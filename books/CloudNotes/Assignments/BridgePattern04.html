@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html dir="ltr">
+
+<head>
+	<meta charset="utf-8" />
+	<title>BridgePattern04</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="/charlie/images/favicon.png">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+	<link href="/charlie/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css" />
+	<!-- Latest compiled and minified JavaScript - Move to bottom of body element -->
+	<script src="//code.jquery.com/jquery.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script src="/charlie/libs/scripts/elvenware.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-2806409-2']);
+		_gaq.push(['_trackPageview']);
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+</head>
+
+<body>
+
+
+
+	<!-- removed  navbar-fixed-top -->
+	<div class="navbar navbar-inverse">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"> </span>
+					<span class="icon-bar"> </span>
+					<span class="icon-bar"> </span>
+				</button>
+				<a class="navbar-brand" href="/charlie/index.html">Elvenware</a>
+			</div>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="/charlie/index.html">Home</a></li>
+					<li><a href="/charlie/contents.html">About</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li class="dropdown-header">Core Code</li>
+							<li><a href="/charlie/development/index.html">Strongly Typed</a></li>
+							<li><a href="/charlie/development/web/index.html">Web &amp; Scripts</a></li>
+							<li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">OS and Tools</li>
+							<li><a href="/charlie/os/index.html">OS</a></li>
+							<li><a href="/charlie/development/database/index.html">Database</a></li>
+							<li><a href="/charlie/books/index.html">My Writing</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">Art</li>
+							<li><a href="/charlie/Art/index.html">Poems &amp; Photos</a></li>
+							<li><a href="/charlie/books/reading/index.html">Book Reviews</a></li>
+							<li><a href="/charlie/spirit/index.html">Spiritual</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">Links</li>
+							<li><a href="/charlie/links.html">My Links</a></li>
+							<li><a href="http://www.github.com/charliecalvert">GitHub</a></li>
+							<li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</div>
+
+	<div class="container">
+
+		<div class="starter-template">
+			<figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png" /></figure>
+<h2>Table of Contents</h2>
+<ul class="elfTocHeading">
+	<li><a href='#bridgepattern-04'>BridgePattern 04</a></li>
+	<li><a href='#step-01-create-a-project'>Step 01: Create a Project</a></li>
+	<li><a href='#step-02-add-in-require'>Step 02: Add in Require</a></li>
+	<li><a href='#step-03-make-sure-it-works'>Step 03: Make sure it works</a></li>
+	<li><a href='#step-04-add-in-control.'>Step 04: Add in Control.</a></li>
+	<li><a href='#step-05-set-up-tests'>Step 05: Set up Tests</a></li>
+	<li><a href='#step-06-add-in-readers'>Step 06: Add in Readers</a></li>
+	<li><a href='#step07-the-displayfactory'>Step07: The DisplayFactory</a></li>
+	<li><a href='#step-08-jsonreader-redux'>Step 08: JsonReader Redux</a></li>
+	<li><a href='#step-09-fastforward-with-the-observer'>Step 09: FastForward with the Observer!</a></li>
+	<li><a href='#step-10-singleton'>Step 10: Singleton</a></li>
+	<li><a href='#step-11-more-tests-more-singletons'>Step 11: More Tests, more Singletons</a></li>
+	<li><a href='#step-12-turn-it-in'>Step 12: Turn it in</a></li>
+</ul>
+<h1 id="bridgepattern-04">BridgePattern 04</h1>
+<p>Primary goals:</p>
+<ol type="1">
+<li>Run on AWS</li>
+<li>Singleton</li>
+<li>Session Management</li>
+</ol>
+<p>Below I step you through the creation of the entire app. You may, however want to start with existing code. There is an argument, I think, for rebuilding from scratch so that you are sure you get the architecture right.</p>
+<p>Our theme: Defining responsibilities is the key step in software development. We use objects, modules, patterns and methods to separate the tasks our software performs, and to link these tasks to one another as loosely as possible.</p>
+<h2 id="step-01-create-a-project">Step 01: Create a Project</h2>
+<p>Use express to create the project:</p>
+<pre><code>express Week08BridgePattern04</code></pre>
+<p>Add in <strong>.project</strong> file and set the name field to <strong>Week08BridgePattern-LastName</strong>, where last name is your last name.</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;projectDescription&gt;
+    &lt;name&gt;Week08Bridgepattern-Calvert&lt;/name&gt;</code></pre>
+<p>Set the project name in <strong>routes/index.js</strong>:</p>
+<pre><code>router.get(&#39;/&#39;, function(req, res) {
+  res.render(&#39;index&#39;, { title: &#39;Week08BridgePattern&#39; });
+});</code></pre>
+<p>Set the port in <strong>bin/www</strong>:</p>
+<pre><code>app.set(&#39;port&#39;, process.env.PORT || 30025);</code></pre>
+<h2 id="step-02-add-in-require">Step 02: Add in Require</h2>
+<p>Get Main.js, require and jquery:</p>
+<pre><code>cd public/javascripts
+wget http://requirejs.org/docs/release/2.1.11/comments/require.js
+wget http://code.jquery.com/jquery-2.1.1.js
+wget http://elvenware.com/charlie/development/web/JavaScript/Scripts/Main.js </code></pre>
+<p>Or, if you want to automate the above, create a symbolic link in your <strong>bin</strong> directory to the <a href="https://github.com/charliecalvert/JsObjects/blob/master/Utilities/InstallScripts/RequireJquery.sh">JsObjects RequireJquery.sh</a> script:</p>
+<pre><code>ln -s ~/Git/JsObjects/Utilities/InstallScripts/RequireJquery.sh ~/bin/requirejq</code></pre>
+<p>Then you can just type: requirejq from your <strong>/public/javascripts</strong> folder.</p>
+<p>Modify <strong>views/layout.jade</strong>:</p>
+<pre><code>doctype html
+html
+  head
+    title= title
+    link(rel=&#39;stylesheet&#39;, href=&#39;/stylesheets/style.css&#39;)
+    script(src=&quot;javascripts/require.js&quot; data-main=&quot;javascripts/Main&quot;)
+  body
+    block content</code></pre>
+<h2 id="step-03-make-sure-it-works">Step 03: Make sure it works</h2>
+<p>Navigate to the root folder for your project and:</p>
+<pre><code>npm install
+npm start</code></pre>
+<p>Start your browser and navigate to localhost:30025. Check the <strong>Network</strong> page in Chrome or Chromium:</p>
+<figure>
+<img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/Routing07.png" alt="Routing" /><figcaption>Routing</figcaption>
+</figure>
+<p>If your view does not look something like this, and particularly if your view shows any red, then something is wrong. The key things to look for, of course, are <strong>jquery</strong>, <strong>require</strong> and <strong>Main.js</strong>.</p>
+<p>Summary diagram:</p>
+<figure>
+<img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/BridgeReader04-01.png" alt="BridgePattern01" /><figcaption>BridgePattern01</figcaption>
+</figure>
+<h2 id="step-04-add-in-control.">Step 04: Add in Control.</h2>
+<p>Create a default Control object and add it in:</p>
+<pre><code>define(function(require) {
+
+    var Control = (function() {
+
+        function Control() {
+
+        }
+
+        return Control;
+
+    }())
+
+    return Control;
+})</code></pre>
+<p>And in <strong>Main</strong>:</p>
+<pre><code>require.config({
+    paths : {
+        &quot;jquery&quot; : &quot;jquery-2.1.1&quot;
+    }
+});
+
+require([&#39;jquery&#39;, &quot;Control&quot;], 
+
+    function(jq, Control) {
+        &#39;use strict&#39;;
+        console.log(&quot;Main called&quot;);
+        
+        $(document).ready(function() {
+            var control = new Control();
+        });
+
+    }
+
+);</code></pre>
+<p>Restart your app and check your work and confirm that <strong>Control</strong> is loaded:</p>
+<figure>
+<img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/Routing08.png" alt="routes" /><figcaption>routes</figcaption>
+</figure>
+<p><strong>NOTE</strong>: <em>If you are tired of restarting the server each time you change code on the server side, use <strong>nodemon</strong>. Like this</em>:</p>
+<pre><code>sudo npm install -g nodemon
+nodemon bin/www</code></pre>
+<p><em>Notice that youare are typing <strong>nodemon</strong> instead of <strong>node</strong>. Now each time you start you change your server side code your application will be restarted automatically.</em></p>
+<p>Summary diagram:</p>
+<figure>
+<img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/BridgeReader04-02.png" alt="BridgePattern02" /><figcaption>BridgePattern02</figcaption>
+</figure>
+<p>In my loosely defined UML-like syntax, the above diagram shows that <strong>Main</strong> aggregates <strong>Control</strong>. This means that <strong>Main</strong> has a property that points at <strong>Control</strong>:</p>
+<pre><code>var control = new Control();</code></pre>
+<h2 id="step-05-set-up-tests">Step 05: Set up Tests</h2>
+<p>Create your <strong>UnitTests</strong> page:</p>
+<ul>
+<li>routes/UnitTests.js</li>
+<li>views/UnitTests.jade</li>
+<li>/Tests/MainTest.js</li>
+<li>/Tests/jasmine-2.0.0/*</li>
+</ul>
+<p>Getting the jasmine folder can be tricky. Be sure your case is correct, and that there actually are files in the jasmine folder. Other projects we have used have Jasmine included, so you can just borrow the folder from another project.</p>
+<p>In <strong>app.js</strong> add these lines:</p>
+<pre><code>var unitTests = require(&#39;./routes/UnitTests&#39;);
+app.use(express.static(path.join(__dirname, &#39;Tests&#39;)));
+app.use(&#39;/UnitTests&#39;, unitTests);</code></pre>
+<p>The first line above links in (requires) our new /routes/UnitTests.js file. The second line helps express find the Tests directory, and to treat requests for files in that directory as if they were in the root of the project. This means we don't have to explicitly use the route '/Tests/ when we want to see files that are physically stored in the tests directory. We can serve files from that directory to help us organize our code on the server, but the client can just think of those files as being in the root. The final line of code tells Express to use our UnitTests function, that is, to consider it as a possible route, as a little bit of middleware running on our server. All the code in our Express app is considered middleware. We have client code on the browser, middleware in our Express app, and database code in our MongoDb database.</p>
+<p>Here is how to use all three of the statements mentioned above in their proper context:</p>
+<pre><code>var express = require(&#39;express&#39;);
+var path = require(&#39;path&#39;);
+var favicon = require(&#39;static-favicon&#39;);
+var logger = require(&#39;morgan&#39;);
+var cookieParser = require(&#39;cookie-parser&#39;);
+var bodyParser = require(&#39;body-parser&#39;);
+
+var routes = require(&#39;./routes/index&#39;);
+var unitTests = require(&#39;./routes/UnitTests&#39;);
+
+var app = express();
+
+// view engine setup
+app.set(&#39;views&#39;, path.join(__dirname, &#39;views&#39;));
+app.set(&#39;view engine&#39;, &#39;jade&#39;);
+
+app.use(favicon());
+app.use(logger(&#39;dev&#39;));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, &#39;public&#39;)));
+app.use(express.static(path.join(__dirname, &#39;Tests&#39;)));
+
+app.use(&#39;/&#39;, routes);
+app.use(&#39;/UnitTests&#39;, unitTests);
+
+/// catch 404 and forwarding to error handler
+app.use(function(req, res, next) { 
+etc....</code></pre>
+<p>Then <strong>views/UnitTests.jade</strong>:</p>
+<pre><code>doctype html
+html
+  head
+    title= title
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    link(href=&quot;jasmine-2.0.0/jasmine.css&quot;, type=&quot;text/css&quot;, rel=&quot;stylesheet&quot;)
+    script(data-main=&quot;MainTest&quot; src=&quot;javascripts/require.js&quot;)
+  h1= title
+  p Welcome to #{title}</code></pre>
+<p>And <strong>routes/UnitTest.js</strong>:</p>
+<pre><code>var express = require(&#39;express&#39;);
+var router = express.Router();
+
+/* GET home page. */
+router.get(&#39;/&#39;, function(req, res) {
+  res.render(&#39;UnitTests&#39;, { title: &#39;UnitTests for Bridge04&#39; });
+});
+
+module.exports = router;</code></pre>
+<p>And of course we need to launch our tests from <strong>views/index.jade</strong> by adding a simple hyperlink:</p>
+<pre><code>extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  a(href=&quot;UnitTests&quot;) Unit Tests</code></pre>
+<p>And we need <strong>Tests/MainTest.js</strong> so that require will know where to find our files. Note that we don't have to say that a file is in either the public or Tests directory, per the lengthy description of app.use given above:</p>
+<pre><code>require.config({
+    baseUrl : &quot;/&quot;,
+    paths : {
+        &quot;jquery&quot; : &quot;javascripts/jquery-2.1.1&quot;,
+        &quot;Control&quot; : &quot;javascripts/Control&quot;,
+        &#39;jasmine&#39; : &#39;jasmine-2.0.0/jasmine&#39;,
+        &#39;jasmine-html&#39; : &#39;jasmine-2.0.0/jasmine-html&#39;,
+        &#39;boot&#39; : &#39;jasmine-2.0.0/boot&#39;
+    },
+    shim : {
+        &#39;jasmine&#39; : {
+            exports : &#39;jasmine&#39;
+        },
+        &#39;jasmine-html&#39; : {
+            deps : [ &#39;jasmine&#39; ],
+            exports : &#39;jasmine&#39;
+        },
+        &#39;boot&#39; : {
+            deps : [ &#39;jasmine&#39;, &#39;jasmine-html&#39; ],
+            exports : &#39;jasmine&#39;
+        }
+    }
+});
+
+require([ &#39;boot&#39; ], function(jasmine) {
+    &#39;use strict&#39;;
+
+    require([ &quot;jquery&quot;, &quot;BridgeTests&quot;], 
+        function(jq, BridgeTests) {
+        console.log(&quot;Main called.&quot;);
+        $(&quot;p&quot;).hide();
+        window.onload();
+    });
+});</code></pre>
+<p>And finally we write our Jasmine test of the simple <strong>Control</strong> module. In <strong>Tests/BridgeTests.js</strong> we create a test that confirms that we can create an instance of the <strong>Control</strong> object.:</p>
+<pre><code>define([ &quot;Control&quot;], 
+    function(Control) {
+    &#39;use strict&#39;;
+
+    describe(&quot;Bridge Tests&quot;, function() {
+
+        it(&quot;proves we can run a test&quot;, function() {
+            expect(true).toBe(true);
+        });
+        
+        it(&quot;proves we can create Control&quot;, function() {
+            var control = new Control();
+            expect(control).toBeTruthy();
+        });
+        
+
+    });
+});</code></pre>
+<p>There are actually two tests in the above code: the default &quot;proves we can run a test&quot; code, and then the test that proves we can create a control.</p>
+<p>When we run our app and click on the Unit Tests link we see this:</p>
+<figure>
+<img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/Routing09.png" alt="routes" /><figcaption>routes</figcaption>
+</figure>
+<p>Summary diagram:</p>
+<figure>
+<img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/BridgeReader04-03.png" alt="Unit Tests" /><figcaption>Unit Tests</figcaption>
+</figure>
+<p>In the diagram above I treat Core and UnitTests as equals. They are both pages that are launched directly from the server via simple route. In one case the route is the root: '/'. In the other it looks like this: '/UnitTests'. See the URL in the image depicting the running UnitTests to see the route in practice: http://localhost:30025/UnitTests.</p>
+<h2 id="step-06-add-in-readers">Step 06: Add in Readers</h2>
+<p>The next step will be to add in <strong>Readers</strong>. Let's begin by creating a test to see if we can create a <strong>JsonReader</strong>:</p>
+<pre><code>define([&quot;Control&quot;, &quot;JsonReader&quot;], 
+    function(Control, JsonReader) {
+    &#39;use strict&#39;;
+
+    describe(&quot;Bridge Tests&quot;, function() {
+
+        it(&quot;proves we can run a test&quot;, function() {
+            expect(true).toBe(true);
+        });
+        
+        it(&quot;proves we can create Control&quot;, function() {
+            var control = new Control();
+            expect(control).toBeTruthy();
+        });
+
+        it(&quot;proves we can create a JsonReader&quot;, function() {
+            var jsonReader = new JsonReader();
+            expect(jsonReader).toBeTruthy();
+        });
+    });
+});</code></pre>
+<p>In this code we require a <strong>JsonReader</strong>:</p>
+<pre><code>define([&quot;Control&quot;, &quot;JsonReader&quot;], 
+    function(Control, JsonReader) {</code></pre>
+<p>We also write a test to see if we can create one:</p>
+<pre><code>it(&quot;proves we can create a JsonReader&quot;, function() {
+    var jsonReader = new JsonReader();
+    expect(jsonReader).toBeTruthy();
+});</code></pre>
+<p>It goes without saying that this test will fail.</p>
+<figure>
+<img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/Routing10.png" alt="UnitTests" /><figcaption>UnitTests</figcaption>
+</figure>
+<p>To fix the problem, we need to add our JsonReader from our earlier projects to our current project:</p>
+<pre><code>/public/javascripts/Readers/JsonReader.js</code></pre>
+<p>Here is the most recent copy of JsonReader:</p>
+<pre><code>define([ &#39;jquery&#39;, &#39;Utilities&#39;, &#39;DisplayAddress&#39;, &#39;DisplayFileList&#39; ], 
+        function(jquery, utilities, DisplayAddress, DisplayFileList) {
+    &#39;use strict&#39;;
+
+    var JsonReader = (function() {
+
+        var that;
+
+        function JsonReader() {
+            that = this;
+        }
+
+        var clear = function() {
+            $(&#39;#displayList&#39;).empty();
+        }
+
+        function nativeCallback(fileList) {
+            var serverData = fileList;
+            that.display(serverData);
+        }
+
+        // If the customCallback exists, then use it, else use ours nativeCallback. 
+        // If there is an error handler, use it, else use our errorHandler
+        function getCallback(customCallback) {
+            var callback = utilities.isTruthy(customCallback) ? customCallback : nativeCallback;
+            if (utilities.isFalsy(callback.error)) {
+                callback.error = utilities.errorHandler;
+            }
+            return callback;
+        }
+
+        JsonReader.prototype.readFile = function(fileName, customCallback) {
+            var fileObject = { &#39;fileName&#39; : fileName };
+            var callback = getCallback(customCallback);
+            $.getJSON(&#39;/read&#39;, fileObject, callback);
+        };
+
+        JsonReader.prototype.display = function(serverData) {
+            clear();
+            if (serverData.type === &#39;address&#39;) {
+                var displayAddress = new DisplayAddress();
+                displayAddress.display(serverData.content);
+            } else if (serverData.type === &#39;fileList&#39;) {
+                var displayFileList = new DisplayFileList();
+                displayFileList.display(serverData.content);
+            }
+        };
+
+        return JsonReader;
+    }());
+
+    return JsonReader;
+});</code></pre>
+<p>We can now add code to <strong>MainTest.js</strong> so that this file can be loaded:</p>
+<pre><code>require.config({
+    baseUrl : &quot;/&quot;,
+    paths : {
+        &quot;jquery&quot; : &quot;javascripts/jquery-2.1.1&quot;,
+        &quot;Control&quot; : &quot;javascripts/Control&quot;,
+        &quot;JsonReader&quot;: &quot;javascripts/Readers/JsonReader&quot;,</code></pre>
+<p>Now let's run our tests and see what happens:</p>
+<figure>
+<img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/Routing11.png" alt="Test 11" /><figcaption>Test 11</figcaption>
+</figure>
+<p><a href="http://en.wiktionary.org/wiki/Gott_im_Himmel#German">Gott im himmel</a>! What is to be done! Disaster! As we could plainly see, if we had only looked, <strong>JsonReader</strong> is dependent on three other objects! This will enver do. Our unit tests are meant to test one object at a time. What will we do now?</p>
+<p>After our breathing returns to normal, the first step is to assess the damage. Where is the trouble comming from? Well, it is here: at the start of <strong>JsonReader</strong>:</p>
+<pre><code>define([ &#39;jquery&#39;, &#39;Utilities&#39;, &#39;DisplayAddress&#39;, &#39;DisplayFileList&#39; ], 
+    function(jquery, utilities, DisplayAddress, DisplayFileList) {</code></pre>
+<p>We use require to link in three objects. Before we do too much, let's look at our code and see where these objects are used. Here is the only use of Utilities:</p>
+<pre><code>    function getCallback(customCallback) {
+        var callback = utilities.isTruthy(customCallback) ? customCallback : nativeCallback;
+        if (utilities.isFalsy(callback.error)) {
+            callback.error = utilities.errorHandler;
+        }
+        return callback;
+    }</code></pre>
+<p>You know, perhaps I have lived in a permissive society for too long, but I'm just not very worried about these calls. This is not a heavy dependency, so I'm going to ignore it for now. After all, these are just simple utility functions, and no heavy lifting is involved.</p>
+<p>But what about the DisplayObjects, how are they used:</p>
+<pre><code>JsonReader.prototype.display = function(serverData) {
+    clear();
+    if (serverData.type === &#39;address&#39;) {
+        var displayAddress = new DisplayAddress();
+        displayAddress.display(serverData.content);
+    } else if (serverData.type === &#39;fileList&#39;) {
+        var displayFileList = new DisplayFileList();
+        displayFileList.display(serverData.content);
+    }
+};</code></pre>
+<p>Looking at this code again, I can see that it is all wrong. We are asking the JsonReader to decide what <strong>DisplayObject</strong> it should use. That isn't right. But gosh, its funny to see how clear this becomes when we start writing tests! So let's just comment this code out for now, and revisit it later.</p>
+<pre><code>JsonReader.prototype.display = function(serverData) {
+    clear();
+    /* if (serverData.type === &#39;address&#39;) {
+        var displayAddress = new DisplayAddress();
+        displayAddress.display(serverData.content);
+    } else if (serverData.type === &#39;fileList&#39;) {
+        var displayFileList = new DisplayFileList();
+        displayFileList.display(serverData.content);
+    } */
+};</code></pre>
+<p>Now let's go back and look at those dependencies again:</p>
+<pre><code>define([ &#39;jquery&#39;, &#39;Utilities&#39;, &#39;DisplayAddress&#39;, &#39;DisplayFileList&#39; ], 
+    function(jquery, utilities, DisplayAddress, DisplayFileList) {
+    </code></pre>
+<p>Why don't we just keep <strong>jquery</strong> and <strong>Utilities</strong>, and get rid of the other two for now, since we don't need them with all their associated code commented out:</p>
+<pre><code>define([ &#39;jquery&#39;, &#39;Utilities&#39;], 
+    function(jquery, utilities) {</code></pre>
+<p>Now let's copy in the <strong>Utilities</strong> object from our previous project. For now, we can put it in <strong>public/javascripts</strong>:</p>
+<pre><code>define(function(require) {
+
+    var utilities = {
+
+        errorHandler : function(fx, status, error) {
+            $(&#39;#debug01&#39;).html(fx.responseText);
+            $(&#39;#debug02&#39;).html(&#39;error&#39; + error);
+        },
+
+        isTruthy : function(value) {
+            if (value === false) {
+                return value;
+            } else if (value === null) {
+                return false;
+            } else if (typeof value === &#39;undefined&#39;) {
+                return false
+            } else {
+                return true;
+            }
+        },
+
+        isFalsy : function(value) {
+            return this.isTruthy(value) ? false : true;
+        },
+        
+        displayOptions:  function(options) {
+            $(&#39;#debug01&#39;).html(&quot;Type: &quot; + options.objectType)
+            $(&#39;#debug02&#39;).html(&quot;File: &quot; + options.fileName);
+        },
+        
+        setClick: function(func) {
+            $(&quot;#displayList&quot;).off(&#39;click&#39;);
+            $(&quot;#displayList&quot;).click(func);
+        },
+        
+        setFileName: function(options, event) {
+            if (options.useDefaultFile) {
+                options.fileName = options.defaultFileName;
+            } else {
+                options.fileName = event.target.attributes.data.value;
+            }           
+            options.objectType = options.readers[0];
+            return !options.useDefaultFile;
+        }
+    }
+
+    return utilities;
+    
+});</code></pre>
+<p>And let's tell require about <strong>Utilities</strong>:</p>
+<pre><code>require.config({
+    baseUrl : &quot;/&quot;,
+    paths : {
+        &quot;jquery&quot; : &quot;javascripts/jquery-2.1.1&quot;,
+        &quot;Control&quot; : &quot;javascripts/Control&quot;,
+        &quot;JsonReader&quot;: &quot;javascripts/Readers/JsonReader&quot;,
+        &quot;Utilities&quot;: &quot;javascripts/Utilities&quot;,</code></pre>
+<p>Now what happens when we run our tests?</p>
+<figure>
+<img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/Routing12.png" alt="Tests" /><figcaption>Tests</figcaption>
+</figure>
+<p><a href="http://www.collinsdictionary.com/dictionary/english-spanish/miracle">Milagrosamente aprobÃ³ el examen</a>! By some miracle we have passed the test! Our hope is but a flickering candle, and yet it still burns!</p>
+<p>But what are we going to do about the offending code? How can we fix this mess that we commented out:</p>
+<pre><code>if (serverData.type === &#39;address&#39;) {
+    var displayAddress = new DisplayAddress();
+    displayAddress.display(serverData.content);
+} else if (serverData.type === &#39;fileList&#39;) {
+    var displayFileList = new DisplayFileList();
+    displayFileList.display(serverData.content);
+}</code></pre>
+<p>Here by the dim light of our lamp, it is hard to see clearly.... And yet, there is a shape that emerges from the darkness. It is only dimly perceivable at first, but as we squint into the darkness, a rough shape is faintly visible. What do we see? Smoke? Iron rails? Brick walls? What is it? Could it be -- yes! -- is it possible, the code we have commented out looks so much like something we have seen before! The billowing smoke, the sound of grinding engines....</p>
+<p>What do we see? Branching code, and in-between a series of calls to <strong>new</strong>? All at once the smoke seems to clear, the brick walls come clearly into view, the billowing smokestacks of a <strong>Factory</strong> hove into view!</p>
+<p>Of course! This code is very much like a <strong>Factory</strong>. And we are, as we well know, supposed to create objects not by calling <strong>new</strong>, but by using a <strong>Factory</strong>! Why didn't we see this before? What had blinded us? All we can do is be thankful for our unit tests that force us to take stock and actually think!</p>
+<p>Summary diagram of tests:</p>
+<figure>
+<img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/BridgeReader04-04.png" alt="sum" /><figcaption>sum</figcaption>
+</figure>
+<h2 id="step07-the-displayfactory">Step07: The DisplayFactory</h2>
+<p>For now we will set aside the code for our <strong>BridgeTests</strong>. Instead, let's create a test for a <strong>DisplayFactory</strong>. Here is the current state of <strong>MainTest.js</strong>:</p>
+<pre><code>/**
+ * @author Charlie Calvert
+ */
+
+require.config({
+    baseUrl : &quot;/&quot;,
+    paths : {
+        &quot;jquery&quot; : &quot;javascripts/jquery-2.1.1&quot;,
+        &quot;Control&quot; : &quot;javascripts/Control&quot;,
+        &quot;DisplayFactory&quot;: &quot;javascripts/Factories/DisplayFactory&quot;,
+        &quot;JsonReader&quot;: &quot;javascripts/Readers/JsonReader&quot;,
+        &quot;Utilities&quot;: &quot;javascripts/Utilities&quot;,
+        &#39;jasmine&#39; : &#39;jasmine-2.0.0/jasmine&#39;,
+        &#39;jasmine-html&#39; : &#39;jasmine-2.0.0/jasmine-html&#39;,
+        &#39;boot&#39; : &#39;jasmine-2.0.0/boot&#39;
+    },
+    shim : {
+        &#39;jasmine&#39; : {
+            exports : &#39;jasmine&#39;
+        },
+        &#39;jasmine-html&#39; : {
+            deps : [ &#39;jasmine&#39; ],
+            exports : &#39;jasmine&#39;
+        },
+        &#39;boot&#39; : {
+            deps : [ &#39;jasmine&#39;, &#39;jasmine-html&#39; ],
+            exports : &#39;jasmine&#39;
+        }
+    }
+});
+
+require([ &#39;boot&#39; ], function(jasmine) {
+    &#39;use strict&#39;;
+
+    require([ &quot;jquery&quot;, &quot;BridgeTests&quot;, &quot;DisplayTests&quot;], 
+        function(jq, BridgeTests) {
+        console.log(&quot;Main called.&quot;);
+        $(&quot;p&quot;).hide();
+        window.onload();
+    });
+});</code></pre>
+<p>You can see the new line that requires the <strong>DisplayFactory</strong> and <strong>DisplayTests</strong> in the code shown above.</p>
+<p>In DisplayTests we define a new suite for testing the <strong>DisplayFactory</strong>:</p>
+<pre><code>define([&quot;DisplayFactory&quot;], 
+    function(DisplayFactory) {
+    &#39;use strict&#39;;
+
+    describe(&quot;Display Tests&quot;, function() {
+
+        it(&quot;proves we can run a test&quot;, function() {
+            expect(true).toBe(true);
+        });
+        
+        it(&quot;proves we can create a DisplayFactory&quot;, function() {
+            var displayFactory = new DisplayFactory();
+            expect(displayFactory).toBeTruthy();
+        });
+
+    });
+});</code></pre>
+<p>Wiathout a <strong>DisplayFactory</strong>, these tests fail. So let's create one:</p>
+<pre><code>define(function(require) {
+    &#39;use strict&#39;;
+
+    // Define a SailBoat factory constructor function
+    function DisplayFactory() {
+    }
+
+    DisplayFactory.prototype.product = {};
+
+    // Create a Boat with this function
+    DisplayFactory.prototype.create = function(options) {       
+
+        switch (options.objectType) {
+        case &quot;fileList&quot;:
+            this.product = {};
+            break;
+        case &quot;address&quot;:
+            this.product = {};
+            break;
+        default:
+            this.product = {};
+        }
+
+        return this.product;
+
+    };
+
+    return DisplayFactory;
+});</code></pre>
+<p>Let's run our tests and make sure they work:</p>
+<figure>
+<img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/Routing13.png" alt="r3" /><figcaption>r3</figcaption>
+</figure>
+<p>At this stage, one would be entitled to complain: &quot;Hey, but you aren't creating real objects! These are just fake DisplayAddress and DisplayFileList objects:</p>
+<pre><code>case &quot;fileList&quot;:
+    this.product = {};
+    break;
+case &quot;address&quot;:
+    this.product = {};
+    break;</code></pre>
+<p>Yes, that is a valid point. And yet, our tests pass! Our goal here is to get our tests to pass. It is not only not necessary to write code that does more than enable our tests to pass, it is a mistake! In agile programming, we always write the minimal amount of code necessary to pass tests, to create working code. What does it say in the <strong>Agile Manifest?</strong> The statement is simple enough:</p>
+<p><strong>Working software is the primary measure of progress.</strong></p>
+<p>Right now, our software is supposed to pass a test. It works. That is the measure of our progress, not the ability to pass some test that hasn't even been written yet!</p>
+<h2 id="step-08-jsonreader-redux">Step 08: JsonReader Redux</h2>
+<p>Once again, let's review the code from <strong>JsonReader</strong> that we commented out:</p>
+<pre><code>if (serverData.type === &#39;address&#39;) {
+    var displayAddress = new DisplayAddress();
+    displayAddress.display(serverData.content);
+} else if (serverData.type === &#39;fileList&#39;) {
+    var displayFileList = new DisplayFileList();
+    displayFileList.display(serverData.content);
+}</code></pre>
+<p>Here is what the display method looks like after we replace the above code with our Factory:</p>
+<pre><code>define([ &#39;jquery&#39;, &#39;Utilities&#39;, &#39;DisplayFactory&#39;], 
+        function(jquery, utilities, DisplayFactory) {
+    &#39;use strict&#39;;
+
+    var JsonReader = (function() {
+    
+    // Code omitted here, but defined above
+    
+    JsonReader.prototype.display = function(serverData) {
+        clear();
+        var displayFactory = new DisplayFactory();
+        var displayObject = displayFactory.create({objectType: serverData.type});
+        displayObject.display(serverData.content);
+    };
+    
+        return JsonReader;
+        
+    }());
+
+    return JsonReader;
+});</code></pre>
+<p>As you can see, we have created our <strong>DisplayFactory</strong>, then used it to create a <strong>DisplayObject</strong>, then displayed it. After adding this code, if we run our tests, they pass. But this isn't much of a test. After all, we are doing nothing more than creating a <strong>JsonReader</strong>. What happens if we try to read something with it?</p>
+<p>First, let's copy our FileList.json file into the <strong>public</strong> directory:</p>
+<pre><code>{
+    &quot;type&quot;: &quot;fileList&quot;,
+    &quot;content&quot;: {
+        &quot;President01.json&quot;: &quot;/home/charlie/Documents/Data/Presidents01.json&quot;,
+        &quot;President02.json&quot;: &quot;/home/charlie/Documents/Data/Presidents02.json&quot;,
+        &quot;President03.json&quot;: &quot;/home/charlie/Documents/Data/Presidents03.json&quot;,
+        &quot;President04.json&quot;: &quot;/home/charlie/Documents/Data/Presidents04.json&quot;
+    }
+}</code></pre>
+<p>Now let's write an asynchronous test and put it in <strong>BridgeTests</strong>:</p>
+<pre><code>    it(&quot;proves we can create a JsonReader and read something&quot;, function(done) {
+        var jsonReader = new JsonReader();
+        jsonReader.readFile(&quot;FileList.json&quot;, function(dataFromServer) {
+            expect(dataFromServer.content[&quot;President01.json&quot;]).toBe(&quot;/home/charlie/Documents/Data/Presidents01.json&quot;);
+            done();
+        });
+    });</code></pre>
+<p>It fails, of course, with a big red Jasmine error and an Obamacare 404 server side error that looks something like this:</p>
+<pre><code>GET /read?fileName=FileList.json 404 47ms - 1.55kb</code></pre>
+<p>The culprit is a missing <strong>read</strong> route, which we can supply from our previous code, and place in <strong>/routes/index.js</strong>:</p>
+<pre><code>// Code omitted
+var fs = require(&#39;fs&#39;);
+
+// Code omitted
+
+router.get(&#39;/read&#39;, function(request, response) {
+    console.log(&#39;root read called: &#39; + JSON.stringify(request.query));
+    var fileName = request.query.fileName;
+    fs.readFile(fileName, &#39;utf8&#39;, function(error, data) {
+        if (error) {
+            response.send({ &quot;Could_Not_Find_File&quot;: error, fileName: fileName});
+            return;
+        }
+        
+        try {
+            var jsonObject = JSON.parse(data);
+            console.log(&quot;Sending error&quot;);
+            response.send(jsonObject);
+        } catch(e) {            
+            response.send({ &quot;error&quot;: &quot;Could not parse&quot;, &quot;Could_Not_Parse_JSON&quot;: &quot;error&quot;});
+        };      
+    });
+    
+});</code></pre>
+<p>Now our tests pass:</p>
+<figure>
+<img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/Routing14.png" alt="JsonReader reads!" /><figcaption>JsonReader reads!</figcaption>
+</figure>
+<p>Summary Diagram:</p>
+<figure>
+<img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/BridgeReader04-05.png" alt="Brider Reader 05" /><figcaption>Brider Reader 05</figcaption>
+</figure>
+<h2 id="step-09-fastforward-with-the-observer">Step 09: FastForward with the Observer!</h2>
+<p>We are now going to rush forward, and plug in all our code from BridgePattern02. The code is complex enough that communication between objects can become tricky. In particular, when a <strong>DisplayObject</strong> finishes refreshing screen, we need to be notified so that we can react to events created when new elements are placed on the screen. In particular, a <strong>DisplayObject</strong> might create a list of items, or other controls. When it does so, we might want to respond to events that occur when the user clicks on a new button or list item. We can't set up these events until the controls are created, so we have to be notified when the events are created.</p>
+<p>This -- of course -- is the classic place where intermediate level programmers go wrong. All their work to ensure loose coupling between objects can collapse when one object suddenly needs to notify another object that something has happened. In that case, most intermediate level developers break down and start hard coding a tightly coupled link between the object that makes the announcement, and the object that wants to hear that the event occurred.</p>
+<p>Beware such treachery! For at that moment the Lords of Development will stretch out their hand upon you and leave your code a tangled ruin of error messages!</p>
+<p>Fortunately, there is a way for one object to talk to another without requiring that one object have carnal knowledge of another. To the rescue comes a pattern called the Observer Here is Ben Alman's nice publish subscribe jQuery plugin, which is a variant on the <strong>Observer</strong> pattern:</p>
+<pre><code>(function($) {
+    &#39;use strict&#39;;
+    
+    var o = $({});
+
+    $.subscribe = function() {
+        o.on.apply(o, arguments);
+    };
+
+    $.unsubscribe = function() {
+        o.off.apply(o, arguments);
+    };
+
+    $.publish = function() {
+        o.trigger.apply(o, arguments);
+    };
+
+}(jQuery)); </code></pre>
+<p>Place this file in the <strong>javascripts</strong> directory as <strong>TinyPubSub.js</strong>. We can use it in the <strong>javascripts/Display/DisplayAddress.js</strong> and <strong>javascripts/Display/DisplayFileList.js</strong> objects which are created by the <strong>DisplayFactory</strong>:</p>
+<pre><code>define(function(require) {
+    &#39;use strict&#39;;
+
+    var DisplayAddress = (function() {
+        
+        function DisplayAddress() {
+
+        }
+
+        DisplayAddress.prototype.display = function(serverData) {
+            for ( var file in serverData) {
+                var content = file + &#39;: &#39; + serverData[file];
+                var listItem = &#39;&lt;li data=&quot;address&quot;&gt;&#39; + content + &#39;&lt;/li&gt;&#39;;
+                $(&#39;#displayList&#39;).append(listItem);
+            }
+            $.publish(&#39;pageRefresh&#39;, { message : &quot;Refreshed Address&quot; });
+        }
+
+        return DisplayAddress;
+    }());
+
+    return DisplayAddress;
+
+});</code></pre>
+<p>The relevant line is this one:</p>
+<pre><code>$.publish(&#39;pageRefresh&#39;, { message : &quot;Refreshed Address&quot; });</code></pre>
+<p>It broadcasts a message to all those who have subscribed, telling them that the page has been refreshed. The same line of code can appear in our <strong>Display/DisplayFileList</strong> object:</p>
+<pre><code>define(function(require) {
+    &#39;use strict&#39;;
+
+    var DisplayFileList = (function() {
+
+        function DisplayFileList() {
+
+        }
+
+        DisplayFileList.prototype.display = function(fileList) {
+            for ( var file in fileList) {
+                var dataContent = fileList[file] + &#39;&gt;&#39; + file;
+                dataContent = &#39;&lt;li class=&quot;displayItem&quot; data=&#39; + dataContent + &#39;&lt;/li&gt;&#39;
+                $(&#39;#displayList&#39;).append(dataContent);
+            }
+            $.publish(&#39;pageRefresh&#39;, { message : &quot;Refreshed FileList&quot; });
+        }
+
+        return DisplayFileList;
+    }());
+
+    return DisplayFileList;
+
+});</code></pre>
+<p>I leave it up to you to modify <strong>DisplayFactory</strong> to create these objects rather than the default empty objects we created before. If these two <strong>DisplayObjects</strong> publish an event, then it seems reasonable that there will be another object that will subscribe to it. In our case, it will be the <strong>Control</strong> object, which we update to look like this:</p>
+<pre><code>define([ &quot;ReaderFactory&quot;, &quot;BridgeFactory&quot;, &quot;Utilities&quot; ], function(
+        ReaderFactory, BridgeFactory, utilities) {
+
+    var Control = (function() {
+
+        var fancyReader = null;
+        var factory = null;
+        var options = {
+            defaultFileName : &quot;public/FileList.json&quot;,
+            useDefaultFile : true,
+        };
+        options.readers = [ &quot;JsonReader&quot;, &quot;MarkdownReader&quot; ];
+        options.objectType = options.readers[0];
+        options.fileName = options.defaultFileName;
+
+        function Control() {
+            factory = new ReaderFactory();
+            fancyReader = new BridgeFactory().create({ objectType : &quot;FancyReaderBridge&quot; });
+            $.subscribe(&#39;pageRefresh&#39;, function() { $(&quot;li&quot;).click(run); });
+            run();
+        }
+
+        function runReader(options) {
+            utilities.displayOptions(options);
+            var reader = factory.create(options);
+            fancyReader.setReader(reader);
+            fancyReader.readFile(options.fileName);
+        }
+
+        function run(event) {
+            options.useDefaultFile = utilities.setFileName(options, event);
+            runReader(options);
+        }
+
+        return Control;
+
+    }())
+
+    return Control;
+})</code></pre>
+<p>As you can see, whenever a <strong>DisplayOject</strong> updates the display our code sets up an event handler for clicks on the new list items:</p>
+<pre><code>$.subscribe(&#39;pageRefresh&#39;, function() { $(&quot;li&quot;).click(run); });</code></pre>
+<p>The control object finds out what file the user clicked on in the list item, and then it loads that file. It uses the <strong>setFileName</strong> method from the <strong>Utilities</strong> object to switchback to loading the default file (FileList.json) if the user clicks on the display list:</p>
+<pre><code>setFileName: function(options, event) {
+    if (options.useDefaultFile) {
+        options.fileName = options.defaultFileName;
+    } else {
+        options.fileName = event.target.attributes.data.value;
+    }           
+    options.objectType = options.readers[0];
+    return !options.useDefaultFile;
+}</code></pre>
+<p>It will probably prove to be a temporary solution, but it keeps us going for now. Remember. We care about creating working code. We don't try to plan for all contingencies we imagine might occur!</p>
+<p>The main point, of course, is that our program, when reduced to its essence, is run with these four lines of code:</p>
+<pre><code>options.useDefaultFile = utilities.setFileName(options, event); // What file to read?
+var reader = factory.create(options);
+fancyReader.setReader(reader);
+fancyReader.readFile(options.fileName);</code></pre>
+<p>It's the fruit of all our work, and its simplicity helps to keep our project maintainable.</p>
+<p>You've probably seen all this before, but here is the rest of our program. The <strong>javascripts/Factories/ReaderFactory</strong>:</p>
+<pre><code>define([ &#39;DefaultReader&#39;, &#39;JsonReader&#39;, &quot;MarkdownReader&quot; ], function(
+        DefaultReader, JsonReader, MarkdownReader) {
+    &#39;use strict&#39;;
+
+    var ReaderFactory = (function() {
+
+        function ReaderFactory() {
+        }
+
+        ReaderFactory.prototype.product = {};
+
+        ReaderFactory.prototype.create = function(options) {
+
+            switch (options.objectType) {
+            case &quot;JsonReader&quot;:
+                this.product = new JsonReader();
+                break;
+            case &quot;MarkdownReader&quot;:
+                this.product = new MarkdownReader();
+                break;
+            case &quot;DefaultReader&quot;:
+                this.product = new DefaultReader();
+                break;
+            default:
+                this.product = {};
+            }
+
+            return this.product;
+
+        };
+
+        return ReaderFactory;
+
+    }());
+
+    return ReaderFactory;
+});</code></pre>
+<p>The <strong>javascripts/Factories/BridgeFactory</strong>:</p>
+<pre><code>define([ &#39;ReaderBridge&#39;, &#39;FancyReaderBridge&#39; ], function(ReaderBridge, FancyReaderBridge) {
+    &#39;use strict&#39;;
+
+    // Define a SailBoat factory constructor function
+    function BridgeFactory() {
+    }
+
+    BridgeFactory.prototype.product = {};
+
+    // Create a Boat with this function
+    BridgeFactory.prototype.create = function(options) {        
+
+        switch (options.objectType) {
+        case &quot;JsonReader&quot;:
+            this.product = new ReaderBridge;
+            break;
+        case &quot;FancyReaderBridge&quot;:
+            this.product = new FancyReaderBridge()
+            break;
+        default:
+            this.product = {};
+        }
+
+        return this.product;
+
+    };
+
+    return BridgeFactory;
+});</code></pre>
+<p>The <strong>javascripts/Bridges/ReaderBridge</strong>:</p>
+<pre><code>define(function(require) {
+    &#39;use strict&#39;;
+
+    var Readers = (function() {
+
+        function Readers(reader) {
+            this.setReader(reader);
+        }
+
+        Readers.prototype.setReader = function(reader) {
+            this.reader = reader;
+        };
+
+        Readers.prototype.readFile = function(fileName, customCallback) {
+            return this.reader.readFile(fileName, customCallback);
+        };
+
+        Readers.prototype.display = function(serverData) {
+            return this.reader.display(serverData);
+        };
+
+        return Readers;
+    }());
+
+    return Readers;
+});</code></pre>
+<p>And of course the <strong>javascripts/Bridges/FancyReaderBridge</strong>, which does nothing for us at this time:</p>
+<pre><code>define([&quot;ReaderBridge&quot;], function(ReaderBridge) {
+    &#39;use strict&#39;;
+
+var FancyReader = ( function() {
+
+        function FancyReader(reader) {           
+            this.setReader(reader);
+        }       
+        
+        FancyReader.prototype = new ReaderBridge();
+        
+        return FancyReader;
+    }());
+    
+    return FancyReader;
+    
+});</code></pre>
+<p>The <strong>DefaultReader</strong>:</p>
+<pre><code>define(function(require) {&#39;use strict&#39;;
+
+    var DefaultReader = ( function() {
+
+            function DefaultReader() {
+
+            }
+
+
+            DefaultReader.prototype.readFile = function() {
+                return &quot;I&#39;m the default reader&quot;;
+            };
+
+            DefaultReader.prototype.display = function() {
+                var data = this.readFile();
+                $(&quot;#display&quot;).text(data);
+            };
+
+            return DefaultReader;
+        }());
+
+    return DefaultReader;
+
+}); </code></pre>
+<p>And for now, we will use this simple <strong>javascripts/Readers/MarkdownReader</strong>, and wait until Monday to see how to integrate the real reader into our program:</p>
+<pre><code>define(function(require) {&#39;use strict&#39;;
+
+    var MarkdownReader = ( function() {
+
+            function MarkdownReader() {
+
+            }
+
+            MarkdownReader.prototype.readFile = function() {
+                this.display(&quot;#Title\n- Item01\n- Item02&quot;);             
+            };
+
+            MarkdownReader.prototype.display = function(data) {             
+                var text = JSON.stringify(data, null, 4);
+                $(&quot;#display&quot;).text(text);
+            };
+
+            return MarkdownReader;
+        }());
+
+    return MarkdownReader;
+});</code></pre>
+<p>I think that is everything except our updated, Main.js file, which you should be able to fix up. The body of it, is unchanged, except that it is a good place to load 'PubSub':</p>
+<pre><code>require([&#39;jquery&#39;, &quot;Control&quot;, &quot;PubSub&quot;], 
+
+    function(jq, Control, PubSub) {
+        &#39;use strict&#39;;
+        console.log(&quot;Main called&quot;);
+        
+        $(document).ready(function() {
+            var control = new Control();
+        });
+    }
+
+);</code></pre>
+<p>The top part of the file is where you configure require to load: &quot;jquery&quot;, &quot;DefaultReader&quot;, &quot;JsonReader&quot;, &quot;MarkdownReader&quot;, &quot;ReaderFactory&quot;, &quot;BridgeFactory&quot;, &quot;DisplayFactory&quot;, &quot;ReaderBridge&quot;, &quot;FancyReaderBridge&quot;, &quot;DisplayFileList&quot;, &quot;DisplayAddress&quot;, &quot;Utilities&quot;, &quot;Control&quot;, and &quot;PubSub&quot;.</p>
+<p>Only Utilities, Control and PubSub are in the javascripts folder. The rest are subdirectories of <strong>javascripts</strong> such as <strong>Bridges</strong>, <strong>Display</strong>, <strong>Factories</strong> and <strong>Readers</strong>.</p>
+<p>And the Presidents. <strong>Presidents01.json</strong>:</p>
+<pre><code>{
+    &quot;type&quot;: &quot;address&quot;,
+    &quot;content&quot;: {
+        &quot;firstName&quot;: &quot;George&quot;,
+        &quot;lastName&quot;: &quot;Washington&quot;,
+        &quot;address&quot;: &quot;101 June Street&quot;,
+        &quot;city&quot;: &quot;Bellevue&quot;,
+        &quot;state&quot;: &quot;WA&quot;
+    }
+}</code></pre>
+<p><strong>Presidents02.json</strong>:</p>
+<pre><code>{
+    &quot;type&quot;: &quot;address&quot;,
+    &quot;content&quot;: {
+        &quot;firstName&quot;: &quot;John&quot;,
+        &quot;lastName&quot;: &quot;Adams&quot;,
+        &quot;address&quot;: &quot;101 June Street&quot;,
+        &quot;city&quot;: &quot;Bellevue&quot;,
+        &quot;state&quot;: &quot;WA&quot;
+    }
+}</code></pre>
+<p><strong>Presidents03.json</strong>:</p>
+<pre><code>{
+    &quot;type&quot;: &quot;address&quot;,
+    &quot;content&quot;: {
+        &quot;firstName&quot;: &quot;Thomas&quot;,
+        &quot;lastName&quot;: &quot;Jefferson&quot;,
+        &quot;address&quot;: &quot;101 June Street&quot;,
+        &quot;city&quot;: &quot;Bellevue&quot;,
+        &quot;state&quot;: &quot;WA&quot;
+    }
+}</code></pre>
+<p><strong>Presidents04.json</strong>:</p>
+<pre><code>{
+    &quot;type&quot;: &quot;address&quot;,
+    &quot;content&quot;: {
+        &quot;firstName&quot;: &quot;James&quot;,
+        &quot;lastName&quot;: &quot;Madison&quot;,
+        &quot;address&quot;: &quot;101 June Street&quot;,
+        &quot;city&quot;: &quot;Bellevue&quot;,
+        &quot;state&quot;: &quot;WA&quot;
+    }
+}</code></pre>
+<h2 id="step-10-singleton">Step 10: Singleton</h2>
+<p>The purpose of the Singleton pattern is to assure that only one instance of a particular object is created. We will discuss the <strong>Singleton</strong> pattern on Monday. However, you can get started with it now.</p>
+<p>Here is the <strong>Singleton</strong> example from the <strong>JavaScript/Design</strong> folder of <strong>JsObjects</strong>:</p>
+<pre><code>define(function() {
+
+    var elf = {};
+
+    elf.SingletonModule = (function() {
+        &#39;use strict&#39;;
+
+        var _instance = null;
+
+        function SingletonModule() {
+            if (_instance === null) {
+                _instance = this;
+            } else {
+                return _instance;
+            }
+        }
+
+        SingletonModule.prototype.publicMethod = function() {
+            return &quot;I&#39;m the SingletonModule.publicMethod.&quot;;
+        };
+
+        SingletonModule.prototype.display = function(value) {
+            $(&#39;#debug01&#39;).append(&#39;&lt;li&gt;&#39; + value + &#39;&lt;/li&gt;&#39;);
+        };
+    
+        return SingletonModule;
+
+    }());
+
+    return elf.SingletonModule;
+});</code></pre>
+<p>As you can see, we declare a variable called **_instance<strong>. When the </strong>constructor** is called, we check if **_instance** is <strong>null</strong>. If it is, then we assume this is the first time the <strong>constructor</strong> has been called. We set **_instance** to <strong>this</strong>. The <strong>constructor</strong> then exits, which means it performs the default task of all constructors, which is to return <strong>this.</strong> If **_instance** is not <strong>null</strong>, we assume an instance of the object has already been created, so we have the constructor return **_instance** and just throw away the new <strong>this</strong> object. The end result is to assure that only one instance of the object can ever be created.</p>
+<p>Let's apply it to the default Reader:</p>
+<pre><code>define(function(require) {&#39;use strict&#39;;
+
+    var DefaultReader = ( function() {
+
+            var _instance = null;
+            
+            function DefaultReader() {
+                if (_instance === null) {
+                    _instance = this;
+                } else {
+                    return _instance;
+                }
+            }
+
+
+            DefaultReader.prototype.readFile = function() {
+                return &quot;I&#39;m the default reader&quot;;
+            };
+
+            DefaultReader.prototype.display = function() {
+                var data = this.readFile();
+                $(&quot;#display&quot;).text(data);
+            };
+
+            return DefaultReader;
+        }());
+
+    return DefaultReader;
+
+}); </code></pre>
+<p>And here are a suite of tests designed to help us see if it is working. Save it as <strong>/Tests/DefaultSingletonTests.js</strong>:</p>
+<pre><code>/*globals describe:true, it:true, expect:true, define: true */
+
+define([&#39;DefaultReader&#39;], function(DefaultReader) {
+    &#39;use strict&#39;;
+
+    describe(&quot;Default Singleton Module Suite&quot;, function() {
+
+        var a, b, c, d, f;
+        
+        beforeEach(function() {
+            a = new DefaultReader();
+            b = new DefaultReader();
+            c = new DefaultReader();
+            d = new DefaultReader();
+            f = [];
+        });
+        
+        it(&quot;proves we can run a test&quot;, function() {
+            expect(true).toBe(true);
+        });
+
+        it(&quot;proves we can run a sanity check that we expect to fail&quot;, function() {
+            var e = {};
+            expect(a === e).toBe(false);
+        });
+        
+        it(&quot;proves we can create a DefaultReader01&quot;, function() {       
+            expect(a === b).toBe(true);
+        });
+
+        it(&quot;proves we can create a DefaultReader02&quot;, function() {
+            expect(a === c).toBe(true);
+        });
+
+        it(&quot;proves we can create a DefaultReader03&quot;, function() {
+            
+            expect(a === d).toBe(true);
+        });
+        
+        it(&quot;proves we can create a DefaultReader04&quot;, function() {
+            expect(b === c).toBe(true);
+        });
+
+        it(&quot;proves we can create a DefaultReader05&quot;, function() {
+            expect(c === d).toBe(true);
+        });
+
+        it(&quot;proves we can run another sanity check&quot;, function() {
+            expect(a === f).toBe(false);
+        });
+
+    });
+
+});</code></pre>
+<p>Integrate this test with all your other tests. Make sure they are working:</p>
+<figure>
+<img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/Routing15.png" alt="Unit Tests Singleton" /><figcaption>Unit Tests Singleton</figcaption>
+</figure>
+<p>Don't forget the <strong>JsonReader</strong> now relies on <strong>TinyPubSub</strong> so it will need to be loaded if you want to test that object.</p>
+<h2 id="step-11-more-tests-more-singletons">Step 11: More Tests, more Singletons</h2>
+<p>Some additional steps you should perform on your own to complete the assignment:</p>
+<ul>
+<li>Make all the Readers <strong>Singletons</strong>.<br /></li>
+<li>Make <strong>Control</strong> a <strong>Singleton</strong>.</li>
+<li>Write Unit Tests like the DefaultSingletonTests for <strong>Control</strong> and the other <strong>Readers</strong>.</li>
+<li>Set up <strong>Presidents01.json</strong> etc, and write tests proving that <strong>JsonReader</strong> can read them.</li>
+<li>Write tests proving that you can create:
+<ul>
+<li>ReaderBridge</li>
+<li>FancyReaderBridge</li>
+<li>ReaderFactory</li>
+<li>BridgeFactory</li>
+</ul></li>
+<li>Call <strong>DisplayAddress.display</strong> and <strong>DisplayFileList.display</strong> and write tests proving that they fire an event.</li>
+</ul>
+<p>Make sure your main program works. The program should load <strong>FileList.json</strong> when it starts. When you click on a file from <strong>FileList.json</strong> it should load that file on the main page. Click again, and it should go back to displaying <strong>FileList.json</strong>.</p>
+<h2 id="step-12-turn-it-in">Step 12: Turn it in</h2>
+<p>Place your work in a folder called <strong>Week09BridgePattern04</strong> and check it in to your repository.</p>
+<p>Include a screenshot of your program running its tests.</p>
+<!-- FOOTER -->
+      <footer>
+        <p class="pull-right"><a href="#">Back to top</a></p>        
+		<p>Copyright &copy; <a href="/charlie/index.html">Charlie Calvert</a> |
+		<a href="/charlie/contents.html">Site Overview</a> |
+		<a href="/charlie/development/index.html">Writing Code</a> |
+		<a href="/charlie/development/web/index.html">Web</a> |
+		<a href="/charlie/development/web/JavaScript/index.html">JavaScript</a> |
+		<a href="/charlie/books/index.html">My Books</a> </p>
+
+      </footer>
+
+    </div><!-- /.container -->
+</body>
+</html>
+
+
+

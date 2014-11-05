@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html dir="ltr">
+
+<head>
+	<meta charset="utf-8" />
+	<title>Passport</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="/charlie/images/favicon.png">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+	<link href="/charlie/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css" />
+	<!-- Latest compiled and minified JavaScript - Move to bottom of body element -->
+	<script src="//code.jquery.com/jquery.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script src="/charlie/libs/scripts/elvenware.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-2806409-2']);
+		_gaq.push(['_trackPageview']);
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+</head>
+
+<body>
+
+
+
+	<!-- removed  navbar-fixed-top -->
+	<div class="navbar navbar-inverse">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"> </span>
+					<span class="icon-bar"> </span>
+					<span class="icon-bar"> </span>
+				</button>
+				<a class="navbar-brand" href="/charlie/index.html">Elvenware</a>
+			</div>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="/charlie/index.html">Home</a></li>
+					<li><a href="/charlie/contents.html">About</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li class="dropdown-header">Core Code</li>
+							<li><a href="/charlie/development/index.html">Strongly Typed</a></li>
+							<li><a href="/charlie/development/web/index.html">Web &amp; Scripts</a></li>
+							<li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">OS and Tools</li>
+							<li><a href="/charlie/os/index.html">OS</a></li>
+							<li><a href="/charlie/development/database/index.html">Database</a></li>
+							<li><a href="/charlie/books/index.html">My Writing</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">Art</li>
+							<li><a href="/charlie/Art/index.html">Poems &amp; Photos</a></li>
+							<li><a href="/charlie/books/reading/index.html">Book Reviews</a></li>
+							<li><a href="/charlie/spirit/index.html">Spiritual</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">Links</li>
+							<li><a href="/charlie/links.html">My Links</a></li>
+							<li><a href="http://www.github.com/charliecalvert">GitHub</a></li>
+							<li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</div>
+
+	<div class="container">
+
+		<div class="starter-template">
+			<figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png" /></figure>
+<h2>Table of Contents</h2>
+<ul class="elfTocHeading">
+	<li><a href='#passport'>Passport</a></li>
+	<li><a href='#install-passport'>Install Passport</a></li>
+	<li><a href='#passport-code'>Passport Code</a></li>
+	<li><a href='#login-and-logout'>Login and Logout</a></li>
+	<li><a href='#run'>Run</a></li>
+	<li><a href='#is-the-user-logged-on'>Is the User Logged On?</a></li>
+	<li><a href='#control'>Control</a></li>
+	<li><a href='#account-and-logon'>Account and Logon</a></li>
+	<li><a href='#permissions'>Permissions</a></li>
+	<li><a href='#turn-it-in'>Turn It In</a></li>
+</ul>
+<h1 id="passport">Passport</h1>
+<p>This software allows you to &quot;sign in with Google&quot;. The goal of the assignment is to allow you to add a <strong>Log On</strong> page to your web application. You can then sign on to your site with your Google account. It will be possible to decide whether a user can perform a particular action depending on whether or not she is signed on.</p>
+<p>By having Google manage the sign on process you free yourself of:</p>
+<ul>
+<li>Having to authenticate users. Google has already done it for you.</li>
+<li>Having to write code that authenticates users in a secure manner. This is a very error prone process. When the user signs on, Google will pass their email address to you. Normally we would store that address, and the user's ID, in a database. We would store it in MongoDb, but typically developers use a small fast database called redis for this purpose. There is a discussion of redis on Elvenware. In this class, however, we will skip the process of storing the user's name in a database due to time constraints.</li>
+</ul>
+<h2 id="install-passport">Install Passport</h2>
+<p>To get started, first create a new project and then download the Passport package:</p>
+<pre><code>express Passport
+cd Passport
+npm install passport passport-google --save
+npm install express-session --save</code></pre>
+<p>Passport is the tool we will use to allow the user to log on with Google.</p>
+<p>Once you have passport installed, open up <strong>app.js</strong> and add the following lines near the top:</p>
+<pre><code>var session = require(&#39;express-session&#39;);
+var passport = require(&#39;passport&#39;);</code></pre>
+<p>And in the use section (around line 26 or wherever, after cookie parser and static public):</p>
+<pre><code>app.use(session({ secret : &#39;keyboard cat&#39; }));
+app.use(passport.initialize());
+app.use(passport.session());</code></pre>
+<h2 id="passport-code">Passport Code</h2>
+<p>There is quite a bit of set up code needed to get Passport up and running. I finally decided to put all this code in <strong>index.js</strong>. From an architectual point of view, that is probably not a very good decision. It is, however, much easier for you to simply paste the code into <strong>index.js</strong> than to worry about a more optimal solution.</p>
+<p>So, in the intest of expediency, set index.js to look like this:</p>
+<pre><code>var express = require(&#39;express&#39;);
+var router = express.Router();
+var passport = require(&#39;passport&#39;);
+var GoogleStrategy = require(&#39;passport-google&#39;).Strategy;
+
+/* GET home page. */
+router.get(&#39;/&#39;, function(request, response) {
+    console.log(&quot;Index called&quot;);
+    response.render(&#39;index&#39;, { title : &#39;Passport Google&#39; });
+});
+
+router.get(&#39;/info&#39;, function(request, response) {
+    console.log(&quot;Info called&quot;);
+    console.log(&quot;Auth: &quot; + request.isAuthenticated(&#39;google&#39;));
+    response.send({
+        result : &quot;Success&quot;,
+        authenticated : request.isAuthenticated()
+    });
+});
+
+passport.serializeUser(function(user, done) {
+    done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+    done(null, obj);
+});
+
+passport.use(new GoogleStrategy({
+    returnURL: &#39;http://localhost:30025/auth/google/return&#39;,
+    realm: &#39;http://localhost:30025/&#39;
+  },
+  function(identifier, profile, done) {
+    console.log(&#39;Google Strategy&#39;);
+    process.nextTick(function () {      
+      profile.identifier = identifier;
+      return done(null, profile);
+    });
+  }
+));
+
+router.get(&#39;/auth/google&#39;, passport.authenticate(&#39;google&#39;, {
+    failureRedirect : &#39;/login&#39;
+}), function(req, res) {
+    response.redirect(&#39;/&#39;);
+});
+
+router.get(&#39;/auth/google/return&#39;, passport.authenticate(&#39;google&#39;, {
+    failureRedirect : &#39;/login&#39;
+}), function(request, response) {
+    response.redirect(&#39;/&#39;);
+});
+
+router.get(&#39;/auth/logout&#39;, function(request, response) {
+    console.log(&quot;Logout called&quot;);
+    request.logout();
+    response.redirect(&#39;/&#39;);
+});
+
+module.exports = router;</code></pre>
+<p>Since we are working on a blank new project, you can just replace the entirety of <strong>index.js</strong> with the code shown above. When working on the final, however, you will have to do a bit of cutting and pasting.</p>
+<p>For process.nextTick, <a href="http://nodejs.org/api/process.html#process_process_nexttick_callback">see the docs</a>. Instead of making the call immediately, it is more like a callback. We wait until the next time that node is not busy, then make the call. Node runs on an event loop, and in effect this is saying the next time the loop comes around.</p>
+<h2 id="login-and-logout">Login and Logout</h2>
+<p>Let's take a look at these lines in index.js:</p>
+<pre><code>app.get(&#39;/auth/google&#39;, passport.authenticate(&#39;google&#39;, {
+    failureRedirect : &#39;/login&#39;
+}), function(request, response) {
+    response.redirect(&#39;/&#39;);
+});
+
+app.get(&#39;/auth/google/return&#39;, passport.authenticate(&#39;google&#39;, {
+    failureRedirect : &#39;/login&#39;
+}), function(request, response) {
+    response.redirect(&#39;/&#39;);
+});</code></pre>
+<p>These are lines that get called when the user is being authenticated. You might want to add some console.log lines to this code if you want to better understand how the process works.</p>
+<h2 id="run">Run</h2>
+<p>We are now ready to begin testing our code. This is not the final solution for logging on, of course, but it lets you check that everything is set up correctly before you come up with a more user friendly solution.</p>
+<p>To log on, go to this URL:</p>
+<blockquote>
+<p>http://localhost:30025/auth/google</p>
+</blockquote>
+<p>Or better, set up the page to handle all this with clicks. So layout.jade:</p>
+<pre><code>doctype html
+html
+  head
+    title= title
+    link(rel=&#39;stylesheet&#39;, href=&#39;/stylesheets/style.css&#39;)
+    script(src=&quot;//code.jquery.com/jquery-1.11.0.min.js&quot;)
+    script(src=&quot;javascripts/Control.js&quot;)
+  body
+    block content</code></pre>
+<p>And then index.jade:</p>
+<pre><code>extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  
+  div
+    a(href=&#39;/auth/google&#39;) Log In
+  div
+    a(href=&#39;/auth/logout&#39;) Log out
+  div
+    a(href=&#39;/account&#39;) Account
+  div
+    a(href=&#39;/login&#39;) Login
+
+  button#info Information
+  
+  div
+    p#report
+  div
+    p#debug</code></pre>
+<h1 id="is-the-user-logged-on">Is the User Logged On?</h1>
+<p>It is often helpful for the client to know whether or not the user is signed on. Let's add a simple Ajax call to Control.js. The call can return information about the status of the user.</p>
+<h1 id="control">Control</h1>
+<pre><code>/**
+ * Control.js
+ */
+
+var Control = (function() {
+    
+    function Control() {
+        console.log(&quot;Control constructor called&quot;);
+        $(&quot;#info&quot;).click(info);
+    }
+    
+    var info = function() {
+        $.ajax({
+            url: &#39;/info&#39;
+        }).success(function(serverInfo) {
+            $(&quot;#report&quot;).html(JSON.stringify(serverInfo));
+        }).error(function(err) {
+            $(&quot;#debug&quot;).html(err);
+        });
+    };
+    
+    return Control;
+    
+}());
+
+
+$(document).ready(function() {
+    var control = new Control();
+});</code></pre>
+<h2 id="account-and-logon">Account and Logon</h2>
+<p>Now we are back on the server side. Here is a simple module with one method it in. We can use this code to check if the user is signed in. Notice in particular the <strong>isAuthenticated</strong> method.</p>
+<p>Create a file called 'routes/SignedIn.js:</p>
+<pre><code>/**
+ * SignedIn.js
+ */
+
+function signedIn(request, response, next) {
+    if (request.isAuthenticated()) {
+        console.log(&quot;authenticated and valid&quot;);
+        return next();
+    }
+    console.log(&quot;not authenticated.&quot;);
+    response.redirect(&#39;/login&#39;);
+}
+
+exports.signedIn = signedIn;</code></pre>
+<p>And in Account.js:</p>
+<pre><code>var express = require(&#39;express&#39;);
+var router = express.Router();
+var signedIn = require(&#39;./SignedIn&#39;).signedIn;
+
+/* GET home page. */
+router.get(&#39;/&#39;, signedIn, function(request, response) {
+    console.log(&quot;Index called&quot;);
+    response.render(&#39;account&#39;, { title: &#39;Passport Account&#39; });
+    
+    // response.render(&#39;account&#39;, { user : request.user });
+});
+
+module.exports = router;</code></pre>
+<h2 id="permissions">Permissions</h2>
+<p>You want to track who has permissions to access your account information:</p>
+<blockquote>
+<p>https://security.google.com/settings/security/permissions</p>
+</blockquote>
+<h2 id="turn-it-in">Turn It In</h2>
+<p>In your repository create a folder called Week11Passport. Place your work in that folder, if it is not there already. Submit your assignment.</p>
+<!-- FOOTER -->
+      <footer>
+        <p class="pull-right"><a href="#">Back to top</a></p>        
+		<p>Copyright &copy; <a href="/charlie/index.html">Charlie Calvert</a> |
+		<a href="/charlie/contents.html">Site Overview</a> |
+		<a href="/charlie/development/index.html">Writing Code</a> |
+		<a href="/charlie/development/web/index.html">Web</a> |
+		<a href="/charlie/development/web/JavaScript/index.html">JavaScript</a> |
+		<a href="/charlie/books/index.html">My Books</a> </p>
+
+      </footer>
+
+    </div><!-- /.container -->
+</body>
+</html>
+
+
+

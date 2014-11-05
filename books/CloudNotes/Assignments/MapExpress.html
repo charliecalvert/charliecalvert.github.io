@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html dir="ltr">
+
+<head>
+	<meta charset="utf-8" />
+	<title>MapExpress</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="/charlie/images/favicon.png">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+	<link href="/charlie/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css" />
+	<!-- Latest compiled and minified JavaScript - Move to bottom of body element -->
+	<script src="//code.jquery.com/jquery.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script src="/charlie/libs/scripts/elvenware.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-2806409-2']);
+		_gaq.push(['_trackPageview']);
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+</head>
+
+<body>
+
+
+
+	<!-- removed  navbar-fixed-top -->
+	<div class="navbar navbar-inverse">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"> </span>
+					<span class="icon-bar"> </span>
+					<span class="icon-bar"> </span>
+				</button>
+				<a class="navbar-brand" href="/charlie/index.html">Elvenware</a>
+			</div>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="/charlie/index.html">Home</a></li>
+					<li><a href="/charlie/contents.html">About</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li class="dropdown-header">Core Code</li>
+							<li><a href="/charlie/development/index.html">Strongly Typed</a></li>
+							<li><a href="/charlie/development/web/index.html">Web &amp; Scripts</a></li>
+							<li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">OS and Tools</li>
+							<li><a href="/charlie/os/index.html">OS</a></li>
+							<li><a href="/charlie/development/database/index.html">Database</a></li>
+							<li><a href="/charlie/books/index.html">My Writing</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">Art</li>
+							<li><a href="/charlie/Art/index.html">Poems &amp; Photos</a></li>
+							<li><a href="/charlie/books/reading/index.html">Book Reviews</a></li>
+							<li><a href="/charlie/spirit/index.html">Spiritual</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">Links</li>
+							<li><a href="/charlie/links.html">My Links</a></li>
+							<li><a href="http://www.github.com/charliecalvert">GitHub</a></li>
+							<li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</div>
+
+	<div class="container">
+
+		<div class="starter-template">
+			<figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png" /></figure>
+<h2>Table of Contents</h2>
+<ul class="elfTocHeading">
+	<li><a href='#map-express'>Map Express</a></li>
+	<li><a href='#the-html-and-css'>The HTML and CSS</a></li>
+	<li><a href='#the-code'>The Code</a></li>
+	<li><a href='#the-constructor'>The Constructor</a></li>
+	<li><a href='#goto-location'>Goto Location</a></li>
+	<li><a href='#turn-it-in'>Turn It In</a></li>
+</ul>
+<h1 id="map-express">Map Express</h1>
+<p>The goal of this application is to show the user's current position on a map.</p>
+<h2 id="the-html-and-css">The HTML and CSS</h2>
+<p>To get started, create an express application called <strong>Week11MapExpress</strong>. Set the port. In <strong>routes/index.js</strong>, set the application name.</p>
+<p>In <strong>views/index.jade</strong>, you need a div in which you can put your map:</p>
+<pre><code>div#map</code></pre>
+<p>We will also need to set up the CSS:</p>
+<pre><code>body {  
+  font: 14px &quot;Lucida Grande&quot;, Helvetica, Arial, sans-serif;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+
+}
+
+html {
+  height: 100%;
+}
+
+#map {
+    background-color: blue;
+    height: 100%;
+    width: 100%;
+}</code></pre>
+<h2 id="the-code">The Code</h2>
+<p>We need one variable in Control with object scope:</p>
+<pre><code>var mapDiv;</code></pre>
+<p>There are a few more methods we need. Put in this case, things are very simple, all the code goes into Control.js. (For the final, you will arrange things differently, but for now, just put all the code in Control.js.) Here is an updated and simplified call to <strong>getCurrentPosition</strong>:</p>
+<pre><code>    function position() {
+
+        var options = {
+            enableHighAccuracy : true,
+            timeout : 5000,
+            maximumAge : 0
+        };
+
+        try {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(loadMap, showDebug, options);
+            } else {
+                showError(&quot;NOT-SUPPORTED&quot;);
+            }
+        } catch (evt) {
+            alert(evt);
+        }
+    }</code></pre>
+<p>Instead of just showing the user the position, we display the position on a map:</p>
+<pre><code>    function loadMap(position) {
+        var latlng = new google.maps.LatLng(position.coords.latitude,
+                position.coords.longitude);
+        var mapOptions = {
+            zoom : 8,
+            center : latlng,
+            mapTypeId : google.maps.MapTypeId.ROADMAP
+        };
+        var map = $(&quot;#map&quot;);
+        mapDiv = new google.maps.Map(map[0], mapOptions);
+
+        makeMarker(&#39;here&#39;, latlng.lat(), latlng.lng());
+    }</code></pre>
+<p>This function allows us to put a pin, or marker, on the map:</p>
+<pre><code>    function makeMarker(name, latitude, longitude) {
+        var location = new google.maps.LatLng(latitude, longitude);
+
+        var place = new google.maps.Marker({
+            position : location,
+            map : mapDiv,
+            title : name
+        });
+
+        google.maps.event.addListener(place, &#39;click&#39;, function() {
+            mapDiv.setCenter(location);
+            mapDiv.setZoom(10);
+        });
+    }</code></pre>
+<p>And here is ShowDebug:</p>
+<pre><code>var showDebug = function(textToDisplay) {
+    $(&quot;#debug&quot;).append(&#39;&lt;li&gt;&#39; + textToDisplay + &#39;&lt;/li&gt;&#39;);
+};</code></pre>
+<h2 id="the-constructor">The Constructor</h2>
+<p>The tricky part of this program is loading the Google API. If you simply want to load it like any normal human being, you could do something like this:</p>
+<pre><code>&lt;script src=&quot;http://maps.googleapis.com/maps/api/js?sensor=true&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</code></pre>
+<p>I'm sure you can see that this is way to easy, as it even eliminates the need to call the navigator to the position. Pathetic really. Definitely for the simple minded.</p>
+<p>To make it interesting, we will use require, loading it in <strong>layout.jade</strong>:</p>
+<pre><code>doctype html
+html
+  head
+    title= title
+    link(rel=&#39;stylesheet&#39;, href=&#39;/stylesheets/style.css&#39;)
+    script(src=&quot;javascripts/require.js&quot;, data-main=&quot;javascripts/Main&quot;)
+  body
+    block content</code></pre>
+<p>The problem, of course, is that trying to load it in <strong>Main.js</strong> with require doesn't work, even if we try to shim it in:</p>
+<pre><code>require.config({
+    paths : {
+        &quot;jquery&quot; : [&quot;http://code.jquery.com/jquery-1.11.1&quot;],
+        &quot;googleMap&quot;: [&quot;http://maps.googleapis.com/maps/api/js?sensor=true&quot;],
+        &quot;Control&quot;: &quot;Control&quot;
+    },
+    shim : {
+        &quot;googleMap&quot;: [&quot;jquery&quot;]
+    }</code></pre>
+<p>Don't use the code above, as it does not work. Part of the problem here is that <strong>api/js</strong>, like <strong>bin/www</strong>, has no <strong>.js</strong> extension. As a result, require is not happy with it. There may be a simple solution to this problem, but I came up with this one, which is not simple, but nevertheless I find it interesting:</p>
+<pre><code>var elf = {
+    position : function() {
+        this.control.position();
+    }
+}
+
+define(function() {
+
+    var Control = (function() {
+        &#39;use strict&#39;;
+        var mapDiv;
+
+        function Control() {
+            loadScript();
+        }
+
+        function loadScript() {
+            var script = document.createElement(&#39;script&#39;);
+            script.type = &#39;text/javascript&#39;;
+            script.src = &#39;https://maps.googleapis.com/maps/api/js?v=3.exp&amp;callback=elf.position&#39;;
+            document.body.appendChild(script);
+        }
+        
+        Control.prototype.position = function() { ... 
+            
+        // Code ommitted here
+});</code></pre>
+<p>We are, in effect, creating a poor man's require. It appends the call to load the script to the HTML we are loading, thus ensure that that GoogleApi javascript file does get loaded. It is also passes in the name of a callback:</p>
+<p>callback=elf.position</p>
+<p>Here is elf:</p>
+<pre><code>var elf = {
+    position : function() {
+        this.control.position();
+    }
+}</code></pre>
+<p>But how does elf know about Control? We set that up in <strong>Main.js</strong>:</p>
+<pre><code>require.config({
+    paths : {
+        &quot;jquery&quot; : [&quot;http://code.jquery.com/jquery-1.11.1&quot;],
+        &quot;Control&quot;: &quot;Control&quot;
+    }
+});
+
+require([ &quot;jquery&quot;, &quot;Control&quot; ], function(jq, Control) {
+    &#39;use strict&#39;;
+    console.log(&quot;Main called.&quot;);
+    elf.control = new Control();
+});</code></pre>
+<p>The important line is this one:</p>
+<pre><code>elf.control = new Control();</code></pre>
+<p>This is too fancy by far, but it does seem to work. I provide it just so you can understand that we have options even when the normal require API appears, at least to me, to not provide a solution. Granted, however, there is much about <strong>require</strong> that I don't know, and perhaps there is a simpler solution.</p>
+<h2 id="goto-location">Goto Location</h2>
+<p>Here is a method that can take you to any latitude or longitude on the map:</p>
+<pre><code>function gotoLocation(latitude, longitude, zoomLevel) {
+    var location = new google.maps.LatLng(latitude, longitude);
+    mapDiv.setCenter(location);
+    mapDiv.setZoom(zoomLevel);
+    return location;
+}</code></pre>
+<p>You can now set up a button click handler that will allow you to travel to Darwin, Australia:</p>
+<pre><code>function gotoDarwin() {
+
+    var darwin = gotoLocation(-12.461334, 130.841904, 14);
+
+    var marker = new google.maps.Marker({
+        position : darwin,
+        map : mapDiv,
+        title : &quot;Hello World!&quot;
+    });
+
+    google.maps.event.addListener(marker, &#39;click&#39;, function() {
+        mapDiv.setZoom(8);
+    });
+}</code></pre>
+<h2 id="turn-it-in">Turn It In</h2>
+<p>Place you code in your repository in a folder called Week11MapExpress. Push. Submit the assignment.</p>
+<!-- FOOTER -->
+      <footer>
+        <p class="pull-right"><a href="#">Back to top</a></p>        
+		<p>Copyright &copy; <a href="/charlie/index.html">Charlie Calvert</a> |
+		<a href="/charlie/contents.html">Site Overview</a> |
+		<a href="/charlie/development/index.html">Writing Code</a> |
+		<a href="/charlie/development/web/index.html">Web</a> |
+		<a href="/charlie/development/web/JavaScript/index.html">JavaScript</a> |
+		<a href="/charlie/books/index.html">My Books</a> </p>
+
+      </footer>
+
+    </div><!-- /.container -->
+</body>
+</html>
+
+
+

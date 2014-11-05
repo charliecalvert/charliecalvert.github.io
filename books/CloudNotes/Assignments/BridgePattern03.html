@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html dir="ltr">
+
+<head>
+	<meta charset="utf-8" />
+	<title>BridgePattern03</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="/charlie/images/favicon.png">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+	<link href="/charlie/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css" />
+	<!-- Latest compiled and minified JavaScript - Move to bottom of body element -->
+	<script src="//code.jquery.com/jquery.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script src="/charlie/libs/scripts/elvenware.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-2806409-2']);
+		_gaq.push(['_trackPageview']);
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+</head>
+
+<body>
+
+
+
+	<!-- removed  navbar-fixed-top -->
+	<div class="navbar navbar-inverse">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"> </span>
+					<span class="icon-bar"> </span>
+					<span class="icon-bar"> </span>
+				</button>
+				<a class="navbar-brand" href="/charlie/index.html">Elvenware</a>
+			</div>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="/charlie/index.html">Home</a></li>
+					<li><a href="/charlie/contents.html">About</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li class="dropdown-header">Core Code</li>
+							<li><a href="/charlie/development/index.html">Strongly Typed</a></li>
+							<li><a href="/charlie/development/web/index.html">Web &amp; Scripts</a></li>
+							<li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">OS and Tools</li>
+							<li><a href="/charlie/os/index.html">OS</a></li>
+							<li><a href="/charlie/development/database/index.html">Database</a></li>
+							<li><a href="/charlie/books/index.html">My Writing</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">Art</li>
+							<li><a href="/charlie/Art/index.html">Poems &amp; Photos</a></li>
+							<li><a href="/charlie/books/reading/index.html">Book Reviews</a></li>
+							<li><a href="/charlie/spirit/index.html">Spiritual</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">Links</li>
+							<li><a href="/charlie/links.html">My Links</a></li>
+							<li><a href="http://www.github.com/charliecalvert">GitHub</a></li>
+							<li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</div>
+
+	<div class="container">
+
+		<div class="starter-template">
+			<figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png" /></figure>
+<h2>Table of Contents</h2>
+<ul class="elfTocHeading">
+	<li><a href='#bridge-pattern-03'>Bridge Pattern 03</a></li>
+	<li><a href='#creating-your-github-page'>Creating your GitHub Page</a></li>
+	<li><a href='#displaying-markdown-files'>Displaying Markdown Files</a></li>
+	<li><a href='#saving-files'>Saving Files</a></li>
+	<li><a href='#mongodb'>MongoDb</a></li>
+	<li><a href='#some-steps'>Some Steps</a></li>
+	<li><a href='#borrow-what-you-can'>Borrow what you Can</a></li>
+	<li><a href='#create-or-borrow-a-control-class'>Create or Borrow a Control Class</a></li>
+	<li><a href='#create-new-routes'>Create New Routes</a></li>
+	<li><a href='#launch-the-markdown-editor'>Launch the Markdown Editor</a></li>
+	<li><a href='#data-and-pages'>Data and Pages</a></li>
+	<li><a href='#session-support'>Session Support</a></li>
+	<li><a href='#turn-it-in'>Turn it In</a></li>
+</ul>
+<h1 id="bridge-pattern-03">Bridge Pattern 03</h1>
+<p>Here is an overview of the assignment:</p>
+<ul>
+<li>Start with the BridgePattern 02 assignment</li>
+<li>Add a new page that contains a markdown editor</li>
+<li>The user will be able to:
+<ul>
+<li>Save the markdown to MongoDb</li>
+<li>Save the HTML to disk</li>
+<li>Display the HTML on a GitHub page.</li>
+</ul></li>
+</ul>
+<h2 id="creating-your-github-page">Creating your GitHub Page</h2>
+<p>Set up your github pages as described here:</p>
+<ul>
+<li><a href="https://pages.github.com/">GitHub Pages</a></li>
+<li>create a repository called: <strong>username</strong>.github.io</li>
+<li>Example <a href="http://charliecalvert.github.io/">http://<strong>charliecalvert</strong>.github.io/</a></li>
+<li>Clone the repository: git clone git@github.com:<strong>username</strong>/<strong>username</strong>.github.io.git</li>
+<li>Create an index.html page and push it:</li>
+</ul>
+<pre><code>&lt;!DOCTYPE html&gt;
+
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Charlie on Github&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Charlie on Github&lt;/h1&gt;
+        &lt;p&gt;Let&#39;s get started&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h2 id="displaying-markdown-files">Displaying Markdown Files</h2>
+<p>For now your filelist should contain at least two markdown files:</p>
+<pre><code>{
+    &quot;type&quot;: &quot;fileList&quot;,
+    &quot;content&quot;: {
+        &quot;President01.json&quot;: &quot;/home/charlie/Documents/Data/Presidents01.json&quot;,
+        &quot;President02.json&quot;: &quot;/home/charlie/Documents/Data/Presidents02.json&quot;,
+        &quot;President03.md&quot;: &quot;/home/charlie/Documents/Data/Presidents03.md&quot;,
+        &quot;President04.md&quot;: &quot;/home/charlie/Documents/Data/Presidents04.md&quot;
+    }
+}</code></pre>
+<p>If the user selects a markdown file, then retrieve it from disk and display it in a page that contains your markdown editor.</p>
+<p>The code for displaying the markdown editor page and initializing the object that creates can be exactly the same as in the midterm, but I want you to start using the bridge pattern as well as the factory pattern. This means that the following call should place text into the <strong>input</strong> control in the markdown editor:</p>
+<pre><code>myBridge.loadFile(fileName);</code></pre>
+<p>Typically the <strong>markdownReader.loadFile</strong> method calls the display method in its callback.</p>
+<h2 id="saving-files">Saving Files</h2>
+<p>Suppose the user choose to edit Presidents04.md. When the user clicks the save button in the markdown editor:</p>
+<ul>
+<li>Save a new copy of /home/charlie/Documents/Data/Presidents04.md</li>
+<li>In your gitHub page directory, save Presidents04.html. You got it by calling <strong>converter.makeHtml(saveMarkdown);</strong></li>
+<li>Save the markdown into MongoDb.</li>
+</ul>
+<h2 id="mongodb">MongoDb</h2>
+<p>For now, the JSON you save to MongoDb should look like this:</p>
+<pre><code>{
+    &quot;FileName&quot;: fileName,
+    &quot;Path&quot; path,
+    &quot;markdown&quot;: markdown
+}</code></pre>
+<p>Ultimately, we will probably replace or generate FileList.json from these records in the database. So you should see a parallel between these records and the information in <strong>FileList.json</strong>. The big difference, of course, is that the JSON contains a copy of the markdown, rather than just pointing to it.</p>
+<h2 id="some-steps">Some Steps</h2>
+<p>There are many ways to finish this assignment. You could build off your BridgePattern02 assignment, off of BridgeSailor from JsObjects/Design, from the midterm, or start from scratch. I'll show how to start from scratch, and hopefully you can pick and choose from what I show depending on your needs.</p>
+<p>Create a new project:</p>
+<pre><code>express JsonMarkdown
+cd JsonMarkdown
+npm install</code></pre>
+<p>Create a dot project file and sets it name:</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;projectDescription&gt;
+    &lt;name&gt;JsonMarkdown-Calvert&lt;/name&gt;
+    &lt;comment&gt;&lt;/comment&gt;
+    &lt;projects&gt;
+    &lt;/projects&gt;
+    &lt;buildSpec&gt;
+        &lt;buildCommand&gt;
+            &lt;name&gt;com.aptana.ide.core.unifiedBuilder&lt;/name&gt;
+            &lt;arguments&gt;
+            &lt;/arguments&gt;
+        &lt;/buildCommand&gt;
+    &lt;/buildSpec&gt;
+    &lt;natures&gt;
+        &lt;nature&gt;com.aptana.projects.webnature&lt;/nature&gt;
+    &lt;/natures&gt;
+&lt;/projectDescription&gt;</code></pre>
+<p>Open up the project in Eclipse or your favorite editor. (In Eclipse, you use <strong>File | Import</strong>, and then <strong>General | Existing Projects into Workspace</strong>.</p>
+<p>Set the port:</p>
+<pre><code>app.set(&#39;port&#39;, process.env.PORT || 30025);</code></pre>
+<h2 id="borrow-what-you-can">Borrow what you Can</h2>
+<p>From your Week08InClassMarkdown (exact name?) project, take:</p>
+<pre><code>/public/javascripts/Markdown // The whole directory
+/public/javascripts/jquery.js // Which ever version you used
+/public/javascripts/require.js
+/public/javascripts/Main.js
+/public/stylesheets/markdown.css
+/public/wmd-buttons.png
+/views/layout.jade</code></pre>
+<p>Layout looks like this:</p>
+<pre><code>doctype html
+html
+  head
+    title= title
+    link(rel=&#39;stylesheet&#39;, href=&#39;/stylesheets/style.css&#39;)
+    script(src=&quot;javascripts/require.js&quot; data-main=&quot;javascripts/Main&quot;)
+  body
+    block content</code></pre>
+<p>Get MarkShow.js and PagedownSetup.js.</p>
+<h2 id="create-or-borrow-a-control-class">Create or Borrow a Control Class</h2>
+<p>Put in <strong>/public/javascripts</strong></p>
+<pre><code>define(function() {
+    
+    var Control = (function() {
+    
+        function Control() {
+            
+        }
+        
+        return Control;
+    }());
+    
+    return Control;
+    
+});</code></pre>
+<p>Modify your <strong>Main.js</strong> to load <strong>Control.js</strong> instead of Markshow:</p>
+<pre><code>require.config({
+    paths: {
+        &quot;jquery&quot;: &quot;jquery-2.1.1&quot;,
+        &quot;Markdown&quot;: &quot;Markdown/Converter&quot;,
+        &quot;Editor&quot;: &quot;Markdown/Editor&quot;
+    }
+});
+
+require([&#39;jquery&#39;, &quot;Control&quot;], function(jq, Control) {
+    &#39;use strict&#39;;
+    console.log(&quot;Main called&quot;);
+    
+    var showMark = new Control();
+});</code></pre>
+<p>This is a good time to make sure you can get things up and running. Load your program in Chrome. Press up F12 to bring up the Developer Tools. Turn to the Networking page. You should be able to see:</p>
+<ul>
+<li>localhost</li>
+<li>style.css</li>
+<li>markdown.css</li>
+<li>require.js</li>
+<li>Main.js</li>
+<li>jquery*.js</li>
+<li>Control.js</li>
+</ul>
+<p>I don't see the bitmap loading. Is that just because it doesn't like me or because we aren't using it yet? I'll come back to this.</p>
+<h2 id="create-new-routes">Create New Routes</h2>
+<p>Create your new route:</p>
+<pre><code>/routes/Markdown.js
+/views/Markdown.jade</code></pre>
+<p>Markdown.jade will at least start like this:</p>
+<p>extends layout</p>
+<pre><code>block content
+link(rel=&#39;stylesheet&#39;, href=&#39;/stylesheets/markdown.css&#39;)
+
+  h1= title
+  p Welcome to #{title}
+
+  div#markdown.clearfix
+    div.wmd-panel
+      div#wmd-button-bar-elf
+      textarea.wmd-input#wmd-input-elf
+
+    div#wmd-preview-elf.wmd-panel.wmd-preview
+    </code></pre>
+<p><strong>Markdown.js</strong> can be almost identical to the default <strong>index.js</strong>, but it should contain a line like this:</p>
+<pre><code>  res.render(&#39;Markdown&#39;, { title: &#39;Markdown&#39; });</code></pre>
+<p>The same thing is done in the <a href="http://elvenware.com/charlie/books/CloudNotes/Assignments/Prog282Midterm2014.html#add-a-new-page">midterm</a> when you add a <a href="http://elvenware.com/charlie/books/CloudNotes/Assignments/Prog282Midterm2014.html#add-a-new-page">NewPage</a>, so base your work on that. But instead of readering a NewPage, render the markdown, as shown above. Also add the appropriate <strong>require</strong> and <strong>app.use</strong> statements to <strong>app.js</strong>, as explained in the same section of the <a href="http://elvenware.com/charlie/books/CloudNotes/Assignments/Prog282Midterm2014.html#add-a-new-page">midterm</a>.</p>
+<h2 id="launch-the-markdown-editor">Launch the Markdown Editor</h2>
+<p>Define two buttons in <strong>index.jade</strong>:</p>
+<p>button#showJson Show Json button#showMarkdown Show Markdown</p>
+<p>Edit <strong>Control.js</strong> to Respond to clicks on the <strong>markdown</strong> button.</p>
+<pre><code>define(function(requre) {
+    
+    var Control = (function() {
+    
+        function Control() {
+            $(&quot;#showMarkdown&quot;).click(showMarkdown);
+        }
+        
+
+        var showMarkdown = function() {
+            window.location.href = &#39;/Markdown&#39;;
+        };
+        
+        return Control;
+    }());
+    
+    return Control;
+    
+});</code></pre>
+<p>When you page load, everything looks fine, but the controls are not initialized. MarkShow is crucial to us, because it initializes our markdown editor with code that begins like this:</p>
+<pre><code>var pagedownSetup = new PagedownSetup();
+converter = pagedownSetup.setupConverter(Markdown);</code></pre>
+<p>So we have to load <strong>MarkShow</strong> and we have to do it after the new page is loaded. The question is when and where?</p>
+<p>We could place a button on the <strong>markDown</strong> Jade page:</p>
+<pre><code>button#editLoad Edit Load</code></pre>
+<p>We would then respond to button clicks in order to initialize the editor:</p>
+<pre><code>define([&quot;MarkShow&quot;], function(MarkShow) {
+    
+    var Control = (function() {
+    
+        function Control() {
+            $(&quot;#showMarkdown&quot;).click(showMarkdown);
+            $(&quot;#editLoad&quot;).click(editLoad); // Clicks on the MarkDown page.
+        }
+        
+        var showMarkdown = function() {         
+            window.location.href = &#39;/Markdown&#39;;
+        };
+        
+        var editLoad = function() {
+            var markShow = new MarkShow();
+        }
+        
+        return Control;
+    }());
+    
+    return Control;
+    
+});</code></pre>
+<p>The problem with this approach is that it forces the user to perform an extra button click. A better approach is to restore Control.js to the state we were in before our experiment:</p>
+<pre><code>define(function(requre) {
+    
+    var Control = (function() {
+    
+        function Control() {
+            $(&quot;#showMarkdown&quot;).click(showMarkdown);
+        }
+        
+        var showMarkdown = function() {         
+            window.location.href = &#39;/Markdown&#39;;
+        };
+        
+        return Control;
+    }());
+    
+    return Control;
+    
+});</code></pre>
+<p>You will also want to remove the button from Markdown.jade.</p>
+<p>Now edit <strong>Main.js</strong> to behave one way when the main page is loaded, and another way when the Markdown page is loaded:</p>
+<pre><code>require([&#39;jquery&#39;, &quot;Control&quot;, &quot;MarkShow&quot;], function(jq, Control, MarkShow) {
+    &#39;use strict&#39;;
+    console.log(&quot;Main called&quot;);
+
+    $(document).ready(function() {
+        
+        if (document.URL === &quot;http://localhost:30025/Markdown&quot;) {
+            var showMark = new MarkShow();
+        } else {
+            var control = new Control();
+        }
+    })
+});</code></pre>
+<p>The key line is this one:</p>
+<pre><code>if (document.URL === &quot;http://localhost:30025/Markdown&quot;) {</code></pre>
+<p>This tests if we are loading http://localhost:30025 or http://localhost:30025/Markdown. Obviously this won't work in a production environment. This should do the same thing, but work anywhere, even if it is a bit more difficult to read:</p>
+<pre><code>function endsWith(value, suffix) {
+    return value.indexOf(suffix, this.length - suffix.length) !== -1;
+}
+
+require([ &#39;jquery&#39;, &quot;Control&quot;, &quot;MarkShow&quot; ], function(jq, Control, MarkShow) {
+    &#39;use strict&#39;;
+    console.log(&quot;Main called&quot;);
+
+    $(document).ready(function() {
+        
+        if (endsWith(document.URL, &quot;Markdown&quot;)) {
+            var showMark = new MarkShow();
+        } else {
+            var control = new Control();
+        }
+    })
+});</code></pre>
+<p>Ultimately, I believe it makes more sense to simply insert the appropriate HTML into our current page rather than load an entirely new page. However, we'll do that later. Or you can do it now if you want.</p>
+<h2 id="data-and-pages">Data and Pages</h2>
+<p>When we load the /Markdown page our data gets refreshed. So how do we keep track of the data selected by the user? There are several ways to do this. Here's what we'll do for now:</p>
+<p>Let's start by adding some new methods to <strong>routes/index.js</strong>:</p>
+<pre><code>var express = require(&#39;express&#39;);
+var router = express.Router();
+var pick = &quot;&quot;;
+
+/* GET home page. */
+router.get(&#39;/&#39;, function(req, res) {
+  res.render(&#39;index&#39;, { title: &#39;Express&#39; });
+});
+
+router.get(&#39;/setPick&#39;, function(request, response) {
+    pick = request.query.pick;
+    response.send({&quot;result&quot;: &quot;success&quot;})
+});
+
+router.get(&#39;/getPick&#39;, function(request, response) {
+    console.log(&quot;GetPick: &quot; + pick);    
+    response.send({&quot;userPick&quot;: pick})
+});
+
+module.exports = router;</code></pre>
+<p>In Control update <strong>showMarkdown</strong>:</p>
+<pre><code>var showMarkdown = function() {
+    $.getJSON(&#39;/setPick&#39;, {pick: &quot;SomeFileNameOrPath&quot;}, function(result){
+        if (result.result !== &quot;success&quot;) {
+            throw &quot;Error&quot;;
+        }
+        window.location.href = &#39;/Markdown&#39;;
+    });
+};</code></pre>
+<p>In MarkShow, create a method to get the user's pick:</p>
+<pre><code>MarkShow.prototype.getPick = function(event) {
+    $.getJSON(&#39;/getPick&#39;, function(result) {
+        inputText.html((result.userPick));
+    });
+}</code></pre>
+<p>In Main call <strong>MarkShow.getPick</strong>:</p>
+<pre><code>require([ &#39;jquery&#39;, &quot;Control&quot;, &quot;MarkShow&quot; ], function(jq, Control, MarkShow) {
+    &#39;use strict&#39;;
+    console.log(&quot;Main called&quot;);
+
+    $(document).ready(function() {
+
+        if (endsWith(document.URL, &quot;Markdown&quot;)) {
+            var showMark = new MarkShow();
+            showMark.getPick();
+        } else {            
+            var control = new Control();
+        }
+    })
+});</code></pre>
+<p>The key lines, of course, are these, where the second has been added to our code:</p>
+<pre><code>var showMark = new MarkShow();
+showMark.getPick();</code></pre>
+<p>The steps:</p>
+<ul>
+<li>The user asks for the Markdown page.</li>
+<li>In <strong>Control.showMarkdown</strong> use <strong>$.getJson</strong> to save the file the user choose to see in the page back on the server. (Eventually we will have to deal with users on the server, but just save it globally for now.) Still in <strong>Control.showMarkdown</strong>, Launch the new page (window.location.href) In MarkShow, ask the server for the file pick with <strong>$.getJSON</strong>. Display the pick to the user</li>
+</ul>
+<h2 id="session-support">Session Support</h2>
+<pre><code>npm install express-session --save-dev</code></pre>
+<h2 id="turn-it-in">Turn it In</h2>
+<p>Save your work in a Week08BridgePattern03 folder in your repository. Include a .project that has your last name appended to the directory name: Week08BridgePattern03-LastName.</p>
+<!-- FOOTER -->
+      <footer>
+        <p class="pull-right"><a href="#">Back to top</a></p>        
+		<p>Copyright &copy; <a href="/charlie/index.html">Charlie Calvert</a> |
+		<a href="/charlie/contents.html">Site Overview</a> |
+		<a href="/charlie/development/index.html">Writing Code</a> |
+		<a href="/charlie/development/web/index.html">Web</a> |
+		<a href="/charlie/development/web/JavaScript/index.html">JavaScript</a> |
+		<a href="/charlie/books/index.html">My Books</a> </p>
+
+      </footer>
+
+    </div><!-- /.container -->
+</body>
+</html>
+
+
+
