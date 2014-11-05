@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html dir="ltr">
+
+<head>
+	<meta charset="utf-8" />
+	<title>SocketTalk</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="/charlie/images/favicon.png">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+	<link href="/charlie/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css" />
+	<!-- Latest compiled and minified JavaScript - Move to bottom of body element -->
+	<script src="//code.jquery.com/jquery.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script src="/charlie/libs/scripts/elvenware.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-2806409-2']);
+		_gaq.push(['_trackPageview']);
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+</head>
+
+<body>
+
+
+
+	<!-- removed  navbar-fixed-top -->
+	<div class="navbar navbar-inverse">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"> </span>
+					<span class="icon-bar"> </span>
+					<span class="icon-bar"> </span>
+				</button>
+				<a class="navbar-brand" href="/charlie/index.html">Elvenware</a>
+			</div>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="/charlie/index.html">Home</a></li>
+					<li><a href="/charlie/contents.html">About</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li class="dropdown-header">Core Code</li>
+							<li><a href="/charlie/development/index.html">Strongly Typed</a></li>
+							<li><a href="/charlie/development/web/index.html">Web &amp; Scripts</a></li>
+							<li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">OS and Tools</li>
+							<li><a href="/charlie/os/index.html">OS</a></li>
+							<li><a href="/charlie/development/database/index.html">Database</a></li>
+							<li><a href="/charlie/books/index.html">My Writing</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">Art</li>
+							<li><a href="/charlie/Art/index.html">Poems &amp; Photos</a></li>
+							<li><a href="/charlie/books/reading/index.html">Book Reviews</a></li>
+							<li><a href="/charlie/spirit/index.html">Spiritual</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">Links</li>
+							<li><a href="/charlie/links.html">My Links</a></li>
+							<li><a href="http://www.github.com/charliecalvert">GitHub</a></li>
+							<li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</div>
+
+	<div class="container">
+
+		<div class="starter-template">
+			<figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png" /></figure>
+<h2>Table of Contents</h2>
+<ul class="elfTocHeading">
+	<li><a href='#socket-talk'>Socket Talk</a></li>
+	<li><a href='#create-app.js'>Create App.js</a></li>
+	<li><a href='#control.js'>Control.js</a></li>
+	<li><a href='#the-html'>The HTML</a></li>
+	<li><a href='#the-css'>The CSS</a></li>
+	<li><a href='#turn-it-in'>Turn it In</a></li>
+</ul>
+<h1 id="socket-talk">Socket Talk</h1>
+<p>Let's create a simple chat application.</p>
+<h2 id="create-app.js">Create App.js</h2>
+<p>This is the most stripped down Express server I could create and still support the tools we need to create a socket application with a reasonable architecture:</p>
+<pre><code>var express = require(&#39;express&#39;);
+var app = express();
+var http = require(&#39;http&#39;).Server(app);
+var path = require(&#39;path&#39;);
+var io = require(&#39;socket.io&#39;)(http);
+
+app.use(express.static(path.join(__dirname, &#39;public&#39;)));
+
+app.get(&#39;/&#39;, function(req, res){
+  res.sendFile(__dirname + &#39;/index.html&#39;);
+});
+
+io.on(&#39;connection&#39;, function(socket){
+    console.log(&#39;connection called&#39;);    
+    socket.on(&#39;chatMessage&#39;, function(msg){
+        console.log(&#39;Chat socket message: &#39;, msg);        
+        if (msg === &quot;&quot;) {
+            msg=&quot;Empty message sent.&quot;;
+        }
+        io.sockets.emit(&#39;chatMessage&#39;, msg);
+    });
+});
+
+http.listen(30025, function(){
+  console.log(&#39;listening on *:30025&#39;);
+});</code></pre>
+<p>Notice this line:</p>
+<pre><code>app.use(express.static(path.join(__dirname, &#39;public&#39;)));</code></pre>
+<p>It gives us the ability to serve pages out of a directory called <strong>public</strong>. This folder is a subdirectory of the project root. If the project is in <strong>/src</strong> then public is in <strong>/src/public</strong>.</p>
+<h2 id="control.js">Control.js</h2>
+<p>We need code to accept</p>
+<pre><code>socket = io(&#39;localhost&#39;);
+socket.on(&#39;chatMessage&#39;, function(msg){
+     $(&#39;#info&#39;).prepend($(&#39;&lt;li&gt;&#39;).text(msg));
+});</code></pre>
+<p>And here is how we send messages:</p>
+<pre><code>socket.emit(&#39;chatMessage&#39;, $(&#39;#myInput&#39;).val());</code></pre>
+<h2 id="the-html">The HTML</h2>
+<p>I'm placing both the HTML and app.js in the root. Here is the HTML:</p>
+<pre><code>&lt;!doctype html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Socket.IO chat&lt;/title&gt;
+    &lt;link href=&quot;css/Style.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;
+    &lt;script src=&quot;https://cdn.socket.io/socket.io-1.2.0.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;http://code.jquery.com/jquery-1.11.1.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;Control.js&quot;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    
+    &lt;div class=&quot;data&quot;&gt;
+        &lt;input id=&quot;myInput&quot; autocomplete=&quot;off&quot; /&gt;
+        &lt;button id=&quot;chatButton&quot;&gt;Chat&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div id=&#39;messageDiv&#39;&gt;
+        &lt;ul id=&quot;info&quot;&gt;
+            &lt;li&gt;Start&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;   
+
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h2 id="the-css">The CSS</h2>
+<p>I put the CSS in a file called Styles.css and placed it in the <strong>public/css</strong> folder. It looks like this:</p>
+<pre><code>
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body { 
+    font: 21px sans; 
+}
+
+.data { 
+    background: #ABA; 
+    padding: 3px; 
+    width: 100%; 
+    border-radius: 12px;
+}
+
+.data input { 
+    border: 0;    
+    padding: 10px; 
+    padding-top: 12px; 
+    width: 90%; 
+    margin-right: .5%; 
+    margin-left: .5%; 
+}
+
+#chatButton { 
+    width: 8.1%; 
+    background: #787; 
+    border: none; 
+    padding: 5px; 
+    color: white;
+    font: 21px sans; 
+}
+
+#messageDiv {
+    background-color: #bdb;
+    border-radius: 12px;
+}
+
+#info { 
+    list-style-type: none; 
+    margin: 0; 
+    padding: 1;
+}
+    
+#info li { 
+    border-radius: 12px;
+    padding: 5px 10px; 
+}
+    
+#info li:nth-child(odd) { 
+    background: #bcb; 
+} </code></pre>
+<h2 id="turn-it-in">Turn it In</h2>
+<p>Create a Control.js file that works.</p>
+<p>It should look something like this:</p>
+<figure>
+<img src="https://drive.google.com/uc?export=view&amp;id=0B25UTAlOfPRGMDM3T3lCUkg0Z00" alt="look" /><figcaption>look</figcaption>
+</figure>
+<p>We will also integrate chat into the final. At this stage, enter text can be only done in the GameListener.</p>
+<!-- FOOTER -->
+      <footer>
+        <p class="pull-right"><a href="#">Back to top</a></p>        
+		<p>Copyright &copy; <a href="/charlie/index.html">Charlie Calvert</a> |
+		<a href="/charlie/contents.html">Site Overview</a> |
+		<a href="/charlie/development/index.html">Writing Code</a> |
+		<a href="/charlie/development/web/index.html">Web</a> |
+		<a href="/charlie/development/web/JavaScript/index.html">JavaScript</a> |
+		<a href="/charlie/books/index.html">My Books</a> </p>
+
+      </footer>
+
+    </div><!-- /.container -->
+</body>
+</html>
+
+
+
