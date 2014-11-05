@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html dir="ltr">
+
+<head>
+	<meta charset="utf-8" />
+	<title>Require</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="/charlie/images/favicon.png">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+	<link href="/charlie/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css" />
+	<!-- Latest compiled and minified JavaScript - Move to bottom of body element -->
+	<script src="//code.jquery.com/jquery.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script src="/charlie/libs/scripts/elvenware.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-2806409-2']);
+		_gaq.push(['_trackPageview']);
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+</head>
+
+<body>
+
+
+
+	<!-- removed  navbar-fixed-top -->
+	<div class="navbar navbar-inverse">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"> </span>
+					<span class="icon-bar"> </span>
+					<span class="icon-bar"> </span>
+				</button>
+				<a class="navbar-brand" href="/charlie/index.html">Elvenware</a>
+			</div>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="/charlie/index.html">Home</a></li>
+					<li><a href="/charlie/contents.html">About</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li class="dropdown-header">Core Code</li>
+							<li><a href="/charlie/development/index.html">Strongly Typed</a></li>
+							<li><a href="/charlie/development/web/index.html">Web &amp; Scripts</a></li>
+							<li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">OS and Tools</li>
+							<li><a href="/charlie/os/index.html">OS</a></li>
+							<li><a href="/charlie/development/database/index.html">Database</a></li>
+							<li><a href="/charlie/books/index.html">My Writing</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">Art</li>
+							<li><a href="/charlie/Art/index.html">Poems &amp; Photos</a></li>
+							<li><a href="/charlie/books/reading/index.html">Book Reviews</a></li>
+							<li><a href="/charlie/spirit/index.html">Spiritual</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">Links</li>
+							<li><a href="/charlie/links.html">My Links</a></li>
+							<li><a href="http://www.github.com/charliecalvert">GitHub</a></li>
+							<li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</div>
+
+	<div class="container">
+
+		<div class="starter-template">
+			<figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png" /></figure>
+<h2>Table of Contents</h2>
+<ul class="elfTocHeading">
+	<li><a href='#require'>Require</a></li>
+	<li><a href='#strategy'>Strategy</a></li>
+	<li><a href='#simple-case'>Simple Case</a></li>
+	<li><a href='#require-boat'>Require Boat</a></li>
+	<li><a href='#configure-require-paths'>Configure Require Paths</a></li>
+	<li><a href='#more'>More</a></li>
+</ul>
+<h1 id="require">Require</h1>
+<p><strong>Require JS</strong> provides several benefits:</p>
+<ul>
+<li>It relieves us of needing to define <strong>SCRIPT</strong> tags in our HTML files and worrying about the order in which they are loaded. If you have a relatively small project, and you wrote or know all the modules in it, then it is fairly easy to define the order in which to list <strong>SCRIPT</strong> tags in your HTML file. In large projects, or in cases where you don't know the JavaScript files used in a project, there is often no easy way to discover what dependencies exist in your project. Does ModuleA depend on ModuleB? Or is it that ModuleB depends on ModuleA? What about modules C, D, E and F? A primary goal of require is to relieve you of all these issues.</li>
+<li><strong>require</strong> allows us to decide which modules will be loaded when. In large applications, we don't want to load all our files at one time, as some might not be needed at all, and some might not be needed when the app first loads. For instance, if users can optionally load movies using a complex and heavy weight set of JavaScript files, then it would make sense to load those heavy files only when the user requested them, and not before.</li>
+<li>A third benefit is that <strong>require</strong>, like the modular pattern, helps you protect the global namespace. In fact, require has a version of the modular pattern written in to it. This allows you to use the modular pattern without the peculiar syntax that some find intimidating.</li>
+</ul>
+<h2 id="strategy">Strategy</h2>
+<p>When should you use <strong>require</strong>?</p>
+<p>In small projects that use only one or two JavaScript files, require is usually not needed. However, I think it is good idea to use require as often as possible, just so that you can become familiar with it's syntax.</p>
+<h2 id="simple-case">Simple Case</h2>
+<p>Here is a relatively simple example set of files:</p>
+<pre><code>require.config({
+    baseUrl: &#39;.&#39;,
+    paths: {
+        &quot;jquery&quot;: &#39;jquery-2.1.1&#39;,
+        &quot;Control&quot;: &#39;Control&#39;
+    }
+});
+
+
+require([&#39;jquery&#39;, &#39;Control&#39;],
+    function(jq, Control) {
+        &#39;use strict&#39;;
+
+        $(document).ready(function() {
+            var control = new Control();
+        });
+});</code></pre>
+<p>And then Control might look like this:</p>
+<pre><code>define([], function(require) {
+
+    var Control = (function() {
+
+        return Control;
+    }());
+
+    return Control;
+});</code></pre>
+<h2 id="require-boat">Require Boat</h2>
+<p>Take a look at <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Design/RequireBoat">Require Boat</a>.</p>
+<p>This is a very simple example showing how to get up to speed with require.</p>
+<p>In <strong>index.html</strong> we link in <strong>Main</strong> and <strong>require.js</strong>:</p>
+<pre><code>&lt;script data-main=&quot;Source/Main&quot; src=&quot;Source/require.js&quot;&gt; &lt;/script&gt;</code></pre>
+<p><strong>Main</strong> then configures <strong>jquery</strong>:</p>
+<pre><code>require.config({
+  paths: {
+    &quot;jquery&quot;: &quot;http://code.jquery.com/jquery-1.11.0.min&quot;,     
+  }
+});</code></pre>
+<p>Then we create a simple module called <strong>Boat</strong> which is found in <strong>Boat.js</strong>:</p>
+<pre><code>define([&#39;jquery&#39;], function() { &#39;use strict&#39;;
+
+    function describe() {  
+        $(&quot;#list&quot;).append(&quot;&lt;li&gt;I&#39;m a boat.&lt;/li&gt;&quot;);
+    };  
+    
+    return {describe: describe};
+});</code></pre>
+<p>This code says that our <strong>Boat</strong> module requires <strong>jquery</strong>. It then defines a simple function which adds an item to a list. Finally we return a link to the function:</p>
+<pre><code>return {describe: describe};</code></pre>
+<p>Back in <strong>Main</strong>, we can now link in <strong>Boat</strong> and call <strong>Boat.describe:</strong></p>
+<pre><code>require([&quot;Boat&quot;], function(boat) {
+    boat.describe();
+});</code></pre>
+<p>The first <strong>Boat</strong>, the one in the array, links in the <strong>Boat.js</strong> module. For this we get a reference to a <strong>boat</strong> which is passed as a parameter to our anonymous function. Finally, we use the reference to call the describe method:</p>
+<pre><code>boat.describe();</code></pre>
+<h2 id="configure-require-paths">Configure Require Paths</h2>
+<p>Consider this code:</p>
+<pre><code>require.config({
+    paths : {
+        &quot;jquery&quot; : &quot;jquery-1.11.1.min&quot;,
+        &quot;Markdown&quot; : &quot;Markdown/Converter&quot;,
+        &quot;Editor&quot; : &quot;Markdown/Editor&quot;
+    }
+});
+    
+require([&#39;jquery&#39;, &quot;MarkShow&quot;],function(jq, MarkShow){
+    var markShow= new MarkShow();
+});</code></pre>
+<p>Compare it to this:</p>
+<pre><code>require.config({
+    paths : {
+        &quot;jquery&quot; :&quot;jquery-1.11.1.min&quot;,
+        &quot;MarkShow&quot; : &quot;MarkShow&quot;,
+        &quot;Markdown&quot; : &quot;Markdown/Converter&quot;,
+        &quot;Editor&quot; : &quot;Markdown/Editor&quot;
+    }
+
+});
+
+require([&#39;jquery&#39;, &quot;MarkShow&quot;], function(jq, MarkShow){
+    var markShow = new MarkShow();
+});</code></pre>
+<p>The first puts <strong>MarkShow</strong> only in the call to require, while the second puts it in both the <strong>require.config</strong> statement and the call to <strong>require</strong>. What is the difference?</p>
+<p>I don't believe there is any difference at all. We use the <strong>paths</strong> property in <strong>require.config</strong> to help us work with complex paths or complex names. It's easier to write <strong>jquery</strong> than <strong>jquery-1-11.1.min</strong> so we <em>configure</em> require so that it understands that when we say <strong>jquery</strong>, we really mean <strong>jquery-1-11-1.min</strong>. The main purpose of <strong>paths</strong>, of course, is just to let us define the paths to modules that are not in the current directory:</p>
+<pre><code>&quot;Markdown&quot; : &quot;Markdown/Converter&quot;,</code></pre>
+<p>In our example, <strong>MarkShow</strong> is in the current directory, so there is no reason to configure it. We can already reference it just by writing <strong>require[&quot;MarkShow&quot;], function(MarkShow)</strong>. As a result, there is no point in putting it in the <strong>paths</strong> property of <strong>require.config</strong>.</p>
+<p>It is worth noting that you can do other things with require.config besides just setting up a path. In particular, you can use the <strong>shim</strong> section to help load files that are not set up to use <strong>requirejs</strong>.</p>
+<h2 id="more">More</h2>
+<p>In answer to the first question, it is okay to create only one factory if you wish. The goal is to write code that you think is cleanest and easiest to use. These are judgement calls, so try using one factory, and let's see what happens. I'm honestly not sure which is best. I see arguments on both sides.</p>
+<p>I don't know a good shortcut to defining the paths to your files when they appear in multiple directories. There might be one, but I don't know it. For now I think it is best to define the paths to all your files in main.js, and not in other files. That way you will not have to search among your files looking for the place where you defined the path to be used when it comes time to load them.</p>
+<p>Having said this, we might in the future want to place a file in each directory that is responsible for loading the files in that directory. That way we create a &quot;package&quot; as it were. Here is a directory called Readers, and in it is a file like Main.js, that knows how to load all the files in that directory. That way we can load Readers/Main.js and it will load the files in that &quot;package&quot; or &quot;name space.&quot; But frankly, I'm a little fuzzy on how all that might work. I'll figure it out, just not today.</p>
+<p>I would ask that for the midterm, you define the paths to all your files in require.config for Main (public/javascripts), MainTest (Tests), and TestMain (the karma require file). That way I will know where to look if there is trouble loading files for your project. I feel like we have to move beyond this state of affairs, and soon, but for now, I think this is best.</p>
+<p>If anyone is reading this, and is confused. I'll give an example. In public/javascripts/Main.js, there is a section like this:</p>
+<pre><code>require.config({
+    paths : {
+        &quot;jquery&quot; : &quot;jquery-2.1.1&quot;,
+        &quot;DefaultReader&quot; : &quot;./Readers/DefaultReader&quot;,
+        &quot;JsonReader&quot; : &quot;./Readers/JsonReader&quot;,
+        &quot;MarkdownReader&quot; : &quot;./Readers/MarkdownReader&quot;
+    }
+});</code></pre>
+<p>I want you to define the paths to all the files in your project in the paths object shown above. The only exception would be for files that are already in public/javascript. They don't need to be called out explicitly since they can just be referenced by name.</p>
+<p>One you have defined the path for a file, then anywhere in your project that you need the file, you can just point to it by the name you defined in the paths object shown above. You point to it like this:</p>
+<pre><code>require([&quot;jquery&quot;, &quot;DefaultReader&quot;, &quot;JsonReader&quot;, &quot;MarkdownReader&quot;],
+    function(jq, DefaultReader, JsonReader, MarkdownReader) {&#39;use strict&#39;;</code></pre>
+<p>Note that we don't have to specify the path to DefaultReader. Just say its name, and behind the scenes require uses the path from the require.config in Main.js.</p>
+<p>In the require array above, use the same case as you used when defining the variable in the path object. That should usually be the same case as you used for the file name. For instance, BridgeReader.js would be 'BridgeReader' and test.js would be 'test'. In the function callback that follows, capitalize objects that need to be called with new, and use camel case for those that do not. For instance, consider this:</p>
+<pre><code>require([&quot;jquery&quot;, &quot;Foo&quot;, &quot;Gorp&quot;, &quot;Gar&quot;],
+    function(jq, foo, gorp, Gar) {&#39;use strict&#39;;</code></pre>
+<p>The assumption here is that you do not need to call new on foo or gorp but you do on Gar. (These are just used for illustrations, you probably want to use the modular pattern for most of the objects in your project, so you probably usually want to capitalize the names in the parameter list to the function callback in a require statement. At this stage, you don't have to use the modular pattern, however.)</p>
+<!-- FOOTER -->
+      <footer>
+        <p class="pull-right"><a href="#">Back to top</a></p>        
+		<p>Copyright &copy; <a href="/charlie/index.html">Charlie Calvert</a> |
+		<a href="/charlie/contents.html">Site Overview</a> |
+		<a href="/charlie/development/index.html">Writing Code</a> |
+		<a href="/charlie/development/web/index.html">Web</a> |
+		<a href="/charlie/development/web/JavaScript/index.html">JavaScript</a> |
+		<a href="/charlie/books/index.html">My Books</a> </p>
+
+      </footer>
+
+    </div><!-- /.container -->
+</body>
+</html>
+
+
+

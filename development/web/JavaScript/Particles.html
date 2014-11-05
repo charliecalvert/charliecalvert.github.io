@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html dir="ltr">
+
+<head>
+	<meta charset="utf-8" />
+	<title>Particles</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="/charlie/images/favicon.png">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+	<link href="/charlie/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css" />
+	<!-- Latest compiled and minified JavaScript - Move to bottom of body element -->
+	<script src="//code.jquery.com/jquery.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script src="/charlie/libs/scripts/elvenware.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-2806409-2']);
+		_gaq.push(['_trackPageview']);
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+</head>
+
+<body>
+
+
+
+	<!-- removed  navbar-fixed-top -->
+	<div class="navbar navbar-inverse">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"> </span>
+					<span class="icon-bar"> </span>
+					<span class="icon-bar"> </span>
+				</button>
+				<a class="navbar-brand" href="/charlie/index.html">Elvenware</a>
+			</div>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="/charlie/index.html">Home</a></li>
+					<li><a href="/charlie/contents.html">About</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li class="dropdown-header">Core Code</li>
+							<li><a href="/charlie/development/index.html">Strongly Typed</a></li>
+							<li><a href="/charlie/development/web/index.html">Web &amp; Scripts</a></li>
+							<li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">OS and Tools</li>
+							<li><a href="/charlie/os/index.html">OS</a></li>
+							<li><a href="/charlie/development/database/index.html">Database</a></li>
+							<li><a href="/charlie/books/index.html">My Writing</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">Art</li>
+							<li><a href="/charlie/Art/index.html">Poems &amp; Photos</a></li>
+							<li><a href="/charlie/books/reading/index.html">Book Reviews</a></li>
+							<li><a href="/charlie/spirit/index.html">Spiritual</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">Links</li>
+							<li><a href="/charlie/links.html">My Links</a></li>
+							<li><a href="http://www.github.com/charliecalvert">GitHub</a></li>
+							<li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</div>
+
+	<div class="container">
+
+		<div class="starter-template">
+			<figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png" /></figure>
+<h2>Table of Contents</h2>
+<ul class="elfTocHeading">
+	<li><a href='#particles'>Particles</a></li>
+	<li><a href='#refactoring'>Refactoring</a></li>
+	<li><a href='#display-a-simple-particle-system'>Display a Simple Particle System</a></li>
+	<li><a href='#rotate-particles'>Rotate Particles</a></li>
+	<li><a href='#put-particles-where-npcs-are'>Put Particles Where NPCs Are</a></li>
+	<li><a href='#load-shapes'>Load Shapes</a></li>
+	<li><a href='#turn-it-in'>Turn it in</a></li>
+</ul>
+<h1 id="particles">Particles</h1>
+<h2 id="refactoring">Refactoring</h2>
+<p>Let's performs some refactoring. Our utility methods go in a file called <strong>Utilities.js</strong>. Make sure it is require ready, that is, make sure it includes a define method.</p>
+<p>It should contain to methods:</p>
+<pre><code>        showDebug : function(data) {
+            console.log(data);
+        },
+
+        showError : function(request, ajaxOptions, thrownError) {
+            showDebug(&quot;Error occurred: = &quot; + ajaxOptions + &quot; &quot; + thrownError);
+            showDebug(request.status);
+            showDebug(request.statusText);
+            showDebug(request.getAllResponseHeaders());
+            showDebug(request.responseText);
+        }</code></pre>
+<p>Put this method inside a simple JavaScript and return that object at the bottom of the file, per the usual system for require.</p>
+<p>Some files that you might have in your project:</p>
+<ul>
+<li>Particles.js - Draw the particle system</li>
+<li>Shapes.js - Load the shape objects such as the star.</li>
+<li>Buildings.js (or Walls.js or Maze.js) - Draw the maze</li>
+<li>Floor.js - Draw the floor</li>
+<li>Controls.js - The main hub for your project</li>
+<li>Utilities.js - Any simple routine that you want to be able to reuse</li>
+<li>Main.js - The require file</li>
+</ul>
+<p>You could also go to GenMyModel, create an account, and draw a UML diagram of your project.</p>
+<h2 id="display-a-simple-particle-system">Display a Simple Particle System</h2>
+<p>Create a file called <strong>Particles.js</strong>. Set it up so it with a define method so it can be loaded with <strong>require</strong>. Don't forget to add new files to <strong>Main.js</strong>!</p>
+<p>The Icosahedron is in the shape of a sphere, so our particles, taken together, form a sphere.</p>
+<pre><code>function showParticles(scene, x, y) {
+   var geometry = new THREE.IcosahedronGeometry(10, 2);
+   var material = new THREE.PointCloudMaterial({
+       color : 0x00AA00,
+       size : 0.2
+   });
+   var particleSystem = new THREE.PointCloud(geometry, material);
+   particleSystem.position.set(x, 10, y);
+   scene.add(particleSystem);
+   particles.push(particleSystem);
+}</code></pre>
+<h2 id="rotate-particles">Rotate Particles</h2>
+<p>Make all the particles rotate like a spinning sphere:</p>
+<pre><code>Particles.prototype.rotateParticlesAroundWorldAxis = 
+    function(axis, radians, npc) {
+        if (npcs.length &gt; 0) {
+            for (var i = 0; i &lt; npcs.length; i++) {
+                var object;
+                if (npc === true) {
+                    object = npcs[i];
+                } else {
+                    object = particles[i];
+                }
+
+            that.rotWorldMatrix = new THREE.Matrix4();
+            that.rotWorldMatrix.makeRotationAxis(axis.normalize(),
+                    radians);
+
+            that.rotWorldMatrix.multiply(object.matrix); // pre-multiply
+
+            object.matrix = that.rotWorldMatrix;
+
+            object.rotation.setFromRotationMatrix(object.matrix);
+        }
+    }
+};            </code></pre>
+<p>Declare a variable called <strong>animateNpc</strong> at the top of <strong>Control.js</strong> with object scope. Then in <strong>animate()</strong>, you can call <strong>rotateAparticlesAroundWorldAxis</strong> like this:</p>
+<pre><code>var xAxis = new THREE.Vector3(1, 0, 0);
+particles.rotateParticlesAroundWorldAxis(xAxis, Math.PI / 180, animateNpc);
+animateNpc = !animateNpc;</code></pre>
+<h2 id="put-particles-where-npcs-are">Put Particles Where NPCs Are</h2>
+<p>Load in the NPC grid, iterate over it, and draw particles.</p>
+<pre><code>Particles.prototype.initNpc = function(fileName, scene, camera) {
+    $.ajax({
+        url : fileName,
+        cache : false,
+        type : &quot;GET&quot;,
+        dataType : &quot;json&quot;,
+        success : function(gridData) {
+            utilities.showDebug(&#39;Opening file: &#39; + fileName);
+            for (var i = 0; i &lt; gridData.length; i++) {
+                var shapeType = 4;
+                console.log(gridData[i]);
+                for (var j = 0; j &lt; gridData[0].length; j++) {
+                    var npcValue = gridData[j][i];
+                    if (npcValue !== 0) {
+                        console.log(&quot;npcValue: &quot;, npcValue);
+                        // addShape(shapeType, scene, camera, j, i, npcValue);
+                        showParticles(scene, j * size, i * size);
+                    }
+                }
+            }
+        },
+
+        error : utilities.showError
+    });
+};</code></pre>
+<p>Here is the Npc000.json:</p>
+<pre><code>[
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 99, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 5, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+]</code></pre>
+<h2 id="load-shapes">Load Shapes</h2>
+<p>For this code to work, you need to get <strong>OBJMTLLoader.js</strong> and <strong>MTLLoader.js</strong>. These files are from the examples directory in Mr. Doops big zip file that you get from the <a href="http://threejs.org/">threejs downloads page</a>. I think it is wise it download the whole zip file, unzip it, then get a copy of <strong>three.js</strong> from the <strong>build</strong> folder and the other files from: **examples*. Here is the Shapes.js file, that you should not have to modify:</p>
+<pre><code>/**
+ * Shapes
+ * 
+ * @author Charlie Calvert
+ */
+
+define([ &#39;MTLLoader&#39;, &#39;OBJMTLLoader&#39;, &#39;ColladaLoader&#39; ], 
+        function(MTLLoader, OBJMTLLoader, ColladaLoader) {
+
+    function Shapes() {
+
+    }
+
+    Shapes.prototype.addStarObject = function(npcs, scene, camera, wireFrame, x, y) {
+        var loader = new THREE.OBJMTLLoader();
+        loader.load(&#39;mesh/20facestar.obj&#39;, &#39;mesh/20facestar.mtl&#39;, function(
+                object) {
+            object.position.set(x, 10, y);
+            scene.add(object);
+            npcs.push(object);
+        });
+    }
+
+    Shapes.prototype.addBuilding = function(scene, camera, wireFrame, x, y) {
+        var meshes = [ &#39;mesh/untitled.dae&#39;, &#39;mesh/facestar.dae&#39;,
+                &#39;mesh/Medieval_building.DAE&#39; ];
+        var loader = new THREE.ColladaLoader();
+        loader.load(meshes[0], function(result) {
+            result.scene.position.set(x, 6, y);
+            scene.add(result.scene);
+        });
+    }
+
+    Shapes.prototype.addBuildingObject = function(scene, camera, wireFrame, x, y) {
+        var loader = new THREE.OBJMTLLoader();
+        loader.load(&#39;mesh/RuralStallObj/RuralStall.obj&#39;,
+                &#39;mesh/RuralStallObj/RuralStall.mtl&#39;, function(object) {
+                    object.scale.set(0.03, 0.03, 0.03);
+                    object.position.set(x, 0, y);
+
+                    scene.add(object);
+                    npcs.push(object);
+                });
+    }
+
+    Shapes.prototype.addNumber = function(scene, camera, wireFrame, x, y, npcValue) {
+        // create a canvas element
+        var canvas1 = document.createElement(&#39;canvas&#39;);
+        var context1 = canvas1.getContext(&#39;2d&#39;);
+        context1.font = &quot;Bold 8px Arial&quot;;
+        context1.fillStyle = &quot;rgba(55,255,55,0.95)&quot;;
+        context1.fillText(&#39;Hello, world!&#39;, 0, 50);
+
+        // canvas contents will be used for a texture
+        var texture1 = new THREE.Texture(canvas1);
+        texture1.needsUpdate = true;
+
+        var material1 = new THREE.MeshBasicMaterial({
+            map : texture1,
+            side : THREE.DoubleSide
+        });
+        material1.transparent = true;
+
+        var mesh1 = new THREE.Mesh(new THREE.PlaneGeometry(
+                canvas1.width, canvas1.height), material1);
+        mesh1.position.set(x, 6, y);
+        scene.add(mesh1);
+    }
+
+    /*
+     * var calcRotation = function ( obj, a) { var euler = new THREE.Euler( 0,
+     * a, 0, &#39;XYZ&#39; ); obj.rotation.applyEuler(euler); };
+     */
+
+    return Shapes;
+});</code></pre>
+<p>Call <strong>addStarObject</strong> something like this:</p>
+<pre><code>addStarObject(npcs, Scene, Camera, false, x, z);</code></pre>
+<p><strong>npcs</strong> is an array to hold the star objects you create, in case you need them later. The values x and z are the location where you want the star object to appear.</p>
+<p>Here are the two pieces of the 20facestar object wrapped in a zip file. I think it is the only one you need for now:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/downloads/20facestar.zip">20FaceStar</a></li>
+</ul>
+<p>If you have trouble working with these files, let me know. I orignally got them here:</p>
+<ul>
+<li><a href="http://www.turbosquid.com/FullPreview/Index.cfm/ID/535674">TurobSquid</a></li>
+</ul>
+<p>There are several formats available, and we are using the OBJ.</p>
+<p>For those who want to start creating their own shapes, here is blender:</p>
+<ul>
+<li><a href="http://www.blender.org/">Blender</a></li>
+</ul>
+<p>It is open source and works on Windows, Linux and the Mac. There are, no doubt, better 3D tools out there, but this one is good, and it is free and cross platform.</p>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Put your project in your repository as Week05_Particles. Attach a bitmap showing the UML diagram you created.</p>
+<!-- FOOTER -->
+      <footer>
+        <p class="pull-right"><a href="#">Back to top</a></p>        
+		<p>Copyright &copy; <a href="/charlie/index.html">Charlie Calvert</a> |
+		<a href="/charlie/contents.html">Site Overview</a> |
+		<a href="/charlie/development/index.html">Writing Code</a> |
+		<a href="/charlie/development/web/index.html">Web</a> |
+		<a href="/charlie/development/web/JavaScript/index.html">JavaScript</a> |
+		<a href="/charlie/books/index.html">My Books</a> </p>
+
+      </footer>
+
+    </div><!-- /.container -->
+</body>
+</html>
+
+
+
