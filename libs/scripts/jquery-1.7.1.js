@@ -5001,8 +5001,8 @@ if ( document.querySelectorAll ) {
 		Sizzle = function( query, context, extra, seed ) {
 			context = context || document;
 
-			// Only use querySelectorAll on non-XML documents
-			// (ID selectors don't work in non-HTML documents)
+			// Only use querySelectorAll on non-XML web
+			// (ID selectors don't work in non-HTML web)
 			if ( !seed && !Sizzle.isXML(context) ) {
 				// See if we find a selector to speed up
 				var match = /^(\w+$)|^\.([\w\-]+$)|^#([\w\-]+$)/.exec( query );
