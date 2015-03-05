@@ -23,15 +23,89 @@
 <li><a href="href=&quot;http://www.dexie.org">Dexie Simple Wrapper</a></li>
 </ul>
 <h1 id="jade-and-markdown">Jade and Markdown</h1>
+<p>Goals:</p>
+<ul>
+<li>We often need to create text that will be reused in multiple locations.</li>
+<li>When we make a change to that file in one place, we want the changes to appear everywhere.</li>
+<li>We want to be able to combine this text with other text in a simple way, and to do so often as we want.</li>
+<li>We want to use markdown to compose text, but have the full power of HTML when we render that text.</li>
+</ul>
 <p>The ElfSite example express example.</p>
 <p>Integration with Bootstrap.</p>
+<p>Here is a simple example of using both the <strong>extends</strong> and <strong>include</strong> syntax:</p>
+<pre><code>extends ../index.jade
+block append content
+    .container
+        +logo
+        h1= title
+        p Welcomes to #{title}
+        include:md JadeMarkdownExpress.md
+        include:md JadeMarkdownExpress-Project.md
+</code></pre><p>Notice also the <strong>mixin</strong>: +logo.</p>
+<p>And the use of <strong>block append</strong>.</p>
+<h2 id="jade">Jade</h2>
 <p>Jade and Mixins: <a href="http://bit.ly/jade-mixins">http://bit.ly/jade-mixins</a></p>
+<p>Install Jade globally:</p>
+<ul>
+<li>npm install -g jade</li>
+</ul>
+<p>Here is most or perhaps all of a <strong>Render.js</strong> script to process a jade file and copy it to your github.io folder:</p>
+<pre><code>var jade = require(&#39;jade&#39;);
+var fs = require(&#39;fs&#39;);
+
+options = {
+    &quot;filename&quot;: &quot;Render.js&quot;,
+    &quot;title&quot;: &quot;My Title&quot;,
+    &quot;basedir&quot;: &quot;/home/charlie&quot;
+};
+
+var files = [
+    {
+        &quot;in&quot;: &quot;views/css/ElvenSass.jade&quot;,
+        &quot;out&quot;: &quot;/development/web/CssGuide/ElvenSass.html&quot;
+    }, {
+        &quot;in&quot;: &quot;views/web/index.jade&quot;,
+        &quot;out&quot;: &quot;/development/web/index.html&quot;
+    }
+]
+
+function writeFile(fileToProcess) {
+    var html = jade.renderFile(fileToProcess.in, options);
+    fs.writeFile(process.env.GIT_HUB_IO + fileToProcess.out, html, function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(&#39;wrote file&#39;);
+        }
+    });
+}
+
+for (var i = 0; i &lt; files.length; i++) {
+    writeFile(files[i]);
+}
+</code></pre><p>Set up the <strong>GIT_HUB_IO</strong> environment variable in <strong>.bash_aliases</strong> so that it always present:</p>
+<pre><code>export GIT_HUB_IO=$GIT_HOME/charliecalvert.github.io
+alias gitio=&quot;cd $GIT_HUB_IO&quot;
+</code></pre><p>The second one is just for convienance, so you can navigate to your folder quickly.</p>
+<p>I am pushing to <strong>github.io</strong> frequently, so I have this <strong>go</strong> script in the root of that folder:</p>
+<pre><code>#! /bin/bash
+
+git add .
+git commit -m &quot;These are auto changes. Use dollar sign 1 to pass parameter.&quot;
+git push
+</code></pre><p>I think this would allow you customize the commit message:</p>
+<pre><code>git commit -m &#39;My Changes: &quot;$1&quot;.&#39;
+</code></pre><h2 id="setup-your-environment">Setup Your Environment</h2>
+<p>Use aliases and scripts to automate the process.</p>
 <p>Setup involves:</p>
 <ul>
 <li>github.io</li>
 <li>.bash_alias aliases</li>
 <li>npm install marked --save</li>
+<li>npm install -g jade</li>
 </ul>
 <p>The <strong>Render.js</strong> script.
 The <strong>Render</strong> script.</p>
+<h2 id="tools">Tools</h2>
+<p>Use <a href="http://sourceforge.net/projects/retext/">retext</a> to edit markdown. This can be installed from the Software Center on Lubuntu. </p>
 </div></body></html>
