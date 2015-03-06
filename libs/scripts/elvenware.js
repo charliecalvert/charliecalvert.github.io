@@ -48,14 +48,18 @@ $(function()
 
 function setAccordion()
 {
-	$( "#accordion00" ).accordion(
-	{
-		collapsible: true, active: false
-	});
+    try {
+        $("#accordion00").accordion(
+            {
+                collapsible: true, active: false
+            });
 
-	$( "#accordion01" ).accordion({
-		collapsible: true, active: false
-	});
+        $("#accordion01").accordion({
+            collapsible: true, active: false
+        });
+    } catch(e) {
+        console.log("Could not find accordion tag");
+    }
 }
 
 function showTracer()
