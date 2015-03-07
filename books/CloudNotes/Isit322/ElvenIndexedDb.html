@@ -128,7 +128,6 @@
             request.onerror = onerror;
             request.onupgradeneeded = onupgradeneeded;
             request.onsuccess = successFunc || onOpenDbSuccess;
-//            request.oncomplete = oncompleteFunc || onOpenDbComplete;
             return request;
         } catch(e) {
            throw e.message;
@@ -213,7 +212,30 @@
     return IndexDbWrapper;
 
 })();
-</code></pre><h2 id="references">References</h2>
+</code></pre><p>These two tests should give you at least some idea of how to use it.</p>
+<pre><code>            it(&quot;shows we can open a db&quot;, function(done) {
+                var index =  new elf.IndexDbWrapper(dbName);
+                var request = index.openDb(1, function(event) {
+                    var db = event.target.result;
+                    expect(db).to.be.ok;
+                    expect(db.name).to.equal(dbName);
+                    db.close();
+                    done();
+                });
+            });
+
+            it(&quot;shows we can get data (broken in Chromium only?)&quot;, function(done) {
+                var index =  new elf.IndexDbWrapper(dbName);
+                var request = index.openAndGetData(1, function(items) {
+                    expect(items.length).to.equal(3);
+                    expect(items[0].name).to.equal(&#39;Bill&#39;);
+                    expect(items[1].name).to.equal(&#39;Donna&#39;);
+                    expect(items[2].name).to.equal(&#39;Lisa&#39;);
+                    done();
+                });
+            });
+</code></pre><p>Remember, this code is likely to change!</p>
+<h2 id="references">References</h2>
 <ul>
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB">MDN</a></li>
 <li><a href="http://www.ibm.com/developerworks/library/wa-indexeddb">IBM</a></li>
