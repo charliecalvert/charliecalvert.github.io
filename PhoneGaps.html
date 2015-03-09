@@ -85,10 +85,12 @@
 	<li><a href='#plugins-with-angular-angular-plugin-'>Plugins with Angular {#angular-plugin}</a></li>
 	<li><a href='#phone-gap-setup-setupphonegap-'>Phone Gap Setup {#setupPhoneGap}</a></li>
 	<li><a href='#the-phonegap-cordova-setup-cheat-sheet'>The PhoneGap/Cordova Setup Cheat Sheet</a></li>
-	<li><a href='#use-setx-to-set-the-environment'>Use SetX to Set the Environment</a></li>
 	<li><a href='#details-on-setting-up-the-environment-for-phonegap-details-'>Details on Setting up the Environment for PhoneGap {#details}</a></li>
 	<li><a href='#java-_home'>JAVA_HOME</a></li>
 	<li><a href='#ant-_home'>ANT_HOME</a></li>
+	<li><a href='#cordova-storage'>Cordova Storage</a></li>
+	<li><a href='#indexeddb'>IndexedDb</a></li>
+	<li><a href='#references'>References</a></li>
 	<li><a href='#create-a-phonegap-cordova-project-createphonegap-'>Create a PhoneGap/Cordova Project {#createPhoneGap}</a></li>
 	<li><a href='#running-an-phonegap-cordova-project-from-eclipse-runproject-'>Running an PhoneGap/Cordova Project from Eclipse {#runProject}</a></li>
 	<li><a href='#customize-the-cordova-create-script-customize-'>Customize the Cordova Create Script {#customize}</a></li>
@@ -104,7 +106,7 @@
 	<li><a href='#ant'>Ant</a></li>
 </ul>
 <h1 id="cordova-phonegap">Cordova/PhoneGap</h1>
-<p>This document is under construction as Cordova/PhoneGap have changed quite a bit.</p>
+<p>This document is under constructions as Cordova/PhoneGap have changed quite a bit.</p>
 <p>PhoneGap is a tool that allows you to target various phones, including
 Android, IPhone, Windows Phone 7, Blackberry, Symbion and WebOS.</p>
 <ul>
@@ -153,13 +155,13 @@ directory.</li>
 <li>Completely delete plugins</li>
 <li>Running a script that installed the platform and the plugins. The script might look something like this:</li>
 </ul>
-<pre><code>#! /bin/bash
+<pre><code>    #! /bin/bash
 
-rm -r platforms
-rm -r plugins
+    rm -r platforms
+    rm -r plugins
 
-cordova platform add android
-cordova plugin add org.apache.cordova.network-information
+    cordova platform add android
+    cordova plugin add org.apache.cordova.network-information
 </code></pre><p>It follows that we don&#39;t want to check in the plugins folder at all. Probably the best solution is to add plugins to your repository wide .gitignore file. Don&#39;t worry about having checked in plugins on one or two projects, but we do want to fix this issue going forward.</p>
 <h2 id="phone-gap-setup-setupphonegap-">Phone Gap Setup {#setupPhoneGap}</h2>
 <p>More recent information is here:</p>
@@ -187,6 +189,7 @@ Eclipse</a>.
 But first let&#39;s talk about setting up your environment.</p>
 <p><strong>NOTE</strong>: <em>Eclipse used to be the preferred IDE for Android development. However, that has changed, and now Google prefers Android Studio. Whether you do Cordova development in Android Studio, Eclipse, WebStorm or some other tool is mostly a matter of taste. I find it easy to build the application from the command line, so I think the choice of IDE is simply a matter of taste and not of necessity. Just to be clear, the Android SDK is a necessity, you must install it. But Android Studio is optional. This means you can install the stand alone Android SDK rather than getting it as part of the Android Studio bundle.</em> </p>
 <h2 id="the-phonegap-cordova-setup-cheat-sheet">The PhoneGap/Cordova Setup Cheat Sheet</h2>
+<p>With the advent of <strong>npm install Cordova</strong> there is no longer a need for the information found in this section of the text.</p>
 <p>To use the PhoneGap/Cordova <strong>create</strong> program to quickly and easily
 create a Cordova project you need to make sure you have the path on your
 system set up correctly so that several programs will run. In
@@ -287,25 +290,8 @@ appended the following to my path.</p>
 output when I type the word<strong>path</strong>:</p>
 <pre><code class="lang-{.code}">C:\Users\Charlie\EclipseAndroid\sdk\platform-tools;C:\Users\Charlie\EclipseAndroid\sdk\tools;C:\Development\ApacheAnt-184\bin;C:\Development\jdk\bin;C:\Development\PhoneGap-2.3.0\lib\android\bin
 </code></pre>
-<h2 id="use-setx-to-set-the-environment">Use SetX to Set the Environment</h2>
-<p>Here is a little batch file that you can create to automate the 
-process of setting your environment variables:</p>
-<pre><code>SetX JAVA_HOME &quot;C:\Program Files\Java\jdk1.7.0_45&quot;
-SetX ANT_HOME C:\Src\Ant\apache-ant-1.9.3
-SetX PHONEGAP_HOME C:\Src\cordova-android
-SetX ANDROID_SDK_HOME C:\Src\Eclipse\sdk
-</code></pre><p>The SetX is built into windows. You can learn about it by searching
-the internet or typing:</p>
-<pre><code>setx /h
-</code></pre><p>In the code shown above, we are setting environment variables:</p>
-<pre><code>setx [ENVIRONMENT VARIABLE] [VALUE]
-</code></pre><p>By default, the variable is set for the current user. If you want
-to change the entire environment for all users, look in the /M 
-parameter. Here is how the help describes that variable:</p>
-<p><em>/M Specifies that the variable should be set in the system wide 
-(HKEY_LOCAL_MACHINE) environment. The default is to set the variable 
-under the HKEY_CURRENT_USER environment.</em></p>
 <h2 id="details-on-setting-up-the-environment-for-phonegap-details-">Details on Setting up the Environment for PhoneGap {#details}</h2>
+<p>With the advent of <strong>npm install Cordova</strong> there is no longer a need for the information found in this section of the text.</p>
 <p>Now that you have an overview of where you are headed, I will add a bit
 more detail for those who are not clear on exactly how to proceed. The
 first thing to understand is that it is possible to build a fully
@@ -319,6 +305,12 @@ site:</p>
 </code></pre><p>Also download Ant, unzip it, and place it in the same Dev directory as
 PhoneGap, ie C:\Dev\ApacheAnt-184:</p>
 <pre><code>http://ant.apache.org/bindownload.cgi
+</code></pre><p>Here is an example script showing what you can do with the setx command on
+Windows:</p>
+<pre><code>SetX JAVA_HOME &quot;C:\Program Files\Java\jdk1.7.0_45&quot;
+SetX ANT_HOME C:\Src\Ant\apache-ant-1.9.3
+SetX PHONEGAP_HOME C:\Src\cordova-android
+SetX ANDROID_SDK_HOME C:\Src\Eclipse\sdk    
 </code></pre><h3 id="java-_home">JAVA_HOME</h3>
 <p>You need to set up the JAVA_HOME <a href="http://www.elvenware.com/charlie/os/windows/faq.html#environment">environment
 variable</a>.</p>
@@ -346,6 +338,22 @@ C:\Users\charles.calvert\AndroidEclipse\sdk\tools
 <a href="http://www.elvenware.com/charlie/os/windows/faq.html#environment">Java-home</a>.
 Make sure javac will run from the command line. If not, examine the part
 of your path that we set with <strong>%JAVA_HOME%\bin</strong>.</p>
+<h2 id="cordova-storage">Cordova Storage</h2>
+<p>There are several types of storage</p>
+<ul>
+<li>IndexDb</li>
+<li>LocalStorage</li>
+<li>WebSql</li>
+<li>File API</li>
+</ul>
+<h1 id="indexeddb">IndexedDb</h1>
+<p>On updrade events are the only time you can alter the structure of a 
+database.</p>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="http://cordova.apache.org/docs/en/4.0.0/cordova_storage_storage.md.html">http://cordova.apache.org/docs/en/4.0.0/cordova_storage_storage.md.html</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API">https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API</a></li>
+</ul>
 <h2 id="create-a-phonegap-cordova-project-createphonegap-">Create a PhoneGap/Cordova Project {#createPhoneGap}</h2>
 <p>If you have everything set up right, then you should be able to go to
 the command prompt and run <strong>create</strong>. </p>
