@@ -15,6 +15,226 @@
 <ul>
 <li><a href="">FilePicks</a></li>
 </ul>
+<p>Much to be done, but a starter on it:</p>
+<pre><code>elf.IndexDbWrapper = (function() {
+
+    var db;
+    var request;
+    var dbName;
+    var dataStoreName = &quot;customers&quot;;
+
+
+    function IndexDbWrapper(dbNameInit, reportInit) {
+        dbName = dbNameInit;
+        report = reportInit || report;
+    }
+
+    function report(success, title, message) {
+        console.log(title, message);
+    }
+
+
+    var onerror = function(event) {
+        console.log(JSON.stringify(event, null, 4));
+        report(false, &quot;Database Failure&quot;, event.target.errorCode);
+    };
+
+    /**
+     * Delete all data in a data store
+     * @param callback
+     */
+    IndexDbWrapper.prototype.clearDataStore = function(callback) {
+        var transaction = db.transaction([dataStoreName], &#39;readwrite&#39;);
+        var customerStore = transaction.objectStore(dataStoreName);
+
+        // onsuccess doesn&#39;t means its done. oncomplete means its done.
+        transaction.oncomplete = function(event) {
+            console.log(&quot;object store cleared, operation finished.&quot;);
+            callback();
+        };
+
+        customerStore.clear().onsuccess = function(event) {
+            console.log(&quot;object store cleared but operation not finished&quot;);
+        };
+    };
+
+    IndexDbWrapper.prototype.close = function() {
+        if (db) {
+            db.close();
+        }
+    };
+
+    IndexDbWrapper.prototype.deleteDatabase = function(callback) {
+        if (db) {
+            db.close();
+        }
+        var deleteDbRequest = window.indexedDB.deleteDatabase(dbName);
+        deleteDbRequest.onsuccess = function (event) {
+            callback(event);
+        };
+        deleteDbRequest.onerror = function (e) {
+            console.log(&quot;Database error: &quot; + e.target.errorCode);
+        };
+    };
+
+    IndexDbWrapper.prototype.getAllItemsFromDataStore = function(callback, closeOnDone) {
+        console.log(&quot;getAllItemsFromDataStore called&quot;);
+        var transaction = db.transaction([dataStoreName]);
+        var customerStore = transaction.objectStore(dataStoreName);
+
+        var items = [];
+        var cursorRequest = customerStore.openCursor();
+
+        transaction.oncomplete = function(evt) {
+            callback(items);
+            if (closeOnDone) {
+                db.close();
+            }
+        };
+
+        cursorRequest.onerror = function(event) {
+            report(false, &quot;Database Failure&quot;, event.target.errorCode);
+        };
+
+        cursorRequest.onsuccess = function(event) {
+            console.log(&quot;cursor request on success called&quot;);
+
+            report(true, &quot;Success&quot;, &quot;DataStore for SSN 444-44-4444 is &quot; + event.target.source.name);
+
+            var cursor = event.target.result;
+            if (cursor) {
+                console.log(&quot;found Item: &quot;, cursor.value);
+                items.push(cursor.value);
+                cursor.continue(); // I think this causes onsuccess to be called again
+            }
+
+            console.log(&quot;Number of items found&quot;, items.length);
+        };
+    };
+
+    IndexDbWrapper.prototype.getDbName = function() {
+        return db.name;
+    };
+
+    var onOpenDbSuccess = function(event) {
+        db = event.target.result;
+        console.log(&quot;OnGetDbSuccess called&quot;);
+        report(true, &quot;OnGetDbSuccess&quot;,  &quot;Report: Opened Database&quot;);
+    };
+
+    IndexDbWrapper.prototype.openDb = function(versionNumber, successFunc) {
+        try {
+            request = window.indexedDB.open(dbName, versionNumber);
+            request.onerror = onerror;
+            request.onupgradeneeded = onupgradeneeded;
+            request.onsuccess = successFunc || onOpenDbSuccess;
+            return request;
+        } catch(e) {
+           throw e.message;
+        }
+    };
+
+    IndexDbWrapper.prototype.openAndGetData = function(versionNumber, callback) {
+        var that = this;
+        that.openDb(versionNumber, function(event) {
+            db = event.target.result;
+            that.getAllItemsFromDataStore(callback);
+        });
+    };
+
+    IndexDbWrapper.prototype.insertArray = function(dataArray, callback) {
+        var transaction = db.transaction([dataStoreName], &quot;readwrite&quot;);
+
+        // Do something when all the data is added to the database.
+        transaction.oncomplete = function(event) {
+            // $(&quot;#alerts&quot;).bootstrap_alert(&#39;alert-success&#39;, &quot;Success&quot;, &quot;Added Data.&quot;);
+            if (typeof callback !== &#39;undefined&#39;) {
+                callback()
+            }
+        };
+
+        transaction.onerror = onerror;
+
+        var objectStore = transaction.objectStore(dataStoreName);
+        for (var i in dataArray) {
+            var request = objectStore.add(dataArray[i]);
+            request.onsuccess = function(event) {
+                console.log(event);
+                // event.target.result == customerData[i].ssn;
+            };
+        }
+    };
+
+    // This event is only implemented in recent browsers
+    var onupgradeneeded = function(event) {
+        // TODO: Pass this in
+        const customerData = [
+            {ssn: &quot;444-44-4444&quot;, name: &quot;Bill&quot;, age: 35, email: &quot;bill@company.com&quot;},
+            {ssn: &quot;555-55-5555&quot;, name: &quot;Donna&quot;, age: 32, email: &quot;donna@home.org&quot;},
+            {ssn: &quot;666-66-6666&quot;, name: &quot;Lisa&quot;, age: 52, email: &quot;lisa@home.org&quot;}
+        ];
+        console.log(&#39;onUpGradeNeeded called&#39;);
+        var db = event.target.result;
+        report(true, &quot;OnUpGradeNeeded database.&quot;);
+
+        // Create an objectStore to hold information about our customers. We&#39;re
+        // going to use &quot;ssn&quot; as our key path because it&#39;s guaranteed to be
+        // unique - or at least that&#39;s what I was told during the kickoff meeting.
+        var objectStore = db.createObjectStore(dataStoreName, { keyPath: &quot;ssn&quot; });
+
+        // Create an index to search customers by name. We may have duplicates
+        // so we can&#39;t use a unique index.
+        objectStore.createIndex(&quot;name&quot;, &quot;name&quot;, { unique: false });
+
+        // Create an index to search customers by email. We want to ensure that
+        // no two customers have the same email, so use a unique index.
+        objectStore.createIndex(&quot;email&quot;, &quot;email&quot;, { unique: true });
+
+        // Use transaction oncomplete to make sure the objectStore creation is
+        // finished before adding data into it.
+        objectStore.transaction.oncomplete = function(event) {
+            // Store values in the newly created objectStore.
+            var customerTransaction = db.transaction(dataStoreName, &quot;readwrite&quot;);
+            var customerObjectStore = customerTransaction.objectStore(dataStoreName);
+
+            customerTransaction.oncomplete = function(event) {
+                console.log(&quot;On upgrade complete&quot;);
+            };
+
+            for (var i in customerData) {
+                customerObjectStore.add(customerData[i]);
+            }
+        }
+    };
+
+
+
+    return IndexDbWrapper;
+
+})();
+</code></pre><p>These two tests should give you at least some idea of how to use it.</p>
+<pre><code>            it(&quot;shows we can open a db&quot;, function(done) {
+                var index =  new elf.IndexDbWrapper(dbName);
+                var request = index.openDb(1, function(event) {
+                    var db = event.target.result;
+                    expect(db).to.be.ok;
+                    expect(db.name).to.equal(dbName);
+                    db.close();
+                    done();
+                });
+            });
+
+            it(&quot;shows we can get data (broken in Chromium only?)&quot;, function(done) {
+                var index =  new elf.IndexDbWrapper(dbName);
+                var request = index.openAndGetData(1, function(items) {
+                    expect(items.length).to.equal(3);
+                    expect(items[0].name).to.equal(&#39;Bill&#39;);
+                    expect(items[1].name).to.equal(&#39;Donna&#39;);
+                    expect(items[2].name).to.equal(&#39;Lisa&#39;);
+                    done();
+                });
+            });
+</code></pre><p>Remember, this code is likely to change!</p>
 <h2 id="references">References</h2>
 <ul>
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB">MDN</a></li>
@@ -123,4 +343,11 @@ cd $GIT_HUB_IO
 The <strong>Render</strong> script.</p>
 <h2 id="tools">Tools</h2>
 <p>Use <a href="http://sourceforge.net/projects/retext/">retext</a> to edit markdown. This can be installed from the Software Center on Lubuntu. </p>
-</div></body></html>
+</div></body></html<li><a href="#indexeddb">IndexedDb</a></li>
+<li><a href="#open-the-database">Open the Database</a></li>
+<li><a href="#sample-program">Sample Program</a></li>
+<li><a href="#references">References</a></li>
+<li><a href="#jade-and-markdown">Jade and Markdown</a></li>
+<li><a href="#jade">Jade</a></li>
+<li><a href="#setup-your-environment">Setup Your Environment</a></li>
+<li><a href="#tools">Tools</a></li>>
