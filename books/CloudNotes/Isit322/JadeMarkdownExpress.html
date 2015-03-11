@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width" initial-scale="1"><title>JadeMarkdownExpress</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><script src="/libs/scripts/jquery.min.js"></script><script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/index.html" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/contents.html">About</a></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>JadeMarkdownExpress</h1><p>Welcomes to JadeMarkdownExpress</p><p>There are two sections to this document. One informative, the second a project for you to complete.</p><ul><!--TOC_Start--><li><a href="#jade-and-markdown">Jade and Markdown</a></li>
+<li><a href="#jade">Jade</a></li>
+<li><a href="#setup-your-environment">Setup Your Environment</a></li>
+<li><a href="#tools">Tools</a></li>
+<li><a href="#jade-markdown-express-project">Jade Markdown Express Project</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h1 id="jade-and-markdown">Jade and Markdown</h1>
+<p>Goals:</p>
+<ul>
+<li>We often need to create text that will be reused in multiple locations.</li>
+<li>When we make a change to that file in one place, we want the changes to appear everywhere.</li>
+<li>We want to be able to combine this text with other text in a simple way, and to do so often as we want.</li>
+<li>We want to use markdown to compose text, but have the full power of HTML when we render that text.</li>
+</ul>
+<p>The ElfSite example express example.</p>
+<p>Integration with Bootstrap.</p>
+<p>Here is a simple example of using both the <strong>extends</strong> and <strong>include</strong> syntax:</p>
+<pre><code>extends ../index.jade
+block append content
+    .container
+        +logo
+        h1= title
+        p Welcomes to #{title}
+        include:md JadeMarkdownExpress.md
+        include:md JadeMarkdownExpress-Project.md
+</code></pre><p>Notice also the <strong>mixin</strong>: +logo.</p>
+<p>And the use of <strong>block append</strong>.</p>
+<h2 id="jade">Jade</h2>
+<p>Jade and Mixins: <a href="http://bit.ly/jade-mixins">http://bit.ly/jade-mixins</a></p>
+<p>Install Jade globally:</p>
+<ul>
+<li>npm install -g jade</li>
+</ul>
+<p>Here is most or perhaps all of a <strong>Render.js</strong> script to process a jade file and copy it to your github.io folder:</p>
+<pre><code>var jade = require(&#39;jade&#39;);
+var fs = require(&#39;fs&#39;);
+
+options = {
+    &quot;filename&quot;: &quot;Render.js&quot;,
+    &quot;title&quot;: &quot;My Title&quot;,
+    &quot;basedir&quot;: &quot;/home/charlie&quot;
+};
+
+var files = [
+    {
+        &quot;in&quot;: &quot;views/css/ElvenSass.jade&quot;,
+        &quot;out&quot;: &quot;/development/web/CssGuide/ElvenSass.html&quot;
+    }, {
+        &quot;in&quot;: &quot;views/web/index.jade&quot;,
+        &quot;out&quot;: &quot;/development/web/index.html&quot;
+    }
+]
+
+function writeFile(fileToProcess) {
+    var html = jade.renderFile(fileToProcess.in, options);
+    fs.writeFile(process.env.GIT_HUB_IO + fileToProcess.out, html, function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(&#39;wrote file&#39;);
+        }
+    });
+}
+
+for (var i = 0; i &lt; files.length; i++) {
+    writeFile(files[i]);
+}
+</code></pre><p>Set up the <strong>GIT_HUB_IO</strong> environment variable in <strong>.bash_aliases</strong> so that it always present:</p>
+<pre><code>export GIT_HUB_IO=$GIT_HOME/charliecalvert.github.io
+alias gitio=&quot;cd $GIT_HUB_IO&quot;
+</code></pre><p>The second one is just for convienance, so you can navigate to your folder quickly.</p>
+<p>I am pushing to <strong>github.io</strong> frequently, so I have this <strong>go</strong> script in the root of that folder:</p>
+<pre><code>#! /bin/bash
+
+git add .
+git commit -m &quot;These are auto changes. Use dollar sign 1 to pass parameter.&quot;
+git push
+</code></pre><p>I think this would allow you customize the commit message:</p>
+<pre><code>git commit -m &#39;My Changes: &quot;$1&quot;.&#39;
+</code></pre><p>Here is a fancier version called <strong>PushMe.sh</strong> that includes a date:</p>
+<pre><code>#!/bin/sh
+
+NOW=$(date +&quot;%m-%d-%Y&quot;)
+PARAM=&quot;$1 $NOW&quot;
+
+git add .
+git commit -m &quot;$PARAM&quot;
+git push
+</code></pre><p>And here is one that could tie them both together so you can do everything with one command:</p>
+<pre><code>#! /bin/bash
+
+node Render.js &#39;ElvenSass.html&#39;
+cd $GIT_HUB_IO 
+./PushMe.sh &quot;$1&quot;
+</code></pre><h2 id="setup-your-environment">Setup Your Environment</h2>
+<p>Use aliases and scripts to automate the process.</p>
+<p>Setup involves:</p>
+<ul>
+<li>github.io</li>
+<li>.bash_alias aliases</li>
+<li>npm install marked --save</li>
+<li>npm install -g jade</li>
+</ul>
+<p>The <strong>Render.js</strong> script.
+The <strong>Render</strong> script.</p>
+<h2 id="tools">Tools</h2>
+<p>Use <a href="http://sourceforge.net/projects/retext/">retext</a> to edit markdown. This can be installed from the Software Center on Lubuntu. </p>
+<h1 id="jade-markdown-express-project">Jade Markdown Express Project</h1>
+<p>Create a project that uses:</p>
+<ul>
+<li>Yeoman </li>
+<li>Express</li>
+<li>Jade</li>
+<li>Mocha</li>
+<li>marked (for markdown)</li>
+</ul>
+<p>Like this:</p>
+<pre><code>npm install -g jade
+mkdir Week09-JadeMarkdownExpress
+cd Week09-JadeMarkdownExpress
+yo express
+yo mocha
+npm install marked --save
+</code></pre><p>Create or edit four Jade pages:</p>
+<ul>
+<li>index.jade</li>
+<li>CensusApi.jade<ul>
+<li>CensusApi.md</li>
+</ul>
+</li>
+<li>MixinMadness.jade<ul>
+<li>MixinMadness.md</li>
+</ul>
+</li>
+<li>mixins.jade    </li>
+</ul>
+<p>Use <strong>mixins.jade</strong> to create, at minimum, Bootstrap menus for <strong>index.jade</strong>. Extend <strong>CensusApi.jade</strong> and <strong>MixinMadness.jade</strong> with the menus from index.jade.</p>
+<p><strong>Include</strong> the appropriate markdown in each page. For instance, put <strong>CensusApi.md</strong> in <strong>CensusApi.jade</strong>.</p>
+<p>Include some links and some text about Mixins and the CensusApi on the appropriate pages.</p>
+<p>Type <strong>grunt</strong>, run the project, and show the pages you created. Take a screenshot.</p>
+<p>Create script that converts the Jade and Markdown to HTML, then places the resulting file in your <strong>lastname.github.io</strong> repository. Push the pages. </p>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Include:</p>
+<ul>
+<li>Your Week09-* folder</li>
+<li>Attach your screenshots to the assignment when you turn it in</li>
+<li>Provide the URL to your pages on lastname.github.io.</li>
+</ul>
+</div></body></html>
