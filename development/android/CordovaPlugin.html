@@ -5,7 +5,10 @@
 <li><a href="#install-script">Install Script</a></li>
 <li><a href="#bower">Bower</a></li>
 <li><a href="#set-up-custom-icons">Set up Custom Icons</a></li>
-<li><a href="#express-to-cordova">Express to Cordova</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#express-to-cordova">Express to Cordova</a></li>
+<li><a href="#media-queries">Media Queries</a></li>
+<li><a href="#server-url">Server URL</a></li>
+<li><a href="#troubleshoot">TroubleShoot</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Many of the scripts discussed in this document are found here:</p>
 <ul>
 <li><a href="https://github.com/charliecalvert/JsObjects/tree/master/Utilities/CordovaTools">https://github.com/charliecalvert/JsObjects/tree/master/Utilities/CordovaTools</a></li>
@@ -164,4 +167,63 @@ Cordova project. The key points to grasp are:</p>
 <li>the files from the <strong>public</strong> directory of an Express project belong in the <strong>www</strong> directory of a Cordova project. </li>
 <li>You need to bring along your bower components or similar files that are needed to make the project run.</li>
 </ul>
+<h2 id="media-queries">Media Queries</h2>
+<ul>
+<li><a href="https://css-tricks.com/snippets/css/media-queries-for-standard-devices/">https://css-tricks.com/snippets/css/media-queries-for-standard-devices/</a></li>
+</ul>
+<pre><code>body {
+  padding: 25px;
+  font: 14px &quot;Lucida Grande&quot;, Helvetica, Arial, sans-serif;
+}
+
+
+/* Smartphones (portrait) ----------- */
+@media only screen and (max-width : 360px) {
+  /* padding-top , right, bottom, left */
+  body {
+    padding: 5px 0px 5px 5px;
+  }
+}
+
+/* Landscape layout (with min-width) */
+@media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
+  body {
+    /* padding-top , right, bottom, left */
+    padding:5px 0px 5px 15px;
+  }
+}
+</code></pre><p>When you copy over bower, be aware of the public directory. It does not exist
+on Cordova. So you probably want to modify bowerrc. Simpler, perhaps, to just
+copy over <strong>jquery.js</strong> and put it in same directory as <strong>Control.js</strong>. But
+then you will need to modify the script tag in the HTML file.</p>
+<p>You can run your program, to some degree, using the python web server:</p>
+<p>python3 -m http.server 30025</p>
+<p>The paths to your scripts and css in your HTML should begin with ./:</p>
+<pre><code>  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width&quot;&gt;
+    &lt;title&gt;&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;./css/style.css&quot;&gt;
+    &lt;script src=&quot;./components/jquery/dist/jquery.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;./javascripts/Control.js&quot;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+</code></pre><h2 id="server-url">Server URL</h2>
+<p>In a standard Express app, we just write this to call a route on the server:</p>
+<pre><code>$.getJSON(&#39;/someRoute&#39;, function(response) {
+</code></pre><p>That won&#39;t work in a Cordova app because the server is not running from the
+same place as our Cordova application. In fact, the server is not on the phone
+at all. So instead we write this:</p>
+<pre><code>$.getJSON(&#39;http://192.168.2.12:30025/someRoute&#39;, function(response) {
+</code></pre><p>Here 192.168.2.12 is the address where my server is running. It will probably be,
+for most of you, your Elastic IP.</p>
+<p><img class="small" src="https://drive.google.com/uc?id=0B25UTAlOfPRGcElESW1La1RzUEU" alt="ElvenGeo"></p>
+<h2 id="troubleshoot">TroubleShoot</h2>
+<p>Two things likely to go wrong:</p>
+<ul>
+<li>You did not put Control.js or other JavaScript files where they can be found</li>
+<li>You did not put jquery where it can be found.</li>
+</ul>
+<p>Don&#39;t forget to look at the command prompt where your server is running. There
+can be messages there that are helpful.</p>
+<p>And of course, don&#39;t forget to start your server.</p>
 </div></body></html>
