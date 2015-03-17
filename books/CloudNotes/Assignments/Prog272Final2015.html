@@ -4,12 +4,15 @@
 <li><a href="#step-three">Step Three</a></li>
 <li><a href="#step-four">Step Four</a></li>
 <li><a href="#step-five">Step Five</a></li>
-<li><a href="#extra-credit">Extra Credit</a></li><!--TOC_End--></ul><h1 id="prog-272-final-2015">Prog 272 Final 2015</h1>
+<li><a href="#extra-credit">Extra Credit</a></li>
+<li><a href="#hints">Hints</a></li><!--TOC_End--></ul><h1 id="prog-272-final-2015">Prog 272 Final 2015</h1>
 <p>There are two primary goals:</p>
 <ul>
 <li>Move the Midterm into a Cordova Application</li>
 <li>Add some the ability to get the users location and to make a phone call</li>
 </ul>
+<p>Sample Screenshot:</p>
+<p><img class="small" src="https://drive.google.com/uc?id=0B25UTAlOfPRGb0xXVlV6RkR2aGc" alt="Prog272Final"></p>
 <h2 id="step-one">Step One</h2>
 <p>Create your working folder. The syntax for the command looks a bit like this:</p>
 <pre><code>$ cordova create --help
@@ -45,6 +48,8 @@ will be Prog272FinalLastName, where LastName is your last name.</p>
 <li><a href="http://bit.ly/elven-android-studio">Android Studio Slids</a></li>
 <li><a href="http://bit.ly/1at2JZ2">Slides</a></li>
 <li><a href="http://www.elvenware.com/charlie/development/android/Androidx86.shtml">Elvenware</a></li>
+<li><a href="https://bc.instructure.com/courses/1078221/pages/week03-overview">Week03 Overview</a></li>
+<li><a href="https://developer.chrome.com/devtools/docs/remote-debugging">Remote Debugging</a></li>
 </ul>
 <p>Build and install the project</p>
 <pre><code>cordova build android
@@ -66,19 +71,60 @@ adb install platforms/android/ant-build/CordovaApp-debug.apk
 <ul>
 <li>../Source/public/js/Control.js -&gt; www/js/Control.js</li>
 <li>../Source/public/css/style.css -&gt; www/css/style.css</li>
+<li>../Source/public/Presidents.json -&gt; www/Presidents.json</li>
+<li>../Source/public/Scientists.json -&gt; www/Scientists.json</li>
 </ul>
 <p>Then I saved my Cordova geneated copy of <strong>index.html</strong> and copied over <strong>index.js</strong> from <strong>Source</strong>:</p>
 <ul>
 <li>www/index.html -&gt; www/index.html.old</li>
 <li>../Source/views/index.html -&gt; www/index.html</li>
+<li>../Source/views/JsonAjax.html -&gt; www/JsonAjax.html</li>
 <li>../Source/bower.json -&gt; www/bower.json</li>
 </ul>
+<p><strong>NOTE</strong>: <em>Be sure you have used our <strong>JadeToHtml</strong> to convert <strong>JsonAjax.jade</strong> to <strong>JsonAjax.html</strong>, etc....</em></p>
+<p>A script for automating the process might look something like this:</p>
+<pre><code>    #! /bin/bash
+
+    SOURCE_QUERY=&quot;../Source&quot;
+
+    # mv www/index.html www/index.html.old
+
+    cp -v $SOURCE_QUERY/public/js/Control.js www/js/.
+    cp -v $SOURCE_QUERY/views/index.html www/.
+    cp -v $SOURCE_QUERY/views/JsonAjax.html www/.
+    cp -v $SOURCE_QUERY/public/css/style.css www/css/.
+    cp -v $SOURCE_QUERY/bower.json www/.
+    cp -v $SOURCE_QUERY/public/Presidents.json www/.
+    cp -v $SOURCE_QUERY/public/Scientists.json www/.
+
+    echo &quot;Set up your .bowerrc file and run bower install&quot;
+</code></pre><p>Don&#39;t view this as written in stone. For instance, There may be additional lines you wish to add such as:</p>
+<pre><code>cp -v $SOURCE_QUERY/public/css/Custom.css www/css/.
+cp -v $SOURCE_QUERY/public/css/Button.css www/css/.
+</code></pre><p>Note that the line <strong>SOURCE_QUERY=&quot;../Source&quot;</strong> will likely differ on your system since the folder where you keep your best vesions of the Midterm is not likely to be called <strong>Source</strong>.</p>
 <p>Now you want to install the updated version of your project and fuss with it until it starts
-to work. </p>
+to work. For instance, you will have to make the menus work when requestion HTML files rather than rendered Jade. This will mean making changes to your HTML. Line 1 is the original call to load json-ajax as rendered Jade, while line 2 shows how it should look in your Cordova project:</p>
+<pre><code>    &lt;li id=&quot;json-ajax&quot;&gt;&lt;a href=&quot;json-ajax&quot;&gt;JsonAjax&lt;/a&gt;&lt;/li&gt;
+    &lt;li id=&quot;json-ajax&quot;&gt;&lt;a href=&quot;JsonAjax.html&quot;&gt;JsonAjax&lt;/a&gt;&lt;/li&gt;
+</code></pre><p><strong>NOTE</strong>: <em>You should probably remove the live reload code from <strong>index.html</strong>.</em></p>
 <h2 id="step-five">Step Five</h2>
-<p>Add support for detecting if you are connect to a phone and reporting location.</p>
-<p>You should also add support for location to your best version of the Midterm, and ensure that it looks good on a mobile device.</p>
+<p>Add support for detecting if you are connect to an android device and reporting location. Adding support for detecting if you are connected to a device is relatively simple, since the code is in the generated <strong>index.js</strong> that comes with all Cordova projects. It is the code that makes the that glows green in the default Cordova project.</p>
+<p>You should also add support for location to your best version of the Midterm, and ensure that it looks good on a mobile device. </p>
 <h2 id="extra-credit">Extra Credit</h2>
 <p>Add support for phone calls.</p>
 <p>Add support for iterating over multiple records instead of just viewing male and female records. You should be able to load a JSON file, then change the male and buttons to forward and back.</p>
+<h2 id="hints">Hints</h2>
+<p>Work through the entire <strong>JsObjects/Cordova/CordovaFromExpress</strong> project very carefully. Make sure you understand it. It is so very close to what you need to do in the final that you can all but use it as an exact template with illustrations of how to complete each step.</p>
+<p>As detailed elsewhere, run the Python web server in your www folder to see if you have at least parts of the app working correctly. For instance, you can check if you are loading all the files properly.            </p>
+<p>At some point, you are going to find that the code in <strong>Week12Final</strong> is close enough to what you want that you don&#39;t want to copy the files over the <strong>Source</strong> folder again. And yet, you will still likely be making changes to both <strong>Week12Final</strong> and <strong>Source</strong> and you will want to be sure some of those changes end up in both projects. The tool you want is <strong>meld</strong>. Here is the command, as it would be issued from the root of your repository:</p>
+<pre><code>meld Week12Final/www Source/public
+</code></pre><p>This will allow you to compare the contents of <strong>www</strong> and <strong>public</strong>. You can see line by line differences between the files in the two projects, and you can copy individual lines from one file to the other.    </p>
+<p>Linking to Bootstrap and JQuery. This worked for me:</p>
+<pre><code>    &lt;link rel=&quot;stylesheet&quot; href=&quot;components/bootstrap/dist/css/bootstrap.min.css&quot;&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;css/Custom.css&quot;&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;css/Buttons.css&quot;&gt;
+    &lt;script src=&quot;components/jquery/dist/jquery.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;components/bootstrap/dist/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;js/Control.js&quot;&gt;&lt;/script&gt;
+</code></pre><p>Of course there has to really be a <strong>components</strong> folder. For instance, there should not be a <strong>public/components</strong> folder.   </p>
 </div></body></html>
