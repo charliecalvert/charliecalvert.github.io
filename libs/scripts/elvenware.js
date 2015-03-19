@@ -8,6 +8,7 @@
 	$("footer").addClass("ui-widget-content");
 	$("header").addClass("ui-widget-header");
 	$("nav").addClass("ui-widget-content");
+	$('table').addClass('table-striped table-bordered');
 
 	registerParagraphClick();
 });
