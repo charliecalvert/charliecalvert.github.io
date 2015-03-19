@@ -5,7 +5,8 @@
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#links">Links</a></li>
 <li><a href="#route-parameters">Route Parameters</a></li>
-<li><a href="#step-one-run-route-parameters">Step One: Run Route Parameters</a></li>
+<li><a href="#step-one-find-route-parameters">Step One: Find Route Parameters</a></li>
+<li><a href="#step-two-run-route-parameters-on-aws">Step Two: Run Route Parameters on AWS</a></li>
 <li><a href="#domain-names">Domain Names</a></li>
 <li><a href="#pricing">Pricing</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
@@ -89,15 +90,87 @@ a list to display the result:</p>
 <li><a href="http://bit.ly/FunctionalJavascript">http://bit.ly/FunctionalJavascript</a></li>
 </ul>
 <hr class="style-eight"><h2 id="route-parameters">Route Parameters</h2>
-<p>This assignment is not yet complete. Please be patient and check back 
-reqularly for updates. I will publish an announcment when it is ready.</p>
-<h2 id="step-one-run-route-parameters">Step One: Run Route Parameters</h2>
-<p><img src="https://drive.google.com/uc?id=0B25UTAlOfPRGVG02a25FZENnMk0" alt="RouteParameters on AWS"></p>
-<p>The Route Parameters program on JsObjects:</p>
+<p>The goal of this assignment is to get the RouteParameters program running on:</p>
+<ul>
+<li>AWS</li>
+<li>A mobile devices</li>
+</ul>
+<p>This is not a coding assignment. It is just an exercise. You will, however, 
+have to demonstrate an understanding of the program we will be running.</p>
+<h2 id="step-one-find-route-parameters">Step One: Find Route Parameters</h2>
+<p>The Route Parameters program can be found on JsObjects:</p>
 <ul>
 <li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/NodeCode/NodeRoutesParams">RouteParams</a></li>
 </ul>
-<hr class="style-eight"><H2>Domains</H2><p>We decided not to do this assignment, but I'm keepign the material here in case you want to review it.</p><hr><h1 id="domain-names">Domain Names</h1>
+<p>It has a fairly simple interface:</p>
+<p><img src="https://drive.google.com/uc?id=0B25UTAlOfPRGVG02a25FZENnMk0" alt="RouteParameters on AWS"></p>
+<h2 id="step-two-run-route-parameters-on-aws">Step Two: Run Route Parameters on AWS</h2>
+<p>First, make sure you have the most recent copy of JsObjects on your AWS instance:</p>
+<pre><code>$ ssh ubuntu@&lt;SOME-ELASTIC-IP&gt;
+Welcome to Ubuntu 14.04.2 LTS (GNU/Linux 3.13.0-44-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+
+  System information as of Thu Mar 19 15:18:36 UTC 2015
+
+  System load:  0.0               Processes:           99
+  Usage of /:   19.5% of 7.74GB   Users logged in:     0
+  Memory usage: 10%               IP address for eth0: 172.31.33.228
+  Swap usage:   0%
+
+  Graph this data and manage this system at:
+    https://landscape.canonical.com/
+
+  Get cloud support with Ubuntu Advantage Cloud Guest:
+    http://www.ubuntu.com/business/services/cloud
+
+10 packages can be updated.
+9 updates are security updates.
+
+
+Last login: Thu Mar 19 15:18:36 2015 from c-24-22-247-196.hsd1.wa.comcast.net
+Agent pid 15723
+ubuntu@ip-172-31-33-228:~
+$ cd Git
+ubuntu@ip-172-31-33-228:~/Git
+$ git clone http://github.com/charliecalvert/JsObjects.git
+</code></pre><p>The key line, of course, is this one:</p>
+<pre><code> git clone http://github.com/charliecalvert/JsObjects.git
+</code></pre><p>Copy the Route Params project to a folder of your choosing outside
+of JsObjects:</p>
+<pre><code>    cd &lt;TO SOME FOLDER OF YOUR CHOOSING SUCH AS ~/Source&gt;
+    cp -r ~/Git/JsObjects/JavaScript/NodeCode/NodeRoutesParams/ .
+</code></pre><p>Navigate into your copied version of <strong>NodeRoutesParams</strong> and edit Control.js</p>
+<pre><code>cd NodeRoutesParams
+nano public/javascripts/Control.js
+</code></pre><p>Change the IP address to your elastic IP:</p>
+<pre><code> GNU nano 2.2.6       File: public/javascripts/Control.js                      
+
+var Control = (function() {
+
+        // Constructor
+        function Control() {
+        $(&quot;button&quot;).click(function(event) {
+            var id = event.target.id;
+            var route = &#39;http://52.11.190.176:30025/routeParams/&#39; + id;
+            $(&quot;#clientRoute&quot;).html(&#39;ClientRoute: &#39; + route);
+            $.getJSON(route, function(response) {
+                // $(&#39;#response&#39;).html(JSON.stringify(response));
+                $(&#39;#route&#39;).html(&quot;ROUTE: &quot; + response.route);
+                $(&#39;#result&#39;).html(&quot;RESULT: &quot; + response.result);
+                $(&#39;#query&#39;).html(&quot;QUERY: &quot; + JSON.stringify(response.query));
+                $(&#39;#params&#39;).html(&quot;PARAMS: &quot; + JSON.stringify(response.params));
+                $(&#39;#id&#39;).html(&quot;ID: &quot; + response.id);
+
+                // elf.utilities.showMessage(choice, true);
+            });
+        });
+
+^G Get Help  ^O WriteOut  ^R Read File ^Y Prev Page ^K Cut Text  ^C Cur Pos
+^X Exit      ^J Justify   ^W Where Is  ^V Next Page ^U UnCut Text^T To Spell
+</code></pre><p>The relevant line is this one:</p>
+<pre><code>var route = &#39;http://&lt;CHANGE ME&gt;:30025/routeParams/&#39; + id;
+</code></pre><hr class="style-eight"><H2>Domains</H2><p>We decided not to do this assignment, but I'm keepign the material here in case you want to review it.</p><hr><h1 id="domain-names">Domain Names</h1>
 <ul>
 <li>Go to GoDaddy.</li>
 <li>Buy two one dollar, one year, domain names.</li>
@@ -141,6 +214,6 @@ set the A record to your elastic IP.</p>
 <p>In the DNS zone file page, set the CNAME alias for www to:</p>
 <p>username@github.io.</p>
 <ul>
-<li><a href="&#109;&#97;&#x69;&#x6c;&#x74;&#x6f;&#x3a;&#x68;&#x74;&#x74;&#112;&#x73;&#58;&#47;&#47;&#x6d;&#x65;&#100;&#x69;&#x75;&#x6d;&#x2e;&#99;&#111;&#x6d;&#47;&#64;&#x4c;&#111;&#118;&#x65;&#x74;&#x74;&#x4c;&#x6f;&#118;&#101;&#x74;&#116;&#47;&#103;&#105;&#116;&#104;&#117;&#98;&#45;&#x70;&#x61;&#x67;&#x65;&#x73;&#x2d;&#x67;&#111;&#100;&#x61;&#x64;&#100;&#121;&#x2d;&#x66;&#x30;&#51;&#49;&#x38;&#99;&#50;&#x66;&#x32;&#x35;&#97;">&#x68;&#x74;&#x74;&#112;&#x73;&#58;&#47;&#47;&#x6d;&#x65;&#100;&#x69;&#x75;&#x6d;&#x2e;&#99;&#111;&#x6d;&#47;&#64;&#x4c;&#111;&#118;&#x65;&#x74;&#x74;&#x4c;&#x6f;&#118;&#101;&#x74;&#116;&#47;&#103;&#105;&#116;&#104;&#117;&#98;&#45;&#x70;&#x61;&#x67;&#x65;&#x73;&#x2d;&#x67;&#111;&#100;&#x61;&#x64;&#100;&#121;&#x2d;&#x66;&#x30;&#51;&#49;&#x38;&#99;&#50;&#x66;&#x32;&#x35;&#97;</a></li>
+<li><a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#x6f;&#x3a;&#x68;&#116;&#x74;&#x70;&#x73;&#58;&#x2f;&#47;&#109;&#x65;&#100;&#105;&#117;&#x6d;&#x2e;&#x63;&#x6f;&#109;&#x2f;&#64;&#x4c;&#x6f;&#118;&#101;&#116;&#x74;&#76;&#x6f;&#118;&#x65;&#x74;&#116;&#x2f;&#103;&#x69;&#x74;&#x68;&#117;&#x62;&#x2d;&#112;&#97;&#x67;&#101;&#115;&#45;&#x67;&#x6f;&#x64;&#97;&#100;&#x64;&#121;&#x2d;&#102;&#x30;&#51;&#49;&#x38;&#x63;&#50;&#x66;&#50;&#53;&#97;">&#x68;&#116;&#x74;&#x70;&#x73;&#58;&#x2f;&#47;&#109;&#x65;&#100;&#105;&#117;&#x6d;&#x2e;&#x63;&#x6f;&#109;&#x2f;&#64;&#x4c;&#x6f;&#118;&#101;&#116;&#x74;&#76;&#x6f;&#118;&#x65;&#x74;&#116;&#x2f;&#103;&#x69;&#x74;&#x68;&#117;&#x62;&#x2d;&#112;&#97;&#x67;&#101;&#115;&#45;&#x67;&#x6f;&#x64;&#97;&#100;&#x64;&#121;&#x2d;&#102;&#x30;&#51;&#49;&#x38;&#x63;&#50;&#x66;&#50;&#53;&#97;</a></li>
 </ul>
 </div></body></html>
