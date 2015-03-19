@@ -7,6 +7,10 @@
 <li><a href="#route-parameters">Route Parameters</a></li>
 <li><a href="#step-one-find-route-parameters">Step One: Find Route Parameters</a></li>
 <li><a href="#step-two-run-route-parameters-on-aws">Step Two: Run Route Parameters on AWS</a></li>
+<li><a href="#step-three-copy-and-link">Step Three: Copy and Link</a></li>
+<li><a href="#step-four-set-port">Step Four: Set Port</a></li>
+<li><a href="#step-five-start-upstart">Step Five: Start Upstart</a></li>
+<li><a href="#step-xx-edit-elastic-ip">Step XX: Edit Elastic IP</a></li>
 <li><a href="#domain-names">Domain Names</a></li>
 <li><a href="#pricing">Pricing</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
@@ -98,12 +102,18 @@ a list to display the result:</p>
 <p>This is not a coding assignment. It is just an exercise. You will, however, 
 have to demonstrate an understanding of the program we will be running.</p>
 <h2 id="step-one-find-route-parameters">Step One: Find Route Parameters</h2>
-<p>The Route Parameters program can be found on JsObjects:</p>
+<p>The Route Parameters program can be found on JsObjects. Here is the web app version:</p>
 <ul>
-<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/NodeCode/NodeRoutesParams">RouteParams</a></li>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/NodeCode/NodeRoutesParams">Web App</a></li>
 </ul>
-<p>It has a fairly simple interface:</p>
+<p>Here is the Cordova version:</p>
+<ul>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/Cordova/CordovaNodeRoutes">Cordova App</a></li>
+</ul>
+<p>It has a fairly simple interface. Here it is as a web app:</p>
 <p><img src="https://drive.google.com/uc?id=0B25UTAlOfPRGVG02a25FZENnMk0" alt="RouteParameters on AWS"></p>
+<p>And here it is as Cordova application:</p>
+<p><img class="small" src="https://drive.google.com/uc?id=0B25UTAlOfPRGc1JqUWh1Tk5fZUE" alt="Isit 322 Final Home Page"></p>
 <h2 id="step-two-run-route-parameters-on-aws">Step Two: Run Route Parameters on AWS</h2>
 <p>First, make sure you have the most recent copy of JsObjects on your AWS instance:</p>
 <pre><code>$ ssh ubuntu@&lt;SOME-ELASTIC-IP&gt;
@@ -136,13 +146,70 @@ ubuntu@ip-172-31-33-228:~/Git
 $ git clone http://github.com/charliecalvert/JsObjects.git
 </code></pre><p>The key line, of course, is this one:</p>
 <pre><code> git clone http://github.com/charliecalvert/JsObjects.git
-</code></pre><p>Copy the Route Params project to a folder of your choosing outside
+</code></pre><h2 id="step-three-copy-and-link">Step Three: Copy and Link</h2>
+<p>Copy the Route Params project to a folder of your choosing outside
 of JsObjects:</p>
 <pre><code>    cd &lt;TO SOME FOLDER OF YOUR CHOOSING SUCH AS ~/Source&gt;
     cp -r ~/Git/JsObjects/JavaScript/NodeCode/NodeRoutesParams/ .
-</code></pre><p>Navigate into your copied version of <strong>NodeRoutesParams</strong> and edit Control.js</p>
+</code></pre><p>Now we need to create a symbolic link to our project. We want it to
+appear that our project is in the <strong>~/bin directory</strong>. To do this, create
+a symbolic link. The simplest way to do that is to navigate to the
+folder that contains your project. For instance, if you project is in
+<strong>Source</strong> directory, then navigate to the source directory. Then
+create the symbolic link like this:</p>
+<pre><code>$ ln -s ~/Source/NodeRoutesParams/ ~/bin/NodeRoutesParams
+</code></pre><p>If all works out, you can see the symbolic link in your <strong>bin</strong> directory
+by issuing a command like this:</p>
+<pre><code>$ ls -l ~/bin
+</code></pre><p>You should see that NodeParams is a symbolic link to your Source/NodeRoutesParams
+directory:</p>
+<pre><code>NodeRoutesParams -&gt; /home/charlie/Source/NodeRoutesParams/
+</code></pre><h2 id="step-four-set-port">Step Four: Set Port</h2>
+<pre><code>#!/usr/bin/env node
+var debug = require(&#39;debug&#39;)(&#39;expressapp&#39;);
+var app = require(&#39;../app&#39;);
+
+app.set(&#39;port&#39;, process.env.PORT || 30101);
+</code></pre><p>Go to your AWS console. Go to Security Groups, edit the rules for your security
+group to open up port 30101. If there is any confusion, you can find the security
+group associated with your instance on the <strong>instances</strong> page in the AWS console.
+In particular, select your instance, and look down and to your right.</p>
+<ul>
+<li>Type: Custom TCP</li>
+<li>Protocol: TCP</li>
+<li>Port Range: 30101 (Can we write: 30101-30105?)</li>
+<li>Source: Anywhere</li>
+</ul>
+<h2 id="step-five-start-upstart">Step Five: Start Upstart</h2>
+<p>Upstart can be used to keep your program running after you close 
+your shell and to ensure that it restarts automatically when you
+reboot the system. Take a momement to learn about upstart:</p>
+<ul>
+<li>[UpStart on Elvenware][elfUpstate]</li>
+<li><a href="http://upstart.ubuntu.com/index.html">UpStart home page</a></li>
+</ul>
+<p>Our upstart script is called <strong>NodeRoutesParams</strong>. If you look inside it, you will see that
+it assumes your copy of NodeRoutesParams is in <strong>~/bin</strong>:</p>
+<pre><code>exec /usr/bin/nodejs $HOME/bin/NodeRoutesParams/bin/www &gt;&gt; /var/log/node.log 2&gt;&amp;1
+</code></pre><p>That is why we created a symbolic link in that folder. That way, regardless of where
+you keep <strong>NodeRoutesParams</strong> on your system, our script can find it.    </p>
+<p>Copy the <strong>NodeRoutesParams</strong> file to the <strong>/etc/init</strong> directory:</p>
+<pre><code>sudo cp NodeRoutesParams.conf /etc/init/.
+</code></pre><p>Start the program</p>
+<pre><code>sudo start NodeRoutesParams
+</code></pre><p>Stop the program</p>
+<pre><code>sudo stop NodesRoutesParams
+</code></pre><p>If you reboot the system, your program will start automatically.</p>
+<p>Error messages and and other output are in: /var/log/node.log </p>
+<p>Browse to your instance:</p>
+<pre><code>&lt;elasticIp&gt;:30101/
+</code></pre><p>For instance, if you were testing all this out on your copy of Lubunutu,
+you would do this:</p>
+<pre><code>127.0.0.1:30101/    
+</code></pre><h2 id="step-xx-edit-elastic-ip">Step XX: Edit Elastic IP</h2>
+<p>Navigate into your copied version of <strong>NodeRoutesParams</strong> and edit Control.js</p>
 <pre><code>cd NodeRoutesParams
-nano public/javascripts/Control.js
+nano public/javascripts/Control.js   
 </code></pre><p>Change the IP address to your elastic IP:</p>
 <pre><code> GNU nano 2.2.6       File: public/javascripts/Control.js                      
 
@@ -170,8 +237,7 @@ var Control = (function() {
 ^X Exit      ^J Justify   ^W Where Is  ^V Next Page ^U UnCut Text^T To Spell
 </code></pre><p>The relevant line is this one:</p>
 <pre><code>var route = &#39;http://&lt;CHANGE ME&gt;:30025/routeParams/&#39; + id;
-</code></pre><p><img class="small" src="https://drive.google.com/uc?id=0B25UTAlOfPRGc1JqUWh1Tk5fZUE" alt="Isit 322 Final Home Page"></p>
-<hr class="style-eight"><H2>Domains</H2><p>We decided not to do this assignment, but I'm keepign the material here in case you want to review it.</p><hr><h1 id="domain-names">Domain Names</h1>
+</code></pre><hr class="style-eight"><H2>Domains</H2><p>We decided not to do this assignment, but I'm keepign the material here in case you want to review it.</p><hr><h1 id="domain-names">Domain Names</h1>
 <ul>
 <li>Go to GoDaddy.</li>
 <li>Buy two one dollar, one year, domain names.</li>
@@ -215,6 +281,6 @@ set the A record to your elastic IP.</p>
 <p>In the DNS zone file page, set the CNAME alias for www to:</p>
 <p>username@github.io.</p>
 <ul>
-<li><a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#x68;&#116;&#116;&#112;&#115;&#x3a;&#47;&#x2f;&#109;&#x65;&#x64;&#x69;&#x75;&#x6d;&#46;&#x63;&#x6f;&#x6d;&#x2f;&#64;&#76;&#x6f;&#x76;&#x65;&#x74;&#x74;&#x4c;&#111;&#x76;&#x65;&#x74;&#x74;&#47;&#x67;&#x69;&#x74;&#x68;&#117;&#98;&#45;&#x70;&#97;&#103;&#x65;&#x73;&#45;&#103;&#x6f;&#100;&#97;&#x64;&#x64;&#x79;&#x2d;&#x66;&#48;&#51;&#x31;&#x38;&#x63;&#50;&#102;&#x32;&#53;&#97;">&#x68;&#116;&#116;&#112;&#115;&#x3a;&#47;&#x2f;&#109;&#x65;&#x64;&#x69;&#x75;&#x6d;&#46;&#x63;&#x6f;&#x6d;&#x2f;&#64;&#76;&#x6f;&#x76;&#x65;&#x74;&#x74;&#x4c;&#111;&#x76;&#x65;&#x74;&#x74;&#47;&#x67;&#x69;&#x74;&#x68;&#117;&#98;&#45;&#x70;&#97;&#103;&#x65;&#x73;&#45;&#103;&#x6f;&#100;&#97;&#x64;&#x64;&#x79;&#x2d;&#x66;&#48;&#51;&#x31;&#x38;&#x63;&#50;&#102;&#x32;&#53;&#97;</a></li>
+<li><a href="&#x6d;&#x61;&#105;&#108;&#116;&#111;&#58;&#x68;&#116;&#x74;&#x70;&#115;&#x3a;&#47;&#x2f;&#109;&#x65;&#100;&#105;&#117;&#x6d;&#x2e;&#99;&#111;&#109;&#x2f;&#x40;&#76;&#111;&#118;&#101;&#116;&#x74;&#x4c;&#111;&#x76;&#x65;&#116;&#x74;&#x2f;&#103;&#105;&#116;&#104;&#117;&#x62;&#45;&#x70;&#97;&#103;&#x65;&#115;&#45;&#x67;&#111;&#100;&#x61;&#100;&#x64;&#121;&#x2d;&#102;&#x30;&#x33;&#49;&#x38;&#99;&#50;&#x66;&#50;&#x35;&#x61;">&#x68;&#116;&#x74;&#x70;&#115;&#x3a;&#47;&#x2f;&#109;&#x65;&#100;&#105;&#117;&#x6d;&#x2e;&#99;&#111;&#109;&#x2f;&#x40;&#76;&#111;&#118;&#101;&#116;&#x74;&#x4c;&#111;&#x76;&#x65;&#116;&#x74;&#x2f;&#103;&#105;&#116;&#104;&#117;&#x62;&#45;&#x70;&#97;&#103;&#x65;&#115;&#45;&#x67;&#111;&#100;&#x61;&#100;&#x64;&#121;&#x2d;&#102;&#x30;&#x33;&#49;&#x38;&#99;&#50;&#x66;&#50;&#x35;&#x61;</a></li>
 </ul>
 </div></body></html>
