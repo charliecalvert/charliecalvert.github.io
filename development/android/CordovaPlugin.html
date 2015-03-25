@@ -5,6 +5,7 @@
 <li><a href="#install-script">Install Script</a></li>
 <li><a href="#bower">Bower</a></li>
 <li><a href="#custom-icons">Set up Custom Icons</a></li>
+<li><a href="#clean-setup">Clean and Setup</a></li>
 <li><a href="#express-to-cordova">Express to Cordova</a></li>
 <li><a href="#media-queries">Media Queries</a></li>
 <li><a href="#server-url">Server URL</a></li>
@@ -168,6 +169,70 @@ cp -r $RES_ICONS/hooks/after_platform_ls/ hooks/.
 </code></pre><p>If you install them before you running <strong>cordova platform add android</strong> then
 they will be installed automatically at that point. You could also modify
 the scripts in the hooks directory to copy the icons from another location.</p>
+<p>Very nice. The one thing that would have been nice would have been to set up bower.json in your Cordova folder so that it:</p>
+<p>A) Existed
+B) Put the components in the right place.</p>
+<p>I should have talked about this during class, but did not quite see</p>
+<p>A) How simple it would be
+B) How useful it would be.</p>
+<p>Still, it would have been nice had you thought of it.</p>
+<p>Your <strong>.bowerrc</strong> ought to look like this:</p>
+<pre><code>{
+  &quot;directory&quot;: &quot;www/bower_components&quot;
+}
+</code></pre><h2 id="clean-setup">Clean and Setup</h2>
+<p>One thing I have noticed that has become a real problem: Cordova
+applications, and particularly their plugins, have to be set up 
+correctly. If there are plugins listed in <strong>plugins/android.json</strong>
+and they are not available, and not installed into <strong>platforms</strong>,
+then your application will not work correctly.</p>
+<p>This issue has become so troublesome to me that I believe all Cordova
+applications have to come with three files, or one file that does
+three things at the right time:</p>
+<ul>
+<li>Clean: A script to delete the contents of <strong>plugins</strong> and <strong>platforms</strong></li>
+<li>Setup: A script to add and run bower, and to add platforms and install plugins</li>
+<li>install: A script to install on the phone.</li>
+</ul>
+<p>The details of how to implement these scripts could be varied or improved.
+The most important point is that you should be able to run Clean, Setup,
+and install and and have your app work. Nothing should be turned in until
+this done.</p>
+<p><strong>NOTE</strong>: *The quarter is about over, and so this may not seem like a 
+pressing issue. But you will care later. You will want to write 
+mobile applications in the future, and take it from me: you need these
+scripts. I have now installed dozens, probably many more, cordova
+applications. I&#39;m learning the hard way what needs to be done.</p>
+<p>Though it could no doubt be improved, here is a sample Clean script:</p>
+<pre><code>#! /bin/bash
+
+PLATFORMS=platforms
+PLUGINS=plugins
+BOWER=www/bower_components
+
+if [ -d &quot;$PLATFORMS&quot; ] ; then
+    rm -r $PLATFORMS
+fi
+
+if [ -d &quot;$PLUGINS&quot; ] ; then
+    rm plugins/android.json
+fi
+
+if [ -d &quot;$BOWER&quot; ] ; then
+    rm -r $BOWER
+fi
+</code></pre><p>Sample Setup:</p>
+<pre><code>#! /bin/bash
+
+cordova platform add android
+bower install
+</code></pre><p>Sample install:</p>
+<pre><code>#! /bin/bash
+
+cordova build android
+adb uninstall com.pennockprojects.week08cordova
+adb install platforms/android/ant-build/CordovaApp-debug.apk
+</code></pre><p>```</p>
 <h1 id="express-to-cordova">Express to Cordova</h1>
 <p>It is relatively simple copy an Express application into a
 Cordova project. The key points to grasp are:</p>
