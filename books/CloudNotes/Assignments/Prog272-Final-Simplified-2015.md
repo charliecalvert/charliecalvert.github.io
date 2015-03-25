@@ -1,0 +1,10 @@
+The grade above is not final. I just want to catch your attention.
+
+ I want to give you the opportunity to complete a simplified final. To
+ complete this final, you must complete Route Parameters and Cordova
+ Various Plugins. These are steps six and seven of the final.
+ 
+ 
+ - [Route Parameters](http://www.ccalvert.net/books/CloudNotes/Assignments/RouteParameters.html)
+ - [Cordova Various Plugins](http://www.ccalvert.net/books/CloudNotes/Assignments/CordovaVariousPlugins.html)
+ - [The final](http://www.ccalvert.net/books/CloudNotes/Assignments/Prog272Final2015.html)
