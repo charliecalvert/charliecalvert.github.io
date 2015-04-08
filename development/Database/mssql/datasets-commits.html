@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+	<title>DataSets</title>
+	<link rel="stylesheet" type="text/css" href="../../../css/csharp.css" > 
+</head>
+
+<body>
+
+<h1>DataSets Commits</h1>
+
+<p>Some code to make it possible to commit data to the database.</p>
+
+<!-- code formatted by http://manoli.net/csharpformat/ -->
+<pre class="csharpcode">
+<span class="kwrd">this</span>.detailsDataAdapter.UpdateCommand = <span class="kwrd">new</span> SqlCommand();
+<span class="kwrd">this</span>.detailsDataAdapter.UpdateCommand.Connection = connection;
+<span class="kwrd">this</span>.detailsDataAdapter.UpdateCommand.CommandText = <span class="str">@"UPDATE event SET Description = @Description "</span>
+                                                    + <span class="str">"WHERE EventID = @EventId;"</span>;
+<span class="kwrd">this</span>.detailsDataAdapter.UpdateCommand.Parameters.Add(<span class="str">"@EventId"</span>, SqlDbType.Int);
+<span class="kwrd">this</span>.detailsDataAdapter.UpdateCommand.Parameters.Add(<span class="str">"@Description"</span>, SqlDbType.VarChar);</pre>
+
+
+<p>And now we are reading to save the data.</p>
+<!-- code formatted by http://manoli.net/csharpformat/ -->
+<pre class="csharpcode">
+<span class="kwrd">public</span> <span class="kwrd">void</span> Save(<span class="kwrd">int</span> EventId, <span class="kwrd">string</span> data, <span class="kwrd">string</span> shortDescription, <span class="kwrd">string</span> description)
+{
+    <span class="kwrd">this</span>.detailsDataAdapter.UpdateCommand.Parameters[<span class="str">"@EventId"</span>].Value = EventId; 
+    <span class="kwrd">this</span>.detailsDataAdapter.UpdateCommand.Parameters[<span class="str">"@Description"</span>].Value = description; 
+    <span class="kwrd">this</span>.detailsDataAdapter.Update(<span class="kwrd">this</span>.masterDetailDataSet.Tables[1]);    
+}
+</pre>
+
+</body>
+
+</html>

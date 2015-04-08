@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html dir="ltr">
+
+<!-- #BeginTemplate "../../Elvenware.dwt" -->
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<!-- #BeginEditable "doctitle" -->
+<title>Menus</title>
+<meta name="keywords" content="menu, android, sdk, development" />
+<meta name="description" content="Creating menus in Android applications" />
+<!-- #EndEditable -->
+<meta content="width=device-width,minimum-scale=1.0,maximum-scale=1.0" name="viewport" />
+<link href="/charlie/libs/css/style2.css" rel="stylesheet" title="style2" type="text/css" />
+<link href="/charlie/libs/jquery-ui/jquery-ui.css" rel="stylesheet" type="text/css" />
+<script src="/charlie/libs/scripts/jquery.min.js" type="text/javascript"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
+<script src="/charlie/libs/scripts/elvenware.js" type="text/javascript"></script>
+<!-- #BeginEditable "docScripts" -->
+<!-- #EndEditable -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-2806409-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+
+<body>
+
+<div id="container">
+	<header>
+		<div class="navButton" onclick="elvenware.toggleMenu()">
+			Toggle Menu</div>
+		<h1>Charlie Calvert on Elvenware</h1>
+		<h2>Writing Code and Prose on Computers</h2>
+	</header>
+	<nav>
+		<h2>Menu</h2>
+		<div id="accordion00">
+		<h2 class="navSection01">Core Code</h2>
+			<ul>
+				<li><a href="../index.html">Strongly Typed</a></li>
+				<li><a href="../web/index.html">Web &amp; Scripts</a></li>
+				<li><a href="../cloud/index.shtml">Cloud</a></li>
+			</ul>
+		
+			<h2 class="navSection02">OS and Tools</h2>
+			<ul>
+				<li><a href="../../os/index.html">OS</a></li>
+				<li><a href="../database/index.html">Database</a></li>
+				<li><a href="../../books/index.html">My Writing</a></li>
+			</ul>
+			
+		
+			<h2 class="navSection03">Art</h2>
+			<ul>
+				<li><a href="../../Art/index.html">Poems &amp; Photos</a></li>
+				<li><a href="../../books/reading/index.html">Book Reviews</a></li>
+				<li><a href="../../spirit/index.html">Spiritual</a></li>
+			</ul>
+			<h2 class="navSection04">Links</h2>
+			<ul>
+				<li><a href="../../links.html">My Links</a></li>
+				<li><a href="http://www.falafel.com/">Falafel</a></li>
+				<li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li>
+			</ul>
+		</div>
+	</nav>
+	<article>
+		<figure>
+			<img alt="Elvenware" src="../../images/elvenwarelogo.png" /></figure>
+		<!-- #BeginEditable "body" -->
+
+<h2>Menus</h2>
+		<p>To view an Android menu in VirtualBox or some copies of the Emulator, 
+		try the F2 key, or the right popup menu key found on many keyboards 
+		between the right-alt key and the right-ctrl key.</p>
+		<h2>Coding a Menu with Android SDK</h2>
+
+		<p>Create a new project. Target the most recent SDK, but set the min-sdk 
+		for the version of Android that you want to use.</p>
+
+		<p>You now need to create your menu. Right click on the <strong>res
+		</strong>folder and create a new folder called <strong>menu. </strong>
+		Right click on the new folder and choose <strong>New | Other | Android | 
+		Android XML file</strong> or, alternatively, <strong>New | Android XML 
+		File.</strong> Give you file a name, such as <strong>menu_main.xml.
+		</strong>Enter XML like that shown below:</p>
+		<pre class="code">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;menu xmlns:android="http://schemas.android.com/apk/res/android" &gt;
+  &lt;group android:id="@+id/group_main"&gt;
+    &lt;item android:id="@+id/item_show" android:title="show"&gt;&lt;/item&gt;
+    &lt;item android:id="@+id/item_exit" android:title="exit"&gt;&lt;/item&gt;
+  &lt;/group&gt;
+&lt;/menu&gt;</pre>
+		<p>Modify your main layout so that it has at least one <strong>TextView
+		</strong>with an id:</p>
+		<pre class="code">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;LinearLayout xmlns:android="<a href="http://schemas.android.com/apk/res/android">http://schemas.android.com/apk/res/android</a>"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical" &gt;
+
+&lt;TextView
+  android:id="@+id/textview_main"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:text="@string/hello" /&gt;
+
+&lt;/LinearLayout&gt;</pre>
+
+		<p>Now add simple menu code, in your Activity:</p>
+		<pre class="code">     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	MenuInflater inflator = <strong>getMenuInflater</strong>();
+    	inflator.<strong>inflate</strong>(R.menu.menu_main, menu);
+    	return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+    	TextView textView = (TextView)this.<strong>findViewById</strong>(R.id.textview_main);
+    	textView.setText(item.getTitle());
+    	return super.onMenuItemSelected(featureId, item);
+    }</pre>
+		
+		<p>In Eclipse, the outline of each of the methods shown here can be 
+		created automagically if you type in the first few letters of their 
+		name, such as <strong>onCreateO</strong> and then press <strong>
+		Ctrl-Space</strong>.</p>
+
+		<p>The code shown here makes the menu visible, and displays the titles 
+		of the menu items selected by the user in a <strong>TextView. </strong>
+		Notice the calls to <strong>getMenuInflater()</strong>,<strong> 
+		inflate() </strong>and <strong>findViewById. </strong>The first two make 
+		your menu visiable, the latter helps you locate your <strong>TextView</strong> 
+		so that you can change the text inside it.</p>
+
+		<p>The location of menus differs by version of the SDK. The menu moves 
+		to the top if you write this:</p>
+		<pre class="code">&lt;uses-sdk android:minSdkVersion="13" /&gt;</pre>
+
+		<p>It then appears on the bar at the top, rather than at the bottom.</p>
+
+		<p>You can add a menu using setChildScene. But this is the same way that 
+		we set a control.</p>
+
+		<h2>Links</h2>
+		<ul>
+			<li><a href="../../downloads/Android/SimpleMenu.zip">Download the 
+			source.</a></li>
+		</ul>
+		<!-- #EndEditable -->
+	</article>
+	<footer>
+
+		<p>Copyright &copy; <a href="../../index.html">Charlie Calvert</a> |
+		<a href="../../index.html">Elvenware Home</a> |
+		<a href="../index.html">Writing Code</a> |
+		<a href="../delphi/index.html">Delphi</a> |
+		<a href="../csharp/index.html">CSharp</a> |
+		<a href="../../books/index.html">My Books</a> </p>
+	</footer>
+</div>
+
+</body>
+
+<!-- #EndTemplate -->
+
+</html>

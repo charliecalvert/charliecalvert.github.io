@@ -1,0 +1,313 @@
+﻿<!DOCTYPE html>
+<html dir="ltr">
+
+<!-- #BeginTemplate "../../Elvenware.dwt" -->
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<!-- #BeginEditable "doctitle" -->
+<title>Http Get on Async Thread</title>
+<meta name="description" content="Android Example of an HttpGet on Async Thread" />
+<meta name="keywords" content="Android SDK HttpGet thread" />
+<!-- #EndEditable -->
+<meta content="width=device-width,minimum-scale=1.0,maximum-scale=1.0" name="viewport" />
+<link href="/charlie/libs/css/style2.css" rel="stylesheet" title="style2" type="text/css" />
+<link href="/charlie/libs/jquery-ui/jquery-ui.css" rel="stylesheet" type="text/css" />
+<script src="/charlie/libs/scripts/jquery.min.js" type="text/javascript"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
+<script src="/charlie/libs/scripts/elvenware.js" type="text/javascript"></script>
+<!-- #BeginEditable "docScripts" -->
+<!-- #EndEditable -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-2806409-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+
+<body>
+
+<div id="container">
+	<header>
+		<div class="navButton" onclick="elvenware.toggleMenu()">
+			Toggle Menu</div>
+		<h1>Charlie Calvert on Elvenware</h1>
+		<h2>Writing Code and Prose on Computers</h2>
+	</header>
+	<nav>
+		<h2>Menu</h2>
+		<div id="accordion00">
+		<h2 class="navSection01">Core Code</h2>
+			<ul>
+				<li><a href="../index.html">Strongly Typed</a></li>
+				<li><a href="../web/index.html">Web &amp; Scripts</a></li>
+				<li><a href="../cloud/index.shtml">Cloud</a></li>
+			</ul>
+		
+			<h2 class="navSection02">OS and Tools</h2>
+			<ul>
+				<li><a href="../../os/index.html">OS</a></li>
+				<li><a href="../database/index.html">Database</a></li>
+				<li><a href="../../books/index.html">My Writing</a></li>
+			</ul>
+			
+		
+			<h2 class="navSection03">Art</h2>
+			<ul>
+				<li><a href="../../Art/index.html">Poems &amp; Photos</a></li>
+				<li><a href="../../books/reading/index.html">Book Reviews</a></li>
+				<li><a href="../../spirit/index.html">Spiritual</a></li>
+			</ul>
+			<h2 class="navSection04">Links</h2>
+			<ul>
+				<li><a href="../../links.html">My Links</a></li>
+				<li><a href="http://www.falafel.com/">Falafel</a></li>
+				<li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li>
+			</ul>
+		</div>
+	</nav>
+	<article>
+		<figure>
+			<img alt="Elvenware" src="../../images/elvenwarelogo.png" /></figure>
+		<!-- #BeginEditable "body" -->
+		
+<h1>HttpGet and HttpPost</h1>
+
+		<p>In the manifest, before the Application, put this:</p>
+
+<pre class="code">&lt;uses-permission android:name="android.permission.INTERNET"&gt;&lt;/uses-permission&gt;</pre>
+
+<h2>Basic HttpGet</h2>
+		<p>To perform an HTTPGet, you can create a an implementation of the 
+		abstract class called <strong>
+		<a href="http://developer.android.com/reference/android/os/AsyncTask.html">
+		AsyncTask</a></strong>:</p>
+		<pre class="code"> AsyncTask&lt;Params, Progress, Result&gt;.</pre>
+		<p>This class allows you to perform tasks in the background on a 
+		separate thread, and then publish the results to the UI. This is a 
+		recommended technique for two reasons:</p>
+		<ul>
+			<li>If you try to perform an HTTP request on the main thread, it can 
+			hang your application for an unspecified period of time while 
+			waiting for a network request to time out.</li>
+			<li>To avoid freezing the UI during a timeout, you want to run on a 
+			second thread. But when running on a second thread, you cannot 
+			normally touch the UI on the main thread without risking a thread 
+			conflict which can permanently lock up your code.</li>
+		</ul>
+		<p>&nbsp;There are a number of methods in the <strong>AsyncTask</strong> 
+		class that you override including <strong>doInBackground, onPostExecute
+		</strong>and <strong>onProgressUpdate.</strong></p>
+		<p>AsyncTask has three generic types:</p>
+		<ol>
+			<li><strong>Params</strong>: An array of parameters you want to pass 
+			in to the class you create when you subclass <strong>AsyncTask</strong>.</li>
+			<li><strong>Progress</strong>: If you override <strong>
+			onProgressUpdate</strong>, this is the type that method returns.</li>
+			<li><strong>Result</strong>: This is the type that <strong>
+			doInBackground </strong>returns.</li>
+		</ol>
+		<p>In a typical example, such as the one below, you pass in a <strong>
+		TextView.</strong> This TextView is part of your main UI. In the <strong>
+		onPostExecute</strong> method, you display text in the <strong>TextView</strong>. 
+		This is how the background task you have created talks to the UI. In 
+		particular, the <strong>onPostExecute</strong> method gets passed a 
+		string (or whatever type you specified in the generic type <strong>
+		Result</strong>). You can display this string in the <strong>TextView</strong>. 
+		In the example shown below the second parameter is set to Void since we 
+		do not override <strong>onProgressUpdate. </strong>We do, however, state 
+		that <strong>doInBackground</strong> will return a <strong>String</strong>.</p>
+<p>Here is your code:</p>
+<pre class="code">package elvenware.MyTester;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import android.os.AsyncTask;
+import android.widget.TextView;
+//  
+public class HttpGetDemo extends AsyncTask&lt;TextView, Void, String&gt; {
+	TextView t;
+	String result = "fail";
+	
+	@Override
+	protected String doInBackground(TextView... params) {
+		// TODO Auto-generated method stub
+		this.t = params[0];
+		return GetSomething();
+	}
+	
+	final String GetSomething()
+	{
+		String url = "http://www.elvenware.com/cgi-bin/LatLongReadData.py";
+		BufferedReader inStream = null;
+		try {
+			HttpClient httpClient = new DefaultHttpClient();
+			HttpGet httpRequest = new HttpGet(url);
+			HttpResponse response = httpClient.execute(httpRequest);
+			inStream = new BufferedReader(
+				new InputStreamReader(
+					response.getEntity().getContent()));
+
+			StringBuffer buffer = new StringBuffer("");
+			String line = "";
+			String NL = System.getProperty("line.separator");
+			while ((line = inStream.readLine()) != null) {
+				buffer.append(line + NL);
+			}
+			inStream.close();
+
+			result = buffer.toString();			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (inStream != null) {
+				try {
+					inStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return result;
+	}
+	
+	protected void onPostExecute(String page)
+	{    	
+    	  t.setText(page);    	
+	}	
+}</pre>
+
+<p>You would call it like this:</p>
+<pre class="code">public void onGetClick(View v) 
+{
+	TextView textView = (TextView)findViewById(R.id.viewText1);
+	new HttpGetDemo().execute(textView);    	
+}</pre>
+		<h2>Posting</h2>
+
+<p>Here is the code:</p>
+
+<pre class="code">package Elvenware.MyTester;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import android.os.AsyncTask;
+import android.widget.TextView;
+
+public class HttpPostDemo extends AsyncTask&lt;TextView, Void, String&gt; 
+{
+	TextView textView;
+	
+	@Override
+	protected String doInBackground(TextView... params) 	
+	{
+		this.textView = params[0];
+		BufferedReader inBuffer = null;
+		String url = "http://www.elvenware.com/cgi-bin/JQueryTest01.py";
+		String result = "fail";
+		try {
+			HttpClient httpClient = new DefaultHttpClient();
+			HttpPost request = new HttpPost(url);
+			List&lt;NameValuePair&gt; postParameters = 
+				new ArrayList&lt;NameValuePair&gt;();
+			postParameters.add(new BasicNameValuePair("operanda", "5"));
+			postParameters.add(new BasicNameValuePair("operandb", "6"));
+			postParameters.add(new BasicNameValuePair("answer", "11"));
+			UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(
+					postParameters);
+
+			request.setEntity(formEntity);
+			HttpResponse httpResponse = httpClient.execute(request);
+			inBuffer = new BufferedReader(
+				new InputStreamReader(
+					httpResponse.getEntity().getContent()));
+
+			StringBuffer stringBuffer = new StringBuffer("");
+			String line = "";
+			String newLine = System.getProperty("line.separator");
+			while ((line = inBuffer.readLine()) != null) {
+				stringBuffer.append(line + newLine);
+			}
+			inBuffer.close();
+
+			result = stringBuffer.toString();
+			
+		} catch(Exception e) {
+			// Do something about exceptions
+			result = e.getMessage();
+		} finally {
+			if (inBuffer != null) {
+				try {
+					inBuffer.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return result;
+	}
+	
+	protected void onPostExecute(String page)
+	{    	
+    	textView.setText(page);    	
+	}	
+}</pre>
+		<p>You would call it like this:</p>
+		<pre class="code">public void onPostClick(View v) 
+{
+	TextView textView = (TextView)findViewById(R.id.viewText1);
+	new HttpPostDemo().execute(textView); 
+}</pre>
+
+<h2>&nbsp;</h2>
+		<h2>Links</h2>
+<ul>
+<li>Get the <a href="../../downloads/Android/MyHttpTester.zip">sample code.</a></li>
+<li>Back to <a href="index.html">Android Main</a></li>
+</ul>
+		<!-- #EndEditable -->
+	</article>
+	<footer>
+
+		<p>Copyright &copy; <a href="../../index.html">Charlie Calvert</a> |
+		<a href="../../index.html">Elvenware Home</a> |
+		<a href="../index.html">Writing Code</a> |
+		<a href="../delphi/index.html">Delphi</a> |
+		<a href="../csharp/index.html">CSharp</a> |
+		<a href="../../books/index.html">My Books</a> </p>
+	</footer>
+</div>
+
+</body>
+
+<!-- #EndTemplate -->
+
+</html>
