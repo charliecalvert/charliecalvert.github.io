@@ -2,13 +2,17 @@
 <li><a href="#create">Step 01: Create</a></li>
 <li><a href="#control">Step 02: Control.js</a></li>
 <li><a href="#layout">Step Three: Layout</a></li>
-<li><a href="#jade">Step Four: Jade</a></li><!--TOC_End--></ul><h1 id="express-and-jquery-in-class">Express and JQuery In Class</h1>
+<li><a href="#jade">Step Four: Jade</a></li>
+<li><a href="#lists">Step Five: Lists</a></li>
+<li><a href="#marie">Step Six: Add Marie</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h1 id="express-and-jquery-in-class">Express and JQuery In Class</h1>
 <p>Goals:</p>
 <ul>
 <li>Module Pattern</li>
 <li>Document Ready</li>
 <li>Jade</li>
 <li>JQuery and DOM basics</li>
+<li>JSON and Lists</li>
 </ul>
 <h2 id="create">Step 01: Create</h2>
 <p>Create a new express app:</p>
@@ -16,6 +20,7 @@
 cd Week02-ExpressJQuery
 npm install
 </code></pre><p>Open up your project in WebStorm. </p>
+<p>Open <strong>bin/www</strong>. Set the port to 30025. In <strong>package.json</strong>,  plug in <strong>nodemon</strong> instead of <strong>node</strong>. Set the title in <strong>routes/index.js</strong> to some string that contains your last name.</p>
 <h2 id="control">Step 02: Control.js</h2>
 <p>In the <strong>public/javascripts</strong> folder create a JavaScript file called <strong>Control.js</strong>. </p>
 <p>Put the following code in <strong>Control.js</strong>:</p>
@@ -27,7 +32,8 @@ var MyObject = (function() {
 
     MyObject.prototype.readyCalled = function() {
         $(&quot;#readyCalled&quot;).html(&quot;Ready was called and myObjected created&quot;);
-    }
+    };
+
     return MyObject;
 }());
 
@@ -38,7 +44,58 @@ $(document).ready(function() {
 });
 </code></pre>
 <h2 id="layout">Step Three: Layout</h2>
-<p>Modify <strong>/views/layout.jade</strong> to include this file.</p>
+<p>Bower is like npm. Use NPM for server side code. Use Bower for client side code. This is not absolutely necessary, but it is common. As a result, we will learn about both NPM and Bower in this class.</p>
+<p>Install Bower:</p>
+<pre><code>npm install -g bower
+</code></pre><p>Create a <strong>bower.json</strong> file in the root of your current project:</p>
+<pre><code>bower init
+</code></pre><p>You will be prompted for input. Take all the defaults or use your common sense to fill in the fields as you are prompted for them.</p>
+<p>Remember that Windows does not like to start a file with a period. As a result, we need to create <strong>.bowerrc</strong> like this:</p>
+<pre><code>echo { } &gt; .bowerrc
+</code></pre><p>Edit <strong>.bowerrc</strong> in geany and add the following so that we will install bower components into the <strong>public/components</strong> directory:</p>
+<pre><code>{
+  &quot;directory&quot;: &quot;public/components&quot;,
+  &quot;json&quot;: &quot;bower.json&quot;
+}
+</code></pre><p>Again, test in <strong>jsonlint.com</strong> to make sure it is valid.</p>
+<p>Install jquery:</p>
+<pre><code>bower install jquery --save
+</code></pre><p>The <strong>--save</strong> parameter saves your request for jquery into the <strong>bower.json file.</strong>  </p>
+<p>My <strong>bower.json</strong> file now looks like this:</p>
+<pre><code>{
+  &quot;name&quot;: &quot;Week02-ExpressJQuery&quot;,
+  &quot;version&quot;: &quot;0.0.0&quot;,
+  &quot;authors&quot;: [
+    &quot;Charlie CedarIsle Calvert &lt;charlie@elvenware.com&gt;&quot;
+  ],
+  &quot;description&quot;: &quot;JQuery Demo&quot;,
+  &quot;main&quot;: &quot;bin/www&quot;,
+  &quot;keywords&quot;: [
+    &quot;JQuery&quot;
+  ],
+  &quot;license&quot;: &quot;MIT&quot;,
+  &quot;homepage&quot;: &quot;www.elvenware.com&quot;,
+  &quot;ignore&quot;: [
+    &quot;**/.*&quot;,
+    &quot;node_modules&quot;,
+    &quot;bower_components&quot;,
+    &quot;test&quot;,
+    &quot;tests&quot;
+  ],
+  &quot;dependencies&quot;: {
+    &quot;jquery&quot;: &quot;~2.1.3&quot;
+  }
+}
+</code></pre><p>The most important part is the <strong>dependencies</strong> object at the end of the file.</p>
+<p>Modify <strong>/views/layout.jade</strong> to include jquery and <strong>Control.js</strong></p>
+<pre><code>doctype html
+html
+    head
+        title= title
+        link(rel=&#39;stylesheet&#39;, href=&#39;/stylesheets/style.css&#39;)
+        scripts(&#39;javascripts/components/jquery/dist/jquery.js&#39;)
+        etc...
+</code></pre><p><strong>NOTE</strong>: <em>When I type <strong>etc...</strong>, that can sometimes be translated as: &quot;Filling in this part of the file is left as an exercise for the reader.&quot;</em></p>
 <h2 id="jade">Step Four: Jade</h2>
 <p>In <strong>index.jade</strong> use Jade to create a button and two paragraphs:</p>
 <pre><code>button#sendString Send String
@@ -47,4 +104,49 @@ p#readyCalled
 </code></pre><p>Add a button to index.jade with an id of <strong>sendString</strong>. Use the constuctor of <strong>MyObject</strong> to set
 up a handler for the button click. Create a private method of <strong>MyObject</strong> called <strong>stringSender</strong> that places
 a string in your <strong>stringHolder</strong> paragraph.</p>
+<h2 id="lists">Step Five: Lists</h2>
+<p>Create <strong>ul</strong> element in your <strong>index.jade</strong>:</p>
+<pre><code>ul#myList
+</code></pre><p>Add a button:</p>
+<pre><code>button#getItems Get Items
+</code></pre><p>Handle it:</p>
+<pre><code>function MyObject() {
+    $(&#39;#getItems&#39;).click(showItems);
+}
+</code></pre><p>Add items to the list inside the <strong>addItems</strong> method:</p>
+<pre><code>function showItems() {
+    $(&quot;#myList&quot;).append(&#39;&lt;li&gt;&#39; + &#39;item01&#39; + &#39;&lt;/li&gt;&#39;);
+    $(&quot;#myList&quot;).append(&#39;&lt;li&gt;&#39; + &#39;item02&#39; + &#39;&lt;/li&gt;&#39;);
+    $(&quot;#myList&quot;).append(&#39;&lt;li&gt;&#39; + &#39;item03&#39; + &#39;&lt;/li&gt;&#39;);
+}
+</code></pre><h2 id="marie">Step Six: Add Marie</h2>
+<p>Add a marie button:</p>
+<pre><code>button#getMarie Get Marie
+</code></pre><p>Handle it:</p>
+<pre><code>function MyObject() {
+    $(&#39;#getItems&#39;).click(showItems);
+    $(&#39;#getMarie&#39;).click(showMarie);
+}
+</code></pre><p>Inside <strong>showMarie</strong> create a JavaScript object that follows the rules of JSON:</p>
+<pre><code>var marie = {
+    &quot;firstName&quot;: &quot;Marie&quot;,
+    &quot;lastName&quot;: &quot;Curie&quot;,
+    &quot;city&quot;: &quot;Paris&quot;,
+    &quot;country&quot;: &quot;France&quot;
+};
+</code></pre><p>Cut and paste the curly braces and the syntax between them into <a href="jsonlint.com">jsonlint.com</a> to be sure it is valid JSON:</p>
+<pre><code>{
+    &quot;firstName&quot;: &quot;Marie&quot;,
+    &quot;lastName&quot;: &quot;Curie&quot;,
+    &quot;city&quot;: &quot;Paris&quot;,
+    &quot;country&quot;: &quot;France&quot;
+}
+</code></pre><p>Now inside <strong>showMarie </strong> iterate over the items and add them to your list:</p>
+<pre><code>for (var property in marie) {
+    if (marie.hasOwnProperty(property)) {
+        $(&quot;#myList&quot;).append(&#39;&lt;li&gt;&#39; + marie[property] + &#39;&lt;/li&gt;&#39;);        
+    }
+}
+</code></pre><h2 id="turn-it-in">Turn it in</h2>
+<p>Place the contents of your project in your repository in a folder called <strong>Week02-ExpressJQuery</strong>.</p>
 </div></body></html>
