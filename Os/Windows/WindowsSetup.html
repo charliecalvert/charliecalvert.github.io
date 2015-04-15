@@ -1,0 +1,162 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><title>WindowsSetup</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><script src="/libs/scripts/jquery.min.js"></script><script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/index.html" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/contents.html">About</a></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>WindowsSetup</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#windows-setup">Windows Setup</a></li>
+<li><a href="#script">Script</a></li>
+<li><a href="#good-run">Good Run</a></li>
+<li><a href="#analysis">Analysis</a></li>
+<li><a href="#path">PATH</a></li>
+<li><a href="#bad-results">Bad Results</a></li>
+<li><a href="#home">Home Machine</a></li>
+<li><a href="#npm-packages">NPM Packages</a></li><!--TOC_End--></ul><h1 id="windows-setup">Windows Setup</h1>
+<p>I am working on a script that might prove useful. This is a just a preliminary versions of the script. </p>
+<h2 id="script">Script</h2>
+<p>I will publish a completed version when it is ready. It will be <a href="https://github.com/charliecalvert/JsObjects/blob/master/Utilities/SetupWindows/SanityCheck01.bat">maintained</a> on JsObjects so that you can always get the most recent copy. Save the following as <strong>SanityCheck01.bat</strong>. To run it, just type <strong>SanityCheck01.bat</strong>.</p>
+<pre><code>set RESULTS=Results.txt
+
+where git.exe &gt; %RESULTS%
+where node.exe &gt;&gt; %RESULTS% 
+where npm.cmd &gt;&gt; %RESULTS% 
+where geany.exe &gt;&gt; %RESULTS% 
+where notepad++.exe &gt;&gt; %RESULTS% 
+where putty.exe &gt;&gt; %RESULTS%
+where pageant.exe &gt;&gt; %RESULTS%
+
+@ECHO OFF
+
+echo -----------------------------------------
+echo We are now going to examine %RESULTS%
+echo Here is the contents of %RESULTS%
+echo -----------------------------------------
+type %RESULTS% 
+echo -----------------------------------------
+echo End %RESULTS%
+echo There should be eight lines in %RESULTS%.
+echo Here is how many we found:
+findstr /R /N &quot;^&quot; %RESULTS% | find /C &quot;:&quot;
+echo -----------------------------------------
+echo ==================================
+echo Testing for GIT_SSH
+echo ==================================
+
+IF NOT DEFINED GIT_SSH GOTO MISSING_HOME
+
+GOTO END
+
+:MISSING_HOME
+ECHO You are missing something
+ECHO GIT_SSH - %GIT_SSH%
+EXIT /B 1
+
+:END
+ECHO Looks Good: You have these settings:
+ECHO -----------------------------------------
+ECHO GIT_SSH - %GIT_SSH%
+ECHO -----------------------------------------
+</code></pre><h2 id="good-run">Good Run</h2>
+<p>Here is the output I get when running the script on one of the school machines that is -- I believe -- set up correctly: </p>
+<pre><code>-----------------------------------------
+We are now going to examine Results.txt
+Here is the contents of Results.txt
+-----------------------------------------
+C:\Program Files (x86)\Git\cmd\git.exe
+C:\Program Files\nodejs\node.exe
+C:\Program Files\nodejs\npm.cmd
+C:\Users\charles.calvert\AppData\Roaming\npm\npm.cmd
+C:\Program Files (x86)\Geany\bin\Geany.exe
+C:\Program Files (x86)\Notepad++\notepad++.exe
+C:\Users\charles.calvert\Bin\PUTTY.EXE
+C:\Users\charles.calvert\Bin\PAGEANT.EXE
+-----------------------------------------
+End Results.txt
+There should be eight lines in Results.txt.
+Here is how many we found:
+8
+-----------------------------------------
+==================================
+Testing for GIT_SSH
+==================================
+Looks Good: You have these settings:
+-----------------------------------------
+GIT_SSH - C:\Users\charles.calvert\Bin\PLINK.EXE
+-----------------------------------------
+</code></pre><h2 id="analysis">Analysis</h2>
+<p>If you have 7 instead of 8 lines in Results.txt, that is probably okay. I have two copies of npm on my system, because I run this command <strong>npm install -g npm</strong>. It is not a necessity to run that command, I don&#39;t think. The reason I ran it was to be sure that I had the most recent version of NPM on my system.</p>
+<p>When looking at the output, the most important items are these:</p>
+<pre><code>C:\Program Files (x86)\Git\cmd\git.exe
+C:\Program Files\nodejs\node.exe
+C:\Program Files\nodejs\npm.cmd
+GIT_SSH - C:\Users\charles.calvert\Bin\PLINK.EXE
+</code></pre><p>Things just won&#39;t work without that much set up.</p>
+<p>The next most important item is Putty:</p>
+<pre><code>C:\Users\charles.calvert\Bin\PUTTY.EXE
+C:\Users\charles.calvert\Bin\PAGEANT.EXE
+</code></pre><p>Next in importance are you editors:</p>
+<pre><code>C:\Program Files (x86)\Geany\bin\Geany.exe
+C:\Program Files (x86)\Notepad++\notepad++.exe
+</code></pre><p>And finally, the straggler:</p>
+<pre><code>C:\Users\charles.calvert\AppData\Roaming\npm\npm.cmd
+</code></pre><h2 id="path">PATH</h2>
+<p>Here are the items I added to the path when setting up the machine:</p>
+<pre><code>C:\Program Files (x86)\Git\cmd;
+C:\Program Files (x86)\Geany\bin;
+C:\Program Files (x86)\Notepad++;
+C:\Users\charles.calvert\AppData\Roaming\npm
+C:\Users\charles.calvert\Bin
+</code></pre><h2 id="bad-results">Bad Results</h2>
+<p>Here is how things look on a system that is not set up correctly, or at least does not have GIT_SSH defined, and does not have Git, Putty, Geany and NotePad++ on the path.</p>
+<pre><code>-----------------------------------------
+We are now going to examine Results.txt
+Here is the contents of Results.txt
+-----------------------------------------
+C:\Program Files\nodejs\node.exe
+C:\Program Files\nodejs\npm.cmd
+-----------------------------------------
+End Results.txt
+There should be eight lines in Results.txt.
+Here is how many we found:
+2
+-----------------------------------------
+==================================
+Testing for GIT_SSH
+==================================
+You are missing something
+GIT_SSH -
+</code></pre><h2 id="home">Home Machine</h2>
+<p>Here is the output I get when I run the script on my home machine, where Putty is installed in <strong>Program Files (x86)</strong>:</p>
+<pre><code>-----------------------------------------
+We are now going to examine Results.txt
+Here is the contents of Results.txt
+-----------------------------------------
+C:\Program Files (x86)\Git\cmd\git.exe
+C:\Program Files\nodejs\node.exe
+C:\Program Files\nodejs\npm.cmd
+C:\Users\charlie\AppData\Roaming\npm\npm.cmd
+C:\Program Files (x86)\Geany\bin\Geany.exe
+C:\Program Files (x86)\Notepad++\notepad++.exe
+C:\Program Files (x86)\PuTTY\putty.exe
+C:\Program Files (x86)\PuTTY\pageant.exe
+-----------------------------------------
+End Results.txt
+There should be eight lines in Results.txt.
+Here is how many we found:
+8
+-----------------------------------------
+==================================
+Testing for GIT_SSH
+==================================
+Looks Good: You have these settings:
+-----------------------------------------
+GIT_SSH - C:\Program Files (x86)\PuTTY\plink.exe
+-----------------------------------------
+</code></pre><h2 id="npm-packages">NPM Packages</h2>
+<p>You can list the npm packages you have installed globally with <strong>npm list -g --depth=0</strong>. It should, at this stage, look something like this:</p>
+<pre><code>npm list -g --depth=0
+
+├── bower@1.4.1
+├── express-generator@4.12.1
+├── jshint@2.6.3
+|── nodemon@1.3.7
+</code></pre><p>If any of the above are missing, it is easy to install them. To do so, just issue one or more of these commands:</p>
+<pre><code>npm install -g bower
+npm install -g express-generator
+npm install -g jshint
+npm install -g nodemon
+</code></pre></div></body></html>
