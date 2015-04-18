@@ -8,6 +8,10 @@
 <li><a href="#connecting-to-an-ssh-server-with-putty">Connecting to an SSH Server with Putty</a></li>
 <li><a href="#puttyGen">Creating Key Pairs with PuttyGen</a></li>
 <li><a href="#pem">Convert a PEM File to a Putty PPK File</a></li>
+<li><a href="#git-and-putty">Git and Putty</a></li>
+<li><a href="#step-one-download">Step One: Download</a></li>
+<li><a href="#step-two-bin-directory">Step Two: Bin Directory</a></li>
+<li><a href="#step-three-putty-in-bin">Step Three: Putty in Bin</a></li>
 <li><a href="#pageant">Loading a Private Key with Pageant</a></li>
 <li><a href="#ec2-cloud-only">EC2 Cloud Only</a></li>
 <li><a href="#ec2Trouble">Trouble Shooting the Connectiong to EC2</a></li>
@@ -356,7 +360,68 @@ field to associate this key with your Putty session. However, this does not
 work quite as you hope if you have associated a password (passphrase) with 
 your private key. In fact, I usually leave this field blank, and instead use 
 a tool called Pageant. </p>
-<h2 id="pageant">Loading a Private Key with Pageant</h2>
+<h2 id="git-and-putty">Git and Putty</h2>
+<p>On Windows, we have no built in SSH client. As result, we use a tool called Putty, which is an open source, third party, project.</p>
+<h3 id="step-one-download">Step One: Download</h3>
+<p>Putty comes in two forms:</p>
+<ul>
+<li>A zip file</li>
+<li>A Windows installer</li>
+</ul>
+<p>If you are admin on your machine, use the installer, otherwise use the
+zip file. </p>
+<p>Download the zip  file or installer from here: </p>
+<ul>
+<li><a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">Putty</a></li>
+</ul>
+<h3 id="step-two-bin-directory">Step Two: Bin Directory</h3>
+<p>If you are not admin on your machine, you will need to decide where to put Putty. This is really a general issue, and not one limited just to Putty. In particular, we need a place to put executables and scripts that we will run frequently. This could be:</p>
+<ul>
+<li>C:\Users\UserName\Bin</li>
+<li>%USERPROFILE%\Bin</li>
+</ul>
+<p>The two lines above are just two ways of saying the same thing. I show them both hoping that at least one of them will make sense to you. Create the <strong>Bin</strong> directory and put it on your path. Restart your command session.</p>
+<h3 id="step-three-putty-in-bin">Step Three: Putty in Bin</h3>
+<p>If you are not admin on your machine, then put the contents of the Putty zip file in your bin directory. Otherwise, just leave the Putty files where they were installed, but make sure they are on your path. </p>
+<p>Create an environment variable called GIT_SSH. It should be set to:</p>
+<pre><code>c:\Users\charles.calvert\Bin\PLINK.EXE
+</code></pre><p>You can use the Windows GUI tools for manipulating the environment, or you can try using the built-in SETX utility:</p>
+<pre><code>setx GIT_SSH=c:\Users\charles.calvert\Bin\PLINK.EXE
+</code></pre><p>You will probably need to restart the Windows Command Line after making this change. To test your work, echo it from the command line. For instance:    </p>
+<pre><code>&gt;echo %GIT_SSH%
+c:\Users\charles.calvert\Bin\PLINK.EXE
+</code></pre><p>You should also make sure <strong>Git.exe</strong> is on your path. It can usually be found here. When working with this path, be careful to get the spaces right:</p>
+<pre><code>C:\Program Files (x86)\Git\cmd
+</code></pre><p>Also Make sure you enter the following at the command prompt:</p>
+<pre><code>git config --global push.default simple
+</code></pre><p><strong>TIP</strong>: <em>Consider putting your SSH keys in an encrypted folder.</em></p>
+<p>You might get this error:</p>
+<pre><code>Cloning into &#39;CloudNotes&#39;...
+The server&#39;s host key is not cached in the registry. You
+have no guarantee that the server is the computer you
+think it is.
+The server&#39;s rsa2 key fingerprint is:
+ssh-rsa 2048 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48
+Connection abandoned.
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+</code></pre><p>Fix it like this:</p>
+<pre><code>plink github.com
+</code></pre><p>When they ask you to store the key in the cache, answer yes. Then use
+CTRL-C to exit the process. (Don&#39;t log in.)</p>
+<p>Check the contents of your .gitconfig file:</p>
+<pre><code>C:\Users\charles.calvert&gt;type .gitconfig
+[gui]
+        recentrepo = C:/Users/charles.calvert/Git/JsObjects
+        recentrepo = C:/Users/charles.calvert/Git/CloudNotes
+[push]
+        default = simple
+[user]
+        email = charlie@elvenware.com
+        name = Charlie at A134
+</code></pre><h2 id="pageant">Loading a Private Key with Pageant</h2>
 <p>Pageant is one of the most important tools in the Putty suite of utilities. 
 You can use it to keep your private key and password in memory. You can load this 
 file in the morning when you sign in, and then never have to enter the 
@@ -388,6 +453,7 @@ will simply work, very securely, without you having to do anything.</p>
 in Figure 08.</p>
 <p><img src="images/Putty08.png" alt="Browse for your PPK"></p>
 <p><strong>Figure 08: Browse for your PPK so PuTTY can use it for authentication.</strong></p>
+<p>Finally, it is helpful if you have a way to be able to easily check to be sure that pageant is load. It is best if you can see Pageant in the <strong>notification area</strong>. Start pageant, then go to the do-hickey in the Windows Notification area and set &quot;Show icon and notifications. The Windows Notification Area is usually found at the bottom right of your screen, on the task bar.* </p>
 <h2 id="ec2-cloud-only">EC2 Cloud Only</h2>
 <p>Assume that you are on a heavily locked down machine, or perhaps a Chromebook, and want to connect to an EC2 instance. We assume that you can&#39;t install anything: not ssh, not putty, not cygwin -- absolutely nothing. All you have is a browser. How do you proceed?</p>
 <p>You will need two tools:</p>
