@@ -95,15 +95,19 @@ body(ng-app=&#39;elvenApp&#39;)
       p {{selectedIndex}}
 </code></pre><h2 id="step-four">Step Four</h2>
 <p>Create the angular modules that will query and display the database.</p>
-<pre><code>angular.module(&#39;pres&#39;, [&#39;ngResource&#39;])
+<pre><code>/**
+ * Created by charlie on 4/29/2015.
+ */
+
+angular.module(&#39;pres&#39;, [&#39;ngResource&#39;])
     .constant(&#39;CONFIG&#39;, {
-        DB_NAME: &lt;DB_NAME&gt;,
+        DB_NAME: &#39;prog219-lastname&#39;,
         COLLECTION: &#39;scientists&#39;,
-        API_KEY: &lt;YOUR_API_KEY&gt;
+        API_KEY: &#39;&lt;YOUR_KEY&gt;&#39;
     })
-   .factory(&#39;presidents&#39;, function($resource, CONFIG) {
-        console.log(&#39;Presidents factory called&#39;);
-        var presidents = $resource(
+    .factory(&#39;scientists&#39;, function ($resource, CONFIG) {
+        console.log(&#39;Scientists factory called&#39;);
+        var scientists = $resource(
             &#39;https://api.mongolab.com/api/1/databases/&#39; + CONFIG.DB_NAME +
             &#39;/collections/&#39; + CONFIG.COLLECTION + &#39;/:id&#39;, {
                 apiKey: CONFIG.API_KEY
@@ -112,7 +116,33 @@ body(ng-app=&#39;elvenApp&#39;)
                 update: {method: &#39;PUT&#39;}
             });
 
-        return presidents;
+        scientists.prototype.getFirstName = function () {
+            return this.firstName;
+        };
+
+        scientists.prototype.getLastName = function () {
+            return this.lastName;
+        };
+
+        scientists.prototype.getSubject = function () {
+            return this.subject;
+        };
+
+        return scientists;
+    });
+</code></pre><p>and in mongodb: </p>
+<pre><code>angular.module(&#39;elvenApp&#39;, [&#39;pres&#39;])
+    .controller(&#39;MyController&#39;, function($scope, $http, scientists) {
+        $scope.hint = &quot;&lt;p&gt;Start with &lt;strong&gt;node server.js&lt;/strong&gt; to retrieve JSON from Server&lt;/p&gt;&quot;;
+
+        $scope.loadPresidents = function() {
+            $scope.scientists = scientists.query({}, function(scientists) {
+                $scope.presidentsLength = scientists.length;
+                console.log(scientists[0].firstName);
+                console.log(scientists[0].lastName);
+                console.log(scientists[0].getFirstName());
+            });
+        };
     });
 </code></pre><p>Your api key is on your Account page.</p>
 </div></body></html>
