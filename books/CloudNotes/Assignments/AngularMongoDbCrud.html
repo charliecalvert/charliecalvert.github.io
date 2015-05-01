@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><title>AngularMongoDbCrud</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><script src="/libs/scripts/jquery.min.js"></script><script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/index.html" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/contents.html">About</a></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>AngularMongoDbCrud</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#angular-mongodb-crud">Angular MongoDb CRUD</a></li>
+<li><a href="#step-one">Step One</a></li>
+<li><a href="#step-two">Step Two</a></li>
+<li><a href="#step-three">Step Three</a></li>
+<li><a href="#step-four">Step Four</a></li>
+<li><a href="#step-five">Step Five</a></li>
+<li><a href="#step-six">Step Six</a></li>
+<li><a href="#step-seven">Step Seven</a></li>
+<li><a href="#additional-information">Additional Information</a></li><!--TOC_End--></ul><h1 id="angular-mongodb-crud">Angular MongoDb CRUD</h1>
+<p>This assignment is not yet complete, but I&#39;m publishing what I have so you can get started on it. I will announce when it is updated, but still, I would press refresh from time to time in your browser to make sure you have the latest version.</p>
+<p>The goal of this assignment is to add basic CRUD functionality to our AngularMongoDbStarter project. CRUD stands for Create, Read, Update, Delete. We already have read, so we want to add the capacity to:</p>
+<ul>
+<li>Create new records</li>
+<li>Update existing records</li>
+<li>Delete records</li>
+</ul>
+<p>This video gives an overview of what I want:</p>
+<ul>
+<li><a href="http://youtu.be/-i2IFE2r5Ls">http://youtu.be/-i2IFE2r5Ls</a></li>
+</ul>
+<p>Before you begin, please note the following. Here is how records on MongoLab look:</p>
+<pre><code>{
+    &quot;_id&quot;: {
+        &quot;$oid&quot;: &quot;5541b5fbe4b01e004ed25b86&quot;
+    },
+    &quot;firstName&quot;: &quot;Marie&quot;,
+    &quot;lastName&quot;: &quot;Curie&quot;,
+    &quot;city&quot;: &quot;Paris&quot;,
+    &quot;country&quot;: &quot;France&quot;,
+    &quot;subject&quot;: &quot;Radiations&quot;
+}
+</code></pre><p>Note the peculiar structure where <strong>_id</strong> is not just a simple value, but an object with a property called <strong>$0id</strong> that contains the simple <strong>id</strong> value we expect to find. Sad, but true.</p>
+<h2 id="step-one">Step One</h2>
+<p>Our first step will be to make a copy of our existing project. You can do this any way you want, but I prefer to use the built in Windows RoboCopy utility.</p>
+<ul>
+<li>Navigate to the root of your repository.</li>
+<li><p>Use the <a href="https://technet.microsoft.com/en-us/library/cc733145.aspx">robocopy</a> command to make a copy of your project:</p>
+<p>  robocopy Week04-AngularMongoStart Week05-AngularMongoCrud /MIR</p>
+</li>
+</ul>
+<p>The exact command you issue may differ in small ways depending on the original name of your starter project, but that is the general pattern to follow.</p>
+<p>When you are done you should have a new folder called <strong>Week05-AngularMongoDbCrud</strong> that contains an exact copy (a MIRror) of your <strong>Week04-AngularMongoDbStarter</strong> project.</p>
+<h2 id="step-two">Step Two</h2>
+<p>Open the project in Webstorm. </p>
+<p>This next part of this step is cosmetic, and not essential, but I mention it for the sake of completeness. You might notice that the title of your project, shown in the upper right of the IDE, is still set to AngularMongoStart. To fix this, right click on the top node in the project window and choose refactor. Opt to change not the folder name, but the project name. Rename the project to AngularMongoCrud or some other name that appeals to you.</p>
+<p><strong>NOTE</strong>: <em>We could avoid having to rename the project by not copying the <strong>idea</strong> folder with robocopy. You can specify to exclude a folder with the /XD switch, which takes an absolute path to the folder you want to exclude. The command on your system would surely differ, but might look like this:</em></p>
+<pre><code>robocopy Week04-AngularMongoStart Week05-Foo /XD D:\Git\Prog219-calvert\Week04-AngularMongoStart\.idea /MIR 
+</code></pre><p>If that is too long and unwieldy, you can do this:</p>
+<pre><code>set SKIP=D:\Git\Prog219-calvert\Week04-AngularMongoStart\.idea
+robocopy Week04-AngularMongoStart Week05-Foo /XD %SKIP% /MIR
+</code></pre><h2 id="step-three">Step Three</h2>
+<p>Add new records:</p>
+<p>Remember that our controller gets passed a <strong>scientists</strong> object which is an instance of the <strong>$resource</strong> object we create in <strong>resources.js</strong>:</p>
+<pre><code>    angular.module(&#39;elvenApp&#39;, [&#39;pres&#39;])
+        .controller(&#39;MyController&#39;, function($scope, $http, scientists) {
+</code></pre><p>Now we have a <strong>scientists object </strong>. We use it in the method designed to add a new record:</p>
+<pre><code class="lang-javascript">$scope.newScientist = function() {
+    var scientistResource = new scientists({
+        firstName: $scope.firstName,
+        lastName: $scope.lastName,
+        subject: $scope.subject
+    });
+    scientistResource.$save(function(scientist) {
+        $scope.scientists.push(scientist);
+        $scope.scientistsLength = $scope.scientists.length;
+    });
+};
+</code></pre>
+<p>Let&#39;s take a moment to break this down. Notice that we first invoke the constructor object from <strong>scientists</strong> service to create a new Angular scientist resource:</p>
+<pre><code class="lang-javascript">    var scientistResource = new scientists({
+        firstName: $scope.firstName,
+        lastName: $scope.lastName,
+        subject: $scope.subject
+    });
+</code></pre>
+<p>The Angular <strong>$resouce</strong> service has a number of utility functions on it. One of them is called <strong>$save</strong>. We use it like this to save our new record back to the database:</p>
+<pre><code>scientistResource.$save(function(scientist) {
+    $scope.scientists.push(scientist);
+    $scope.scientistsLength = $scope.scientists.length;
+});
+</code></pre><p>As you can see, if the insertion is successful, we also add the new record to our local copy of the data. An alternative would be to call refresh on the whole database.</p>
+<h2 id="step-four">Step Four</h2>
+<p>Responds to clicks in the numeric input control by iterating through any records we may have the database. Begin by creating an index that tracks our current record. We do this by adding <strong>$scope.currentItem</strong> into the <strong>loadScientists</strong> method found at the top of <strong>control.js</strong>  </p>
+<pre><code class="lang-javascript">          $scope.loadScientists = function() {
+                $scope.scientists = scientists.query({}, function(scientists) {
+                    $scope.scientistsLength = scientists.length;
+                    $scope.firstName = scientists[0].firstName;
+                    $scope.lastName = scientists[0].lastName;
+                    $scope.subject = scientists[0].subject;                    
+                    console.log(scientists[0].firstName);
+                    console.log(scientists[0].lastName);
+                    console.log(scientists[0].getFirstName());
+                    $scope.currentItem = 0;   // HERE IS THE NEW ITEM
+                });
+            };
+</code></pre>
+<p>Now add a method that performs our task:</p>
+<pre><code class="lang-javascript">    $scope.indexChange = function() {
+        $scope.firstName = $scope.scientists[$scope.currentItem].firstName;
+        $scope.lastName = $scope.scientists[$scope.currentItem].lastName;
+        $scope.subject = $scope.scientists[$scope.currentItem].subject;
+    };
+</code></pre>
+<h2 id="step-five">Step Five</h2>
+<p>We will want to add <strong>update</strong> and <strong>delete</strong> methods  to <strong>resources.js</strong>. We will use a REST protocol  wrapped by Angular in their <a href="https://docs.angularjs.org/api/ngResource/service/$resource">$resource</a> service found in the <strong>ngResouce</strong> module. (See below for more on REST.)</p>
+<p>In the starter assignment, we learned that we can get hold of the Angular <strong>$resource</strong> service with a command like this:</p>
+<pre><code>var url = &#39;https://api.mongolab.com/api/1/databases/myDatabase/collections/mycollection/:id&#39;;
+var scientists = $resource(url, { apiKey: 41abc3d322332gaserfadswf});
+</code></pre><p>Our particular version of this method is somewhat different:</p>
+<pre><code>var url = &#39;https://api.mongolab.com/api/1/databases/myDatabase/collections/mycollection/:id&#39;;
+var scientists = $resource(url, { apiKey: 41abc3d322332gaserfadswf}, {update: {method: &#39;PUT&#39;});
+</code></pre><p> We use this syntax to extend the <strong>$resource</strong> service with a <strong>PUT</strong> command. This is necessary because MongoLab uses HTTP <strong>PUT</strong> commands to update documents.</p>
+<h2 id="step-six">Step Six</h2>
+<p>Delete a document from our collection.</p>
+<p>Here is a method to delete an item from the database:</p>
+<pre><code>    scientists.prototype.remove = function (successCallback, errorCallback) {
+        return scientists.remove({id:this._id.$oid}, successCallback, errorCallback);
+    };
+</code></pre><p>This item ought to be added to our <strong>scientists</strong> factory. The method relies on the <strong>$resource</strong> service created as shown earlier in this section. As you can surmise, this service has a built in <strong>remove</strong> method that takes an ID and two callbacks. </p>
+<p>We invoke this remove method in <strong>control.js</strong>. In particular, here is how to provide the two callbacks in our invocation of this method:</p>
+<pre><code>    $scope.deleteRow = function() {
+        var currentItem = $scope.currentItem;
+        $scope.scientists[currentItem].remove(
+            function(deletedObject, headers) {
+                $scope.scientists.splice(currentItem, 1);
+                $scope.scientistsLength = $scope.scientists.length;
+            }, function(err) {
+                    console.log(&quot;error: &quot; + err.data.message);
+        });
+    };
+</code></pre><p>The basic call looks looks like this:</p>
+<pre><code>$scope.scientists[currentItem].remove(successCallback, errorCallback);
+</code></pre><h2 id="step-seven">Step Seven</h2>
+<p>More coming....</p>
+<h2 id="additional-information">Additional Information</h2>
+<p>REST (Representational State Transfer) is a protocol for making stateless client-server requests over HTTP. Let&#39;s break that down:</p>
+<ul>
+<li>Stateless: There is no memory of a request after it is made. The server should not go into a particular state when you make a request. It should simply perform the action then return to a default state. For instance, we could delete a record. After the deletion, the record is gone, but no other changes are made to the state of the server. For instance, it is does not &quot;remember&quot; what record was deleted, or even that there was a delete request. </li>
+<li>Client Server: Requests are made from our client to our server. Specifically, in our case, they are made from our HTML/CSS/JavaScript app running in our web browser to our nodejs express server.</li>
+<li>HTTP: We use the same protocol used to request pages in the browser. Explaining HTTP is beyond the scope of this assignment, but it is perhaps helpful to understand that it is a text based protocol built on top of TCP/IP. For instance, when we browse to <strong><a href="http://www.google.com">http://www.google.com</a></strong> we are making an HTTP request. In particular, this means that REST requests are made in the form of URIs. For instance, a request to delete a document with an <strong>id</strong> of 3 might look like this: <strong>localhost:30025/delete?id=3</strong>. </li>
+</ul>
+</div></body></html>
