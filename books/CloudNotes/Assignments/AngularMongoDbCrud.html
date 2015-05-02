@@ -7,6 +7,7 @@
 <li><a href="#step-five">Step Five</a></li>
 <li><a href="#step-six">Step Six</a></li>
 <li><a href="#step-seven">Step Seven</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#additional-information">Additional Information</a></li><!--TOC_End--></ul><h1 id="angular-mongodb-crud">Angular MongoDb CRUD</h1>
 <p>This assignment is not yet complete, but I&#39;m publishing what I have so you can get started on it. I will announce when it is updated, but still, I would press refresh from time to time in your browser to make sure you have the latest version.</p>
 <p>The goal of this assignment is to add basic CRUD functionality to our AngularMongoDbStarter project. CRUD stands for Create, Read, Update, Delete. We already have read, so we want to add the capacity to:</p>
@@ -20,6 +21,7 @@
 <li><a href="http://youtu.be/-i2IFE2r5Ls">http://youtu.be/-i2IFE2r5Ls</a></li>
 </ul>
 <p>As with last weeks assignments, I recommend getting as far as possible with this assignment before class starts. Then we can answer questions during class and turn in the final version shortly thereafter.</p>
+<p><strong>NOTE</strong>: <em>Please do not refactor this code, even if it seems tempting. We will do that next week in class after we add some unit tests.</em></p>
 <h2 id="preliminaries">Preliminaries</h2>
 <p>Before you begin, please note the following. Here is how records on MongoLab look:</p>
 <pre><code>{
@@ -33,7 +35,7 @@
     &quot;subject&quot;: &quot;Radiations&quot;
 }
 </code></pre><p>Note the peculiar structure where <strong>_id</strong> is not just a simple value, but an object with a property called <strong>$0id</strong> that contains the simple <strong>id</strong> value we expect to find. Sad, but true.</p>
-<p>You are also going to need to need to make minor updates to <strong>views/index.jade</strong> in order to accomodate my last minute switch from presidents to scientists. I&#39;ll leave that as an &quot;exercise for the reader.&quot;</p>
+<p>You are also going to need to make minor updates to <strong>views/index.jade</strong> in order to accommodate my last minute switch from presidents to scientists. I&#39;ll leave that as an &quot;exercise for the reader.&quot;</p>
 <h2 id="step-one">Step One</h2>
 <p>Our first step will be to make a copy of our existing project. You can do this any way you want, but I prefer to use the built in Windows RoboCopy utility.</p>
 <ul>
@@ -112,7 +114,7 @@ var scientists = $resource(url, { apiKey: 41abc3d322332gaserfadswf});
 </code></pre><p>Our particular version of this method is somewhat different:</p>
 <pre><code>var url = &#39;https://api.mongolab.com/api/1/databases/myDatabase/collections/mycollection/:id&#39;;
 var scientists = $resource(url, { apiKey: 41abc3d322332gaserfadswf}, {update: {method: &#39;PUT&#39;});
-</code></pre><p> We use this syntax to extend the <strong>$resource</strong> service with a <strong>PUT</strong> command. This is necessary because MongoLab uses HTTP <strong>PUT</strong> commands to update documents.</p>
+</code></pre><p> We use this syntax to extend the <strong>$resource</strong> service with a method called <strong>update</strong> that uses the HTTP <strong>PUT</strong> command. This is necessary because MongoLab uses HTTP <strong>PUT</strong> commands to update documents while $resource does not. See <a href="#step-seven">Step Seven</a> for more details.</p>
 <h2 id="step-six">Step Six</h2>
 <p>Delete a document from our collection.</p>
 <p>Here is a method to delete an item from the database:</p>
@@ -128,13 +130,53 @@ var scientists = $resource(url, { apiKey: 41abc3d322332gaserfadswf}, {update: {m
                 $scope.scientists.splice(currentItem, 1);
                 $scope.scientistsLength = $scope.scientists.length;
             }, function(err) {
-                    console.log(&quot;error: &quot; + err.data.message);
+                console.log(&quot;error: &quot; + err.data.message);
         });
     };
 </code></pre><p>The basic call looks looks like this:</p>
 <pre><code>$scope.scientists[currentItem].remove(successCallback, errorCallback);
-</code></pre><h2 id="step-seven">Step Seven</h2>
-<p>More coming....</p>
+</code></pre><p>In our success callback we use the JavaScript <strong>splice</strong> function to remove the item from our local copy of the data. We also track the current number (length) of documents held on the client side.</p>
+<h2 id="step-seven">Step Seven</h2>
+<p>Here is how to update the document.</p>
+<p>From <strong>control.js</strong>:</p>
+<pre><code class="lang-javascript">$scope.updateRow = function() {
+    var indexOfItemToUpdate = $scope.currentItem;
+    $scope.scientists[indexOfItemToUpdate].firstName = $scope.firstName;
+    // You write the code to handle lastName and subject.
+    $scope.scientists[indexOfItemToUpdate].updateDocument(function(data) {
+        console.log(&quot;success: &quot; + data);
+    }, function(err) {
+        console.log(&quot;Error Status: &quot; + err.status + &#39; &#39; + err.data.message);
+    });
+};
+</code></pre>
+<p>On success, the method shown above writes out something like this to the console:</p>
+<pre><code>success: [object Object]
+</code></pre><p>Change the code so that it writes out the first and last names of updated scientist, along with his subject.</p>
+<p>From <strong>resources.js</strong>:</p>
+<pre><code class="lang-javascript">scientists.prototype.updateMe = function (successCallback, errorCallback) {
+    console.log(&quot;update called&quot;);
+    var idObject = {id:this._id.$oid};
+    var updateData = angular.extend({}, this, {_id:undefined});
+    scientists.update( &lt;PASS IN THE APPROPRIATE PARAMETERS&gt; );
+};
+</code></pre>
+<p>The call to <strong>scientists.update</strong> takes four parameters:</p>
+<ul>
+<li>An object specifying the ID of the document to update</li>
+<li>An object specifying the new values for the document</li>
+<li>A success callback</li>
+<li>An error callback</li>
+</ul>
+<p>Remove the text in angle brackets and pass in the four parameters instead. </p>
+<p>Notice the call to <strong>angular.extend</strong>.   We are using an angular utility called 
+<strong>extend</strong> to combine the second and third parameters without changing either of them.</p>
+<p><strong>NOTE</strong>: <em>My description of <strong>angular.extend</strong> is a rare case of me actually 
+writing a comment on my code. The problem here is that <strong>angular.extend</strong>
+is so poorly named that there is no way to tell what it does, even when looking at
+in use.</em></p>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Push your working program to your repository and submit it in the usual manner. Please include two screen shots, one where your program displays one row of data and one in which it displays three rows of data.</p>
 <h2 id="additional-information">Additional Information</h2>
 <p>REST (Representational State Transfer) is a protocol for making stateless client-server requests over HTTP. Let&#39;s break that down:</p>
 <ul>
