@@ -128,7 +128,26 @@ test/bower_components/jasmine/*
 <pre><code>  it(&#39;should get a hint&#39;, function() {
      expect(scope.hint.length).to.equal(78);
   });
-</code></pre><p>Do what you need to do to set up your mock object, then run this test:</p>
+</code></pre><p>Do what you need to do to set up your mock object in resources.js:</p>
+<pre><code>angular.module(&#39;pres&#39;, [])
+    .constant(&#39;CONFIG&#39;, {
+        DB_NAME: &#39;elvenlab01&#39;,
+        COLLECTION: &#39;scientists&#39;,
+        API_KEY: &#39;qfSxFoUGHBA1EuUlqhux_op2fy6oF_wy&#39;
+    })
+    .factory(&#39;scientists&#39;, function (CONFIG) {
+        console.log(&#39;Scientists factory called&#39;);
+
+   function scientists() {
+
+   }
+
+   scientists.prototype.query = function() {
+      return [{firstName: &#39;Marie&#39;, lastName: &#39;Curie&#39;, subject: &#39;Radiation&#39;}];
+   };
+    return new scientists();
+</code></pre><p>A
+Then run this test:</p>
 <pre><code>    it(&#39;should get a database hit&#39;, function() {
             scope.loadScientists();
             expect(scope.scientists[0].firstName).to.equal(&#39;Marie&#39;);
