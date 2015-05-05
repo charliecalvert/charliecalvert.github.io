@@ -3,6 +3,7 @@
 <li><a href="#step-two">Step Two</a></li>
 <li><a href="#step-three">Step Three</a></li>
 <li><a href="#step-four">Step Four</a></li>
+<li><a href="#step-five">Step Five</a></li>
 <li><a href="#step-five">Step Five</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
 <p>Angular Mongo Test in class.</p>
 <p><strong>NOTE</strong>: <em>I&#39;ve noticed a few of you are using the git bash command prompt rather than the Windows Command Prompt. If you truly are more comfortable using bash instead of the Windows Command Prompt, then please continue, but if you don&#39;t have a strong preference, I think you will find it easier to use the Windows Command Prompt. I think bash is better than the Windows command, but it is meant to be run with Linux, and trying to get it to work on Windows can be a struggle.</em>  </p>
@@ -13,7 +14,10 @@ robocopy Week05-AngularMongoCrud Week05-AngularMongoTest /XD %SKIP% /MIR
 </code></pre><p>This is a bit artificial. We would normally have just one project and add our tests to it. But I need to grade your work, and the simplest way for me to do that is to have you start a completely new project at each stage. If we were really confident of our Git skills we could use tags and branches, but let&#39;s not rely on that quite yet.</p>
 <h2 id="step-two">Step Two</h2>
 <p>Install <a href="http://jasmine.github.io/2.3/introduction.html" title="Jasmine">Jasmine</a>.</p>
-<p>At the root of your project, type <strong>yo jasmine</strong>. This creates a folder called <strong>test</strong> with this structure:</p>
+<p>Run the following command to install yeoman generator for Jasmine. You
+only need to do it once:</p>
+<pre><code>npm install -g generator-jasmine
+</code></pre><p>At the root of your project, type <strong>yo jasmine</strong>. This creates a folder called <strong>test</strong> with this structure:</p>
 <pre><code>test/
 test/.bowerrc
 test/.bower.json
@@ -74,8 +78,9 @@ test/bower_components/jasmine/*
     &lt;/body&gt;
 &lt;/html&gt;
 </code></pre><h2 id="step-three">Step Three</h2>
-<p>Bad luck, Charlie prefers <strong>chai</strong>.</p>
-<p>Add this to <strong>index.html</strong>.</p>
+<p>Bad luck, Charlie prefers <strong>chai</strong>. Start by adding <a href="http://chaijs.com/">chai</a> to <strong>test/bower.json</strong>:</p>
+<pre><code>bower install chai --save
+</code></pre><p>Add this to <strong>index.html</strong>.</p>
 <pre><code>&lt;script src=&quot;bower_components/chai/chai.js&quot;&gt;&lt;/script&gt;
 </code></pre><p>Modify <strong>test.js</strong> so that it looks, in its entirety, like this:</p>
 <pre><code>(function() {
@@ -100,6 +105,54 @@ test/bower_components/jasmine/*
 <li>We added an expectation to our test</li>
 </ul>
 <h2 id="step-four">Step Four</h2>
+<p>It is now time to start testing our program.</p>
+<p>First load into <strong>index.html</strong> Angular and the code you want to test:</p>
+<pre><code>&lt;!-- include source files here... --&gt;
+&lt;script src=&quot;../public/components/angular/angular.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;../public/components/angular-mocks/angular-mocks.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;../public/javascripts/resources.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;../public/javascripts/control.js&quot;&gt;&lt;/script&gt;
+</code></pre><p>Add this code beneath the word <strong>describe</strong> and above your first test:</p>
+<pre><code>        var MyController, scope;
+
+        beforeEach(module(&#39;elvenApp&#39;));
+
+        // Initialize the controller and a mock scope
+        beforeEach(inject(function ($controller, $rootScope) {
+            scope = $rootScope.$new();
+            MyController = $controller(&#39;MyController&#39;, {
+                $scope: scope
+            });
+        }));
+</code></pre><p>Now add in a real test of your object:</p>
+<pre><code>  it(&#39;should get a hint&#39;, function() {
+     expect(scope.hint.length).to.equal(78);
+  });
+</code></pre><p>Do what you need to do to set up your mock object in resources.js:</p>
+<pre><code>angular.module(&#39;pres&#39;, [])
+    .constant(&#39;CONFIG&#39;, {
+        DB_NAME: &#39;elvenlab01&#39;,
+        COLLECTION: &#39;scientists&#39;,
+        API_KEY: &#39;qfSxFoUGHBA1EuUlqhux_op2fy6oF_wy&#39;
+    })
+    .factory(&#39;scientists&#39;, function (CONFIG) {
+        console.log(&#39;Scientists factory called&#39;);
+
+   function scientists() {
+
+   }
+
+   scientists.prototype.query = function() {
+      return [{firstName: &#39;Marie&#39;, lastName: &#39;Curie&#39;, subject: &#39;Radiation&#39;}];
+   };
+    return new scientists();
+</code></pre><p>A
+Then run this test:</p>
+<pre><code>    it(&#39;should get a database hit&#39;, function() {
+            scope.loadScientists();
+            expect(scope.scientists[0].firstName).to.equal(&#39;Marie&#39;);
+    });
+</code></pre><h2 id="step-five">Step Five</h2>
 <p>Grunt</p>
 <p>When running <strong>yo gruntfile</strong>, we care about the DOM, but not about minification.</p>
 <pre><code>npm install -g generator-gruntfile
