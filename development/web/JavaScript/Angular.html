@@ -3,6 +3,7 @@
 <li><a href="#declaring-controllers">Declaring Controllers</a></li>
 <li><a href="#checklist">CheckList</a></li>
 <li><a href="#dom-manipulation">DOM Manipulation</a></li>
+<li><a href="#directives">Directives</a></li>
 <li><a href="#scope">Scope</a></li>
 <li><a href="#calling-methods-in-factories">Calling Methods in Factories</a></li>
 <li><a href="#select">Select</a></li>
@@ -119,6 +120,47 @@ HTML and JavaScript controller.</p>
 <li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Design/AngularDirective">JsObject Directive Example</a></li>
 <li><a href="http://docs.angularjs.org/guide/directive">Directives</a></li>
 </ul>
+<h2 id="directives">Directives</h2>
+<p>Directives allow you to enrich the HTML language. Some people are designers, and others are developers. If you are developer, you can create directives. If you are designer, you can consume or use directives.</p>
+<p>A developer can expand the richness of HTML. By creating a new directive, you can make HTML more expressive. Simply add a new tag to your HTML template, and that page will now have a new ability. For instance, you could add a single tag to a page and thereby give it the ability to edit standard address records, or track hits on the page.</p>
+<p>Here is a simple directive:</p>
+<pre><code>app.directive(&#39;bar&#39;, function() {
+    return {
+        link: function() {
+            console.log(&#39;bar&#39;)
+        }
+    };
+});
+</code></pre><p>This directive assumes there is a variable app that references a module. In other words, it assumes that somewhere there is code that looks something like this:</p>
+<pre><code>var app = angular.module(&#39;foo&#39;, []);
+</code></pre><p>After linking in the above directive, you can log the word <strong>bar</strong> to the console by adding this to your HTML:</p>
+<pre><code>    &lt;div bar&gt;
+    &lt;/div&gt;
+</code></pre><p>This would also work:</p>
+<pre><code>    &lt;bar&gt;&lt;/bar&gt;
+</code></pre><p>Suppose your controller had this declaration in it:</p>
+<pre><code>   $scope.marie = {
+        firstName: &#39;Marie&#39;,
+        lastName: &#39;Curie&#39;,
+        city: &#39;Paris&#39;,
+        country: &#39;France&#39;
+    };
+</code></pre><p>You could then write code like this:</p>
+<pre><code>app.directive(&#39;elfMarie&#39;, function() {
+    return {
+        template: &#39;First: {{marie.firstName}} &#39; +
+            &#39;&lt;br&gt;Last: {{marie.lastName}}&#39; +
+            &#39;&lt;br&gt;City: {{marie.city}}&#39;
+
+    };
+});
+</code></pre><p>To consume the directive, the designer could use either of the options demonstrated here in an HTML template:</p>
+<pre><code>&lt;div elf-marie&gt;&lt;/div&gt;
+
+&lt;div&gt;
+   &lt;elf-marie&gt;&lt;/elf-marie&gt;
+&lt;/div&gt;
+</code></pre><p>The result would be output that displayed the firstName, lastName and city for Marie Curie.</p>
 <h2 id="scope">Scope</h2>
 <p>The scope in Angular is a means of working with the templates in our HTML. If we were using jQuery, we might write code like this in a Controller to update and track code in an input control:</p>
 <pre><code>$(&#39;#foo&#39;).val(&#39;bar&#39;);
