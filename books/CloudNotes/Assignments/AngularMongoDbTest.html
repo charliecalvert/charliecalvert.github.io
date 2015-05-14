@@ -4,7 +4,7 @@
 <li><a href="#step-three">Step Three</a></li>
 <li><a href="#step-four">Step Four</a></li>
 <li><a href="#step-five">Step Five</a></li>
-<li><a href="#step-five">Step Five</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
 <p>Angular Mongo Test in class.</p>
 <p><strong>NOTE</strong>: <em>I&#39;ve noticed a few of you are using the git bash command prompt rather than the Windows Command Prompt. If you truly are more comfortable using bash instead of the Windows Command Prompt, then please continue, but if you don&#39;t have a strong preference, I think you will find it easier to use the Windows Command Prompt. I think bash is better than the Windows command prompt, but it is meant to be run with Linux, and trying to get it to work on Windows can be a struggle.</em>  </p>
 <h2 id="step-one">Step One</h2>
@@ -79,6 +79,7 @@ test/bower_components/jasmine/*
 &lt;/html&gt;
 </code></pre><h2 id="step-three">Step Three</h2>
 <p>Good luck, Charlie prefers <strong>chai</strong>, but is having trouble getting it to integrate with Jasmine. Please skip this step. </p>
+<p>Information about chai is <a href="http://www.elvenware.com/charlie/development/web/UnitTests/Mocha.html#chai">available on Elvenware</a>.</p>
 <h2 id="step-four">Step Four</h2>
 <p>It is now time to start testing our program.</p>
 <p>First load into <strong>index.html</strong> Angular and the code you want to test:</p>
@@ -101,7 +102,7 @@ test/bower_components/jasmine/*
         }));
 </code></pre><p>Now add in a real test of your object:</p>
 <pre><code>  it(&#39;should get a hint&#39;, function() {
-     expect(scope.hint.length).to.equal(78);
+     expect(scope.hint.length).toEqual(78);
   });
 </code></pre><p>Do what you need to do to set up your mock object in resources.js:</p>
 <pre><code>angular.module(&#39;pres&#39;, [])
@@ -121,11 +122,27 @@ test/bower_components/jasmine/*
       return [{firstName: &#39;Marie&#39;, lastName: &#39;Curie&#39;, subject: &#39;Radiation&#39;}];
    };
     return new scientists();
-</code></pre><p>A
-Then run this test:</p>
+</code></pre><p>We can modify the above further by removing the constant we named <strong>CONFIG</strong>. This constant is needed if we want to access MongoDb, but it serves no purpose in this mock object:</p>
+<pre><code>angular.module(&#39;pres&#39;, [])
+    .factory(&#39;scientists&#39;, function () {
+        console.log(&#39;Scientists factory called&#39;);
+
+        function scientists() {
+
+        }
+
+        scientists.prototype.query = function() {
+            return [{firstName: &#39;Marie&#39;, lastName: &#39;Curie&#39;, subject: &#39;Radiation&#39;}];
+        };
+
+        // CODE OMITTED HERE
+
+    return new scientists();
+   });
+</code></pre><p>Then run this test:</p>
 <pre><code>    it(&#39;should get a database hit&#39;, function() {
             scope.loadScientists();
-            expect(scope.scientists[0].firstName).to.equal(&#39;Marie&#39;);
+            expect(scope.scientists[0].firstName).toEqual(&#39;Marie&#39;);
     });
 </code></pre><h2 id="step-five">Step Five</h2>
 <p>Grunt</p>
@@ -149,10 +166,6 @@ reporter: &#39;checkstyle&#39;,
 reporterOutput: &#39;result.xml&#39;
 </code></pre><p>The <strong>browser</strong>,  and <strong>boss</strong> properties already exist. I&#39;m adding them just for context. You need to modify globals by adding chai, and you need to add <strong>ignores</strong>, <strong>reporter</strong> and <strong>reporterOutput</strong>. Some variables that we use such as <strong>jQuery, chai and angular</strong> that should be ignored. That is, they should not be reported as <strong>undefined</strong>.</p>
 <p>Run <strong>grunt jshint</strong>. Look at result.xml in your browser.</p>
-<h2 id="step-five">Step Five</h2>
-<p>Load a real test</p>
-<p>In <strong>index.html</strong>:</p>
-<pre><code>&lt;!-- include source files here... --&gt;
-&lt;script src=&quot;../public/javascripts/resources.js&quot;&gt;&lt;/script&gt;
-</code></pre><p>In test.js:</p>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Be sure your code is in the <strong>Week05-AngularMongoTest</strong> folder of your repository. Check it in and push the submit button for the assignment, adding comments as usual or as needed. </p>
 </div></body></html>
