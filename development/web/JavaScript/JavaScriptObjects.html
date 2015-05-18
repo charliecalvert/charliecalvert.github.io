@@ -1,0 +1,687 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><title>JavaScriptObjects</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><script src="/libs/scripts/jquery.min.js"></script><script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/contents.html">About</a></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>JavaScriptObjects</h1><p>Welcomes to JavaScriptObjects</p><ul><!--TOC_Start--><li><a href="#javascript-objects">JavaScript Objects</a></li>
+<li><a href="#createObjects">Creating Objects</a></li>
+<li><a href="#properties-and-methods">Properties and Methods</a></li>
+<li><a href="#propIntro">Property Introduction</a></li>
+<li><a href="#methodIntroduction">Method Introduction</a></li>
+<li><a href="#properties">Properties</a></li>
+<li><a href="#multipleProperties">Objects with Multiple Properties</a></li>
+<li><a href="#enumerating-properties">Enumerating Properties</a></li>
+<li><a href="#property-attributes">Property Attributes</a></li>
+<li><a href="#defineproperty">DefineProperty</a></li>
+<li><a href="#methods">Methods</a></li>
+<li><a href="#use-strict-and-methods">Use Strict and Methods</a></li>
+<li><a href="#public-and-private-variables">Public and Private Variables</a></li>
+<li><a href="#share-data-between-objects">Share Data Between Objects</a></li>
+<li><a href="#object-maps">Object Maps</a></li>
+<li><a href="#sorting">Sorting</a></li>
+<li><a href="#properties-and-constants">Properties and Constants</a></li>
+<li><a href="#dictionaries">Dictionaries</a></li>
+<li><a href="#classes">Classes</a></li>
+<li><a href="#links">Links</a></li><!--TOC_End--></ul><h2 id="javascript-objects">JavaScript Objects</h2>
+<p>In this chapter we will start with a quick overview of the some built in JavaScript Objects such as Arrays. After covering the basics about these topics we will move on to our main subject, which is creating custom JavaScript Objects.</p>
+<h2 id="createObjects">Creating Objects</h2>
+<p>You can declare an object like this:</p>
+<pre><code>var myObject = {};
+</code></pre><p>This type of object declaration is called an <strong>object literal</strong>. You can compare
+this to using the new operator, which produces the same result:</p>
+<pre><code>var myObject = new Object();
+</code></pre><p>When you declare an object as we do <strong>myObject</strong>, we usually don&#39;t call
+<strong>new</strong> on it. As discussed above, the following two statements are essentially identical:</p>
+<pre><code>var myObject = {};
+var myObject = new Object();
+</code></pre><p>However, we prefer the first.</p>
+<h2 id="properties-and-methods">Properties and Methods</h2>
+<p>The next two section briefly outline properties and methods. Once you have had a glimpse of the 
+basic syntax, I will circle back around and discuss both properties and methods in more depth.</p>
+<ul>
+<li><a href="#properties">Properties in Depth</a></li>
+<li><a href="#methods">Methods</a></li>
+</ul>
+<h3 id="propIntro">Property Introduction</h3>
+<p>Inside the curly braces of your object literal you can define your object. 
+Objects are merely a list of name:value pairs:</p>
+<pre><code>var myObject = {
+    a: 1,
+    b: 2,
+    c: &#39;three&#39;
+};
+</code></pre><p>Each name:value pair shown in the above example is called a property. In the 
+first example, <strong>a</strong> is the property name, and <strong>1</strong> is the property value. </p>
+<h3 id="methodIntroduction">Method Introduction</h3>
+<p>Here is how to add a method to your object:</p>
+<pre><code>var myObject = {
+    a: 1,
+    b: 2,
+    c: &#39;three&#39;,
+    four: function() {}
+};
+</code></pre><p>Note that this function is just another key:value, or name:value pair:</p>
+<pre><code>name | value
+four | function() {}
+</code></pre><p>Besides properties and methods, objects can also contain other objects. 
+Through a feature called a <strong>prototype</strong>, objects can implement inheritance.</p>
+<p>Unless you specify otherwise, JavaScript objects can be modified at any 
+time. In particular, anyone who can execute code in your runtime can add or 
+delete methods or properties. EcmaScript 5 provides means of making objects
+immune to this kind of manipulation.</p>
+<h3 id="properties">Properties</h3>
+<p>As stated above, properties are name value pairs, where name is a string.</p>
+<pre><code>var myObject = { &#39;myProperty&#39;: 12 };
+</code></pre><p>The above code declares a simple object with a single property called
+<strong>myProperty</strong>. The value of <strong>myProperty</strong> is twelve. We talk of
+properties of this type as being key:value pairs. The <strong>key</strong> is
+<strong>myProperty</strong> and the <strong>value</strong> is <strong>12</strong>.</p>
+<p>The quotes around a property name are optional if the name is a legal
+Javascript identifier:</p>
+<pre><code>var myObject = { myProperty: 12 };
+</code></pre><p>You can access a property with either of two notations:</p>
+<pre><code>myObject.myProperty;
+myObject[&#39;myProperty&#39;]; 
+</code></pre><p>You can then treat the property as you would explect. Here I try to run
+through the common permutations for accessing <strong>myProperty</strong>.</p>
+<pre><code>var myObject = {
+    myProperty : 12
+};
+
+console.log(myObject.myProperty);
+console.log(myObject[&quot;myProperty&quot;])
+
+myObject[&#39;myProperty&#39;] = 3;
+var valueA = myObject.myProperty;
+console.log(valueA);
+
+myObject.myProperty = 5;
+var valueB = myObject[&#39;myProperty&#39;];
+console.log(valueB);
+</code></pre><p>This syntax is less than ideal, however, since we are repeating the string
+<em>myProperty</em> multiple times. A useful solution would look like this:</p>
+<pre><code>var myObject = {
+    myProperty : 12
+};
+
+var myProperty = &quot;myProperty&quot;;
+
+console.log(myObject.myProperty);
+console.log(myObject[myProperty]);
+
+myObject[myProperty] = 3;
+var valueA = myObject.myProperty;
+console.log(valueA);
+
+myObject.myProperty = 5;
+var valueB = myObject[myProperty];
+console.log(valueB);
+</code></pre><p>I hesitated to show you this second solution as the first take because you
+might get confused by the expression <strong>myObject[myProperty]</strong>. In this code
+<strong>myProperty</strong> refers to the string declared near the top of the listing. 
+Hungarian notation is usually not useful in JavaScript, but if we bring 
+it back for a moment, our code would look like this:</p>
+<pre><code>var myObject = {
+    myProperty : 12
+};
+
+var myPropertyStr = &quot;myProperty&quot;;
+
+console.log(myObject.myProperty);
+console.log(myObject[myPropertyStr]);
+
+myObject[myPropertyStr] = 3;
+var valueA = myObject.myProperty;
+console.log(valueA);
+
+myObject.myProperty = 5;
+var valueB = myObject[myPropertyStr];
+console.log(valueB);
+</code></pre><p>Notice that we now declare the string that represents the name of our property
+like this:</p>
+<p>var myPropertyStr = &quot;myProperty&quot;;</p>
+<p>Hopefully that makes code like the following easier to read:</p>
+<pre><code>var myPropertyStr = &quot;myProperty&quot;;
+
+console.log(myObject.myProperty);
+console.log(myObject[myPropertyStr]);
+</code></pre><p>In any case, regardless of which permuation of the program you use, the 
+output looks like this:</p>
+<pre><code>&gt;node index.js
+12
+12
+3
+5
+</code></pre><ul>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Objects/ObjectNameValue">The source is in JsObjects</a></li>
+</ul>
+<p>Though both examples are legal, the first is much more common.</p>
+<p><a href="BasicSyntax.html#sameProprties">Try it.</a></p>
+<h3 id="multipleProperties">Objects with Multiple Properties</h3>
+<p>To declare an object with multiple properties, separate them with
+commas:</p>
+<pre><code>var myObject = {    
+    myProperty01: 12,
+    myProperty02: 4                   
+};
+</code></pre><p>Here is a JavaScript object with three properties, one of which is a
+function:</p>
+<pre><code>var myObject = {    
+    myProperty01: 12,
+    myProperty02: 4,
+    myFunction: function() {
+        return this.myProperty01 + this.myProperty02; 
+    }                   
+};
+</code></pre><p>If you have more than one function, separate them with commas:</p>
+<pre><code>var myObject = {    
+    myProperty01: 12,
+    myProperty02: 4,
+    addProperties: function() {
+        return this.myProperty01 + this.myProperty02; 
+    },
+    multiplyProperties: function() {
+        return this.myProperty01 * this.myProperty02; 
+    }                   
+};
+
+console.log(myObject.multiplyProperties());
+</code></pre><p>Note that we call the function <strong>multiplyProperties</strong> by writing:</p>
+<pre><code>myObject.multiplyProperties()
+</code></pre><p>In this case, it yields the result <strong>48</strong>, as shown in the program from
+JsObjects called ObjectDemo01:</p>
+<pre><code>JsObjects/Syntax/ObjectDemo01
+</code></pre><p><strong>Note</strong> We use the keyword <strong>var</strong> when declaring <strong>myObject</strong>
+but not when we declare <strong>myProperty01</strong> or <strong>addProperties</strong>. This can
+be confusing to newcomers, but the rule is simple and relatively
+reasonable: the properties of an object are not declared with <strong>var</strong>.</p>
+<h3 id="enumerating-properties">Enumerating Properties</h3>
+<p>There are several ways to get a list of the properties on an object. Consider this object:</p>
+<pre><code>var myObject = {
+    myProperty01 : 12,
+    myProperty02 : 4,
+    addProperties : function() {&#39;use strict&#39;;
+        return this.myProperty01 + this.myProperty02;
+    },
+    multiplyProperties : function() {&#39;use strict&#39;;
+        return this.myProperty01 * this.myProperty02;
+    }
+};
+</code></pre><p>We can get the list of properties on the object:</p>
+<pre><code>var keys = Object.keys(myObject);
+</code></pre><p>The call to <strong>Object.keys</strong> returns a list of all the properties on <strong>myObject</strong>. As a result, <strong>keys</strong> now has the following properties:</p>
+<pre><code>[&quot;myProperty01&quot;, &quot;myProperty02&quot;, &quot;addProperties&quot;, &quot;multiplyProperties&quot;] 
+</code></pre><p>We can also do this:</p>
+<pre><code>for (property in myObject) {
+    display(property);
+};
+</code></pre><p>The for loop shown above yields the following output.</p>
+<pre><code>myProperty01
+myProperty02
+addProperties
+multiplyProperties  
+</code></pre><p>Because the world is a fussy place, it is usually considered best to do the following:</p>
+<pre><code>for (property in myObject) {
+    if (myObject.hasOwnProperty(property)) {
+        display(property);
+    }
+};
+</code></pre><p>If you <strong>use strict</strong> then it is an error to omit the <strong>if</strong> clause. The <strong>hasOwnProperty</strong> method returns only properties declared on an object, and not those properties inherited by an object. For instance, <strong>hasOwnProperty</strong> returns true for <strong>myProperty01</strong> but false for the inherited <strong>toString</strong> property. The object actually has both properties, but of the two, only <strong>myProperty01</strong> is an <strong>own</strong> property. And yes, <strong>own</strong> is a technical term.</p>
+<p>Interestingly, and somewhat mysteriously from my point of view, our for loop returns the same output whether or not I call <strong>hasOwnProperty</strong>.</p>
+<h3 id="property-attributes">Property Attributes</h3>
+<p>Each property can be, in some circumstances:</p>
+<ul>
+<li>Enumerable (Can be discovered by enumeration with <strong>for x in obj</strong>)</li>
+<li>Configurable (Can be deleted)</li>
+<li>Writable (ReadWrite vs ReadOnly)</li>
+</ul>
+<p>You can use getOwnPropertyDescriptor to explore the attributes of a property:</p>
+<pre><code>Object.getOwnPropertyDescriptor([object Name], [property Name])
+</code></pre><p>For example:</p>
+<pre><code>Object.getOwnPropertyDescriptor(myObject, propName);
+</code></pre><p>To see the method in action, let&#39;s return to this simple object:</p>
+<pre><code>    var myObject = {
+        myProperty01: 12,
+        myProperty02: 4,
+        addProperties: function() {
+            &#39;use strict&#39;;
+            return this.myProperty01 + this.myProperty02;
+        },
+        multiplyProperties: function() {
+            &#39;use strict&#39;;
+            return this.myProperty01 * this.myProperty02;
+        }    
+    };
+</code></pre><p>Let&#39;s create a simple method that will display some text both in an HTML page and at the console:</p>
+<pre><code>    var display = function(value) {
+        console.log(value);
+        $(&quot;#debug&quot;).append(&#39;&lt;li&gt;&#39; + value + &#39;&lt;/li&gt;&#39;);
+    };
+</code></pre><p>Now let&#39;s explore the descriptor for each of myObject&#39;s properties:</p>
+<pre><code>    var getPropertyDescriptor = function(propName) {
+        var descriptor = Object.getOwnPropertyDescriptor(myObject, propName);
+        var description = JSON.stringify(descriptor);
+        display(description);
+    };
+
+    var getPropertyIsEnumerable = function(propName) {
+        var isEnumerable = myObject.propertyIsEnumerable(propName) ? &quot;true&quot; : &quot;false&quot;;
+        display(&quot;enumerable: &quot; + isEnumerable);
+    };
+
+    $(document).ready(function() {
+        display(myObject.multiplyProperties());
+        var keys = Object.keys(myObject);
+        for (var i = 0; i &lt; keys.length; i++) {
+            var propName = keys[i];
+            display(propName);
+            getPropertyDescriptor(propName);
+            getPropertyIsEnumerable(propName);
+        }
+    });
+</code></pre><p>Notice how we get the list of properties on the object:</p>
+<pre><code>var keys = Object.keys(myObject);
+</code></pre><p>The call to <strong>Object.keys</strong> returns a list of all the properties on <strong>myObject</strong>.</p>
+<p>The key call here is to <strong>getOwnPropertyDescriptor</strong>. However, I also call <strong>propertyIsEnumerable</strong> just so you can see that the method is available. Here is the output:</p>
+<pre><code>48 
+myProperty01 
+    {&quot;value&quot;:12,&quot;writable&quot;:true,&quot;enumerable&quot;:true,&quot;configurable&quot;:true} 
+    enumerable: true 
+myProperty02 
+    {&quot;value&quot;:4,&quot;writable&quot;:true,&quot;enumerable&quot;:true,&quot;configurable&quot;:true} 
+    enumerable: true 
+addProperties 
+    {&quot;writable&quot;:true,&quot;enumerable&quot;:true,&quot;configurable&quot;:true} 
+    enumerable: true 
+multiplyProperties 
+    {&quot;writable&quot;:true,&quot;enumerable&quot;:true,&quot;configurable&quot;:true} 
+    enumerable: true 
+</code></pre><p>This example is <a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/Objects/ObjectDemo01/ObjectDemo01.js">available in JsObjects</a>.</p>
+<h2 id="defineproperty">DefineProperty</h2>
+<p>The <strong>defineProperty</strong> method is a fancy version of a standard JavaScript property. Here is what we normally do:</p>
+<pre><code>foo.myProperty = 3;
+</code></pre><p>By using <strong>defineProperty</strong> we get what we have above, plus some additional features such as <strong>eumerable</strong> and <strong>configurable</strong>. You can also make a property read only.</p>
+<p>Here is how to expose a readonly property called <strong>length</strong>:</p>
+<pre><code>function SimpleQueue() {
+    dataStore = [];
+
+    Object.defineProperty(this, &quot;length&quot;, {
+        get: function() {
+                return dataStore.length;
+            },
+            enumerable: true,
+            configurable: true
+    });
+
+        SimpleQueue.prototype.enqueue = function() {
+        etc...
+</code></pre><p>After adding the <strong>length</strong> property, you can now access it in your tests like this:</p>
+<p>   var len = simpleQueue.length;<br>    for (var i = 0; i &lt; len; i++) {
+        simpleQueue.dequeue();
+    }</p>
+<p>In the code shown above, we use a relatively new feature of JavaScript called a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty">property</a>. There are several ways to use properties. In this case we define a read-only property implemented primarily in the <strong>get</strong> function. If you want to jump ahead and see what else can be done, you can visit the <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Properties">Properties</a> folder in JsObjects.</p>
+<p>By the way, the code shown above works exactly the same way if you are using the Modular pattern:</p>
+<pre><code>var SimpleQueue = (function() {
+
+    var dataStore = null;
+
+    function SimpleQueue() {
+        dataStore = [];
+
+        Object.defineProperty(this, &quot;length&quot;, {
+            get: function() {
+                return dataStore.length;
+            },
+            enumerable: true,
+            configurable: true
+        });
+    }
+
+    SimpleQueue.prototype.enqueue = function() {
+    etc...
+</code></pre><p>My tests look exactly the same whether I use a standard constructor function or the modular pattern. Though we normally try to avoid <strong>this</strong>, creating properties in a constructor is one place where it is relatively safe to use <strong>this</strong>.)</p>
+<p>In a queue, there are other places, such as <strong>back</strong> and <strong>front</strong>, where you could use properties. Doing so is optional, but if you want to learn a little more now, rather than later, then go ahead....</p>
+<p>Newcomers to JavaScript: Don&#39;t worry too much about the Modular pattern unless you are comfortable with it. The main thing for you here is that there are several tips as to how to put together your <strong>queue</strong> class.</p>
+<h2 id="methods">Methods</h2>
+<p>A more indepth discussion of methods will be added here in the future.</p>
+<h3 id="use-strict-and-methods">Use Strict and Methods</h3>
+<p>In the following example, we add the words &#39;use strict&#39;; to a function:</p>
+<pre><code>var myObject = {    
+    myProperty01: 12,
+    myProperty02: 4,
+    myFunction: function() {
+        &#39;use strict&#39;; 
+        return this.myProperty01 + this.myProperty02; 
+    }                   
+};
+</code></pre><p>This object has two properties and one function. The function adds the
+two properties together and returns the result.</p>
+<p>By adding &#39;use strict&#39; we force the JavaScript language to reject some 
+coding conventions that worked in the past. The general idea is to remove 
+features from the language that have not proved to be useful. If you define 
+strict, then any attempt to use those features will raise an error. In the 
+future, it is likely that strict will be turned on by default. Strict goes a 
+long way toward mitigating some of the most egregious problems inherent in 
+the poorly designed JavaScript architecture.</p>
+<p>In particular, it used to be legal to declare a variable without using the
+keyword <strong>var</strong>:</p>
+<pre><code>  myVariable = 3; // Bad
+  var myVariable = 3; // Good
+</code></pre><p>Omitting <strong>var</strong> will throw an error when <strong>strict</strong> is turned on. This
+and other features of <strong>strict</strong> are designed to keep you from accessing the 
+global object unnecessarily.</p>
+<p>Strict mode also throws exceptions in cases that would otherwise fail 
+silently. For instance, if you try to change a property that has its 
+writable attribute set to false.</p>
+<p>Strict will also usually keep you from using <strong>eval</strong> or even including the word
+in your code.</p>
+<p>Another old JavaScript feature that goes away in strict mode is <strong>with</strong>.</p>
+<p>Here are some other, less important, benefits of strict mode:</p>
+<ul>
+<li>It introduces some optimizations</li>
+<li>It prevents you from employing syntax that is likely to conflict
+with a future version of the language that has not been implemented
+yet.</li>
+</ul>
+<h2 id="public-and-private-variables">Public and Private Variables</h2>
+<p>Here are a few comments on public and private variables in objects:</p>
+<pre><code>var Point = function (x1, y1) {
+    &#39;use strict&#39;;
+
+    // Private variables
+    var x = x1;
+    var y = y1;
+
+    // private method
+    function bar() { return &quot;Snake&quot;; };
+
+    // public methods
+    this.hiss = function () { return &quot;Hiss &quot; + bar(); };
+    this.add = function () {
+        return x + y;
+    };
+
+};
+
+// Public method
+
+window.onload = function () {
+    &#39;use strict&#39;;
+    var el = document.getElementById(&#39;content&#39;);
+    var el2 = document.getElementById(&#39;content2&#39;);
+    var point = new Point(3, 4);    
+    el.innerHTML = point.add();    
+    el2.innerHTML = point.hiss();
+};
+</code></pre><p>In this code x and y are private variables. Here is how the code would
+look if we wanted to work with public variables:</p>
+<pre><code>var Point = function (x1, y1) {
+    &#39;use strict&#39;;
+
+    // Public variables
+    this.x = x1;
+    this.y = y1;
+
+    // private method
+    function bar() { return &quot;Snake&quot;; };
+
+    // public methods
+    this.hiss = function () { return &quot;Hiss &quot; + bar(); };
+    this.add = function () {
+        return this.x + this.y;
+    };
+
+};
+
+window.onload = function () {
+    &#39;use strict&#39;;
+    var el = document.getElementById(&#39;content&#39;);
+    var el2 = document.getElementById(&#39;content2&#39;);
+    var point = new Point(3, 4);
+    alert(point.x);
+    el.innerHTML = point.add();    
+    el2.innerHTML = point.hiss();
+};
+</code></pre><p>Notice that in this new version, we had to change the add function to
+use this.x and this.y rather than the bare x and y. We can further
+modify the code to declare the <strong>add</strong> method using prototype:</p>
+<pre><code>var Point = function (x1, y1) {
+    &#39;use strict&#39;;
+
+    // Public variables
+    this.x = x1;
+    this.y = y1;
+
+    // private method
+    function bar() { return &quot;Snake&quot;; };
+
+    // public methods
+    this.hiss = function () { return &quot;Hiss &quot; + bar(); }
+
+};
+
+// Public method
+Point.prototype.add = function () {
+    &#39;use strict&#39;;
+    return this.x + this.y;
+};
+
+window.onload = function () {
+    &#39;use strict&#39;;
+    var el = document.getElementById(&#39;content&#39;);
+    var el2 = document.getElementById(&#39;content2&#39;);
+    var point = new Point(3, 4);    
+    el.innerHTML = point.add();    
+    el2.innerHTML = point.hiss();
+};
+</code></pre><p>This would not have worked had the variables x and y been private. In
+that case, the add method would not have been able to access the private
+variables x and y. It can, however, access the public properties this.x
+and this.y.</p>
+<h2 id="share-data-between-objects">Share Data Between Objects</h2>
+<p>Suppose you have two variables called playerX and playerY that you
+want two objects to share. One way to handle the situation is to declare
+a single object with two properties called <strong>playerX</strong> and <strong>playerY</strong>. You
+can then share the object between the two objects. Changes made to the
+shared object will be seen by both objects that share the data.</p>
+<p>Consider this object:</p>
+<pre><code>ELF.own.Player = (function() {
+    &#39;use strict&#39;;
+    var that = {};
+    that.playerX = 1;
+    that.playerY = 2;
+
+    // Constructor
+    function Player() {
+        new ELF.own.ShowPlayer(that);
+        $(&#39;#buttonChangePlayer&#39;).click(changePlayer);
+    }
+
+    var changePlayer = function() {
+        that.playerX += 1;
+        that.playerY += 2;
+    };
+
+    return Player;
+})();
+</code></pre><p>And here is the object that wants to consume playerX and playerY:</p>
+<pre><code>var ELF = {};
+ELF.own = {};
+
+ELF.own.ShowPlayer = (function() { &#39;use strict&#39;;
+
+    var sharedData = null;
+
+    function ShowPlayer(initData) {
+        sharedData = initData;
+        $(&#39;#buttonShowPlayer&#39;).click(showPlayerXY);
+    }
+
+    var showPlayerXY = function() {
+        $(&#39;#test01&#39;).html(&#39;X = &#39; + sharedData.playerX + &#39; Y = &#39; + sharedData.playerY);
+    };
+
+    return ShowPlayer;
+})();
+</code></pre><p>In the first object I declare the data to be shared:</p>
+<pre><code>    var that = {};
+    that.playerX = 1;
+    that.playerY = 2;
+</code></pre><p>Then I share the data with the second object when the second object is created:</p>
+<pre><code>    new ELF.own.ShowPlayer(that);
+</code></pre><p>You can make the variable passed to the second object global within that second 
+object:</p>
+<pre><code>    var sharedData = null;
+
+    // Constructor
+    function ShowPlayer(initData) {
+        sharedData = initData;
+    }
+</code></pre><p>Now any changes made to that.playerX by either object will be seen by both 
+objects. In other words, it is passed by reference, not by value. The method
+that changes the data is called <strong>changePlayer</strong>, and the method that detects
+the change is called <strong>showPlayerXY</strong>.</p>
+<p>To see this in practice, look at:</p>
+<pre><code>/JsObjects/JavaScripts/Objects/ShareVariables01
+</code></pre><h3 id="object-maps">Object Maps</h3>
+<p>After all our talk about if..else and <strong>switch</strong> statements it is worth noting
+that JavaScript provides a third mechanism that is arguable a much better 
+solution to this kind of problem. Consider the following example:</p>
+<pre><code>var funcBranch = function(stateAbbreviation) {
+
+    var stateMap = {
+        &#39;AL&#39;: 4800736,
+        &#39;CA&#39;: 38053956,
+        &#39;TX&#39;: 25901361,
+        &#39;WA&#39;: 6830038
+    }
+
+    console.log(&#39;The population of &#39; + stateAbbreviation + &#39; = &#39; + stateMap[stateAbbreviation]);
+};
+</code></pre><p>In this code we create a small object called stateMap. We can then pull out the
+value we want by simply writing the following simple expression:</p>
+<pre><code>stateMap[stateAbbreviation]
+</code></pre><p>If, for instance, stateAbbreviation were equal to &#39;WA&#39;, then this expression
+would return 6830038. This code is concise, easy to read, and it performs
+well. </p>
+<p>Note that you could perform more complex operations by setting up an object
+that contains functions:</p>
+<pre><code>var stateMap = {
+    &#39;AL&#39;: function() {
+        return 4800736 /100;
+    },
+    &#39;CA&#39;: function() {
+        return 38053956 / 100;
+    },
+    etc...
+}
+</code></pre><p>This makes the solution <em>functionally</em> equivalent to a switch statement, since
+each option can consist of a series of statements. For instance you could write
+something like this:</p>
+<pre><code>var funcBranch2 = function(stateAbbreviation) {
+        var stateMap2 = {
+            &#39;AL&#39;: function() {
+                return 4800736 /100;
+            }(),
+            &#39;CA&#39;: function() {
+                return 38053956 / 100;
+            }(),
+            &#39;TX&#39;: function() {
+                return 25901361 / 100;
+            }(),
+
+            &#39;WA&#39;: function() {
+                return 6830038 / 100;
+            }()
+        }
+
+        console.log(&#39;The population of &#39; + stateAbbreviation + &#39; = &#39; + stateMap2[stateAbbreviation]);        
+    };
+</code></pre><p>If that is just too esoteric for your tastes, then you can write:</p>
+<pre><code>var funcBranch2 = function(stateAbbreviation) {
+    var stateMap2 = {
+        &#39;AL&#39;: function() {
+            return 4800736 /100;
+        },
+        &#39;CA&#39;: function() {
+            return 38053956 / 100;
+        },
+        &#39;TX&#39;: function() {
+            return 25901361 / 100;
+        },
+
+        &#39;WA&#39;: function() {
+            return 6830038 / 100;
+        }
+    }
+
+    var bar = stateMap2[stateAbbreviation];
+    console.log(&#39;The population of &#39; + stateAbbreviation + &#39; = &#39; + bar());
+};
+</code></pre><p>It&#39;s really just a question of when you want the function to execute. The
+first case saves you a bit of code, but it is arguable going to a bit hard
+for some people to read.</p>
+<p>The example program is on GitHub, in JsObjects:</p>
+<p><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Syntax/Branching01">JsObjects/JavaScript/Syntax/Branching01</a></p>
+<h3 id="sorting">Sorting</h3>
+<p>Here is code for sorting an array called <strong>presidents</strong> by first name:</p>
+<pre><code>var sort = function(){
+    presidents.sort(function (a, b) {
+        if (a.firstName &gt; b.firstName) {
+            return 1;
+        } else if (a.firstName &lt; b.firstName) {
+            return -1;
+        } else { 
+            return 0;
+        }
+    });
+};
+</code></pre><h2 id="properties-and-constants">Properties and Constants</h2>
+<p>See this example:</p>
+<ul>
+<li><a href="Constants.html">Constants</a></li>
+</ul>
+<h2 id="dictionaries">Dictionaries</h2>
+<p>JavaScript Dictionaries are Associative Arrays. JavaScript objects are a comma separated list of key value pairs:</p>
+<pre><code>var myObject = {
+    a: 1,
+    b: 2,
+    c: &#39;three&#39;
+};
+</code></pre><p>The begin with an open curly brace and end with a close curly brace 
+and a semicolon.</p>
+<p>In myObject, <strong>a</strong>, <strong>b</strong> and <strong>c</strong> are all <strong>keys</strong> and <strong>1</strong>, <strong>2</strong> 
+and <strong>&#39;three&#39;</strong> are <strong>values</strong>.</p>
+<p>If a <strong>value</strong> is a function then we call it a method:</p>
+<pre><code>var objectWithMethod = {
+    a: 1,
+    b: 2,
+    getThree: function() {
+        return 3;
+    }
+};
+</code></pre><h2 id="classes">Classes</h2>
+<p>There is no such thing as a JavaScript class. Instead, JavaScript has
+objects. You can&#39;t declare the class for a JavaScript object.</p>
+<p>To the degree that we can talk coherently about classes in JavaScript,
+we can do so by focusing on their prototype. All the members of a class
+share the same prototype. If two objects have the same prototype, then
+they are members of the same class.</p>
+<p>Two constructors with quite different contents are nonetheless members
+of the same class if they have the same prototype. (Example needed. Did I 
+lose it, I thought I had one?)</p>
+<p>By convention, objects and functions that need to be called with the <strong>new</strong> 
+operator begin with a capital letter, while methods and functions begin with 
+lower case letters.</p>
+<h2 id="links">Links</h2>
+<p>A surprising amount of my work is making sure that I am teaching you things that matter, that are used widely and are likely to be used widely in the future. Once you start digging into this world, you will find that things like git, express, node, WebStorm, the bash shell, Jade (or at least various forms of HTML templates), are all used a lot. They are mainstream technologies in the web world.</p>
+<p>One of the best ways to stay current is to follow the leaders in this world. They include:</p>
+<ul>
+<li><a href="http://addyosmani.com/blog/">Addy Osmani</a></li>
+<li><a href="http://ejohn.org/">John Resig</a></li>
+<li>Almost anyone who <a href="http://superherojs.com/">SuperHeroes</a> links to.</li>
+<li>Yahuda Katz</li>
+<li><a href="http://javascript.crockford.com/">Crockford</a></li>
+<li><a href="http://www.nczonline.net/">Nicholas Zachas</a></li>
+</ul>
+<p>And many more. Of course, they will not always agree with me. That would not be possible, especially in a world that is changing so fast. But if you read what those folks say and think, then you can&#39;t go too far wrong. It is still an artform to choose what is best when top folks like that disagree, but even if they pick wrong in terms of where we are headed, they still pick smart.</p>
+<p>And of course Anders Helsberg&#39;s TypeScript is important, as is everything that Anders has done, from Pascal, to Delphi to C#.</p>
+<ul>
+<li><a href="http://bjorn.tipling.com/advanced-objects-in-javascript">JavaScript Objects Overview</a></li>
+</ul>
+</div></body></html>
