@@ -1,13 +1,22 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><title>AngularRouting</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><script src="/libs/scripts/jquery.min.js"></script><script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/contents.html">About</a></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>AngularRouting</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#description">Description</a></li>
 <li><a href="#step-one">Step One</a></li>
-<li><a href="#step-two">Step Two</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<li><a href="#step-two">Step Two</a></li>
+<li><a href="#step-three">Step Three</a></li>
+<li><a href="#step-four">Step Four</a></li>
+<li><a href="#five">Five</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
 <p>Learn Angular Routing basics.</p>
-<p>Some slides are here: <a href="http://bit.ly/angular-routes">http://bit.ly/angular-routes</a></p>
+<ul>
+<li>Some slides are here: <a href="http://bit.ly/angular-routes">http://bit.ly/angular-routes</a></li>
+<li>Angular Routing View Example: <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Design/AngularRoutingView">On JsObjects</a></li>
+</ul>
 <p>The example in the slides is not the one I want you to create for this assignment.</p>
 <h2 id="step-one">Step One</h2>
 <p>Create the project in your repository:</p>
 <pre><code>express Week07-AngularRoutes
 </code></pre><p>Open the project in WebStorm or your choice of editor/IDE.</p>
+<p>Set port to 30025 in <strong>bin/www</strong>, use <strong>nodemon</strong> in <strong>package.json</strong>.</p>
+<p>In <strong>routes/index.js</strong> set the title to <strong>Angular Routes LastName</strong>, where LastName is your last name.</p>
 <h2 id="step-two">Step Two</h2>
 <p>Add angular, bower and bootstrap.</p>
 <ul>
@@ -15,4 +24,61 @@
 <li>copy %ELF_TEMPLATES%.bowerrc .</li>
 <li>bower install angular angular-route jquery bootstrap  --save</li>
 </ul>
+<h2 id="step-three">Step Three</h2>
+<p>Create <strong>app.js</strong></p>
+<pre><code>var myModule = angular.module(&quot;elfApp&quot;, [ &#39;ngRoute&#39; ]);
+
+myModule.config(function($routeProvider, $locationProvider) {
+    $routeProvider.when(&quot;/&quot;, {
+        templateUrl : &quot;main&quot;,
+        controller : &quot;MainController&quot;,
+        controllerAs: &quot;mainController&quot;
+    }).when(&#39;/about&#39;, {
+        templateUrl : &quot;about&quot;,
+        controller : &quot;AboutController&quot;,
+        controllerAs: &#39;aboutController&#39;
+    }).otherwise({
+        redirectTo : &#39;/&#39;
+    });
+});
+</code></pre><h2 id="step-four">Step Four</h2>
+<p>Create main.js:</p>
+<pre><code>var elfApp = angular.module(&quot;elfApp&quot;);
+
+elfApp.controller(&#39;MainController&#39;, function() {
+    var mainController = this;
+    mainController.mainData = &quot;Main Data&quot;;
+});
+</code></pre><p>about.js:</p>
+<pre><code>var elfApp = angular.module(&quot;elfApp&quot;);
+
+elfApp.controller(&#39;AboutController&#39;, function() {
+    var aboutController = this;
+    aboutController.aboutData = &quot;About Data&quot;;
+
+});
+</code></pre><p>main.jade:</p>
+<pre><code>&lt;p&gt;This is main&lt;/p&gt;
+
+&lt;p&gt;{{mainController.mainData}}&lt;/p&gt;
+</code></pre><p>about.jade:</p>
+<pre><code>&lt;p&gt;This is about&lt;/p&gt;
+
+&lt;p&gt;{{aboutController.aboutData}}&lt;/p&gt;
+</code></pre><h2 id="five">Five</h2>
+<p>In Layout.jade:</p>
+<pre><code>doctype html
+html
+  head
+    title= title
+    link(rel=&#39;stylesheet&#39;, href=&#39;/stylesheets/style.css&#39;)
+    script(src=&quot;components/angular/angular.js&quot;)
+    script(src=&quot;components/angular-route/angular-route.js&quot;)
+    script(src=&quot;javascripts/app.js&quot;)
+    script(src=&quot;javascripts/main.js&quot;)
+    script(src=&quot;javascripts/about.js&quot;)
+  body(ng-app=&quot;elfApp&quot;)
+    block content
+</code></pre><h2 id="turn-it-in">Turn it in</h2>
+<p>The usual.</p>
 </div></body></html>
