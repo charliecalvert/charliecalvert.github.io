@@ -1,0 +1,175 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><title>Ec2Provision</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><script src="/components/jquery/"></script><script src="components/angular/angular.js"></script><script src="components/angular-route/angular-route.js"></script><script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body ng-app="elfApp"><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>Ec2Provision</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#description">Description</a></li>
+<li><a href="#provision-ec2">Provision EC2</a></li>
+<li><a href="#videos">Videos</a></li>
+<li><a href="#ssh">SSH</a></li>
+<li><a href="#bash_aliases">bash_aliases</a></li>
+<li><a href="#install-node">Install Node</a></li>
+<li><a href="#git">Git</a></li>
+<li><a href="#turn-it-in">Turn it In</a></li>
+<li><a href="#more-information">More Information</a></li>
+<li><a href="#history">History</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<p>Create and provision an EC2 instance suitable for node development in one of Charlie&#39;s classes.</p>
+<h2 id="provision-ec2">Provision EC2</h2>
+<p>This assignment is perhaps not entirely complete, but here is enough to get you started. Perform the following tasks:</p>
+<ul>
+<li>Update your server  </li>
+<li>Install Git </li>
+<li>Download JsObjects from GitHub into your Git folder.</li>
+<li>Install Node </li>
+<li>Install MongoDb </li>
+<li>Install Lamp</li>
+</ul>
+<p>Use the notes found here:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html">http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html</a></li>
+</ul>
+<p><strong>NOTE</strong>: <em>There is no need to install SSH and Java on EC2. Those just happen to be found on the reference page I&#39;m using for this assignment.</em></p>
+<p>We can go over this in class, but you will also need to understand how to open up ports, such as 30025, on AWS. For this assignment, you must at least get as far as opening up Port 80:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/cloud/WebServices.html#ec2SecurityGroups">http://www.elvenware.com/charlie/development/cloud/WebServices.html#ec2SecurityGroups</a></li>
+</ul>
+<h2 id="videos">Videos</h2>
+<ul>
+<li><a href="https://youtu.be/TjVWpNZfTPE">Amazon Web Services EC2 Setup</a></li>
+<li><a href="https://youtu.be/mSKxHKTQAc4">LinuxWebUser Part II</a></li>
+<li><a href="https://youtu.be/RTICenN5n8Q">LinuxWebUser Part III</a></li>
+<li><a href="https://youtu.be/p1obmWF6Nks">Import Files into Git with SSH</a></li>
+<li><a href="https://youtu.be/4w0hKs35cdg">Billing on AWS</a></li>
+<li><a href="https://www.youtube.com/playlist?list=PLe8CjTxuUQ3_RmFD4ROFth7nX_UoUP6pV">PlayList</a></li>
+</ul>
+<h2 id="ssh">SSH</h2>
+<p>Type <strong>cd</strong> and press enter to get to your home directory. Type <strong>pwd</strong> to be sure you are in the right place:</p>
+<pre><code>ubuntu@ip-172-31-33-240:~$ pwd
+/home/ubuntu
+</code></pre><p>In your home directory, paste in the following by right clicking on the ssh window:</p>
+<pre><code>ssh-keygen -t rsa -P &#39;&#39; -f ~/.ssh/id_rsa 
+cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys
+</code></pre><p>Navigate to the .ssh directory and cat your public file:</p>
+<pre><code>cd .ssh
+cat id_rsa.pub
+</code></pre><p>Select the entire key with the mouse and press <strong>Ctrl-C</strong> to copy it. Then go to bitbucket, choose manage account, and add you new public ssh key, calling it something like Prog219AwsKey.</p>
+<p>Type <strong>cd</strong> to go to the home directory. Then type: <strong>nano .bashrc</strong></p>
+<p>Scroll to the bottom, and paste in the following:</p>
+<pre><code>if [ -z &quot;$SSH_AUTH_SOCK&quot; ] ; then
+    eval `ssh-agent`
+fi
+
+export PATH=&quot;$PATH:$HOME/npm/bin&quot;
+
+export NODE_PATH=:/home/ubuntu/npm/lib/node_modules
+</code></pre><p>Type <strong>Ctrl-O + enter</strong> to save, and <strong>Ctrl-X</strong> to exit nano. </p>
+<p>Now process your updated <strong>.bashrc</strong> file from the command line: <strong>source ~/.bashrc</strong></p>
+<p>Make the key only readable by you, the owner:</p>
+<pre><code>chmod 400 ~/.ssh/id_rsa
+</code></pre><p>Then type the following to load the private key. (Like loading a key into Pageant): </p>
+<pre><code>ssh-add ~/.ssh/id_rsa
+</code></pre><p>It might look like this:</p>
+<pre><code>ubuntu@ip-172-31-33-240:~/.ssh$ ssh-add id_rsa
+Identity added: id_rsa (id_rsa)
+</code></pre><p>Go to your Git Folder and clone your repo:</p>
+<pre><code>cd Git
+git clone git@bitbucket.com:lastname/reponame.git
+</code></pre><p>See also this section on using SSH config files:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#ssh-config">http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#ssh-config</a></li>
+</ul>
+<h2 id="bash_aliases">bash_aliases</h2>
+<p>You can copy a bash_alias file from JsObjects to your home directory. Type <strong>cd</strong> to get to your home directory:</p>
+<pre><code>cd
+</code></pre><p>then copy the file:</p>
+<pre><code>cp ~/Git/JsObjects/Utilities/SetupLinuxBox/.bash_aliases .
+</code></pre><p>Then you can edit it with nano:</p>
+<pre><code>nano .bash_aliases
+</code></pre><p>Change this line to reflect what is on your system:</p>
+<pre><code>alias sshadd=&quot;ssh-add ~/.ssh/rsa-key-git.pem&quot;
+</code></pre><p>It should probably read like this:</p>
+<pre><code>alias sshadd=&quot;ssh-add ~/.ssh/id_rsa&quot;
+</code></pre><p>Save your work with Ctrl-O and the Ctrl-X to exit. Then process your .bash_alias file with
+the <strong>source</strong> command:</p>
+<pre><code>source ~/.bash_aliases
+</code></pre><h2 id="install-node">Install Node</h2>
+<pre><code>cd Git/JsObjects/Utilities/NodeInstall/
+./NodeInstall.sh
+</code></pre><p>Then install the node packages that you need:</p>
+<pre><code>./InstallNodePackages.sh
+</code></pre><h2 id="git">Git</h2>
+<p>Please read this section of the Elvenware Git docs:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/cloud/Git.html#configuring-git">Configuring Git</a></li>
+</ul>
+<h2 id="turn-it-in">Turn it In</h2>
+<p>To turn in the assignment, you should provide a screen shot showing:</p>
+<ul>
+<li>A listing of your Git (ls -la ~/Git). A sample screen shot is shown below, but it has more directories in it than your&#39;s will have.</li>
+<li>A listing of the JsObjects directory (ls -la ~/Git/JsObjects)</li>
+<li>A listing of your .ssh folder: (ls -la ~/.ssh</li>
+<li>A link to your site and/or a screen shot of it running. It should show the Apache welcome screen, as shown below. This part of the assignment will not work unless you have first opened up Port 80.</li>
+</ul>
+<p>Here is a sample listing screen shot:</p>
+<p><img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/Ec2Listing01.png" alt="Git Listing"></p>
+<p>Here is a sample of what the Apache welcome screen should look like:</p>
+<p><img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/LampApache2.png" alt="Lamp"></p>
+<h2 id="more-information">More Information</h2>
+<p>The following document used in another class also contains information that you might find useful:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/books/CloudNotes/Assignments/AwsEc2Expert.html">AwsEc2Expert</a></li>
+</ul>
+<h2 id="history">History</h2>
+<p>What I did in class</p>
+<pre><code> 1  exit
+    2  sudo apt-get update
+    3  sudo apt-get upgrade
+    4  exit
+    5  ls
+    6  sudo apt-get install git
+    7  git --version
+    8  git
+    9  mkdir Git
+   10  cd Git/
+   11  git clone http://git@github.com/charliecalvert/JsObjects.git git clone http://git@github.com/charliecalvert/JsObjects.git
+   12  git clone http://git@github.com/charliecalvert/JsObjects.git
+   13  cd ,,
+   14  cd
+   15  cd .ssh/
+   16  ls
+   17  cd
+   18  ckear&#39;
+   19  clear
+   20  pwd
+   21  cd Git/
+   22  cd
+   23  ssh-keygen -t rsa -P &#39;&#39; -f ~/.ssh/id_rsa
+   24  cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys
+   25  pwd
+   26  ubuntu@ip-172-31-33-240:~$ pwd
+   27  /home/ubuntu
+   28  cd .ssh/
+   29  ls
+   30  clear
+   31  ls
+   32  ls -l
+   33  nano id_rsa.pub
+   34  cat id_rsa.pub
+   35  cat id_rsa.pub
+   36  cd
+   37  nano .bashrc
+   38  cd .ssh
+   39  ls
+   40  chmod 400 id_rsa
+   41  ssh-add id_rsa
+   42  source ~/.bashrc
+   43  ssh-add id_rsa
+   44  ubuntu@ip-172-31-33-240:~/.ssh$ ssh-add id_rsa
+   45  Identity added: id_rsa (id_rsa)
+   46  cd ..
+   47  cd Git/
+   48  dir
+   49  git clone git@bitbucket.org:ccalvert/prog219-calvert.git
+   50  cd prog219-calvert/
+   51  ls
+   52  cd Week05-AngularMongoCrud/
+   53  npm install
+</code></pre><blockquote>
+<p>by <a href="http://elvenware.com/charlie">Charlie Calvert</a>.</p>
+</blockquote>
+</div></body></html>
