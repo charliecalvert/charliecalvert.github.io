@@ -69,7 +69,8 @@ block content
 
         #monogoData(data-ng-view=&quot;&quot;)
 </code></pre><p>There are several ways to solve the next problem, but I created an <strong>app.js</strong> file in my <strong>public/javascripts</strong> directory. It can look more or less identical to the one in the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/AngularRouting.html">Angular Routing</a> assignment. You don&#39;t need a <strong>main.js</strong> file on the client side, as you already have <strong>Control.js</strong>. You will, however, need an <strong>about.js</strong> file in the client. It can look very much like the corresponding file in the Angular Routing assignment.</p>
-<p>One tricky thing can be setting up the routing on the server side. One solution is to do this. Create a <strong>routes\science.js</strong> file with this content:</p>
+<p>One tricky thing can be setting up the routing on the server side. You are now going to load <strong>about.jade</strong> and <strong>main.jade</strong> from <strong>routes/index.js</strong>. That means you want to change the code in that file to look in the <strong>views</strong> directory for paramters. In particular, it should not look for them in the <strong>views/ScienceInfo</strong> directory, or its equivalent in your application. </p>
+<p>So how are we going to load ScienceInfo files like <strong>physics</strong>, <strong>astronomy</strong> and <strong>radioactivety</strong>? One solution is to do this. Create a <strong>routes\science.js</strong> file with this content:</p>
 <pre><code>var express = require(&#39;express&#39;);
 var router = express.Router();
 
@@ -81,15 +82,21 @@ router.get(&#39;/:id&#39;, function(req, res, next) {
 });
 
 module.exports = router;
-</code></pre><p>In the route of your project, open up <strong>app.js</strong> and around line 9 add this line:</p>
+</code></pre><p>In the route of your entire project, open up <strong>app.js</strong>. (This is not the <strong>app.js</strong> you may have added on the client side. Around line 9 add this line:</p>
 <pre><code>var science = require(&#39;./routes/science&#39;);
 </code></pre><p>Around line 26, add this line:</p>
 <pre><code>app.use(&#39;/ScienceInfo&#39;, science);
-</code></pre><p>In <strong>Control.js</strong> update <strong>loadDocument</strong> to include <strong>/ScienceInfo/</strong> in its route:</p>
+</code></pre><p>Okay, now you have a way to handle <strong>ScienceInfo routes</strong>. But there is one more step you need to take to complete the process. You now have to add <strong>ScienceInfo</strong> to the route when you load your equivalents of the <strong>astronomy</strong>, <strong>physics</strong>, etc files.</p>
+<p>The fix is simple. In <strong>Control.js</strong> update <strong>loadDocument</strong> to include <strong>/ScienceInfo/</strong> in the route you pass to <strong>$http.get</strong>:</p>
 <pre><code>myController.loadDocument = function() {
             $http.get(&#39;/ScienceInfo/&#39; + myController.subject.toLowerCase())
             // etc. The rest is the same
-</code></pre><p>To get the unit tests running again you will need to add, at minimum, <strong>angular-route.js</strong> to <strong>index.html</strong>. I think you will also need to load the client side version <strong>app.js</strong>, but I&#39;m not sure of that. </p>
+</code></pre><p>Now your routes should be working, and you should be able to load:</p>
+<ul>
+<li><strong>main.jade</strong> and <strong>about.jade</strong> from the routes in <strong>routes/index.js</strong></li>
+<li>Your equivalent of the <strong>astronomy</strong> etc files from the routes in <strong>routes/science.js</strong>.</li>
+</ul>
+<p>After doing all this, you may find that your unit tests are no longer running. To get the unit tests back on their feet you will need to add, at minimum, <strong>angular-route.js</strong> to <strong>index.html</strong>. I think you will also need to load the client side version <strong>app.js</strong>, but I&#39;m not sure of that. </p>
 <p>You may find that the unit tests on the client side (Test.js) won&#39;t pass the test that asks for the length of the hint in the input control. To fix that, place this code at the top of your client side tests:</p>
 <pre><code> // Wait half a second to allow main (myController) to load
  beforeAll(function(done) {
