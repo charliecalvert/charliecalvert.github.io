@@ -43,7 +43,44 @@
 <p>Unless you are absolutely sure you know what you are doing, don&#39;t try to write &quot;integration tests&quot; against your MongoDb database factories beyond what we did in FacadeUi and MangoExpress. More specifically, don&#39;t try to run tests that confirm that you can get hold of real database data. You should write integration tests that confirm you can use mock data from mock objects, just as you did in FacadeUI and MangoExpress. </p>
 <p>Most of the code is written for you and you completed it in FacadeUI and MangoExpress. You do, however, need to change the data in ScienceFacade and ScienceSimpleData to match the data in your main program. For instance, if you are writing an application with the theme of music, then the data in SimpleScienceData must match the data in your main program. It must be about music. That is, if you have chosen music as a theme. You should probably also change the name of the those files. For instance, to MusicSimpleData and MusicFacade. Most of you have done this already.</p>
 <h2 id="angular-routing">Angular Routing</h2>
-<p>Please come back later and I will detail what I want to see here. The key is that you have code in your program that looks somewhat like the code in <a href="https://docs.google.com/presentation/d/1V2Hu53TXH7COUT50MCskIHn1N3H4nEvHCOpxykgTaeY/edit#slide=id.g9f89ca564_0_72">this slide</a>.</p>
+<p>The key is that you have code in your program that looks somewhat like the code in <a href="https://docs.google.com/presentation/d/1V2Hu53TXH7COUT50MCskIHn1N3H4nEvHCOpxykgTaeY/edit#slide=id.g9f89ca564_0_72">this slide</a>.</p>
+<p>Start by adding Angular Route to your project:</p>
+<pre><code>bower install angular-route --save
+</code></pre><p>Then you will need to create the main and about jade files</p>
+<pre><code>views/about.jade
+views/main.jade
+</code></pre><p>At this stage, it does not much matter what you put in about.jade. This will do:</p>
+<pre><code>p About 
+</code></pre><p>In <strong>main.jade</strong>, you will want to put most of what you currently have in <strong>index.jade</strong>. I would leave only the jumbotron and its contents in index.jade. But of course you will want to add a menu:</p>
+<pre><code>extends layout
+block content
+    .container
+        .header
+            nav.navbar-default.navbar-fixed-top
+                ul.nav.nav-pills
+                    li(ng-class=&quot;{ active: isActive(&#39;/&#39;)}&quot;)
+                        a(ng-href=&#39;#/&#39;) Home
+                    li(ng-class=&quot;{ active: isActive(&#39;/about&#39;)}&quot;)
+                        a(ng-href=&#39;#/about&#39;) About
+
+        div.jumbotron
+            h1= title
+            p Welcome to #{title}
+
+        #monogoData(data-ng-view=&quot;&quot;)
+</code></pre><p>There are several ways to solve the next problem, but I created an <strong>app.js</strong> file in my <strong>public/javascripts</strong> directory. It can look more or less identical to the one in the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/AngularRouting.html">Angular Routing</a> assignment. You don&#39;t need a <strong>main.js</strong> file on the client side, as you already have <strong>Control.js</strong>. You will, however, need an <strong>about.js</strong> file in the client. It can look very much like the corresponding file in the Angular Routing assignment.</p>
+<p>To get the unit tests running again you will need to add, at minimum, <strong>angular-route.js</strong> to <strong>index.html</strong>. I think you will also need to load the client side version <strong>app.js</strong>, but I&#39;m not sure of that. </p>
+<p>You may find that the unit tests on the client side (Test.js) won&#39;t pass the test that asks for the length of the hint in the input control. To fix that, place this code at the top of your client side tests:</p>
+<pre><code> // Wait half a second to allow main (myController) to load
+ beforeAll(function(done) {
+     console.log(&#39;outer&#39;);
+     setTimeout(function() {
+         var value = 0;
+         done();
+     }, 500);
+ });
+</code></pre><p>The goal is to <strong>main.js</strong> time to load. In some cases, you may need to wait longer than 500 milleseconds, depending on performance on your machine.</p>
+<p><strong>NOTE</strong>: <em>When I talk about the client side, I&#39;m talking about the files in the <strong>public</strong> directory. In particular, I&#39;m usually talking the files in the <strong>public/javascripts</strong> directory.</em></p>
 <h2 id="extra-credit">Extra Credit</h2>
 <p>Set up Grunt and jshint to process all your java script files when the command <strong>grunt jshint</strong> is issued at the command line. Your <strong>result.xml</strong> file should come back clean. If it does not, which might be understandable at this stage, add a comment to your submission explaining why you did not fix some of the errors mentioned in jshint report.</p>
 <p>Including your screen shots of your EC2 instance on your EC2 Apache web server. For instance, create a custom <strong>index.html</strong> file and in that file use image tags to include your screen shots of your Mango Express server running on your EC2 instance.  </p>
