@@ -69,7 +69,27 @@ block content
 
         #monogoData(data-ng-view=&quot;&quot;)
 </code></pre><p>There are several ways to solve the next problem, but I created an <strong>app.js</strong> file in my <strong>public/javascripts</strong> directory. It can look more or less identical to the one in the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/AngularRouting.html">Angular Routing</a> assignment. You don&#39;t need a <strong>main.js</strong> file on the client side, as you already have <strong>Control.js</strong>. You will, however, need an <strong>about.js</strong> file in the client. It can look very much like the corresponding file in the Angular Routing assignment.</p>
-<p>To get the unit tests running again you will need to add, at minimum, <strong>angular-route.js</strong> to <strong>index.html</strong>. I think you will also need to load the client side version <strong>app.js</strong>, but I&#39;m not sure of that. </p>
+<p>One tricky thing can be setting up the routing on the server side. One solution is to do this. Create a <strong>routes\science.js</strong> file with this content:</p>
+<pre><code>var express = require(&#39;express&#39;);
+var router = express.Router();
+
+/* GET home page. */
+
+router.get(&#39;/:id&#39;, function(req, res, next) {
+  console.log(&#39;ScienceInfo&#39;, req.params.id);
+  res.render(&#39;ScienceInfo/&#39; + req.params.id, { title: &#39;Astronomy&#39; });
+});
+
+module.exports = router;
+</code></pre><p>In the route of your project, open up <strong>app.js</strong> and around line 9 add this line:</p>
+<pre><code>var science = require(&#39;./routes/science&#39;);
+</code></pre><p>Around line 26, add this line:</p>
+<pre><code>app.use(&#39;/ScienceInfo&#39;, science);
+</code></pre><p>In <strong>Control.js</strong> update <strong>loadDocument</strong> to include <strong>ScienceInfo</strong> in its route:</p>
+<pre><code>myController.loadDocument = function() {
+            $http.get(&#39;/ScienceInfo/&#39; + myController.subject.toLowerCase())
+            // etc. The rest is the same
+</code></pre><p>To get the unit tests running again you will need to add, at minimum, <strong>angular-route.js</strong> to <strong>index.html</strong>. I think you will also need to load the client side version <strong>app.js</strong>, but I&#39;m not sure of that. </p>
 <p>You may find that the unit tests on the client side (Test.js) won&#39;t pass the test that asks for the length of the hint in the input control. To fix that, place this code at the top of your client side tests:</p>
 <pre><code> // Wait half a second to allow main (myController) to load
  beforeAll(function(done) {
