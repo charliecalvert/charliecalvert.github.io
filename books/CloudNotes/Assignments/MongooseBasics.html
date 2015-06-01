@@ -138,8 +138,19 @@ html
       ng-change=&#39;mongoController.indexChange()&#39;,
       ng-model=&#39;mongoController.currentItem&#39;,
       min=&#39;0&#39;, max=&#39;{{mongoController.scientistsLength-1}}&#39;)
-</code></pre><p>Add all these methods to <strong>control.js</strong>:</p>
-<pre><code>        mongoController.getScientist = function(index) {
+</code></pre><p>Add all these methods to <strong>control.js</strong>. Note currentItem and the calls to <strong>getScientist and save, insert and indexchanged</strong>:</p>
+<pre><code>        var mongoController = this;
+
+        mongoController.currentItem = 0;
+
+        $http.get(&#39;/all-data&#39;).success(function(data) {
+            mongoController.allData = data;
+            mongoController.scientistsLength = data.alldata.legnth;
+        }).error(function(err) {
+            console.log(err);
+        });
+
+        mongoController.getScientist = function(index) {
             mongoFactory.getScientist(index, mongoController);
         };
 
@@ -156,4 +167,57 @@ html
                 mongoFactory.getScientist(mongoController.currentItem, mongoController);
             }
         };
+</code></pre><p>And here is our factory, saved in <strong>mongo-factory.js</strong></p>
+<pre><code>(function() {
+
+    var app = angular.module(&#39;elvenApp&#39;);
+
+    app.factory(&#39;mongoFactory&#39;, function($http) {
+
+        return {
+
+            currentItem: 0,
+
+            getScientists: function(mongoController) {
+                $http.get(&#39;/all-data&#39;).success(function(data) {
+                    mongoController.scientistsLength = data.allData.length;
+                    allDataNames = data.allData.map(function(scientist) {
+                        return {id: scientist._id, name: scientist.firstName + &#39; &#39; + scientist.lastName};
+                    });
+                    mongoController.allData = allDataNames;
+                }).error(function() {
+                    console.log(&quot;error&quot;);
+                });
+            },
+
+            postDocument: function(route, mongoController) {
+                var scientist = {
+                    id: mongoController.data.id,
+                    firstName: mongoController.data.firstName,
+                    lastName: mongoController.data.lastName,
+                    subject: mongoController.data.subject
+                };
+                $http.post(route, scientist).success(function(data, status, headers, config) {
+                    console.log(data);
+                    console.log(status);
+                    console.log(headers);
+                    console.log(config);
+                }).error(function(data, status, headers, config) {
+                    console.log(data);
+                    console.log(status);
+                    console.log(headers);
+                    console.log(config);
+                });
+            },
+
+            getScientist: function(index, mongoController) {
+                this.currentItem = index;
+                $http.get(&#39;/data/&#39; + index).success(function(data) {
+                    mongoController.data = data;
+                }).error(function() {
+                    console.log(&quot;error&quot;);
+                });
+            }
+        };
+    });
 </code></pre></div></body></html>
