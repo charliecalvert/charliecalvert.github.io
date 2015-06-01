@@ -2,7 +2,8 @@
 <li><a href="#step-one">Step One</a></li>
 <li><a href="#step-two">Step Two</a></li>
 <li><a href="#step-three">Step Three</a></li>
-<li><a href="#step-four">Step Four</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<li><a href="#step-four">Step Four</a></li>
+<li><a href="#step-5">Step 5</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
 <p>Mongoose Basics is an ORM for MongoDB.</p>
 <h2 id="step-one">Step One</h2>
 <pre><code>express Week09-MongooseBasics
@@ -90,4 +91,41 @@ router.get(&#39;/all-data&#39;, function(request, response) {
 });
 </code></pre><p>In MongoLab make sure you have a user with read-write priveleges and that you know the users name and password.</p>
 <p>When you are looking at your database in MongoLab you can see the actual URL that you should use. It is similar to the one I show above, but not identical.</p>
-</div></body></html>
+<h2 id="step-5">Step 5</h2>
+<p>Get the code in angular</p>
+<p>This is <strong>controll.js</strong> at this early stage:</p>
+<pre><code>(function() {
+
+    var app = angular.module(&#39;elvenApp&#39;, []);
+
+    app.controller(&#39;MongoController&#39;, function($http) {
+        var mongoController = this;
+
+        $http.get(&#39;/all-data&#39;).success(function(data) {
+            mongoController.allData = data;
+        }).error(function(err) {
+            console.log(err);
+        });
+    });
+
+})();
+</code></pre><p>Here is index.jade:</p>
+<pre><code>extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  div(ng-controller=&quot;MongoController as mongoController&quot;)
+    div {{mongoController.allData}}
+</code></pre><p>and layout.jade</p>
+<pre><code>doctype html
+html
+  head
+    title= title
+    link(rel=&#39;stylesheet&#39;, href=&#39;/stylesheets/style.css&#39;)
+    script(src=&quot;components/angular/angular.js&quot;)
+    script(src=&quot;javascripts/control.js&quot;)
+  body(ng-app=&quot;elvenApp&quot;)
+    block content
+</code></pre></div></body></html>
