@@ -56,4 +56,34 @@ var scientistsSchema = mongoose.Schema({
 });
 
 module.exports = mongoose.model(&#39;scientists&#39;, scientistsSchema);
+</code></pre><p>In <strong>routes/index.js</strong> do these two things:</p>
+<pre><code>var scientists = require(&#39;../models/scientists&#39;);
+var mongoose = require(&#39;mongoose&#39;);
+</code></pre><p>And then create methods to open your collection:</p>
+<pre><code>function doConnection() {
+    //mongodb://&lt;dbuser&gt;:&lt;dbpassword&gt;@ds049848.mongolab.com:49848/elvenlab01
+    mongoose.connect(&#39;mongodb://csc:Re*lD*t*22#@ds049848.mongolab.com:49848/elvenlab01&#39;);
+    var db = mongoose.connection;
+    db.on(&#39;error&#39;, console.error.bind(console, &#39;connection error:&#39;));
+    db.once(&#39;open&#39;, function(callback) {
+        connected = true;
+        console.log(&#39;Opened connection to mongo&#39;);
+    });
+
+}
+
+router.get(&#39;/all-data&#39;, function(request, response) {
+    if (!connected) {
+        doConnection();
+    }
+
+    scientists.find({}, function(err, data) {
+        console.log(data.length);
+        console.log(data[0]);
+        response.send({
+            result: &#39;Success&#39;,
+            allData: data
+        });
+    });
+});
 </code></pre></div></body></html>
