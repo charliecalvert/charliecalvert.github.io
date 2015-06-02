@@ -4,7 +4,8 @@
 <li><a href="#step-three">Step Three</a></li>
 <li><a href="#step-four">Step Four</a></li>
 <li><a href="#step-5">Step 5</a></li>
-<li><a href="#step-six">Step Six</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<li><a href="#step-six">Step Six</a></li>
+<li><a href="#step-seven">Step Seven</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
 <p>Mongoose Basics is an ORM for MongoDB.</p>
 <h2 id="step-one">Step One</h2>
 <pre><code>express Week09-MongooseBasics
@@ -145,7 +146,7 @@ html
 
         $http.get(&#39;/all-data&#39;).success(function(data) {
             mongoController.allData = data;
-            mongoController.scientistsLength = data.alldata.length;
+            mongoController.scientistsLength = data.allData.length;
         }).error(function(err) {
             console.log(err);
         });
@@ -224,4 +225,96 @@ html
 })();
 </code></pre><p>Don&#39;t forget to load <strong>mongo-factory</strong> in <strong>layout.jade</strong>:</p>
 <pre><code>script(src=&quot;javascripts/mongo-factory.js&quot;)
+</code></pre><h2 id="step-seven">Step Seven</h2>
+<p>In <strong>routes/index.js</strong> append all of the following before the module statement:</p>
+<pre><code>
+router.get(&#39;/data/:id&#39;, function(request, response) {
+    console.log(&#39;Request id: &#39; + request.params.id);
+    console.log(&#39;type of request:&#39; + typeof request.params.id);
+    var idInvalid = (request.params.id === &#39;undefined&#39;);
+    console.log(&#39;IdInvalid: &#39; + idInvalid);
+    if (!idInvalid) {
+        if (!connected) {
+            doConnection();
+        }
+        scientists.find({}, function(err, data) {
+            console.log(data.length);
+            console.log(data[0]);
+            response.send({
+                result: &#39;Success&#39;,
+                numberOfDocuments: data.length,
+                id: data[request.params.id]._id,
+                firstName: data[request.params.id].firstName,
+                lastName: data[request.params.id].lastName,
+                subject: data[request.params.id].subject,
+                subjects: data[request.params.id].subjects,
+                comments: data[request.params.id].comments
+            });
+        });
+    } else {
+        response.send({result: &#39;Invalid id&#39;});
+    }
+
+});
+
+function getNewData(body) {
+    console.log(body);
+    var newData = {
+        firstName: body.firstName,
+        lastName: body.lastName,
+        subject:  body.subject
+    };
+    console.log(newData);
+    return newData;
+}
+
+router.post(&#39;/save&#39;, function(request, response) {
+    console.log(&#39;Save called. Body is next: &#39;)
+
+    var newData = getNewData(request.body);
+
+    if (!connected) {
+        doConnection();
+    }
+
+    console.log(&quot;about to call update&quot;);
+    scientists.update({ _id: request.body.id }, { $set: newData},
+        function(err, data) {
+            console.log(err, data);
+            if (err) {
+                console.log(err);
+            }
+            response.send({result: &#39;Success&#39;, data: data});
+        }
+    );
+
+});
+
+router.post(&#39;/insert&#39;, function(request, response) {
+    console.log(&#39;Save called. Body is next: &#39;)
+    //var newData = getNewData(request.body);
+    var newData = {
+        firstName: request.body.firstName,
+        lastName: request.body.lastName,
+        subject:  request.body.subject,
+        comments: [],
+        subjects: []
+    };
+    console.log(&quot;New Data&quot;, newData);
+
+    if (!connected) {
+        doConnection();
+    }
+
+    console.log(&quot;about to call update&quot;);
+    var f = new scientists(newData);
+    f.save(function(e, a) {
+        response.send({result: e + a});
+    });
+});
+
+router.get(&#39;/:id&#39;, function(request, response) {
+    console.log(request.params.id);
+    response.render(request.params.id, {});
+});
 </code></pre></div></body></html>
