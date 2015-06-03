@@ -1,0 +1,377 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><title>MongooseEditor</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body ng-app="elfApp"><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>MongooseEditor</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#description">Description</a></li>
+<li><a href="#mongoose-updates">Mongoose Updates</a></li>
+<li><a href="#update-schema">Update Schema</a></li>
+<li><a href="#remove-numeric-input">Remove Numeric Input</a></li>
+<li><a href="#clickable-items">Clickable Items</a></li>
+<li><a href="#mongofactory-search">MongoFactory Search</a></li>
+<li><a href="#the-menu">The Menu</a></li>
+<li><a href="#program-structure">Program Structure</a></li>
+<li><a href="#posting-data">Posting Data</a></li>
+<li><a href="#subjects">Subjects</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<p>This is the followup to the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/MongooseBasics.html">MongooseBasics assignment</a>.</p>
+<p>The main goal will be to create multiple pages:</p>
+<ul>
+<li>Main Page: View the data</li>
+<li>Edit: Edit scientist name and main subject</li>
+<li>Subjects: Edit a list of subjects associated with a scientist</li>
+<li>Comments: Comment on a scientist</li>
+<li>About: Standard about page</li>
+</ul>
+<p>We are breaking the app up into multiple pages for several reasons:</p>
+<ul>
+<li>It creates a number of small pages that will fit on a mobile device</li>
+<li>It helps the user understand each discreet task by isolating it on a simple page</li>
+<li>It teaches you how to create and maintain a multi-page angular application</li>
+</ul>
+<p>References:</p>
+<ul>
+<li>The Mongoose Slides: <a href="http://bit.ly/elf-mongoose">http://bit.ly/elf-mongoose</a></li>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Prog219/Prog219-Week09-2015.html">Week09 Overview</a></li>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Prog219/Prog219-Resources.html">Prog219 Resources</a></li>
+</ul>
+<h2 id="mongoose-updates">Mongoose Updates</h2>
+<p>There are several updates to the code we wrote on Monday.</p>
+<h3 id="update-schema">Update Schema</h3>
+<p>In <strong>modules/scientists</strong>, the <strong>subjects</strong> array should look like this: </p>
+<pre><code>subjects: [String].
+</code></pre><p>Here is the entire schema so you can see the change in context:</p>
+<pre><code>var scientistsSchema = mongoose.Schema({
+    &quot;firstName&quot;: String,
+    &quot;lastName&quot;: String,
+    &quot;subject&quot;: String,
+    &quot;subjects&quot;: [String],
+    comments: [{ body: String, date: Date }]
+});
+</code></pre><p>You should be able to make this change without modifying the rest of your code.</p>
+<h3 id="remove-numeric-input">Remove Numeric Input</h3>
+<p>Remove the numeric input from <strong>index.jade</strong> and from <strong>control.js</strong>. This means we no longer need:</p>
+<ul>
+<li><strong>currentItem</strong> in either <strong>control.js</strong> or in <strong>mongo-factory</strong>.</li>
+<li>The <strong>indexChanged</strong> method in <strong>control.js</strong>.</li>
+<li>The numeric input in <strong>layout.jade</strong></li>
+</ul>
+<h2 id="clickable-items">Clickable Items</h2>
+<p>With the numeric input gone, we need another way to select items. We will do that by making each item in our list a hyperlink:</p>
+<pre><code>    li(data-ng-repeat=&#39;scientist in mongoController.allData&#39;)
+        &lt;a ng-click=&quot;selectScientist(scientist)&quot;&gt; {{scientist.id}} {{scientist.name}} &lt;/a&gt;
+</code></pre><p>The selectScientist method looks like this:</p>
+<pre><code>        mongoController.selectScientist = function(scientist) {
+            mongoFactory.getScientistById(scientist.id, mongoController);
+        };
+</code></pre><h2 id="mongofactory-search">MongoFactory Search</h2>
+<p>Right now the structure of our <strong>mongoFactory</strong> looks like this:</p>
+<pre><code>    var app = angular.module(&#39;elvenApp&#39;);
+
+    app.factory(&#39;mongoFactory&#39;, function($http) {
+
+        return {
+                        // code omitted here
+        };        
+    });
+</code></pre><p>Let&#39;s make a slight change to that code so that we can reference the factory itself from within the factory:</p>
+<pre><code>    var app = angular.module(&#39;elvenApp&#39;);
+
+    app.factory(&#39;mongoFactory&#39;, function($http) {
+
+        var mongoFactory =  {
+                        // code omitted here
+                        // With this new structure, we can reference the mongoFactory in here.
+        };        
+
+               return mongoFactory;
+    });
+</code></pre><p>We don&#39;t have a <strong>getScientistById</strong> method, so let&#39;s make some changes to <strong>mongo-factory.js</strong> that make it possible. We are going to add two properties:</p>
+<ul>
+<li><strong>currentId</strong>: This is the MongoDb <strong>id</strong> of the currently selected scientist. It is long and looks a bit like GUID or UUID.</li>
+<li><strong>allData</strong>: When we retrieve the list of scientists, we can store it in this property</li>
+</ul>
+<p>We will have to make some changes to <strong>mongoFactory.getScientists</strong> to support these new properties. Notice that we initialize both properties after retrieving the list of scientists from the server:</p>
+<pre><code>currentId: null,
+
+allData: null,
+
+getScientists: function(controller) {
+    $http.get(&#39;/all-data&#39;).success(function(data) {
+        controller.scientistsLength = data.allData.length;
+        mongoFactory.allData = data.allData;
+        mongoFactory.currentId = data.allData[0]._id;
+        allDataNames = data.allData.map(function(scientist) {
+            return {id: scientist._id, name: scientist.firstName + &#39; &#39; + scientist.lastName};
+        });
+        controller.allData = allDataNames;
+        mongoFactory.getScientistById(mongoFactory.currentId, controller);
+    }).error(function() {
+        console.log(&quot;error&quot;);
+    });
+},
+</code></pre><p>If you look at the mongoFactory.getScientists method, you can see that it frequently references itself:</p>
+<pre><code>    mongoFactory.allData = data.allData
+</code></pre><p>Being able to write that kind of code was why we made the change to the structure of the factory. Our goal is to avoid using <strong>this</strong> whenever possible. In particular, we don&#39;t want to accidentally reference this thinking that it points to <strong>mongoFactory</strong> when it actually points to the global object. </p>
+<p>Now that we can track the list of scientists and a currently selected scientist, it becomes easy to retrieve a scientist by MongoDb <strong>id</strong>:</p>
+<pre><code>getScientistById: function(id, controller) {
+    mongoFactory.currentId = id;
+    var items = mongoFactory.allData.filter(function(scientist) {
+        return scientist._id === id;
+    });
+    return controller.data = items[0];
+}
+</code></pre><p>This method uses the javascript <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter"><strong>filter</strong></a> method. The <strong>filter</strong> method is an of javascript&#39;s support for <a href="http://eloquentjavascript.net/05_higher_order.html">functional programming</a>.</p>
+<h2 id="the-menu">The Menu</h2>
+<p>We need a menu in <strong>index.jade</strong> so the user can access each page.</p>
+<pre><code>extends layout
+block content
+    .container
+        .header
+            nav.navbar-default.navbar-fixed-top
+                ul.nav.nav-pills
+                    li(ng-class=&quot;{ active: isActive(&#39;/&#39;)}&quot;)
+                        a(ng-href=&#39;#/&#39;) Home
+                    li(ng-class=&quot;{ active: isActive(&#39;/edit&#39;)}&quot;)
+                        a(ng-href=&#39;#/edit&#39;) Edit
+                    li(ng-class=&quot;{ active: isActive(&#39;/subjects&#39;)}&quot;)
+                        a(ng-href=&#39;#/subjects&#39;) Subjects
+                    li(ng-class=&quot;{ active: isActive(&#39;/comments&#39;)}&quot;)
+                        a(ng-href=&#39;#/comments&#39;) Comments
+                    li(ng-class=&quot;{ active: isActive(&#39;/about&#39;)}&quot;)
+                        a(ng-href=&#39;#/about&#39;) About
+        div.jumbotron
+            h1= title
+            p Welcome to #{title}
+
+        #monogoData(data-ng-view=&quot;&quot;)
+</code></pre><p>We will need to modify this menu next week. When run on a phone, for instance, we need it to morph into a hamburger menu. But for now, let&#39;s keep it as simple as possible.</p>
+<h2 id="program-structure">Program Structure</h2>
+<p>We need jade and javascript files to support each of the menu items:</p>
+<table>
+<thead>
+<tr>
+<th>Menu</th>
+<th style="text-align:center">Jade</th>
+<th style="text-align:right">JavaScript</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Home</td>
+<td style="text-align:center">main.jade</td>
+<td style="text-align:right">control.js</td>
+</tr>
+<tr>
+<td>Edit</td>
+<td style="text-align:center">edit.jade</td>
+<td style="text-align:right">edit.js</td>
+</tr>
+<tr>
+<td>Subjects</td>
+<td style="text-align:center">subjects.jade</td>
+<td style="text-align:right">subjects.js</td>
+</tr>
+<tr>
+<td>Comments</td>
+<td style="text-align:center">comments.jade</td>
+<td style="text-align:right">comments.js</td>
+</tr>
+<tr>
+<td>About</td>
+<td style="text-align:center">about.jade</td>
+<td style="text-align:right">about.js</td>
+</tr>
+</tbody>
+</table>
+<p>You can sketch out these files by putting code like this in each jade file:</p>
+<pre><code>h1: About
+</code></pre><p>And in the javascript files, you can put code like this:</p>
+<pre><code>(function() {
+
+    var app = angular.module(&#39;elvenApp&#39;);
+
+    app.controller(&#39;CommentsController&#39;, function($http, mongoFactory) {
+        var commentsController = this;
+
+        commentsController.hint = &quot;Edit Document&quot;;
+    });
+
+})();
+</code></pre><p>It should be obvious the small changes that need to be made to this sample code in order to make it unique to a particular file. For instance, in <strong>subjects.jade</strong> one would write: <strong>h1: Subjects</strong>. You can use the <strong>app.js</strong> file shown below to help you fill in the details, if they are not already obvious to you.</p>
+<p>We also need to create a file where we can specifyg our client side routes. The file, will be called <strong>app.js</strong> and it belongs in the <strong>public/javascripts</strong> folder. It structure should be second nature to you by this time:</p>
+<pre><code>var myModule = angular.module(&quot;elvenApp&quot;, [ &#39;ngRoute&#39; ]);
+
+myModule.config(function($routeProvider, $locationProvider) {
+    $routeProvider.when(&quot;/&quot;, {
+        templateUrl : &quot;main&quot;,
+        controller : &quot;MongoController&quot;,
+        controllerAs: &quot;mongoController&quot;
+    }).when(&#39;/edit&#39;, {
+        templateUrl : &quot;edit&quot;,
+        controller : &quot;EditController&quot;,
+        controllerAs: &#39;editController&#39;
+    }).when(&#39;/subjects&#39;, {
+        templateUrl : &quot;subjects&quot;,
+        controller : &quot;SubjectsController&quot;,
+        controllerAs: &#39;subjectsController&#39;
+    }).when(&#39;/comments&#39;, {
+        templateUrl : &quot;comments&quot;,
+        controller : &quot;CommentsController&quot;,
+        controllerAs: &#39;commentsController&#39;
+    }).when(&#39;/about&#39;, {
+        templateUrl : &quot;about&quot;,
+        controller : &quot;AboutController&quot;,
+        controllerAs: &#39;aboutController&#39;
+    }).otherwise({
+        redirectTo : &#39;/&#39;
+    });
+});
+</code></pre><h2 id="posting-data">Posting Data</h2>
+<p>We want to update the database, we have to post data from the client to the server and from the server to the database. Information about the transaction is that routed back to the client.</p>
+<p>On the client side, we use <strong>$http.post</strong> to send data to the server. These calls take two parameters:</p>
+<ul>
+<li>The route we want to call on the server. For instance: <strong>&#39;/data&#39;</strong>.</li>
+<li>The new data that we want to send to the database. This is the update itself.</li>
+</ul>
+<p>First, let&#39;s create a helper function that can handle our success and error messages:</p>
+<pre><code>    report: function(data, status, headers, config) {
+        console.log(data);
+        console.log(status);
+        console.log(headers);
+        console.log(config);
+    },
+</code></pre><p>Now lets compose the <strong>$http</strong> requests that will send data to the server. There are three of them:</p>
+<ul>
+<li>Update the <strong>firstName</strong>, <strong>lastName</strong> and main <strong>subject</strong>.</li>
+<li>Update the detailed list of <strong>subjects</strong>.</li>
+<li>Update the the list of <strong>comments</strong>.</li>
+</ul>
+<p>Here is what the code in <strong>mongoFactory</strong> looks like. Remember that each method is  requests to update the database. It will be sent to the server using REST calls:</p>
+<pre><code>            postDocument: function(route, controller) {
+                var scientist = {
+                    id: controller.data._id,
+                    firstName: controller.data.firstName,
+                    lastName: controller.data.lastName,
+                    subject: controller.data.subject
+                };
+                $http.post(route, scientist)
+                .success(function(data, status, headers, config) {
+                    mongoFactory.report(data, status, headers, config);
+                }).error(function(data, status, headers, config) {
+                    mongoFactory.report(data, status, headers, config);
+                });
+            },
+
+            postSubjects: function(initId, subjects) {
+                var subjectsUpdate = {
+                    id: initId,
+                    subjects: subjects
+                };
+                $http.post(&#39;/updateSubjects&#39;, subjectsUpdate)
+                .success(function(data, status, headers, config) {
+                    mongoFactory.report(data, status, headers, config);
+                }).error(function(data, status, headers, config) {
+                    mongoFactory.report(data, status, headers, config);
+                });
+            },
+
+            postComments: function(initId, comments) {
+                var subjectsUpdate = {
+                    id: initId,
+                    comments: comments
+                };
+                $http.post(&#39;/updateComments&#39;, subjectsUpdate)
+                .success(function(data, status, headers, config) {
+                    mongoFactory.report(data, status, headers, config);
+                }).error(function(data, status, headers, config) {
+                    mongoFactory.report(data, status, headers, config);
+                });
+            },
+</code></pre><p>In <strong>routes/index.js</strong> we respond to the requests that originate in <strong>mongoFactory</strong>:</p>
+<pre><code>router.post(&#39;/insert&#39;, function(request, response) {
+    console.log(&#39;Save called. Body is next: &#39;);
+    //var newData = getNewData(request.body);
+    var newData = {
+        firstName: request.body.firstName,
+        lastName: request.body.lastName,
+        subject:  request.body.subject,
+        comments: [],
+        subjects: []
+    };
+    console.log(&quot;New Data&quot;, newData);
+
+    if (!connected) {
+        doConnection();
+    }
+
+    console.log(&quot;about to call update&quot;);
+    var f = new scientists(newData);
+    f.save(function(e, a) {
+        response.send({result: e + a});
+    });
+});
+
+router.post(&#39;/updateSubjects&#39;, function(request, response) {
+    console.log(&#39;updateSubjects called. Body is next: &#39;);
+    console.log(request.body);
+    scientists.update({ _id: request.body.id }, {
+            $set: {
+                subjects: request.body.subjects
+            }
+        }, function(err, numUpdated) {
+            console.log(err, {numUpdated: numUpdated});
+            if (err) {
+                console.log(err);
+            }
+            response.send({result: &#39;Success&#39;, data: numUpdated});
+        }
+    );
+});
+
+router.post(&#39;/updateComments&#39;, function(request, response) {
+    console.log(&#39;updateComments called. Body is next: &#39;);
+    console.log(request.body);
+    scientists.update({ _id: request.body.id }, {
+            $set: {
+                comments: request.body.comments
+            }
+        }, function(err, numUpdated) {
+            console.log(err, {numUpdated: numUpdated});
+            if (err) {
+                console.log(err);
+            }
+            response.send({result: &#39;Success&#39;, data: numUpdated});
+        }
+    );
+});
+</code></pre><h2 id="subjects">Subjects</h2>
+<p>Here is the code for inserting and updating the detailed list of subjects. It belongs, of course, in <strong>public/javascripts/subjects.js</strong>:</p>
+<pre><code>(function() {
+
+    var app = angular.module(&#39;elvenApp&#39;);
+
+    app.controller(&#39;SubjectsController&#39;, function($http, mongoFactory) {
+        var subjectsController = this;
+
+        subjectsController.hint = &quot;Edit Document&quot;;
+
+        subjectsController.addItem = function() {
+            subjectsController.data.subjects.push(subjectsController.newSubject);
+        };
+
+        subjectsController.saveItems = function() {
+            mongoFactory.postSubjects(subjectsController.data._id,
+                subjectsController.data.subjects);
+        };
+
+        subjectsController.deleteSelected = function() {
+
+        };
+
+        function getScientist() {
+            mongoFactory.getScientistById(mongoFactory.currentId, subjectsController);
+        }
+
+        getScientist();
+    });
+
+})();
+</code></pre><p>The code starts in <strong>getScientist</strong> by retrieving the current record from the <strong>mongoFactory</strong>:</p>
+<pre><code>    mongoFactory.getScientistById(mongoFactory.currentId, subjectsController);
+</code></pre><p>This code works because the factory is always tracking the currently selected record back on the main page.</p>
+</div></body></html>
