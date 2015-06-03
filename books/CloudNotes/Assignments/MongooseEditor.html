@@ -7,6 +7,7 @@
 <li><a href="#the-menu">The Menu</a></li>
 <li><a href="#program-structure">Program Structure</a></li>
 <li><a href="#directives">Directives</a></li>
+<li><a href="#finding-data">Finding Data</a></li>
 <li><a href="#posting-data">Posting Data</a></li>
 <li><a href="#edit-main-fields">Edit Main Fields</a></li>
 <li><a href="#subjects">Subjects</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
@@ -319,7 +320,71 @@ myModule.config(function($routeProvider, $locationProvider) {
 
 })();
 </code></pre><p>As you can see, the <strong>scienceShow</strong> directive is just another version of <strong>elfMarie</strong>, so you can remove that directive from <strong>control.js</strong>.</p>
-<h2 id="posting-data">Posting Data</h2>
+<h2 id="finding-data">Finding Data</h2>
+<p>I&#39;ve rewritten the connect method to make it easier to see the user name, password and database. Remember
+that we want to create a REST URL that looks like this:</p>
+<pre><code>mongoose.connect(&#39;mongodb://csc:Re*lD*t*22#@ds049848.mongolab.com:49848/elvenlab01&#39;);
+</code></pre><p>Here is the new method, where the parts that specify the user name, password and database
+are perhaps easier for you to see. Remember that the user name and password are separated
+by a colon:    </p>
+<pre><code>function doConnection() {
+    var baseUrl = &#39;mongodb://&#39;;
+    var namePassword = &#39;csc:Re*lD*t*22#&#39;;
+    var site = &#39;@ds049848.mongolab.com:49848/&#39;
+    var databaseName = &#39;elvenlab01&#39;
+    var url = baseUrl+ namePassword + site + databaseName;
+    mongoose.connect(url);
+
+    var db = mongoose.connection;
+    db.on(&#39;error&#39;, console.error.bind(console, &#39;connection error:&#39;));
+    db.once(&#39;open&#39;, function(callback) {
+        connected = true;
+        console.log(&#39;Opened connection to mongo&#39;);
+    });
+
+}
+</code></pre><p>We have changed the way several methods in <strong>routes/index.js</strong> work:</p>
+<pre><code>router.get(&#39;/data/:id&#39;, function(request, response) {
+    console.log(&#39;Request id: &#39; + request.params.id);
+    console.log(&#39;type of request:&#39; + typeof request.params.id);
+    var idInvalid = (request.params.id === &#39;undefined&#39;);
+    console.log(&#39;IdInvalid: &#39; + idInvalid);
+    if (!idInvalid) {
+        response.send({
+            result: &#39;Success&#39;,
+            numberOfDocuments: allData.length,
+            id: allData[request.params.id]._id,
+            firstName: allData[request.params.id].firstName,
+            lastName: allData[request.params.id].lastName,
+            subject: allData[request.params.id].subject,
+            subjects: allData[request.params.id].subjects,
+            comments: allData[request.params.id].comments
+        });
+    } else {
+        response.send({result: &#39;Invalid id&#39;});
+    }
+});
+
+router.get(&#39;/find-by-id/:id&#39;, function(request, response) {
+    console.log(&#39;Request id: &#39; + request.params.id);
+    console.log(&#39;type of request:&#39; + typeof request.params.id);
+    var idInvalid = (request.params.id === &#39;undefined&#39;);
+    console.log(&#39;IdInvalid: &#39; + idInvalid);
+    if (!idInvalid) {
+        var query = scientists.where({_id: request.params.id});
+        query.findOne(function(err, scientist) {
+            if (err) {
+                response.send(err);
+            }
+            if (scientist) {
+                response.send(scientist);
+            }
+        });
+    } else {
+        response.send({result: &#39;Invalid id&#39;});
+    }
+});
+</code></pre><h2 id="posting-data">Posting Data</h2>
 <p>We want to update the database, we have to post data from the client to the server and from the server to the database. Information about the transaction is that routed back to the client.</p>
 <p>On the client side, we use <strong>$http.post</strong> to send data to the server. These calls take two parameters:</p>
 <ul>
