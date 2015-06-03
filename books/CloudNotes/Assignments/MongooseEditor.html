@@ -55,8 +55,9 @@
 </ul>
 <h2 id="clickable-items">Clickable Items</h2>
 <p>With the numeric input gone, we need another way to select items. We will do that by making each item in our list a hyperlink:</p>
-<pre><code>    li(data-ng-repeat=&#39;scientist in mongoController.allData&#39;)
-        &lt;a ng-click=&quot;selectScientist(scientist)&quot;&gt; {{scientist.id}} {{scientist.name}} &lt;/a&gt;
+<pre><code>    ul
+        li(data-ng-repeat=&#39;scientist in mongoController.allData&#39;)
+            &lt;a ng-click=&quot;selectScientist(scientist)&quot;&gt; {{scientist.id}} {{scientist.name}} &lt;/a&gt;
 </code></pre><p>The selectScientist method looks like this:</p>
 <pre><code>        mongoController.selectScientist = function(scientist) {
             mongoFactory.getScientistById(scientist.id, mongoController);
@@ -541,7 +542,22 @@ documents:</p>
             mongoFactory.postDocument(&quot;/insert&quot;, editController);
         };
 </code></pre><h2 id="subjects">Subjects</h2>
-<p>Here is the code for inserting and updating the detailed list of subjects. It belongs, of course, in <strong>public/javascripts/subjects.js</strong>:</p>
+<p>Now we want to be able to create a detailed list of subjects associated with a particular scientist. Let&#39;s start by adding 
+in the jade code in <strong>views/subjects.jade</strong>:</p>
+<pre><code>h1 Subjects
+
+label(class=&#39;col-sm-2, control-label&#39;) New Subject
+input.form-control(type=&#39;text&#39;, ng-model=&#39;subjectsController.newSubject&#39;)
+
+
+button(ng-click=&quot;subjectsController.addItem()&quot;) Add Item
+button(ng-click=&quot;subjectsController.saveItems()&quot;) Save Items
+button(ng-click=&quot;subjectsController.deleteSelected()&quot;) Delete Selected
+
+ul
+   li(ng-repeat=&#39;subject in subjectsController.data.subjects&#39;)
+      span {{subject}}
+</code></pre><p>Here is the code for inserting and updating the detailed list of subjects. It belongs, of course, in <strong>public/javascripts/subjects.js</strong>:</p>
 <pre><code>(function() {
 
     var app = angular.module(&#39;elvenApp&#39;);
