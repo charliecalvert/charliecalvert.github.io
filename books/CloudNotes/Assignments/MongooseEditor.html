@@ -329,20 +329,21 @@ that we want to create a REST URL that looks like this:</p>
 are perhaps easier for you to see. Remember that the user name and password are separated
 by a colon:    </p>
 <pre><code>function doConnection() {
-    var baseUrl = &#39;mongodb://&#39;;
-    var namePassword = &#39;csc:Re*lD*t*22#&#39;;
-    var site = &#39;@ds049848.mongolab.com:49848/&#39;
-    var databaseName = &#39;elvenlab01&#39;
-    var url = baseUrl+ namePassword + site + databaseName;
-    mongoose.connect(url);
+  var baseUrl = &#39;mongodb://&#39;;
+  var userName = &#39;csc&#39;;
+  var password = &#39;Re*lD*t*22#&#39;;
+  var siteAndPort = &#39;ds049848.mongolab.com:49848&#39;;
+  var databaseName = &#39;elvenlab01&#39;;
+  var url = baseUrl + userName + &#39;:&#39; + password + &#39;@&#39; + siteAndPort + &#39;/&#39; + databaseName;
+  console.log(url);
+  mongoose.connect(url);
 
-    var db = mongoose.connection;
-    db.on(&#39;error&#39;, console.error.bind(console, &#39;connection error:&#39;));
-    db.once(&#39;open&#39;, function(callback) {
-        connected = true;
-        console.log(&#39;Opened connection to mongo&#39;);
-    });
-
+  var db = mongoose.connection;
+  db.on(&#39;error&#39;, console.error.bind(console, &#39;connection error:&#39;));
+  db.once(&#39;open&#39;, function(callback) {
+    connected = true;
+    console.log(&#39;Opened connection to mongo&#39;);
+  });
 }
 </code></pre><p>We have changed the way several methods in <strong>routes/index.js</strong> work:</p>
 <pre><code>router.get(&#39;/data/:id&#39;, function(request, response) {
