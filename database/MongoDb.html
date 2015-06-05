@@ -7,7 +7,8 @@
 <li><a href="#set-up-a-mongolab-url">Set up a MongoLab URL</a></li>
 <li><a href="#working-with-mongo-data">Working with Mongo Data</a></li>
 <li><a href="#getting-started">Getting Started</a></li>
-<li><a href="#noStart">MongoDb Won&#39;t Start</a></li><!--TOC_End--></ul><h1 id="mongodb">MongoDb</h1>
+<li><a href="#noStart">MongoDb Won&#39;t Start</a></li>
+<li><a href="#mongoose-gyp-bson">Mongoose Gyp and Bson</a></li><!--TOC_End--></ul><h1 id="mongodb">MongoDb</h1>
 <p>MongoDb is no-sql database.</p>
 <ul>
 <li><a href="http://www.mongodb.org/">MongoDb home page</a></li>
@@ -294,5 +295,40 @@ half a gig, but that should be plenty for our needs.</p>
 <li>Remove lockfile: sudo rm /var/lib/mongodb/mongod.lock</li>
 <li>Repair: sudo -u mongodb mongod -f /etc/mongod.conf --repair</li>
 <li>sudo service mongod start</li>
+</ul>
+<h2 id="mongoose-gyp-bson">Mongoose Gyp and Bson</h2>
+<p>You may get a message about C++ BSON not being installed and so the system is falling back on the &quot;pure javascript version&quot;. Please note this is not an error. There is nothing wrong with the pure javascript version other than it being perhaps a bit slower. That will not matter on a development machine in most cases. So I suggest simply living with the messages on your development machine, and fix them only on your production machine.</p>
+<p>If you want to fix them, there are two issues here:</p>
+<ul>
+<li>Installation on Windows</li>
+<li>Installation on Ubuntu Linux</li>
+</ul>
+<p>In this discussion, we will assume that our production environment is an EC2 Ubuntu server. In this scenario, on Windows, we will are only doing development and testing.</p>
+<p>By default, our Ubuntu server does not have a C++ compiler installed. You can test if it does by typing:</p>
+<pre><code>gcc -v 
+</code></pre><p>To install the gcc C++ compiler, first connect to your EC2 instance and ensure your it is up to date:</p>
+<pre><code>sudo apt-get update
+sudo apt-get upgrade
+</code></pre><p>Then install gcc:</p>
+<pre><code>sudo apt-get install build-essential
+</code></pre><p>More details and a reference are <a href="https://help.ubuntu.com/community/InstallingCompilers">here</a></p>
+<p>Now when you type <strong>npm install</strong> or <strong>npm install mongoose --save</strong> at the linux command prompt all will go smoothly.</p>
+<p>On Windows, there is nothing I can see that is wrong with using the &quot;Pure JavaScript version&quot; of bson. It&#39;s going to be slower, but this is only our development environment.  </p>
+<p>So I would just live with the Bson messages, unless you have VS installed already. I don&#39;t really like to install Visual Studio except on a dedicated development machine or in a VM. If, however, you have it installed already, then you should only need to worry about your Python version. I have two versions installed, set up like this:</p>
+<pre><code>C:\Python\Python27
+C:\Python\Python33
+</code></pre><p>I can just change my path to point to the one I want to use at any particular time. One way to do this would be to:</p>
+<ul>
+<li>Create an environment variable called <strong>PYTHON_HOME</strong>. Set it to point to your currently preferred version of Python:</li>
+<li><strong>setx PYTHON_HOME C:\Python\Python27</strong></li>
+<li>Append PYTHON_HOME to your path: <strong>C:\Foo;C:\Bar;%PYTHON_HOME%;</strong></li>
+</ul>
+<p>Now you can just use setx to change the environment variable and then restart your windows command line session:</p>
+<pre><code>setx PYTHON_HOME C:\Python\Python33
+</code></pre><p>You can read about setx here:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/os/windows/faq.html#environment">http://www.elvenware.com/charlie/os/windows/faq.html#environment</a></li>
+<li><a href="http://ss64.com/nt/setx.html">http://ss64.com/nt/setx.html</a></li>
+<li><a href="https://technet.microsoft.com/en-us/library/cc755104.aspx">https://technet.microsoft.com/en-us/library/cc755104.aspx</a></li>
 </ul>
 </div></body></html>
