@@ -154,13 +154,11 @@ var routes = require(&#39;./routes/index&#39;)(passport);
     failureRedirect: &#39;/&#39;
   }));
 </code></pre><p>In <strong>routes/index.js</strong></p>
-<pre><code>// http://code.tutsplus.com/tutorials/authenticating-nodejs-applications-with-passport--cms-21619
-
-var express = require(&#39;express&#39;);
+<pre><code>var express = require(&#39;express&#39;);
 var router = express.Router();
 
-var isAuthenticated = function (req, res, next) {
-    // if user is authenticated in the session, call the next() to call the next request handler 
+var isAuthenticated = function(req, res, next) {
+    // if user is authenticated in the session, call the next() to call the next request handler
     // Passport adds this method to request object. A middleware is allowed to add properties to
     // request and response objects
     if (req.isAuthenticated())
@@ -169,32 +167,30 @@ var isAuthenticated = function (req, res, next) {
     res.redirect(&#39;/&#39;);
 };
 
-module.exports = function(passport){
+module.exports = function(passport) {
 
     router.get(&#39;/&#39;, function(req, res) {
-        res.render(&#39;index&#39;, { title: &quot;sign in&quot; });
+        res.render(&#39;index&#39;, {title: &quot;sign in&quot;});
     });
 
     router.post(&#39;/login&#39;, passport.authenticate(&#39;login&#39;, {
         successRedirect: &#39;/home&#39;,
-        failureRedirect: &#39;/&#39;,
-        failureFlash : true  
+        failureRedirect: &#39;/&#39;
     }));
 
-    router.get(&#39;/signup&#39;, function(req, res){
-        res.render(&#39;register&#39;, {message: req.flash(&#39;message&#39;)});
+    router.get(&#39;/signup&#39;, function(req, res) {
+        res.render(&#39;register&#39;, {});
     });
 
     /* Handle Registration POST */
     router.post(&#39;/signup&#39;, passport.authenticate(&#39;signup&#39;, {
         successRedirect: &#39;/home&#39;,
-        failureRedirect: &#39;/signup&#39;,
-        failureFlash : true  
+        failureRedirect: &#39;/signup&#39;
     }));
 
     /* GET Home Page */
-    router.get(&#39;/home&#39;, isAuthenticated, function(req, res){
-        res.render(&#39;home&#39;, { user: req.user });
+    router.get(&#39;/home&#39;, isAuthenticated, function(req, res) {
+        res.render(&#39;home&#39;, {user: req.user});
     });
 
     router.get(&#39;/signout&#39;, function(req, res) {
@@ -203,7 +199,7 @@ module.exports = function(passport){
     });
 
     return router;
-}
+};
 </code></pre><h2 id="step-five">Step Five</h2>
 <p>Passport</p>
 <p>In <strong>/passport/init.js</strong></p>
