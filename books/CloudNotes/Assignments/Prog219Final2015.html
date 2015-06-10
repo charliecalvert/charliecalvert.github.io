@@ -3,7 +3,10 @@
 <li><a href="#pages">Pages</a></li>
 <li><a href="#database">Database</a></li>
 <li><a href="#jasmine-unit-tests">Jasmine Unit Tests</a></li>
-<li><a href="#extra-credit">Extra Credit</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<li><a href="#extra-credit">Extra Credit</a></li>
+<li><a href="#hints">Hints</a></li>
+<li><a href="#bootswatch">Bootswatch in bower.json</a></li>
+<li><a href="#define-scientists">Define Scientists</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
 <p>This is the final for Prog 219 taken June 2015. Many details are perhaps not filled in yet, but this should be enough to get you started.</p>
 <p>The core goal is to create a web application that runs on AWS with <strong>upstart</strong> and links to a MongoDb database running on MongoLab.</p>
 <h2 id="overview">Overview</h2>
@@ -36,6 +39,8 @@
 <li>Subjects: Add and view topics</li>
 <li>Comments: Add, delete and edit comments</li>
 </ul>
+<p>On all pages you should be able to see the name of the currently selected topic. For instance, here we can see the name of the selected scientist:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/Prog219-Final-2015-01.png" alt="Subjects Name"></p>
 <h2 id="database">Database</h2>
 <p>The following database features should be included</p>
 <ul>
@@ -63,4 +68,30 @@
 </ul>
 </li>
 </ul>
-</div></body></html>
+<h2 id="hints">Hints</h2>
+<p>Some hints</p>
+<h2 id="bootswatch">Bootswatch in bower.json</h2>
+<p>One of your duties as a developer is to make sure that your code can be compiled and run by other developers. Don&#39;t leave mistakes in your code, or in <strong>package.json</strong>, or <strong>bower.json</strong>, that cause build errors. You should test the code that you check in, and make sure it builds.</p>
+<p>In particular, in your bower file, don&#39;t write this:</p>
+<pre><code>&quot;bootswatch&quot;: &quot;~3.3.4+1&quot;
+</code></pre><p>It causes an error when I type <strong>bower install</strong>. Instead, write this, where the tilde has been removed:</p>
+<pre><code>&quot;bootswatch&quot;: &quot;3.3.4+1&quot;
+</code></pre><h3 id="define-scientists">Define Scientists</h3>
+<p>In subdocuments I redefined <strong>models/scientists.js</strong>. Some of that was probably not necessary and will only be confusing. For now, at least, let export only one Schema, but keep the updates to the <strong>comment</strong> schema:</p>
+<pre><code>var mongoose = require(&#39;mongoose&#39;);
+
+var comment = mongoose.Schema({
+    commentText: String,
+    date: { type: Date, default: Date.now }
+});
+
+var scientistsSchema = mongoose.Schema({
+    &quot;firstName&quot;: String,
+    &quot;lastName&quot;: String,
+    &quot;subject&quot;: String,
+    &quot;subjects&quot;: [String],
+    comments: [comment]
+});
+
+module.exports = mongoose.model(&#39;scientist&#39;, scientistsSchema);
+</code></pre></div></body></html>
