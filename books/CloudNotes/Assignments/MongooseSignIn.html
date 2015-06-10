@@ -4,7 +4,9 @@
 <li><a href="#step-two">Step Two</a></li>
 <li><a href="#step-three">Step Three</a></li>
 <li><a href="#step-four">Step Four</a></li>
-<li><a href="#step-five">Step Five</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<li><a href="#step-five">Step Five</a></li>
+<li><a href="#step-six">Step Six</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
 <p>Mongoose sign in has two major parts:</p>
 <ul>
 <li>An interface built in express and jade (no angular) that allows the user to enter a username and password</li>
@@ -59,26 +61,24 @@ html
     block content
 </code></pre><p>In <strong>views/index.jade</strong></p>
 <pre><code>extends layout
-
 block content
-  h1= title
-  p Welcome to #{title}
-
-  div.container
-    div.row
-      div.col-sm-6.col-md-4.col-md-offset-4
-        h1.text-center.login-title Sign in to our Passport app
-          div.account-wall
-            img(class=&#39;profile-img&#39;, src=&#39;images/SpaceNeedle.png&#39;)
-            form(class=&#39;form-signin&#39;, action=&#39;/login&#39;, method=&#39;POST&#39;)
-              input(type=&#39;text&#39;, name=&#39;username&#39; class=&#39;form-control&#39;, placeholder=&#39;UserName&#39;,required, autofocus)
-              input(type=&#39;password&#39;, name=&#39;password&#39; class=&#39;form-control&#39;, placeholder=&#39;Password&#39;, required)
-              button(class=&#39;btn btn-lg btn-primary btn-block&#39;, type=&#39;submit&#39;) Sign in
-              span.clearfix
-          a(href=&#39;/signup&#39;, class=&#39;text-center new-account&#39;) Create an account
-          #message
-          if message
-            h1.text-center.error-message #{message}
+    h1= title
+    p Welcome to #{title}
+    div.container
+        div.row
+            div.col-sm-6.col-md-4.col-md-offset-4
+                h1.text-center.login-title Sign in to our Passport app
+                    div.account-wall
+                        img(class=&#39;profile-img&#39;, src=&#39;images/SpaceNeedle.png&#39;)
+                        form(class=&#39;form-signin&#39;, action=&#39;/login&#39;, method=&#39;POST&#39;)
+                            input(type=&#39;text&#39;, name=&#39;username&#39; class=&#39;form-control&#39;, placeholder=&#39;UserName&#39;,required, autofocus)
+                            input(type=&#39;password&#39;, name=&#39;password&#39; class=&#39;form-control&#39;, placeholder=&#39;Password&#39;, required)
+                            button(class=&#39;btn btn-lg btn-primary btn-block&#39;, type=&#39;submit&#39;) Sign in
+                            span.clearfix
+                    a(href=&#39;/signup&#39;, class=&#39;text-center new-account&#39;) Create an account
+                    #message
+                    if message
+                        h1.text-center.error-message #{message}
 </code></pre><p>in <strong>views/register.jade</strong></p>
 <pre><code>extends layout
 
@@ -101,21 +101,21 @@ block content
                             h1.text-center.error-message #{message}
 </code></pre><p>In <strong>views/home.jade</strong></p>
 <pre><code>extends layout
-
 block content
     div.container
         div.row
             div.col-sm-6.col-md-4.col-md-offset-4
                 #user
                     h1.text-center.login-title Welcome #{user.firstName}. Check your details below:
-                        div.signup-wall
-                            ul.user-details
-                                li Username ---&gt; #{user.username}
-                                li Email    ---&gt; #{user.email}
-                                li First Name ---&gt; #{user.firstName} 
-                                li Last Name ---&gt; #{user.lastName}
-                        a(href=&#39;/signout&#39;, class=&#39;text-center new-account&#39;) Sign Out
-</code></pre><h2 id="step-three">Step Three</h2>
+                    div.signup-wall
+                        ul.user-details
+                            li Username ---&gt; #{user.username}
+                            li Email    ---&gt; #{user.email}
+                            li First Name ---&gt; #{user.firstName}
+                            li Last Name ---&gt; #{user.lastName}
+                    a(href=&#39;/signout&#39;, class=&#39;text-center new-account&#39;) Sign Out
+</code></pre><p>Be careful about the whitespace in these files.</p>
+<h2 id="step-three">Step Three</h2>
 <p>Database Mongoose</p>
 <p>In <strong>app.js</strong>, about line 8.</p>
 <pre><code>var dbConfig = require(&#39;./db&#39;);
@@ -230,39 +230,43 @@ module.exports = function(passport) {
 
 };
 </code></pre><p>In <strong>/passport/login.js</strong></p>
-<pre><code>var LocalStrategy   = require(&#39;passport-local&#39;).Strategy;
+<pre><code>/**
+ * Created by charlie on 6/8/2015.
+ */
+
+var LocalStrategy   = require(&#39;passport-local&#39;).Strategy;
 var User = require(&#39;../models/user&#39;);
 var bCrypt = require(&#39;bcrypt-nodejs&#39;);
 
 module.exports = function(passport) {
 
     passport.use(&#39;login&#39;, new LocalStrategy({
-            passReqToCallback : true
-        },
-        function(req, username, password, done) { 
-            // check in mongo if a user with username exists or not
-            User.findOne({ &#39;username&#39; :  username }, 
-                function(err, user) {
-                    // In case of any error, return using the done method
-                    if (err)
-                        return done(err);
-                    // Username does not exist, log the error and redirect back
-                    if (!user){
-                        console.log(&#39;User Not Found with username &#39;+username);
-                        return done(null, false, req.flash(&#39;message&#39;, &#39;User Not found.&#39;));                 
+                passReqToCallback : true
+            },
+            function(req, username, password, done) {
+                // check in mongo if a user with username exists or not
+                User.findOne({ &#39;username&#39; :  username },
+                    function(err, user) {
+                        // In case of any error, return using the done method
+                        if (err)
+                            return done(err);
+                        // Username does not exist, log the error and redirect back
+                        if (!user){
+                            console.log(&#39;User Not Found with username &#39;+username);
+                            return done(null, false);
+                        }
+                        // User exists but wrong password, log the error
+                        if (!isValidPassword(user, password)){
+                            console.log(&#39;Invalid Password&#39;);
+                            return done(null, false); // redirect back to login page
+                        }
+                        // User and password both match, return user from done method
+                        // which will be treated like success
+                        return done(null, user);
                     }
-                    // User exists but wrong password, log the error 
-                    if (!isValidPassword(user, password)){
-                        console.log(&#39;Invalid Password&#39;);
-                        return done(null, false, req.flash(&#39;message&#39;, &#39;Invalid Password&#39;)); // redirect back to login page
-                    }
-                    // User and password both match, return user from done method
-                    // which will be treated like success
-                    return done(null, user);
-                }
-            );
+                );
 
-        })
+            })
     );
 
 
@@ -331,4 +335,87 @@ module.exports = function(passport){
     }
 
 };
-</code></pre></div></body></html>
+</code></pre><h2 id="step-six">Step Six</h2>
+<p>Add css. Append this to <strong>public/css/style.css</strong>:</p>
+<pre><code>.form-signin{
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-signin .form-signin-heading, .form-signin .checkbox{
+    margin-bottom: 10px;
+}
+.form-signin .checkbox{
+    font-weight: normal;
+}
+.form-signin .form-control{
+    position: relative;
+    font-size: 16px;
+    height: auto;
+    padding: 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.form-signin .form-control:focus{
+    z-index: 2;
+}
+.form-signin input[type=&quot;text&quot;]{
+    margin-bottom: -1px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.form-signin input[type=&quot;password&quot;]{
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.form-signin input[type=&quot;password&quot;].nomargin{
+    margin-bottom: 0px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.account-wall{
+    margin-top: 20px;
+    padding: 40px 0px 20px 0px;
+    background-color: #f7f7f7;
+    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+.signup-wall{
+    margin-top: 20px;
+    padding: 20px 0px 20px 0px;
+    background-color: #f7f7f7;
+    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);    
+}
+.login-title{
+    color: #555;
+    font-size: 18px;
+    font-weight: 400;
+    display: block;
+}
+.profile-img{
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 10px;
+    display: block;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+}
+.new-account{
+    display: block;
+    margin-top: 10px;
+}
+h1.error-message{
+    color: red;
+}
+ul.user-details{
+    list-style: none;
+}
+</code></pre><h2 id="turn-it-in">Turn it in</h2>
+<p>Submit three screen shots as PNG attachments. Each screen shot should contain your first and last names. Also check in your code in <strong>Week10-MongooseSignIn</strong> or some similar name beginning with <strong>Week10</strong>.</p>
+</div></body></html>
