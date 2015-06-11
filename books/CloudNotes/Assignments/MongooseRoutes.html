@@ -46,7 +46,47 @@ point is that this is the menu that will collapse into the hamburger menu:</p>
         title= title
         etc...
 </code></pre><p>The viewport is essential to make it work on a mobile device. See HTML5 Boilerplate web site for latest and details.</p>
-<p>This is the example that I use when I get confused about how to build menus:</p>
+<p>Also add this code to make sure we can see the whole of the jumbotron:</p>
+<pre><code>    .elf-container
+        div.jumbotron
+            h1= title
+            p Welcome to #{title}
+
+        #monogoData(data-ng-view=&quot;&quot;)
+</code></pre><p>And this CSS in <strong>JavaScripts/css/Styles.css</strong>:</p>
+<pre><code>.elf-container {
+  border: solid #004b63 thin;
+  margin-top: 25px;
+</code></pre><p>Here is my code complete:</p>
+<pre><code>extends layout
+block content
+    nav.navbar-default.navbar-fixed-top
+        .container-fluid
+            div.navbar-header
+                button(type=&quot;button&quot; class=&quot;navbar-toggle collapsed&quot; data-toggle=&quot;collapse&quot; data-target=&quot;#myTarget&quot;)
+                    span.sr-only Toggle navigation
+                    span.icon-bar
+                    span.icon-bar
+                    span.icon-bar
+                a.navbar-brand(href=&quot;#/&quot;) Final
+            #myTarget.collapse.navbar-collapse
+                ul.nav.navbar-nav
+                    li(ng-class=&quot;{ active: isActive(&#39;/&#39;)}&quot;)
+                        a(ng-href=&#39;#/&#39;) Home
+                    li(ng-class=&quot;{ active: isActive(&#39;/edit&#39;)}&quot;)
+                        a(ng-href=&#39;#/edit&#39;) Edit
+                    li(ng-class=&quot;{ active: isActive(&#39;/subjects&#39;)}&quot;)
+                        a(ng-href=&#39;#/subjects&#39;) Subjects
+                    li(ng-class=&quot;{ active: isActive(&#39;/comments&#39;)}&quot;)
+                        a(ng-href=&#39;#/comments&#39;) Comments
+                    li(ng-class=&quot;{ active: isActive(&#39;/about&#39;)}&quot;)
+                        a(ng-href=&#39;#/about&#39;) About
+    div.jumbotron
+        h1= title
+        p Welcome to #{title}
+
+    #monogoData(data-ng-view=&quot;&quot;)
+</code></pre><p>This is the example that I use when I get confused about how to build menus:</p>
 <ul>
 <li><a href="http://getbootstrap.com/examples/theme/#">http://getbootstrap.com/examples/theme/#</a></li>
 </ul>
@@ -147,5 +187,10 @@ var app = express();
 <pre><code>app.use(&#39;/&#39;, routes);
 app.use(&#39;/ScienceInfo&#39;, science);
 app.use(&#39;/comments/&#39;, comments);
+</code></pre><p>Here is the way the top of <strong>index.js</strong> looks now:</p>
+<pre><code>var express = require(&#39;express&#39;);
+var router = express.Router();
+var connect = require(&#39;./connect&#39;);
+var scientists = require(&#39;../models/scientists&#39;);
 </code></pre><h2 id="routing-login">Routing Login</h2>
 </div></body></html>
