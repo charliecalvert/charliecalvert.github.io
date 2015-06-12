@@ -1,0 +1,166 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><title>MongooseComments</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body ng-app="elfApp"><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>MongooseComments</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#description">Description</a></li>
+<li><a href="#step-one">Step One</a></li>
+<li><a href="#step-two">Step Two</a></li>
+<li><a href="#step-three">Step Three</a></li>
+<li><a href="#step-four">Step Four</a></li>
+<li><a href="#step-five">Step Five</a></li>
+<li><a href="#step-five">Step Five</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<p>See how to refactor MongooseSubDocs in to a program with easily reusable components.</p>
+<h2 id="step-one">Step One</h2>
+<p>Copy MongooseSubDocs into <strong>Week11-MongooseComments</strong>:</p>
+<pre><code>robocopy Week10-MongooseSubdocs Week11-MongooseComments /mir
+</code></pre><p>Open <strong>Week11-MongooseComments</strong> in WebStorm and change the name from MongooseSubDocs to MongooseComments.</p>
+<h2 id="step-two">Step Two</h2>
+<p>Handle connection to the MongoDb database.</p>
+<p>The goal here is to create a share-able file that can be used when we need to connect to our database. This is needed because our new application is going to have two pieces of middleware both of which need to connect to the Mongoose database:</p>
+<ul>
+<li><strong>routes/index.js</strong>  will be able to retrieve all the data from the database. In our final, this file might be also used for other tasks such as inserting and deleting scientists and updating the subjects. In short, it handles everything except the comments.</li>
+<li><strong>routes/comments.js</strong> will only handle comments. The point is that the CRUD operations for comments are complex enough that they belongs in their own module. We are following the rule that says each object should do one thing and have only one reason for change. The <strong>comments.js</strong> module follows that rule reasonable well, in that it only will change if our technique for handling <strong>comments</strong> changes.</li>
+</ul>
+<p><strong>NOTE</strong>: <em>It is arguable that we could break more code out of <strong>index.js</strong> and into its own middleware file. I would, in fact, do that, but we have simply run out of time this quarter.</em></p>
+<p>Here is the <strong>connect.js</strong> file that handles the connection to the mongoose database for both <strong>routes/index.js</strong> and <strong>routes/comments.js</strong>:</p>
+<pre><code class="lang-javascript">var mongoose = require(&#39;mongoose&#39;);
+
+var connect = {
+
+    connected: false,
+
+    doConnection: function() {
+        connect.connected = true;
+        var userName = &#39;csc&#39;;
+        var password = &#39;Re*lD*t*22#&#39;;
+        var siteAndPort = &#39;ds049848.mongolab.com:49848&#39;;
+        var databaseName = &#39;elvenlab01&#39;;
+        var url = &#39;mongodb://&#39; + userName + &#39;:&#39; + password + &#39;@&#39; + siteAndPort + &#39;/&#39; + databaseName;
+        console.log(url);
+        mongoose.connect(url);
+
+        // This part is optional
+        var db = mongoose.connection;
+        db.on(&#39;error&#39;, console.error.bind(console, &#39;connection error:&#39;));
+        db.once(&#39;open&#39;, function(callback) {
+            connected = true;
+            console.log(&#39;Opened connection to mongo&#39;);
+        });
+    }
+};
+
+module.exports = connect;
+</code></pre>
+<h2 id="step-three">Step Three</h2>
+<p>Create <strong>routes/comments.js</strong>. </p>
+<ul>
+<li>Right click on the <strong>routes</strong> folder and create a new file called <strong>comments.js</strong>.</li>
+</ul>
+<p>At the top of <strong>routes/comments.js</strong> paste in this code:</p>
+<pre><code>var express = require(&#39;express&#39;);
+var router = express.Router();
+var connect = require(&#39;./connect&#39;);
+var scientists = require(&#39;../models/scientists&#39;);
+</code></pre><p>First we load express and the router, just as we do at the top of all the <strong>middleware</strong> files in the <strong>routes</strong> folder. Then we link in our new connection code and our existing <strong>scientists</strong> model.</p>
+<ul>
+<li>Cut the entirety of the following methods from <strong>index.js</strong> and paste them into <strong>comments.js</strong><ul>
+<li><strong>router.post(&#39;/newComment&#39;, etc...</strong></li>
+<li><strong>function remove(arr, item) {  etc...</strong></li>
+<li><strong>router.post(&#39;/deleteComment&#39;, function(request, response) { etc...</strong></li>
+<li><strong>router.post(&#39;/updateComments&#39;, function(request, response) { etc...</strong></li>
+</ul>
+</li>
+<li>Also copy this line to the very end of <strong>comments.js</strong>:<ul>
+<li><strong>module.exports = router;</strong></li>
+</ul>
+</li>
+</ul>
+<p>The final step is to modify the way we handle connecting to the database. Take a close look at the beginning of <strong>connect.js</strong> above. Notice that we have declared a <strong>boolean</strong> property of the <strong>connect</strong> object that records whether or not we are already connected.</p>
+<p>Inside <strong>routes/comments.js</strong> we use that <strong>connected</strong> property, and the <strong>doConnection</strong> method itself, like this:</p>
+<pre><code class="lang-javascript">if (!connect.connected) {
+    connect.doConnection();
+}
+</code></pre>
+<p>You should work your way through comments.js and make sure all the calls that check for the connection to the database now look like the code shown above. In other words, you want to transform code like the following into the code shown above:</p>
+<pre><code class="lang-javascript">if (!connected) {
+    doConnection();
+}
+</code></pre>
+<p>Your should have to make three such substitutions, one at the top of each methods in <strong>comments.js</strong>.</p>
+<p>Your copy of <strong>models/scientists.js</strong> may already look like this, but just to avoid confusion, the version of that file I&#39;m using in this project looks like this:</p>
+<pre><code>/**
+ * Created by charlie on 6/6/2015.
+ */
+
+var mongoose = require(&#39;mongoose&#39;);
+
+var commentSchema = mongoose.Schema({
+    commentText: String,
+    date: { type: Date, default: Date.now }
+});
+
+var scientistsSchema = mongoose.Schema({
+    &quot;firstName&quot;: String,
+    &quot;lastName&quot;: String,
+    &quot;subject&quot;: String,
+    &quot;subjects&quot;: [String],
+    comments: [commentSchema]
+});
+
+module.exports = mongoose.model(&#39;scientist&#39;, scientistsSchema);
+</code></pre><p>Notice the <strong>exports</strong> statement as it may vary slightly from the version on your system. It is important to get it right as other code in this document depends on it.</p>
+<h2 id="step-four">Step Four</h2>
+<p>Link in your new <strong>routes/comments.js</strong> middleware. We want this new <strong>comments</strong> module to be included in our program, so we have to tell <strong>express</strong> to call it whenever a request for an operation on our comments comes in. All our comment operations will have have the routes <strong>/coment</strong> prepended to them.</p>
+<p>You can begin by loading the <strong>comments</strong> module. In the following code, the first two lines, and last line, are included only for context. It is the third line that you want to add to the server side <strong>/app.js</strong> file:</p>
+<pre><code class="lang-javascript">var routes = require(&#39;./routes/index&#39;);
+var users = require(&#39;./routes/users&#39;);
+var comments = require(&#39;./routes/comments&#39;);
+
+var app = express();
+</code></pre>
+<p>Now tell express to include your <strong>comments</strong> middleware in the chain of code it calls when requests to handle comments are passed to the server from the client. Again, the first two lines are included here only for context, only to help you find the place in <strong>app.js</strong> to add our new line of code:</p>
+<pre><code class="lang-javascript">app.use(&#39;/&#39;, routes);
+app.use(&#39;/users&#39;, users);
+app.use(&#39;/comments&#39;, comments);
+</code></pre>
+<h2 id="step-five">Step Five</h2>
+<p>Modify <strong>index.js</strong> to work with our new connection model.</p>
+<p>Here is the way the top of <strong>index.js</strong> should now look:</p>
+<pre><code>var express = require(&#39;express&#39;);
+var router = express.Router();
+var connect = require(&#39;./connect&#39;);
+var scientists = require(&#39;../models/scientists&#39;);
+var fs = require(&#39;fs&#39;);
+</code></pre><p>The key point is that we are now linking in the new <strong>routes/connect.js</strong> module.</p>
+<p>Since the <strong>doConnection</strong> method is now in <strong>connect.js</strong>, you should delete <strong>doConnection</strong> from <strong>routes/index.js</strong>. You should also delete the variable called <strong>connected</strong>. You should also change all the calls to <strong>doConnection</strong> as described in an earlier step.</p>
+<h2 id="step-five">Step Five</h2>
+<p>Let&#39;s now switch over to the client side and create a <strong>javascripts/comments.js</strong> file that mirrors the <strong>routes/comments.js</strong> file on the server side. </p>
+<p>Create a file called <strong>javascripts/comments-factory.js</strong>. Start it out with boilerplate code:</p>
+<pre><code class="lang-javascript">
+(function() {
+
+    var app = angular.module(&#39;elvenApp&#39;);
+
+    app.factory(&#39;commentFactory&#39;, function($http) {
+
+            var commentsFactory = {
+
+                // Insert comment methods here
+
+            }
+
+            return commentsFactory;    
+        });
+});
+</code></pre>
+<p>Cut the following methods from <strong>mongo-factory.js</strong> and paste them into <strong>comments-factory</strong> in the designated location:</p>
+<ul>
+<li><strong>newComment</strong></li>
+<li><strong>updateComment</strong></li>
+<li><strong>deleteComment</strong></li>
+</ul>
+<p>Make sure that the factory in <strong>mongo-factory</strong> is called <strong>mongoFactory</strong> and the factory in <strong>comments-factory</strong> is called <strong>commentsFactory</strong>. Double check to make sure you got it right.</p>
+<p>Now change all the <strong>HTTP</strong> REST calls to make sure they are using the route to our new middleware. In particular, change calls that look like this:</p>
+<pre><code>$http.post(&#39;/newComment&#39;
+</code></pre><p>Now they should use our new route to the middleware found in <strong>routes/comments.js</strong>:</p>
+<pre><code>$http.post(&#39;/comments/newComment&#39;
+</code></pre><p>Recall that we set that middleware up in <strong>/app.js</strong> with this line of code:</p>
+<pre><code>app.use(&#39;/comments&#39;, comments);
+</code></pre><p>Congrats. You now have everything set up correctly. In addition, it should be relatively trivial for you to move this code into your <strong>Final</strong> project.</p>
+</div></body></html>

@@ -15,15 +15,15 @@
 <pre><code>nav.navbar-default.navbar-fixed-top
     .container-fluid
 </code></pre><p>Inside the div with the class <strong>container-fluid</strong> we want to put two more divs. The first is the hamburger menu:</p>
-<pre><code>div.navbar-header
+<pre><code>.navbar-header
     button(type=&quot;button&quot; class=&quot;navbar-toggle collapsed&quot; data-toggle=&quot;collapse&quot; data-target=&quot;#myTarget&quot;)
         span.sr-only Toggle navigation
             span.icon-bar
             span.icon-bar
             span.icon-bar
         a.navbar-brand(href=&quot;#/&quot;) Final
-</code></pre><p>Then we put in our menu, giving it the same id as the data-target from <strong>navbar-header</strong>. The
-point is that this is the menu that will collapse into the hamburger menu:</p>
+</code></pre><p>The hamburger menu is boilerplate. It will look the same in all code, with the exception of the last line, <strong>navbar-brand</strong> which is the title of your application. The <strong>data-target</strong> can also change, as explained below.</p>
+<p>Then we put in our menu, giving it the same id as the <strong>data-target</strong> from <strong>navbar-header</strong>. The ID we assign to <strong>data-target</strong> ties this list of menu items to the hamburger menu. It is what tells <strong>bootstrap</strong> what to show when the user selects the hamburger menu. The point is that this is the menu that will collapse into the hamburger menu:</p>
 <pre><code>#myTarget.collapse.navbar-collapse
     ul.nav.navbar-nav
         li(ng-class=&quot;{ active: isActive(&#39;/&#39;)}&quot;)
@@ -57,12 +57,17 @@ point is that this is the menu that will collapse into the hamburger menu:</p>
 <pre><code>.elf-container {
   border: solid #004b63 thin;
   margin-top: 25px;
-</code></pre><p>Here is my code complete:</p>
+</code></pre><p>Below is my complete for my menus. It&#39;s nice to be able to just paste this in, but it is much better if you can see the two main sections:</p>
+<ul>
+<li>The Hamburger menu which is the begings with <strong>.navbar-header</strong></li>
+<li>The menu items, which bigin with the div labeled <strong>#myTarget.collapse.navbar-collapse</strong></li>
+<li>Notice that the id <strong>#myTarget</strong> ties the two sections together. If you don&#39;t match the two ids, then when you click on the hamburger menu, nothing happens.</li>
+</ul>
 <pre><code>extends layout
 block content
     nav.navbar-default.navbar-fixed-top
         .container-fluid
-            div.navbar-header
+            .navbar-header
                 button(type=&quot;button&quot; class=&quot;navbar-toggle collapsed&quot; data-toggle=&quot;collapse&quot; data-target=&quot;#myTarget&quot;)
                     span.sr-only Toggle navigation
                     span.icon-bar
@@ -102,10 +107,11 @@ callback allows you to compare two items from the array, returning:</p>
 </ul>
 <p>Lets assume we have a simple object with an id and name. We place these
 objects in an array:</p>
-<pre><code>    var allNames = [{id: scientist._id, name: scientist.firstName + &#39; &#39; + scientist.lastName}];
-</code></pre><p>Here we have only one item in the array, but if we had more items we would
+<pre><code class="lang-javascript">    var allNames = [{id: scientist._id, name: scientist.firstName + &#39; &#39; + scientist.lastName}];
+</code></pre>
+<p>Here we have only one item in the array, but if we had more items we would
 want to sort the array by name. We could approach that task like this:</p>
-<pre><code>allDataNames.sort(function(scientistA, scientistB) {
+<pre><code class="lang-javascript">allDataNames.sort(function(scientistA, scientistB) {
     if (scientistA.name &gt; scientistB.name) {
         return 1;
     }
@@ -115,10 +121,11 @@ want to sort the array by name. We could approach that task like this:</p>
     // a must be equal to b
     return 0;
 });
-</code></pre><h2 id="routing-comments">Routing Comments</h2>
+</code></pre>
+<h2 id="routing-comments">Routing Comments</h2>
 <p>We need to set up a separate route for comments. This means making edits to the server side <strong>app.js</strong> and adding a new file called <strong>routes/comment.js</strong>.</p>
 <p>We should also have a separate http factory. It contains everything from our subdocs code that is not already in mongoFactory. In particular, get the code for updating, inserting and deleting comments. Here is the beginning of <strong>public/javascripts/comment-factory.js</strong>.</p>
-<pre><code>(function() {
+<pre><code class="lang-javascript">(function() {
 
     var app = angular.module(&#39;elvenApp&#39;);
 
@@ -128,13 +135,12 @@ want to sort the array by name. We could approach that task like this:</p>
 
             newComment: function(scientist, text) {
                 etc...
-</code></pre><p>The methods are <strong>newComment</strong>, <strong>updateComment</strong> and <strong>deleteComment</strong>. You will also need a <strong>routes/comments.js</strong> file that contains the three corresponding routes from the subdocs <strong>routes/index.js</strong> assignment. The top of <strong>routes/comments.js</strong> looks like this:</p>
-<pre><code>var express = require(&#39;express&#39;);
+</code></pre>
+<p>The methods are <strong>newComment</strong>, <strong>updateComment</strong> and <strong>deleteComment</strong>. You will also need a <strong>routes/comments.js</strong> file that contains the three corresponding routes from the subdocs <strong>routes/index.js</strong> assignment. The top of <strong>routes/comments.js</strong> looks like this:</p>
+<pre><code class="lang-javascript">var express = require(&#39;express&#39;);
 var router = express.Router();
 var connect = require(&#39;./connect&#39;);
 var scientists = require(&#39;../models/scientists&#39;);
-var fs = require(&#39;fs&#39;);
-
 
 router.post(&#39;/newComment&#39;, function(request, response) {
 
@@ -145,8 +151,35 @@ router.post(&#39;/newComment&#39;, function(request, response) {
 console.log(&#39;newComments called. Body is next: &#39;);
 
 etc...
-</code></pre><p>Because you now have two files that need to connect to the MongoDb database, you will probably want to create a file called <strong>routes/connect.js</strong> that you use in both <strong>routes/index.js</strong> and in <strong>routes/comments.js</strong>. It might look like this:</p>
-<pre><code>var mongoose = require(&#39;mongoose&#39;);
+</code></pre>
+<p>Don&#39;t forget to export the router at the end of <strong>routes/comments.js</strong>:</p>
+<pre><code class="lang-javascript">router.post(&#39;/updateComments&#39;, function(request, response) {
+    if (!connect.connected) {
+        connect.doConnection();
+    }
+
+    console.log(&#39;updateComments called. Body is next: &#39;);
+    console.log(request.body);
+    console.log(request.body.comments);
+    scientists.update({_id: request.body.id}, {
+            $set: {
+                comments: request.body.comments
+            }
+        },
+        function(err, electionObject) {
+            console.log(err, electionObject);
+            if (err) {
+                console.log(err);
+            }
+            response.send({result: &#39;Success&#39;, electionObject: electionObject});
+        }
+    );
+});
+
+module.exports = router;
+</code></pre>
+<p>Because you now have two files that need to connect to the MongoDb database, you will probably want to create a file called <strong>routes/connect.js</strong> that you use in both <strong>routes/index.js</strong> and in <strong>routes/comments.js</strong>. Your new <strong>routes/connect.js</strong> file might look like this:</p>
+<pre><code class="lang-javascript">var mongoose = require(&#39;mongoose&#39;);
 
 var connect = {
 
@@ -173,7 +206,8 @@ var connect = {
 };
 
 module.exports = connect;
-</code></pre><p>Take a close look at the beginning of <strong>newComments</strong> above. Notice how it ensures you are connected before trying to access the database:</p>
+</code></pre>
+<p>Take a close look at the beginning of <strong>newComments</strong> above. Notice how it ensures you are connected before trying to access the database:</p>
 <pre><code>if (!connect.connected) {
     connect.doConnection();
 }
@@ -192,5 +226,7 @@ app.use(&#39;/comments/&#39;, comments);
 var router = express.Router();
 var connect = require(&#39;./connect&#39;);
 var scientists = require(&#39;../models/scientists&#39;);
-</code></pre><h2 id="routing-login">Routing Login</h2>
+var fs = require(&#39;fs&#39;);
+</code></pre><p>You should also delete <strong>doConnection</strong> and the variable called <strong>connected</strong>.</p>
+<h2 id="routing-login">Routing Login</h2>
 </div></body></html>
