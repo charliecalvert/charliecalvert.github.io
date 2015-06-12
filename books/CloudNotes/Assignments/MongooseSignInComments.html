@@ -1,0 +1,250 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><title>MongooseSignInComments</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body ng-app="elfApp"><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>MongooseSignInComments</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#description">Description</a></li>
+<li><a href="#step-one">Step One</a></li>
+<li><a href="#step-two">Step Two</a></li>
+<li><a href="#step-three">Step Three</a></li>
+<li><a href="#step-four">Step Four</a></li>
+<li><a href="#step-five">Step Five</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<p>This assignment is not complete yet. I give it to you only because it contains enough information to show some of you how to use sign in with angular.</p>
+<p>tldr: replace this method from the routes folder:</p>
+<pre><code>router.post(&#39;/login&#39;, passport.authenticate(&#39;login&#39;, {
+    successRedirect: &#39;/#/home&#39;,
+    failureRedirect: &#39;/&#39;
+}));
+</code></pre><p>With this one:</p>
+<pre><code>router.post(&#39;/login&#39;, passport.authenticate(&#39;login&#39;),
+    function(req, res) {
+        res.send(req.user);
+});
+</code></pre><p>SignIn and Comments in one program with a menu.</p>
+<p>Found a <a href="https://vickev.com/#!/article/authentication-in-single-page-applications-node-js-passportjs-angularjs">good article</a> on password and angular. The <a href="https://github.com/Anomen/AuthenticationAngularJS">code</a> is available and that is how I knew to replace the method shown above.</p>
+<h2 id="step-one">Step One</h2>
+<p>Copy the MongooseComments program into a new folder:</p>
+<pre><code>robocopy Week11-MongooseComments Week11-SignInComment /mir
+</code></pre><p>Open the project in WebStorm and rename it the project to <strong>SignInComment</strong>.</p>
+<p>Install the tools we will need:</p>
+<pre><code>npm install bcrypt-nodejs --save
+npm install passport --save
+npm install passport-local --save
+npm install express-session --save
+bower install angular-route --save
+</code></pre><h2 id="step-two">Step Two</h2>
+<p>Add a menu</p>
+<p>In <strong>layout.jade</strong>, copy in meta tags to prepare for use in a mobile device:</p>
+<pre><code>doctype html
+html
+    head
+        meta(charset=&#39;utf-8&#39;)
+        meta(name=&#39;description&#39;, content=&#39;Final by Charlie Calvert for Prog 219 Spring 2015&#39;)
+        meta(name=&#39;viewport&#39;, content=&#39;width=device-width, initial-scale=1&#39;)
+        title= title
+</code></pre><p>Then also load <strong>angular-route</strong> and <strong>app.js</strong></p>
+<pre><code>    script(src=&quot;components/angular-route/angular-route.js&quot;)
+    script(src=&quot;javascripts/app.js&quot;)
+</code></pre><p>Then in <strong>index.jade</strong>, paste in the menu we have used in other programs, where I have include a few extra lines to provide context:</p>
+<pre><code>extends layout
+block content
+    nav.navbar-default.navbar-fixed-top
+        .container-fluid
+            .navbar-header
+                button(type=&quot;button&quot; class=&quot;navbar-toggle collapsed&quot; data-toggle=&quot;collapse&quot; data-target=&quot;#myTarget&quot;)
+                    span.sr-only Toggle navigation
+                    span.icon-bar
+                    span.icon-bar
+                    span.icon-bar
+                a.navbar-brand(href=&quot;#/&quot;) Final
+            #myTarget.collapse.navbar-collapse
+                ul.nav.navbar-nav
+                    li(ng-class=&quot;{ active: isActive(&#39;/&#39;)}&quot;)
+                        a(ng-href=&#39;#/&#39;) Home
+                    li(ng-class=&quot;{ active: isActive(&#39;/comments&#39;)}&quot;)
+                        a(ng-href=&#39;#/comments&#39;) Comments
+                    li(ng-class=&quot;{ active: isActive(&#39;/login&#39;)}&quot;)
+                        a(ng-href=&#39;#/login&#39;) Login
+
+
+            h1= title
+            p Welcome to #{title}
+                        div(data-ng-view=&quot;&quot;)
+</code></pre><h2 id="step-three">Step Three</h2>
+<p>Link in the passport sign in code.</p>
+<ul>
+<li>Copy the passport folder from the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/MongooseSignIn.html">sign in project</a>. It includes three files:<ul>
+<li>init.js</li>
+<li>login.js</li>
+<li>signup.js</li>
+</ul>
+</li>
+</ul>
+<p>From the sign in project, copy <strong>models/user.js</strong> and place it in the <strong>models</strong> folder of this project.</p>
+<pre><code class="lang-javascript">var mongoose = require(&#39;mongoose&#39;);
+
+var userSchema = mongoose.Schema({
+    id: String,
+    firstName: String,
+    lastName: String,
+    username: String,
+    password: String,
+    email: String
+});
+
+module.exports = mongoose.model(&#39;User&#39;, userSchema);
+</code></pre>
+<p>Copy <strong>SpaceNeedle.png</strong> or some similar file into <strong>public/images</strong>.</p>
+<p>Copy in the CSS from the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/MongooseSignIn.html">SignIn</a> assignment.</p>
+<h2 id="step-four">Step Four</h2>
+<p>Most things on the backend for passport are the same. Just make sure you get rid of all references to <strong>flash</strong>. </p>
+<p>We are going to create a file called <strong>routes/login.js</strong>. It provides new middleware routes for logging in. This is like the example code from the previous example that was found in <strong>routes/index.js</strong>, but now we don&#39;t invoke it off the main route (&#39;/&#39;), instead we have <strong>login</strong> route (&#39;/login&#39;). </p>
+<p>Here are the changes to make in <strong>app.js</strong>. You can keep the loading of routes middleware the same: </p>
+<pre><code>var routes = require(&#39;./routes/index&#39;);
+var users = require(&#39;./routes/users&#39;);
+var comments = require(&#39;./routes/comments&#39;);
+</code></pre><p>And then further down we have code that is quite similar to the original example:</p>
+<pre><code>// Configuring Passport
+var passport = require(&#39;passport&#39;);
+var expressSession = require(&#39;express-session&#39;);
+app.use(expressSession({
+      secret: &#39;mySecretKey&#39;,
+      resave: true,
+      saveUninitialized: true
+    })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Using the flash middleware provided by connect-flash to store messages in session
+// and displaying in templates
+// var flash = require(&#39;connect-flash&#39;);
+// app.use(flash());
+
+// Initialize Passport
+var initPassport = require(&#39;./passport/init&#39;);
+initPassport(passport);
+
+var login = require(&#39;./routes/login&#39;)(passport);
+app.use(&#39;/&#39;, routes);
+app.use(&#39;/users&#39;, users);
+app.use(&#39;/comments&#39;, comments);
+app.use(&#39;/login&#39;, login);
+</code></pre><p>The key line is the last one, where we load the new middleware for handling our new <strong>login</strong> route.</p>
+<p>And below you see <strong>routes/login.js</strong>. Notice that this is pretty much the same as in our login example, but the <strong>post(&#39;/login&#39;</strong> method has been replaced (I commented out the old version):</p>
+<pre><code>/**
+ * Created by charlie on 6/11/2015.
+ */
+
+var express = require(&#39;express&#39;);
+var router = express.Router();
+
+var isAuthenticated = function(req, res, next) {
+    // if user is authenticated in the session, call the next() to call the next request handler
+    // Passport adds this method to request object. A middleware is allowed to add properties to
+    // request and response objects
+    if (req.isAuthenticated())
+        return next();
+    // if the user is not authenticated then redirect him to the login page
+    res.redirect(&#39;/&#39;);
+};
+
+module.exports = function(passport) {
+    router.get(&#39;/&#39;, function(req, res) {
+        res.render(&#39;index&#39;, {title: &quot;sign in&quot;});
+    });
+
+    /*
+    router.post(&#39;/login&#39;, passport.authenticate(&#39;login&#39;, {
+        successRedirect: &#39;/#/home&#39;,
+        failureRedirect: &#39;/&#39;
+    })); */
+
+    router.post(&#39;/login&#39;, passport.authenticate(&#39;login&#39;),
+        function(req, res) {
+            res.send(req.user);
+    });
+
+        router.get(&#39;/signup&#39;, function(req, res) {
+        res.render(&#39;register&#39;, {});
+    });
+
+    /* Handle Registration POST */
+    router.post(&#39;/signup&#39;, passport.authenticate(&#39;signup&#39;, {
+        successRedirect: &#39;/home&#39;,
+        failureRedirect: &#39;/signup&#39;
+    }));
+
+    /* GET Home Page */
+    router.get(&#39;/home&#39;, isAuthenticated, function(req, res) {
+        res.render(&#39;home&#39;, {user: req.user});
+    });
+
+    router.get(&#39;/signout&#39;, function(req, res) {
+        req.logout();
+        res.redirect(&#39;/&#39;);
+    });
+
+    return router;
+};
+</code></pre><h2 id="step-five">Step Five</h2>
+<p>We need a login route in app.js:</p>
+<pre><code>var myModule = angular.module(&quot;elvenApp&quot;, [ &#39;ngRoute&#39; ]);
+
+myModule.config(function($routeProvider, $locationProvider) {
+    $routeProvider.when(&quot;/&quot;, {
+        templateUrl : &quot;main&quot;,
+        controller : &quot;MainController&quot;,
+        controllerAs: &quot;mainController&quot;
+    }).when(&#39;/comments&#39;, {
+        templateUrl : &quot;comments&quot;,
+        controller : &quot;CommentsController&quot;,
+        controllerAs: &#39;commentsController&#39;
+    }).when(&#39;/login&#39;, {
+        templateUrl : &quot;login&quot;,
+        controller : &quot;LoginController&quot;,
+        controllerAs: &#39;loginController&#39;
+    }).otherwise({
+        redirectTo : &#39;/&#39;
+    });
+});
+</code></pre><p>This is your updated login jade, which has been adapted to work with angular:</p>
+<pre><code>extends layout
+block content
+   div.container
+      #main.row
+         div.col-sm-6.col-md-4.col-md-offset-4
+            h1.text-center.login-title {{loginController.hint}}
+               div.account-wall
+                  img(class=&#39;profile-img&#39;, src=&#39;images/SpaceNeedle.png&#39;)
+                  form.form-signin(novalidate=&#39;&#39;)
+                     input.form-control(type=&#39;text&#39;, ng-model=&#39;loginController.userName&#39; placeholder=&#39;UserName&#39;,required, autofocus)
+                     input.form-control(type=&#39;password&#39;, ng-model=&#39;loginController.password&#39; placeholder=&#39;Password&#39;, required)
+                     button.btn.btn-lg.btn-primary.btn-block(type=&#39;submit&#39;, ng-click=&#39;loginController.update()&#39;) Sign in
+                     span.clearfix
+               a(href=&#39;/login/signup&#39;, class=&#39;text-center new-account&#39;) Create an account
+               #message
+               if message
+                  h1.text-center.error-message #{message}
+</code></pre><p>This is your login controller:</p>
+<pre><code>/**
+ * Created by charlie on 6/11/2015.
+ */
+
+var app = angular.module(&#39;elvenApp&#39;);
+
+app.controller(&#39;LoginController&#39;, function($http, $location) {
+    var loginController = this;
+    loginController.hint = &quot;Sign in&quot;;
+
+    loginController.update = function() {
+        $http.post(&#39;/login/login/&#39;, {&quot;username&quot;: loginController.userName, &quot;password&quot;: loginController.password}).success(function(data) {
+            $location.path(&#39;/&#39;);
+        }).error(function(err) {
+            loginController.hint = &#39;Bad Password/User. Try again&#39;;
+        })
+    }
+});
+</code></pre><p>Notice how it works. We have two paths:</p>
+<ul>
+<li>success</li>
+<li>error</li>
+</ul>
+<p>If the user is logged in successfully the success path is invoked and the user is redirected back to the home page. If the error path is invoked, then a hint is displayed telling the user to try again.</p>
+<p>We don&#39;t have signup working at this time. If you need to create a user, for now use the signup <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/MongooseSignIn.html">assignment</a> example to create the user, then switch back to this code.</p>
+</div></body></html>
