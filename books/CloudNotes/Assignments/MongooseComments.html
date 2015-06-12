@@ -4,8 +4,17 @@
 <li><a href="#step-three">Step Three</a></li>
 <li><a href="#step-four">Step Four</a></li>
 <li><a href="#step-five">Step Five</a></li>
-<li><a href="#step-five">Step Five</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
-<p>See how to refactor MongooseSubDocs in to a program with easily reusable components.</p>
+<li><a href="#step-five">Step Five</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<p>Learn how to refactor <strong>MongooseSubDocs</strong> in to a program with easily reusable components. In particular, learn how to break out the code for handling comments into two separate modules called:</p>
+<ul>
+<li><strong>routes/comments.js</strong></li>
+<li><strong>public/javascripts/comment-factory.js</strong></li>
+</ul>
+<p>You will also create a new file for handling connections to a MongoDb database. That file is called:</p>
+<p>-- <strong>routes/connect.js</strong> </p>
+<p>Some changes will also be made to the <strong>routes/index.js</strong> file in <strong>MongooseSubDocs</strong></p>
+<p><strong>NOTE</strong>: <em>If you have already completed this assignment as part of <strong>MongooseRoutes</strong>, then you can simply point me toward that assignment when you turn in this assignment.</em></p>
 <h2 id="step-one">Step One</h2>
 <p>Copy MongooseSubDocs into <strong>Week11-MongooseComments</strong>:</p>
 <pre><code>robocopy Week10-MongooseSubdocs Week11-MongooseComments /mir
@@ -131,7 +140,7 @@ var fs = require(&#39;fs&#39;);
 <p>Since the <strong>doConnection</strong> method is now in <strong>connect.js</strong>, you should delete <strong>doConnection</strong> from <strong>routes/index.js</strong>. You should also delete the variable called <strong>connected</strong>. You should also change all the calls to <strong>doConnection</strong> as described in an earlier step.</p>
 <h2 id="step-five">Step Five</h2>
 <p>Let&#39;s now switch over to the client side and create a <strong>javascripts/comments.js</strong> file that mirrors the <strong>routes/comments.js</strong> file on the server side. </p>
-<p>Create a file called <strong>javascripts/comments-factory.js</strong>. Start it out with boilerplate code:</p>
+<p>Create a file called <strong>javascripts/comment-factory.js</strong>. Start it out with boilerplate code:</p>
 <pre><code class="lang-javascript">
 (function() {
 
@@ -139,28 +148,36 @@ var fs = require(&#39;fs&#39;);
 
     app.factory(&#39;commentFactory&#39;, function($http) {
 
-            var commentsFactory = {
+            var commentFactory = {
 
                 // Insert comment methods here
 
-            }
+            };
 
-            return commentsFactory;    
+            return commentFactory;    
         });
-});
+})();
 </code></pre>
-<p>Cut the following methods from <strong>mongo-factory.js</strong> and paste them into <strong>comments-factory</strong> in the designated location:</p>
+<p>Cut the following methods from <strong>mongo-factory.js</strong> and paste them into <strong>comment-factory</strong> in the designated location:</p>
 <ul>
 <li><strong>newComment</strong></li>
 <li><strong>updateComment</strong></li>
 <li><strong>deleteComment</strong></li>
 </ul>
-<p>Make sure that the factory in <strong>mongo-factory</strong> is called <strong>mongoFactory</strong> and the factory in <strong>comments-factory</strong> is called <strong>commentsFactory</strong>. Double check to make sure you got it right.</p>
+<p>Make sure that the factory in <strong>mongo-factory</strong> is called <strong>mongoFactory</strong> and the factory in <strong>comment-factory</strong> is called <strong>commentFactory</strong>. Double check to make sure you got it right.</p>
 <p>Now change all the <strong>HTTP</strong> REST calls to make sure they are using the route to our new middleware. In particular, change calls that look like this:</p>
 <pre><code>$http.post(&#39;/newComment&#39;
 </code></pre><p>Now they should use our new route to the middleware found in <strong>routes/comments.js</strong>:</p>
 <pre><code>$http.post(&#39;/comments/newComment&#39;
 </code></pre><p>Recall that we set that middleware up in <strong>/app.js</strong> with this line of code:</p>
 <pre><code>app.use(&#39;/comments&#39;, comments);
-</code></pre><p>Congrats. You now have everything set up correctly. In addition, it should be relatively trivial for you to move this code into your <strong>Final</strong> project.</p>
+</code></pre><p>In layout.jade, link in comments:</p>
+<pre><code>    script(src=&quot;javascripts/comment-factory.js&quot;)
+    script(src=&quot;javascripts/mongo-factory.js&quot;)
+</code></pre><p>At the top of <strong>control.js</strong>, link in both <strong>mongoFactory</strong> and <strong>commentFactory</strong>:</p>
+<pre><code>app.controller(&#39;MainController&#39;, function(mongoFactory, commentFactory) {
+</code></pre><p>Go through each method in <strong>control.js</strong> and make sure it is calling into the proper factory. Some call into <strong>commentFactory</strong> and others into <strong>mongoFactory</strong>.</p>
+<p>Congrats. You now have everything set up correctly. In addition, it should be relatively trivial for you to move this code into your <strong>Final</strong> project.</p>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Put his project in a folder of your repository called <strong>Week11-MongooseComments</strong>. If you already completed this project  as part of the <strong>MongooseRoutes</strong> assignment, then simply point me to the folder that contains your version of the assignment. For instance, when you submit this assignment, add a comment saying that this project can be found in the <strong>XXX</strong> folder.</p>
 </div></body></html>
