@@ -5,7 +5,9 @@
 <li><a href="#upstart">Upstart</a></li>
 <li><a href="#menus">Menus</a></li>
 <li><a href="#signin">SignIn</a></li>
-<li><a href="#comments">Comments</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<li><a href="#comments">Comments</a></li>
+<li><a href="#handling-missing-documents">Handling Missing Documents</a></li>
+<li><a href="#the-getmarie-button">The GetMarie Button</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
 <p>Thoughts and hints during finals week.</p>
 <h2 id="angular-verison">Angular verison</h2>
 <p>Don&#39;t mix your versions of angular in bower.json</p>
@@ -83,4 +85,38 @@ module.exports = router;
 <h2 id="menus">Menus</h2>
 <h2 id="signin">SignIn</h2>
 <h2 id="comments">Comments</h2>
+<h2 id="handling-missing-documents">Handling Missing Documents</h2>
+<p>We should have a default document that is loaded if the document requested is not found. If not that, then at least load in a message rather than popping up an alert.</p>
+<h2 id="the-getmarie-button">The GetMarie Button</h2>
+<p>Make sure you are searching for a string and a field that exists in your database. For instance, I have someone with a firstName of <strong>Marie</strong> in my database, hence the following code works for me:</p>
+<pre><code class="lang-javascript">
+myController.getMarie = function() {
+    var maries = myController.scientists[0].getTopic(&quot;Marie&quot;, function(maries) {
+        myController.marie = maries[0];
+    });
+};
+</code></pre>
+<p>But if you have no one with a first name of Marie, then that won&#39;t work. </p>
+<p>Also, in your equivalent of <strong>public/javascripts/ScienceResource</strong>, make sure you search on a field that exists in your database. For instance, I have a field called <strong>firstName</strong> so this code works:</p>
+<pre><code class="lang-javascript">scientists.prototype.getTopic = function(firstNameToFind, callback) {
+    bar = $resource(
+        &#39;https://api.mongolab.com/api/1/databases/&#39; + CONFIG.DB_NAME +
+        &#39;/collections/&#39; + CONFIG.COLLECTION, {
+            apiKey: CONFIG.API_KEY,
+            q: {&quot;firstName&quot;: firstNameToFind }
+        });
+    return bar.query({}, callback);
+};
+</code></pre>
+<p>However, if you have a <strong>gadgetName</strong> property but no <strong>firstName</strong> property, then you should write this:</p>
+<pre><code class="lang-javascript">scientists.prototype.getTopic = function(gadgetNameToFind, callback) {
+    bar = $resource(
+        &#39;https://api.mongolab.com/api/1/databases/&#39; + CONFIG.DB_NAME +
+        &#39;/collections/&#39; + CONFIG.COLLECTION, {
+            apiKey: CONFIG.API_KEY,
+            q: {&quot;gadgetName&quot;: gadgetNameToFind }
+        });
+    return bar.query({}, callback);
+};
+</code></pre>
 </div></body></html>
