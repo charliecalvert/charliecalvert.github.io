@@ -33,6 +33,7 @@
 <li><a href="#clone-a-local-repository">Clone a Local Repository</a></li>
 <li><a href="#clone-a-specific-branch">Clone a Specific Branch</a></li>
 <li><a href="#git-checkout-a-specific-branch">Git Checkout a Specific Branch</a></li>
+<li><a href="#oldversion">Find Old Version of Code</a></li>
 <li><a href="#comparing-two-branches">Comparing Two Branches</a></li>
 <li><a href="#forking">Forking</a></li>
 <li><a href="#fix-broken-fork">Fix Broken Fork</a></li>
@@ -969,7 +970,41 @@ the Git web sites. Typing git log can also help you find these numbers.</p>
 </code></pre><p>In this example we created a new branch called charlie01 that mirrors
 the state of the repository as it looked after the commit identified
 by the SHA a608f0e.</p>
-<h2 id="comparing-two-branches">Comparing Two Branches</h2>
+<h2 id="oldversion">Find Old Version of Code</h2>
+<p>The subject of checking out a specific branch is so important, that it might be worth discussing in more depth. When you do good work, check it in. Then later, if you find that you wish you could go back to the working verison of your code, there are several things you can do. Here is one.</p>
+<p>One way to get access to the older version of your code is to check it out in a branch. To do this, you need to know the commit number of the good code. Often the best way to find this number is to browse on GitHub or BitBucket. But you can also find with with the Git log comment:</p>
+<pre><code>git log
+</code></pre><p>Or</p>
+<pre><code>git log &lt;FileName&gt;
+</code></pre><p>Sample output:</p>
+<pre><code>&gt;git log Control.js
+commit bbe914c7347c51237b21a4b9a68be29fac3fccf4
+Author: Charlie CedarIsle Calvert &lt;charlie@elvenware.com&gt;
+Date:   Tue May 26 22:07:44 2015 -0700
+
+    Week08 Initial checkin 
+
+commit 16763f8a3327b074d56f7cb563900ae2d34729a6
+Author: Charlie CedarIsle Calvert &lt;charlie@elvenware.com&gt;
+Date:   Mon May 25 16:20:49 2015 -0700
+
+    Midterm updated getScientists method with support for Jade files
+</code></pre><p>When reading the results of this log, you will begin to understand why it is so important to type in something useful when you commit your code. A useful comment can help you find a particular older version of your code.</p>
+<p> Now create the branch based on the commit you did after we worked together. Here I call git branch and give a name for the branch and the full commit number as seen above in the log statement:</p>
+<pre><code>git branch initial bbe914c7347c51237b21a4b9a68be29fac3fccf4
+</code></pre><p>Now checkout the branch:</p>
+<pre><code>git checkout initial
+</code></pre><p>Now you have a copy of the code from the past that you wanted to see. You might save the portions you need into another directory. Don&#39;t just open it in an editor, copy it someplace else outside your repository. Then (AND IMPORTANTLY), go back to the master branch:</p>
+<pre><code>git checkout master
+</code></pre><p>You need to go back to the master because you probably don&#39;t want to do your work in the older branch as it does not contain all your recent work. You just wanted to look at your older files, save the parts you wanted, and then go back to your new work.</p>
+<p>Again, there are other ways to solve this problem. This one, however, can be useful as it:</p>
+<ul>
+<li>Give you a good chance to look over all the files in your project as it was at a specific point in time.</li>
+<li>Creates a branch that <strong>memorializes</strong> that point in time in case you want to switch back to it again. To get back to it, just type <strong>git checkout initial</strong>. But don&#39;t forget to switch back to master when you are done: <strong>git checkout master</strong>.</li>
+</ul>
+<p>Having a branch in your code is not nearly as expensive as it might seem at first. If, however, you want to delete it. First switch to master, and then:</p>
+<pre><code>git branch -d initial
+</code></pre><h2 id="comparing-two-branches">Comparing Two Branches</h2>
 <p>If you want to compare the files from BranchA and BranchB, you might
 do something like this:</p>
 <pre><code>git diff --name-status branchA..branchB
