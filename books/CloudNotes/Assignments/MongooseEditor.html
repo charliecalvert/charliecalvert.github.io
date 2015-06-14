@@ -506,6 +506,28 @@ router.post(&#39;/updateComments&#39;, function(request, response) {
         }
     );
 });
+</code></pre><p>You should already have it in there, but if not, be sure you have include a <strong>save</strong> route:</p>
+<pre><code>router.post(&#39;/save&#39;, function(request, response) {
+  console.log(&#39;Save called. Body is next: &#39;)
+
+  var newData = getNewData(request.body);
+
+  if (!connected) {
+    doConnection();
+  }
+
+  console.log(&quot;about to call update&quot;);
+  scientists.update({ _id: request.body.id }, { $set: newData},
+      function(err, data) {
+        console.log(err, data);
+        if (err) {
+          console.log(err);
+        }
+        response.send({result: &#39;Success&#39;, data: data});
+      }
+  );
+
+});
 </code></pre><h2 id="edit-main-fields">Edit Main Fields</h2>
 <p>Now that we have things set up, the first step will be to enable editing of the <strong>firstName</strong> 
 and <strong>lastName</strong>. This will take place in <strong>edit.js</strong>. We begin by modifying <strong>edit.jade</strong>:</p>
