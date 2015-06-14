@@ -7,6 +7,7 @@
 <li><a href="#scope">Scope</a></li>
 <li><a href="#calling-methods-in-factories">Calling Methods in Factories</a></li>
 <li><a href="#select">Select</a></li>
+<li><a href="#http">HTTP</a></li>
 <li><a href="#jasmine-matchers">Jasmine Matchers</a></li>
 <li><a href="#use-tothrow-matcher">Use toThrow Matcher</a></li>
 <li><a href="#unit-test-names">Unit Test Names</a></li>
@@ -255,6 +256,146 @@ sailBoat.getNine();
      ng-options=&quot;v for v in chartSelect.values&quot; ng-change=&quot;chartTypeUpdate()&quot;&gt;
 &lt;/select&gt;
 </code></pre>
+<h2 id="http">HTTP</h2>
+<p>One important part of any REST based web application is sending data from the client to the server and responding to that data. Let&#39;s consider an Angular program that uses:</p>
+<ul>
+<li>HTML, CSS, and JavaScript on the client.</li>
+<li>Node and Express on the server</li>
+<li>MongoDb in the database</li>
+</ul>
+<p>In particular, we send queries:</p>
+<ul>
+<li>From the browser</li>
+<li>To our express program</li>
+<li>And from our express program </li>
+<li>To a database</li>
+</ul>
+<p>Then a response is sent back</p>
+<ul>
+<li>From the database</li>
+<li>To the express program</li>
+<li>From the express program, back to our client side brower.</li>
+</ul>
+<p>To better understand that process, let&#39;s look at code that allows user to add comments on a particular subject. In particular, we want to add a new comment to an array of comments. This array is a property of a larger object called a scientist.</p>
+<ul>
+<li>A scientist has fields such as <strong>firstName</strong>, <strong>lastName</strong> and <strong>comments</strong></li>
+<li><p>The comments are an array of objects containing the text of the comment and the date when the comment was made.</p>
+<p>We want to look at a method called <strong>newComment</strong> which is part of a larger object called <strong>mongoFactory</strong>. We will look only at the <strong>newComment</strong> method and ignore the rest of the factory.</p>
+</li>
+</ul>
+<p><strong>newComment</strong> takes two parameters, the text for a <strong>comment</strong>, and a <strong>scientist</strong> object to which the comment will be appended:</p>
+<pre><code class="lang-javascript">newComment: function(scientist, text) {
+    var comment = {
+        commentText: text,
+        date: new Date().toJSON().slice(0, 10)
+    };
+    if (scientist.comments === null) {
+        scientist.comments = [];
+    }
+    var payLoad = {scientist: scientist, comment: comment};
+    $http.post(&#39;/newComment&#39;, payLoad).success(function(result) {
+        console.log(result.data.comments[result.data.comments.length - 1]._id);
+        scientist.comments.push(result.data.comments[result.data.comments.length - 1]);
+    }).error(function(err) {
+        console.log(err);
+    });
+},
+</code></pre>
+<p>This method takes the <strong>scientist</strong> and <strong>comment</strong> and sends them to the server. The server combines this information into a single <strong>scientist</strong> object and sends it to the database for storage. A confirmation response is then relayed back to the client.</p>
+<p>But let&#39;s stay on the client side for now.</p>
+<p>The key lines in this client side code are found here:</p>
+<pre><code class="lang-javascript">var payLoad = {scientist: scientist, comment: comment};
+$http.post(&#39;/newComment&#39;, payLoad).success(function(result) {
+    etc...
+</code></pre>
+<p>Here we see how to create a single object called <strong>payload</strong> that contains two properties each of which are themselves objects. We want to send the <strong>payload</strong> object from the client to the server. We use the angular <strong>$http.post</strong> method to send the information. </p>
+<p><strong>NOTE</strong>: <em>The <strong>$http.post</strong> method and the jQuery <strong>$.ajax</strong> method are very similar. The big difference is that <strong>$http.post</strong> knows how to handle two way binding in angular.</em> </p>
+<p>Here is a deeper look at the payload object. It has two properties:</p>
+<pre><code>var payLoad = {
+    scientist: scientist,       // A scientist with a firstName, lastName, etc... 
+    comment: comment    // A comment about the scientist with date and text
+};
+</code></pre><p>More specifically, the scientist object looks like this:</p>
+<pre><code>var newScientist = new scientists({
+        &quot;firstName&quot;: scientist.firstName,
+        &quot;lastName&quot;: scientist.lastName,
+        &quot;subject&quot;: scientist.subject,
+        &quot;subjects&quot;: scientist.subjects,
+        &quot;comments&quot;: scientist.comments
+});
+</code></pre><p>The comment like this:</p>
+<pre><code class="lang-javascript">var comment = {
+    commentText: text,
+    date: new Date().toJSON().slice(0, 10)
+};
+</code></pre>
+<p>As you can see, we are passing a reasonable amount of data back to the server. How is this accomplished? The <strong>$http.post</strong> method built into angular takes two parameters:</p>
+<ul>
+<li>The uri designating the route for our code: <strong>&#39;/newComment&#39;</strong>.  </li>
+<li>The data we want to send to the server. In this case the <strong>payload</strong> object.</li>
+</ul>
+<p>Here they are:</p>
+<pre><code>$http.post(&#39;/newComment&#39;, payLoad).success etc....
+</code></pre><p>In addition, the <strong>$http.post</strong> method provides two callbacks, one for success, and one for failure.  They handle the results of the request. I&#39;m not going to say anything more about those methods at this point, as the code in them should be easy enough to understand.</p>
+<p>The call to <strong>$http.post</strong> causes information to be sent from the browser to the server. The call is sent using the HTTP protocol. This is the protocol that drives the web, and it is primary means of transporting information between machines in REST based programs.</p>
+<p>Here is the node express code on the server side that receives our <strong>payload</strong> object sent by the call to <strong>$http.post</strong>:</p>
+<pre><code>router.post(&#39;/newComment&#39;, function(request, response) {
+    if (!connected) {
+        doConnection();
+    }
+
+    console.log(&#39;newComments called. Body is next: &#39;);
+    console.log(request.body);
+    var scientist = request.body.scientist;
+    var comment = request.body.comment;
+
+    scientists.findOne({&quot;_id&quot;: scientist._id }, function(err, scientist) {
+        console.log(&#39;After Find.&#39;);
+        console.log(scientist);
+        if (scientist.comments) {
+            scientist.comments.push(comment);
+            scientist.markModified(&#39;comments&#39;);
+            scientist.save(function(err, data) {
+                console.log(&#39;After save.&#39;);
+                console.log(&quot;Error:&quot;, err);
+                console.log(&quot;Data: &quot;, data);
+                response.send({result: &#39;Success&#39;, data: data});
+            });
+        } else {
+            response.send({result: &#39;Error&#39;});
+        }
+    });
+});
+</code></pre><p>First we check to be sure we are connected to our mongodb database. The next order of business is to ensure that we can parse the <strong>payload</strong> sent by the client. That object is found in the built-in <strong>body</strong> property of the express <strong>request</strong> object:</p>
+<pre><code class="lang-javascript">console.log(request.body);
+var scientist = request.body.scientist;
+var comment = request.body.comment;
+</code></pre>
+<p>This code first sends some debug information to the console to help us confirm that all is working as expected. Then we parse out the <strong>scientist</strong> and <strong>comment</strong> objects sent from the client.</p>
+<p>Next we find the existing record in the database to which we want to append the comment:</p>
+<pre><code class="lang-javasscript">scientists.findOne({&quot;_id&quot;: scientist._id }, function(err, scientist) {
+</code></pre>
+<p><strong>NOTE</strong>: <em>It appears that we are only using the <strong>_id</strong> field of the scientist object, so it probably would have been possible to send that field alone, rather than the whole scientist object.</em></p>
+<p>Once we have found our scientist, we add our comment to its collection:</p>
+<pre><code>scientist.comments.push(comment);
+</code></pre><p>Then we send the updated scientist back to the database:</p>
+<pre><code class="lang-javascript">scientist.save(function(err, data) {
+        response.send({result: &#39;Success&#39;, data: data});
+});
+</code></pre>
+<p>The call to <strong>response.send</strong> relays the response from the database back to the client where it is handled by the <strong>success</strong> callback mentioned earlier.</p>
+<p>To review, we send our <strong>payload </strong>data:</p>
+<ul>
+<li>From the client (the browser)</li>
+<li>To the server (our express program)</li>
+<li>To the database (mongodb on mongolab in our case)</li>
+</ul>
+<p>Then confirmation messages are sent back </p>
+<ul>
+<li>From mongodb to the server</li>
+<li>From the server to the client</li>
+</ul>
+<p>And so on, endlessly, across the entire web, call by call, program by program, millions of such calls are going across the internet every day, driving our economy, enhancing our social lives, communicating knowledge and information. Understanding this process is crucial to your understanding of web development. These kinds of operations are the very essence of a REST based application. </p>
 <h2 id="jasmine-matchers">Jasmine Matchers</h2>
 <p>There are many Jasmine matchers.</p>
 <p>You can look for an exact match like the === operator:</p>
