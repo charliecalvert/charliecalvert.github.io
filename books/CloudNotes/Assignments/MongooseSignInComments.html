@@ -3,7 +3,8 @@
 <li><a href="#step-two">Step Two</a></li>
 <li><a href="#step-three">Step Three</a></li>
 <li><a href="#step-four">Step Four</a></li>
-<li><a href="#step-five">Step Five</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<li><a href="#step-five">Step Five</a></li>
+<li><a href="#step-six">Step Six</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
 <p>This assignment is not complete yet. I give it to you only because it contains enough information to show some of you how to use sign in with angular.</p>
 <p>tldr: replace this method from the routes folder:</p>
 <pre><code>router.post(&#39;/login&#39;, passport.authenticate(&#39;login&#39;, {
@@ -15,7 +16,7 @@
     function(req, res) {
         res.send(req.user);
 });
-</code></pre><p>The point is that passport will authenticate our user for us, and then it will put the user&#39;s information (username, email, etc) in <strong>request.user</strong>. At that point we simply send the information back to the front end with <strong>response.send(request.user)</strong>. If the user can&#39;t log in, an error is sent back, per these lines from <strong>passport/login</strong>:</p>
+</code></pre><p>Now passport will authenticate our user for us, and then put the user&#39;s information (username, email, etc) in <strong>request.user</strong>. It then relays the information back to the front end with <strong>response.send(request.user)</strong>. If the user can&#39;t log in, an error is sent back, per these lines from <strong>passport/login</strong>:</p>
 <pre><code>if (!user){
     console.log(&#39;User Not Found with username &#39;+username);
     return done(null, false);
@@ -102,9 +103,9 @@ module.exports = mongoose.model(&#39;User&#39;, userSchema);
 <p>Copy <strong>SpaceNeedle.png</strong> or some similar file into <strong>public/images</strong>.</p>
 <p>Copy in the CSS from the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/MongooseSignIn.html">SignIn</a> assignment.</p>
 <h2 id="step-four">Step Four</h2>
-<p>Most things on the backend for passport are the same. Just make sure you get rid of all references to <strong>flash</strong>. </p>
-<p>We are going to create a file called <strong>routes/login.js</strong>. It provides new middleware routes for logging in. This is like the example code from the previous example that was found in <strong>routes/index.js</strong>, but now we don&#39;t invoke it off the main route (&#39;/&#39;), instead we have <strong>login</strong> route (&#39;/login&#39;). </p>
-<p>Here are the changes to make in <strong>app.js</strong>. You can keep the loading of routes middleware the same: </p>
+<p>Most things on the backend for passport are the same. Just make sure you get rid of all references to <strong>flash</strong>.</p>
+<p>We are going to create a file called <strong>routes/login.js</strong>. It provides new middleware routes for logging in. This is like the example code from the previous example that was found in <strong>routes/index.js</strong>, but now we don&#39;t invoke it off the main route (&#39;/&#39;), instead we have <strong>login</strong> route (&#39;/login&#39;).</p>
+<p>Here are the changes to make in <strong>app.js</strong>. You can keep the loading of routes middleware the same:</p>
 <pre><code>var routes = require(&#39;./routes/index&#39;);
 var users = require(&#39;./routes/users&#39;);
 var comments = require(&#39;./routes/comments&#39;);
@@ -130,12 +131,20 @@ app.use(passport.session());
 var initPassport = require(&#39;./passport/init&#39;);
 initPassport(passport);
 
+var auth = function(req, res, next){
+    if (!req.isAuthenticated())
+        res.send(401);
+    else
+        next();
+};
+
 var login = require(&#39;./routes/login&#39;)(passport);
 app.use(&#39;/&#39;, routes);
 app.use(&#39;/users&#39;, users);
 app.use(&#39;/comments&#39;, comments);
 app.use(&#39;/login&#39;, login);
-</code></pre><p>The key line is the last one, where we load the new middleware for handling our new <strong>login</strong> route.</p>
+</code></pre><p>The most important addition here is the section that begins <strong>var auth...</strong>. We will discuss it later in this document.</p>
+<p>Another key line is the last one, where we load the new middleware for handling our new <strong>login</strong> route.</p>
 <p>And below you see <strong>routes/login.js</strong>. Notice that this is pretty much the same as in our login example, but the <strong>post(&#39;/login&#39;</strong> method has been replaced (I commented out the old version):</p>
 <pre><code>/**
  * Created by charlie on 6/11/2015.
@@ -244,7 +253,7 @@ app.controller(&#39;LoginController&#39;, function($http, $location) {
 
     loginController.update = function() {
             var user = {
-                &quot;username&quot;: loginController.userName, 
+                &quot;username&quot;: loginController.userName,
                 &quot;password&quot;: loginController.password
             };
 
@@ -263,4 +272,61 @@ app.controller(&#39;LoginController&#39;, function($http, $location) {
 </ul>
 <p>If the user is logged in successfully the success path is invoked and the user is redirected back to the home page. We are also passed information about the user from our database. That is, we are passed the user name, email, etc. If the error path is invoked, then a hint is displayed telling the user to try again.</p>
 <p>We don&#39;t have signup working at this time. If you need to create a user, for now use the signup <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/MongooseSignIn.html">assignment</a> example to create the user, then switch back to this code.</p>
+<h2 id="step-six">Step Six</h2>
+<p>Logging out.</p>
+<p>Add the following at the bottom of <strong>routes/index.html</strong>. Place it before <strong>get(&#39;/:id&#39;, function... etc</strong>.</p>
+<pre><code>router.post(&#39;/logout&#39;, function(request, response){
+    request.logOut();
+    response.send(200);
+});
+
+router.get(&#39;/loggedin&#39;, function(request, response) {
+    response.send(request.isAuthenticated() ? request.user : &#39;0&#39;);
+});
+</code></pre><p>Put this code in <strong>public/javascripts/app.js</strong>:</p>
+<pre><code>//================================================
+// Check if the user is connected
+//================================================
+var checkLoggedin = function($q, $timeout, $http, $location, $rootScope){
+    // Initialize a new promise
+    var deferred = $q.defer();
+
+    // Make an AJAX call to check if the user is logged in
+    $http.get(&#39;/loggedin&#39;).success(function(user){
+        // Authenticated
+        if (user !== &#39;0&#39;)
+        /*$timeout(deferred.resolve, 0);*/
+            deferred.resolve();
+
+        // Not Authenticated
+        else {
+            $rootScope.message = &#39;You need to log in.&#39;;
+            //$timeout(function(){deferred.reject();}, 0);
+            deferred.reject();
+            $location.url(&#39;/login&#39;);
+        }
+    });
+
+    return deferred.promise;
+};
+
+//================================================
+// Add an interceptor for AJAX errors
+//================================================
+$httpProvider.interceptors.push(function($q, $location) {
+    return {
+        response: function(response) {
+            // do something on success
+            return response;
+        },
+        responseError: function(response) {
+            if (response.status === 401)
+                $location.url(&#39;/login&#39;);
+            return $q.reject(response);
+        }
+    };
+});
+</code></pre><p>Near the top of the file, you will have to inject the <strong>$httpProvider</strong> in the signature for the config provider:</p>
+<pre><code>myModule.config(function($routeProvider, $httpProvider, $locationProvider) {
+</code></pre><p>You will get a warning &#39;Synchronous XMLHttpRequest on the main thread is deprecated&#39;. I believe this has something to do with the dialog we are loading to login and the related code. I don&#39;t think it has to do with the way we are rerouting events. In other words, it happens when we go directly to the login page, not just when we get there from the comments link. For now we are ignorning this warning.</p>
 </div></body></html>
