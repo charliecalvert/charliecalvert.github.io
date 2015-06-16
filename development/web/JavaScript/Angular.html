@@ -274,7 +274,7 @@ sailBoat.getNine();
 <ul>
 <li>From the database</li>
 <li>To the express program</li>
-<li>From the express program, back to our client side brower.</li>
+<li>From the express program, back to our client side browser.</li>
 </ul>
 <p>To better understand that process, let&#39;s look at code that allows user to add comments on a particular subject. In particular, we want to add a new comment to an array of comments. This array is a property of a larger object called a scientist.</p>
 <ul>
@@ -849,6 +849,35 @@ HTML files. Open the files in your browser.</p>
 <p>You can also use Grunt to run jshint.</p>
 <pre><code>grunt jshint
 </code></pre><h2 id="mocking-objects-with-httpbackend">Mocking Objects with $httpBackend</h2>
+<p>Unit tests with $httpBackend allows us to write mock tests that confirm that a particular properly handles the type of data that might be returned from a server. This process does not test if the server is working correctly. Instead, it tests whether our program can handle the data the server will send when it is working correctly. </p>
+<p>To test if the server is working correctly, you should write an integration or end to end test, not a unit test. You need not only unit tests, but also end to end and integration tests. But as developers, we are most interested in unit tests.</p>
+<p>Most testing frameworks provide a means of handling mock objects. <strong>$httpbackend</strong> is unique to Jasmine. There are, however, parallels in other unit testing frameworks.  </p>
+<p><strong>NOTE</strong>: <em>I would say that understanding this kind of unit test and why it is helpful took me longer to grasp than almost any other concept in programming. Part of the problem is that there is not much good information on this subject. However, the tide is turning. Now that a few leaders in the community have clearly explained this concept, I&#39;m starting to see more and more clear explanations of the subjects. It is not that hard to understand once you get over a few preliminary hurdles. I will, add, however, that this is one of those subjects you don&#39;t want to understand too quickly. I, at any rate, found that I thought I understood well before I actually started to understand it.</em></p>
+<p>Here is a stripped down example:</p>
+<pre><code class="lang-javascript">var $httpBackend = null;
+
+beforeEach(inject(function(_$httpBackend_) {
+    $httpBackend = _$httpBackend_;
+}));
+
+afterEach(function() {
+    $httpBackend.verifyNoOutstandingExpectation();
+    $httpBackend.verifyNoOutstandingRequest();
+});
+
+it(&quot;Test load json hitPoints&quot;, function() {
+    $httpBackend.expectGET(&#39;data.json&#39;).respond({
+        &quot;name&quot;: &quot;NPC01&quot;,
+        &quot;hitPoints&quot;: 37,
+        &quot;damage&quot;: 5});
+    myController.loadJson();
+    $httpBackend.flush();
+    expect(myController.data.hitPoints).toEqual(37);
+});
+</code></pre>
+<p>Calls to <strong>expectGET</strong> or <strong>whenGET</strong> give you a chance to mock up the data that a real call to the server might produce. Then we call the function that actually performs the action we want to test:</p>
+<pre><code>myController.loadJson
+</code></pre><p>Finally, we call <strong>flush</strong> in order to simulate the reply returning from the server with our requested data. At that point, we are ready to see if the data sent back is what we expected. </p>
 <p>Read the README.md file for JsonFromServer:</p>
 <ul>
 <li><a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/Design/JsonFromServer/README.md">JsonFromServer on GitHub</a></li>
@@ -859,9 +888,21 @@ HTML files. Open the files in your browser.</p>
 <li><a href="https://github.com/charliecalvert/JsObjects/tree/master/Data/MongoLab01">MongoLab01</a></li>
 <li><a href="https://github.com/charliecalvert/JsObjects/tree/master/Data/MongoLab02">MongoLab02</a></li>
 <li><a href="https://github.com/charliecalvert/JsObjects/tree/master/Data/MongoLab03">MongoLab03</a></li>
-<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Games/CharacterCreate02">CreateCharacters02</a></li>
 </ul>
-<p>See TestMongoTower.js.</p>
+<p>Here are few places where I provide examples of how to do this:</p>
+<p>In <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/UnitTests/SimpleHttpBackend">JsObjects/JavaScript/UnitTests/SimpleHttpBackend</a>:</p>
+<ul>
+<li><a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/UnitTests/SimpleHttpBackend/test/spec/controllers/main-spec.js">main-spec</a></li>
+</ul>
+<p>In <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Design/JsonFromServer02">JsObjects/JavaScript/Design/JsonFromServer02</a></p>
+<ul>
+<li><a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/Design/JsonFromServer02/Test/TestJsonLoader.js">TestJsonLoader</a></li>
+</ul>
+<p>In <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Games/CharacterCreate02">JsObjects/JavaScript/Games/CharacterCreate02</a> </p>
+<ul>
+<li><a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/Games/CharacterCreate02/Tests/TestMongoTower.js">TestMongoTower</a></li>
+<li><a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/Games/CharacterCreate02/Tests/TestConflict.js">TestConflict</a></li>
+</ul>
 <h2 id="angular-links">Angular Links</h2>
 <h3 id="elvenware">Elvenware</h3>
 <ul>
