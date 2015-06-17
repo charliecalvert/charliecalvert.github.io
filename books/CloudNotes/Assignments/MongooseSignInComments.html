@@ -4,7 +4,8 @@
 <li><a href="#step-three">Step Three</a></li>
 <li><a href="#step-four">Step Four</a></li>
 <li><a href="#step-five">Step Five</a></li>
-<li><a href="#step-six">Step Six</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<li><a href="#step-six">Step Six</a></li>
+<li><a href="#hints">Hints</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
 <p>This assignment is not complete yet. I give it to you only because it contains enough information to show some of you how to use sign in with angular.</p>
 <p>Now passport will authenticate our user for us, and then put the user&#39;s information (username, email, etc) in <strong>request.user</strong>. It then relays the information back to the front end with <strong>response.send(request.user)</strong>. If the user can&#39;t log in, an error is sent back, per these lines from <strong>passport/login</strong>:</p>
 <pre><code>if (!user){
@@ -42,7 +43,7 @@ html
 <pre><code>    script(src=&quot;components/angular-route/angular-route.js&quot;)
     script(src=&quot;javascripts/app.js&quot;)
 </code></pre><p>Then in <strong>index.jade</strong>, paste in the menu we have used in other programs, where I have include a few extra lines to provide context:</p>
-<pre><code>extends layout
+<pre><code class="lang-jade">extends layout
 block content
     nav.navbar-default.navbar-fixed-top
         .container-fluid
@@ -59,14 +60,19 @@ block content
                         a(ng-href=&#39;#/&#39;) Home
                     li(ng-class=&quot;{ active: isActive(&#39;/comments&#39;)}&quot;)
                         a(ng-href=&#39;#/comments&#39;) Comments
-                    li(ng-class=&quot;{ active: isActive(&#39;/login&#39;)}&quot;)
-                        a(ng-href=&#39;#/login&#39;) Login
+                    li(ng-class=&quot;{ active: isActive(&#39;/about&#39;)}&quot;)
+                        a(ng-href=&#39;#/about&#39;) About
+                    li(ng-class=&quot;{ active: isActive(&#39;/signin&#39;)}&quot;)
+                        a(ng-href=&#39;#/{{themeController.signinMenuItem}}&#39;) {{themeController.signinMenuText}}
+                    li(ng-switch=&quot;themeController.loggedIn&quot; ng-class=&quot;{ active: isActive(&#39;/login&#39;)}&quot;)
+                        a(ng-switch-when=&quot;true&quot; ng-href=&#39;#/logout&#39;) Logout
+                        a(ng-switch-default ng-href=&#39;#/login&#39;) Login
 
-
-            h1= title
-            p Welcome to #{title}
-                        div(data-ng-view=&quot;&quot;)
-</code></pre><h2 id="step-three">Step Three</h2>
+    h1= title
+    p Welcome to #{title}
+    div(data-ng-view=&quot;&quot;)
+</code></pre>
+<h2 id="step-three">Step Three</h2>
 <p>Link in the passport sign in code.</p>
 <ul>
 <li>Copy the passport folder from the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/MongooseSignIn.html">sign in project</a>. It includes three files:<ul>
@@ -76,6 +82,138 @@ block content
 </ul>
 </li>
 </ul>
+<p>Here is init:</p>
+<pre><code class="lang-javascript">var login = require(&#39;./login&#39;);
+var signup = require(&#39;./signup&#39;);
+var User = require(&#39;../models/user&#39;);
+
+module.exports = function(passport) {
+
+    // Passport needs to be able to serialize and deserialize
+    // users to support persistent login sessions
+    passport.serializeUser(function(user, done) {
+        console.log(&#39;serializing user: &#39;);
+        console.log(user);
+        done(null, user._id);
+    });
+
+    passport.deserializeUser(function(id, done) {
+        User.findById(id, function(err, user) {
+            console.log(&#39;deserializing user:&#39;, user);
+            done(err, user);
+        });
+    });
+
+    // Setting up Passport Strategies for Login and SignUp/Registration
+    login(passport);
+    signup(passport);
+
+};
+</code></pre>
+<p>Here is login:</p>
+<pre><code class="lang-javascript">var LocalStrategy   = require(&#39;passport-local&#39;).Strategy;
+var User = require(&#39;../models/user&#39;);
+var bCrypt = require(&#39;bcrypt-nodejs&#39;);
+
+module.exports = function(passport) {
+
+    passport.use(&#39;login&#39;, new LocalStrategy({
+            passReqToCallback : true
+        },
+        function(req, username, password, done) { 
+            // check in mongo if a user with username exists or not
+            User.findOne({ &#39;username&#39; :  username }, 
+                function(err, user) {
+                    // In case of any error, return using the done method
+                    if (err)
+                        return done(err);
+                    // Username does not exist, log the error and redirect back
+                    if (!user){
+                        console.log(&#39;User Not Found with username &#39;+username);
+                        return done(null, false);
+                    }
+                    // User exists but wrong password, log the error 
+                    if (!isValidPassword(user, password)){
+                        console.log(&#39;Invalid Password&#39;);
+                        return done(null, false); // redirect back to login page
+                    }
+                    // User and password both match, return user from done method
+                    // which will be treated like success
+                    return done(null, user);
+                }
+            );
+
+        })
+    );
+
+
+    var isValidPassword = function(user, password){
+        return bCrypt.compareSync(password, user.password);
+    }
+
+};
+</code></pre>
+<p>Here is signup:</p>
+<pre><code class="lang-javascript">var LocalStrategy   = require(&#39;passport-local&#39;).Strategy;
+var User = require(&#39;../models/user&#39;);
+var bCrypt = require(&#39;bcrypt-nodejs&#39;);
+
+module.exports = function(passport){
+
+    passport.use(&#39;signup&#39;, new LocalStrategy({
+            passReqToCallback : true // allows us to pass back the entire request to the callback
+        },
+        function(req, username, password, done) {
+
+            findOrCreateUser = function(){
+                // find a user in Mongo with provided username
+                User.findOne({ &#39;username&#39; :  username }, function(err, user) {
+                    // In case of any error, return using the done method
+                    if (err){
+                        console.log(&#39;Error in SignUp: &#39;+err);
+                        return done(err);
+                    }
+                    // already exists
+                    if (user) {
+                        console.log(&#39;User already exists with username: &#39;+username);
+                        return done(null, false, req.flash(&#39;message&#39;,&#39;User Already Exists&#39;));
+                    } else {
+                        // if there is no user with that email
+                        // create the user
+                        var newUser = new User();
+
+                        // set the user&#39;s local credentials
+                        newUser.username = username;
+                        newUser.password = createHash(password);
+                        newUser.email = req.param(&#39;email&#39;);
+                        newUser.firstName = req.param(&#39;firstName&#39;);
+                        newUser.lastName = req.param(&#39;lastName&#39;);
+
+                        // save the user
+                        newUser.save(function(err) {
+                            if (err){
+                                console.log(&#39;Error in Saving user: &#39;+err);  
+                                throw err;  
+                            }
+                            console.log(&#39;User Registration succesful&#39;);    
+                            return done(null, newUser);
+                        });
+                    }
+                });
+            };
+            // Delay the execution of findOrCreateUser and execute the method
+            // in the next tick of the event loop
+            process.nextTick(findOrCreateUser);
+        })
+    );
+
+    // Generates hash using bCrypt
+    var createHash = function(password){
+        return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
+    }
+
+};
+</code></pre>
 <p>From the sign in project, copy <strong>models/user.js</strong> and place it in the <strong>models</strong> folder of this project.</p>
 <pre><code class="lang-javascript">var mongoose = require(&#39;mongoose&#39;);
 
@@ -112,29 +250,16 @@ app.use(expressSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Using the flash middleware provided by connect-flash to store messages in session
-// and displaying in templates
-// var flash = require(&#39;connect-flash&#39;);
-// app.use(flash());
-
 // Initialize Passport
 var initPassport = require(&#39;./passport/init&#39;);
 initPassport(passport);
-
-var auth = function(req, res, next){
-    if (!req.isAuthenticated())
-        res.send(401);
-    else
-        next();
-};
 
 var login = require(&#39;./routes/login&#39;)(passport);
 app.use(&#39;/&#39;, routes);
 app.use(&#39;/users&#39;, users);
 app.use(&#39;/comments&#39;, comments);
 app.use(&#39;/login&#39;, login);
-</code></pre><p>The most important addition here is the section that begins <strong>var auth...</strong>. We will discuss it later in this document.</p>
-<p>Another key line is the last one, where we load the new middleware for handling our new <strong>login</strong> route.</p>
+</code></pre><p>Notice the last line, where we load the new middleware for handling our new <strong>login</strong> route.</p>
 <p>And below you see <strong>routes/login.js</strong>. Notice that this is pretty much the same as in our login example, but the <strong>post(&#39;/login&#39;</strong> method has been replaced (I commented out the old version):</p>
 <pre><code>/**
  * Created by charlie on 6/11/2015.
@@ -143,44 +268,34 @@ app.use(&#39;/login&#39;, login);
 var express = require(&#39;express&#39;);
 var router = express.Router();
 
-var isAuthenticated = function(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-        } else {
-       // if the user is not authenticated then redirect him to the login page
-       res.redirect(&#39;/&#39;);
-        }
-};
-
 module.exports = function(passport) {
-    router.get(&#39;/&#39;, function(req, res) {
-        res.render(&#39;index&#39;, {title: &quot;sign in&quot;});
-    });
 
     router.post(&#39;/login&#39;, passport.authenticate(&#39;login&#39;),
         function(req, res) {
             res.send(req.user);
+        }
+    );
+
+    router.get(&#39;/logout&#39;, function(request, response){
+        request.logOut();
+        response.sendStatus(200);
     });
 
-        router.get(&#39;/signup&#39;, function(req, res) {
+    router.get(&#39;/loggedin&#39;, function(request, response) {
+        response.send(request.isAuthenticated() ? true : false);
+    });
+
+    router.get(&#39;/signup&#39;, function(req, res) {
+        console.log(&#39;Get signup&#39;);
         res.render(&#39;register&#39;, {});
     });
 
     /* Handle Registration POST */
     router.post(&#39;/signup&#39;, passport.authenticate(&#39;signup&#39;, {
-        successRedirect: &#39;/home&#39;,
+        successRedirect: &#39;/#/login&#39;,
         failureRedirect: &#39;/signup&#39;
     }));
 
-    /* GET Home Page */
-    router.get(&#39;/home&#39;, isAuthenticated, function(req, res) {
-        res.render(&#39;home&#39;, {user: req.user});
-    });
-
-    router.get(&#39;/signout&#39;, function(req, res) {
-        req.logout();
-        res.redirect(&#39;/&#39;);
-    });
 
     return router;
 };
@@ -193,56 +308,63 @@ module.exports = function(passport) {
 <pre><code>router.post(&#39;/login&#39;, passport.authenticate(&#39;login&#39;),
     function(req, res) {
         res.send(req.user);
-});
+        }
+);
 </code></pre><h2 id="step-five">Step Five</h2>
 <p>We need a login route in app.js:</p>
 <p>Put this code in <strong>public/javascripts/app.js</strong>:</p>
-<pre><code>//================================================
-// Check if the user is connected
-//================================================
-var checkLoggedin = function($q, $timeout, $http, $location, $rootScope){
-    // Initialize a new promise
-    var deferred = $q.defer();
+<pre><code>var myModule = angular.module(&quot;elvenApp&quot;, [ &#39;ngRoute&#39; ]);
 
-    // Make an AJAX call to check if the user is logged in
-    $http.get(&#39;/loggedin&#39;).success(function(user){
-        // Authenticated
-        if (user !== &#39;0&#39;)
-        /*$timeout(deferred.resolve, 0);*/
-            deferred.resolve();
+myModule.config(function($routeProvider, $httpProvider, $locationProvider) {
 
-        // Not Authenticated
-        else {
-            $rootScope.message = &#39;You need to log in.&#39;;
-            //$timeout(function(){deferred.reject();}, 0);
-            deferred.reject();
-            $location.url(&#39;/login&#39;);
-        }
-    });
+    //================================================
+    // Check if the user is connected
+    //================================================
+    var checkLoggedin = function($q, $timeout, $http, $location, $rootScope){
+        // Initialize a new promise
+        var deferred = $q.defer();
 
-    return deferred.promise;
-};
+        // Make an AJAX call to check if the user is logged in
+        $http.get(&#39;/login/loggedin&#39;).success(function(result){
+            // Authenticated
+            if (result !== false)
+            /*$timeout(deferred.resolve, 0);*/
+                deferred.resolve();
 
-//================================================
-// Add an interceptor for AJAX errors
-//================================================
-$httpProvider.interceptors.push(function($q, $location) {
-    return {
-        response: function(response) {
-            // do something on success
-            return response;
-        },
-        responseError: function(response) {
-            if (response.status === 401)
+            // Not Authenticated
+            else {
+                $rootScope.message = &#39;You need to log in.&#39;;
+                //$timeout(function(){deferred.reject();}, 0);
+                deferred.reject();
                 $location.url(&#39;/login&#39;);
-            return $q.reject(response);
-        }
+            }
+        });
+
+        return deferred.promise;
     };
-});
 
-var myModule = angular.module(&quot;elvenApp&quot;, [ &#39;ngRoute&#39; ]);
+    //================================================
+    // Add an interceptor for AJAX errors
+    //================================================
+    $httpProvider.interceptors.push(function($q, $location) {
+        return {
+            response: function(response) {
+                // do something on success
+                return response;
+            },
+            responseError: function(response) {
+                if (response.status === 401) {
+                    console.log(&#39;status 401&#39;);
+                    $location.url(&#39;/login&#39;);
+                }
+                return $q.reject(response);
+            }
+        };
+    });    
 
-myModule.config(function($routeProvider, $locationProvider) {
+    //================================================
+    // Define all the routes
+    //================================================
     $routeProvider.when(&quot;/&quot;, {
         templateUrl : &quot;main&quot;,
         controller : &quot;MainController&quot;,
@@ -250,11 +372,24 @@ myModule.config(function($routeProvider, $locationProvider) {
     }).when(&#39;/comments&#39;, {
         templateUrl : &quot;comments&quot;,
         controller : &quot;CommentsController&quot;,
-        controllerAs: &#39;commentsController&#39;
+        controllerAs: &#39;commentsController&#39;,
+        resolve: {
+            loggedin: checkLoggedin
+        }
+    }).when(&#39;/about&#39;, {
+        templateUrl : &quot;about&quot;,
+        controller : &quot;AboutController&quot;,
+        controllerAs: &#39;aboutController&#39;
     }).when(&#39;/login&#39;, {
         templateUrl : &quot;login&quot;,
         controller : &quot;LoginController&quot;,
         controllerAs: &#39;loginController&#39;
+    }).when(&#39;/logout&#39;, {
+        templateUrl : &quot;logout&quot;,
+        controller : &quot;LogoutController&quot;,
+        controllerAs: &#39;logoutController&#39;
+    }).when(&#39;/register&#39;, {
+        templateUrl : &quot;register&quot;
     }).otherwise({
         redirectTo : &#39;/&#39;
     });
@@ -280,28 +415,26 @@ block content
                if message
                   h1.text-center.error-message #{message}
 </code></pre><p>This is your login controller:</p>
-<pre><code>/**
- * Created by charlie on 6/11/2015.
- */
+<pre><code>var app = angular.module(&#39;elvenApp&#39;);
 
-var app = angular.module(&#39;elvenApp&#39;);
-
-app.controller(&#39;LoginController&#39;, function($http, $location) {
+app.controller(&#39;LoginController&#39;, function($http, $location, themeFactory) {
     var loginController = this;
     loginController.hint = &quot;Sign in&quot;;
 
     loginController.update = function() {
-            var user = {
-                &quot;username&quot;: loginController.userName,
-                &quot;password&quot;: loginController.password
-            };
+        console.log(&#39;update&#39;);
+        var user = {
+            &quot;username&quot;: loginController.userName,
+            &quot;password&quot;: loginController.password
+        };
 
-            $http.post(&#39;/login/login/&#39;, user).success(function(user) {
-                console.log(user);
-                $location.path(&#39;/&#39;);
-            }).error(function(err) {
-                loginController.hint = &#39;Bad Password/User. Try again&#39;;
-            })
+        $http.post(&#39;/login/login/&#39;, user).success(function(user) {
+            themeFactory.setLogin(true);
+            console.log(user);
+            $location.path(&#39;/&#39;);
+        }).error(function(err) {
+            loginController.hint = &#39;Bad Password/User. Try again&#39;;
+        })
     }
 });
 </code></pre><p>Notice how it works. We have two paths:</p>
@@ -313,14 +446,47 @@ app.controller(&#39;LoginController&#39;, function($http, $location) {
 <p>We don&#39;t have signup working at this time. If you need to create a user, for now use the signup <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/MongooseSignIn.html">assignment</a> example to create the user, then switch back to this code.</p>
 <h2 id="step-six">Step Six</h2>
 <p>Logging out.</p>
-<p>Add the following at the bottom of <strong>routes/index.html</strong>. Place it before <strong>get(&#39;/:id&#39;, function... etc</strong>.</p>
-<pre><code>router.post(&#39;/logout&#39;, function(request, response){
+<p>Here is the logout controller:</p>
+<pre><code class="lang-javascript">var app = angular.module(&#39;elvenApp&#39;);
+
+app.controller(&#39;LogoutController&#39;, function($http, $sce, $location, themeFactory) {
+    var logoutController = this;
+    logoutController.hint = &quot;Sign in&quot;;
+    logoutController.loggedInStatus = &quot;unknown&quot;;
+
+    logoutController.logout = function() {
+        console.log(&#39;logout&#39;);
+
+        $http.get(&#39;/login/logout/&#39;).success(function(user) {
+            themeFactory.setLogin(false);
+            console.log(user);
+        }).error(function(err) {
+            logoutController.hint = &#39;Could not call logout&#39;;
+            logoutController.error = $sce.trustAsHtml(err);
+        })
+    };
+
+    logoutController.isLoggedIn = function() {
+
+        $http.get(&#39;/login/loggedin/&#39;).success(function(user) {
+            logoutController.loggedInStatus = user;
+        }).error(function(err) {
+            logoutController.hint = &#39;Bad Password/User. Try again&#39;;
+        });
+    };
+
+    logoutController.logout();
+});
+</code></pre>
+<p>We have already added the following at the bottom of <strong>routes/login.js</strong>. </p>
+<pre><code>router.get(&#39;/logout&#39;, function(request, response){
     request.logOut();
-    response.send(200);
+    response.sendStatus(200);
 });
 
 router.get(&#39;/loggedin&#39;, function(request, response) {
-    response.send(request.isAuthenticated() ? request.user : &#39;0&#39;);
+    response.send(request.isAuthenticated() ? true : false);
 });
-</code></pre><p>You will get a warning &#39;Synchronous XMLHttpRequest on the main thread is deprecated&#39;. I believe this has something to do with the dialog we are loading to login and the related code. I don&#39;t think it has to do with the way we are rerouting events. In other words, it happens when we go directly to the login page, not just when we get there from the comments link. For now we are ignorning this warning.</p>
+</code></pre><h2 id="hints">Hints</h2>
+<p>You will get a warning &#39;Synchronous XMLHttpRequest on the main thread is deprecated&#39;. I believe this has something to do with the dialog we are loading to login and the related code. I don&#39;t think it has to do with the way we are rerouting events. In other words, it happens when we go directly to the login page, not just when we get there from the comments link. For now we are ignorning this warning.</p>
 </div></body></html>
