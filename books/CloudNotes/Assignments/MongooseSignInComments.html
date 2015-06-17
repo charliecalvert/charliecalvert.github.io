@@ -5,6 +5,7 @@
 <li><a href="#step-four">Step Four</a></li>
 <li><a href="#step-five">Step Five</a></li>
 <li><a href="#step-six">Step Six</a></li>
+<li><a href="#step-seven">Step Seven</a></li>
 <li><a href="#hints">Hints</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
 <p>This assignment is not complete yet. I give it to you only because it contains enough information to show some of you how to use sign in with angular.</p>
 <p>Now passport will authenticate our user for us, and then put the user&#39;s information (username, email, etc) in <strong>request.user</strong>. It then relays the information back to the front end with <strong>response.send(request.user)</strong>. If the user can&#39;t log in, an error is sent back, per these lines from <strong>passport/login</strong>:</p>
@@ -443,7 +444,27 @@ app.controller(&#39;LoginController&#39;, function($http, $location, themeFactor
 <li>error</li>
 </ul>
 <p>If the user is logged in successfully the success path is invoked and the user is redirected back to the home page. We are also passed information about the user from our database. That is, we are passed the user name, email, etc. If the error path is invoked, then a hint is displayed telling the user to try again.</p>
-<p>We don&#39;t have signup working at this time. If you need to create a user, for now use the signup <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/MongooseSignIn.html">assignment</a> example to create the user, then switch back to this code.</p>
+<p>Here is the register (signup) jade file:</p>
+<pre><code>extends layout
+
+block content
+    div.container
+        div.row
+            div.col-sm-6.col-md-4.col-md-offset-4
+                h1.text-center.login-title Registration Details
+                    div.signup-wall
+                        form(class=&#39;form-signin&#39;, action=&#39;/login/signup&#39;, method=&#39;POST&#39;)
+                            input(type=&#39;text&#39;, name=&#39;username&#39;, class=&#39;form-control&#39;, placeholder=&#39;Username&#39;,required, autofocus)
+                            input(type=&#39;password&#39;, name=&#39;password&#39;, class=&#39;form-control nomargin&#39;, placeholder=&#39;Password&#39;, required)
+                            input(type=&#39;email&#39;, name=&#39;email&#39;, class=&#39;form-control&#39;, placeholder=&#39;Email&#39;,required)
+                            input(type=&#39;text&#39;, name=&#39;firstName&#39;, class=&#39;form-control&#39;, placeholder=&#39;First Name&#39;,required)
+                            input(type=&#39;text&#39;, name=&#39;lastName&#39;, class=&#39;form-control&#39;, placeholder=&#39;Last Name&#39;,required)
+                            button(class=&#39;btn btn-lg btn-primary btn-block&#39;, type=&#39;submit&#39;) Register
+                            span.clearfix
+                    #message
+                        if message
+                            h1.text-center.error-message #{message}
+</code></pre><p>We now have signup working. If you need be, however, you can create a user using the signup <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/MongooseSignIn.html">assignment</a> example. Then switch back to this code.</p>
 <h2 id="step-six">Step Six</h2>
 <p>Logging out.</p>
 <p>Here is the logout controller:</p>
@@ -487,6 +508,81 @@ app.controller(&#39;LogoutController&#39;, function($http, $sce, $location, them
 router.get(&#39;/loggedin&#39;, function(request, response) {
     response.send(request.isAuthenticated() ? true : false);
 });
+</code></pre><h2 id="step-seven">Step Seven</h2>
+<p>Here is <strong>public/javascripts/comments.jade</strong></p>
+<pre><code>(function() {
+
+    var app = angular.module(&#39;elvenApp&#39;);
+
+    app.controller(&#39;CommentsController&#39;, function(mongoFactory, commentFactory) {
+        var commentsController = this;
+
+        commentsController.updateComment = function() {
+            commentFactory.updateComment(commentsController.scientist);
+        };
+
+        commentsController.newComment = function() {
+            commentFactory.newComment(commentsController.scientist, commentsController.newCommentText);
+        };
+
+        commentsController.deleteComment = function() {
+            commentFactory.deleteComment(commentsController.scientist, commentsController.comment);
+        };
+
+        commentsController.selectComment = function(comment) {
+            commentsController.comment = comment;
+        };
+
+        function getScientist() {
+            mongoFactory.getScientistById(mongoFactory.currentId, commentsController);
+        }
+
+        getScientist();
+    });
+
+})();
+</code></pre><p>Here is the code from <strong>mongo-factory</strong> that provides you with a name property you can display at the top of the <strong>edit</strong>, <strong>comments</strong>, and <strong>subjects</strong> pages of your final:</p>
+<pre><code class="lang-javascript">setControllerName: function(controller) {
+    controller.name = controller.scientist.firstName + &#39; &#39; + controller.scientist.lastName;
+},
+
+getScientistById: function(id, controller) {
+    mongoFactory.currentId = id;
+    var items = mongoFactory.allData.filter(function(scientist) {
+        return scientist._id === id;
+    });
+    controller.scientist = items[0];
+    mongoFactory.setControllerName(controller);
+    return controller.scientist;
+},
+</code></pre>
+<p>This means that a file like <strong>comments.jade</strong> will would look like this:</p>
+<pre><code>h1 Comments: {{commentsController.name}}
+div.names
+    ul
+        li(ng-repeat=&#39;comment in commentsController.scientist.comments&#39;)
+            a(ng-click=&quot;commentsController.selectComment(comment)&quot;) {{comment.commentText}}
+    div.names(ng-form=&quot;newCommentForm&quot;)
+        hr
+        button.btn.btn-default(ng-click=&#39;commentsController.newComment()&#39;) New Comment
+        br
+        br
+        label(class=&#39;col-sm-2, control-label&#39;) Text
+        input.form-control(type=&#39;text&#39;, ng-model=&#39;commentsController.newCommentText&#39;)
+    div.names(ng-form=&quot;myform&quot;)
+        hr
+        button.btn.btn-default(ng-click=&#39;commentsController.updateComment()&#39;) Update Comment
+        button.btn.btn-default(ng-click=&#39;commentsController.deleteComment()&#39;) Delete Comment
+        br
+        br
+        label(class=&#39;col-sm-2, control-label&#39;) Text
+        input.form-control(type=&#39;text&#39;, ng-model=&#39;commentsController.comment.commentText&#39;)
+        br
+        label(class=&#39;col-sm-2, control-label&#39;) Date
+        input.form-control(type=&#39;text&#39;, ng-model=&#39;commentsController.comment.date&#39;)
+        br
+        label(class=&#39;col-sm-2, control-label&#39;) Id
+        input.form-control(type=&#39;text&#39;, ng-model=&#39;commentsController.comment._id&#39;)
 </code></pre><h2 id="hints">Hints</h2>
 <p>You will get a warning &#39;Synchronous XMLHttpRequest on the main thread is deprecated&#39;. I believe this has something to do with the dialog we are loading to login and the related code. I don&#39;t think it has to do with the way we are rerouting events. In other words, it happens when we go directly to the login page, not just when we get there from the comments link. For now we are ignorning this warning.</p>
 </div></body></html>
