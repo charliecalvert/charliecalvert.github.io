@@ -508,7 +508,52 @@ app.controller(&#39;LogoutController&#39;, function($http, $sce, $location, them
 router.get(&#39;/loggedin&#39;, function(request, response) {
     response.send(request.isAuthenticated() ? true : false);
 });
-</code></pre><h2 id="step-seven">Step Seven</h2>
+</code></pre><p>Tie together the login and log out code and provide support for switching themes:</p>
+<pre><code>(function () {
+
+    // https://scotch.io/tutorials/use-angularjs-and-nghref-to-grab-css-dynamically
+
+    var app = angular.module(&#39;elvenApp&#39;);
+
+    app.factory(&#39;themeFactory&#39;, function() {
+        var themeFactory = {
+            themeController: null,
+            setLogin: function(init) {
+                themeFactory.themeController.loggedIn = init;
+            }
+        }
+
+        return themeFactory;
+    });
+
+    app.controller(&#39;ThemeController&#39;, function (themeFactory) {
+        var themeController = this;
+        themeController.loggedIn = false;
+        themeFactory.themeController = themeController;
+        themeController.bootStrapCss = &quot;cosmo&quot;;
+        themeController.bootStrapThemes = [
+            {name: &quot;Cerulean&quot;, url: &quot;cerulean&quot;},
+            {name: &quot;Cosmo&quot;, url: &quot;cosmo&quot;},
+            {name: &quot;Cyborg&quot;, url: &quot;cyborg&quot;},
+            {name: &quot;Darkly&quot;, url: &quot;darkly&quot;},
+            {name: &quot;Flatly&quot;, url: &quot;flatly&quot;},
+            {name: &quot;Journal&quot;, url: &quot;journal&quot;},
+            {name: &quot;Lumen&quot;, url: &quot;lumen&quot;},
+            {name: &quot;Paper&quot;, url: &quot;paper&quot;},
+            {name: &quot;Readable&quot;, url: &quot;readable&quot;},
+            {name: &quot;Sandstone&quot;, url: &quot;sandstone&quot;},
+            {name: &quot;Simplex&quot;, url: &quot;simplex&quot;},
+            {name: &quot;Slate&quot;, url: &quot;slate&quot;},
+            {name: &quot;Spacelab&quot;, url: &quot;spacelab&quot;},
+            {name: &quot;Superhero&quot;, url: &quot;superhero&quot;},
+            {name: &quot;United&quot;, url: &quot;united&quot;},
+            {name: &quot;Yeti&quot;, url: &quot;yeti&quot;}
+        ];
+    });
+
+})();
+</code></pre><p>Notice that the themeFactory is used in the <strong>login</strong> and <strong>logout</strong> controllers.</p>
+<h2 id="step-seven">Step Seven</h2>
 <p>Here is <strong>public/javascripts/comments.jade</strong></p>
 <pre><code>(function() {
 
