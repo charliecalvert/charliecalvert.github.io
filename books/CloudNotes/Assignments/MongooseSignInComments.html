@@ -7,18 +7,7 @@
 <li><a href="#step-six">Step Six</a></li>
 <li><a href="#step-seven">Step Seven</a></li>
 <li><a href="#hints">Hints</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
-<p>This assignment is not complete yet. I give it to you only because it contains enough information to show some of you how to use sign in with angular.</p>
-<p>Now passport will authenticate our user for us, and then put the user&#39;s information (username, email, etc) in <strong>request.user</strong>. It then relays the information back to the front end with <strong>response.send(request.user)</strong>. If the user can&#39;t log in, an error is sent back, per these lines from <strong>passport/login</strong>:</p>
-<pre><code>if (!user){
-    console.log(&#39;User Not Found with username &#39;+username);
-    return done(null, false);
-}
-
-if (!isValidPassword(user, password)){
-    console.log(&#39;Invalid Password&#39;);
-    return done(null, false); // redirect back to login page
-}
-</code></pre><p>SignIn and Comments in one program with a menu.</p>
+<p>SignIn and Comments in one program with a menu.</p>
 <p>Found a <a href="https://vickev.com/#!/article/authentication-in-single-page-applications-node-js-passportjs-angularjs">good article</a> on passport and angular. The <a href="https://github.com/Anomen/AuthenticationAngularJS">code</a> is available and that is how I knew to replace the method shown above.</p>
 <h2 id="step-one">Step One</h2>
 <p>Copy the MongooseComments program into a new folder:</p>
@@ -511,8 +500,6 @@ router.get(&#39;/loggedin&#39;, function(request, response) {
 </code></pre><p>Tie together the login and log out code and provide support for switching themes:</p>
 <pre><code>(function () {
 
-    // https://scotch.io/tutorials/use-angularjs-and-nghref-to-grab-css-dynamically
-
     var app = angular.module(&#39;elvenApp&#39;);
 
     app.factory(&#39;themeFactory&#39;, function() {
@@ -535,19 +522,7 @@ router.get(&#39;/loggedin&#39;, function(request, response) {
             {name: &quot;Cerulean&quot;, url: &quot;cerulean&quot;},
             {name: &quot;Cosmo&quot;, url: &quot;cosmo&quot;},
             {name: &quot;Cyborg&quot;, url: &quot;cyborg&quot;},
-            {name: &quot;Darkly&quot;, url: &quot;darkly&quot;},
-            {name: &quot;Flatly&quot;, url: &quot;flatly&quot;},
-            {name: &quot;Journal&quot;, url: &quot;journal&quot;},
-            {name: &quot;Lumen&quot;, url: &quot;lumen&quot;},
-            {name: &quot;Paper&quot;, url: &quot;paper&quot;},
-            {name: &quot;Readable&quot;, url: &quot;readable&quot;},
-            {name: &quot;Sandstone&quot;, url: &quot;sandstone&quot;},
-            {name: &quot;Simplex&quot;, url: &quot;simplex&quot;},
-            {name: &quot;Slate&quot;, url: &quot;slate&quot;},
-            {name: &quot;Spacelab&quot;, url: &quot;spacelab&quot;},
-            {name: &quot;Superhero&quot;, url: &quot;superhero&quot;},
-            {name: &quot;United&quot;, url: &quot;united&quot;},
-            {name: &quot;Yeti&quot;, url: &quot;yeti&quot;}
+                        etc...
         ];
     });
 
@@ -566,17 +541,7 @@ router.get(&#39;/loggedin&#39;, function(request, response) {
             commentFactory.updateComment(commentsController.scientist);
         };
 
-        commentsController.newComment = function() {
-            commentFactory.newComment(commentsController.scientist, commentsController.newCommentText);
-        };
-
-        commentsController.deleteComment = function() {
-            commentFactory.deleteComment(commentsController.scientist, commentsController.comment);
-        };
-
-        commentsController.selectComment = function(comment) {
-            commentsController.comment = comment;
-        };
+        // Code omitted here....
 
         function getScientist() {
             mongoFactory.getScientistById(mongoFactory.currentId, commentsController);
@@ -586,48 +551,19 @@ router.get(&#39;/loggedin&#39;, function(request, response) {
     });
 
 })();
-</code></pre><p>Here is the code from <strong>mongo-factory</strong> that provides you with a name property you can display at the top of the <strong>edit</strong>, <strong>comments</strong>, and <strong>subjects</strong> pages of your final:</p>
-<pre><code class="lang-javascript">setControllerName: function(controller) {
-    controller.name = controller.scientist.firstName + &#39; &#39; + controller.scientist.lastName;
-},
-
-getScientistById: function(id, controller) {
-    mongoFactory.currentId = id;
-    var items = mongoFactory.allData.filter(function(scientist) {
-        return scientist._id === id;
-    });
-    controller.scientist = items[0];
-    mongoFactory.setControllerName(controller);
-    return controller.scientist;
-},
+</code></pre><p>Here is the code from <strong>mongo-factory</strong> that provides you with a <strong>name</strong> property you can display at the top of the <strong>edit</strong>, <strong>comments</strong>, and <strong>subjects</strong> pages of your final:</p>
+<pre><code class="lang-javascript">    setControllerName: function(controller) {
+        controller.name = controller.scientist.firstName + &#39; &#39; + controller.scientist.lastName;
+    },
 </code></pre>
-<p>This means that a file like <strong>comments.jade</strong> will would look like this:</p>
+<p>Call it from <strong>getScientistById</strong>.</p>
+<p>This means that a file like <strong>comments.jade</strong> will would begin like this:</p>
 <pre><code>h1 Comments: {{commentsController.name}}
 div.names
     ul
         li(ng-repeat=&#39;comment in commentsController.scientist.comments&#39;)
             a(ng-click=&quot;commentsController.selectComment(comment)&quot;) {{comment.commentText}}
-    div.names(ng-form=&quot;newCommentForm&quot;)
-        hr
-        button.btn.btn-default(ng-click=&#39;commentsController.newComment()&#39;) New Comment
-        br
-        br
-        label(class=&#39;col-sm-2, control-label&#39;) Text
-        input.form-control(type=&#39;text&#39;, ng-model=&#39;commentsController.newCommentText&#39;)
-    div.names(ng-form=&quot;myform&quot;)
-        hr
-        button.btn.btn-default(ng-click=&#39;commentsController.updateComment()&#39;) Update Comment
-        button.btn.btn-default(ng-click=&#39;commentsController.deleteComment()&#39;) Delete Comment
-        br
-        br
-        label(class=&#39;col-sm-2, control-label&#39;) Text
-        input.form-control(type=&#39;text&#39;, ng-model=&#39;commentsController.comment.commentText&#39;)
-        br
-        label(class=&#39;col-sm-2, control-label&#39;) Date
-        input.form-control(type=&#39;text&#39;, ng-model=&#39;commentsController.comment.date&#39;)
-        br
-        label(class=&#39;col-sm-2, control-label&#39;) Id
-        input.form-control(type=&#39;text&#39;, ng-model=&#39;commentsController.comment._id&#39;)
-</code></pre><h2 id="hints">Hints</h2>
-<p>You will get a warning &#39;Synchronous XMLHttpRequest on the main thread is deprecated&#39;. I believe this has something to do with the dialog we are loading to login and the related code. I don&#39;t think it has to do with the way we are rerouting events. In other words, it happens when we go directly to the login page, not just when we get there from the comments link. For now we are ignorning this warning.</p>
+</code></pre><p>The fist line shows how to use the new <strong>name</strong> property.</p>
+<h2 id="hints">Hints</h2>
+<p>You may get a warning &#39;Synchronous XMLHttpRequest on the main thread is deprecated&#39;. I believe this has something to do with the dialog we are loading to login and the related code. I don&#39;t think it has to do with the way we are rerouting events. In other words, it happens when we go directly to the login page, not just when we get there from the comments link. For now we are ignorning this warning.</p>
 </div></body></html>
