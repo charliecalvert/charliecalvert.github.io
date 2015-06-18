@@ -34,6 +34,7 @@
 <li><a href="#clone-a-specific-branch">Clone a Specific Branch</a></li>
 <li><a href="#git-checkout-a-specific-branch">Git Checkout a Specific Branch</a></li>
 <li><a href="#oldversion">Find Old Version of Code</a></li>
+<li><a href="#replace-master-with-old-commit">Replace Master with Old Commit</a></li>
 <li><a href="#comparing-two-branches">Comparing Two Branches</a></li>
 <li><a href="#forking">Forking</a></li>
 <li><a href="#fix-broken-fork">Fix Broken Fork</a></li>
@@ -1004,6 +1005,19 @@ Date:   Mon May 25 16:20:49 2015 -0700
 </ul>
 <p>Having a branch in your code is not nearly as expensive as it might seem at first. If, however, you want to delete it. First switch to master, and then:</p>
 <pre><code>git branch -d initial
+</code></pre><h2 id="replace-master-with-old-commit">Replace Master with Old Commit</h2>
+<p>Sometimes you will find that the current master branch is no longer what you want. You want to go back to some earlier commit, some earlier state. The first thing to do is find the commit number of that old branch as described above. Suppose that number is<strong> f631de7</strong>. Here is how to replace the current master branch with that older commit. You may or may not want to start with a <strong>git fetch</strong> to to pull down the most recent code (current master branch) from your repository. At any rate, once you are ready to begin, you should do this, where the first line creates a branch called <strong>yesterday</strong> based on specific commit:</p>
+<pre><code>git branch yesterday f631de7
+git checkout yesterday
+git merge -s ours master
+git checkout master
+git merge yesterday
+</code></pre><p>The -s stands for strategy: <strong>git merge --strategy ours master</strong>. It says that if there are conflicts during the merge, always prefer our current branch over the master branch.</p>
+<p>When looking at the above code, it should be clear that you can use this same strategy to replace the current master with some any random branch. Suppose you want to replace the current master with the a branch called <strong>goodbranch</strong>:</p>
+<pre><code>git checkout goodbranch
+git merge -s ours master
+git checkout master
+git merge yesterday
 </code></pre><h2 id="comparing-two-branches">Comparing Two Branches</h2>
 <p>If you want to compare the files from BranchA and BranchB, you might
 do something like this:</p>
