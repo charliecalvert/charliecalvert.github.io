@@ -588,8 +588,18 @@ router.get(&#39;/loggedin&#39;, function(request, response) {
         controller.name = controller.scientist.firstName + &#39; &#39; + controller.scientist.lastName;
     },
 </code></pre>
-<p>Call it from <strong>getScientistById</strong>.</p>
-<p>This means that a file like <strong>comments.jade</strong> will would begin like this:</p>
+<p>Call it from <strong>getScientistById</strong>:</p>
+<pre><code class="lang-javascript">getScientistById: function(id, controller) {
+    mongoFactory.currentId = id;
+    var items = mongoFactory.allData.filter(function(scientist) {
+        return scientist._id === id;
+    });
+    controller.scientist = items[0];
+    mongoFactory.setControllerName(controller);
+    return controller.scientist;
+},
+</code></pre>
+<p>This means that a file like <strong>views/comments.jade</strong> would begin like this:</p>
 <pre><code>h1 Comments: {{commentsController.name}}
 div.names
     ul
