@@ -6,6 +6,7 @@
 <li><a href="#step-five">Step Five</a></li>
 <li><a href="#step-six">Step Six</a></li>
 <li><a href="#step-seven">Step Seven</a></li>
+<li><a href="#step-eight">Step Eight</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#hints">Hints</a></li>
 <li><a href="#references">References</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
@@ -220,7 +221,88 @@ var fs = require(&#39;fs&#39;);
 <pre><code>$http.post(&#39;/comments/newComment&#39;
 </code></pre><p>Recall that we set that middleware up in <strong>/app.js</strong> with this line of code:</p>
 <pre><code>app.use(&#39;/comments&#39;, comments);
-</code></pre><h2 id="step-seven">Step Seven</h2>
+</code></pre><p>And we will need a <strong>/views/commentds.jade</strong> file to go with <strong>public/javascripts/comments.js</strong></p>
+<pre><code class="lang-jade">h1 Comments: {{commentsController.name}}
+div.names
+    ul
+        li(ng-repeat=&#39;comment in commentsController.scientist.comments&#39;)
+            a(ng-click=&quot;commentsController.selectComment(comment)&quot;) {{comment.commentText}}
+    div.names(ng-form=&quot;newCommentForm&quot;)
+        hr
+        button.btn.btn-default(ng-click=&#39;commentsController.newComment()&#39;) New Comment
+        br
+        br
+        label(class=&#39;col-sm-2, control-label&#39;) Text
+        input.form-control(type=&#39;text&#39;, ng-model=&#39;commentsController.newCommentText&#39;)
+    div.names(ng-form=&quot;myform&quot;)
+        hr
+        button.btn.btn-default(ng-click=&#39;commentsController.updateComment()&#39;) Update Comment
+        button.btn.btn-default(ng-click=&#39;commentsController.deleteComment()&#39;) Delete Comment
+        br
+        br
+        label(class=&#39;col-sm-2, control-label&#39;) Text
+        input.form-control(type=&#39;text&#39;, ng-model=&#39;commentsController.comment.commentText&#39;)
+        br
+        label(class=&#39;col-sm-2, control-label&#39;) Date
+        input.form-control(type=&#39;text&#39;, ng-model=&#39;commentsController.comment.date&#39;)
+        br
+        label(class=&#39;col-sm-2, control-label&#39;) Id
+        input.form-control(type=&#39;text&#39;, ng-model=&#39;commentsController.comment._id&#39;)
+</code></pre>
+<p>You should probably add support for an about page as well.</p>
+<h2 id="step-seven">Step Seven</h2>
+<p>Include a menu in <strong>index.jade</strong></p>
+<pre><code class="lang-jade">extends layout
+block content
+    nav.navbar-default.navbar-fixed-top
+        .container-fluid
+            .navbar-header
+                button(type=&quot;button&quot; class=&quot;navbar-toggle collapsed&quot; data-toggle=&quot;collapse&quot; data-target=&quot;#myTarget&quot;)
+                    span.sr-only Toggle navigation
+                    span.icon-bar
+                    span.icon-bar
+                    span.icon-bar
+                a.navbar-brand(href=&quot;#/&quot;) Final
+            #myTarget.collapse.navbar-collapse
+                ul.nav.navbar-nav
+                    li(ng-class=&quot;{ active: isActive(&#39;/&#39;)}&quot;)
+                        a(ng-href=&#39;#/&#39;) Home
+                    li(ng-class=&quot;{ active: isActive(&#39;/comments&#39;)}&quot;)
+                        a(ng-href=&#39;#/comments&#39;) Comments
+                    li(ng-class=&quot;{ active: isActive(&#39;/about&#39;)}&quot;)
+                        a(ng-href=&#39;#/about&#39;) About
+    h1= title
+    p Welcome to #{title}
+    div(data-ng-view=&quot;&quot;)
+</code></pre>
+<p>And add in support for routes:</p>
+<pre><code>bower install angular-route --save
+</code></pre><p>Make sure that <strong>bower.json</strong> is using a single version of angular throughout.</p>
+<p>Then provide support for your routes on the client:</p>
+<pre><code>var myModule = angular.module(&quot;elvenApp&quot;, [ &#39;ngRoute&#39; ]);
+
+myModule.config(function($routeProvider, $httpProvider, $locationProvider) {
+
+    $routeProvider.when(&quot;/&quot;, {
+        templateUrl : &quot;main&quot;,
+        controller : &quot;MainController&quot;,
+        controllerAs: &quot;mainController&quot;
+    }).when(&#39;/comments&#39;, {
+        templateUrl : &quot;comments&quot;,
+        controller : &quot;CommentsController&quot;,
+        controllerAs: &#39;commentsController&#39;,
+        resolve: {
+            loggedin: checkLoggedin
+        }
+    }).when(&#39;/about&#39;, {
+        templateUrl : &quot;about&quot;,
+        controller : &quot;AboutController&quot;,
+        controllerAs: &#39;aboutController&#39;
+    }).otherwise({
+        redirectTo : &#39;/&#39;
+    });
+});
+</code></pre><h2 id="step-eight">Step Eight</h2>
 <p>Some finishing touches.</p>
 <p>In layout.jade, link in comments:</p>
 <pre><code>script(src=&quot;javascripts/comment-factory.js&quot;)
