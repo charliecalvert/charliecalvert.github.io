@@ -1,0 +1,442 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><title>MongooseSignIn</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body ng-app="elfApp"><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>MongooseSignIn</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#description">Description</a></li>
+<li><a href="#step-one">Step One</a></li>
+<li><a href="#step-two">Step Two</a></li>
+<li><a href="#step-two">Step Two</a></li>
+<li><a href="#step-three">Step Three</a></li>
+<li><a href="#step-four">Step Four</a></li>
+<li><a href="#step-five">Step Five</a></li>
+<li><a href="#step-six">Step Six</a></li>
+<li><a href="#step-seven-view-data-on-mongolab">Step Seven View Data on MongoLab</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<p>Mongoose sign in has two major parts:</p>
+<ul>
+<li>An interface built in express and jade (no angular) that allows the user to enter a username and password</li>
+<li>A Mongooose library for storing and retrieving the user names and passwords</li>
+</ul>
+<p>The code also encrypts and validates user names and passwords.</p>
+<p>The sign in Screen:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/SignIn01.png" alt="Sign In"></p>
+<p>Register a new users:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/SignIn02.png" alt="Sign In"></p>
+<p>Logged in:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/SignIn03.png" alt="Sign In"></p>
+<p>The users in MongoLab:</p>
+<h2 id="step-one">Step One</h2>
+<p>Create an express app</p>
+<pre><code>express Week10-MongooseSignIn
+cd Week10-MongooseSignIn
+npm install
+npm install bcrypt-nodejs --save
+npm install mongoose --save
+npm install passport --save
+npm install passport-local --save
+npm install express-session --save
+</code></pre><p>Don&#39;t forget port 30025, the title and <strong>nodemon</strong>.</p>
+<ul>
+<li><a href="https://drive.google.com/file/d/0B25UTAlOfPRGVXR3SHFJa05sNjQ/view?usp=sharing">https://drive.google.com/file/d/0B25UTAlOfPRGVXR3SHFJa05sNjQ/view?usp=sharing</a></li>
+</ul>
+<h2 id="step-two">Step Two</h2>
+<p>Setup Mongoose</p>
+<p>In /db.js:</p>
+<pre><code>module.exports = {
+    &#39;url&#39; : &#39;mongodb://csc:Re*lD*t*22#@ds049848.mongolab.com:49848/elvenlab01&#39;
+}
+</code></pre><p>If working with a local database, then do this:</p>
+<pre><code>&#39;url&#39; : &#39;mongodb://localhost/test&#39;
+</code></pre><p>In <strong>models/user.js</strong>:</p>
+<pre><code>var mongoose = require(&#39;mongoose&#39;);
+
+var userSchema = mongoose.Schema({
+    id: String,
+    firstName: String,
+    lastName: String,
+    username: String,
+    password: String,
+    email: String
+});
+
+module.exports = mongoose.model(&#39;User&#39;, userSchema);
+</code></pre><h2 id="step-two">Step Two</h2>
+<p>Front end</p>
+<p>In <strong>views/layout.jade</strong></p>
+<pre><code>doctype html
+html
+  head
+    title= title
+    link(rel=&#39;stylesheet&#39;, href=&#39;/stylesheets/style.css&#39;)
+    link(rel=&#39;stylesheet&#39;, href=&#39;http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css&#39;)
+  body
+    block content
+</code></pre><p>In <strong>views/index.jade</strong></p>
+<pre><code>extends layout
+block content
+    h1= title
+    p Welcome to #{title}
+    div.container
+        div.row
+            div.col-sm-6.col-md-4.col-md-offset-4
+                h1.text-center.login-title Sign in to our Passport app
+                    div.account-wall
+                        img(class=&#39;profile-img&#39;, src=&#39;images/SpaceNeedle.png&#39;)
+                        form(class=&#39;form-signin&#39;, action=&#39;/login&#39;, method=&#39;POST&#39;)
+                            input(type=&#39;text&#39;, name=&#39;username&#39; class=&#39;form-control&#39;, placeholder=&#39;UserName&#39;,required, autofocus)
+                            input(type=&#39;password&#39;, name=&#39;password&#39; class=&#39;form-control&#39;, placeholder=&#39;Password&#39;, required)
+                            button(class=&#39;btn btn-lg btn-primary btn-block&#39;, type=&#39;submit&#39;) Sign in
+                            span.clearfix
+                    a(href=&#39;/signup&#39;, class=&#39;text-center new-account&#39;) Create an account
+                    #message
+                    if message
+                        h1.text-center.error-message #{message}
+</code></pre><p>in <strong>views/register.jade</strong></p>
+<pre><code>extends layout
+
+block content
+    div.container
+        div.row
+            div.col-sm-6.col-md-4.col-md-offset-4
+                h1.text-center.login-title Registration Details
+                    div.signup-wall
+                        form(class=&#39;form-signin&#39;, action=&#39;/signup&#39;, method=&#39;POST&#39;)
+                            input(type=&#39;text&#39;, name=&#39;username&#39;, class=&#39;form-control&#39;, placeholder=&#39;Username&#39;,required, autofocus)
+                            input(type=&#39;password&#39;, name=&#39;password&#39;, class=&#39;form-control nomargin&#39;, placeholder=&#39;Password&#39;, required)
+                            input(type=&#39;email&#39;, name=&#39;email&#39;, class=&#39;form-control&#39;, placeholder=&#39;Email&#39;,required)
+                            input(type=&#39;text&#39;, name=&#39;firstName&#39;, class=&#39;form-control&#39;, placeholder=&#39;First Name&#39;,required)
+                            input(type=&#39;text&#39;, name=&#39;lastName&#39;, class=&#39;form-control&#39;, placeholder=&#39;Last Name&#39;,required)
+                            button(class=&#39;btn btn-lg btn-primary btn-block&#39;, type=&#39;submit&#39;) Register
+                            span.clearfix
+                    #message
+                        if message
+                            h1.text-center.error-message #{message}
+</code></pre><p>In <strong>views/home.jade</strong></p>
+<pre><code>extends layout
+block content
+    div.container
+        div.row
+            div.col-sm-6.col-md-4.col-md-offset-4
+                #user
+                    h1.text-center.login-title Welcome #{user.firstName}. Check your details below:
+                    div.signup-wall
+                        ul.user-details
+                            li Username ---&gt; #{user.username}
+                            li Email    ---&gt; #{user.email}
+                            li First Name ---&gt; #{user.firstName}
+                            li Last Name ---&gt; #{user.lastName}
+                    a(href=&#39;/signout&#39;, class=&#39;text-center new-account&#39;) Sign Out
+</code></pre><p>Be careful about the whitespace in these files.</p>
+<h2 id="step-three">Step Three</h2>
+<p>Database Mongoose</p>
+<p>In <strong>app.js</strong>, about line 8.</p>
+<pre><code>var dbConfig = require(&#39;./db&#39;);
+var mongoose = require(&#39;mongoose&#39;);
+// Connect to DB
+mongoose.connect(dbConfig.url);
+</code></pre><p>On about line 13, comment out the existing routes call:</p>
+<pre><code>// var routes = require(&#39;./routes/index&#39;);
+</code></pre><p>In app.js around line 28:</p>
+<pre><code>// Configuring Passport
+var passport = require(&#39;passport&#39;);
+var expressSession = require(&#39;express-session&#39;);
+app.use(expressSession({
+    secret: &#39;mySecretKey&#39;,
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Initialize Passport
+var initPassport = require(&#39;./passport/init&#39;);
+initPassport(passport);
+
+var routes = require(&#39;./routes/index&#39;)(passport);
+</code></pre><h2 id="step-four">Step Four</h2>
+<p>Backend</p>
+<p>Passport provides authentication. If the user can be authenticated, then they will be allowed to do something, otherwise will they will be redirected to another screen:</p>
+<ul>
+<li>Success: You get to do it</li>
+<li>Failure: Access denied!</li>
+</ul>
+<p>Here is the classic <strong>authenticate</strong> middleware in action:</p>
+<pre><code>router.post(&#39;/login&#39;, passport.authenticate(&#39;login&#39;, {
+    successRedirect: &#39;/home&#39;,
+    failureRedirect: &#39;/&#39;
+  }));
+</code></pre><p>In <strong>routes/index.js</strong></p>
+<pre><code>var express = require(&#39;express&#39;);
+var router = express.Router();
+
+var isAuthenticated = function(req, res, next) {
+    // if user is authenticated in the session, call the next() to call the next request handler
+    // Passport adds this method to request object. A middleware is allowed to add properties to
+    // request and response objects
+    if (req.isAuthenticated())
+        return next();
+    // if the user is not authenticated then redirect him to the login page
+    res.redirect(&#39;/&#39;);
+};
+
+module.exports = function(passport) {
+
+    router.get(&#39;/&#39;, function(req, res) {
+        res.render(&#39;index&#39;, {title: &quot;sign in&quot;});
+    });
+
+    router.post(&#39;/login&#39;, passport.authenticate(&#39;login&#39;, {
+        successRedirect: &#39;/home&#39;,
+        failureRedirect: &#39;/&#39;
+    }));
+
+    router.get(&#39;/signup&#39;, function(req, res) {
+        res.render(&#39;register&#39;, {});
+    });
+
+    /* Handle Registration POST */
+    router.post(&#39;/signup&#39;, passport.authenticate(&#39;signup&#39;, {
+        successRedirect: &#39;/home&#39;,
+        failureRedirect: &#39;/signup&#39;
+    }));
+
+    /* GET Home Page */
+    router.get(&#39;/home&#39;, isAuthenticated, function(req, res) {
+        res.render(&#39;home&#39;, {user: req.user});
+    });
+
+    router.get(&#39;/signout&#39;, function(req, res) {
+        req.logout();
+        res.redirect(&#39;/&#39;);
+    });
+
+    return router;
+};
+</code></pre><h2 id="step-five">Step Five</h2>
+<p>Passport</p>
+<p>In <strong>/passport/init.js</strong></p>
+<pre><code>var login = require(&#39;./login&#39;);
+var signup = require(&#39;./signup&#39;);
+var User = require(&#39;../models/user&#39;);
+
+module.exports = function(passport) {
+
+    // Passport needs to be able to serialize and deserialize
+    // users to support persistent login sessions
+    passport.serializeUser(function(user, done) {
+        console.log(&#39;serializing user: &#39;);
+        console.log(user);
+        done(null, user._id);
+    });
+
+    passport.deserializeUser(function(id, done) {
+        User.findById(id, function(err, user) {
+            console.log(&#39;deserializing user:&#39;, user);
+            done(err, user);
+        });
+    });
+
+    // Setting up Passport Strategies for Login and SignUp/Registration
+    login(passport);
+    signup(passport);
+
+};
+</code></pre><p>In <strong>/passport/login.js</strong></p>
+<pre><code>/**
+ * Created by charlie on 6/8/2015.
+ */
+
+var LocalStrategy   = require(&#39;passport-local&#39;).Strategy;
+var User = require(&#39;../models/user&#39;);
+var bCrypt = require(&#39;bcrypt-nodejs&#39;);
+
+module.exports = function(passport) {
+
+    passport.use(&#39;login&#39;, new LocalStrategy({
+                passReqToCallback : true
+            },
+            function(req, username, password, done) {
+                // check in mongo if a user with username exists or not
+                User.findOne({ &#39;username&#39; :  username },
+                    function(err, user) {
+                        // In case of any error, return using the done method
+                        if (err)
+                            return done(err);
+                        // Username does not exist, log the error and redirect back
+                        if (!user){
+                            console.log(&#39;User Not Found with username &#39;+username);
+                            return done(null, false);
+                        }
+                        // User exists but wrong password, log the error
+                        if (!isValidPassword(user, password)){
+                            console.log(&#39;Invalid Password&#39;);
+                            return done(null, false); // redirect back to login page
+                        }
+                        // User and password both match, return user from done method
+                        // which will be treated like success
+                        return done(null, user);
+                    }
+                );
+
+            })
+    );
+
+
+    var isValidPassword = function(user, password){
+        return bCrypt.compareSync(password, user.password);
+    }
+
+};
+</code></pre><p>In <strong>/passport/signup.js</strong></p>
+<pre><code>var LocalStrategy   = require(&#39;passport-local&#39;).Strategy;
+var User = require(&#39;../models/user&#39;);
+var bCrypt = require(&#39;bcrypt-nodejs&#39;);
+
+module.exports = function(passport){
+
+    passport.use(&#39;signup&#39;, new LocalStrategy({
+            passReqToCallback : true // allows us to pass back the entire request to the callback
+        },
+        function(req, username, password, done) {
+
+            findOrCreateUser = function(){
+                // find a user in Mongo with provided username
+                User.findOne({ &#39;username&#39; :  username }, function(err, user) {
+                    // In case of any error, return using the done method
+                    if (err){
+                        console.log(&#39;Error in SignUp: &#39;+err);
+                        return done(err);
+                    }
+                    // already exists
+                    if (user) {
+                        console.log(&#39;User already exists with username: &#39;+username);
+                        return done(null, false, req.flash(&#39;message&#39;,&#39;User Already Exists&#39;));
+                    } else {
+                        // if there is no user with that email
+                        // create the user
+                        var newUser = new User();
+
+                        // set the user&#39;s local credentials
+                        newUser.username = username;
+                        newUser.password = createHash(password);
+                        newUser.email = req.param(&#39;email&#39;);
+                        newUser.firstName = req.param(&#39;firstName&#39;);
+                        newUser.lastName = req.param(&#39;lastName&#39;);
+
+                        // save the user
+                        newUser.save(function(err) {
+                            if (err){
+                                console.log(&#39;Error in Saving user: &#39;+err);  
+                                throw err;  
+                            }
+                            console.log(&#39;User Registration succesful&#39;);    
+                            return done(null, newUser);
+                        });
+                    }
+                });
+            };
+            // Delay the execution of findOrCreateUser and execute the method
+            // in the next tick of the event loop
+            process.nextTick(findOrCreateUser);
+        })
+    );
+
+    // Generates hash using bCrypt
+    var createHash = function(password){
+        return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
+    }
+
+};
+</code></pre><h2 id="step-six">Step Six</h2>
+<p>Add css. Append this to <strong>public/css/style.css</strong>:</p>
+<pre><code>.form-signin{
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-signin .form-signin-heading, .form-signin .checkbox{
+    margin-bottom: 10px;
+}
+.form-signin .checkbox{
+    font-weight: normal;
+}
+.form-signin .form-control{
+    position: relative;
+    font-size: 16px;
+    height: auto;
+    padding: 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.form-signin .form-control:focus{
+    z-index: 2;
+}
+.form-signin input[type=&quot;text&quot;]{
+    margin-bottom: -1px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.form-signin input[type=&quot;password&quot;]{
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.form-signin input[type=&quot;password&quot;].nomargin{
+    margin-bottom: 0px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.account-wall{
+    margin-top: 20px;
+    padding: 40px 0px 20px 0px;
+    background-color: #f7f7f7;
+    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+.signup-wall{
+    margin-top: 20px;
+    padding: 20px 0px 20px 0px;
+    background-color: #f7f7f7;
+    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);    
+}
+.login-title{
+    color: #555;
+    font-size: 18px;
+    font-weight: 400;
+    display: block;
+}
+.profile-img{
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 10px;
+    display: block;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+}
+.new-account{
+    display: block;
+    margin-top: 10px;
+}
+h1.error-message{
+    color: red;
+}
+ul.user-details{
+    list-style: none;
+}
+</code></pre><h2 id="step-seven-view-data-on-mongolab">Step Seven View Data on MongoLab</h2>
+<p>When viewing the data on MongoLab, select <strong>edit table view</strong> in the view of your <strong>users</strong> collection and paste in the following code:</p>
+<pre><code>{
+    &quot;_id&quot;: &quot;id&quot;,
+    &quot;username&quot;: &quot;username&quot;,
+    &quot;email&quot;: &quot;email&quot;,
+    &quot;firstName&quot;: &quot;firstName&quot;,
+    &quot;lastName&quot;: &quot;lastName&quot;,
+    &quot;password&quot;: &quot;password&quot;
+}
+</code></pre><p>When you are done, you are view of the data could look something like this:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/SignIn04.png" alt="MongoLab"></p>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Submit four screen shots as PNG attachments. Each screen shot except the last should contain your first and last names. Model your screen shots after the four images found in this assignment.</p>
+<p>Also check in your code in <strong>Week10-MongooseSignIn</strong> or some similar name beginning with <strong>Week10</strong>. If there might be any question at all as to where I would find your code, please include the folder name when you submit the assignment.</p>
+</div></body></html>
