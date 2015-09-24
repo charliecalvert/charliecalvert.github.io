@@ -8,12 +8,19 @@
 <li><a href="#the-video">The Video</a></li>
 <li><a href="#summary">Summary</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
-<li><a href="#hints">Hints</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#hints">Hints</a></li>
+<li><a href="#id-git">Identify a repository</a></li>
+<li><a href="#git-nest">Don&#39;t Nest Repositories</a></li>
+<li><a href="#ssh-config">SSH Config</a></li>
+<li><a href="#bitbucket-code">BitBucket Sample Code</a></li>
+<li><a href="#github-code">GitHub Sample Code</a></li>
+<li><a href="#fingerprints">RSA Fingerprints</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>This assignment is designed to help you create a new git repository. The text is oriented towards BitBucket and Linux, but it should be possible to use it with GitHub as well. I focus on BitBucket because they provide free private repositories. Since my students turn in assignments with git, it is important that the repositories be private.</p>
 <p>See also:</p>
 <ul>
 <li><a href="http://bit.ly/git-basics">Git Slide Deck</a></li>
-<li><a href="http://bit.ly/elf-cloud9">Git on Cloud 9</a></li>
+<li><a href="http://www.elvenware.com/charlie/development/cloud/Git.html">Git on Elvenware</a></li>
+<li><a href="http://bit.ly/elf-cloud9">Git and Cloud 9</a></li>
 <li><a href="http://youtu.be/HCoC3FbdcQk">Git Video</a></li>
 </ul>
 <h2 id="git-account">Git Account</h2>
@@ -40,7 +47,7 @@
 on the class you are in:</p>
 <pre><code>prog219_calvert-2015
 prog270_calvert-2015
-    prog272_calvert-2015
+prog272_calvert-2015
 isit320_calvert-2015
 isit322_calvert-2015
 </code></pre><p>Then make the following selections:</p>
@@ -169,7 +176,38 @@ git push -u origin master
 <p>Most of the time, when I ask for your Git your URL, I want the one I can I use to clone it. It should be clear, however, that either URL will allow me to access your repository.</p>
 <p>Whenever you need to send me information when submitting an assignment, you can either enter a comment or use the Text page. When possible, use the Text page, because you can insert live hyperlinks and relatively well formatted text using that option. However, either technique will work.</p>
 <h2 id="hints">Hints</h2>
-<p>Sample code from the BitBucket when you first create a repository</p>
+<p>Various Hints</p>
+<h3 id="id-git">Identify a repository</h3>
+<p>You can identify a repository by looking for the hidden directory named <strong>.git</strong>. If that file
+exists, then you are in the root of a git repository.</p>
+<p>In this listing, you can tell that the file called <strong>README.md</strong> is in a git repository
+because a long (l) listing (ls) of the directory with the hidden flag (a) reveals the existence of
+the .git folder:</p>
+<pre><code class="lang-bash">$ ls -la
+total 16
+drwxrwxr-x  3 charlie charlie 4096 Sep 24 10:55 .
+drwxrwxr-x 14 charlie charlie 4096 Sep 24 10:55 ..
+drwxrwxr-x  7 charlie charlie 4096 Sep 24 10:55 .git
+-rw-rw-r--  1 charlie charlie    4 Sep 24 10:55 README.md
+</code></pre>
+<h3 id="git-nest">Don&#39;t Nest Repositories</h3>
+<p>Don&#39;t create one repository inside another unless you are sure you know what
+you are doing. It is possible to nest repos, but it is special case and requires
+specific knowledge on how to proceed.</p>
+<p>In particular:</p>
+<ul>
+<li>Don&#39;t <strong>pull</strong> the Elvenware JsObjects repository into your repository.</li>
+<li>Don&#39;t create your repository inside the JsObjects repository</li>
+<li>Don&#39;t create your repository inside any other repository.</li>
+</ul>
+<h3 id="ssh-config">SSH Config</h3>
+<p>Simplify your life with SSH Config files.</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#ssh-config">SSH Config</a></li>
+</ul>
+<h3 id="bitbucket-code">BitBucket Sample Code</h3>
+<p>Sample code from the BitBucket when you first create a repository. I&#39;m
+including this just because it.</p>
 <p>Set up local directory:</p>
 <pre><code>mkdir /path/to/your/project
 cd /path/to/your/project
@@ -180,7 +218,45 @@ git remote add origin git@bitbucket.org:ccalvert/isit320-deleteme-2015.git
 git add contributors.txt
 git commit -m &#39;Initial commit with contributors&#39;
 git push -u origin master
-</code></pre><!-- ********************************* -->
+</code></pre><h3 id="github-code">GitHub Sample Code</h3>
+<p>Here is the sample code suggested by GitHub.</p>
+<p>Create a new repository in an existing directory from the command line:</p>
+<pre><code>echo &quot;# deleteme06&quot; &gt;&gt; README.md
+git init
+git add README.md
+git commit -m &quot;first commit&quot;
+git remote add origin git@github.com:charliecalvert/deleteme06.git
+git push -u origin master
+</code></pre><p>Push an existing repository for the first time to a new repository:</p>
+<pre><code>git remote add origin git@github.com:charliecalvert/deleteme06.git
+git push -u origin master
+</code></pre><h3 id="fingerprints">RSA Fingerprints</h3>
+<p>It is possible to spoof a URL or even an IP address. As a result, when you
+push and pull from BitBucket or GitHub, git checks to see that the machine
+you are connecting to is the correct machine. In particular, it looks in
+this file for the fingerprint of your remote machine:</p>
+<pre><code>~/.ssh/known-hosts
+</code></pre><p>If the machine you are going to connect to is not listed in known-hosts, then
+the connection will be aborted.</p>
+<p>When you first push to bitbucket or any new SSH server, you should be prompted
+to confirm the authenticity of the site:</p>
+<pre><code>git push -u origin --all
+The authenticity of host &#39;bitbucket.org (131.103.20.168)&#39; can&#39;t be established.
+RSA key fingerprint is 97:8c:1b:f2:6f:14:6b:5c:3b:ec:aa:46:46:74:7c:40.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added &#39;bitbucket.org&#39; (RSA) to the list of known hosts.
+</code></pre><p>When you type in <strong>yes</strong> at the prompt, the fingerprint for this server is
+stored in your <strong>known_hosts</strong> file. You can read more about this process on
+Elvenware.</p>
+<p>See also:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#moreSsh">More on SSH</a></li>
+</ul>
+<p>If you ever need to remove a line from a known_hosts file, see this:</p>
+<ul>
+<li><a href="http://superuser.com/questions/30087/remove-key-from-known-hosts">Remove from known_hosts</a></li>
+</ul>
+<!-- ********************************* -->
 <!-- ** URLS ************************* -->
 <!-- ********************************* -->
 </div></body></html>
