@@ -2,8 +2,13 @@
 <li><a href="#slides">Slides</a></li>
 <li><a href="#elvenware">Elvenware</a></li>
 <li><a href="#callbacks">Callbacks</a></li>
+<li><a href="#create">Step01: Create an Express Project</a></li>
+<li><a href="#bower">Step02: Bower  and jQuery</a></li>
+<li><a href="#custom-js">Step03: Create a Custom JavaScript file</a></li>
+<li><a href="#link">Step04: Link in your Custom File</a></li>
+<li><a href="#display-controls">Step05: Setup Display Controls</a></li>
+<li><a href="#exercise-callbacks">Step06: Create and Exercise Callbacks</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
-<li><a href="#links">Links</a></li>
 <li><a href="#route-parameters">Route Parameters</a></li>
 <li><a href="#step-one-find-route-parameters">Step One: Find Route Parameters</a></li>
 <li><a href="#step-two-run-route-parameters-on-aws">Step Two: Run Route Parameters on AWS</a></li>
@@ -37,66 +42,87 @@
 <li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/NodeJs.html">Node on Elvenware</a></li>
 </ul>
 <hr class="style-eight"><h1 id="callbacks">Callbacks</h1>
-<p>Create an Express project called <strong>Week10-Callbacks</strong>. Add a JavaScript file called <strong>Callbacks.js</strong> and place it in the <strong>public/javascripts</strong>. Link that file into your project.</p>
-<p>In <strong>Callbacks.js</strong> create a function named <strong>callbackHandler</strong> that takes three parameters. The first parameter is
-a callback (that is, a function), the other two parameters are integers.</p>
-<p>Now call the <strong>callbackHandler</strong> function three times:</p>
+<p>Learn about JavaScripts callbacks.</p>
 <ul>
-<li>First pass a function that adds the second and third parameters.</li>
-<li>Pass a function that returns the remainder from dividing two numbers (modulus operator)</li>
-<li>Pass a function that converts the second parameter from miles to feet</li>
+<li><a href="http://bit.ly/elf-callbacks">Callbacks Deck</a></li>
+<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/JavaScriptFunctions.html#callbacks-passing-functions-as-parameters">Callbacks on Elvenware</a></li>
 </ul>
-<p>To install jQuery:</p>
+<h2 id="create">Step01: Create an Express Project</h2>
+<p>Create an Express project called <strong>Week02-Callbacks</strong>.</p>
+<pre><code>    express Week02-Callbacks
+    cd Week02-Callbacks
+    npm install
+</code></pre><h2 id="bower">Step02: Bower  and jQuery</h2>
+<p>Either Create or Copy a <strong>bower.json</strong> file. Here is how to copy it:</p>
+<pre><code>    cp $ELF_TEMPLATES/bower.json .
+</code></pre><p>Here is how to create it:</p>
+<pre><code>    bower init
+</code></pre><p>Now install jQuery:</p>
 <pre><code>bower install jquery --save
-</code></pre><p>Make sure you load them:</p>
-<pre><code>doctype html
-html(lang=&#39;en&#39;)
-  head
-    meta(charset=&#39;UTF-8&#39;)
-    meta(name=&#39;viewport&#39;, content=&#39;width=device-width&#39;)
-    title= title
-    block css
-      link(rel=&#39;stylesheet&#39;, href=&#39;/css/style.css&#39;)
-    block js
-      script(src=&#39;components/jquery/dist/jquery.js&#39;)
-      script(src=&#39;js/Callbacks.js&#39;)
-      script(src=&#39;http://localhost:35729/livereload.js&#39;)
-  body
-    block content
-</code></pre><p>Show Message: </p>
+</code></pre><h2 id="custom-js">Step03: Create a Custom JavaScript file</h2>
+<p>Open your project in WebStorm or your IDE/editor of choice.</p>
+<ul>
+<li>Edit <strong>bin/www</strong> and set the port to <strong>30025</strong></li>
+<li>Edit <strong>package.json</strong> to your project uses <strong>nodemon</strong> instead of <strong>node</strong> to start your project </li>
+</ul>
+<p>Choose <strong>File | New | JavaScript File</strong>. Add a JavaScript file called <strong>callbacks.js</strong> and place it in the <strong>public/javascripts</strong>. </p>
+<h2 id="link">Step04: Link in your Custom File</h2>
+<p>In <strong>views/layout.jade</strong>, use a script statement to link jQuery and your custom file into your project.</p>
+<pre><code>script(src=&#39;components/jquery/dist/jquery.min.js&#39;)
+script(src=&#39;javascripts/callbacks.js)
+</code></pre><p>From the command line, run the project, load it into Chrome, open the Developer Tools with F12, confirm that both <strong>jquery</strong> and <strong>callbacks.js</strong> are loading properly.</p>
+<h2 id="display-controls">Step05: Setup Display Controls</h2>
+<p>Edit <strong>views/index.jade</strong> to that it contains an empty list object.</p>
+<pre><code>    ul#myList
+</code></pre><p>This jade code produces the following HTML:</p>
+<pre><code>    &lt;ul id=&quot;myList&quot;&gt; &lt;/ul&gt;
+</code></pre><p>In <strong>Callbacks.js</strong> create a simple function that uses jquery to display information to the user:</p>
 <pre><code>function showMessage(message) {
     $(&quot;#myList&quot;).append(&quot;&lt;li&gt;&quot; + message + &quot;&lt;/li&gt;&quot;);
 }
-</code></pre><p>Get JSON:</p>
-<pre><code>function callRoute() {
-    showMessage(&#39;callRoute was called&#39;);
-    $.getJSON(&#39;/getNine&#39;, function(json) {
-       showMessage(JSON.stringify(json));
-        showMessage(json.result);
-    });
-}
-</code></pre><p>Callback:</p>
+</code></pre><p>The above code appends a list item to our HTML list.</p>
+<ul>
+<li><a href="http://api.jquery.com/append/">jquery Append</a></li>
+<li><a href="http://stackoverflow.com/questions/1145208/jquery-how-to-add-li-in-an-existing-ul">Append on StackOverflow</a> </li>
+<li><a href="https://www.google.com/search?q=jquery+list+append">Append on Google search</a></li>
+</ul>
+<p>Prove that it works by appending this code to the bottom of your custom JavaScript file:</p>
+<pre><code>$(document).ready(function() {    
+    showMessage(&quot;We can display messages.&quot;);
+});
+</code></pre><p>The <strong>jquery</strong> function called <a href="https://learn.jquery.com/using-jquery-core/document-ready/">document ready</a> will be called when your HTML page has loaded. It is similar to the built in JavaScript function called <strong>window.onload</strong>, but it can be called multiple times.</p>
+<p>In Chrome/Chromium, press F5 to refresh the page. You should see our message displayed on the main page of your web app.</p>
+<h2 id="exercise-callbacks">Step06: Create and Exercise Callbacks</h2>
+<p>create a function named <strong>callbackHandler</strong> that takes three parameters. The first parameter is a callback (that is, a function), the other two parameters are integers.</p>
+<p>Now call the <strong>callbackHandler</strong> function three times:</p>
+<ol>
+<li>First pass a function that adds the second and third parameters. (plus operator)</li>
+<li>Pass in a function that subtracts the second and third parameters. (minus operator)</li>
+<li>Pass a function that returns the remainder from dividing two numbers (modulus operator)</li>
+</ol>
+<p>JavaScript doesn&#39;t care whether you pass in or use a parameter. To see this in action:</p>
+<ul>
+<li>Pass in a function that returns the number 9</li>
+<li>Pass a function that converts the second parameter from miles to feet</li>
+</ul>
+<p>To get you started, I&#39;ll show how to complete the first step shown above.</p>
 <pre><code>function callbackHandler(func, a, b) {
     return func(a, b);
 }
-</code></pre><p>The <strong>callbackHandler</strong> function that you create should use jQuery to display the results of your function calls. Use
-a list to display the result:</p>
-<p>The HTML:</p>
-<pre><code>&lt;ul id=&quot;myList&quot;&gt; &lt;/ul&gt;
-</code></pre><p>In Jade, that would be:</p>
-<pre><code>ul#myList
-</code></pre><p>The JavaScript to display the result of your function calls:</p>
-<pre><code>$(&quot;#myList&quot;).append(&quot;&lt;li&gt;&quot; + result + &quot;&lt;/li&gt;&quot;);
-</code></pre><h2 id="turn-it-in">Turn it in</h2>
-<p>Place it in your git folder under the name Week10-Callbacks. Provide a link to your folder.</p>
-<h2 id="links">Links</h2>
-<p>The following links should help you complete this assignment.</p>
-<ul>
-<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Functions">JsObjects Callback Demos</a></li>
-<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Functions">JsObjects Function This</a></li>
-<li><a href="http://elvenware.com/charlie/books/CloudNotes/Prog282/Week02.html">Week02 Notes</a></li>
-<li><a href="http://bit.ly/FunctionalJavascript">http://bit.ly/FunctionalJavascript</a></li>
-</ul>
+
+function add(a, b) {
+    return a + b;
+}
+
+$(document).ready(function() {    
+    showMessage(&quot;We can display messages.&quot;);
+    var addResult = callbackHandler(add, 2, 3);
+    showMessage(addResult);
+});
+</code></pre><p>Note that the result of the call to the <strong>callbackHandler</strong> is displayed to the user by our jQuery based <strong>showMessage</strong> function.</p>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Be sure you have placed your work in your git folder under the name <strong>Week02-Callbacks</strong>. Submit the URL of your repository, or optionally provide a link to your folder inside your Git project.</p>
+<p><strong>NOTE</strong>: <em>When naming your folder, small things like casing and dashes rather than underscores matter. Remember, I&#39;m grading multiple assignments, and I want to automate the process as best I can. This means I need to know the exact name of your folder, which I specify above.</em></p>
 <hr class="style-eight"><h2 id="route-parameters">Route Parameters</h2>
 <p>The goal of this assignment is to get the RouteParameters program running on:</p>
 <ul>
