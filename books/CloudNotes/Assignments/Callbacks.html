@@ -5,7 +5,9 @@
 <li><a href="#link">Step04: Link in your Custom File</a></li>
 <li><a href="#display-controls">Step05: Setup Display Controls</a></li>
 <li><a href="#exercise-callbacks">Step06: Create and Exercise Callbacks</a></li>
-<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h1 id="callbacks">Callbacks</h1>
+<li><a href="#show-debug">Step Seven: Debugger</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#hint">Hint</a></li><!--TOC_End--></ul><h1 id="callbacks">Callbacks</h1>
 <p>Learn about JavaScripts callbacks. We will cover this in class on Thursday, so you can wait until then to do it, if you wish.</p>
 <ul>
 <li><a href="http://bit.ly/elf-callbacks">Callbacks Deck</a></li>
@@ -22,7 +24,7 @@
 </code></pre><p>Alternatively, here is how to create it using an interactive utility:</p>
 <pre><code>    bower init
 </code></pre><p>And then copy in our <strong>.bowerrc</strong> file so the components are installed in the <strong>public</strong> directory:</p>
-<pre><code>cp $ELF_TEMPLATES/.bowerrc
+<pre><code>cp $ELF_TEMPLATES/.bowerrc .
 </code></pre><p>Now install jQuery:</p>
 <pre><code>bower install jquery --save
 </code></pre><h2 id="custom-js">Step03: Create a Custom JavaScript file</h2>
@@ -35,7 +37,7 @@
 <h2 id="link">Step04: Link in your Custom File</h2>
 <p>In <strong>views/layout.jade</strong>, use a script statement to link jQuery and your custom file into your project.</p>
 <pre><code>script(src=&#39;components/jquery/dist/jquery.min.js&#39;)
-script(src=&#39;javascripts/callbacks.js)
+script(src=&#39;javascripts/callbacks.js&#39;)
 </code></pre><p>From the command line, run the project, load it into Chrome, open the Developer Tools with F12, confirm that both <strong>jquery</strong> and <strong>callbacks.js</strong> are loading properly.</p>
 <h2 id="display-controls">Step05: Setup Display Controls</h2>
 <p>Edit <strong>views/index.jade</strong> to that it contains an empty list object.</p>
@@ -64,13 +66,19 @@ script(src=&#39;javascripts/callbacks.js)
 <ol>
 <li>First pass a function that adds the second and third parameters. (plus operator)</li>
 <li>Pass in a function that subtracts the second and third parameters. (minus operator)</li>
-<li>Pass a function that returns the remainder from dividing two numbers (modulus operator)</li>
+<li>Pass in a function that returns the remainder from dividing two numbers (modulus operator)</li>
 </ol>
 <p>JavaScript doesn&#39;t care whether you pass in or use a parameter. To see this in action:</p>
 <ul>
-<li>Pass in a function that returns the number 9</li>
-<li>Pass a function that converts the second parameter from miles to feet</li>
+<li>Pass in a function called <strong>getNine</strong> that returns the number 9 and displays it in the list.</li>
+<li>Pass in a function called <strong>milesToFeet</strong> that converts the first parameter from miles to feet and display the result in the list.</li>
 </ul>
+<p>Even though the above code works, create two more callbackHandlers, one for functions that take one parameter and one for functions that take zero parameters. Call them:</p>
+<ul>
+<li>zeroParamCallbackHandler</li>
+<li>oneParamCallbackHandler</li>
+</ul>
+<p>Pass in <strong>getNine</strong> to <strong>zeroParamCallbackHandler</strong> and <strong>milesToFeet</strong> to <strong>oneParamCallbackHandler</strong> </p>
 <p>To get you started, I&#39;ll show how to complete the first step shown above.</p>
 <pre><code>function callbackHandler(func, a, b) {
     return func(a, b);
@@ -86,7 +94,37 @@ $(document).ready(function() {
     showMessage(addResult);
 });
 </code></pre><p>Note that the result of the call to the <strong>callbackHandler</strong> is displayed to the user by our jQuery based <strong>showMessage</strong> function.</p>
+<h2 id="show-debug">Step Seven: Debugger</h2>
+<p>Step through the code in the Chrome debugger.</p>
+<ul>
+<li>In Chrome, make sure the developer tools are open. (Press F12)</li>
+<li>Turn to the <strong>Sources</strong> page.</li>
+<li>Select the <strong>callbacks.js</strong> file from the <strong>javascripts folder</strong></li>
+<li>Put a breakpoint on the sole line in the <strong>callBackHandler</strong> function. To create the breakpoint, click in the gutter to the left of the line. </li>
+<li>Run your code to the breakpoint as it appears when the <strong>add</strong> function is passed in. To simplify this process, pass in add first, as in the example above. Then the first time the breakpoint is hit the the parameter called <strong>func</strong> with hold the <strong>add</strong> function.</li>
+<li>Take a screenshot. It should show the values of a and b, which should be set to 2 and 3.</li>
+<li>Attach the screen shot to your assignment when you turn it in.</li>
+</ul>
 <h2 id="turn-it-in">Turn it in</h2>
 <p>Be sure you have placed your work in your git folder under the name <strong>Week02-Callbacks</strong>. Submit the URL of your repository, or optionally provide a link to your folder inside your Git project.</p>
+<p>Don&#39;t forget to attach your screenshot to your assignment.</p>
 <p><strong>NOTE</strong>: <em>When naming your folder, small things like casing and dashes rather than underscores matter. Remember, I&#39;m grading multiple assignments, and I want to automate the process as best I can. This means I need to know the exact name of your folder, which I specify above.</em></p>
+<h2 id="hint">Hint</h2>
+<p>Here is a script to set up a project of this type from scratch:</p>
+<pre><code>express Week02-Callbacks
+cd Week02-Callbacks
+npm install
+cp $ELF_TEMPLATES/bower.json .
+cp $ELF_TEMPLATES/.bowerrc .
+bower install jquery --save
+</code></pre><p>Here is a more complete script that allows you to pass in the name of the file you want to create:</p>
+<pre><code>#!/bin/bash
+
+express $1
+cd $1
+npm install
+cp $ELF_TEMPLATES/bower.json .
+cp $ELF_TEMPLATES/.bowerrc .
+bower install jquery --save
+</code></pre><p>This script is maintained in <strong>JsObjects/Utilities/DeveloperUtilities</strong>.</p>
 </div></body></html>
