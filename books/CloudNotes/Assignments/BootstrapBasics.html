@@ -3,6 +3,10 @@
 <li><a href="#link">Step Two: Link to Bootstrap</a></li>
 <li><a href="#create-main-public">Step Three: Create Public JavaScript File</a></li>
 <li><a href="#define-controls">Step Four: Define Controls</a></li>
+<li><a href="#add-a-box">Add a box</a></li>
+<li><a href="#put-them-in-rows-">Put them in rows:</a></li>
+<li><a href="#debug-display">Create Debug Display</a></li>
+<li><a href="#process">Process</a></li>
 <li><a href="#turn-it-in">Turn It In</a></li><!--TOC_End--></ul><h1 id="bootstrap-basics">Bootstrap Basics</h1>
 <p>We&#39;ll work on this assignment in class on Tuesday, Oct 6, 2015.</p>
 <p>Bootstrap allows you to create projects with CSS that looks good on a PC, a tablet or a phone.</p>
@@ -20,6 +24,9 @@ bower install bootstrap --save
 <pre><code>sed -i -- &#39;s/3000/30025/g&#39; bin/www
 </code></pre><p>And this should replace <strong>node</strong> with <strong>nodemon</strong> in <strong>package.json</strong>:</p>
 <pre><code>sed -i -- &#39;s/node\s/nodemon /g&#39; package.json
+</code></pre><p>Then let&#39;s copy in a favicon and change the title:</p>
+<pre><code>cp ~/Git/JsObjects/Data/MongoLab03/favicon.png public/.
+sed -i -- &#39;s/Express/Week03-Bootstrap-Basics/g&#39; routes/index.js
 </code></pre><p>This part of your work is done now, but as an fyi, this is how it looks if you put it all together:</p>
 <pre><code>express Week03-BootstrapBasics
 cd Week03-BootstrapBasics
@@ -29,6 +36,9 @@ cp $ELF_TEMPLATES/.bowerrc .
 bower install bootstrap --save
 sed -i -- &#39;s/3000/30025/g&#39; bin/www
 sed -i -- &#39;s/node\s/nodemon /g&#39; package.json
+cp ~/Git/JsObjects/Data/MongoLab03/favicon.png public/.
+sed -i -- &#39;s/Express/Week03-Bootstrap-Basics/g&#39; routes/index.js
+npm start
 </code></pre><h2 id="link">Step Two: Link to Bootstrap</h2>
 <p>We need to link in three files:</p>
 <ul>
@@ -48,12 +58,16 @@ html
   body
     block content
 </code></pre><h2 id="create-main-public">Step Three: Create Public JavaScript File</h2>
-<p>Add a file into the javascripts directory called <strong>control.js</strong>. Use the <strong>script</strong> tag to link it into our app from <strong>layout.jade</strong>. Begin by placing the following code in it.</p>
+<p>Add a file into the javascripts directory called <strong>control.js</strong>. You can create the file inside WebStorm, or use the following code:</p>
+<pre><code>ELF_NOW=$(date +&quot;%m/%d/%Y&quot;)
+ELF_FILE=public/javascripts/control.js
+echo &quot;/**&quot; &gt;&gt; $ELF_FILE
+echo &quot; * Created by Charlie Calvert $ELF_NOW&quot; &gt;&gt; $ELF_FILE
+echo &quot; */&quot; &gt;&gt; $ELF_FILE
+</code></pre><p>Use the <strong>script</strong> tag to link it into our app from <strong>layout.jade</strong>:</p>
 <h2 id="define-controls">Step Four: Define Controls</h2>
 <p>Get started defining the HTML for your app by creating a single button and input control:</p>
-<pre><code>button(onclick=&quot;delicious()&quot;) Delicous
-
-div.panel.panel-default
+<pre><code>div.panel.panel-default
     div.panel-heading Text Input
     div.panel-body
         div.form-group
@@ -62,17 +76,113 @@ div.panel.panel-default
 `
 </code></pre><p>For what follows, refer to <strong>JsObjects/HtmCssJavaScript/BootstrapBasics</strong> for help setting up radio buttons and check boxes.</p>
 <p>Provide two radio buttons:</p>
+<pre><code>  div.panel.panel-default
+    div.panel-heading Radios
+    div.panel-body
+      div.btn-group.elves(role=&quot;group&quot;)
+        button.btn.btn-default(type=&quot;button&quot;) radio01
+        button.btn.btn-default(type=&quot;button&quot;) radio02
+</code></pre><p>When the user selects one of them...</p>
+<p>Provide three checkboxes:</p>
+<pre><code>  div.panel.panel-default
+    div.panel-heading CheckBoxes
+    div.panel-body
+      div
+        input#checkBox01(type=&#39;checkbox&#39;, name=&#39;check&#39;, value=&#39;check1&#39; )
+        label(for=&#39;checkBox01&#39;) CheckBox 01
+      div
+        input#checkBox02(type=&#39;checkbox&#39;, name=&#39;check&#39;, value=&#39;check2&#39; )
+        label(for=&#39;checkBox02&#39;) CheckBox 02
+</code></pre><h2 id="add-a-box">Add a box</h2>
+<p>Put a box around all the controls:</p>
+<pre><code>    div.panel.panel-default
+        div.panel-heading My Controls
+        div.panel-body
+            PUT THE INPUT HERE
+            THE CHECKBOXES HERE
+            THE RADIOBUTTONS HERE
+</code></pre><h2 id="put-them-in-rows-">Put them in rows:</h2>
+<p>To define a row, create a <strong>DIV</strong> with class <strong>row</strong></p>
+<pre><code class="lang-html">    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-md-6&quot;&gt;column01&lt;/div&gt;
+        &lt;div class=&quot;col-md-6&quot;&gt;column02&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<p>Each row you create should have columns that add up to twelve. For instance col-md-6 + col-md-6 = 6 + 6 = 12. For three columns, do this: col-md-4 + col-md-4 + col-md-4. Example and more docs are here:</p>
 <ul>
-<li>radio01</li>
-<li>radio02</li>
+<li><a href="https://getbootstrap.com/examples/grid/">https://getbootstrap.com/examples/grid/</a></li>
 </ul>
-<p>When the user selects one of them...</p>
-<p>Provide three checkboxes with the these labels:</p>
-<ul>
-<li>check box 01</li>
-<li>check box 02</li>
-<li>check box 03</li>
-</ul>
+<p>The following code creates to two columns in one row, and then below that row you see the radio buttons:</p>
+<pre><code class="lang-jade">  div.panel.panel-default
+    div.panel-heading My Controls
+    div.panel-body
+        div.row
+            div.col-md-6
+                PUT THE TEXT INPUT HERE
+            div.col-md-6
+                PUT THE CHECKBOXES HERE
+        PUT THE RADIO BUTTONS HERE
+</code></pre>
+<p>You can arrange things  this way, or else create a single row with three colums, each containing all three sets of controls.</p>
+<p>Remember, indentation is very important in Jade.</p>
+<h2 id="debug-display">Create Debug Display</h2>
+<pre><code>div.panel.panel-default
+    div.panel-heading Debug Display
+    div.panel-body
+        div.row
+            div.col-md-6
+                div.panel.panel-default
+                    div.panel-heading RadioButtons
+                    div.panel-body
+                        p#radioButtonDisplay01
+            div.col-md-6
+                div.panel.panel-default
+                    div.panel-heading CheckBoxes
+                    div.panel-body
+                        p#checkBoxDisplay01
+                        p#checkBoxDisplay02
+                        p#checkBoxDisplay03
+                        p#allCheckBoxes
+</code></pre><h2 id="process">Process</h2>
+<pre><code class="lang-javascript">function displayCheckboxSelection()
+{
+    var tag, query = &#39;&#39;;
+    var options = [&#39;CheckBox01&#39;, &#39;CheckBox02&#39;];
+
+    if ($(&quot;#checkBox01&quot;).is(&#39;:checked&#39;)) {
+        $(&quot;#checkBoxDisplay01&quot;).html(&quot;CheckBox01 Selected&quot;);
+        query += options[0];
+    } else {
+        $(&quot;#checkBoxDisplay01&quot;).html(&quot;CheckBox01 not Checked&quot;);
+    }
+
+    if ($(&quot;#checkBox02&quot;).is(&#39;:checked&#39;)) {
+        $(&quot;#checkBoxDisplay02&quot;).html(&quot;CheckBox02 Selected&quot;);
+        tag = query === &#39;&#39; ?  &#39;&#39; : &#39;+&#39;;
+        query +=  tag + options[1];
+    } else {
+        $(&quot;#checkBoxDisplay02&quot;).html(&quot;CheckBox02 not Selected&quot;);
+    }
+
+    $(&quot;#allCheckBoxes&quot;).html(query);
+}
+
+function displayRadioButtonSelection() {
+    var id = $(this).text();
+    $(&quot;#radioButtonDisplay01&quot;).html(&quot;You clicked &quot; + id);
+}
+
+$(document).ready(function() {
+
+    // Handle button clicks
+    $(&quot;input[name=check]:checkbox&quot;).click(displayCheckboxSelection);
+    $(&#39;.btn-group .btn&#39;).click(displayRadioButtonSelection);
+
+    // Initialize controls
+    displayCheckboxSelection();
+    $(&quot;#radioButtonDisplay01&quot;).html(&#39;No radiobutton selected&#39;);
+});
+</code></pre>
 <h2 id="turn-it-in">Turn It In</h2>
 <p>Be sure your work is in your repository in a folder called <strong>Week03-BootstrapBasics</strong>. Include the URL of your repository when you submit the assignment. You might also make a note of the folder in which your project resides. This might help you remember to put it in exactly the right folder.</p>
 </div></body></html>
