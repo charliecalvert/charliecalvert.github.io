@@ -15,7 +15,7 @@
 <pre><code>express Week03_BootstrapBasics
 cd Week03_BootstrapBasics
 npm install
-</code></pre><p>First copy our default <strong>bower.json</strong> and <strong>.bowerrc</strong> files from <a href="https://github.com/charliecalvert/JsObjects/tree/master/Utilities/Templates">JsObjects</a>.</p>
+</code></pre><p>Copy our default <strong>bower.json</strong> and <strong>.bowerrc</strong> files from <a href="https://github.com/charliecalvert/JsObjects/tree/master/Utilities/Templates">JsObjects</a>.</p>
 <pre><code>cp $ELF_TEMPLATES/bower.json .
 cp $ELF_TEMPLATES/.bowerrc .
 bower install bootstrap --save
@@ -58,14 +58,16 @@ html
   body
     block content
 </code></pre><h2 id="create-main-public">Step Three: Create Public JavaScript File</h2>
-<p>Add a file into the javascripts directory called <strong>control.js</strong>. You can create the file inside WebStorm, or use the following code:</p>
+<p>Add a file into the javascripts directory called <strong>control.js</strong>. You can create the file inside WebStorm, or use the following code to build it from the bash shell:</p>
 <pre><code>ELF_NOW=$(date +&quot;%m/%d/%Y&quot;)
 ELF_FILE=public/javascripts/control.js
 echo &quot;/**&quot; &gt;&gt; $ELF_FILE
 echo &quot; * Created by Charlie Calvert $ELF_NOW&quot; &gt;&gt; $ELF_FILE
 echo &quot; */&quot; &gt;&gt; $ELF_FILE
-</code></pre><p>Use the <strong>script</strong> tag to link it into our app from <strong>layout.jade</strong>:</p>
+</code></pre><p>Use the <strong>script</strong> tag to link it into our app from <strong>layout.jade</strong>. See the previous section for hints as to how to do this.</p>
 <h2 id="define-controls">Step Four: Define Controls</h2>
+<p>We want to build a page that looks something like this:</p>
+<p><img src="http://bit.ly/bootstrap-basics-01" alt="Bootstrap Form"></p>
 <p>Get started defining the HTML for your app by creating a single button and input control:</p>
 <pre><code>div.panel.panel-default
     div.panel-heading Text Input
@@ -76,31 +78,38 @@ echo &quot; */&quot; &gt;&gt; $ELF_FILE
 `
 </code></pre><p>For what follows, refer to <strong>JsObjects/HtmCssJavaScript/BootstrapBasics</strong> for help setting up radio buttons and check boxes.</p>
 <p>Provide two radio buttons:</p>
-<pre><code>  div.panel.panel-default
-    div.panel-heading Radios
+<pre><code class="lang-jade">div.panel-heading Radios:
     div.panel-body
-      div.btn-group.elves(role=&quot;group&quot;)
-        button.btn.btn-default(type=&quot;button&quot;) radio01
-        button.btn.btn-default(type=&quot;button&quot;) radio02
-</code></pre><p>When the user selects one of them...</p>
+        div.btn-group.elves(role=&quot;group&quot;)
+            .radio
+                label
+                    input(type=&#39;radio&#39;, name=&#39;radio&#39;, value=&#39;option1&#39;, id=&#39;option1&#39;, checked=&#39;&#39;)
+                    |     radio01
+            .radio
+                label
+                    input(type=&#39;radio&#39;, name=&#39;radio&#39;, value=&#39;option2&#39;, id=&#39;option2&#39;)
+                    |     radio02
+</code></pre>
+<p>When the user selects one of them...</p>
 <p>Provide three checkboxes:</p>
-<pre><code>  div.panel.panel-default
+<pre><code class="lang-jade">div.panel.panel-default
     div.panel-heading CheckBoxes
     div.panel-body
-      div
-        input#checkBox01(type=&#39;checkbox&#39;, name=&#39;check&#39;, value=&#39;check1&#39; )
-        label(for=&#39;checkBox01&#39;) CheckBox 01
-      div
-        input#checkBox02(type=&#39;checkbox&#39;, name=&#39;check&#39;, value=&#39;check2&#39; )
-        label(for=&#39;checkBox02&#39;) CheckBox 02
-</code></pre><h2 id="add-a-box">Add a box</h2>
+        div
+            input#checkBox01(type=&#39;checkbox&#39;, name=&#39;check&#39;, value=&#39;check1&#39; )
+            label(for=&#39;checkBox01&#39;) &amp;nbsp; CheckBox 01
+        div
+            input#checkBox02(type=&#39;checkbox&#39;, name=&#39;check&#39;, value=&#39;check2&#39; )
+            label(for=&#39;checkBox02&#39;) &amp;nbsp; CheckBox 02
+</code></pre>
+<h2 id="add-a-box">Add a box</h2>
 <p>Put a box around all the controls:</p>
-<pre><code>    div.panel.panel-default
-        div.panel-heading My Controls
-        div.panel-body
-            PUT THE INPUT HERE
-            THE CHECKBOXES HERE
-            THE RADIOBUTTONS HERE
+<pre><code>div.panel.panel-default
+    div.panel-heading My Controls
+    div.panel-body
+        PUT THE INPUT HERE
+        THE CHECKBOXES HERE
+        THE RADIOBUTTONS HERE
 </code></pre><h2 id="put-them-in-rows-">Put them in rows:</h2>
 <p>To define a row, create a <strong>DIV</strong> with class <strong>row</strong></p>
 <pre><code class="lang-html">    &lt;div class=&quot;row&quot;&gt;
@@ -113,7 +122,7 @@ echo &quot; */&quot; &gt;&gt; $ELF_FILE
 <li><a href="https://getbootstrap.com/examples/grid/">https://getbootstrap.com/examples/grid/</a></li>
 </ul>
 <p>The following code creates to two columns in one row, and then below that row you see the radio buttons:</p>
-<pre><code class="lang-jade">  div.panel.panel-default
+<pre><code class="lang-jade">div.panel.panel-default
     div.panel-heading My Controls
     div.panel-body
         div.row
@@ -126,24 +135,29 @@ echo &quot; */&quot; &gt;&gt; $ELF_FILE
 <p>You can arrange things  this way, or else create a single row with three colums, each containing all three sets of controls.</p>
 <p>Remember, indentation is very important in Jade.</p>
 <h2 id="debug-display">Create Debug Display</h2>
-<pre><code>div.panel.panel-default
+<pre><code class="lang-jade">div.panel.panel-default
     div.panel-heading Debug Display
     div.panel-body
         div.row
             div.col-md-6
                 div.panel.panel-default
+                    div.panel-heading Search result
+                    div.panel-body
+                        p#searchResults
+            div.col-md-6
+                div.panel.panel-default
                     div.panel-heading RadioButtons
                     div.panel-body
                         p#radioButtonDisplay01
-            div.col-md-6
-                div.panel.panel-default
-                    div.panel-heading CheckBoxes
-                    div.panel-body
-                        p#checkBoxDisplay01
-                        p#checkBoxDisplay02
-                        p#checkBoxDisplay03
-                        p#allCheckBoxes
-</code></pre><h2 id="process">Process</h2>
+        div.panel.panel-default
+            div.panel-heading CheckBoxes
+            div.panel-body
+                p#checkBoxDisplay01
+                p#checkBoxDisplay02
+                p#checkBoxDisplay03
+                p#allCheckBoxes
+</code></pre>
+<h2 id="process">Process</h2>
 <pre><code class="lang-javascript">function displayCheckboxSelection()
 {
     var tag, query = &#39;&#39;;
