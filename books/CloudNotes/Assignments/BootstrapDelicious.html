@@ -28,6 +28,11 @@ bower install bootstrap --save
 <pre><code>cp ~/Git/JsObjects/Data/MongoLab03/favicon.png public/.
 </code></pre><p>Change the title:</p>
 <pre><code>sed -i -- &#39;s/Express/BootstrapDelicious/g&#39; routes/index.js
+</code></pre><p>Create control.js and use add strict:</p>
+<pre><code>echo -e &quot;\$(document).ready(function() { &#39;use strict&#39;; \n});&quot; &gt;&gt; public/javascripts/control.js
+sed -i &quot;s/{$/{ &#39;use strict&#39;;/&quot; routes/index.js
+sed -i &quot;s/{$/{ &#39;use strict&#39;;/&quot; routes/users.js
+sed -i &quot;s/next) {/next) { &#39;use strict&#39;;/&quot; app.js
 </code></pre><p>This part of your work is done now, but as an fyi, this is how it looks if you put it all together:</p>
 <pre><code>express Week03-BootstrapDelicious
 cd Week03-BootstrapDelicious
@@ -39,6 +44,10 @@ sed -i -- &#39;s/3000/30025/g&#39; bin/www
 sed -i -- &#39;s/node\s/nodemon /g&#39; package.json
 cp ~/Git/JsObjects/Data/MongoLab03/favicon.png public/.
 sed -i -- &#39;s/Express/BootstrapDelicious/g&#39; routes/index.js
+echo -e &quot;\$(document).ready(function() {\n});&quot; &gt;&gt; public/javascripts/control.js
+sed -i &quot;s/{$/{ &#39;use strict&#39;;/&quot; routes/index.js
+sed -i &quot;s/{$/{ &#39;use strict&#39;;/&quot; routes/users.js
+sed -i &quot;s/next) {/next) { &#39;use strict&#39;;/&quot; app.js
 </code></pre><p>Remember that you can save code like that shown above into <strong>bash</strong> script, and then run it as needed:</p>
 <ul>
 <li>First create the file with an editor such as geany or nano</li>
@@ -59,6 +68,10 @@ sed -i -- &#39;s/3000/30025/g&#39; bin/www
 sed -i -- &#39;s/node\s/nodemon /g&#39; package.json
 cp ~/Git/JsObjects/Data/MongoLab03/favicon.png public/.
 sed -i -- &#39;s/Express/&#39;$1&#39;/g&#39; routes/index.js
+echo -e &quot;\$(document).ready(function() {\n});&quot; &gt;&gt; public/javascripts/control.js
+sed -i &quot;s/{$/{ &#39;use strict&#39;;/&quot; routes/index.js
+sed -i &quot;s/{$/{ &#39;use strict&#39;;/&quot; routes/users.js
+sed -i &quot;s/next) {/next) { &#39;use strict&#39;;/&quot; app.js
 </code></pre><p>Now you can use this script to create a project with an random name. For instance, you could:</p>
 <ul>
 <li>Save the new script as CreateExpressProject and put it in your ~/bin directory</li>
@@ -93,12 +106,14 @@ div.panel.panel-default
         div.form-group
             label(for=&#39;subject&#39;) Subject
             input#subject.form-control(type=&#39;text&#39;, placeholder=&quot;subject&quot;)
+    div
+        pre#viewer
 `
 </code></pre><h2 id="query-delicious">Step Four: Query Delicious</h2>
-<p>Add a file into the javascripts directory called <strong>control.js</strong>. </p>
-<p>Use the <strong>script</strong> tag to link it into our app from <strong>layout.jade</strong>. </p>
+<p>Make sure a file called <strong>control.js</strong> is in the <strong>public/javascripts</strong> directory. It should have been created by our <strong>CreateExpressProject</strong> script back in Step One.</p>
+<p>We will, however, have to use the <strong>script</strong> tag to link <strong>control.js</strong> into our app from <strong>layout.jade</strong>.</p>
 <p>Place the following code inside <strong>control.js</strong>:</p>
-<pre><code>function callDelicious(subject) {
+<pre><code>function callDelicious(subject) { &#39;use strict&#39;;
     var delicious = &#39;http://feeds.delicious.com/v2/json/charliecalvert/&#39; + subject;
     $.ajax(
         {
@@ -110,7 +125,7 @@ div.panel.panel-default
     });
 }
 
-function delicious() {
+function delicious() { &#39;use strict&#39;;
     var subject = $(&quot;#subject&quot;).val();
     callDelicious(subject);
 }
