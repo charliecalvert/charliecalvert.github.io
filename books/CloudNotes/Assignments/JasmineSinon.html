@@ -3,10 +3,7 @@
 <li><a href="#unit-test-setup">Step Two: Set up Unit Testing</a></li>
 <li><a href="#test-test">Step Three: Test our Test Framework</a></li>
 <li><a href="#useful-test">Step Four: Create Useful Tests</a></li>
-<li><a href="#step-five-write-code">Step Five: Write Code</a></li>
-<li><a href="#grunt">Grunt</a></li>
-<li><a href="#karma-config">Karma config</a></li>
-<li><a href="#hint">Hint</a></li><!--TOC_End--></ul><h1 id="jasmine-express-sinon">Jasmine Express Sinon</h1>
+<li><a href="#step-five-write-code">Step Five: Write Code</a></li><!--TOC_End--></ul><h1 id="jasmine-express-sinon">Jasmine Express Sinon</h1>
 <p>Learn about unit testing and mocks with Jasmine and the <a href="https://github.com/sinonjs/sinon">sinon</a> fake web server.</p>
 <h2 id="create-project">Step One: Create Project</h2>
 <p>Create your project using our script.</p>
@@ -19,7 +16,7 @@
 <h2 id="unit-test-setup">Step Two: Set up Unit Testing</h2>
 <p>Use our <a href="https://github.com/charliecalvert/JsObjects/blob/master/Utilities/NodeInstall/TestReady">TestReady</a> script to enable unit testing in your project:</p>
 <pre><code>JsObjects/Utilities/Templates/NodeInstall
-</code></pre><p>The script is described in the NodeInstall <a href="https://github.com/charliecalvert/JsObjects/blob/master/Utilities/NodeInstall/README.md">readme</a>.</p>
+</code></pre><p>The script is described in the the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/JasmineExpressMock.htmll#unit-test-setup">JasmineExpressMock assigment</a>.</p>
 <h2 id="test-test">Step Three: Test our Test Framework</h2>
 <p>The <strong>DevReady</strong> script creates a single simple test that it puts in the <strong>spec</strong> folder:</p>
 <pre><code class="lang-javascript">/**
@@ -49,75 +46,85 @@ describe(&quot;Elvenware Simple Plain Suite&quot;, function() {
 
     &#39;use strict&#39;;
 
-    it(&quot;Call a function in getNumber that returns 9&quot;, function () {
-        expect(getNine()).toBe(9);
+    var server;
+
+    beforeEach(function () {
+        server = sinon.fakeServer.create();
     });
 
-    it(&quot;Test that we can parse the value expected to be returned from getJSON call&quot;, function() {
-        var response = {nine: 10};
-        queryServer.parseSimpleJson(response);
-        expect(queryServer.queryResult).toBe(10);
+    afterEach(function () {
+        server.restore();
     });
 
-    it(&quot;tests ajax call&quot;, function() {
-        spyOn($, &#39;ajax&#39;).and.callFake(function (ajaxConfig) {
-            ajaxConfig.success({&quot;nine&quot;: 9});
-        });
+    it(&quot;expects true to be true&quot;, function() {
+        expect(true).toBe(true);
+    });
+
+    it(&quot;tests jQuery ajax call&quot;, function() {
+        var callback = sinon.spy();
         queryServer.getAjaxServerNine();
+
+        server.requests[0].respond(
+            200,
+            { &quot;Content-Type&quot;: &quot;application/json&quot; },
+            JSON.stringify({ &quot;nine&quot;: 9 })
+        );
+
         expect(queryServer.queryResult).toBe(9);
     });
 
-    it(&quot;tests getJSON call&quot;, function() {
-        // getJSON is wrapper around ajax, so spyOn it, as it is more flexible
-        spyOn($, &#39;getJSON&#39;).and.callFake(function (url, success) {
-            success({&quot;nine&quot;: 9});
-        });
+
+    it(&quot;tests jQuery getJSON call&quot;, function() {
+        var callback = sinon.spy();
         queryServer.getJsonServerNine();
-        expect(queryServer.queryResult).toBe(9);
-    });
 
-    it(&quot;tests getJSON call with fail 9&quot;, function () {
-        spyOn($, &#39;getJSON&#39;).and.callFake(function (url, success) {
-            success({
-                &quot;nine&quot;: 9
-            });
-            return {
-                fail: function() {}
-            };
-        });
-        queryServer.getJsonServerNineWithFail();
+        server.requests[0].respond(
+            200,
+            { &quot;Content-Type&quot;: &quot;application/json&quot; },
+            JSON.stringify({ &quot;nine&quot;: 9 })
+        );
+
         expect(queryServer.queryResult).toBe(9);
     });
 });
 </code></pre>
-<p>The first method checks to see if there is a method called <strong>getNine</strong> that returns the number nine.</p>
-<p>The second test checks to see if there is an object call bar, with a method called <strong>parseSimpleJson.</strong>. If that method is passed a JavaScript object with a property called <strong>nine</strong> set to the value <strong>10</strong> then it should return the value 10. Remember, we haven&#39;t written a method that does that yet, we have just stated that we want to create such a method.</p>
-<p>The third test checks that a method of <strong>bar</strong> called <strong>getAjaxServerNine</strong> sets property of <strong>bar</strong> called <strong>value</strong> to the number nine. <strong>getAjaxServerNine</strong> is problematic for us because it uses the jQuery <strong>ajax</strong> method to call the server and retrieve some JSON. We don&#39;t want our test to rely on server working properly, or even to rely on the fact that it is running at all. So we use the Jasmine <strong>spyOn</strong> method to mock the call. We don&#39;t really call the server, instead the <strong>spyOn</strong> method fakes the call to the server, and then passes to the <strong>getAjaxServerNine</strong> nine <strong>success</strong> a mock up of the data it would recieve had the call to the server succeeded.</p>
-<p>Take a moment to consider how the <strong>ajax</strong> method it works. It calls the server, and the server sends back some data. In this case, we know that the server shoud send back a JSON object shaped like this:</p>
-<pre><code class="lang-JSON">{ 
-    &quot;nine&quot;: 9
+<p>For this code to work we have to do two things:</p>
+<ul>
+<li>Use bower to load <strong>sinon</strong> and <strong>jasmine-sinon</strong></li>
+<li>Load <strong>sinon</strong> and <strong>jasmine-sinon</strong> in <strong>karma.conf.js</strong></li>
+</ul>
+<p>Here are the bower calls:</p>
+<pre><code>bower install sinon --save
+bower install jasmine-sinon --save
+</code></pre><p>In <strong>bower.json</strong>, the dependencies section now looks like this, though your version numbers may differ without breaking code:</p>
+<pre><code class="lang-javascript">&quot;dependencies&quot;: {
+    &quot;bootstrap&quot;: &quot;~3.3.5&quot;,
+    &quot;sinon&quot;: &quot;~1.17.0&quot;,
+    &quot;jasmine-sinon&quot;: &quot;~0.4.0&quot;
 }
 </code></pre>
-<p>We therefore set up a <strong>callFake</strong> to the success function, passing in expect value. Our tests then confirms that the success method knows how to successfully handle the data it might receive from the server.</p>
-<p>At first, this technique of mocking objects seems like it can&#39;t possibly be useful. But it is useful. Very useful. In fact, it simulates exactly what happens when a successful call to the server is made, only we don&#39;t actually have to call the server. Instead we can <strong>mock</strong> such a call. The Jasmine <strong>spyOn</strong> method is a very clever, and useful, piece of code.</p>
-<p>The fourth and last test is just like the previous test, only this time we call <strong>$.getJSON</strong> instead of <strong>$.ajax</strong>.</p>
+<p>You should also tweak the <strong>files</strong> section of <strong>karma.conf.js</strong> as follows so that <strong>sinon</strong> and <strong>jasmine-sinon</strong> get loaded before your tests run:</p>
+<pre><code class="lang-javascript">files: [
+    &#39;public/components/jquery/dist/jquery.min.js&#39;,
+    &#39;public/components/sinonjs/sinon.js&#39;,
+    &#39;public/components/jasmine-sinon/lib/jasmine-sinon.js&#39;,
+    &#39;public/javascripts/*.js&#39;,
+    &#39;spec/test*.js&#39;
+],
+</code></pre>
+<p>With the set up done, we can now look at the tests themselves.</p>
+<p>The second test is for <strong>getAjaxServerNine</strong>. That call uses the jQuery <strong>ajax</strong> method to call the server and retrieve some JSON. We don&#39;t want our test to rely on the server working properly, or even to rely on the fact that it is running at all. So we use the sinon <strong>fakeServer</strong> to mock the call. We don&#39;t really call the server, instead the <strong>spyOn</strong> method fakes the call to the server, and then passes to the <strong>getAjaxServerNine</strong> nine <strong>success</strong> a mock up of the data it would recieve had the call to the server succeeded.</p>
+<p>The third test is just like the previous test, only this time we call <strong>$.getJSON</strong> instead of <strong>$.ajax</strong>. Notice that when we use <strong>sinon</strong> we don&#39;t have to think about how to fake the call as we do when we use the Jasmine <strong>spyOn</strong> method.</p>
 <h2 id="step-five-write-code">Step Five: Write Code</h2>
 <p>Now that we have defined our tests, the next step is to write our program. If the code we write passes our tests, then can assume it is working properly.</p>
 <p>Place the following code in <strong>control.js:</strong></p>
-<pre><code class="lang-javascript">
-function getNine() {
-    &#39;use strict&#39;;
-    return 9;
-}
-
-var queryServer = {
+<pre><code class="lang-javascript">var queryServer = {
 
     url: &#39;./simple.json&#39;,
 
     queryResult: null,
 
-    parseSimpleJson: function (simpleJson) {
-        &#39;use strict&#39;;
+    parseSimpleJson: function (simpleJson) { &#39;use strict&#39;;
         queryServer.queryResult = simpleJson.nine;
     },
 
@@ -139,153 +146,22 @@ var queryServer = {
     getJsonServerNine: function () {
         &#39;use strict&#39;;
 
-        $.getJSON(queryServer.url, function (simpleJson) {
-            queryServer.parseSimpleJson(simpleJson);
-            console.log(queryServer.queryResult);
-            $(&#39;#serverResult&#39;).html(queryServer.queryResult);
-        });
-    },
-
-    getJsonServerNineWithFail: function () {
-        &#39;use strict&#39;;
-        console.log(queryServer.url);
-        $.getJSON(queryServer.url, function (simpleJson) {
-            queryServer.parseSimpleJson(simpleJson);
-            console.log(queryServer.queryResult);
-            $(&#39;#serverResult&#39;).html(queryServer.queryResult);
-        }).fail(function (error) {
+        $.getJSON(queryServer.url,function(simpleJson) {
+                queryServer.parseSimpleJson(simpleJson);
+                console.log(queryServer.queryResult);
+                $(&#39;#serverResult&#39;).html(queryServer.queryResult);
+        }).fail(function(error) {
             console.log(error);
         });
 
     }
 };
+
+$(document).ready(function () {
+    &#39;use strict&#39;;
+    //queryServer.getAjaxServerNine();
+    //queryServer.getJsonServerNine();
+});
 </code></pre>
 <p>The code shown above contains one standalone method called <strong>getNine</strong> and one JavaScript object called <strong>bar</strong>.</p>
-<h2 id="grunt">Grunt</h2>
-<p>The grunt utility is configured in a file called <strong>Gruntfile.js</strong>. You can do many, many things in this file. In our case, however, we have two relatively simple goals:</p>
-<ul>
-<li>Establish the config file for <strong>karma</strong></li>
-<li>Configure <strong>jshint</strong></li>
-</ul>
-<p>It should be fairly simple for you to pick out the places where these tasks are performed:</p>
-<pre><code class="lang-javascript">module.exports = function(grunt) {
-    &#39;use strict&#39;;
-
-    grunt.initConfig({
-
-        pkg : &#39;&lt;json:package.json&gt;&#39;,
-
-        karma : {
-            karma : {
-                configFile : &#39;karma.conf.js&#39;
-            }
-        },
-
-        jshint : {
-            files : [ &#39;**/*.js&#39; ],
-
-            options : {
-                ignores : [ 
-                     &#39;**/node_modules/**&#39;, &#39;**/components/**&#39;
-                ],
-                reporter : &#39;checkstyle&#39;,
-                reporterOutput : &#39;result.xml&#39;,
-                strict : true,
-                globals : {
-                    describe : true,
-                    afterEach : true,
-                    beforeEach : true,
-                    inject : true,
-                    it : true,
-                    jasmine : true,
-                    expect : true
-                }
-            }
-        },
-
-    });
-
-    grunt.loadNpmTasks(&#39;grunt-karma&#39;);
-    grunt.loadNpmTasks(&#39;grunt-contrib-jshint&#39;);
-    grunt.registerTask(&#39;test&#39;, [ &#39;jshint&#39;, &#39;karma&#39; ]);
-
-};
-</code></pre>
-<p>The last three lines perform two tasks:</p>
-<ul>
-<li>The first two lines load libraries that define how grunt controls <strong>karma</strong> and <strong>jshint</strong></li>
-<li>The third line defines a task called <strong>test</strong> that runs both <strong>jshint</strong> and <strong>karma</strong></li>
-</ul>
-<p>If the <strong>jshint</strong> task does not pass, then <strong>karma</strong> will never be run. In other words, if <strong>jshint</strong> finds that your code is not syntactically correct, then <strong>karma</strong> will never get a chance to your tests.</p>
-<h2 id="karma-config">Karma config</h2>
-<pre><code class="lang-javascript">/* global process: true */
-
-module.exports = function(config) {
-    &#39;use strict&#39;;
-
-    config.set({
-        // base path, that will be used to resolve files and exclude
-        basePath: &#39;./&#39;,
-
-        frameworks: [&#39;jasmine&#39;],
-
-        files: [
-            &#39;public/components/jquery/dist/jquery.min.js&#39;,
-            &#39;public/javascripts/*.js&#39;,
-            &#39;spec/test*.js&#39;
-        ],
-
-        // list of files to exclude
-        exclude: [
-        ],
-
-        reporters: [&#39;spec&#39;],
-
-        // web server port
-        port: 9876,
-
-        // enable / disable colors in the output (reporters and logs)
-        colors: true,
-
-        // level of logging
-        logLevel: config.LOG_INFO,
-
-        // enable / disable watching file and executing tests whenever any file changes
-        // CLI --auto-watch --no-auto-watch
-        autoWatch: true,
-
-        // Start these browsers, currently available:
-        browsers: [&#39;PhantomJS&#39;],
-
-        // If browser does not capture in given timeout [ms], kill it
-        captureTimeout: 20000,
-
-        // Set to false to watch files for changes
-        singleRun: true,
-
-        plugins: [&quot;karma-jasmine&quot;,
-            &quot;karma-spec-reporter&quot;,
-            &#39;karma-phantomjs-launcher&#39;]
-
-    });
-};
-</code></pre>
-<h2 id="hint">Hint</h2>
-<p>Normally, it is simplest to use the <strong>headless</strong> phantomjs browser. However, it does not contain the great debugger found in Chrome. To switch to Chrome, change the bottom of <strong>karma.conf.js</strong> to look like this:</p>
-<pre><code>// Start these browsers, currently available:
-// browsers: [&#39;PhantomJS&#39;],
-browsers: [&#39;Chrome&#39;],
-
-// If browser does not capture in given timeout [ms], kill it
-captureTimeout: 20000,
-
-// Set to false to watch files for changes
-singleRun: false,
-
-plugins: [&quot;karma-jasmine&quot;,
-    &quot;karma-spec-reporter&quot;,
-    &quot;karma-chrome-launcher&quot;,
-    &quot;karma-phantomjs-launcher&quot;]
-</code></pre><p>Be sure to install the chrome-launcher:</p>
-<pre><code>npm install karma-chrome-launcher --save
-</code></pre></div></body></html>
+</div></body></html>

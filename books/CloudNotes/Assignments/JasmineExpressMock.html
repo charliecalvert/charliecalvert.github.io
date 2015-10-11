@@ -112,7 +112,6 @@ describe(&quot;Elvenware Simple Plain Suite&quot;, function() {
     });
 
     it(&quot;tests getJSON call&quot;, function() {
-        // getJSON is wrapper around ajax, so spyOn it, as it is more flexible
         spyOn($, &#39;getJSON&#39;).and.callFake(function (url, success) {
             success({&quot;nine&quot;: 9});
         });
@@ -136,7 +135,7 @@ describe(&quot;Elvenware Simple Plain Suite&quot;, function() {
 </code></pre>
 <p>The first method checks to see if there is a method called <strong>getNine</strong> that returns the number nine.</p>
 <p>The second test checks to see if there is an object call bar, with a method called <strong>parseSimpleJson.</strong>. If that method is passed a JavaScript object with a property called <strong>nine</strong> set to the value <strong>10</strong> then it should return the value 10. Remember, we haven&#39;t written a method that does that yet, we have just stated that we want to create such a method.</p>
-<p>The third test checks that a method of <strong>bar</strong> called <strong>getAjaxServerNine</strong> sets property of <strong>bar</strong> called <strong>value</strong> to the number nine. <strong>getAjaxServerNine</strong> is problematic for us because it uses the jQuery <strong>ajax</strong> method to call the server and retrieve some JSON. We don&#39;t want our test to rely on server working properly, or even to rely on the fact that it is running at all. So we use the Jasmine <strong>spyOn</strong> method to mock the call. We don&#39;t really call the server, instead the <strong>spyOn</strong> method fakes the call to the server, and then passes to the <strong>getAjaxServerNine</strong> nine <strong>success</strong> a mock up of the data it would recieve had the call to the server succeeded.</p>
+<p>The third test checks that a method of <strong>queryServer</strong> called <strong>getAjaxServerNine</strong> sets a property of <strong>queryServer</strong> called <strong>queryResult</strong> to the number nine. <strong>getAjaxServerNine</strong> is problematic for us because it uses the jQuery <strong>ajax</strong> method to call the server and retrieve some JSON. We don&#39;t want our test to rely on the server working properly, or even to rely on the fact that it is running at all. So we use the Jasmine <strong>spyOn</strong> method to mock the call. We don&#39;t really call the server, instead the <strong>spyOn</strong> method uses <strong>callFake</strong> to simulate the call to the server. In particular, it passes to the <strong>getAjaxServerNine</strong> nine <strong>success</strong> method a mock up of the data it would recieve had the call to the server succeeded.</p>
 <p>Take a moment to consider how the <strong>ajax</strong> method it works. It calls the server, and the server sends back some data. In this case, we know that the server shoud send back a JSON object shaped like this:</p>
 <pre><code class="lang-JSON">{ 
     &quot;nine&quot;: 9
@@ -144,7 +143,8 @@ describe(&quot;Elvenware Simple Plain Suite&quot;, function() {
 </code></pre>
 <p>We therefore set up a <strong>callFake</strong> to the success function, passing in expect value. Our tests then confirms that the success method knows how to successfully handle the data it might receive from the server.</p>
 <p>At first, this technique of mocking objects seems like it can&#39;t possibly be useful. But it is useful. Very useful. In fact, it simulates exactly what happens when a successful call to the server is made, only we don&#39;t actually have to call the server. Instead we can <strong>mock</strong> such a call. The Jasmine <strong>spyOn</strong> method is a very clever, and useful, piece of code.</p>
-<p>The fourth and last test is just like the previous test, only this time we call <strong>$.getJSON</strong> instead of <strong>$.ajax</strong>.</p>
+<p>The fourth and fifth tests are much like the previous test, only we call <strong>$.getJSON</strong> instead of <strong>$.ajax</strong>. Note that we have to fake the call differently depending on how we implement our call to <strong>$.getJSON</strong>. In particular, if we call <strong>.fail</strong> to handle errors, then we need to take that into account when we write our test. We don&#39;t have to jump through this hoop if we use <strong>sinon</strong> instead of <strong>spyOn</strong>.</p>
+<p><strong>NOTE</strong>: <em>Which is better: <strong>spyOn</strong> or <strong>sinon</strong>? It is a tough call. There is more setup work to do when using <strong>sinon</strong>, but the calls themselves are simpler. Or more precisely, they are all the same since we don&#39;t have to craft a different <strong>callFake</strong> for each type of method we test. With <strong>spyOn</strong> there is no additional setup, and it is educational and perhaps kind of fun, if challenging, to figure out how to craft our <strong>callFake</strong> implementation.</em></p>
 <h2 id="step-five-write-code">Step Five: Write Code</h2>
 <p>Now that we have defined our tests, the next step is to write our program. If the code we write passes our tests, then can assume it is working properly.</p>
 <p>Place the following code in <strong>control.js:</strong></p>
