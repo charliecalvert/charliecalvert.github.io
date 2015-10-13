@@ -1,0 +1,183 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>DeliciousQuery</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body ng-app="elfApp"><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>DeliciousQuery</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#deliciousquery">DeliciousQuery</a></li>
+<li><a href="#system-check">Step00: System Check</a></li>
+<li><a href="#setup">Step01: Setup</a></li>
+<li><a href="#step02-configure-test">Step02: Configure Test</a></li>
+<li><a href="#core-tests">Step03: Core Tests</a></li>
+<li><a href="#implementation">Step04: Implementation</a></li>
+<li><a href="#more-tests">Step 05: Add More Tests</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h1 id="deliciousquery">DeliciousQuery</h1>
+<p>Learn more about testing.</p>
+<h2 id="system-check">Step00: System Check</h2>
+<p>Check you system:</p>
+<pre><code>syscheck
+
+=======================
+Menu
+=======================
+
+b) Basic System Check
+n) Node
+p) PhoneGap
+x) Exit
+
+Please make a selection: b
+</code></pre><p>Make sure b and n are good.</p>
+<h2 id="setup">Step01: Setup</h2>
+<p>Get started as usual:</p>
+<pre><code class="lang-bash">CreateExpressProject Week04-DeliciousQuery
+cd Week04-DeliciousQuery/
+TestReady
+grunt test
+</code></pre>
+<p>Open the project in WebStorm.</p>
+<h2 id="step02-configure-test">Step02: Configure Test</h2>
+<pre><code>cp $ELF_TEMPLATES/WebServices/delicious-links.js spec/.
+</code></pre><p>In <strong>karma.conf.js</strong> load our <strong>delicious-javascript-links</strong>:</p>
+<pre><code class="lang-javascript">files: [
+            &#39;public/components/jquery/dist/jquery.min.js&#39;,
+            &#39;public/javascripts/*.js&#39;,
+            &#39;spec/test*.js&#39;,
+            &#39;spec/delicious-javascript-links.js&#39;
+        ],
+</code></pre>
+<h2 id="core-tests">Step03: Core Tests</h2>
+<pre><code class="lang-javascript">describe(&quot;Elvenware Simple Plain Suite&quot;, function() {  &#39;use strict&#39;;
+
+    it(&quot;expects true to be true&quot;, function() {
+        expect(true).toBe(true);
+    });
+
+});
+
+describe(&quot;Test Delicious Links&quot;, function() {  &#39;use strict&#39;;
+
+    beforeEach(function () {
+        spyOn($, &#39;getJSON&#39;).and.callFake(function (url, success) {
+            success(deliciousLinks);
+            return {
+                fail: function () {
+                }
+            };
+        });
+    });
+
+    afterEach(function() {
+       queryDelicious.deliciousLinks = null;
+    });
+
+    it(&quot;shows we can get our deliciousLink array&quot;, function() {
+        queryDelicious.runQuery(&#39;javascript&#39;);
+        var linkObject = queryDelicious.deliciousLinks;
+        expect(linkObject).toBeTruthy();
+    });
+
+    it(&quot;show we can get a map&quot;, function() {
+        queryDelicious.runQuery(&#39;javascript&#39;);
+        var map = queryDelicious.getMap();
+
+        expect(map[0].url).toContain(&#39;http&#39;);
+        expect(map[0].url).toContain(&#39;web&#39;);
+        expect(map[0].url).toContain(&#39;JavaScript&#39;);
+    });
+});
+</code></pre>
+<p>The <strong>beforeEach</strong> method is called once before each test. It&#39;s presence in this case ensures that we are spying on calls to <strong>getJSON</strong>. After each test we reset the key field of the <strong>queryDelicious</strong> object. This is a simple way of ensuring that we are starting from scratch when each test begins.</p>
+<p><strong>NOTE</strong>: <em>For those who have worked with <strong>httpBackend</strong>, please note that these <strong>beforeEach</strong> and <strong>afterEach</strong> calls are quite different from those we used when testing angular with <em>*httpBackend</em></em>. All we are doing here is setting up our tests, we aren&#39;t doing book-keeping for our testing suite.</p>
+<h2 id="implementation">Step04: Implementation</h2>
+<p>In control.js we can put a small :</p>
+<pre><code class="lang-javascript">
+var queryDelicious = {
+    &quot;url&quot;: &#39;http://feeds.delicious.com/v2/json/charliecalvert/&#39;,
+
+    deliciousLinks: null,
+
+    getUrl: function(subject) { &#39;use strict&#39;;
+        return this.url + subject;
+    },
+
+    callDeliciousGetJson: function(subject) { &#39;use strict&#39;;
+        var url = queryDelicious.getUrl(subject);
+        $.getJSON(url, function(result) {
+            queryDelicious.deliciousLinks = result;
+        }).fail(function(jqXHR, textStatus) {
+            console.log(jqXHR);
+        });
+    },
+
+    getMap: function() { &#39;use strict&#39;;
+        return this.deliciousLinks.map(function(link) {
+            return { &#39;url&#39;: link.u };
+        });
+    }
+
+};
+
+queryDelicious.runQuery = function(subject) { &#39;use strict&#39;;
+    this.callDeliciousGetJson(subject);
+};
+</code></pre>
+<p>We create an object called queryDelicious with with four methods and two properties. Three of the methods are defined inside the object literal, the fourth, call <strong>runQuery</strong> is defined after the object literal is declared. Normally one would not mix the two styles like this, however, I do this only because we are in a teaching environment: I want to show you that you have a choice of two difference styles. It is up to you choose the one you prefer.</p>
+<h2 id="more-tests">Step 05: Add More Tests</h2>
+<p>In <strong>test-basic.js</strong> add the following tests, and get them to pass:</p>
+<p>A test that shows we can create an array containing all ten URLs from our delicious query:</p>
+<pre><code>    it(&quot;shows we can get an array containing only the url from each item&quot;, function() {
+        queryDelicious.runQuery(&#39;javascript&#39;);
+        var allUrls = queryDelicious.getAllUrls();
+        expect(allUrls.length).toBe(10);
+        expect(allUrls[1]).toBe(&quot;http://speakingjs.com/es5/index.html&quot;);
+        expect(allUrls[2]).toBe(&quot;https://leanpub.com/understandinges6/read/&quot;);
+        expect(allUrls[4]).toBe(&quot;https://twitter.com/nodejs&quot;);
+    });
+</code></pre><p>A test that shows we can create a map that creates an array of object containg the following fieldsfrom our original query:</p>
+<ul>
+<li>Description (d)</li>
+<li>URL (u)</li>
+<li>Date (dt)</li>
+<li>That&#39;s the d, u and dt fields from the object we get from Delicious</li>
+</ul>
+<p>The test should look exactly like this:</p>
+<pre><code class="lang-javascript">    it(&quot;shows we can get a midsize map&quot;, function() {
+        var index = 0;
+        queryDelicious.runQuery(&#39;javascript&#39;);
+        var map = queryDelicious.getMapMidSize();
+        expect(map.length).toBe(10);
+        expect(map[index].url).toBeTruthy();
+        expect(map[index].description).toBeTruthy();
+        expect(map[index].date).toBeTruthy();
+        expect(map[index].description).toBe(&#39;Elvenware JavaScript Home Page&#39;);
+    });
+</code></pre>
+<p>Create a method and a test for map that contains these fields:</p>
+<ul>
+<li>url</li>
+<li>description</li>
+<li>date</li>
+<li>tags</li>
+</ul>
+<p>The method should be called <strong>getMapBig</strong> and the test should start like this:</p>
+<pre><code class="lang-javascript">    it(&quot;shows we can get a big map&quot;, function() {
+        queryDelicious.runQuery(&#39;javascript&#39;);
+        etc...
+</code></pre>
+<p>This time the index should be set to 1, and the following two tests should be included at the end of the test:</p>
+<pre><code class="lang-javascript">    expect(map[index].description).toBe(&#39;Speaking JavaScript&#39;);
+    expect(map[index].tags[2]).toBe(&#39;ebook&#39;);
+</code></pre>
+<p>As always, these tests should appear exactly as shown.</p>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Be sure your work is in a folder of your repository with the name specified in <strong>Step01</strong>. When you submit the assignment, include the URL of your repostory and/or the name of the folder where your program resides. When I run <strong>grunt test</strong>, I&#39;m expecting to see output like this:</p>
+<pre><code class="lang-bash">  Elvenware Simple Plain Suite
+    ✓ expects true to be true
+
+  Test Delicious Links
+    ✓ shows we can get our deliciousLink array
+    ✓ shows we can get an array containing only the url from each item
+    ✓ show we can get a map
+    ✓ shows we can get a midsize map
+    ✓ shows we can get a big map
+    ✓ shows that deliciousLink was set to null by afterEach
+
+PhantomJS 1.9.8 (Linux 0.0.0): Executed 7 of 7 SUCCESS (0.038 secs / 0.004 secs)
+TOTAL: 7 SUCCESS
+</code></pre>
+</div></body></html>
