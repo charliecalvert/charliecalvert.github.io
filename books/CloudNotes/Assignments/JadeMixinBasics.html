@@ -12,12 +12,14 @@
 <h2 id="create-project">Create Project</h2>
 <p>Use <strong>CreateExpressProject</strong> to create <strong>Week05-JadeMixinBasics</strong>.</p>
 <p>Copy in the mixins:</p>
-<pre><code>cp $ELF_TEMPLATES/mixins/mixin-radios.jade views/.
-cp $ELF_TEMPLATES/mixins/mixins.jade views/.
-</code></pre><h2 id="the-code">The Code</h2>
+<pre><code>cp $ELF_TEMPLATES/JadeMixins/mixin-radios.jade views/.
+cp $ELF_TEMPLATES/JadeMixins/mixins.jade views/.
+</code></pre><p><strong>NOTE</strong>: <em>We might not use the second file, <strong>mixins.jade</strong>, but I will include if for now in case we need it later.</em></p>
+<p><strong>TIP</strong>: <em>I&#39;ve saved the above commands to <strong>$JSOBJECTS/Utilities/NodeInstall/GetMixins</strong>. You could copy that file to your <strong>~/bin</strong> directory.</em></p>
+<h2 id="the-code">The Code</h2>
 <p>Below we set up an event that will be called when the user clicks on the <strong>submit</strong> button:</p>
 <pre><code class="lang-javascript">
-$(document).ready(function() {
+$(document).ready(function() { &#39;use strict&#39;;
     $(&quot;#target&quot;).submit(function(event) {
         event.preventDefault();
         var userFormData = $(this).serialize();
@@ -40,14 +42,17 @@ HTML:
 <ul>
 <li><strong>formPanel</strong>: Bootstrap panel with a form</li>
 <li><strong>elfPanel</strong>: Generic Bootstrap panel</li>
-<li><strong>elfCheckBox</strong></li>
-<li><strong>radioPanel</strong></li>
-<li><strong>elfRadio</strong></li>
+<li><strong>elfCheckBox</strong>: Create a check box</li>
+<li><strong>radioPanel</strong>: Panel for radio buttons</li>
+<li><strong>elfRadio</strong>: Create a radio button</li>
 </ul>
-<pre><code class="lang-jade">
-extends menu-mixin
+<p>You can see the source for these files here:</p>
+<ul>
+<li><strong>$ELF_TEMPLATES/JadeMixins/</strong></li>
+</ul>
+<p>The following is the complete code listing for <strong>views/index.jade</strong>:</p>
+<pre><code class="lang-jade">extends layout
 include mixin-radios
-include mixins
 
 block append content
 
@@ -55,7 +60,7 @@ block append content
         h1 #{pageTitle}
         p You are in the &lt;strong&gt;#{programTitle}&lt;/strong&gt; program. Select some controls and press the Go button.
 
-        +formPanel(&quot;Main Form&quot;)#target
+        +elfFormPanel(&quot;Main Form&quot;)#target
 
             +radioPanel(&quot;Radio Buttons&quot;)
                 +elfRadio(&quot;Radio1&quot;, &quot;option1&quot;)
@@ -64,6 +69,9 @@ block append content
             +elfPanel(&quot;CheckBoxes&quot;)
                 +elfCheckBox(&quot;CheckBox 01&quot;, &quot;checkBox01&quot;, &quot;checkBox01&quot;)#checkBox01
                 +elfCheckBox(&quot;CheckBox 02&quot;, &quot;checkBox02&quot;, &quot;checkBox02&quot;)#checkBox02
+
+            +elfPanel(&quot;Inputs&quot;)
+                +elfInput(&quot;Enter a name&quot;, &quot;subject&quot;, &quot;Enter a subject&quot;)#subject.form-control
 
             +elfPanel(&quot;Actions&quot;)
                 input.btn.btn-primary(type=&quot;submit&quot;, value=&quot;Go&quot;)
