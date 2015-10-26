@@ -1,0 +1,173 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>JasmineSinon</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body ng-app="elfApp"><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>JasmineSinon</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#jasmine-express-sinon">Jasmine Express Sinon</a></li>
+<li><a href="#create-project">Step One: Create Project</a></li>
+<li><a href="#unit-test-setup">Step Two: Set up Unit Testing</a></li>
+<li><a href="#test-test">Step Three: Test our Test Framework</a></li>
+<li><a href="#useful-test">Step Four: Create Useful Tests</a></li>
+<li><a href="#step-five-write-code">Step Five: Write Code</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h1 id="jasmine-express-sinon">Jasmine Express Sinon</h1>
+<p>Learn about unit testing and mocks with Jasmine and the <a href="https://github.com/sinonjs/sinon">sinon</a> fake web server.</p>
+<h2 id="create-project">Step One: Create Project</h2>
+<p>Create your project using our script.</p>
+<pre><code class="lang-bash">CreateExpressProject Week04-JasmineSinon
+</code></pre>
+<p>I maintain my copy of this script here:</p>
+<ul>
+<li><a href="https://github.com/charliecalvert/JsObjects/blob/master/Utilities/NodeInstall/CreateExpressProject">JsObjects/Utilities/NodeInstall/CreateExpressProject</a></li>
+</ul>
+<h2 id="unit-test-setup">Step Two: Set up Unit Testing</h2>
+<p>Use our <a href="https://github.com/charliecalvert/JsObjects/blob/master/Utilities/NodeInstall/TestReady">TestReady</a> script to enable unit testing in your project:</p>
+<pre><code>JsObjects/Utilities/Templates/NodeInstall
+</code></pre><p>The script is described in the the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/JasmineExpressMock.htmll#unit-test-setup">JasmineExpressMock assigment</a>.</p>
+<h2 id="test-test">Step Three: Test our Test Framework</h2>
+<p>The <strong>DevReady</strong> script creates a single simple test that it puts in the <strong>spec</strong> folder:</p>
+<pre><code class="lang-javascript">/**
+ * Created by charlie on 10/7/15.
+ */
+
+describe(&quot;Elvenware Simple Plain Suite&quot;, function() {
+
+    &#39;use strict&#39;;
+
+    it(&quot;expects true to be true&quot;, function() {
+        expect(true).toBe(true);
+    });
+
+});
+</code></pre>
+<p>This test has a single purpose:</p>
+<ul>
+<li>It tests whether <strong>true</strong> is actually <strong>true</strong></li>
+</ul>
+<p>Why would one want to run such a test? Simply to find out if <strong>karma</strong> and the <strong>jasmine</strong> unit test library are set up correctly. Since we know that <strong>true</strong> is equal to true, any errors we see are almost certainly the result of problems in our configuration, not in our test. If our test succeeds, then we know we have set things up correctly. In particular, we want to see a line that looks like this:</p>
+<pre><code>  Elvenware Simple Plain Suite
+    ✓ expects true to be true
+</code></pre><h2 id="useful-test">Step Four: Create Useful Tests</h2>
+<p>Assuming we can get our single test to pass, the next step will be copy in some tests that do a bit more:</p>
+<pre><code class="lang-javascript">describe(&quot;Elvenware Object Number Suite&quot;, function () {
+
+    &#39;use strict&#39;;
+
+    var server;
+
+    beforeEach(function () {
+        server = sinon.fakeServer.create();
+    });
+
+    afterEach(function () {
+        server.restore();
+    });
+
+    it(&quot;expects true to be true&quot;, function() {
+        expect(true).toBe(true);
+    });
+
+    it(&quot;tests jQuery ajax call&quot;, function() {
+        var callback = sinon.spy();
+        queryServer.getAjaxServerNine();
+
+        server.requests[0].respond(
+            200,
+            { &quot;Content-Type&quot;: &quot;application/json&quot; },
+            JSON.stringify({ &quot;nine&quot;: 9 })
+        );
+
+        expect(queryServer.queryResult).toBe(9);
+    });
+
+
+    it(&quot;tests jQuery getJSON call&quot;, function() {
+        var callback = sinon.spy();
+        queryServer.getJsonServerNine();
+
+        server.requests[0].respond(
+            200,
+            { &quot;Content-Type&quot;: &quot;application/json&quot; },
+            JSON.stringify({ &quot;nine&quot;: 9 })
+        );
+
+        expect(queryServer.queryResult).toBe(9);
+    });
+});
+</code></pre>
+<p>For this code to work we have to do two things:</p>
+<ul>
+<li>Use bower to load <strong>sinon</strong> and <strong>jasmine-sinon</strong></li>
+<li>Load <strong>sinon</strong> and <strong>jasmine-sinon</strong> in <strong>karma.conf.js</strong></li>
+</ul>
+<p>Here are the bower calls:</p>
+<pre><code>bower install sinon --save
+bower install jasmine-sinon --save
+</code></pre><p>In <strong>bower.json</strong>, the dependencies section now looks like this, though your version numbers may differ without breaking code:</p>
+<pre><code class="lang-javascript">&quot;dependencies&quot;: {
+    &quot;bootstrap&quot;: &quot;~3.3.5&quot;,
+    &quot;sinon&quot;: &quot;~1.17.0&quot;,
+    &quot;jasmine-sinon&quot;: &quot;~0.4.0&quot;
+}
+</code></pre>
+<p>You should also tweak the <strong>files</strong> section of <strong>karma.conf.js</strong> as follows so that <strong>sinon</strong> and <strong>jasmine-sinon</strong> get loaded before your tests run:</p>
+<pre><code class="lang-javascript">files: [
+    &#39;public/components/jquery/dist/jquery.min.js&#39;,
+    &#39;public/components/sinonjs/sinon.js&#39;,
+    &#39;public/components/jasmine-sinon/lib/jasmine-sinon.js&#39;,
+    &#39;public/javascripts/*.js&#39;,
+    &#39;spec/test*.js&#39;
+],
+</code></pre>
+<p>With the set up done, we can now look at the tests themselves.</p>
+<p>The second test is for <strong>getAjaxServerNine</strong>. That call uses the jQuery <strong>ajax</strong> method to call the server and retrieve some JSON. We don&#39;t want our test to rely on the server working properly, or even to rely on the fact that it is running at all. So we use the sinon <strong>fakeServer</strong> to mock the call. We don&#39;t really call the server, instead the <strong>spyOn</strong> method fakes the call to the server, and then passes to the <strong>getAjaxServerNine</strong> nine <strong>success</strong> a mock up of the data it would recieve had the call to the server succeeded.</p>
+<p>The third test is just like the previous test, only this time we call <strong>$.getJSON</strong> instead of <strong>$.ajax</strong>. Notice that when we use <strong>sinon</strong> we don&#39;t have to think about how to fake the call as we do when we use the Jasmine <strong>spyOn</strong> method.</p>
+<h2 id="step-five-write-code">Step Five: Write Code</h2>
+<p>Now that we have defined our tests, the next step is to write our program. If the code we write passes our tests, then can assume it is working properly.</p>
+<p>Place the following code in <strong>control.js:</strong></p>
+<pre><code class="lang-javascript">var queryServer = {
+
+    url: &#39;./simple.json&#39;,
+
+    queryResult: null,
+
+    parseSimpleJson: function (simpleJson) { &#39;use strict&#39;;
+        queryServer.queryResult = simpleJson.nine;
+    },
+
+    getAjaxServerNine: function () {
+        &#39;use strict&#39;;
+
+        $.ajax({
+            url: queryServer.url,
+            success: function (simpleJson) {
+                queryServer.parseSimpleJson(simpleJson);
+                console.log(queryServer.queryResult);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(textStatus + &quot;incoming Text &quot; + jqXHR.responseText);
+            }
+        });
+    },
+
+    getJsonServerNine: function () {
+        &#39;use strict&#39;;
+
+        $.getJSON(queryServer.url,function(simpleJson) {
+                queryServer.parseSimpleJson(simpleJson);
+                console.log(queryServer.queryResult);
+                $(&#39;#serverResult&#39;).html(queryServer.queryResult);
+        }).fail(function(error) {
+            console.log(error);
+        });
+
+    }
+};
+
+$(document).ready(function () {
+    &#39;use strict&#39;;
+    //queryServer.getAjaxServerNine();
+    //queryServer.getJsonServerNine();
+});
+</code></pre>
+<p>The code shown above contains one standalone method called <strong>getNine</strong> and one JavaScript object called <strong>bar</strong>.</p>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Put your work in your repository, and send me the url when you submit your work. Check your folder name. It should be as specified above.</p>
+<ul>
+<li><a href="http://sinonjs.org/">More on sinon</a></li>
+</ul>
+</div></body></html>

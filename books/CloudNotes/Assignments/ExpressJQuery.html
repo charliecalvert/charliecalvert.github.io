@@ -1,0 +1,166 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ExpressJQuery</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body ng-app="elfApp"><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>ExpressJQuery</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#express-and-jquery-in-class">Express and JQuery In Class</a></li>
+<li><a href="#create">Step 01: Create</a></li>
+<li><a href="#control">Step 02: Control.js</a></li>
+<li><a href="#layout">Step Three: Layout</a></li>
+<li><a href="#jade">Step Four: Jade</a></li>
+<li><a href="#lists">Step Five: Lists</a></li>
+<li><a href="#marie">Step Six: Add Marie</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h1 id="express-and-jquery-in-class">Express and JQuery In Class</h1>
+<p>Goals:</p>
+<ul>
+<li>Module Pattern</li>
+<li>Document Ready</li>
+<li>Jade</li>
+<li>JQuery and DOM basics</li>
+<li>JSON and Lists</li>
+</ul>
+<h2 id="create">Step 01: Create</h2>
+<p>Create a new express app:</p>
+<pre><code>express Week02-ExpressJQuery
+cd Week02-ExpressJQuery
+npm install
+</code></pre><p>Open up your project in WebStorm. </p>
+<p>Open <strong>bin/www</strong>. Set the port to 30025. In <strong>package.json</strong>,  plug in <strong>nodemon</strong> instead of <strong>node</strong>. Set the title in <strong>routes/index.js</strong> to some string that contains your last name.</p>
+<h2 id="control">Step 02: Control.js</h2>
+<p>In the <strong>public/javascripts</strong> folder create a JavaScript file called <strong>Control.js</strong>. </p>
+<p>Put the following code in <strong>Control.js</strong>:</p>
+<pre><code class="lang-javascript">
+var MyObject = (function() {
+
+    function MyObject() {
+    }
+
+    MyObject.prototype.readyCalled = function() {
+        $(&quot;#readyCalled&quot;).html(&quot;Ready was called and myObjected created&quot;);
+    };
+
+    return MyObject;
+}());
+
+
+$(document).ready(function() {
+    var myObject = new MyObject();
+    myObject.readyCalled();
+});
+</code></pre>
+<h2 id="layout">Step Three: Layout</h2>
+<p>Bower is like npm. Use NPM for server side code. Use Bower for client side code. This is not absolutely necessary, but it is common. As a result, we will learn about both NPM and Bower in this class.</p>
+<p>Install Bower:</p>
+<pre><code>npm install -g bower
+</code></pre><p>Create a <strong>bower.json</strong> file in the root of your current project:</p>
+<pre><code>bower init
+</code></pre><p>You will be prompted for input. Take all the defaults or use your common sense to fill in the fields as you are prompted for them.</p>
+<p>Remember that Windows does not like to start a file with a period. As a result, we need to create <strong>.bowerrc</strong> like this:</p>
+<pre><code>echo { } &gt; .bowerrc
+</code></pre><p>Edit <strong>.bowerrc</strong> in geany and add the following so that we will install bower components into the <strong>public/components</strong> directory:</p>
+<pre><code>{
+  &quot;directory&quot;: &quot;public/components&quot;,
+  &quot;json&quot;: &quot;bower.json&quot;
+}
+</code></pre><p>Again, test in <strong>jsonlint.com</strong> to make sure it is valid.</p>
+<p>Install jquery:</p>
+<pre><code>bower install jquery --save
+</code></pre><p>The <strong>--save</strong> parameter saves your request for jquery into the <strong>bower.json file.</strong>  </p>
+<p>My <strong>bower.json</strong> file now looks like this:</p>
+<pre><code>{
+  &quot;name&quot;: &quot;Week02-ExpressJQuery&quot;,
+  &quot;version&quot;: &quot;0.0.0&quot;,
+  &quot;authors&quot;: [
+    &quot;Charlie CedarIsle Calvert &lt;charlie@elvenware.com&gt;&quot;
+  ],
+  &quot;description&quot;: &quot;JQuery Demo&quot;,
+  &quot;main&quot;: &quot;bin/www&quot;,
+  &quot;keywords&quot;: [
+    &quot;JQuery&quot;
+  ],
+  &quot;license&quot;: &quot;MIT&quot;,
+  &quot;homepage&quot;: &quot;www.elvenware.com&quot;,
+  &quot;ignore&quot;: [
+    &quot;**/.*&quot;,
+    &quot;node_modules&quot;,
+    &quot;bower_components&quot;,
+    &quot;test&quot;,
+    &quot;tests&quot;
+  ],
+  &quot;dependencies&quot;: {
+    &quot;jquery&quot;: &quot;~2.1.3&quot;
+  }
+}
+</code></pre><p>The most important part is the <strong>dependencies</strong> object at the end of the file.</p>
+<p>Modify <strong>/views/layout.jade</strong> to include jquery and <strong>Control.js</strong></p>
+<pre><code>doctype html
+html
+    head
+        title= title
+        link(rel=&#39;stylesheet&#39;, href=&#39;/stylesheets/style.css&#39;)
+        script(src=&#39;components/jquery/dist/jquery.js&#39;)
+        etc...
+</code></pre><p><strong>NOTE</strong>: <em>When I type <strong>etc...</strong>, that can sometimes be translated as: &quot;Filling in this part of the file is left as an exercise for the reader.&quot;</em></p>
+<h2 id="jade">Step Four: Jade</h2>
+<p>In <strong>index.jade</strong> use Jade to create a button and two paragraphs:</p>
+<pre><code>button#sendString Send String
+p#stringHolder
+p#readyCalled
+</code></pre><p>Add a button to index.jade with an id of <strong>sendString</strong>. Use the constuctor of <strong>MyObject</strong> to set up a handler for the button click. Create a private method of <strong>MyObject</strong> called <strong>stringSender</strong> that places a string in your <strong>stringHolder</strong> paragraph.</p>
+<p>When the user clicks on the button a method must be called. To make the possible, add code in the constructor that defines an event handler for the button click and method to handle the event:</p>
+<pre><code>    function MyObject() {
+        $(&#39;#sendString&#39;).click(showString);
+    }
+
+    function showString() {
+        $(&#39;#stringHolder&#39;).html(&#39;Send string was clicked&#39;);
+    }
+</code></pre><p><strong>NOTE</strong>: <em>The above code should appear in <strong>Control.js</strong>. As a rule, it makes no sense to place JavaScript code in a Jade file. The purpose of a Jade file is to create HTML. It is not a place for, or a means of creating, JavaScript.</em> </p>
+<h2 id="lists">Step Five: Lists</h2>
+<p>Create <strong>ul</strong> element in your <strong>index.jade</strong>:</p>
+<pre><code>ul#myList
+</code></pre><p>Add a button:</p>
+<pre><code>button#getItems Get Items
+</code></pre><p>In <strong>Control.js</strong> we handle the button click like this:</p>
+<pre><code>function MyObject() {
+    $(&#39;#getItems&#39;).click(showItems);
+}
+</code></pre><p>In <strong>Control.js</strong> we add items to the list with this <strong>showItems</strong> method:</p>
+<pre><code>function showItems() {
+    $(&quot;#myList&quot;).append(&#39;&lt;li&gt;&#39; + &#39;item01&#39; + &#39;&lt;/li&gt;&#39;);
+    $(&quot;#myList&quot;).append(&#39;&lt;li&gt;&#39; + &#39;item02&#39; + &#39;&lt;/li&gt;&#39;);
+    $(&quot;#myList&quot;).append(&#39;&lt;li&gt;&#39; + &#39;item03&#39; + &#39;&lt;/li&gt;&#39;);
+}
+</code></pre><h2 id="marie">Step Six: Add Marie</h2>
+<p>Add a marie button to <strong>index.jade</strong>:</p>
+<pre><code>button#getMarie Get Marie
+</code></pre><p>Handle it like this in <strong>Control.js</strong>:</p>
+<pre><code>function MyObject() {
+    $(&#39;#sendString&#39;).click(showString);
+    $(&#39;#getItems&#39;).click(showItems);
+    $(&#39;#getMarie&#39;).click(showMarie);
+}
+</code></pre><p>Inside the <strong>showMarie</strong> method create a JavaScript object that follows the rules of JSON:</p>
+<pre><code>var marie = {
+    &quot;firstName&quot;: &quot;Marie&quot;,
+    &quot;lastName&quot;: &quot;Curie&quot;,
+    &quot;city&quot;: &quot;Paris&quot;,
+    &quot;country&quot;: &quot;France&quot;
+};
+</code></pre><p>Cut and paste the curly braces and the syntax between them into <a href="jsonlint.com">jsonlint.com</a> to be sure it is valid JSON:</p>
+<pre><code>{
+    &quot;firstName&quot;: &quot;Marie&quot;,
+    &quot;lastName&quot;: &quot;Curie&quot;,
+    &quot;city&quot;: &quot;Paris&quot;,
+    &quot;country&quot;: &quot;France&quot;
+}
+</code></pre><p>Now inside <strong>showMarie </strong> iterate over the items and add them to your list:</p>
+<pre><code>for (var property in marie) {
+    if (marie.hasOwnProperty(property)) {
+        $(&quot;#myList&quot;).append(&#39;&lt;li&gt;&#39; + marie[property] + &#39;&lt;/li&gt;&#39;);        
+    }
+}
+</code></pre><h2 id="turn-it-in">Turn it in</h2>
+<p>Place the contents of your project in your repository in a folder called <strong>Week02-ExpressJQuery</strong>.</p>
+<p>When you make the submission remind me of the URL of your repository and specify the folder in your repository where the project resides. </p>
+<p>When I open the folder that contains your project, I should see the code for your project, not another folder that contains the code. </p>
+<p>Good: </p>
+<pre><code>.../Git/prog219-lastname/Week02-ExpressjQuery/package.json
+</code></pre><p>Not so good:</p>
+<pre><code>.../Git/prog219-lastname/Week02-ExpressjQuery/ExpressProject/package.json
+</code></pre></div></body></html>
