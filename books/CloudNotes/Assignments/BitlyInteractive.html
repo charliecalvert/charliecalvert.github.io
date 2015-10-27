@@ -4,7 +4,10 @@
 <li><a href="#get-a-bitly-access-token">Get a Bitly Access Token</a></li>
 <li><a href="#the-interface">The interface</a></li>
 <li><a href="#check-a-checkbox">Check a CheckBox</a></li>
-<li><a href="#converting-dates">Converting Dates</a></li><!--TOC_End--></ul><h1 id="bitly-interactive">Bitly Interactive</h1>
+<li><a href="#converting-dates">Converting Dates</a></li>
+<li><a href="#iterate">Iterate</a></li>
+<li><a href="#multiple-modules">Multiple Modules</a></li>
+<li><a href="#the-downloads-module">The <strong>downloads</strong> module</a></li><!--TOC_End--></ul><h1 id="bitly-interactive">Bitly Interactive</h1>
 <p>The primary goal of this program is to create an interface for your Bitly data.</p>
 <p>Other goals include:</p>
 <ul>
@@ -18,7 +21,7 @@
 <p><a href="https://s3.amazonaws.com/bucket01.elvenware.com/images/Bitly-Interactive01.png"><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/Bitly-Interactive01Small.png" alt="interface"></a></p>
 <p><strong>Bitly Interactive</strong>: <em>Part of the interface. Click image to see larger version.</em></p>
 <h2 id="get-started">Get Started</h2>
-<p>Rather than start from scratch, copy your <strong>BitlyQuery</strong> program into a new folder called <strong>Week06-BitlyInteractive</strong>. First navigate to the root of your repository. Then issue a command like this:</p>
+<p>Rather than start from scratch, copy your <strong>BitlyQuery</strong> program into a new folder called <strong>Week06-BitlyInteractive</strong>. To perform this action, first navigate to the root of your repository. Then issue a command like this:</p>
 <pre><code>cp -r Week06-BitlyQuery Week06-BitlyInteractive
 </code></pre><p>You will have to make a few changes to the name of the application. In particular, look in these files:</p>
 <ul>
@@ -26,11 +29,12 @@
 <li>routes/index.js</li>
 <li>package.json</li>
 </ul>
-<p>Find instances of BitlyQuery in each file, and change them to <strong>BitlyInteractive</strong></p>
+<p>Find instances of the string <strong>BitlyQuery</strong>, or something similar, in each file, and change them to <strong>BitlyInteractive</strong></p>
 <h2 id="load-the-data">Load the data</h2>
 <p>Your program should be able to load data either directly from the Bitly website, or from a JSON file stored in your public directory.</p>
 <h2 id="get-a-bitly-access-token">Get a Bitly Access Token</h2>
-<p>Go to the bitly API home page: <a href="http://dev.bitly.com/">http://dev.bitly.com/</a>. You can find a link to this page under the <strong>more</strong> button at the bottom of the bitly home page, and at various other places, such as on the <strong>tools</strong> page.</p>
+<p>You will need a Bitly account, and you will need to create at least a few bitly links.</p>
+<p>Once you have done that, go to the bitly API home page: <a href="http://dev.bitly.com/">http://dev.bitly.com/</a>. You should always be able to find a link to the API page under the <strong>more</strong> button at the bottom of the bitly home page, and at various other places, such as on the <strong>tools</strong> page.</p>
 <p>On the right, at the bottom, choose <strong>Manage my apps</strong>. Generate a <strong>Generic Access Token</strong>.</p>
 <h2 id="the-interface">The interface</h2>
 <p>To get started, just boot up the program normally: <strong>npm start</strong>.</p>
@@ -73,6 +77,144 @@ if (bitlyLink.archived) {
 <pre><code class="lang-javascript">&quot;created_at&quot;: 1444163942
 </code></pre>
 <p>We typically convert them from epoch format to human readable format with code like this:</p>
-<pre><code>new Date(bitlyLink.created_at * 1000)
-</code></pre><p>Most of what you need to know is at the <a href="http://www.epochconverter.com">epochconverter.com</a> site and their <a href="http://www.epochconverter.com/programming/#javascript">javascript</a> page:</p>
+<pre><code class="lang-javascript">new Date(bitlyLink.created_at * 1000)
+</code></pre>
+<p>Most of what you need to know is at the <a href="http://www.epochconverter.com">epochconverter.com</a> site and their <a href="http://www.epochconverter.com/programming/#javascript">javascript</a> page:</p>
+<h2 id="iterate">Iterate</h2>
+<p>Your program should be able to iterate over the bitly objects in our bitly array. At the top of the program are three buttons:</p>
+<pre><code>+elfPanel(&quot;Iterate&quot;)
+    button.btn.btn-success.btn-large(type=&#39;button&#39;, onclick=&quot;movement.left()&quot;)
+        span.glyphicon.glyphicon-arrow-left
+        | &amp;nbsp; Left
+
+    button.btn.btn-success.btn-large(type=&#39;button&#39;, onclick=&quot;movement.right()&quot;)
+        | Right &amp;nbsp;
+        span.glyphicon.glyphicon-arrow-right
+
+    span &amp;nbsp;&amp;nbsp;&amp;nbsp;
+
+    button.btn.btn-default(type=&#39;button&#39;, onclick=&quot;downloads.getBitlyData()&quot;)
+        | Get Bitly Data &amp;nbsp;&amp;nbsp;
+        span.glyphicon.glyphicon-download
+</code></pre><p>The first two buttons allow you to move back and forth from record 0, to record 1 and so on. The third button can be used to load the data either from the:</p>
+<ul>
+<li>local json file</li>
+<li>Bitly web site</li>
+</ul>
+<p>When iterating over the records, you need first an object that will allow you to respond to button clicks:</p>
+<pre><code class="lang-javascript">var movement = {
+    left: function () {
+        &#39;use strict&#39;;
+        if (bitlyUrlParser.linkIndex &gt; 0) {
+            bitlyUrlParser.linkIndex -= 1;
+            bitlyUrlParser.display();
+        }
+    },
+
+    right: function () {
+        &#39;use strict&#39;;
+        // You fill in this bit.
+    }
+};
+</code></pre>
+<p>The <strong>bitlyUrlParser.display</strong> method in <strong>control.js</strong> might look, in part, a bit like this:</p>
+<pre><code class="lang-javascript">var bitlyUrlParser = {
+    linkIndex: 0,
+
+    bitlyLinks: null,
+
+    display: function () {
+        &#39;use strict&#39;;
+        var index = bitlyUrlParser.linkIndex;
+        var bitlyLink = bitlyUrlParser.bitlyLinks.data.link_history[index];
+        bitlyUrlParser.showRecord(bitlyLink);
+    },
+
+    getUrl: function (accessToken) {
+        &#39;use strict&#39;;
+
+        if (accessToken === -1) {
+            return &#39;data/bitly-links.json&#39;;
+        } else {
+            var url = &#39;https://api-ssl.bitly.com/v3/user/link_history?access_token=&#39;;
+            return url += accessToken;
+        }
+    },
+
+    getBitlyLinks: function (accessToken) {
+        &#39;use strict&#39;;
+        var url = bitlyUrlParser.getUrl(accessToken);
+
+        $.getJSON(url, function (result) {
+            bitlyUrlParser.bitlyLinks = result;
+            bitlyUrlParser.display();
+            $(&#39;#displayLinks&#39;).html(JSON.stringify(result, null, 4));
+        }).fail(function () {
+            console.log(&quot;Error&quot;);
+        });
+    },
+
+   showRecord: function (bitlyLink) {
+        &#39;use strict&#39;;
+        if (bitlyLink.private) {
+            $(&quot;#checkBoxPrivate&quot;).prop(&#39;checked&#39;, true);
+        }
+
+        if (bitlyLink.archived) {
+            document.getElementById(&quot;checkBoxArchived&quot;).checked = true;
+        }
+
+        $(&#39;#keywordLink&#39;).val(bitlyLink.keyword_link);
+
+        etc...
+
+    }
+</code></pre>
+<p>Notice that the <strong>getUrl</strong> method returns different data depending on whether you pass in a Bitly access token or the number <strong>-1</strong>. This is how the program knows whether to get local data, or data from Bitly itself.</p>
+<h2 id="multiple-modules">Multiple Modules</h2>
+<p>Your program should have several objects in it. In particular, you should have at least three files on the client side:</p>
+<ul>
+<li>javascripts/control.js</li>
+<li>javascripts/downloads.js</li>
+<li>javascripts/movement.js</li>
+</ul>
+<p>Don&#39;t forget to modify <strong>layout.jade</strong> to include links to these files. </p>
+<p>While we are on the subject of <strong>layout.jade</strong>, be sure that you declaring the <strong>charset</strong> and configuring the viewport:</p>
+<pre><code>doctype html
+html
+  head
+    meta(charset=&#39;UTF-8&#39;)
+    meta(name=&#39;viewport&#39;, content=&#39;width=device-width&#39;)
+    title= title
+    link(rel=&#39;stylesheet&#39;, href=&#39;/stylesheets/style.css&#39;)
+    etc...
+</code></pre><h2 id="the-downloads-module">The <strong>downloads</strong> module</h2>
+<pre><code class="lang-javascript">var downloads = function () { &#39;use strict&#39;; };
+
+downloads.accessToken = YOUR TOKEN HERE. AS A STRING...;
+
+downloads.dataTypes = [&quot;dtLocal&quot;, &quot;dtCloud&quot;];
+
+downloads.dataType = downloads.dataTypes[0];
+
+downloads.dataTypeSelection = function () {
+    &#39;use strict&#39;;
+    if ($(&#39;#localData&#39;).is(&#39;:checked&#39;)) {
+        $(&quot;#radioButtonDisplay01&quot;).html(&quot;You clicked localData &quot;);
+        downloads.dataType = downloads.dataTypes[0];
+    } else {
+        YOUR CODE HERE
+    }
+};
+
+downloads.getBitlyData = function () {
+    &#39;use strict&#39;;
+    if (this.dataType === this.dataTypes[0]) {
+        console.log(&quot;getBitlyData called: &quot;, this.dataTypes[0]);
+        bitlyUrlParser.getBitlyLinks(WHAT GOES HERE?);
+    } else if (this.dataType === this.dataTypes[1]) {
+        YOUR CODE HERE
+    }
+};
+</code></pre>
 </div></body></html>
