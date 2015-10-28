@@ -10,7 +10,8 @@
 <li><a href="#display-with-jade">Display with Jade</a></li>
 <li><a href="#multiple-modules">Multiple Modules</a></li>
 <li><a href="#the-downloads-module">The <strong>downloads</strong> module</a></li>
-<li><a href="#grunt-issues">Grunt Issues</a></li><!--TOC_End--></ul><h1 id="bitly-interactive">Bitly Interactive</h1>
+<li><a href="#grunt-issues">Grunt Issues</a></li>
+<li><a href="#test-the-url">Test the URL</a></li><!--TOC_End--></ul><h1 id="bitly-interactive">Bitly Interactive</h1>
 <p>The primary goal of this program is to create an interface for your Bitly data.</p>
 <p>Other goals include:</p>
 <ul>
@@ -310,4 +311,37 @@ downloads.getBitlyData = function () {
 // reporterOutput : &#39;result.xml&#39;,
 </code></pre><p>At the command line, do this:</p>
 <pre><code>npm install jshint-stylish --save-dev
-</code></pre></div></body></html>
+</code></pre><h2 id="test-the-url">Test the URL</h2>
+<p>I&#39;ve come up with some additional tests that were not part of the first 2015 version of <strong>BitlyQuery</strong>. Make sure these tests are included in the <strong>Test Bitly Suite</strong>:</p>
+<pre><code>    it(&quot;tests the url we pass to getBitlyLinks&quot;, function() {
+        var finalUrl;
+
+        spyOn($, &#39;getJSON&#39;).and.callFake(function(url, success) {
+            finalUrl = url;
+            success(bitlyLinks);
+            return {
+                fail: function() {}
+            };
+        });
+
+        bitlyUrlParser.getBitlyLinks(-1);
+        expect(finalUrl).toBe(&#39;data/bitly-links.json&#39;);
+    });
+
+    it(&quot;tests the url we pass to getBitlyLinks&quot;, function() {
+        var finalUrl;
+
+        spyOn($, &#39;getJSON&#39;).and.callFake(function(url, success) {
+            finalUrl = url;
+            success(bitlyLinks);
+            return {
+                fail: function() {}
+            };
+        });
+
+        bitlyUrlParser.getBitlyLinks(accessToken);
+        expect(finalUrl).toContain(accessToken);
+        expect(finalUrl).toContain(&#39;https&#39;);
+    });
+</code></pre><p>Take a look at the updated <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/BitlyQuery.html#set-up-unit-tests">BitlyQuery</a> assignment, as these tests are now included in that assignment.</p>
+</div></body></html>
