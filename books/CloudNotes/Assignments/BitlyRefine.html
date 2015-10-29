@@ -1,29 +1,229 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>BitlyRefine</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body ng-app="elfApp"><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>BitlyRefine</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#create-project">Create Project</a></li>
-<li><a href="#elf-unity">Elf Unity</a></li>
 <li><a href="#display-updates">Display Updates</a></li>
-<li><a href="#css-updates">CSS Updates</a></li><!--TOC_End--></ul><p>#BitlyRefine</p>
+<li><a href="#elf-unity">Elf Unity</a></li>
+<li><a href="#css-updates">CSS Updates</a></li>
+<li><a href="#creating-a-table">Creating a table</a></li>
+<li><a href="#jade-mixins">Jade Mixins</a></li>
+<li><a href="#set-up-the-title">Set up the Title</a></li><!--TOC_End--></ul><p>#BitlyRefine</p>
 <p>This is the midterm. Your goal is to refine the BitlyProgram into something reasonably attractive and easy to use.</p>
 <p><a href="https://s3.amazonaws.com/bucket01.elvenware.com/images/BitlyRefine01.png"><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/BitlyRefine01Small.png" alt="BitlyRefine"></a></p>
 <h2 id="create-project">Create Project</h2>
 <p>Copy Week06-BitlyInteractive into Week07-BitlyRefine</p>
 <pre><code>cp Week06-BitlyInteractive Week07-BitlyRefine
-</code></pre><h2 id="elf-unity">Elf Unity</h2>
-<p>Rename objects to begin with elf</p>
+</code></pre><p>Update the project name to <strong>BitlyRefine</strong> in:</p>
 <ul>
-<li>elfMovement</li>
-<li>elfDisplay</li>
-<li>elfDownloads</li>
+<li>bin/www</li>
+<li>routes/index.js</li>
+<li>package.json</li>
 </ul>
-<p>Not the file names, just the objects. 
-This is a halfway step</p>
-<p>Run unit tests while you are working
-Use refactor inside WebStorm</p>
+<p><strong>NOTE</strong>: <em>I understand why you would want to work on a single project and keep updating it, but I want you to work one step at a time. I&#39;m expecting to see three directories: <strong>Week06-BitlyQuery</strong>, <strong>Week06-BitlyInteractive</strong>, and <strong>Week07-BitlyRefine</strong>. Each folder should contain the proper code for their respective assignments.</em></p>
 <h2 id="display-updates">Display Updates</h2>
-<p>Move display into its own file called display
-Call display <strong>display.render</strong></p>
+<p>Right now we have several methods that have to do with displaying the fields of a link object. These don&#39;t really belong in the main object found in <strong>control.js</strong>. Let&#39;s move then into their own file called display.</p>
+<p>In particular, I&#39;m talking about the methods called:</p>
+<ul>
+<li>display</li>
+<li>showRecord</li>
+</ul>
+<p>I want you to rename <strong>display</strong> to <strong>display.render</strong>. The object you create should have at least this much in it:</p>
+<ul>
+<li>display.render</li>
+<li>display.showRecord</li>
+<li>display.renderTable</li>
+<li>display.showTableSelection</li>
+</ul>
+<p>The latter two methods can be empty for now. So your code might look something like this:</p>
+<pre><code class="lang-javascript">var elfDisplay={
+
+    render: function () {
+        &#39;use strict&#39;;
+        // VERY SIMILAR TO CODE FROM BitlyInteractive
+    },
+
+    renderTable: function(links) {
+        &#39;use strict&#39;;
+        // CAN BE EMPTY FOR NOW
+    },
+
+    showRecord: function (bitlyLink) {
+        &#39;use strict&#39;;
+        // VERY SIMILAR OR IDENTICAL TO CODE FROM BitlyInteractive
+    },
+
+    showTableSelection: function(event) {
+        &#39;use strict&#39;;
+        // CAN BE EMPTY AT FIRST
+    }
+
+};
+</code></pre>
+<p>Don&#39;t forget that you need to load your new JavaScript files in <strong>layout.jade</strong>. In particular you will need to load <strong>control.js</strong>, <strong>downloads.js</strong>, <strong>movement.js</strong> and <strong>display.js</strong>:</p>
+<pre><code>script(src=&quot;javascripts/control.js&quot;)
+script(src=&quot;javascripts/etc...
+script(src=&quot;javascripts/etc...
+script(src=&quot;javascripts/etc...
+</code></pre><h2 id="elf-unity">Elf Unity</h2>
+<p>This is a refactoring issue. We want to take a halfway step to fixing the global namespace problem. Let&#39;s begin by making sure all our objects begin with the letters <strong>elf</strong>.</p>
+<p>While you are doing the following, be sure you are running the unit tests. We are going to be changing variable names in multiple locations, and even when using Refactor in WebStorm, this can be complicated. As you make changes, run your unit tests and make sure they all pass. Also, check to make sure the interface works.</p>
+<p>The refactor option in WebStorm can help with this process, but it can also make changes that you are not expecting. I think the unit tests are more help than the <strong>refactor</strong> option, but you may have a different opinion.</p>
+<p><strong>NOTE</strong>: <em>Make changes one at a time. If you attempt to make too many changes at once, you won&#39;t know what is broken. Make a change, confirm that it works, then make the next change.</em></p>
+<p>In particular, rename the main objects in your program as follows:</p>
+<ul>
+<li>elfBitly (This was <strong>bitlyUrlParser</strong> and is in <strong>control.js</strong>)</li>
+<li>elfMovement (<strong>movement.js</strong>)</li>
+<li>elfDisplay (<strong>display.js</strong>)</li>
+<li>elfDownloads (<strong>downloads.js</strong>)</li>
+</ul>
+<p>We are not changing any file names, just the objects in the files.</p>
 <h2 id="css-updates">CSS Updates</h2>
 <p>Create the <strong>.elfDiv</strong> class in styles.css</p>
 <p>Set the border width in <strong>styles.css</strong></p>
 <p>Changes to elfInput, including moving to its own file.</p>
 <p>Describe the elfDivFolder</p>
-</div></body></html>
+<p>Here is my current <strong>public/stylesheets/style.css</strong> file:</p>
+<pre><code>body {
+  padding: 10px;
+  font: 14px &quot;Lucida Grande&quot;, Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+
+.elfDiv {
+  max-width: 800px;
+  border: ridge 1px black;
+  margin: auto;
+}
+
+.scroller {
+  height: 220px;
+  overflow: auto;
+}
+</code></pre><p>Note that I have set the <strong>padding</strong> in the BODY tag to 10px rather than the default <strong>50px</strong> that we get by default in Express projects.</p>
+<p>The <strong>elfDiv</strong> class ensures that the width of our panels is never larger than 800px, and that the panels are centered in the page. We center them by setting their margins to equivalent values: <strong>margin:auto</strong>.</p>
+<p>The scroller class is used to help us scroll the table that we put inside a panel, as described elsewhere in this document.</p>
+<h2 id="creating-a-table">Creating a table</h2>
+<p>Our interface has a new section in it called <strong>Bitly Links Table</strong>. (See screen shot above.) Here are some hints on how to create it.</p>
+<p>In <strong>elfDisplay</strong> fill in the <strong>renderTable</strong> method. In the code shown below, you will need to discover which fields of the <strong>link</strong> object you want to include to create results like that shown in the screenshot:</p>
+<pre><code class="lang-javascript">    renderTable: function(links) {
+        &#39;use strict&#39;;
+        $.each(links, function(index, link) {
+            var title = &quot;&lt;td&gt;&quot; + WHAT GOES HERE? +  &quot;&lt;/td&gt;&quot;;
+            var keyword = &quot;&lt;td&gt;&quot; + WHAT GOES HERE? + &quot;&lt;/td&gt;&quot;;
+            var tableRowStart = &quot;&lt;tr class=&#39;linkTitle&#39; index=&quot; + index + &quot;&gt;&quot;;
+            $(&quot;#tableLinks&quot;).append(tableRowStart + WHAT GOES HERE? + &quot;&lt;tr&gt;&quot;);
+        });
+        $(&#39;.linkTitle&#39;).click(elfDisplay.showTableSelection);
+    },
+</code></pre>
+<p>Notice that each <TR> has a class and custom attribute called <strong>index</strong> associated with it:</p>
+<pre><code class="lang-javascript">var tableRowStart = &quot;&lt;tr class=&#39;linkTitle&#39; index=&quot; + index + &quot;&gt;&quot;;
+</code></pre>
+<p>The <strong>jQuery</strong> code at the bottom of the method ensures that if the user clicks on one of these rows, then the <strong>elfDisplay.showTableSelection</strong> method will be called:</p>
+<pre><code class="lang-javascript">showTableSelection: function(event) {
+    &#39;use strict&#39;;
+    var index = $(event.currentTarget).attr(&#39;index&#39;);
+    var link = elfBitly.getLinkHistory(index, true);
+    // CALL THE showRecord METHOD OF elfDisplay HERE.
+}
+</code></pre>
+<p>This code requires a moment&#39;s study. Each <TR> element has an attribute called <strong>index</strong> that is set to the offset of that particular row in our <strong>bitly-links.json</strong> file. We can use that index to display the appropriate link object in our main form. All we need to do, is get ahold of the value of the <strong>index</strong> attribute for the row the user clicked. To do that, we use the jQuery <strong>attr</strong> property. Make sure you understand this code. It is important to understand how to work with attributes of your HTML elements.</p>
+<p>Here is the updated <strong>getLinkHistory</strong> method:</p>
+<pre><code class="lang-javascript">getLinkHistory: function(index, setLinkIndex) {
+    &#39;use strict&#39;;
+    if (setLinkIndex) {
+        elfBitly.linkIndex = parseInt(index);
+    }
+    return elfBitly.bitlyLinks.data.link_history[index];
+
+},
+</code></pre>
+<p>As you can see, it is has been modified to ensure that we continue to track the currently selected item in the <strong>linkIndex</strong> property of <strong>elfBitly</strong></p>
+<p>Here is the Jade that we use to hold our table.</p>
+<pre><code>+elfPanel(&quot;Bitly Links Table&quot;).elfDiv
+    div.scroller
+        table.table#tableLinks
+</code></pre><p>This jade and CSS <strong>scroller</strong> class found in <strong>styles.css</strong> ensure that our table has scroll bars and can be scrolled.</p>
+<h2 id="jade-mixins">Jade Mixins</h2>
+<p>Start dividing mixins into easy to comprehend files. When you are done, the top of <strong>index.jade</strong> might look something like this:</p>
+<pre><code>extends layout
+include mixin-radios
+include mixin-inputs
+include mixin-buttons
+</code></pre><p>Here are my <strong>mixin-buttons.jade</strong> file:</p>
+<pre><code>mixin forwardBack(leftFunction, rightFunction)
+    button.btn.btn-success.btn-large(type=&#39;button&#39;, onclick= leftFunction)
+       span.glyphicon.glyphicon-arrow-left
+       | &amp;nbsp; Left
+    span &amp;nbsp;
+    button.btn.btn-success.btn-large(type=&#39;button&#39;, onclick= rightFunction)
+       | Right &amp;nbsp;
+       span.glyphicon.glyphicon-arrow-right
+
+mixin downloadButton(title, downloadFunction)
+    button.btn.btn-primary(type=&#39;button&#39;, onclick= downloadFunction)
+        | #{title} &amp;nbsp;&amp;nbsp;
+        span.glyphicon.glyphicon-download
+</code></pre><p>One could use them like this:</p>
+<pre><code>+forwardBack(&quot;elfMovement.left()&quot;, &quot;elfMovement.right()&quot;)
++downloadButton(&quot;Get Bitly Data&quot;, &quot;downloads.getBitlyData()&quot;)
+</code></pre><p>I have also moved the input controls into their own file called <strong>mixin-inputs.jade</strong>:</p>
+<pre><code>// **************
+// Vertical Input Controls
+// **************
+
+mixin elfInput(labelText, name, placeHolder)
+   div
+      label(for=&#39;subject&#39;) #{labelText}
+      input(type=&#39;text&#39;, name=name, placeholder=placeHolder)&amp;attributes(attributes)
+
+mixin elfInputVB(labelText, name, placeHolder, labelType)
+   - if (typeof attributes.buttonType === &#39;undefined&#39;) {
+   -        attributes.buttonType=&quot;btn-default&quot;;
+   - }
+
+   div
+      label.label.label-default(for=&#39;subject&#39;) #{labelText}
+      input(type=&#39;text&#39;, name=name, placeholder=placeHolder)&amp;attributes(attributes)
+
+
+// **************
+// Horizontal Input Controls
+// **************
+mixin elfInputA(labelText, name, placeHolder)
+   div.row
+      label.col-md-2.control-label(for=&#39;textinput&#39;) #{labelText}
+      .col-md-8
+         input.form-control.input-md(name=name, type=&#39;text&#39;, placeholder=placeholder)&amp;attributes(attributes)
+
+mixin elfInputB(labelText, name, placeHolder)
+   div.row
+      h4
+         span.col-md-2.label.label-success #{labelText}
+      .col-md-10
+         input.form-control.input-md(name=name, type=&#39;text&#39;, placeholder=placeholder)&amp;attributes(attributes)
+
+mixin elfInputHorizontal(labelText, name, placeHolder)
+   .form-group
+      span.col-xs-2.label.label-success #{labelText}
+      .col-xs-10
+         input.form-control.input-sm(name=name, type=&#39;text&#39;, placeholder=placeholder)&amp;attributes(attributes)
+</code></pre><p>All this is in <strong>$ELF_TEMPLATES</strong>. Therefore the following code should get up to date, so long as you first ran <strong>git pull</strong> in JsObjects:</p>
+<pre><code class="lang-bash">cp $ELF_TEMPLATES/JadeMixins/mixin-inputs.jade views/.
+cp $ELF_TEMPLATES/JadeMixins/mixin-radios.jade views/.
+cp $ELF_TEMPLATES/JadeMixins/mixin-buttons.jade views/.
+</code></pre>
+<p>Another way to handle this is with the file and directory comparison utility called <strong>meld</strong>. It is available in Pristine Lubuntu:</p>
+<pre><code>meld views/ $ELF_TEMPLATES/JadeMixins
+</code></pre><p><strong>NOTE</strong>: <em>I&#39;ve never tried it, but there is some chance that <a href="http://linuxcommand.org/lc3_adv_mc.php">Midnight Commander</a> might work on Cloud9. Perhaps you can use it to do directory comparisons.</em></p>
+<p>To install midnight command: <strong>sudo apt-get install mc</strong></p>
+<h2 id="set-up-the-title">Set up the Title</h2>
+<p>In <strong>routes/index.js</strong> create a new variable for use when Jade is rendered into HTML. You should, of course, use your own name:</p>
+<pre><code class="lang-javascript">res.render(&#39;index&#39;, { title: &#39;Bitly-Refine&#39;, author: &#39;John von Neumann&#39; });
+</code></pre>
+<p>Change the title to show the author:</p>
+<pre><code>    .jumbotron.elfDiv
+        h1= title
+        p by WHAT GOES HERE?
+</code></pre></div></body></html>

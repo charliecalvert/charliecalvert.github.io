@@ -5,10 +5,10 @@
 <li><a href="#the-interface">The interface</a></li>
 <li><a href="#check-a-checkbox">Check a CheckBox</a></li>
 <li><a href="#converting-dates">Converting Dates</a></li>
+<li><a href="#multiple-modules">Multiple Modules</a></li>
 <li><a href="#iterate">Iterate</a></li>
 <li><a href="#load-json">Load JSON</a></li>
 <li><a href="#display-with-jade">Display with Jade</a></li>
-<li><a href="#multiple-modules">Multiple Modules</a></li>
 <li><a href="#the-downloads-module">The <strong>downloads</strong> module</a></li>
 <li><a href="#grunt-issues">Grunt Issues</a></li>
 <li><a href="#test-the-url">Test the URL</a></li><!--TOC_End--></ul><h1 id="bitly-interactive">Bitly Interactive</h1>
@@ -94,7 +94,28 @@ if (bitlyLink.archived) {
 <pre><code class="lang-javascript">new Date(bitlyLink.created_at * 1000)
 </code></pre>
 <p>Most of what you need to know is at the <a href="http://www.epochconverter.com">epochconverter.com</a> site and their <a href="http://www.epochconverter.com/programming/#javascript">javascript</a> page:</p>
-<h2 id="iterate">Iterate</h2>
+<h2 id="multiple-modules">Multiple Modules</h2>
+<p>There comes a point where you program begins to be too complicated to fit inside one object in file. In other words, our <strong>bitlyUrlParser</strong> is no longer adequate for our needs. The problem here is the same one you encounter when you are told that you should not put all your code for a C, Java or C# program in the <strong>main</strong> module.</p>
+<p>We need to divide and conquor. We need to modularize our program. We need to create objects and methods that properly delineate the various parts of our program. </p>
+<p>This step is essential. If you do not create small, easy to use objects, you code will quickly become a tangled mess of spaghetti that no one can understand.</p>
+<p>To make your code maintainable, it should have several objects in it. In particular, you should have at least three files on the client side:</p>
+<ul>
+<li>javascripts/control.js</li>
+<li>javascripts/downloads.js</li>
+<li>javascripts/movement.js</li>
+</ul>
+<p>Each of these files are described in this document.</p>
+<p>Don&#39;t forget to modify <strong>layout.jade</strong> to include links to these files. </p>
+<p>While we are on the subject of <strong>layout.jade</strong>, be sure that you declaring the <strong>charset</strong> and configuring the viewport:</p>
+<pre><code>doctype html
+html
+  head
+    meta(charset=&#39;UTF-8&#39;)
+    meta(name=&#39;viewport&#39;, content=&#39;width=device-width&#39;)
+    title= title
+    link(rel=&#39;stylesheet&#39;, href=&#39;/stylesheets/style.css&#39;)
+    etc...
+</code></pre><h2 id="iterate">Iterate</h2>
 <p>Your program should be able to iterate over the bitly objects in our bitly array. At the top of the program are three buttons:</p>
 <pre><code>+elfPanel(&quot;Iterate&quot;)
     button.btn.btn-success.btn-large(type=&#39;button&#39;, onclick=&quot;movement.left()&quot;)
@@ -266,24 +287,15 @@ block content
 <pre><code>+elfPanel(&quot;CheckBoxes&quot;)
     +elfCheckBox(&quot;Private&quot;, &quot;checkBoxPrivate&quot;, &quot;checkBoxPrivate&quot;)#checkBoxPrivate
     +elfCheckBox(&quot;Archived&quot;, &quot;checkBoxArchived&quot;, &quot;checkBoxArchived&quot;)#checkBoxArchived
-</code></pre><h2 id="multiple-modules">Multiple Modules</h2>
-<p>Your program should have several objects in it. In particular, you should have at least three files on the client side:</p>
-<ul>
-<li>javascripts/control.js</li>
-<li>javascripts/downloads.js</li>
-<li>javascripts/movement.js</li>
-</ul>
-<p>Don&#39;t forget to modify <strong>layout.jade</strong> to include links to these files. </p>
-<p>While we are on the subject of <strong>layout.jade</strong>, be sure that you declaring the <strong>charset</strong> and configuring the viewport:</p>
-<pre><code>doctype html
-html
-  head
-    meta(charset=&#39;UTF-8&#39;)
-    meta(name=&#39;viewport&#39;, content=&#39;width=device-width&#39;)
-    title= title
-    link(rel=&#39;stylesheet&#39;, href=&#39;/stylesheets/style.css&#39;)
-    etc...
 </code></pre><h2 id="the-downloads-module">The <strong>downloads</strong> module</h2>
+<p>This is the first time we are going to use function objects rather than plain old JavaScript literal objects. A plain old JavaScript object is declared like this:</p>
+<pre><code>var myObject = { ... // STUFF IN HERE };
+</code></pre><p>A function object is declared like this:</p>
+<pre><code>function myFunction() { ... // STUFF IN HERE }
+</code></pre><p>Or like this:</p>
+<pre><code>var myFunction = function() { ... // STUFF IN HERE }
+</code></pre><p>In my opinion, at least, function objects are much more flexible and powerful than plain objects.</p>
+<p>In the code below, the first line creates an JavaScript object. We then declare three properties and two methods of that object:</p>
 <pre><code class="lang-javascript">var downloads = function () { &#39;use strict&#39;; };
 
 downloads.accessToken = YOUR TOKEN HERE. AS A STRING...;
@@ -298,7 +310,9 @@ downloads.dataTypeSelection = function () {
         $(&quot;#radioButtonDisplay01&quot;).html(&quot;You clicked localData &quot;);
         downloads.dataType = downloads.dataTypes[0];
     } else {
-        YOUR CODE HERE
+        YOUR CODE HERE. 
+        YOU NEED TO DEFINE THE CODE for THE dtCloud OPTION.
+        IT IS VERY SIMILAR TO THE OTHER HALF OF THIS IF STATEMENT
     }
 };
 
@@ -308,11 +322,17 @@ downloads.getBitlyData = function () {
         console.log(&quot;getBitlyData called: &quot;, this.dataTypes[0]);
         bitlyUrlParser.getBitlyLinks(WHAT GOES HERE?);
     } else if (this.dataType === this.dataTypes[1]) {
-        YOUR CODE HERE
+        YOUR CODE FOR THE CLOUD OPTION HERE
     }
 };
 </code></pre>
-<h2 id="grunt-issues">Grunt Issues</h2>
+<p>When we are done, we can do things like this:</p>
+<pre><code>console.log(downloads.dataTypes[0]);
+console.log(downloads.accessToken);
+console.log(downloads.dataType);
+</code></pre><p>Or we could call the methods of the object:</p>
+<pre><code>downloads.getBitlyData(-1);
+</code></pre><h2 id="grunt-issues">Grunt Issues</h2>
 <p>In Gruntfile.js make this change:</p>
 <pre><code>reporter : require(&#39;jshint-stylish&#39;),
 // reporterOutput : &#39;result.xml&#39;,
