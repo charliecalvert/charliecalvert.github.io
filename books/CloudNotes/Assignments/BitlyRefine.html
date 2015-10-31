@@ -74,6 +74,23 @@ script(src=&quot;javascripts/etc...
 <li>elfDownloads (<strong>downloads.js</strong>)</li>
 </ul>
 <p>We are not changing any file names, just the objects in the files.</p>
+<p>Given these changes, we would call the <strong>renderTable</strong> method in <strong>display.js</strong> from a modified <strong>getBlitlyLinks</strong> method:</p>
+<pre><code class="lang-javascript">getBitlyLinks: function(accessToken) {
+    &#39;use strict&#39;;
+    var url = elfBitly.getUrl(accessToken);
+
+    $.getJSON(url, function(result) {
+        elfBitly.bitlyLinks = result;
+        elfDisplay.render();
+        elfDisplay.renderTable(elfBitly.getLinkHistoryArray());
+        $(&#39;#displayLinks&#39;).html(JSON.stringify(result, null, 4));
+    }).fail(function(jqxhr, textStatus, error) {s
+        var err = textStatus + &#39;, &#39; + error;
+        console.log(&#39;Request Failed: &#39; + err);
+        console.log(&#39;url:&#39;, url);
+    });
+},
+</code></pre>
 <h2 id="css-updates">CSS Updates</h2>
 <p>Create the <strong>.elfDiv</strong> class in styles.css</p>
 <p>Set the border width in <strong>styles.css</strong></p>

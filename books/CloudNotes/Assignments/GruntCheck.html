@@ -161,6 +161,23 @@ grunt test
         });
     },
 </code></pre>
+<p>Though you probably have these changes already, I&#39;ll remind you that in <strong>BitlyRefine</strong> the code looks like this, :</p>
+<pre><code class="lang-javascript">getBitlyLinks: function(accessToken) {
+    &#39;use strict&#39;;
+    var url = elfBitly.getUrl(accessToken);
+
+    $.getJSON(url, function(result) {
+        elfBitly.bitlyLinks = result;
+        elfDisplay.render();
+        elfDisplay.renderTable(elfBitly.getLinkHistoryArray());
+        $(&#39;#displayLinks&#39;).html(JSON.stringify(result, null, 4));
+    }).fail(function(jqxhr, textStatus, error) {s
+        var err = textStatus + &#39;, &#39; + error;
+        console.log(&#39;Request Failed: &#39; + err);
+        console.log(&#39;url:&#39;, url);
+    });
+},
+</code></pre>
 <p>This change will break some of our tests, since <strong>getLinkHistory</strong> has been renamed to <strong>getLinkHistoryItem</strong>.</p>
 <p>The <strong>package.json</strong> file for this code might look like this:</p>
 <pre><code class="lang-json">{
