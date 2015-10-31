@@ -6,7 +6,8 @@
 <pre><code>grunt check
 grunt test
 </code></pre><p>The emphasis here is onlearning to format your code correctly. In particular, see the <a href="https://google.github.io/styleguide/javascriptguide.xml">Google style guide</a>. The JSCS tests in this project follow the Google style guides, except that our indent is four spaces rather than two.</p>
-<p><strong>NOTE</strong>: <em>When viewing the Google style guide, you may find it easiest to select the <strong>Toggle All Summaries</strong> option at the top of the file.</em></p>
+<p>This assignment turned out to be more difficult 
+<strong>NOTE</strong>: <em>When viewing the Google style guide, you may find it easiest to select the <strong>Toggle All Summaries</strong> option at the top of the file.</em></p>
 <p>See also:</p>
 <ul>
 <li><a href="http://jsbeautifier.org/">jsbeautifier.org</a></li>
@@ -92,18 +93,75 @@ grunt test
     }
 },
 </code></pre><p>In the code above, note how we use the bang operator to tell <strong>jscs</strong> to skip a file: <strong>!spec/bitly-linksjs</strong>.</p>
-<p>We also need to turn off checking for <a href="http://jscs.info/rule/requireCamelCaseOrUpperCaseIdentifiers">CamelCase violations</a>. This means our <strong>.jscsrc</strong> file for <strong>BitlyInteractive</strong> and <strong>BitlyRefine</strong> should look like this:</p>
+<p>We also need to turn off checking for <a href="http://jscs.info/rule/requireCamelCaseOrUpperCaseIdentifiers">CamelCase violations</a>. While we are at it, let&#39;s set the max line length to 120, which is more reasonable for modern editors. This means our <strong>.jscsrc</strong> file for <strong>BitlyInteractive</strong> and <strong>BitlyRefine</strong> should look like this:</p>
 <pre><code class="lang-json">{
     &quot;preset&quot;: &quot;google&quot;,
     &quot;validateIndentation&quot;: 4,
     &quot;excludeFiles&quot;: [&quot;**/node_modules/**&quot;, &quot;**/components/**&quot;],
-    &quot;requireCamelCaseOrUpperCaseIdentifiers&quot;: false
+    &quot;requireCamelCaseOrUpperCaseIdentifiers&quot;: false,
+    &quot;maximumLineLength&quot;: 120
 }
 </code></pre>
-<p>The problem is in our tests, where we have lines like this:</p>
+<p>Note the two new lines at the end of the file. The camel case problem is in our tests, where we have lines like this:</p>
 <pre><code class="lang-javascript">var firstLink = bitlyUrlParser.bitlyLinks.data.link_history[0];
 </code></pre>
 <p>At some later point, we can use maps to transform <strong>link_history</strong> to <strong>linkHistory</strong>, but for now let&#39;s just turn off the warning.</p>
+<p>If a line is too long, try to find a way to break it up. The following method had a line that was over 120 characters, but here I break it up to fit the formatting rules:</p>
+<pre><code class="lang-javascript">    getUrl: function(accessToken) {
+        &#39;use strict&#39;;
+
+        var baseUrl = &#39;https://api-ssl.bitly.com/v3/user/link_history&#39;;
+        var params = &#39;?access_token=&#39;;
+
+        if (accessToken === -1) {
+            return &#39;data/bitly-links.json&#39;;
+        } else {
+            var url = baseUrl + params;
+            return url += accessToken;
+        }
+    },
+</code></pre>
+<p>Let&#39;s make a breaking change that will allows us to shorten some other lines:</p>
+<pre><code class="lang-javascript">    getLinkHistoryArray: function() {
+        &#39;use strict&#39;;
+        return bitlyUrlParser.bitlyLinks.data.link_history;
+    },
+
+    getLinkHistoryItem: function(index) {
+        &#39;use strict&#39;;
+        return bitlyUrlParser.bitlyLinks.data.link_history[index];
+    },
+
+    getMap: function() {
+        &#39;use strict&#39;;
+        return bitlyUrlParser.getLinkHistoryArray().map(function(history) {
+            var myDate = new Date(history.created_at * 1000);
+            return {
+                title: history.title,
+                link: history.link,
+                created_at: myDate.toLocaleString()
+            };
+        });
+    },
+</code></pre>
+<p>Notice that we now call <strong>getLinkHistoryArray</strong> in the <strong>getMap</strong> function.</p>
+<p>And let&#39;s clean up the way we report errors in the <strong>fail</strong> handler:</p>
+<pre><code class="lang-javascript">    getBitlyLinks: function(accessToken) {
+        &#39;use strict&#39;;
+        var url = bitlyUrlParser.getUrl(accessToken);
+
+        $.getJSON(url, function(result) {
+            bitlyUrlParser.bitlyLinks = result;
+            bitlyUrlParser.display();
+            $(&#39;#displayLinks&#39;).html(JSON.stringify(result, null, 4));
+        }).fail(function(jqxhr, textStatus, error) {
+            var err = textStatus + &#39;, &#39; + error;
+            console.log(&#39;Request Failed: &#39; + err);
+            console.log(&#39;url:&#39;, url);
+        });
+    },
+</code></pre>
+<p>This change will break some of our tests, since <strong>getLinkHistory</strong> has been renamed to <strong>getLinkHistoryItem</strong>.</p>
 <p>The <strong>package.json</strong> file for this code might look like this:</p>
 <pre><code class="lang-json">{
   &quot;name&quot;: &quot;week07-gruntcheck&quot;,
