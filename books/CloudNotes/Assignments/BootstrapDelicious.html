@@ -4,7 +4,9 @@
 <li><a href="#simple-controls">Step Three: Simple Controls</a></li>
 <li><a href="#query-delicious">Step Four: Query Delicious</a></li>
 <li><a href="#more-controls">Step Five: Create Additional Controls and Response Methods</a></li>
-<li><a href="#control-clicks">Setp Six: Handle Check Box and Radio Button Clicks</a></li>
+<li><a href="#control-clicks">Step Six: Handle Check Box and Radio Button Clicks</a></li>
+<li><a href="#compose-url">Step 6.5: Compose URL</a></li>
+<li><a href="#anchor-links">Step 6.7: Create Embedded Anchor Links</a></li>
 <li><a href="#delicious-account">Step Seven: Create Your own Delicious Links</a></li>
 <li><a href="#hint">Hint</a></li>
 <li><a href="#deugger-hints">Deugger Hints</a></li>
@@ -203,7 +205,7 @@ sed -<span class="hljs-tag">i</span> <span class="hljs-string">"s/next) {/next) 
 <pre><code>input#<span class="hljs-function"><span class="hljs-title">chJavaScript</span><span class="hljs-params">(type=<span class="hljs-string">'checkbox'</span>, name=<span class="hljs-string">'check'</span>, value=<span class="hljs-string">'JavaScript'</span>)</span></span>
 </code></pre><p>Here is an approximation of something you can create:</p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/BootstrapDelicious.png" alt="Delicious"></p>
-<h2 id="control-clicks">Setp Six: Handle Check Box and Radio Button Clicks</h2>
+<h2 id="control-clicks">Step Six: Handle Check Box and Radio Button Clicks</h2>
 <p>The trickiest parts are the jQuery css selectors in <strong>document ready</strong>. Recall that we already covered this subject in <strong>Bootstrap Basics</strong>.</p>
 <p>This time round, however, we should set up some default actions, perhaps by calling the code that displays the check box selection:</p>
 <p>$(document).ready(function() {</p>
@@ -213,6 +215,75 @@ sed -<span class="hljs-tag">i</span> <span class="hljs-string">"s/next) {/next) 
 // Initialize controls
 // CALL <span class="hljs-preprocessor">CODE</span> THAT HANDLES CHECK <span class="hljs-keyword">BOX </span><span class="hljs-keyword">SELECTION</span>
 </code></pre><p>});</p>
+<p>elicious}</p>
+<h2 id="compose-url">Step 6.5: Compose URL</h2>
+<p>The <strong>displayCheckBoxSelection</strong> must build up a query reflecting the options selected by the user. You might want to declare some local variables with names like <strong>tag</strong>, <strong>query</strong> and <strong>options</strong> to help us with this task.</p>
+<p>Recall that if you want to see the links that have two or more different tags associated with them, then compose a URL like one of these:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">url:</span> <span class="hljs-string">'http://feeds.delicious.com/v2/json/charliecalvert/javascript+nodejs'</span>
+<span class="hljs-string">url:</span> <span class="hljs-string">'http://feeds.delicious.com/v2/json/charliecalvert/nodejs+bootstrap'</span>
+<span class="hljs-string">url:</span> <span class="hljs-string">'http://feeds.delicious.com/v2/json/charliecalvert/bootstrap+javascript+nodejs'</span>
+</code></pre>
+<p>Each of the <strong>if statements</strong> in <strong>displayCheckboxSelection</strong> creates or adds to the <strong>query</strong> string. For instance, if the user selects only <strong>bootstrap</strong>, then this is our <strong>subject</strong> parameter for the query string:</p>
+<ul>
+<li>boostrap</li>
+</ul>
+<p>If they selection <strong>bootstrap</strong> and <strong>javascript</strong>, then we end up with this:</p>
+<ul>
+<li>boostrap+javascript</li>
+</ul>
+<p>And so on. Your job is to build up that query string and then pass it on to the ajax call when you are done:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">callDelicious</span><span class="hljs-params">(query)</span></span>
+</code></pre>
+<p><strong>HINT</strong>: <em>You don&#39;t always want to create a prepend your strings with a <strong>+</strong> operator. Here is code that could be used to help you compose a string that includes a <strong>+</strong> operator only if <em>*query</em></em> is not an emtpy string:</p>
+<pre><code class="lang-javascript"><span class="hljs-setting">tag = <span class="hljs-value">query === <span class="hljs-string">''</span> ?  <span class="hljs-string">''</span> : <span class="hljs-string">'+'</span>;</span></span>
+</code></pre>
+<h2 id="anchor-links">Step 6.7: Create Embedded Anchor Links</h2>
+<p>Here is some of my code for making the remote call to the Delicious web service:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> deliciousLinks;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">appendUrl</span>(<span class="hljs-params">index, deliciousLink</span>) </span>{
+    <span class="hljs-comment">// COMPOSE A HTML LI ELEMENT WITH AN ANCHOR LEADING TO A URL</span>
+    <span class="hljs-comment">// SOMETHING LIKE: &lt;li&gt;&lt;a href="..."&gt;...&lt;/a&gt;&lt;/li&gt;</span>
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callDelicious</span>(<span class="hljs-params">subject</span>) </span>{
+    <span class="hljs-keyword">var</span> feedUrl = <span class="hljs-string">'http://feeds.delicious.com/v2/json/charliecalvert/'</span> + subject;
+    $.ajax(
+        {
+            url: feedUrl,
+
+            dataType: <span class="hljs-string">'jsonp'</span>,
+
+            success: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+                <span class="hljs-comment">// USE JQUERY EACH METHOD TO ITERATE OVER </span>
+                <span class="hljs-comment">// OUR DELICIOUS LINK RECORDS</span>
+                <span class="hljs-comment">// PASS EACH DELICIOUS RECORD TO appendUrl</span>
+            }
+        });
+}
+</code></pre>
+<p>The code first create a url called <strong>feedUrl</strong> that might look like this:</p>
+<pre><code class="lang-xml"><span class="hljs-string">http:</span><span class="hljs-comment">//feeds.delicious.com/v2/json/charliecalvert/bootstrap+javascript</span>
+</code></pre>
+<p>If the <strong>$.ajax</strong> call that uses this URL succeeds, then we iterate over the <strong>data</strong> array returned from Delicious. For each item in the array, we call <strong>appendUrl</strong>, which is designed to create a list item (LI) that contains two hyperlinks.</p>
+<ul>
+<li>The first hyperlink opens a tab showing the Delicious link.</li>
+<li>The second hyperlink shows the details of the object we got from delicious that details the link related information. For instance, the details might look like this:</li>
+</ul>
+<pre><code class="lang-json">{
+    "<span class="hljs-attribute">a</span>": <span class="hljs-value"><span class="hljs-string">"charliecalvert"</span></span>,
+    "<span class="hljs-attribute">d</span>": <span class="hljs-value"><span class="hljs-string">"Twitter Bootstrap Github twbs/bootstrap"</span></span>,
+    "<span class="hljs-attribute">n</span>": <span class="hljs-value"><span class="hljs-string">""</span></span>,
+    "<span class="hljs-attribute">u</span>": <span class="hljs-value"><span class="hljs-string">"https://github.com/twbs/bootstrap"</span></span>,
+    "<span class="hljs-attribute">t</span>": <span class="hljs-value">[
+        <span class="hljs-string">"bootstrap"</span>,
+        <span class="hljs-string">"html"</span>,
+        <span class="hljs-string">"css"</span>,
+        <span class="hljs-string">"javascript"</span>
+    ]</span>,
+    "<span class="hljs-attribute">dt</span>": <span class="hljs-value"><span class="hljs-string">"2015-10-04T03:12:48Z"</span>
+</span>}
+</code></pre>
 <h2 id="delicious-account">Step Seven: Create Your own Delicious Links</h2>
 <p>Ceate our own delicious account and query them. Provide radiobuttons for switching between your account and my account.</p>
 <p>##Turn It In</p>
