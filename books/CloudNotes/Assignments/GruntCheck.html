@@ -225,129 +225,126 @@
 <p>The <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Syntax/PrimitiveTypes">PrimitiveTypes</a> project in <strong>JsObjects</strong> provides an example of what I would, at minimum, like to see. Note that both <strong>grunt check</strong> and <strong>grunt test</strong> pass without errors. (The test is not very interesting, but it does work. That would be fine for <strong>Week04-JavaScriptObjects</strong>, but I want, of course, better tests in the other two projects.)</p>
 <p>Remember, you should not need to modify the files included in this assignment. It is your JavaScript files that may need to change as a result of the tests shown here.</p>
 <h2 id="updated-unit-tests">Updated Unit Tests</h2>
-<pre><code><span class="hljs-comment">/**
- * Created by charlie on 10/7/15.
- */</span>
+<pre><code class="lang-javascript">describe<span class="hljs-list">(<span class="hljs-quoted">'Elvenware</span> Simple Plain Suite', function<span class="hljs-list">()</span> {
+    <span class="hljs-quoted">'use</span> strict'<span class="hljs-comment">;</span>
 
-describe(<span class="hljs-string">'Elvenware Simple Plain Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-<span class="hljs-pi">    'use strict'</span>;
+    it<span class="hljs-list">(<span class="hljs-quoted">'expects</span> true to be true', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">true</span>)</span>.toBe<span class="hljs-list">(<span class="hljs-keyword">true</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
 
-    it(<span class="hljs-string">'expects true to be true'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-        expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">true</span>);
-    });
+})</span><span class="hljs-comment">;</span>
 
-});
+describe<span class="hljs-list">(<span class="hljs-quoted">'Test</span> Bitly Suite', function<span class="hljs-list">()</span> {
+    <span class="hljs-quoted">'use</span> strict'<span class="hljs-comment">;</span>
 
-describe(<span class="hljs-string">'Test Bitly Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-<span class="hljs-pi">    'use strict'</span>;
+    var accessToken = <span class="hljs-quoted">'YOUR</span> ACCESS CODE HERE'<span class="hljs-comment">;</span>
 
-    <span class="hljs-keyword">var</span> accessToken = <span class="hljs-string">'YOUR ACCESS CODE HERE'</span>;
+    it<span class="hljs-list">(<span class="hljs-quoted">'gets</span> a url', function<span class="hljs-list">()</span> {
+        var url = elfBitly.getUrl<span class="hljs-list">(<span class="hljs-keyword">accessToken</span>)</span><span class="hljs-comment">;</span>
 
-    it(<span class="hljs-string">'gets a url'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-        <span class="hljs-keyword">var</span> url = elfBitly.getUrl(accessToken);
+        expect<span class="hljs-list">(<span class="hljs-keyword">url</span>)</span>.toBeTruthy<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">url</span>)</span>.toContain<span class="hljs-list">(<span class="hljs-keyword">accessToken</span>)</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">url</span>)</span>.toContain<span class="hljs-list">(<span class="hljs-quoted">'https</span>')</span><span class="hljs-comment">;</span>
 
-        expect(url).toBeTruthy();
-        expect(url).toContain(accessToken);
-        expect(url).toContain(<span class="hljs-string">'https'</span>);
+    })</span><span class="hljs-comment">;</span>
 
-    });
+    it<span class="hljs-list">(<span class="hljs-quoted">'tests</span> the the local url we pass to getBitlyLinks', function<span class="hljs-list">()</span> {
+        var finalUrl<span class="hljs-comment">;</span>
 
-    it(<span class="hljs-string">'tests the the local url we pass to getBitlyLinks'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-        <span class="hljs-keyword">var</span> finalUrl;
+        spyOn<span class="hljs-list">($, <span class="hljs-quoted">'getJSON</span>')</span>.and.callFake<span class="hljs-list">(<span class="hljs-keyword">function</span><span class="hljs-list">(<span class="hljs-keyword">url</span>, success)</span> {
+            finalUrl = url<span class="hljs-comment">;</span>
+            success<span class="hljs-list">(<span class="hljs-keyword">bitlyLinks</span>)</span><span class="hljs-comment">;</span>
+            return {
+                fail: function<span class="hljs-list">()</span> {}
+            }<span class="hljs-comment">;</span>
+        })</span><span class="hljs-comment">;</span>
 
-        spyOn($, <span class="hljs-string">'getJSON'</span>).and.callFake(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">url, success</span>) </span>{
-            finalUrl = url;
-            success(bitlyLinks);
-            <span class="hljs-keyword">return</span> {
-                fail: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{}
-            };
-        });
+        elfBitly.getBitlyLinks<span class="hljs-list">(<span class="hljs-keyword">-1</span>)</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">finalUrl</span>)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'data/bitly-links</span>.json')</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
 
-        elfBitly.getBitlyLinks(-<span class="hljs-number">1</span>);
-        expect(finalUrl).toBe(<span class="hljs-string">'data/bitly-links.json'</span>);
-    });
+    it<span class="hljs-list">(<span class="hljs-quoted">'tests</span> the accesstoken url we pass to getBitlyLinks', function<span class="hljs-list">()</span> {
+        var finalUrl<span class="hljs-comment">;</span>
 
-    it(<span class="hljs-string">'tests the accesstoken url we pass to getBitlyLinks'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-        <span class="hljs-keyword">var</span> finalUrl;
+        spyOn<span class="hljs-list">($, <span class="hljs-quoted">'getJSON</span>')</span>.and.callFake<span class="hljs-list">(<span class="hljs-keyword">function</span><span class="hljs-list">(<span class="hljs-keyword">url</span>, success)</span> {
+            finalUrl = url<span class="hljs-comment">;</span>
+            success<span class="hljs-list">(<span class="hljs-keyword">bitlyLinks</span>)</span><span class="hljs-comment">;</span>
+            return {
+                fail: function<span class="hljs-list">()</span> {}
+            }<span class="hljs-comment">;</span>
+        })</span><span class="hljs-comment">;</span>
 
-        spyOn($, <span class="hljs-string">'getJSON'</span>).and.callFake(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">url, success</span>) </span>{
-            finalUrl = url;
-            success(bitlyLinks);
-            <span class="hljs-keyword">return</span> {
-                fail: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{}
-            };
-        });
+        elfBitly.getBitlyLinks<span class="hljs-list">(<span class="hljs-keyword">accessToken</span>)</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">finalUrl</span>)</span>.toContain<span class="hljs-list">(<span class="hljs-keyword">accessToken</span>)</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">finalUrl</span>)</span>.toContain<span class="hljs-list">(<span class="hljs-quoted">'https</span>')</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
 
-        elfBitly.getBitlyLinks(accessToken);
-        expect(finalUrl).toContain(accessToken);
-        expect(finalUrl).toContain(<span class="hljs-string">'https'</span>);
-    });
+})</span><span class="hljs-comment">;</span>
 
-});
+describe<span class="hljs-list">(<span class="hljs-quoted">'Test</span> Bitly Links', function<span class="hljs-list">()</span> {
+    <span class="hljs-quoted">'use</span> strict'<span class="hljs-comment">;</span>
 
-describe(<span class="hljs-string">'Test Bitly Links'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-<span class="hljs-pi">    'use strict'</span>;
+    beforeEach<span class="hljs-list">(<span class="hljs-keyword">function</span><span class="hljs-list">()</span> {
+        spyOn<span class="hljs-list">($, <span class="hljs-quoted">'getJSON</span>')</span>.and.callFake<span class="hljs-list">(<span class="hljs-keyword">function</span><span class="hljs-list">(<span class="hljs-keyword">url</span>, success)</span> {
+            success<span class="hljs-list">(<span class="hljs-keyword">bitlyLinks</span>)</span><span class="hljs-comment">;</span>
+            return {
+                fail: function<span class="hljs-list">()</span> {}
+            }<span class="hljs-comment">;</span>
+        })</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
 
-    beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-        spyOn($, <span class="hljs-string">'getJSON'</span>).and.callFake(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">url, success</span>) </span>{
-            success(bitlyLinks);
-            <span class="hljs-keyword">return</span> {
-                fail: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{}
-            };
-        });
-    });
+    it<span class="hljs-list">(<span class="hljs-quoted">'shows</span> we can directly get the status code and text', function<span class="hljs-list">()</span> {
+        elfBitly.getBitlyLinks<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">elfBitly</span>.bitlyLinks.status_code)</span>.toBe<span class="hljs-list">(<span class="hljs-number">200</span>)</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">elfBitly</span>.bitlyLinks.status_txt)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'OK</span>')</span><span class="hljs-comment">;</span>
 
-    it(<span class="hljs-string">'shows we can directly get the status code and text'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-        elfBitly.getBitlyLinks();
-        expect(elfBitly.bitlyLinks.status_code).toBe(<span class="hljs-number">200</span>);
-        expect(elfBitly.bitlyLinks.status_txt).toBe(<span class="hljs-string">'OK'</span>);
+    })</span><span class="hljs-comment">;</span>
 
-    });
+    it<span class="hljs-list">(<span class="hljs-quoted">'shows</span> we have a status code of <span class="hljs-number">200</span>', function<span class="hljs-list">()</span> {
 
-    it(<span class="hljs-string">'shows we have a status code of 200'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        elfBitly.getBitlyLinks<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var statusCode = elfBitly.getStatusCode<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">statusCode</span>)</span>.toBe<span class="hljs-list">(<span class="hljs-number">200</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
 
-        elfBitly.getBitlyLinks();
-        <span class="hljs-keyword">var</span> statusCode = elfBitly.getStatusCode();
-        expect(statusCode).toBe(<span class="hljs-number">200</span>);
-    });
+    it<span class="hljs-list">(<span class="hljs-quoted">'shows</span> we have a status txt of OK', function<span class="hljs-list">()</span> {
 
-    it(<span class="hljs-string">'shows we have a status txt of OK'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        elfBitly.getBitlyLinks<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var statusText = elfBitly.getStatusText<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">statusText</span>)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'OK</span>')</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
 
-        elfBitly.getBitlyLinks();
-        <span class="hljs-keyword">var</span> statusText = elfBitly.getStatusText();
-        expect(statusText).toBe(<span class="hljs-string">'OK'</span>);
-    });
+    it<span class="hljs-list">(<span class="hljs-quoted">'shows</span> we have a count of <span class="hljs-number">165</span> links', function<span class="hljs-list">()</span> {
 
-    it(<span class="hljs-string">'shows we have a count of 165 links'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        elfBitly.getBitlyLinks<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">elfBitly</span>.bitlyLinks.data.result_count)</span>.toBe<span class="hljs-list">(<span class="hljs-number">165</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
 
-        elfBitly.getBitlyLinks();
-        expect(elfBitly.bitlyLinks.data.result_count).toBe(<span class="hljs-number">165</span>);
-    });
+    it<span class="hljs-list">(<span class="hljs-quoted">'show</span> we can get the title of the first element', function<span class="hljs-list">()</span> {
+        elfBitly.getBitlyLinks<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var firstLink = elfBitly.bitlyLinks.data.link_history[<span class="hljs-number">0</span>]<span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">firstLink</span>.title)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'BootstrapBasics01Small</span>.png <span class="hljs-list">(<span class="hljs-number">307</span>×<span class="hljs-number">261</span>)</span>')</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">firstLink</span>.title)</span>.toContain<span class="hljs-list">(<span class="hljs-quoted">'BootstrapBasics01Small</span>.png')</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
 
-    it(<span class="hljs-string">'show we can get the title of the first element'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-        elfBitly.getBitlyLinks();
-        <span class="hljs-keyword">var</span> firstLink = elfBitly.bitlyLinks.data.link_history[<span class="hljs-number">0</span>];
-        expect(firstLink.title).toBe(<span class="hljs-string">'BootstrapBasics01Small.png (307×261)'</span>);
-        expect(firstLink.title).toContain(<span class="hljs-string">'BootstrapBasics01Small.png'</span>);
-    });
+    it<span class="hljs-list">(<span class="hljs-quoted">'show</span> we can get the first item from the link history', function<span class="hljs-list">()</span> {
+        elfBitly.getBitlyLinks<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var firstLink = elfBitly.getLinkHistoryItem<span class="hljs-list">(<span class="hljs-number">0</span>)</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">firstLink</span>.title)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'BootstrapBasics01Small</span>.png <span class="hljs-list">(<span class="hljs-number">307</span>×<span class="hljs-number">261</span>)</span>')</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">firstLink</span>.title)</span>.toContain<span class="hljs-list">(<span class="hljs-quoted">'BootstrapBasics01Small</span>.png')</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
 
-    it(<span class="hljs-string">'show we can get the first item from the link history'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-        elfBitly.getBitlyLinks();
-        <span class="hljs-keyword">var</span> firstLink = elfBitly.getLinkHistoryItem(<span class="hljs-number">0</span>);
-        expect(firstLink.title).toBe(<span class="hljs-string">'BootstrapBasics01Small.png (307×261)'</span>);
-        expect(firstLink.title).toContain(<span class="hljs-string">'BootstrapBasics01Small.png'</span>);
-    });
-
-    it(<span class="hljs-string">'Shows we can transform the data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-        elfBitly.getBitlyLinks();
-        <span class="hljs-keyword">var</span> map = elfBitly.getMap();
-        <span class="hljs-comment">// console.log(JSON.stringify(map[0], null, 4));</span>
-        expect(map.length).toBe(<span class="hljs-number">50</span>);
-    });
-});
-</code></pre><h2 id="turn-it-in">Turn it in</h2>
+    it<span class="hljs-list">(<span class="hljs-quoted">'Shows</span> we can transform the data', function<span class="hljs-list">()</span> {
+        elfBitly.getBitlyLinks<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var map = elfBitly.getMap<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        // console.log<span class="hljs-list">(<span class="hljs-keyword">JSON</span>.stringify<span class="hljs-list">(<span class="hljs-keyword">map</span>[<span class="hljs-number">0</span>], null, <span class="hljs-number">4</span>)</span>)</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">map</span>.length)</span>.toBe<span class="hljs-list">(<span class="hljs-number">50</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+})</span><span class="hljs-comment">;</span>
+</code></pre>
+<h2 id="turn-it-in">Turn it in</h2>
 <p>When turn, I should be able to see updated files in the projects mentioned above. In particular, I should be able to go to any of those three projects, run <strong>grunt check</strong>, and see results like this:</p>
-<pre><code>$ grunt <span class="hljs-operator"><span class="hljs-keyword">check</span>
+<pre><code class="lang-bash">$ grunt <span class="hljs-operator"><span class="hljs-keyword">check</span>
 Running <span class="hljs-string">"jsbeautifier:files"</span> (jsbeautifier) task
 Beautified <span class="hljs-number">5</span> files, <span class="hljs-keyword">changed</span> <span class="hljs-number">0</span> files...OK
 
@@ -360,5 +357,6 @@ Running <span class="hljs-string">"jshint:files"</span> (jshint) task
 
 
 Done, <span class="hljs-keyword">without</span> <span class="hljs-keyword">errors</span></span>
-</code></pre><p>The number of files may differ, but the general format should be the same. Be sure all the JavaScript code in <strong>public/javascripts/</strong> and <strong>routes/</strong> passes these tests.</p>
+</code></pre>
+<p>The number of files may differ, but the general format should be the same. Be sure all the JavaScript code in <strong>public/javascripts/</strong> and <strong>routes/</strong> passes these tests.</p>
 </div></body></html>
