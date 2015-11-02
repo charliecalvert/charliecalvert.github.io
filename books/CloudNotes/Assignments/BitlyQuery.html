@@ -12,17 +12,20 @@
 <p>This assignment is not complete, but there should be enough here to get you started.</p>
 <h2 id="get-started">Get Started</h2>
 <p>Create the project</p>
-<pre><code><span class="hljs-label">CreateExpressProject</span> Week06-<span class="hljs-keyword">BitlyQuery
+<pre><code class="lang-bash"><span class="hljs-label">CreateExpressProject</span> Week06-<span class="hljs-keyword">BitlyQuery
 </span><span class="hljs-label">cd</span> Week06-<span class="hljs-keyword">BitlyQuery
 </span><span class="hljs-label">TestReady</span>
-</code></pre><h2 id="set-up-unit-tests">Set up Unit Tests</h2>
+</code></pre>
+<h2 id="set-up-unit-tests">Set up Unit Tests</h2>
 <p>For now, we won&#39;t query the actual Bitly servers. Instead, we will use mock data that I store in JsObjects:</p>
-<pre><code>cp <span class="hljs-variable">$ELF</span>_TEMPLATES/WebServices/bitly-links.js spec/.
-</code></pre><p>You will have to modify <strong>karma-conf.js</strong> so that it loads the mock data. In particular, modify the <strong>files</strong> property by adding the following to the list of files that will be loaded will be loaded when karma is launched:</p>
-<pre><code><span class="hljs-symbol">'spec</span>/bitly-links.js'
-</code></pre><p>If you don&#39;t complete the above step properly, you might get an error such as: <strong>ReferenceError: Can&#39;t find variable: bitlyLinks</strong>.</p>
+<pre><code class="lang-base">cp <span class="hljs-variable">$ELF</span>_TEMPLATES/WebServices/bitly-links.js spec/.
+</code></pre>
+<p>You will have to modify <strong>karma-conf.js</strong> so that it loads the mock data. In particular, modify the <strong>files</strong> property by adding the following to the list of files that will be loaded will be loaded when karma is launched:</p>
+<pre><code class="lang-base"><span class="hljs-symbol">'spec</span>/bitly-links.js'
+</code></pre>
+<p>If you don&#39;t complete the above step properly, you might get an error such as: <strong>ReferenceError: Can&#39;t find variable: bitlyLinks</strong>.</p>
 <p>Here are the tests that you should get to pass. Put them in <strong>spec/test-basic.js</strong>:</p>
-<pre><code>describe<span class="hljs-list">(<span class="hljs-string">"Elvenware Simple Plain Suite"</span>, function<span class="hljs-list">()</span> { <span class="hljs-quoted">'use</span> strict'<span class="hljs-comment">;</span>
+<pre><code class="lang-javascript">describe<span class="hljs-list">(<span class="hljs-string">"Elvenware Simple Plain Suite"</span>, function<span class="hljs-list">()</span> { <span class="hljs-quoted">'use</span> strict'<span class="hljs-comment">;</span>
 
     it<span class="hljs-list">(<span class="hljs-string">"expects true to be true"</span>, function<span class="hljs-list">()</span> {
         expect<span class="hljs-list">(<span class="hljs-keyword">true</span>)</span>.toBe<span class="hljs-list">(<span class="hljs-keyword">true</span>)</span><span class="hljs-comment">;</span>
@@ -137,11 +140,12 @@ describe<span class="hljs-list">(<span class="hljs-string">"Test Bitly Links"</s
         expect<span class="hljs-list">(<span class="hljs-keyword">map</span>.length)</span>.toBe<span class="hljs-list">(<span class="hljs-number">50</span>)</span><span class="hljs-comment">;</span>
     })</span><span class="hljs-comment">;</span>
 })</span><span class="hljs-comment">;</span>
-</code></pre><p>For now, it won&#39;t really matter what kind of map you create. Any transformation will do.</p>
+</code></pre>
+<p>For now, it won&#39;t really matter what kind of map you create. Any transformation will do.</p>
 <p><strong>NOTE</strong>: <em>I have 165 bitly links, but by default the API returns only 50 links at a time. That is why I test can check to see the length of the map, and expect it to be set to 50.</em></p>
 <h2 id="the-code">The Code</h2>
 <p>Here is some of the object in <strong>control.js</strong>. I&#39;m expecting you to fill in the missing pieces so that the tests will pass. You may not modify the tests themselves. All your changes should be to <strong>control.js</strong>. The <strong>spec/test-basic.js</strong> should not change at all.</p>
-<pre><code><span class="hljs-keyword">var</span> bitlyUrlParser = {
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> bitlyUrlParser = {
 
     bitlyLinks: <span class="hljs-literal">null</span>,
 
@@ -160,12 +164,15 @@ describe<span class="hljs-list">(<span class="hljs-string">"Test Bitly Links"</s
         $.getJSON(url, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{
             bitlyUrlParser.bitlyLinks = result;
             $(<span class="hljs-string">'#displayLinks'</span>).html(result);
-        }).fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Error"</span>);
+        }).fail(jqxhr, textStatus, error) {
+            <span class="hljs-keyword">var</span> err = textStatus + <span class="hljs-string">', '</span> + error;
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Request Failed: '</span> + err);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'url:'</span>, url);
         });
     },
 };
-</code></pre><p>You do not need to include a real access token at this point, as we will not be querying Bitly itself at this stage.</p>
+</code></pre>
+<p>You do not need to include a real access token at this point, as we will not be querying Bitly itself at this stage.</p>
 <h2 id="turn-it-in">Turn it in</h2>
 <p>I&#39;m hoping to be able to run your tests and see that they all pass. Put your work in your repository in the folder specified above. The rest per usual.</p>
 <p><strong>NOTE</strong>: <em>I have pulled the interface portion of this assignment. We will cover that in class on Tuesday.</em></p>
