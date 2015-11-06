@@ -1,0 +1,219 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>TwitterInteractive</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body ng-app="elfApp"><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>TwitterInteractive</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#twitter-query">Twitter Query</a></li>
+<li><a href="#step-one">Step One</a></li>
+<li><a href="#step-two">Step Two</a></li>
+<li><a href="#step-three">Step Three</a></li>
+<li><a href="#step-three">Step Three</a></li>
+<li><a href="#step-four">Step Four</a></li>
+<li><a href="#step-five">Step Five</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h1 id="twitter-query">Twitter Query</h1>
+<p>The goal of this project is to query Twitter. We will ask for details about our account, but also about things that are happening on Twitter.</p>
+<p>While working on this project, use your Delcious and Bitly projects as references. There is lots of code from those programs that will also be used in this project.</p>
+<h2 id="step-one">Step One</h2>
+<p>Make sure you have the most recent scripts:</p>
+<pre><code class="lang-bash">cd <span class="hljs-variable">$JSOBJECTS</span>
+git pull
+cp <span class="hljs-variable">$JSOBJECTS</span>/Utilities/NodeInstall/CreateExpressProject ~/bin/.
+cp <span class="hljs-variable">$JSOBJECTS</span>/Utilities/NodeInstall/TestReady ~/bin/.
+cp <span class="hljs-variable">$JSOBJECTS</span>/Utilities/SetupLinuxBox/strip-triple-spaces ~/bin/.
+</code></pre>
+<p>If you don&#39;t have js-beautify installed globally, which you well might not, then run this command:</p>
+<pre><code>npm <span class="hljs-operator"><span class="hljs-keyword">install</span> -<span class="hljs-keyword">g</span> js-beautify</span>
+</code></pre><p>Or use a different name for my scripts if you have custom versions with the same name.</p>
+<p>I think most of you can then type <strong>i3</strong> to get back to your repositories.</p>
+<pre><code class="lang-bash">export TWITTER_PROJECT=Week07-Twitter
+CreateExpressProject <span class="hljs-variable">$TWITTER</span>_PROJECT
+cd <span class="hljs-variable">$TWITTER</span>_PROJECT
+TestReady
+</code></pre>
+<p>Now run the following commands, one at a time, to confirm that all is well:</p>
+<pre><code class="lang-bash">grunt<span class="hljs-instruction"> check
+</span>grunt test
+</code></pre>
+<h2 id="step-two">Step Two</h2>
+<p>To get started we need to get a <strong>consumer_key</strong> and <strong>access_token_key</strong> from Twitter:</p>
+<ol>
+<li>Go to: <a href="https://apps.twitter.com/">https://apps.twitter.com/</a></li>
+<li>Sign in. </li>
+<li>Make sure you have a mobile phone number set up on your account</li>
+<li><a href="https://dev.twitter.com/oauth/overview/application-owner-access-tokens">Generate an application</a></li>
+<li>On the application management page, choose <strong>Create New App</strong><ol>
+<li>name: bc-tweeter-lastname</li>
+<li>description: learning the twitter api</li>
+<li>website: <a href="http://www.example.com">http://www.example.com</a> (or what pleases you)</li>
+<li>callback <a href="http://www.example.com/bc-tweeter-lastname">http://www.example.com/bc-tweeter-lastname</a></li>
+</ol>
+</li>
+<li>Generate the consumer key  (Button one of two)</li>
+<li>Then generate the access token. (Button two of two)</li>
+</ol>
+<h2 id="step-three">Step Three</h2>
+<p>Querying Twitter is perhaps unnecessarily complex. Fortunately, there is a <a href="https://www.npmjs.com/package/twitter">node package</a> that handles the details for us. To get twitter support, start by adding the package:</p>
+<pre><code>npm <span class="hljs-operator"><span class="hljs-keyword">install</span> twitter <span class="hljs-comment">--save</span></span>
+</code></pre><p>This is node package, so it works on the server side. This is as it should be, since it keeps your keys hidden from users. </p>
+<p>Our server side code can go in <strong>routes/index.js</strong>. First we want to include (<strong>require</strong>) the twitter package we downloaded. Then we create an <strong>elfTwitterClient</strong> from our Twitter package and use it when we query Twitter:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Twitter = <span class="hljs-built_in">require</span>(<span class="hljs-string">'twitter'</span>);
+<span class="hljs-keyword">var</span> elfTwitterClient;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getClient</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">if</span> (!elfTwitterClient) {
+        elfTwitterClient = <span class="hljs-keyword">new</span> Twitter({
+            consumer_key: <span class="hljs-string">'YOUR CONSUMER KEY HERE'</span>,
+            consumer_secret: <span class="hljs-string">'YOUR CONSUMER SECRET HERE'</span>,
+            access_token_key: <span class="hljs-string">'YOUR TOKEN KEY HERE'</span>,
+            access_token_secret: <span class="hljs-string">'YOUR TOKEN SECRET HERE'</span>
+        });
+    }
+    <span class="hljs-keyword">return</span> elfTwitterClient;
+}
+</code></pre>
+<p>Here is a request for information about <strong>#node.js</strong>:</p>
+<pre><code class="lang-javascript">router.<span class="hljs-keyword">get</span>(<span class="hljs-string">'/search'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(req, res, next)</span> </span>{
+    <span class="hljs-keyword">var</span> client = getClient();
+
+    <span class="hljs-keyword">var</span> params = {q: <span class="hljs-string">'#node.js'</span>};
+    client.<span class="hljs-keyword">get</span>(<span class="hljs-string">'search/tweets'</span>, params, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(error, tweets, response)</span> </span>{
+        <span class="hljs-keyword">if</span> (!error) {
+            console.log(tweets);
+            res.send(tweets);
+        } <span class="hljs-keyword">else</span> {
+            console.log(error);
+            res.send({fail: error});
+        }
+    });
+});
+</code></pre>
+<p>We use <strong>client.get</strong> to retrieve information from Twitter, and we use <strong>res.send</strong> to send that information from the server to the browser.</p>
+<p>We&#39;ll work on getting random searches a bit later.</p>
+<h2 id="step-three">Step Three</h2>
+<p>Get our mixins:</p>
+<pre><code class="lang-bash">cp ~<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>Templates<span class="hljs-regexp">/JadeMixins/</span>* views<span class="hljs-regexp">/.</span>
+</code></pre>
+<h2 id="step-four">Step Four</h2>
+<p>Notice that our search function calls <strong>router.get</strong>. The <strong>router</strong> object is built into express. The <strong>get</strong> function is a bit of middleware that is called when the browser sends a request to the server. In particular, it responds to URLs that contain the paramter <strong>search</strong>:</p>
+<pre><code><span class="hljs-string">http:</span><span class="hljs-comment">//localhost:30025/search</span>
+</code></pre><p>Go ahead and paste that URL into your browser&#39;s address bar. Your server side method should get called and a lot of JSON should get send back and displayed in a big blob in your browser. To sort out that data, paste it into <a href="http://jsonlint.com/">http://jsonlint.com/</a>.</p>
+<p>Of course, we want something a bit more fancy. But by now, you know how to transform data big blobs of JSON into code that someone can use.</p>
+<p>The first step might be to declare a little jade:</p>
+<pre><code>+<span class="hljs-function"><span class="hljs-title">elfPanel</span><span class="hljs-params">(<span class="hljs-string">"Bitly Links Table"</span>)</span></span><span class="hljs-class">.elfDiv</span>
+    <span class="hljs-tag">div</span><span class="hljs-class">.scroller</span>
+        <span class="hljs-tag">table</span>.table<span class="hljs-id">#tableLinks</span>
+
++<span class="hljs-function"><span class="hljs-title">elfPanel</span><span class="hljs-params">(<span class="hljs-string">"Debug"</span>, <span class="hljs-string">"panel-default"</span>)</span></span><span class="hljs-class">.elfDiv</span>
+    <span class="hljs-tag">button</span><span class="hljs-class">.btn</span><span class="hljs-class">.btn-default</span>#<span class="hljs-function"><span class="hljs-title">getTweets</span><span class="hljs-params">(type=<span class="hljs-string">'button'</span>)</span></span> Get Tweets
+    <span class="hljs-tag">button</span><span class="hljs-class">.btn</span><span class="hljs-class">.btn-default</span>#<span class="hljs-function"><span class="hljs-title">search</span><span class="hljs-params">(type=<span class="hljs-string">'button'</span>)</span></span> Search
+
+    <span class="hljs-tag">div</span>
+        ul<span class="hljs-id">#tweetList</span>
+
+    <span class="hljs-tag">div</span>
+        pre#tweetData
+</code></pre><p>The second step might be a call to <strong>getJSON</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">search</span>(<span class="hljs-params"></span>) </span>{
+    $.getJSON(<span class="hljs-string">'/search'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+
+        <span class="hljs-comment">// STEP ONE:</span>
+        <span class="hljs-comment">//    STRINGIFY THE RESULT AND DISPLAY IT IN THE PRE</span>
+        <span class="hljs-comment">//    TAG WITH THE ID OF: #tweetData</span>
+
+        <span class="hljs-comment">// STEP TWO:</span>
+        <span class="hljs-comment">//   ITERATE OVER EACH ITEM IN THE RESULT'S STATUSES ARRAY</span>
+        <span class="hljs-comment">//   AND DISPLY THE text PROPERTY IN THE #tweetList</span>
+
+    });
+}
+
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+
+    $(<span class="hljs-string">'#search'</span>).click(search)
+});
+</code></pre>
+<p>At first, just display the <strong>text</strong> property from <strong>statuses</strong> array. Once that is working, you might want to get the first url from the <strong>urls</strong> array in the <strong>entities</strong> property and turn the text field into a hyperlink.</p>
+<p>The data you get back is shaped a bit like this:</p>
+<pre><code class="lang-json"><span class="hljs-collection">{
+  <span class="hljs-string">"statuses"</span>: <span class="hljs-collection">[
+        <span class="hljs-collection">{
+            <span class="hljs-string">"metadata"</span>: <span class="hljs-collection">{
+                <span class="hljs-string">"iso_language_code"</span>: <span class="hljs-string">"en"</span>,
+                <span class="hljs-string">"result_type"</span>: <span class="hljs-string">"recent"</span>
+            }</span>,
+            <span class="hljs-string">"created_at"</span>: <span class="hljs-string">"Tue Nov 03 19:25:02 +0000 2015"</span>,
+            <span class="hljs-string">"id"</span>: <span class="hljs-number">661625149184213000</span>,
+            <span class="hljs-string">"id_str"</span>: <span class="hljs-string">"661625149184212992"</span>,
+            <span class="hljs-string">"text"</span>: <span class="hljs-string">"Understanding Components in Ember 2 https://t.co/iaKG6y6wIt #dev #node #js"</span>,
+            // CODE OMITTED HERE
+            <span class="hljs-string">"user"</span>: <span class="hljs-collection">{
+                <span class="hljs-string">"id"</span>: <span class="hljs-number">3011007497</span>,
+                <span class="hljs-string">"id_str"</span>: <span class="hljs-string">"3011007497"</span>,
+                <span class="hljs-string">"name"</span>: <span class="hljs-string">"Codi"</span>,
+                <span class="hljs-string">"screen_name"</span>: <span class="hljs-string">"codi_ar"</span>,
+                <span class="hljs-string">"location"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"description"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"url"</span>: null,
+                <span class="hljs-string">"entities"</span>: <span class="hljs-collection">{
+                    <span class="hljs-string">"description"</span>: <span class="hljs-collection">{
+                        <span class="hljs-string">"urls"</span>: <span class="hljs-collection">[]</span>
+                    }</span>
+                }</span>,
+                <span class="hljs-string">"protected"</span>: <span class="hljs-literal">false</span>,
+                <span class="hljs-string">"followers_count"</span>: <span class="hljs-number">11</span>,
+                // CODE OMITTED HERE
+            }</span>,
+            <span class="hljs-string">"geo"</span>: null,
+            // CODE OMITTED HERE
+            <span class="hljs-string">"entities"</span>: <span class="hljs-collection">{
+                <span class="hljs-string">"hashtags"</span>: <span class="hljs-collection">[
+                    <span class="hljs-collection">{ <span class="hljs-string">"text"</span>: <span class="hljs-string">"dev"</span>, <span class="hljs-string">"indices"</span>: <span class="hljs-collection">[<span class="hljs-number">60</span>, <span class="hljs-number">64</span>]</span> }</span>,
+                    <span class="hljs-collection">{ <span class="hljs-string">"text"</span>: <span class="hljs-string">"node"</span>, <span class="hljs-string">"indices"</span>: <span class="hljs-collection">[<span class="hljs-number">65</span>,<span class="hljs-number">70</span>]</span> }</span>,
+                    <span class="hljs-collection">{ <span class="hljs-string">"text"</span>: <span class="hljs-string">"js"</span>, <span class="hljs-string">"indices"</span>: <span class="hljs-collection">[<span class="hljs-number">71</span>,<span class="hljs-number">74</span>]</span> }</span>
+                ]</span>,
+                <span class="hljs-string">"symbols"</span>: <span class="hljs-collection">[]</span>,
+                <span class="hljs-string">"user_mentions"</span>: <span class="hljs-collection">[]</span>,
+                <span class="hljs-string">"urls"</span>: <span class="hljs-collection">[
+                    <span class="hljs-collection">{
+                        <span class="hljs-string">"url"</span>: <span class="hljs-string">"https://t.co/iaKG6y6wIt"</span>,
+                        <span class="hljs-string">"expanded_url"</span>: <span class="hljs-string">"http://buff.ly/1Q3yPje"</span>,
+                        <span class="hljs-string">"display_url"</span>: <span class="hljs-string">"buff.ly/1Q3yPje"</span>,
+                        <span class="hljs-string">"indices"</span>: <span class="hljs-collection">[<span class="hljs-number">36</span>,<span class="hljs-number">59</span>]</span>
+                    }</span>
+                ]</span>
+            }</span>,
+            // CODE OMITTED HERE
+        }</span>,
+        // MANY SIMILAR OBJECTS
+   ]</span>,
+   search_metadata: <span class="hljs-collection">{
+        completed_in: <span class="hljs-number">0.026</span>,
+        max_id: <span class="hljs-number">661625223423385600</span>,
+        max_id_str: '661625223423385602',
+        next_results: '?max_id=661623659165937663&amp;q=%<span class="hljs-number">23</span>node.js&amp;include_entities=1',
+        query: '%<span class="hljs-number">23</span>node.js',
+        refresh_url: '?since_id=661625223423385602&amp;q=%<span class="hljs-number">23</span>node.js&amp;include_entities=1',
+        count: <span class="hljs-number">15</span>,
+        since_id: <span class="hljs-number">0</span>,
+        since_id_str: '0'
+     }</span>
+ }</span>
+</code></pre>
+<p>Here&#39;s a couple utility methods you can use if you don&#39;t want to write it yourself:</p>
+<pre><code class="lang-javascript">function appendUrl(selector, index, text, url) {
+    var <span class="hljs-built_in">anchor</span> = '<span class="hljs-variable">&lt;a href="' + url + '" target="_blank"&gt;</span>' + text + '<span class="hljs-variable">&lt;/a&gt;</span>';
+    var details = '<span class="hljs-variable">&lt;a onclick="detailDelicious(' + index + ')"&gt;</span>Details<span class="hljs-variable">&lt;/a&gt;</span>';
+    $(selector).append('<span class="hljs-variable">&lt;li&gt;</span>' + <span class="hljs-built_in">anchor</span> + ' - ' + details + '<span class="hljs-variable">&lt;/li&gt;</span>');
+}
+</code></pre>
+<h2 id="step-five">Step Five</h2>
+<p>The final step will be to use our scrolling table for items without links, and our list for any items that have links. Our vice-versa if you prefer. I&#39;m not sure which is best. The point for now is just to get practice with both ways of displaying data.</p>
+<p>Here is a method that you might find useful:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> renderTable = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">text, user</span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> title = <span class="hljs-string">'&lt;td&gt;'</span> + text + <span class="hljs-string">'&lt;/td&gt;'</span>;
+    <span class="hljs-keyword">var</span> keyword = <span class="hljs-string">'&lt;td&gt;'</span> + user + <span class="hljs-string">'&lt;/td&gt;'</span>;
+    <span class="hljs-keyword">var</span> tableRowStart = <span class="hljs-string">'&lt;tr&gt;'</span>;
+    $(<span class="hljs-string">'#tableLinks'</span>).append(tableRowStart + title + keyword + <span class="hljs-string">'&lt;tr&gt;'</span>);
+};
+</code></pre>
+<p>You would want to call this from your loop in the success callback for <strong>getJSON</strong>. The user should be the user name: <strong>result.user.name</strong> (or something like that).</p>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Per usual.</p>
+</div></body></html>
