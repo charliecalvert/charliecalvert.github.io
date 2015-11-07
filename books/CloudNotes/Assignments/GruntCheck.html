@@ -1,6 +1,7 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>GruntCheck</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body ng-app="elfApp"><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>GruntCheck</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#grunt-check">Grunt Check</a></li>
 <li><a href="#setup">Setup</a></li>
 <li><a href="#clean-code">Clean Code</a></li>
+<li><a href="#long-lines">Very Long Lines</a></li>
 <li><a href="#updated-unit-tests">Updated Unit Tests</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h1 id="grunt-check">Grunt Check</h1>
 <p>Learn how to use <a href="http://jshint.com/docs/">jshint</a>, <a href="https://github.com/jscs-dev/node-jscs">jscs</a> and <a href="https://github.com/beautify-web/js-beautify">jsbeautifier</a>. These utilities help you format your code and run basic sanity checks on it. The goal of this assignment is to be able to run the following commands and have them come back clean:</p>
@@ -224,6 +225,39 @@
 <p>Start with <strong>Week04-JavaScriptObjects</strong> as it is a very simple project. By the time you get it to pass, you should know enough to be able to test the code in the other two projects.</p>
 <p>The <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Syntax/PrimitiveTypes">PrimitiveTypes</a> project in <strong>JsObjects</strong> provides an example of what I would, at minimum, like to see. Note that both <strong>grunt check</strong> and <strong>grunt test</strong> pass without errors. (The test is not very interesting, but it does work. That would be fine for <strong>Week04-JavaScriptObjects</strong>, but I want, of course, better tests in the other two projects.)</p>
 <p>Remember, you should not need to modify the files included in this assignment. It is your JavaScript files that may need to change as a result of the tests shown here.</p>
+<h2 id="long-lines">Very Long Lines</h2>
+<p>In some cases, you may encounter files that have extremely long lines that you do not want to edit. For instance, in JSON files that we download from the <strong>Bitly</strong> site, there could be urls that are very long. Here is what I think we should do about that issue:</p>
+<ol>
+<li>We are not ever actually going to do any work in that file.</li>
+<li>As result, we don&#39;t care what it looks like. It&#39;s like code in <strong>node_modules</strong>. We don&#39;t maintain, so we don&#39;t care what it looks like.</li>
+<li>As a result, we can tell JSCS to ignore it by modifying our <strong>.jscs</strong> file.</li>
+</ol>
+<p>Here is what to do.</p>
+<ul>
+<li>Open up <strong>Gruntfile.js</strong></li>
+<li>Find the <strong>jscs</strong> section</li>
+<li>Change the value for the <strong>src</strong> property to look like this:</li>
+</ul>
+<pre><code class="lang-javascript"><span class="hljs-tag">jscs</span>: <span class="hljs-rules">{
+    <span class="hljs-rule"><span class="hljs-attribute">src</span>:<span class="hljs-value"> [<span class="hljs-string">'**/*.js'</span>, <span class="hljs-string">'!**/bitly-links.js'</span>],
+    options: {
+        config: <span class="hljs-string">'.jscsrc'</span>
+    </span></span></span>}
+},
+</code></pre>
+<p>Here is the key bit of syntax:</p>
+<pre><code class="lang-javascript">'!<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/bitly-links.js'
+</code></pre>
+<p>The bang symbol means <strong>not this file</strong> or <strong>skip this file.</strong>. The two asterisks mean that we should look for this file not only in the current directory, but in any directory. If there is one copy in the <strong>spec</strong> folder, and another in the <strong>public/data</strong> folder, then we should skip them both. Skip any instances of this file in any folder.</p>
+<p>An alternate solution might be to modify the <strong>.jscsrc</strong> file:</p>
+<pre><code class="lang-json">{
+    "<span class="hljs-attribute">preset</span>": <span class="hljs-value"><span class="hljs-string">"google"</span></span>,
+    "<span class="hljs-attribute">validateIndentation</span>": <span class="hljs-value"><span class="hljs-number">4</span></span>,
+    "<span class="hljs-attribute">excludeFiles</span>": <span class="hljs-value">[<span class="hljs-string">"**/node_modules/**"</span>, <span class="hljs-string">"**/components/**"</span>, <span class="hljs-string">"**/bitly-links.js"</span>]</span>,
+    "<span class="hljs-attribute">requireCamelCaseOrUpperCaseIdentifiers</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+    "<span class="hljs-attribute">maximumLineLength</span>": <span class="hljs-value"><span class="hljs-number">120</span>
+</span>}
+</code></pre>
 <h2 id="updated-unit-tests">Updated Unit Tests</h2>
 <pre><code class="lang-javascript">describe<span class="hljs-list">(<span class="hljs-quoted">'Elvenware</span> Simple Plain Suite', function<span class="hljs-list">()</span> {
     <span class="hljs-quoted">'use</span> strict'<span class="hljs-comment">;</span>
