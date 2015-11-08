@@ -15,6 +15,7 @@
 <li><a href="#the-downloads-module">The <strong>downloads</strong> module</a></li>
 <li><a href="#grunt-issues">Grunt Issues</a></li>
 <li><a href="#switch-source">Switch Data Source</a></li>
+<li><a href="#jasmine-fixtures">Jasmine Fixtures</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h1 id="bitly-interactive">Bitly Interactive</h1>
 <p>The primary goal of this program is to create an interface for your Bitly data.</p>
 <p>Other goals include:</p>
@@ -452,6 +453,53 @@ downloads.getBitlyData = <span class="hljs-function"><span class="hljs-keyword">
 </ul>
 <p>Include two radio buttons that allow the user to make this selection. If they select the local option, then call <strong>getBitlyLinks</strong> with an argument of <strong>-1</strong>. If they want the live data, then pass in the access token to your account.</p>
 <p><strong>NOTE</strong>: <em>Ultimately we will want to make the call to the live Bitly data on the server side so the user cannot see your access token. We aren&#39;t doing that yet, however.</em></p>
+<h2 id="jasmine-fixtures">Jasmine Fixtures</h2>
+<p>Suppose we write code like the following where one of two branches will execute:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (bitlyLink.archived) {
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'checkBoxArchived'</span>).checked = <span class="hljs-literal">true</span>;
+} <span class="hljs-keyword">else</span> {
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'checkBoxArchived'</span>).checked = <span class="hljs-literal">false</span>;
+}
+</code></pre>
+<p>Suppose further that this code gets called by our unit tests. Since at least one branch in this <strong>if</strong> statement is sure to execute, we need to be sure it will not throw an error.</p>
+<p>We have, however, a problem: <em>we are not loading any HTML in our tests.</em> As a result, there will be no element with an ID of <strong>checkBoxArchived</strong>. This means, the code will fail with an error like one of these:</p>
+<pre><code> TypeError: Cannot <span class="hljs-operator"><span class="hljs-keyword">set</span> property <span class="hljs-string">'checked'</span> <span class="hljs-keyword">of</span> <span class="hljs-literal">null</span>
+ TypeError: <span class="hljs-string">'null'</span> <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> an <span class="hljs-keyword">object</span> (evaluating <span class="hljs-keyword">document</span>.getElementById etc...)</span>
+</code></pre><p>It is possible to have our tests load our program&#39;s HTML files, but it turns out there is a simpler solution. We can take the little fragment of HTML that we need, and insert it into our tests. The code, which belongs in <strong>spec/test-basic</strong> looks like this:</p>
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Test Bitly Links'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+
+
+    beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> fixture =
+            <span class="hljs-string">'&lt;div id="fixture"&gt;'</span> +
+                <span class="hljs-string">'&lt;input type="checkbox" name="checkBoxPrivate" value="checkBoxPrivate" id="checkBoxPrivate"&gt;'</span> +
+                <span class="hljs-string">'&lt;label for="checkBoxPrivate"&gt;&amp;nbsp; Private&lt;/label&gt;'</span> +
+                <span class="hljs-string">'&lt;input type="checkbox" name="checkBoxArchived" value="checkBoxArchived" id="checkBoxArchived"&gt;'</span> +
+                <span class="hljs-string">'&lt;label for="checkBoxArchived"&gt;&amp;nbsp; Private&lt;/label&gt;'</span> +
+            <span class="hljs-string">'&lt;/div&gt;'</span>;
+
+        <span class="hljs-built_in">document</span>.body.insertAdjacentHTML(<span class="hljs-string">'afterbegin'</span>,  fixture);
+    });
+
+    <span class="hljs-comment">// remove the html fixture from the DOM</span>
+    afterEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-built_in">document</span>.body.removeChild(<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'fixture'</span>));
+    });
+
+    beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        spyOn($, <span class="hljs-string">'getJSON'</span>).and.callFake(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">url, success</span>) </span>{
+            success(bitlyLinks);
+            etc....
+</code></pre>
+<p>I&#39;ve tried to provide enough context so you can see exactly where to put it. The code is quite simple:</p>
+<ul>
+<li>We put the HTML for our checkboxes in a string called <strong>fixture</strong>.</li>
+<li>We use the built-in JavaScript <strong>insertAdjacentHTML</strong> function to insert out HTML into the empty body of the document object provided by the instance of <strong>PhantomJS</strong> launched by karma. (This would work if we used <strong>Chrome</strong> instead of <strong>PhontomJS</strong>).</li>
+<li>After the test is done, remove the <strong>fixture</strong> to ensure that one test does not rely on the results of another test.</li>
+</ul>
+<p>With this code in place our calls to <strong>document.getElementById</strong> succeed and our tests pass.</p>
+<p>If it takes you a moment to wrap your head around this, please sit back and read all this again. It is an extremely useful technique, and one that can help us write much more robust tests.</p>
 <h2 id="turn-it-in">Turn it in</h2>
 <p>Place your code in your repository in a folder with the name specified above. When you submit the assignment include the url of your repository and/or the folder in which the code you created resides. You can also include a comment of your choosing.</p>
 </div></body></html>
