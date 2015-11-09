@@ -3,7 +3,8 @@
 <li><a href="#provide-two-paths">Provide Two Paths</a></li>
 <li><a href="#debug">Debug</a></li>
 <li><a href="#jade-indent">The Giant Jade Search Button</a></li>
-<li><a href="#clear-data">Clear Data</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#clear-data">Clear Data</a></li>
+<li><a href="#match-ids-in-jade-and-javascript">Match IDs in Jade and JavaScript</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Comments on the Twitter Refine assignment.</p>
 <h2 id="create-a-timeline-function">Create a Timeline Function</h2>
 <p>When the user clicks on the <strong>Timeline</strong> button, several things should happen. The first is defined by the ID associated with the button:</p>
@@ -115,4 +116,22 @@
 },
 </code></pre>
 <p>The call to empty ensures that the any data appended to the table will at least begin on row 1. This ensures that at least the first few rows of data are visible, and that the user is given a visual cue that something has changed.</p>
+<h2 id="match-ids-in-jade-and-javascript">Match IDs in Jade and JavaScript</h2>
+<p>Suppose you declare a button with an id of <strong>getTimeLine</strong>:</p>
+<pre><code class="lang-jade">    <span class="hljs-tag">button</span><span class="hljs-class">.btn</span><span class="hljs-class">.btn-default</span>#<span class="hljs-function"><span class="hljs-title">getTimeline</span><span class="hljs-params">(type=<span class="hljs-string">'button'</span>)</span></span> Timeline
+</code></pre>
+<p>Then suppose you tried to set up an event handler for that button with code that looks like this:</p>
+<pre><code class="lang-javascript">$(<span class="hljs-string">'#timeline'</span>).<span class="hljs-function"><span class="hljs-title">click</span><span class="hljs-params">(timeline)</span></span>
+</code></pre>
+<p>This is never going to work because the ID specified in the javascript code and the ID specified in the jade are different: <strong>getTimeLine</strong> vs <strong>timeLine</strong>.</p>
+<p>The fix would be to match the two IDs:</p>
+<pre><code class="lang-javascript"><span class="hljs-variable">$(</span><span class="hljs-string">'#timeline'</span>).click(getTimeline);
+</code></pre>
+<p>Here I show the jQuery for setting up the button handler in the <strong>document ready</strong> function which is where it frequently goes:</p>
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    $(<span class="hljs-string">'#search'</span>).click(search);
+    $(<span class="hljs-string">'#timeline'</span>).click(getTimeline);
+});
+</code></pre>
 </div></body></html>
