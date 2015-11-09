@@ -20,6 +20,7 @@
 <li><a href="#folder-manipulation">Folder Manipulation</a></li>
 <li><a href="#jshint">JSHint and Node</a></li>
 <li><a href="#symbolic-link">Symbolic Links to node_modules</a></li>
+<li><a href="#debug">Debug</a></li>
 <li><a href="#cloud-9">Cloud 9</a></li><!--TOC_End--></ul><h1 id="node">Node</h1>
 <p>Node is a JavaScript platform and compiler and a set of accompanying libraries.
 You can create general purpose JavaScript programs with Node, but it is 
@@ -799,6 +800,26 @@ ln <span class="hljs-operator">-s</span> ~/temp/components public/.
 <p>Save it as <strong>~/bin/nm-links</strong>. Make it executable</p>
 <pre><code>chmod +<span class="hljs-keyword">x</span> ~/bin/<span class="hljs-keyword">nm</span>-links.<span class="hljs-keyword">sh</span>
 </code></pre><p>Now, you can create links to these folders at any time but running the <strong>nm-links</strong> script from the root of your project. (If the folders already exist, then the script will fail.)</p>
+<h2 id="debug">Debug</h2>
+<p>When running your code, make sure the debug window is open. Consider the image shown below.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/debug-bitly-refine-01.png" alt="Debug Twitter"></p>
+<p>Notice the following:</p>
+<ul>
+<li>We are running Chrome/Chromium, not FireFox</li>
+<li>The Chrome Developer Tools are open (F12)</li>
+<li>We are turned to the <strong>Sources</strong> page</li>
+<li>The red circle with the white X at the top right of the Chrome Developer Tools means there is an error</li>
+<li>The blue <strong>&gt;_</strong> symbol to the right of the red circle is toggled on (it is blue). When toggled on, this option displays the <strong>console</strong> at the bottom of the dev tools.</li>
+<li>The console shows our error, which states that &quot;url&quot; is part of an object that is not defined. We can see that the error is on line 33 of <strong>control.js</strong></li>
+<li>The code in the display shows the actual line causing the problem. It is underlined with a red squiggly. Looking at the left of the display we can confirm that it is on line 33.</li>
+</ul>
+<p>Turning to our editor, and moving to line 33, we can see the complete line of code causing the error:</p>
+<pre><code class="lang-javascript">appendUrl(<span class="hljs-string">'#tweetList'</span>, <span class="hljs-keyword">index</span>, tweet.text, tweet.entities.urls[<span class="hljs-number">0</span>].url);
+</code></pre>
+<p>From the error messages in the dev tools, we now know that <strong>urls[0]</strong> is undefined. This is almost certainly because this particular tweet has no <strong>urls</strong> associated with it. As you know from previous lessons, the fix for this problem is to write something like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">if</span> (tweet.entities.urls.length &gt; <span class="hljs-number">0</span>) { ... }
+</code></pre>
+<p>But my point here is not to provide the fix. It is to emphasize how crucially important it is that you use the debugger. I have come around to help many of you during or after class. As you know, the first thing I do is almost always to turn the debugger on. Without it the task of finding an error becomes much more difficult. We <strong>can</strong> walk from here to Tacoma rather than driving, but it is more difficult. We <strong>can</strong> fix problems in our code without the dev tools, but it is indeed much more difficult.</p>
 <h2 id="cloud-9">Cloud 9</h2>
 <p>Cloud 9 is an online IDE. You can find it here:</p>
 <p><a href="https://c9.io/">https://c9.io</a></p>
