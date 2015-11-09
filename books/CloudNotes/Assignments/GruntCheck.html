@@ -1,0 +1,397 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>GruntCheck</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>GruntCheck</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#grunt-check">Grunt Check</a></li>
+<li><a href="#setup">Setup</a></li>
+<li><a href="#clean-code">Clean Code</a></li>
+<li><a href="#long-lines">Very Long Lines</a></li>
+<li><a href="#updated-unit-tests">Updated Unit Tests</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h1 id="grunt-check">Grunt Check</h1>
+<p>Learn how to use <a href="http://jshint.com/docs/">jshint</a>, <a href="https://github.com/jscs-dev/node-jscs">jscs</a> and <a href="https://github.com/beautify-web/js-beautify">jsbeautifier</a>. These utilities help you format your code and run basic sanity checks on it. The goal of this assignment is to be able to run the following commands and have them come back clean:</p>
+<pre><code>grunt<span class="hljs-instruction"> check
+</span>grunt test
+</code></pre><p>The emphasis here is on learning to format your code correctly. In particular, see the <a href="https://google.github.io/styleguide/javascriptguide.xml">Google style guide</a>. The JSCS tests in this project follow the Google style guides, except that our indent is four spaces rather than two.</p>
+<p>This assignment turned out to be more difficult than I thought it would be at first. The main problem came when shortening lines longer than 120 characters. Yet, these style guidelines are reasonable, and we should follow them. Furthermore, it has proved nearly impossible to get either me or my students to properly format their code without some kind of hard metric, and this provides one for us.</p>
+<p><strong>NOTE</strong>: <em>When viewing the Google style guide, you may find it easiest to select the <strong>Toggle All Summaries</strong> option at the top of the file.</em></p>
+<p>See also:</p>
+<ul>
+<li><a href="http://jsbeautifier.org/">jsbeautifier.org</a></li>
+</ul>
+<h2 id="setup">Setup</h2>
+<p>You need to create two files:</p>
+<ul>
+<li><strong>.jscsrc</strong>: Configure JSCS</li>
+<li><strong>Gruntfile.js</strong>: Configure Grunt</li>
+</ul>
+<p>One is used to configure <strong>grunt</strong>, the other to configure <strong>jscs</strong>. Another configuration file that we have dealt with regularly is <strong>.bowerrc</strong>. It is used, of course, to configure <strong>bower</strong>. I mention it only because it is similar to <strong>.jscsrc</strong>.</p>
+<p>Here is the <strong>.jscsrc</strong> config file:</p>
+<pre><code class="lang-javascript">{
+    "<span class="hljs-attribute">preset</span>": <span class="hljs-value"><span class="hljs-string">"google"</span></span>,
+    "<span class="hljs-attribute">validateIndentation</span>": <span class="hljs-value"><span class="hljs-number">4</span></span>,
+    "<span class="hljs-attribute">excludeFiles</span>": <span class="hljs-value">[<span class="hljs-string">"**/node_modules/**"</span>, <span class="hljs-string">"**/components/**"</span>]
+</span>}
+</code></pre>
+<p>Here is <strong>Gruntfile.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">grunt</span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+
+    grunt.initConfig({
+
+        pkg: <span class="hljs-string">'&lt;json:package.json&gt;'</span>,
+
+        jshint: {
+            files: [<span class="hljs-string">'**/*.js'</span>],
+
+            options: {
+                ignores: [
+                    <span class="hljs-string">'**/node_modules/**'</span>, <span class="hljs-string">'**/components/**'</span>
+                ],
+                reporter: <span class="hljs-built_in">require</span>(<span class="hljs-string">'jshint-stylish'</span>),
+                strict: <span class="hljs-literal">true</span>,
+                jasmine: <span class="hljs-literal">true</span>
+            }
+        },
+
+        clean: {
+            yourTarget: {
+                src: [<span class="hljs-string">'**/node_modules/**'</span>, <span class="hljs-string">'**/components/**'</span>]
+            }
+        },
+
+        jscs: {
+            src: <span class="hljs-string">'**/*.js'</span>,
+            options: {
+                config: <span class="hljs-string">'.jscsrc'</span>
+            }
+        },
+
+        <span class="hljs-string">'jsbeautifier'</span>: {
+            files: [<span class="hljs-string">'**/*.js'</span>, <span class="hljs-string">'!**/node_modules/**'</span>, <span class="hljs-string">'!**/components/**'</span>],
+            options: {
+                <span class="hljs-string">'indentSize'</span>: <span class="hljs-number">4</span>
+            }
+        },
+
+        karma: {
+            karma: {
+                configFile: <span class="hljs-string">'karma.conf.js'</span>
+            }
+        }
+
+    });
+
+    grunt.loadNpmTasks(<span class="hljs-string">'grunt-contrib-clean'</span>);
+    grunt.loadNpmTasks(<span class="hljs-string">'grunt-contrib-jshint'</span>);
+    grunt.loadNpmTasks(<span class="hljs-string">'grunt-jscs'</span>);
+    grunt.loadNpmTasks(<span class="hljs-string">'grunt-jsbeautifier'</span>);
+    grunt.loadNpmTasks(<span class="hljs-string">'grunt-karma'</span>);
+    grunt.registerTask(<span class="hljs-string">'beautify'</span>, [<span class="hljs-string">'jsbeautifier'</span>]);
+    grunt.registerTask(<span class="hljs-string">'check'</span>, [<span class="hljs-string">'beautify'</span>, <span class="hljs-string">'jscs'</span>, <span class="hljs-string">'jshint'</span>]);
+    grunt.registerTask(<span class="hljs-string">'test'</span>, [<span class="hljs-string">'jshint'</span>, <span class="hljs-string">'karma'</span>]);
+};
+</code></pre>
+<p>In <strong>jscs</strong>, you can skip checking <strong>bitly-links.js</strong>:</p>
+<pre><code><span class="hljs-tag">jscs</span>: <span class="hljs-rules">{
+    <span class="hljs-rule"><span class="hljs-attribute">src</span>:<span class="hljs-value"> [<span class="hljs-string">'**/*.js'</span>, <span class="hljs-string">'!spec/bitly-links.js'</span>],
+    options: {
+        config: <span class="hljs-string">'.jscsrc'</span>
+    </span></span></span>}
+},
+</code></pre><p>In the code above, note how we use the bang operator to tell <strong>jscs</strong> to skip a file: <strong>!spec/bitly-links.js</strong>.</p>
+<p>We also need to turn off checking for <a href="http://jscs.info/rule/requireCamelCaseOrUpperCaseIdentifiers">Camel Case violations</a>. While we are at it, let&#39;s set the max line length to 120, which is more reasonable for modern editors. This means our <strong>.jscsrc</strong> file for <strong>BitlyInteractive</strong> and <strong>BitlyRefine</strong> should look like this:</p>
+<pre><code class="lang-json">{
+    "<span class="hljs-attribute">preset</span>": <span class="hljs-value"><span class="hljs-string">"google"</span></span>,
+    "<span class="hljs-attribute">validateIndentation</span>": <span class="hljs-value"><span class="hljs-number">4</span></span>,
+    "<span class="hljs-attribute">excludeFiles</span>": <span class="hljs-value">[<span class="hljs-string">"**/node_modules/**"</span>, <span class="hljs-string">"**/components/**"</span>]</span>,
+    "<span class="hljs-attribute">requireCamelCaseOrUpperCaseIdentifiers</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+    "<span class="hljs-attribute">maximumLineLength</span>": <span class="hljs-value"><span class="hljs-number">120</span>
+</span>}
+</code></pre>
+<p>Note the two new lines at the end of the file. The camel case problem is in our tests, where we have lines like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-title">var</span> firstLink = bitlyUrlParser.bitlyLinks.<span class="hljs-typedef"><span class="hljs-keyword">data</span>.link_history[0];</span>
+</code></pre>
+<p>At some later point, we can use maps to transform <strong>link_history</strong> to <strong>linkHistory</strong>, but for now let&#39;s just turn off the warning.</p>
+<p>If a line is too long, try to find a way to break it up. The following method had a line that was over 120 characters, but here I break it up to fit the formatting rules:</p>
+<pre><code class="lang-javascript">    getUrl: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">accessToken</span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+
+        <span class="hljs-keyword">var</span> baseUrl = <span class="hljs-string">'https://api-ssl.bitly.com/v3/user/link_history'</span>;
+        <span class="hljs-keyword">var</span> params = <span class="hljs-string">'?access_token='</span>;
+
+        <span class="hljs-keyword">if</span> (accessToken === -<span class="hljs-number">1</span>) {
+            <span class="hljs-keyword">return</span> <span class="hljs-string">'data/bitly-links.json'</span>;
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">var</span> url = baseUrl + params;
+            <span class="hljs-keyword">return</span> url += accessToken;
+        }
+    },
+</code></pre>
+<p>Let&#39;s make a breaking change that will allows us to shorten some other lines:</p>
+<pre><code class="lang-javascript">    getLinkHistoryArray: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        <span class="hljs-keyword">return</span> bitlyUrlParser.bitlyLinks.data.link_history;
+    },
+
+    getLinkHistoryItem: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        <span class="hljs-keyword">return</span> bitlyUrlParser.bitlyLinks.data.link_history[index];
+    },
+
+    getMap: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        <span class="hljs-keyword">return</span> bitlyUrlParser.getLinkHistoryArray().map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">history</span>) </span>{
+            <span class="hljs-keyword">var</span> myDate = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(history.created_at * <span class="hljs-number">1000</span>);
+            <span class="hljs-keyword">return</span> {
+                title: history.title,
+                link: history.link,
+                created_at: myDate.toLocaleString()
+            };
+        });
+    },
+</code></pre>
+<p>Notice that we now call <strong>getLinkHistoryArray</strong> in the <strong>getMap</strong> function.</p>
+<p>And let&#39;s clean up the way we report errors in the <strong>fail</strong> handler:</p>
+<pre><code class="lang-javascript">    getBitlyLinks: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">accessToken</span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        <span class="hljs-keyword">var</span> url = bitlyUrlParser.getUrl(accessToken);
+
+        $.getJSON(url, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+            bitlyUrlParser.bitlyLinks = result;
+            bitlyUrlParser.display();
+            $(<span class="hljs-string">'#displayLinks'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+        }).fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">jqxhr, textStatus, error</span>) </span>{
+            <span class="hljs-keyword">var</span> err = textStatus + <span class="hljs-string">', '</span> + error;
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Request Failed: '</span> + err);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'url:'</span>, url);
+        });
+    },
+</code></pre>
+<p>Though you probably have these changes already, I&#39;ll remind you that in <strong>BitlyRefine</strong> the code looks like this, :</p>
+<pre><code class="lang-javascript">getBitlyLinks: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">accessToken</span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> url = elfBitly.getUrl(accessToken);
+
+    $.getJSON(url, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+        elfBitly.bitlyLinks = result;
+        elfDisplay.render();
+        elfDisplay.renderTable(elfBitly.getLinkHistoryArray());
+        $(<span class="hljs-string">'#displayLinks'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+    }).fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">jqxhr, textStatus, error</span>) </span>{s
+        <span class="hljs-keyword">var</span> err = textStatus + <span class="hljs-string">', '</span> + error;
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Request Failed: '</span> + err);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'url:'</span>, url);
+    });
+},
+</code></pre>
+<p>This change will break some of our tests, since <strong>getLinkHistory</strong> has been renamed to <strong>getLinkHistoryItem</strong>.</p>
+<p>The <strong>package.json</strong> file for this code might look like this:</p>
+<pre><code class="lang-json">{
+  "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"week07-gruntcheck"</span></span>,
+  "<span class="hljs-attribute">version</span>": <span class="hljs-value"><span class="hljs-string">"1.0.0"</span></span>,
+  "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"\"Learn about jscs and grunt\""</span></span>,
+  "<span class="hljs-attribute">main</span>": <span class="hljs-value"><span class="hljs-string">"work.js"</span></span>,
+  "<span class="hljs-attribute">scripts</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">start</span>": <span class="hljs-value"><span class="hljs-string">"nodemon work.js"</span></span>,
+    "<span class="hljs-attribute">test</span>": <span class="hljs-value"><span class="hljs-string">"grunt test"</span>
+  </span>}</span>,
+  "<span class="hljs-attribute">keywords</span>": <span class="hljs-value">[
+    <span class="hljs-string">"JavaScript"</span>,
+    <span class="hljs-string">"format"</span>
+  ]</span>,
+  "<span class="hljs-attribute">author</span>": <span class="hljs-value"><span class="hljs-string">"Charlie Calvert"</span></span>,
+  "<span class="hljs-attribute">license</span>": <span class="hljs-value"><span class="hljs-string">"MIT"</span></span>,
+  "<span class="hljs-attribute">devDependencies</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">grunt</span>": <span class="hljs-value"><span class="hljs-string">"^0.4.5"</span></span>,
+    "<span class="hljs-attribute">grunt-contrib-clean</span>": <span class="hljs-value"><span class="hljs-string">"^0.6.0"</span></span>,
+    "<span class="hljs-attribute">grunt-contrib-jshint</span>": <span class="hljs-value"><span class="hljs-string">"^0.11.3"</span></span>,
+    "<span class="hljs-attribute">grunt-jsbeautifier</span>": <span class="hljs-value"><span class="hljs-string">"^0.2.10"</span></span>,
+    "<span class="hljs-attribute">grunt-jscs</span>": <span class="hljs-value"><span class="hljs-string">"^2.3.0"</span></span>,
+    "<span class="hljs-attribute">grunt-karma</span>": <span class="hljs-value"><span class="hljs-string">"^0.12.1"</span></span>,
+    "<span class="hljs-attribute">jasmine-core</span>": <span class="hljs-value"><span class="hljs-string">"^2.3.4"</span></span>,
+    "<span class="hljs-attribute">jshint-stylish</span>": <span class="hljs-value"><span class="hljs-string">"^2.0.1"</span></span>,
+    "<span class="hljs-attribute">karma</span>": <span class="hljs-value"><span class="hljs-string">"^0.13.14"</span></span>,
+    "<span class="hljs-attribute">karma-jasmine</span>": <span class="hljs-value"><span class="hljs-string">"^0.3.6"</span></span>,
+    "<span class="hljs-attribute">karma-phantomjs-launcher</span>": <span class="hljs-value"><span class="hljs-string">"^0.2.1"</span></span>,
+    "<span class="hljs-attribute">karma-spec-reporter</span>": <span class="hljs-value"><span class="hljs-string">"0.0.22"</span></span>,
+    "<span class="hljs-attribute">phantomjs</span>": <span class="hljs-value"><span class="hljs-string">"^1.9.18"</span>
+  </span>}
+</span>}
+</code></pre>
+<p>This assignment does not actually use Karma, but I include the code for configuring karma in case you want to use this assignment as a template for that task.</p>
+<h2 id="clean-code">Clean Code</h2>
+<p>I want to be sure that the following projects, and all future projects, pass the tests set up in this project:</p>
+<ul>
+<li>Week04-JavaScriptObjects</li>
+<li>Week06-BitlyInteractive</li>
+<li>Week07-BitlyRefine</li>
+</ul>
+<p>Start with <strong>Week04-JavaScriptObjects</strong> as it is a very simple project. By the time you get it to pass, you should know enough to be able to test the code in the other two projects.</p>
+<p>The <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Syntax/PrimitiveTypes">PrimitiveTypes</a> project in <strong>JsObjects</strong> provides an example of what I would, at minimum, like to see. Note that both <strong>grunt check</strong> and <strong>grunt test</strong> pass without errors. (The test is not very interesting, but it does work. That would be fine for <strong>Week04-JavaScriptObjects</strong>, but I want, of course, better tests in the other two projects.)</p>
+<p>Remember, you should not need to modify the files included in this assignment. It is your JavaScript files that may need to change as a result of the tests shown here.</p>
+<h2 id="long-lines">Very Long Lines</h2>
+<p>In some cases, you may encounter files that have extremely long lines that you do not want to edit. For instance, in JSON files that we download from the <strong>Bitly</strong> site, there could be urls that are very long. Here is what I think we should do about that issue:</p>
+<ol>
+<li>We are not ever actually going to do any work in that file.</li>
+<li>As result, we don&#39;t care what it looks like. It&#39;s like code in <strong>node_modules</strong>. We don&#39;t maintain, so we don&#39;t care what it looks like.</li>
+<li>As a result, we can tell JSCS to ignore it by modifying our <strong>.jscs</strong> file.</li>
+</ol>
+<p>Here is what to do.</p>
+<ul>
+<li>Open up <strong>Gruntfile.js</strong></li>
+<li>Find the <strong>jscs</strong> section</li>
+<li>Change the value for the <strong>src</strong> property to look like this:</li>
+</ul>
+<pre><code class="lang-javascript"><span class="hljs-tag">jscs</span>: <span class="hljs-rules">{
+    <span class="hljs-rule"><span class="hljs-attribute">src</span>:<span class="hljs-value"> [<span class="hljs-string">'**/*.js'</span>, <span class="hljs-string">'!**/bitly-links.js'</span>],
+    options: {
+        config: <span class="hljs-string">'.jscsrc'</span>
+    </span></span></span>}
+},
+</code></pre>
+<p>Here is the key bit of syntax:</p>
+<pre><code class="lang-javascript">'!<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/bitly-links.js'
+</code></pre>
+<p>The bang symbol means <strong>not this file</strong> or <strong>skip this file.</strong>. The two asterisks mean that we should look for this file not only in the current directory, but in any directory. If there is one copy in the <strong>spec</strong> folder, and another in the <strong>public/data</strong> folder, then we should skip them both. Skip any instances of this file in any folder.</p>
+<p>An alternate solution might be to modify the <strong>.jscsrc</strong> file:</p>
+<pre><code class="lang-json">{
+    "<span class="hljs-attribute">preset</span>": <span class="hljs-value"><span class="hljs-string">"google"</span></span>,
+    "<span class="hljs-attribute">validateIndentation</span>": <span class="hljs-value"><span class="hljs-number">4</span></span>,
+    "<span class="hljs-attribute">excludeFiles</span>": <span class="hljs-value">[<span class="hljs-string">"**/node_modules/**"</span>, <span class="hljs-string">"**/components/**"</span>, <span class="hljs-string">"**/bitly-links.js"</span>]</span>,
+    "<span class="hljs-attribute">requireCamelCaseOrUpperCaseIdentifiers</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+    "<span class="hljs-attribute">maximumLineLength</span>": <span class="hljs-value"><span class="hljs-number">120</span>
+</span>}
+</code></pre>
+<p>The main point: <em>we are never going to edit or maintain <strong>bitly-links.js</strong> so we don&#39;t care what it looks like. It&#39;s like the files in the <strong>node_modules</strong> directory. They can have any formatting they want. We don&#39;t care what they look like as we are not tasked with maintaining them. We do, however, care about our own code, and that should look right so that others can understand it. Be very careful about which files you exclude. As a rule, don&#39;t exclude files that contain code that you wrote. There may be exceptions to that rule, but they would have to be very unusual and very clearly defined.</em></p>
+<h2 id="updated-unit-tests">Updated Unit Tests</h2>
+<pre><code class="lang-javascript">describe<span class="hljs-list">(<span class="hljs-quoted">'Elvenware</span> Simple Plain Suite', function<span class="hljs-list">()</span> {
+    <span class="hljs-quoted">'use</span> strict'<span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'expects</span> true to be true', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">true</span>)</span>.toBe<span class="hljs-list">(<span class="hljs-keyword">true</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+})</span><span class="hljs-comment">;</span>
+
+describe<span class="hljs-list">(<span class="hljs-quoted">'Test</span> Bitly Suite', function<span class="hljs-list">()</span> {
+    <span class="hljs-quoted">'use</span> strict'<span class="hljs-comment">;</span>
+
+    var accessToken = <span class="hljs-quoted">'YOUR</span> ACCESS CODE HERE'<span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'gets</span> a url', function<span class="hljs-list">()</span> {
+        var url = elfBitly.getUrl<span class="hljs-list">(<span class="hljs-keyword">accessToken</span>)</span><span class="hljs-comment">;</span>
+
+        expect<span class="hljs-list">(<span class="hljs-keyword">url</span>)</span>.toBeTruthy<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">url</span>)</span>.toContain<span class="hljs-list">(<span class="hljs-keyword">accessToken</span>)</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">url</span>)</span>.toContain<span class="hljs-list">(<span class="hljs-quoted">'https</span>')</span><span class="hljs-comment">;</span>
+
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'tests</span> the the local url we pass to getBitlyLinks', function<span class="hljs-list">()</span> {
+        var finalUrl<span class="hljs-comment">;</span>
+
+        spyOn<span class="hljs-list">($, <span class="hljs-quoted">'getJSON</span>')</span>.and.callFake<span class="hljs-list">(<span class="hljs-keyword">function</span><span class="hljs-list">(<span class="hljs-keyword">url</span>, success)</span> {
+            finalUrl = url<span class="hljs-comment">;</span>
+            success<span class="hljs-list">(<span class="hljs-keyword">bitlyLinks</span>)</span><span class="hljs-comment">;</span>
+            return {
+                fail: function<span class="hljs-list">()</span> {}
+            }<span class="hljs-comment">;</span>
+        })</span><span class="hljs-comment">;</span>
+
+        elfBitly.getBitlyLinks<span class="hljs-list">(<span class="hljs-keyword">-1</span>)</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">finalUrl</span>)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'data/bitly-links</span>.json')</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'tests</span> the accesstoken url we pass to getBitlyLinks', function<span class="hljs-list">()</span> {
+        var finalUrl<span class="hljs-comment">;</span>
+
+        spyOn<span class="hljs-list">($, <span class="hljs-quoted">'getJSON</span>')</span>.and.callFake<span class="hljs-list">(<span class="hljs-keyword">function</span><span class="hljs-list">(<span class="hljs-keyword">url</span>, success)</span> {
+            finalUrl = url<span class="hljs-comment">;</span>
+            success<span class="hljs-list">(<span class="hljs-keyword">bitlyLinks</span>)</span><span class="hljs-comment">;</span>
+            return {
+                fail: function<span class="hljs-list">()</span> {}
+            }<span class="hljs-comment">;</span>
+        })</span><span class="hljs-comment">;</span>
+
+        elfBitly.getBitlyLinks<span class="hljs-list">(<span class="hljs-keyword">accessToken</span>)</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">finalUrl</span>)</span>.toContain<span class="hljs-list">(<span class="hljs-keyword">accessToken</span>)</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">finalUrl</span>)</span>.toContain<span class="hljs-list">(<span class="hljs-quoted">'https</span>')</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+})</span><span class="hljs-comment">;</span>
+
+describe<span class="hljs-list">(<span class="hljs-quoted">'Test</span> Bitly Links', function<span class="hljs-list">()</span> {
+    <span class="hljs-quoted">'use</span> strict'<span class="hljs-comment">;</span>
+
+    beforeEach<span class="hljs-list">(<span class="hljs-keyword">function</span><span class="hljs-list">()</span> {
+        spyOn<span class="hljs-list">($, <span class="hljs-quoted">'getJSON</span>')</span>.and.callFake<span class="hljs-list">(<span class="hljs-keyword">function</span><span class="hljs-list">(<span class="hljs-keyword">url</span>, success)</span> {
+            success<span class="hljs-list">(<span class="hljs-keyword">bitlyLinks</span>)</span><span class="hljs-comment">;</span>
+            return {
+                fail: function<span class="hljs-list">()</span> {}
+            }<span class="hljs-comment">;</span>
+        })</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'shows</span> we can directly get the status code and text', function<span class="hljs-list">()</span> {
+        elfBitly.getBitlyLinks<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">elfBitly</span>.bitlyLinks.status_code)</span>.toBe<span class="hljs-list">(<span class="hljs-number">200</span>)</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">elfBitly</span>.bitlyLinks.status_txt)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'OK</span>')</span><span class="hljs-comment">;</span>
+
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'shows</span> we have a status code of <span class="hljs-number">200</span>', function<span class="hljs-list">()</span> {
+
+        elfBitly.getBitlyLinks<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var statusCode = elfBitly.getStatusCode<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">statusCode</span>)</span>.toBe<span class="hljs-list">(<span class="hljs-number">200</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'shows</span> we have a status txt of OK', function<span class="hljs-list">()</span> {
+
+        elfBitly.getBitlyLinks<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var statusText = elfBitly.getStatusText<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">statusText</span>)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'OK</span>')</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'shows</span> we have a count of <span class="hljs-number">165</span> links', function<span class="hljs-list">()</span> {
+
+        elfBitly.getBitlyLinks<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">elfBitly</span>.bitlyLinks.data.result_count)</span>.toBe<span class="hljs-list">(<span class="hljs-number">165</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'show</span> we can get the title of the first element', function<span class="hljs-list">()</span> {
+        elfBitly.getBitlyLinks<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var firstLink = elfBitly.bitlyLinks.data.link_history[<span class="hljs-number">0</span>]<span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">firstLink</span>.title)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'BootstrapBasics01Small</span>.png <span class="hljs-list">(<span class="hljs-number">307</span>×<span class="hljs-number">261</span>)</span>')</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">firstLink</span>.title)</span>.toContain<span class="hljs-list">(<span class="hljs-quoted">'BootstrapBasics01Small</span>.png')</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'show</span> we can get the first item from the link history', function<span class="hljs-list">()</span> {
+        elfBitly.getBitlyLinks<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var firstLink = elfBitly.getLinkHistoryItem<span class="hljs-list">(<span class="hljs-number">0</span>)</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">firstLink</span>.title)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'BootstrapBasics01Small</span>.png <span class="hljs-list">(<span class="hljs-number">307</span>×<span class="hljs-number">261</span>)</span>')</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">firstLink</span>.title)</span>.toContain<span class="hljs-list">(<span class="hljs-quoted">'BootstrapBasics01Small</span>.png')</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Shows</span> we can transform the data', function<span class="hljs-list">()</span> {
+        elfBitly.getBitlyLinks<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var map = elfBitly.getMap<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        // console.log<span class="hljs-list">(<span class="hljs-keyword">JSON</span>.stringify<span class="hljs-list">(<span class="hljs-keyword">map</span>[<span class="hljs-number">0</span>], null, <span class="hljs-number">4</span>)</span>)</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">map</span>.length)</span>.toBe<span class="hljs-list">(<span class="hljs-number">50</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+})</span><span class="hljs-comment">;</span>
+</code></pre>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>When turn, I should be able to see updated files in the projects mentioned above. In particular, I should be able to go to any of those three projects, run <strong>grunt check</strong>, and see results like this:</p>
+<pre><code class="lang-bash">$ grunt <span class="hljs-operator"><span class="hljs-keyword">check</span>
+Running <span class="hljs-string">"jsbeautifier:files"</span> (jsbeautifier) task
+Beautified <span class="hljs-number">5</span> files, <span class="hljs-keyword">changed</span> <span class="hljs-number">0</span> files...OK
+
+Running <span class="hljs-string">"jscs:src"</span> (jscs) task
+&gt;&gt; <span class="hljs-number">5</span> files <span class="hljs-keyword">without</span> code <span class="hljs-keyword">style</span> <span class="hljs-keyword">errors</span>.
+
+Running <span class="hljs-string">"jshint:files"</span> (jshint) task
+
+✔ <span class="hljs-keyword">No</span> problems
+
+
+Done, <span class="hljs-keyword">without</span> <span class="hljs-keyword">errors</span></span>
+</code></pre>
+<p>The number of files may differ, but the general format should be the same. Be sure all the JavaScript code in <strong>public/javascripts/</strong> and <strong>routes/</strong> passes these tests.</p>
+</div></body></html>
