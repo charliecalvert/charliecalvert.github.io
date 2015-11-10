@@ -9,9 +9,8 @@
 <li><a href="#creative-commons-search">Creative Commons Search</a></li>
 <li><a href="#aws-s3">AWS S3</a></li>
 <li><a href="#icon-missing">Fav-Icon Missing - 404</a></li>
-<li><a href="#create-launcer">Create Launcer</a></li>
-<li><a href="#run-one-test-manual">Hint: Manually Run One Test</a></li>
-<li><a href="#hint-automatically-run-one-test">Hint Automatically Run One Test</a></li><!--TOC_End--></ul><h1 id="isit320-midterm-2015">Isit320 Midterm 2015</h1>
+<li><a href="#create-launcher">Create Launcher</a></li>
+<li><a href="#test-downloads">Test Downloads</a></li><!--TOC_End--></ul><h1 id="isit320-midterm-2015">Isit320 Midterm 2015</h1>
 <p>This document is not complete, but there is enough here to get you started.</p>
 <p>Polish the <strong>BitlyRefine</strong> and <strong>TwitterRefine</strong> programs.</p>
 <p>Extend these programs to support viewing images stored in the cloud. The program should integrate Delicious, Bitly and Twitter. In particular, you should be able to view a <em>gallery</em> of images created from Bitly or Delicious links and Twitter posts.</p>
@@ -164,7 +163,7 @@ total <span class="hljs-number">16</span>
 app.<span class="hljs-keyword">use</span>(favicon(path.join(__dirname, <span class="hljs-string">'public'</span>, <span class="hljs-string">'favicon.png'</span>)));
 </code></pre>
 <p>Now the error should go away. You can use any image editor you want to modify the <strong>favicon.png</strong> file. On Linux, the tool of choice is called <strong>gimp</strong>, but simpler tools will probably a do simple job like this just as well.</p>
-<h2 id="create-launcer">Create Launcer</h2>
+<h2 id="create-launcher">Create Launcher</h2>
 <p>When we run our tests, <strong>control.js</strong> gets loaded. At the bottom (or top) of <strong>control.js</strong> is this code:</p>
 <pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 <span class="hljs-pi">    'use strict'</span>;
@@ -212,35 +211,83 @@ app.<span class="hljs-keyword">use</span>(favicon(path.join(__dirname, <span cla
         <span class="hljs-attribute">exclude</span>: [<span class="hljs-string">'public/javascripts/loader.js'</span>],
 </code></pre>
 <p>Now our <strong>document ready</strong> function will get loaded when we run our program, but not when we run our tests.</p>
-<h2 id="run-one-test-manual">Hint: Manually Run One Test</h2>
-<p>If you want to run only one test, change, <strong>it</strong> to <strong>fit</strong>. To run only one suite, change <strong>describe</strong> to <strong>fdescribe</strong>. In this example, the <strong>elfMidterm</strong> test will be run but the <strong>elfDownloads</strong> test will not be run:</p>
-<pre><code class="lang-javascript">describe(<span class="hljs-string">'File Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-<span class="hljs-pi">    'use strict'</span>;
+<h2 id="test-downloads">Test Downloads</h2>
+<p>Save the following as <strong>spec/test-downloads.js</strong> and make sure all the tests pass:</p>
+<pre><code class="lang-javascript">describe<span class="hljs-list">(<span class="hljs-quoted">'Downloads</span> Suite', function<span class="hljs-list">()</span> {
+    <span class="hljs-quoted">'use</span> strict'<span class="hljs-comment">;</span>
 
-    fit(<span class="hljs-string">'expects elfMidterm to be defined'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-        <span class="hljs-keyword">var</span> isDefined = <span class="hljs-keyword">typeof</span> elfMidterm !== <span class="hljs-string">'undefined'</span>;
-        expect(isDefined).toBe(<span class="hljs-literal">true</span>);
-    });
+    var downloadKeys<span class="hljs-comment">;</span>
 
-    it(<span class="hljs-string">'expects elfDownloads to be defined'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-        <span class="hljs-keyword">var</span> isDefined = <span class="hljs-keyword">typeof</span> elfDownloads !== <span class="hljs-string">'undefined'</span>;
-        expect(isDefined).toBe(<span class="hljs-literal">true</span>);
-    });
-</code></pre>
-<h2 id="hint-automatically-run-one-test">Hint Automatically Run One Test</h2>
-<p>Open up two terminal windows. In one window, start your tests with either of these commands:</p>
-<pre><code class="lang-bash">grunt <span class="hljs-built_in">test</span>
-karma start
-</code></pre>
-<p>In the other termainl window, run this command:</p>
-<pre><code class="lang-bash">karma <span class="hljs-command">run</span> <span class="hljs-comment">-- --grep="status code of 200"</span>
-</code></pre>
-<p>This tells karma to run the tests, and display the output, but to show the results for only the test that includes the text <strong>status code of 200</strong>. In particular, that would be a test that looks like this:</p>
-<pre><code class="lang-javascript">it<span class="hljs-list">(<span class="hljs-quoted">'shows</span> we have a status code of <span class="hljs-number">200</span>', function<span class="hljs-list">()</span> {
-    elfMidterm.getBitlyLinks<span class="hljs-list">()</span><span class="hljs-comment">;</span>
-    var statusCode = elfMidterm.getStatusCode<span class="hljs-list">()</span><span class="hljs-comment">;</span>
-    expect<span class="hljs-list">(<span class="hljs-keyword">statusCode</span>)</span>.toBe<span class="hljs-list">(<span class="hljs-number">200</span>)</span><span class="hljs-comment">;</span>
+    beforeEach<span class="hljs-list">(<span class="hljs-keyword">function</span><span class="hljs-list">()</span> {
+        downloadKeys = Object.keys<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'expects</span> elfDownloads to be defined', function<span class="hljs-list">()</span> {
+        var isDefined = typeof elfDownloads !== <span class="hljs-quoted">'undefined</span>'<span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">isDefined</span>)</span>.toBe<span class="hljs-list">(<span class="hljs-keyword">true</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads to contain Keys', function<span class="hljs-list">()</span> {
+        var downloadKeys = Object.keys<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>)</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">downloadKeys</span>)</span>.toBeTruthy<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads to contain accessToken', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">downloadKeys</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'accessToken</span>')</span>)</span>.toBeGreaterThan<span class="hljs-list">(<span class="hljs-keyword">-1</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads to contain dataTypes', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">downloadKeys</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'dataTypes</span>')</span>)</span>.toBeGreaterThan<span class="hljs-list">(<span class="hljs-keyword">-1</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads to contain dataType', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">downloadKeys</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'dataType</span>')</span>)</span>.toBeGreaterThan<span class="hljs-list">(<span class="hljs-keyword">-1</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads to contain dataTypeSelection', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">downloadKeys</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'dataTypeSelection</span>')</span>)</span>.toBeGreaterThan<span class="hljs-list">(<span class="hljs-keyword">-1</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads to contain getBitlyData', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">downloadKeys</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'getBitlyData</span>')</span>)</span>.toBeGreaterThan<span class="hljs-list">(<span class="hljs-keyword">-1</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads to contain clearControls', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">downloadKeys</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'clearControls</span>')</span>)</span>.toBeGreaterThan<span class="hljs-list">(<span class="hljs-keyword">-1</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads.dataTypes to be defined', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>.dataTypes)</span>.toBeTruthy<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads.dataTypes to be an array', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>.dataTypes instanceof Array)</span>.toBeTruthy<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads.dataTypes to contain four elements', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>.dataTypes.length)</span>.toBe<span class="hljs-list">(<span class="hljs-number">4</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads.dataType to be defined', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>.dataType)</span>.toBeTruthy<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads.dataType to be of type string', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">typeof</span> elfDownloads.dataType)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'string</span>')</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Shows</span> that elfDownloads.getBitlyData is a function', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">typeof</span> elfDownloads.getBitlyData)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'function</span>')</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Shows</span> that elfDownloads.dataTypeSelection is a function', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">typeof</span> elfDownloads.dataTypeSelection)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'function</span>')</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Shows</span> that elfDownloads.clearControls is a function', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">typeof</span> elfDownloads.clearControls)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'function</span>')</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
 })</span><span class="hljs-comment">;</span>
 </code></pre>
-<p>The string you pass to <strong>grep</strong> can be any regular expression. We have not covered reg-ex in this class, but there is a vast amount of information on that topic on the web.</p>
 </div></body></html>
