@@ -1,14 +1,40 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>GruntCheck03</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>GruntCheck03</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#jasmine-jquery">Jasmine JQuery</a></li>
-<li><a href="#jade-and-exec">Jade and Exec</a></li>
-<li><a href="#for-later">For later</a></li>
 <li><a href="#jasmine-jquery">Jasmine JQuery</a></li>
-<li><a href="#the-error-handler">The Error Handler</a></li><!--TOC_End--></ul><h2 id="jasmine-jquery">Jasmine JQuery</h2>
+<li><a href="#jade-and-exec">Jade and Exec</a></li>
+<li><a href="#for-later">For later</a></li><!--TOC_End--></ul><h2 id="jasmine-jquery">Jasmine JQuery</h2>
 <p>Copy over the new and updated unit tests from:</p>
-<pre><code>cp <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/BitlyRefine/*.jade .
+<pre><code>cp <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/BitlyRefine/*.jade views/.
 </code></pre><p>npm install jasmine-jquery --save-dev
 npm install karma-jasmine-jquery --save-dev
 npm install grunt-contrib-jasmine --save-dev</p>
-<h2 id="jade-and-exec">Jade and Exec</h2>
+<h2 id="jasmine-jquery">Jasmine JQuery</h2>
+<p>In karma.conf load jasmine-jquery:</p>
+<pre><code class="lang-javascript">files: [
+    <span class="hljs-symbol">'public</span>/components/jquery/dist/jquery.min.js',
+    <span class="hljs-symbol">'public</span>/javascripts/*.js',
+    <span class="hljs-symbol">'spec</span>/test*.js',
+    <span class="hljs-symbol">'spec</span>/bitly-links.js',
+    <span class="hljs-symbol">'node_modules</span>/jasmine-jquery/lib/jasmine-jquery.js',
+    <span class="hljs-symbol">'spec</span>/javascripts/fixtures/*.html',
+    <span class="hljs-symbol">'spec</span>/*.html',
+    <span class="hljs-char">'*.html'</span>
+],
+</code></pre>
+<p>Or:</p>
+<pre><code class="lang-javascripts">frameworks: [<span class="hljs-symbol">'jasmine</span>-jquery', <span class="hljs-symbol">'jasmine'</span>],
+plugins: [<span class="hljs-symbol">'karma</span>-jasmine',
+    <span class="hljs-symbol">'karma</span>-spec-reporter',
+    <span class="hljs-symbol">'karma</span>-phantomjs-launcher',
+    <span class="hljs-symbol">'karma</span>-chrome-launcher',
+    <span class="hljs-symbol">'karma</span>-jasmine-jquery'
+]
+</code></pre>
+<p>And put this in <strong>karma.conf.js</strong>:</p>
+<pre><code>preprocessors: {
+    // '<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/<span class="hljs-keyword">*</span>.html': ['html2js']
+    '<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/<span class="hljs-keyword">*</span>.html': []
+},
+</code></pre><h2 id="jade-and-exec">Jade and Exec</h2>
 <p>Copy <strong>views/index.jade</strong> to <strong>views/dest.jade</strong>.</p>
 <p>Make sure you have a global copy of Jade:</p>
 <pre><code>npm <span class="hljs-operator"><span class="hljs-keyword">install</span> -<span class="hljs-keyword">g</span> jade</span>
@@ -37,9 +63,9 @@ npm install grunt-contrib-jasmine --save-dev</p>
 <pre><code class="lang-javascript">jade: {
     compile: {
         options: {
-            pretty: <span class="hljs-literal">true</span>,
+            pretty: true,
             data: {
-                debug: <span class="hljs-literal">false</span>
+                debug: false
             }
         },
         files: {
@@ -49,9 +75,9 @@ npm install grunt-contrib-jasmine --save-dev</p>
 },
 
 exec: {
-    echo_name: {
-        cmd: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(firstName, lastName)</span> </span>{
-            <span class="hljs-keyword">var</span> formattedName = [
+    echo<span class="hljs-number">_n</span>ame: {
+        cmd: <span class="hljs-keyword">function</span>(firstName, lastName) {
+            var formattedName = [
                 lastName.toUpperCase(),
                 firstName.toUpperCase()
             ].join(<span class="hljs-string">', '</span>);
@@ -61,24 +87,22 @@ exec: {
     },
 
     foo: {
-        cmd: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-            <span class="hljs-keyword">return</span> <span class="hljs-string">"sed '/extend/d' views/index.jade &gt; views/temp.jade"</span>;
-        }
-    }
-}
-</code></pre>
-<h2 id="jasmine-jquery">Jasmine JQuery</h2>
-<p>In karma.conf load jasmine-jquery:</p>
-<pre><code class="lang-javascript">files: [
-    <span class="hljs-symbol">'public</span>/components/jquery/dist/jquery.min.js',
-    <span class="hljs-symbol">'public</span>/javascripts/*.js',
-    <span class="hljs-symbol">'spec</span>/test*.js',
-    <span class="hljs-symbol">'spec</span>/bitly-links.js',
-    <span class="hljs-symbol">'node_modules</span>/jasmine-jquery/lib/jasmine-jquery.js',
-    <span class="hljs-symbol">'spec</span>/javascripts/fixtures/*.html',
-    <span class="hljs-symbol">'spec</span>/*.html',
-    <span class="hljs-char">'*.html'</span>
-],
+        cmd: <span class="hljs-keyword">function</span>() {
+            <span class="hljs-keyword">return</span> <span class="hljs-string">"sed '/exten## Jasmine JQuery
+
+In karma.conf load jasmine-jquery:
+
+``<span class="hljs-subst">`javascript
+files: [
+    <span class="hljs-string">'public/components/jquery/dist/jquery.min.js'</span>,
+    <span class="hljs-string">'public/javascripts/*.js'</span>,
+    <span class="hljs-string">'spec/test*.js'</span>,
+    <span class="hljs-string">'spec/bitly-links.js'</span>,
+    <span class="hljs-string">'node_modules/jasmine-jquery/lib/jasmine-jquery.js'</span>,
+    <span class="hljs-string">'spec/javascripts/fixtures/*.html'</span>,
+    <span class="hljs-string">'spec/*.html'</span>,
+    <span class="hljs-string">'*.html'</span>
+],</span></span>
 </code></pre>
 <p>Or:</p>
 <pre><code class="lang-javascripts">frameworks: [<span class="hljs-symbol">'jasmine</span>-jquery', <span class="hljs-symbol">'jasmine'</span>],
@@ -89,8 +113,16 @@ plugins: [<span class="hljs-symbol">'karma</span>-jasmine',
     <span class="hljs-symbol">'karma</span>-jasmine-jquery'
 ]
 </code></pre>
-<h2 id="the-error-handler">The Error Handler</h2>
-<pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (app.get(<span class="hljs-string">'env'</span>) === <span class="hljs-string">'development'</span>) {
+<p>d/d&#39; views/index.jade &gt; views/temp.jade&quot;;
+        }
+    }
+}</p>
+<pre><code>
+
+<span class="coffeescript"><span class="hljs-comment">## The Error Handler</span>
+
+`<span class="javascript"></span>``<span class="javascript">javascript
+<span class="hljs-keyword">if</span> (app.get(<span class="hljs-string">'env'</span>) === <span class="hljs-string">'development'</span>) {
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Using Development error handler'</span>);
     app.use(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, req, res, next</span>) </span>{
 <span class="hljs-pi">        'use strict'</span>;
@@ -102,6 +134,5 @@ plugins: [<span class="hljs-symbol">'karma</span>-jasmine',
             error: err
         });
     });
-}
-</code></pre>
-</div></body></html>
+}</span></span>
+</code></pre></div></body></html>
