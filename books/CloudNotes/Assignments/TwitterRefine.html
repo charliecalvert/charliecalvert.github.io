@@ -37,11 +37,13 @@
 <p>Make the search query configurable so the user can search on any subject they choose, rather than just <strong>nodejs</strong>.</p>
 <p>Here is how to send a custom query from the client to the server. Make these changes in <strong>control.js</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clearControls</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
     $(<span class="hljs-string">'#tweetList'</span>).empty();
     $(<span class="hljs-string">'#tableLinks'</span>).empty();
 }
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">search</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
     <span class="hljs-keyword">var</span> searchQuery = $(<span class="hljs-string">'#searchQuery'</span>).val();
     $.getJSON(<span class="hljs-string">'/search'</span>, {<span class="hljs-string">"q"</span>: searchQuery}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
         $(<span class="hljs-string">'#tweetData'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
@@ -87,17 +89,18 @@
 </code></pre>
 <h2 id="step-four">Step Four</h2>
 <p>We want to create a new route that searches on a user timeline. In effect, you are searching for tweets by a particular user, rather than tweets on a particular subject. The version of the query shown below will need to be modified slightly to complete the assignment. Right now it contains a hardcoded search on my screen name. You will want to make it possible for the user to enter a random search on any screen name, including your own:</p>
-<pre><code class="lang-javascript">router.<span class="hljs-keyword">get</span>(<span class="hljs-string">'/user-timeline'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req, res, next)</span> </span>{
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/user-timeline'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
     <span class="hljs-keyword">var</span> client = getClient();
     <span class="hljs-keyword">var</span> params = {
         screen_name: <span class="hljs-string">'calvertbc'</span>
     };
-    client.<span class="hljs-keyword">get</span>(<span class="hljs-string">'statuses/user_timeline'</span>, params, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(error, tweets, response)</span> </span>{
+    client.get(<span class="hljs-string">'statuses/user_timeline'</span>, params, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error, tweets, response</span>) </span>{
         <span class="hljs-keyword">if</span> (!error) {
-            console.log(tweets);
+            <span class="hljs-built_in">console</span>.log(tweets);
             res.send(tweets);
         } <span class="hljs-keyword">else</span> {
-            console.log(error);
+            <span class="hljs-built_in">console</span>.log(error);
             res.send({
                 fail: error
             });
@@ -114,12 +117,14 @@ $.getJSON('/time-line', {<span class="hljs-string">"screen_name"</span>: timelin
 <p><strong>NOTE</strong>: <em>No one has to follow the structure defined in this section. But if you need help building the application, this section might help.</em></p>
 <p>Normally, we would create a method like this that would initilize our buttons:</p>
 <pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
     $(<span class="hljs-string">'#getTimeline'</span>).click(twitterRefine.getTimeline);
     $(<span class="hljs-string">'#search'</span>).click(twitterRefine.search);
 });
 </code></pre>
 <p>Let&#39;s move it into its own method:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> init: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
     $(<span class="hljs-string">'#getTimeline'</span>).click(twitterRefine.getTimeline);
     $(<span class="hljs-string">'#search'</span>).click(twitterRefine.search);
 }
@@ -133,6 +138,7 @@ $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> twitterRefine = {
 
     init: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
         $(<span class="hljs-string">'#search'</span>).click(twitterRefine.search);
         $(<span class="hljs-string">'#getTimeline'</span>).click(twitterRefine.getTimeline);
     },
