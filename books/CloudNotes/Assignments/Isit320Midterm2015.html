@@ -11,9 +11,10 @@
 <li><a href="#aws-s3">AWS S3</a></li>
 <li><a href="#icon-missing">Fav-Icon Missing - 404</a></li>
 <li><a href="#create-launcher">Create Launcher</a></li>
+<li><a href="#call-server">Call Server</a></li>
 <li><a href="#test-downloads">Test Downloads</a></li><!--TOC_End--></ul><h1 id="isit320-midterm-2015">Isit320 Midterm 2015</h1>
 <p>This document is not complete, but there is enough here to get you started.</p>
-<p>Polish the <strong>BitlyRefine</strong> and <strong>TwitterRefine</strong> programs.</p>
+<p>Polish the <strong>BitlyRefine</strong> and <strong>TwitterRefine</strong> programs. Make sure <strong>BootstrapDelicious</strong> at least works.</p>
 <p>Extend these programs to support viewing images stored in the cloud. The program should integrate Delicious, Bitly and Twitter. In particular, you should be able to view a <em>gallery</em> of images created from Bitly or Delicious links and Twitter posts.</p>
 <p>Store links in:</p>
 <ul>
@@ -32,9 +33,22 @@
 <li>Local</li>
 </ul>
 <p>When the buttons are selected, search Bitly, Delicious or Twitter for your images. These means you need to create groups or hash tags in Bitly, Delicious and Twitter that will return the results you expect. For instance here is a possible twitter tag for my images: <strong>#calvert images</strong>.</p>
+<p>To make all this work, I created three three files:</p>
+<ul>
+<li>bitly.js</li>
+<li>twitter.js</li>
+<li>delicious.js</li>
+</ul>
+<p>The code for handling our various link options is in each of these files. The bitly cloud and bitly local requests are handled in bitly.js, the twitter requests in twitter.js, and the delicious requests in delicious.js. In general, the code from:</p>
+<ul>
+<li>TwitterRefine <strong>control.js</strong> is found in <strong>twitter.js</strong></li>
+<li>DelicousBootstrap <strong>control.js</strong> is found in <strong>delicious.js</strong></li>
+<li>BitlyRefine <strong>control.js</strong> is found in <strong>bitly.js</strong></li>
+</ul>
+<p>I tweaked the code here and there, and wrapped stand alone functions in JavaScript literal objects, but otherwise the majority of the code ported over unchanged. In general, the code changes were simply because of changes in naming conventions, not in a program logic.</p>
 <p>Make some other minor changes. For instance:</p>
 <ul>
-<li><strong>elfDownloads.getBitlyData</strong> should now be <strong>elfDownloads.getLinks</strong>. The point is that the function now handles more than just Bitly data.</li>
+<li>For better of worse, I have changed <strong>elfDownloads.getBitlyData</strong> to <strong>elfDownloads.getLinks</strong>.</li>
 </ul>
 <h2 id="what-to-test">What to Test</h2>
 <p>There is a folder called $ELF_TEMPLATES/UnitTest/Isit320Midterm2015 which currently contains at least one test suite. Over the weekend I will be moving more tests into it.</p>
@@ -185,36 +199,51 @@ app.<span class="hljs-keyword">use</span>(favicon(path.join(__dirname, <span cla
 <pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 <span class="hljs-pi">    'use strict'</span>;
     $(<span class="hljs-string">'#localData'</span>).prop(<span class="hljs-string">'checked'</span>, <span class="hljs-literal">true</span>);
-    elfMidterm.getBitlyLinks(-<span class="hljs-number">1</span>);
+    elfMidterm.getLinks(elfDownloads.dataTypes.dtLocal);
     $(<span class="hljs-string">'#dataSource'</span>).click(elfDownloads.dataTypeSelection);
 });
 </code></pre>
 <p>Notice in particular the call to <strong>getBitlyLinks</strong>. This call, or any similar call, will fail when we are running our tests. There are several solutions to this, but on simple solution is to move <strong>documennt ready</strong> into its own file, and then exclude that file from our tests. In particular, we can create a file called <strong>loader.js</strong>:</p>
 <pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 <span class="hljs-pi">    'use strict'</span>;
-    $(<span class="hljs-string">'#localData'</span>).prop(<span class="hljs-string">'checked'</span>, <span class="hljs-literal">true</span>);
-    elfMidterm.getBitlyLinks(-<span class="hljs-number">1</span>);
-    $(<span class="hljs-string">'#dataSource'</span>).click(elfDownloads.dataTypeSelection);
+    elfMidterm.initialize();
 });
+</code></pre>
+<p>My elfMidterm is in <strong>control.js</strong> and looks like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfMidterm = {
+
+    initialize: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        $(<span class="hljs-string">'#localData'</span>).prop(<span class="hljs-string">'checked'</span>, <span class="hljs-literal">true</span>);
+        elfCallServer.loadBitly();
+        elfBitly.getLinks(elfDownloads.dataTypes.dtLocal);
+        $(<span class="hljs-string">'#dataSource'</span>).click(elfDownloads.dataTypeSelection);
+    },
+
+};
 </code></pre>
 <p>Then load the file in <strong>layout.jade</strong></p>
 <pre><code class="lang-javascript">doctype <span class="hljs-tag">html</span>
 <span class="hljs-tag">html</span>
-  head
-    <span class="hljs-function"><span class="hljs-title">meta</span><span class="hljs-params">(charset=<span class="hljs-string">'UTF-8'</span>)</span></span>
-    <span class="hljs-function"><span class="hljs-title">meta</span><span class="hljs-params">(name=<span class="hljs-string">'viewport'</span>, content=<span class="hljs-string">'width=device-width'</span>)</span></span>
-    title= title
-    <span class="hljs-function"><span class="hljs-title">link</span><span class="hljs-params">(rel=<span class="hljs-string">'stylesheet'</span>, href=<span class="hljs-string">'/stylesheets/style.css'</span>)</span></span>
-    <span class="hljs-function"><span class="hljs-title">link</span><span class="hljs-params">(rel=<span class="hljs-string">'stylesheet'</span>, href=<span class="hljs-string">'/components/bootstrap/dist/css/bootstrap.css'</span>)</span></span>
-    <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"components/jquery/dist/jquery.js"</span>)</span></span>
-    <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"components/bootstrap/dist/js/bootstrap.js"</span>)</span></span>
-    <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/loader.js"</span>)</span></span>
-    <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/control.js"</span>)</span></span>
-    <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/downloads.js"</span>)</span></span>
-    <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/movement.js"</span>)</span></span>
-    <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/display.js"</span>)</span></span>
-  <span class="hljs-tag">body</span>
-    block <span class="hljs-attribute">content</span>
+    head
+        <span class="hljs-function"><span class="hljs-title">meta</span><span class="hljs-params">(charset=<span class="hljs-string">'UTF-8'</span>)</span></span>
+        <span class="hljs-function"><span class="hljs-title">meta</span><span class="hljs-params">(name=<span class="hljs-string">'viewport'</span>, content=<span class="hljs-string">'width=device-width'</span>)</span></span>
+        title= title
+        <span class="hljs-function"><span class="hljs-title">link</span><span class="hljs-params">(rel=<span class="hljs-string">'stylesheet'</span>, href=<span class="hljs-string">'/stylesheets/style.css'</span>)</span></span>
+        <span class="hljs-function"><span class="hljs-title">link</span><span class="hljs-params">(rel=<span class="hljs-string">'stylesheet'</span>, href=<span class="hljs-string">'/components/bootstrap/dist/css/bootstrap.css'</span>)</span></span>
+        <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"components/jquery/dist/jquery.js"</span>)</span></span>
+        <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"components/bootstrap/dist/js/bootstrap.js"</span>)</span></span>
+        <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/loader.js"</span>)</span></span>
+        <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/control.js"</span>)</span></span>
+        <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/downloads.js"</span>)</span></span>
+        <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/movement.js"</span>)</span></span>
+        <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/display.js"</span>)</span></span>
+        <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/twitter.js"</span>)</span></span>
+        <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/delicious.js"</span>)</span></span>
+        <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/bitly.js"</span>)</span></span>
+        <span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/call-server.js"</span>)</span></span>
+    <span class="hljs-tag">body</span>
+        block <span class="hljs-attribute">content</span>
 </code></pre>
 <p>And exclude it form <strong>karma.conf.js</strong>:</p>
 <pre><code class="lang-javascript">        <span class="hljs-attribute">files</span>: [
@@ -228,83 +257,43 @@ app.<span class="hljs-keyword">use</span>(favicon(path.join(__dirname, <span cla
         <span class="hljs-attribute">exclude</span>: [<span class="hljs-string">'public/javascripts/loader.js'</span>],
 </code></pre>
 <p>Now our <strong>document ready</strong> function will get loaded when we run our program, but not when we run our tests.</p>
-<h2 id="test-downloads">Test Downloads</h2>
-<p>Save the following as <strong>spec/test-downloads.js</strong> and make sure all the tests pass:</p>
-<pre><code class="lang-javascript">describe<span class="hljs-list">(<span class="hljs-quoted">'Downloads</span> Suite', function<span class="hljs-list">()</span> {
-    <span class="hljs-quoted">'use</span> strict'<span class="hljs-comment">;</span>
+<h2 id="call-server">Call Server</h2>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfCallServer = {
 
-    var downloadKeys<span class="hljs-comment">;</span>
+    loadBitly: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        $(<span class="hljs-string">'#displayContainer'</span>).load(<span class="hljs-string">'/bitly'</span>);
+    },
 
-    beforeEach<span class="hljs-list">(<span class="hljs-keyword">function</span><span class="hljs-list">()</span> {
-        downloadKeys = Object.keys<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>)</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
+    loadDelicious: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        $(<span class="hljs-string">'#displayContainer'</span>).load(<span class="hljs-string">'/delicious'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">response, status, xhr</span>) </span>{
+            <span class="hljs-keyword">if</span> (status == <span class="hljs-string">'error'</span>) {
+                <span class="hljs-keyword">var</span> msg = <span class="hljs-string">'Sorry but there was an error: '</span>;
+                <span class="hljs-comment">// $('#error' ).html( msg + xhr.status + ' ' + xhr.statusText );</span>
+                <span class="hljs-built_in">console</span>.log(msg + xhr.status + <span class="hljs-string">' '</span> + xhr.statusText);
+            } <span class="hljs-keyword">else</span> {
+                elfDelicious.deliciousSetup();
+            }
+        });
+    },
 
-    it<span class="hljs-list">(<span class="hljs-quoted">'expects</span> elfDownloads to be defined', function<span class="hljs-list">()</span> {
-        var isDefined = typeof elfDownloads !== <span class="hljs-quoted">'undefined</span>'<span class="hljs-comment">;</span>
-        expect<span class="hljs-list">(<span class="hljs-keyword">isDefined</span>)</span>.toBe<span class="hljs-list">(<span class="hljs-keyword">true</span>)</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
+    loadTwitter: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        $(<span class="hljs-string">'#displayContainer'</span>).load(<span class="hljs-string">'/twitter'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">response, status, xhr</span>) </span>{
+            <span class="hljs-keyword">if</span> (status == <span class="hljs-string">'error'</span>) {
+                <span class="hljs-keyword">var</span> msg = <span class="hljs-string">'Sorry but there was an error: '</span>;
+                <span class="hljs-comment">// $( '#error' ).html( msg + xhr.status + ' ' + xhr.statusText );</span>
+                <span class="hljs-built_in">console</span>.log(msg + xhr.status + <span class="hljs-string">' '</span> + xhr.statusText);
+            } <span class="hljs-keyword">else</span> {
+                elfTwitter.twitterSetup();
+            }
+        });
 
-    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads to contain Keys', function<span class="hljs-list">()</span> {
-        var downloadKeys = Object.keys<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>)</span><span class="hljs-comment">;</span>
-        expect<span class="hljs-list">(<span class="hljs-keyword">downloadKeys</span>)</span>.toBeTruthy<span class="hljs-list">()</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
-
-    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads to contain accessToken', function<span class="hljs-list">()</span> {
-        expect<span class="hljs-list">(<span class="hljs-keyword">downloadKeys</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'accessToken</span>')</span>)</span>.toBeGreaterThan<span class="hljs-list">(<span class="hljs-keyword">-1</span>)</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
-
-    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads to contain dataTypes', function<span class="hljs-list">()</span> {
-        expect<span class="hljs-list">(<span class="hljs-keyword">downloadKeys</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'dataTypes</span>')</span>)</span>.toBeGreaterThan<span class="hljs-list">(<span class="hljs-keyword">-1</span>)</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
-
-    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads to contain dataType', function<span class="hljs-list">()</span> {
-        expect<span class="hljs-list">(<span class="hljs-keyword">downloadKeys</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'dataType</span>')</span>)</span>.toBeGreaterThan<span class="hljs-list">(<span class="hljs-keyword">-1</span>)</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
-
-    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads to contain dataTypeSelection', function<span class="hljs-list">()</span> {
-        expect<span class="hljs-list">(<span class="hljs-keyword">downloadKeys</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'dataTypeSelection</span>')</span>)</span>.toBeGreaterThan<span class="hljs-list">(<span class="hljs-keyword">-1</span>)</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
-
-    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads to contain getBitlyData', function<span class="hljs-list">()</span> {
-        expect<span class="hljs-list">(<span class="hljs-keyword">downloadKeys</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'getBitlyData</span>')</span>)</span>.toBeGreaterThan<span class="hljs-list">(<span class="hljs-keyword">-1</span>)</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
-
-    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads to contain clearControls', function<span class="hljs-list">()</span> {
-        expect<span class="hljs-list">(<span class="hljs-keyword">downloadKeys</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'clearControls</span>')</span>)</span>.toBeGreaterThan<span class="hljs-list">(<span class="hljs-keyword">-1</span>)</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
-
-    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads.dataTypes to be defined', function<span class="hljs-list">()</span> {
-        expect<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>.dataTypes)</span>.toBeTruthy<span class="hljs-list">()</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
-
-    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads.dataTypes to be an array', function<span class="hljs-list">()</span> {
-        expect<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>.dataTypes instanceof Array)</span>.toBeTruthy<span class="hljs-list">()</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
-
-    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads.dataTypes to contain four elements', function<span class="hljs-list">()</span> {
-        expect<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>.dataTypes.length)</span>.toBe<span class="hljs-list">(<span class="hljs-number">4</span>)</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
-
-    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads.dataType to be defined', function<span class="hljs-list">()</span> {
-        expect<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>.dataType)</span>.toBeTruthy<span class="hljs-list">()</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
-
-    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads.dataType to be of type string', function<span class="hljs-list">()</span> {
-        expect<span class="hljs-list">(<span class="hljs-keyword">typeof</span> elfDownloads.dataType)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'string</span>')</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
-
-    it<span class="hljs-list">(<span class="hljs-quoted">'Shows</span> that elfDownloads.getBitlyData is a function', function<span class="hljs-list">()</span> {
-        expect<span class="hljs-list">(<span class="hljs-keyword">typeof</span> elfDownloads.getBitlyData)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'function</span>')</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
-
-    it<span class="hljs-list">(<span class="hljs-quoted">'Shows</span> that elfDownloads.dataTypeSelection is a function', function<span class="hljs-list">()</span> {
-        expect<span class="hljs-list">(<span class="hljs-keyword">typeof</span> elfDownloads.dataTypeSelection)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'function</span>')</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
-
-    it<span class="hljs-list">(<span class="hljs-quoted">'Shows</span> that elfDownloads.clearControls is a function', function<span class="hljs-list">()</span> {
-        expect<span class="hljs-list">(<span class="hljs-keyword">typeof</span> elfDownloads.clearControls)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'function</span>')</span><span class="hljs-comment">;</span>
-    })</span><span class="hljs-comment">;</span>
-
-})</span><span class="hljs-comment">;</span>
+    }
+};
 </code></pre>
-</div></body></html>
+<h2 id="test-downloads">Test Downloads</h2>
+<p>The code for testing downloads is in <strong>spec/test-downloads.js</strong>. The latest version is in:</p>
+<pre><code><span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/Isit320Midterm2015
+</code></pre></div></body></html>
