@@ -1,6 +1,8 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>GruntCheckComments</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>GruntCheckComments</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#getting-started">Getting Started</a></li>
 <li><a href="#invalid-quotes">Invalid Quotes</a></li>
+<li><a href="#illegal-whitespace">Illegal Trailing WhiteSpace</a></li>
+<li><a href="#can-t-find-bitlylinks">Can&#39;t Find BitlyLinks</a></li>
 <li><a href="#fixture-issues">Fixture Issues</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Comments on the Grunt Check assignment.</p>
 <h2 id="getting-started">Getting Started</h2>
@@ -55,6 +57,34 @@ Invalid quote mark <span class="hljs-keyword">found</span> <span class="hljs-key
 </code></pre><p>The corrected code looks like this:</p>
 <pre><code><span class="hljs-string">firstName:</span> <span class="hljs-string">'George'</span>,
 </code></pre><p>The point is not so much that one type of quote is provably better than the other. It is just that JavaScript gives us a choice, and we ought to pick one or the other and stick with our decision. The <strong>jscs</strong> helps us stay honest about our decision. Which decision you make is configurable, but for not we are going with single quotes.</p>
+<h2 id="illegal-whitespace">Illegal Trailing WhiteSpace</h2>
+<p>The error might look a bit like this:</p>
+<pre><code class="lang-bash">$ grunt jscs
+Running <span class="hljs-string">"jscs:src"</span> (jscs) task
+Illegal trailing whitespace at <span class="hljs-keyword">public</span>/javascripts/display.js :
+    <span class="hljs-number">38</span> |        $(<span class="hljs-string">'#client_id'</span>).val(bitlyLink.client_id);
+    <span class="hljs-number">39</span> |        $(<span class="hljs-string">'#link'</span>).val(bitlyLink.link);
+    <span class="hljs-number">40</span> |        
+----------------^
+    <span class="hljs-number">41</span> |        $(<span class="hljs-string">'#userTs'</span>).val(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(bitlyLink.user_ts * <span class="hljs-number">1000</span>));
+    <span class="hljs-number">42</span> |        $(<span class="hljs-string">'#createdAt'</span>).val(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(bitlyLink.created_at * <span class="hljs-number">1000</span>));
+&gt;&gt; <span class="hljs-number">1</span> code style errors found!
+Warning: Task <span class="hljs-string">"jscs:src"</span> failed. Use --force to <span class="hljs-keyword">continue</span>.
+
+Aborted due to warnings.
+</code></pre>
+<p>JsBeautify should fix this error. If you don&#39;t want to run that tool, another solution is to open it in Geany and choose <strong>Document | Strip Trailing Spaces</strong>.</p>
+<h2 id="can-t-find-bitlylinks">Can&#39;t Find BitlyLinks</h2>
+<p>You might get this error:</p>
+<pre><code>Can<span class="hljs-operator">'</span>t <span class="hljs-built_in">find</span> variable: bitlyLinks
+</code></pre><p>That usually means that you are not loading <strong>bitly-links.js</strong> in <strong>karma.conf.js</strong>:</p>
+<pre><code class="lang-javascript">files: [
+    <span class="hljs-symbol">'public</span>/components/jquery/dist/jquery.min.js',
+    <span class="hljs-symbol">'public</span>/javascripts/*.js',
+    <span class="hljs-symbol">'spec</span>/test*.js',
+    <span class="hljs-symbol">'spec</span>/bitly-links.js'
+],
+</code></pre>
 <h2 id="fixture-issues">Fixture Issues</h2>
 <p>You may get an error such as <strong>null is not an object (evaluating &#39;document.getElementById etc...</strong></p>
 <p>The fix for that problem can now be found in the Bitly Interactive assignment, in the section on <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/BitlyInteractive.html#jasmine-fixtures">fixtures</a>.</p>
