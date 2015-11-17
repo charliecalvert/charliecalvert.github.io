@@ -4,7 +4,8 @@
 <li><a href="#debug">Debug</a></li>
 <li><a href="#jade-indent">The Giant Jade Search Button</a></li>
 <li><a href="#clear-data">Clear Data</a></li>
-<li><a href="#match-ids-in-jade-and-javascript">Match IDs in Jade and JavaScript</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#match-ids-in-jade-and-javascript">Match IDs in Jade and JavaScript</a></li>
+<li><a href="#server-query">Server Query</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Comments on the Twitter Refine assignment.</p>
 <h2 id="create-a-timeline-function">Create a Timeline Function</h2>
 <p>When the user clicks on the <strong>Timeline</strong> button, several things should happen. The first is defined by the ID associated with the button:</p>
@@ -133,5 +134,69 @@
     $(<span class="hljs-string">'#search'</span>).click(search);
     $(<span class="hljs-string">'#timeline'</span>).click(getTimeline);
 });
+</code></pre>
+<h2 id="server-query">Server Query</h2>
+<p>On the server side, some students wrote something like this:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/search'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> client = getClient();
+    <span class="hljs-keyword">var</span> params = {
+        text: <span class="hljs-string">''</span>
+    };
+    client.get(<span class="hljs-string">'search/tweets'</span>, params, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error, tweets, response</span>) </span>{
+        <span class="hljs-keyword">if</span> (!error) {
+            res.send(tweets);
+        } <span class="hljs-keyword">else</span> {
+            res.send({
+                fail: error
+            });
+        }
+    });
+});
+</code></pre>
+<p>The problem here is in the second parameter to <strong>client.get</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> params = {
+    text: <span class="hljs-string">''</span>
+};
+client.<span class="hljs-keyword">get</span>(<span class="hljs-string">'search/tweets'</span>, params, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(error, tweets, response)</span> </span>{
+</code></pre>
+<p>The right thing to do is delete the declaration for params and take the parameters passed from the client side by access request.query:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/search'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> client = getClient();
+    <span class="hljs-comment">/* var params = {
+        q: '#node.js'
+    }; */</span>
+    client.get(<span class="hljs-string">'search/tweets'</span>, req.query, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error, tweets, response</span>) </span>{
+</code></pre>
+<p>If we delete the dead code, it looks like this:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/search'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> client = getClient();
+    client.get(<span class="hljs-string">'search/tweets'</span>, req.query, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error, tweets, response</span>) </span>{
+</code></pre>
+<p>The req.query bit is supplied on the client side in the second parameter to getJSON:</p>
+<pre><code class="lang-javascript">search: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> searchQuery = $(<span class="hljs-string">'#searchQuery'</span>).val();
+    $.getJSON(<span class="hljs-string">'/search'</span>, {<span class="hljs-string">'q'</span>: searchQuery}, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{
+        $(<span class="hljs-string">'#tweetData'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+        clearControls();
+        $.each(result.statuses, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">index, tweet</span>) </span>{
+            <span class="hljs-keyword">if</span> (tweet.entities.urls.length &gt; <span class="hljs-number">0</span>) {
+                appendUrl(<span class="hljs-string">'#tweetList'</span>, index, tweet.text, tweet.entities.urls[<span class="hljs-number">0</span>].url);
+            } <span class="hljs-keyword">else</span> {
+                renderTable(tweet.text, tweet.user.name);
+                $(<span class="hljs-string">'#tweetList'</span>).append(<span class="hljs-string">'&lt;li&gt;'</span> + tweet.text + <span class="hljs-string">'&lt;/li&gt;'</span>);
+            }
+        });
+    });
+},
+</code></pre>
+<p>The key line is here, where we pass as the second parameter the tiny object that takes the place of <strong>params</strong> and that becomes <strong>req.query</strong>:</p>
+<pre><code class="lang-javascript">$.getJSON('/search', {'q': searchQuery}, function (<span class="hljs-literal">result</span>) {
+</code></pre>
+<p>The object, which defines our search query, looks like this:</p>
+<pre><code class="lang-javascript">{<span class="hljs-string">'q'</span>: searchQuery}
 </code></pre>
 </div></body></html>
