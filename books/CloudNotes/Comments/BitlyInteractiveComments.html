@@ -5,7 +5,8 @@
 <li><a href="#switch-source-improved">Improved Switch Source</a></li>
 <li><a href="#icon-missing">Fav-Icon Missing - 404</a></li>
 <li><a href="#package-start">Careful in package.json</a></li>
-<li><a href="#iterate">Iterating Past the End of the Array</a></li><!--TOC_End--></ul><h1 id="week06-bitlyinteractive">Week06-BitlyInteractive</h1>
+<li><a href="#iterate">Iterating Past the End of the Array</a></li>
+<li><a href="#test-with-chrome">Test with Chrome</a></li><!--TOC_End--></ul><h1 id="week06-bitlyinteractive">Week06-BitlyInteractive</h1>
 <p>by Charlie Calvert</p>
 <h2 id="links">Links</h2>
 <ul>
@@ -125,7 +126,7 @@ downloads.dataTypeSelection = <span class="hljs-function"><span class="hljs-keyw
 </code></pre>
 <p>The values <strong>-1</strong> and <strong>0</strong> have no semantic value. They are just numbers which <em>magically</em> mean things like <strong>get the local file</strong> or <em>index</em> into the array to get the local or cloud value.</p>
 <p>The following changes replace my magic numbers with meaningful variables that have semantic value. In <strong>downloads.js</strong>, here are two updated properties and two updated methods:</p>
-<pre><code class="lang-javascript">downloads.dataTypes = {<span class="hljs-string">"dtLocal"</span>: <span class="hljs-number">0</span>, <span class="hljs-string">"dtCloud"</span>: <span class="hljs-number">1</span>};
+<pre><code class="lang-javascript">downloads.dataTypes = {<span class="hljs-string">'dtLocal'</span>: <span class="hljs-number">0</span>, <span class="hljs-string">'dtCloud'</span>: <span class="hljs-number">1</span>};
 
 downloads.dataType = downloads.dataTypes.dtLocal;
 
@@ -237,4 +238,14 @@ app.<span class="hljs-keyword">use</span>(favicon(path.join(__dirname, <span cla
     <span class="hljs-keyword">return</span> bitlyUrlParser.bitlyLinks.data.link_history;
 },
 </code></pre>
-</div></body></html>
+<p>When the user wants to move left, wants to iterate backwards through the data, our only concern is that we don&#39;t move past the beginning of our array:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (bitlyUrlParser.linkIndex &gt; <span class="hljs-number">0</span>) {
+    etc...
+</code></pre>
+<h2 id="test-with-chrome">Test with Chrome</h2>
+<p>Make sure the karma chrome launcher is available:</p>
+<pre><code>npm install karma-chrome-launcher --<span class="hljs-built_in">save</span>-<span class="hljs-built_in">dev</span>
+</code></pre><p>Replace PhantomJS with Chrome:</p>
+<pre><code>sed -<span class="hljs-tag">i</span> -- <span class="hljs-string">"s/browsers: \['PhantomJS'\]/browsers: \['Chrome'\]/"</span> karma<span class="hljs-class">.conf</span><span class="hljs-class">.js</span>
+sed -<span class="hljs-tag">i</span> -- <span class="hljs-string">"s/karma-phantomjs-launcher/karma-chrome-launcher/"</span> karma<span class="hljs-class">.conf</span><span class="hljs-class">.js</span>
+</code></pre></div></body></html>
