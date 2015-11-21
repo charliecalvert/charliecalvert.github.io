@@ -1,7 +1,8 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>MidtermComments</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>MidtermComments</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#update-unit-tests">Update Unit Tests</a></li>
 <li><a href="#proper-naming">Proper Naming</a></li>
-<li><a href="#when-to-load">When to Load</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#when-to-load-dynamic">When to Load Scripts Dynamically</a></li>
+<li><a href="#debug-work-around">Script Debug Workaround</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Week08-Midterm</p>
 <p>by Charlie Calvert</p>
 <h2 id="update-unit-tests">Update Unit Tests</h2>
@@ -41,7 +42,7 @@ diff spec<span class="hljs-regexp">/test-basic.js /</span>home<span class="hljs-
 <p>If I see a few minor changes to your files, such as a change to the <strong>accessToken</strong>, that is fine. But lots of changes are not good. If I see several hundred lines of differences such as the one shown above, then we have some work to do to get your code up to speed.</p>
 <h2 id="proper-naming">Proper Naming</h2>
 <p>Be sure to name your objects properly. Don&#39;t call an object <strong>delicious</strong>, call it <strong>elfDelicious</strong>.</p>
-<h2 id="when-to-load">When to Load</h2>
+<h2 id="when-to-load-dynamic">When to Load Scripts Dynamically</h2>
 <p>At least one student decided to load JavaScript not in <strong>layout.jade</strong> but dynamically as needed:</p>
 <pre><code class="lang-javascript">$(<span class="hljs-string">'input[id="delicious"]'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     elfMidterm.clear();
@@ -55,7 +56,7 @@ diff spec<span class="hljs-regexp">/test-basic.js /</span>home<span class="hljs-
     $.getScript(<span class="hljs-string">'javascripts/link/delicious.js'</span>);
 });
 </code></pre>
-<p><strong>NOTE</strong>: <em>The Chrome and Firefox debuggers have a hard time with code like this, but there is a simple work around not worth covering here.</em></p>
+<p><strong>NOTE</strong>: <em>The Chrome and Firefox debuggers have a hard time with code like this, but there is a simple work around covered near the end of this document in a section called <strong>Script Debug Work Around</strong>.</em></p>
 <p>The problem with the above code is that that the script will frequently be loaded before the HTML has loaded. As a result, the buttons and other controls do not get hooked up properly. The solution is to do this:</p>
 <pre><code class="lang-javascript">`<span class="javascript"></span>``<span class="javascript">javascript
 $(<span class="hljs-string">'input[id="delicious"]'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
@@ -71,4 +72,37 @@ $(<span class="hljs-string">'input[id="delicious"]'</span>).click(<span class="h
 });</span>
 </code></pre>
 <p>By putting the <strong>getScript</strong> call in the callback, we can be certain script gets loaded after the HTML is ready. As a results, checkboxes, radiobuttons and other controls get hooked up properly.</p>
+<h2 id="debug-work-around">Script Debug Workaround</h2>
+<p>If you choose to load scripts dynamically, which I don&#39;t recommend, you should add the following code to your project so that you can properly debug it. It overrides the original jQuery version of <strong>getScript</strong>. I put this code in the main <strong>document.ready</strong>:</p>
+<pre><code class="lang-javascript">jQuery.extend({
+    getScript: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">url, callback</span>) </span>{
+        <span class="hljs-keyword">var</span> head = <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">"head"</span>)[<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">var</span> script = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">"script"</span>);
+        script.src = url;
+
+        <span class="hljs-comment">// Handle Script loading</span>
+        {
+            <span class="hljs-keyword">var</span> done = <span class="hljs-literal">false</span>;
+
+            <span class="hljs-comment">// Attach handlers for all browsers</span>
+            script.onload = script.onreadystatechange = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+                <span class="hljs-keyword">if</span> ( !done &amp;&amp; (!<span class="hljs-keyword">this</span>.readyState ||
+                    <span class="hljs-keyword">this</span>.readyState == <span class="hljs-string">"loaded"</span> || <span class="hljs-keyword">this</span>.readyState == <span class="hljs-string">"complete"</span>) ) {
+                    done = <span class="hljs-literal">true</span>;
+                    <span class="hljs-keyword">if</span> (callback)
+                        callback();
+
+                    <span class="hljs-comment">// Handle memory leak in IE</span>
+                    script.onload = script.onreadystatechange = <span class="hljs-literal">null</span>;
+                }
+            };
+        }
+
+        head.appendChild(script);
+
+        <span class="hljs-comment">// We handle everything using the script element injection</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">undefined</span>;
+    }
+});
+</code></pre>
 </div></body></html>
