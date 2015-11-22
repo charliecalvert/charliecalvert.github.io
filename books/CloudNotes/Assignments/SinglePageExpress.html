@@ -6,7 +6,8 @@
 <li><a href="#waiting-for-html-to-load">Waiting for HTML to Load</a></li>
 <li><a href="#grunt-check">Grunt Check</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
-<li><a href="#hint">Hint</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#hint">Hint</a></li>
+<li><a href="#one-layout-jade">One layout.jade</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Single Page Jade. The goal is to build a <strong>single page application</strong> that can show two different &quot;pages&quot; when the user asks to see them.</p>
 <p>At program start up we:</p>
 <ul>
@@ -260,4 +261,32 @@ hr
 
    <span class="hljs-comment"> // FILL IN THE REST OF YOUR TWITTER REFINE INDEX.JADE HERE</span>
 </code></pre>
-</div></body></html>
+<h2 id="one-layout-jade">One layout.jade</h2>
+<p>A rather subtle, and quite pernicious, bug can be introduced in our programs if we try to <strong>extend</strong> the file called <strong>layout.jade</strong> in the wrong places. This bug took me awhile to track down when I first saw it in a student&#39;s work. Don&#39;t let it happen to you, as it can cause a strange, repetitive loading of our jade files that quickly brings a program to its knees.</p>
+<p>Our single page application has one main page defined in <strong>index.jade</strong>. That page <strong>extends layout.jade</strong>:</p>
+<pre><code><span class="hljs-keyword">extends</span> layout
+<span class="hljs-preprocessor"><span class="hljs-keyword">include</span> mixin-buttons
+<span class="hljs-keyword">include</span> mixin-inputs
+<span class="hljs-keyword">include</span>  mixin-radios
+block content
+   h1= title
+   etc...</span>
+</code></pre><p>We also have secondary pages that are swapped in and out as the user makes selections. Make sure you do not try to extend <strong>layout.jade</strong> in any of those files. For instance, this would cause an error if included at the top of a secondary file:</p>
+<pre><code><span class="hljs-keyword">extends</span> layout
+<span class="hljs-preprocessor"><span class="hljs-keyword">include</span> mixin-buttons
+<span class="hljs-keyword">include</span> mixin-inputs
+<span class="hljs-keyword">include</span>  mixin-radios
+block content
+   h1= title
+   etc...</span>
+</code></pre><p>Instead, the code might, in some cases look a bit like this:</p>
+<pre><code>include mixin-inputs
+include mixin-radios
+include mixin-buttons
+
++<span class="hljs-function"><span class="hljs-title">elfPanel</span><span class="hljs-params">(<span class="hljs-string">"Bitly Links Table"</span>)</span></span><span class="hljs-class">.elfDiv</span>
+    <span class="hljs-tag">div</span><span class="hljs-class">.scroller</span>
+        <span class="hljs-tag">table</span>.table<span class="hljs-id">#tableLinks</span>
+
+etc...
+</code></pre></div></body></html>

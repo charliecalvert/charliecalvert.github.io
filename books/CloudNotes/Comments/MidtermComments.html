@@ -1,4 +1,6 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>MidtermComments</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>MidtermComments</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#one-layout-jade">One layout.jade</a></li>
+<li><a href="#set-up-event-handlers">Set up Event Handlers</a></li>
 <li><a href="#update-unit-tests">Update Unit Tests</a></li>
 <li><a href="#copy-tests">Copy Over Unit Tests</a></li>
 <li><a href="#update-mixins">Update Mixins</a></li>
@@ -11,8 +13,65 @@
 <li><a href="#mixins">Mixins</a></li>
 <li><a href="#when-to-load-dynamic">When to Load Scripts Dynamically</a></li>
 <li><a href="#debug-work-around">Script Debug Workaround</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
-<p>Week08-Midterm</p>
+<p>Week08-Midterm comments</p>
 <p>by Charlie Calvert</p>
+<h2 id="one-layout-jade">One layout.jade</h2>
+<p>A rather subtle, and quite pernicious, bug can be introduced in our programs if we try to <strong>extend</strong> the file called <strong>layout.jade</strong> in the wrong places. This bug took me awhile to track down, and appeared in more than one student&#39;s midterm. It can cause a strange, repetitive loading of our jade files that quickly brings a program to its knees.</p>
+<p>Our single page application has one main page defined in <strong>index.jade</strong>. That page <strong>extends layout.jade</strong>:</p>
+<pre><code><span class="hljs-keyword">extends</span> layout
+<span class="hljs-preprocessor"><span class="hljs-keyword">include</span> mixin-buttons
+<span class="hljs-keyword">include</span> mixin-inputs
+<span class="hljs-keyword">include</span>  mixin-radios
+block content
+   h1= title
+   etc...</span>
+</code></pre><p>We also have secondary pages that are swapped in and out as the user makes selections. Make sure you do not try to extend <strong>layout.jade</strong> in any of those files. For instance, this would cause an error if included at the top of <strong>bitly.jade</strong>:</p>
+<pre><code><span class="hljs-keyword">extends</span> layout
+<span class="hljs-preprocessor"><span class="hljs-keyword">include</span> mixin-buttons
+<span class="hljs-keyword">include</span> mixin-inputs
+<span class="hljs-keyword">include</span>  mixin-radios
+block content
+   h1= title
+   etc...</span>
+</code></pre><p>Instead, the code should probably look a bit like this:</p>
+<pre><code>include mixin-inputs
+include mixin-radios
+include mixin-buttons
+
++<span class="hljs-function"><span class="hljs-title">elfPanel</span><span class="hljs-params">(<span class="hljs-string">"Bitly Links Table"</span>)</span></span><span class="hljs-class">.elfDiv</span>
+    <span class="hljs-tag">div</span><span class="hljs-class">.scroller</span>
+        <span class="hljs-tag">table</span>.table<span class="hljs-id">#tableLinks</span>
+
+etc...
+</code></pre><h2 id="set-up-event-handlers">Set up Event Handlers</h2>
+<p>The following code is not sufficient to properly launch the project because it does not set up any event handlers:</p>
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-string">'use strict'</span>;
+    elfBitly.getBitlyLinks(-<span class="hljs-number">1</span>); <span class="hljs-comment">// loads data on page load</span>
+});
+</code></pre>
+<p>Here is the one way to proceed. In <strong>loader.js</strong>:</p>
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    elfMidterm.initialize();
+});
+</code></pre>
+<p>In control.js:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfMidterm = {
+
+    initialize: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        $(<span class="hljs-string">'#localData'</span>).prop(<span class="hljs-string">'checked'</span>, <span class="hljs-literal">true</span>);
+        elfCallServer.loadBitly();
+        elfBitly.getLinks(elfDownloads.dataTypes.dtLocal);
+        $(<span class="hljs-string">'#dataSource'</span>).click(elfDownloads.dataTypeSelection);
+    },
+};
+</code></pre>
+<p>Note the presence of the following lines, which set up our event handlers:</p>
+<pre><code class="lang-javascript"><span class="hljs-variable">$(</span><span class="hljs-string">'#localData'</span>).prop(<span class="hljs-string">'checked'</span>, <span class="hljs-keyword">true</span>);
+<span class="hljs-variable">$(</span><span class="hljs-string">'#dataSource'</span>).click(elfDownloads.dataTypeSelection);
+</code></pre>
+<p>You have to have code like that or nothing in your application will work. The program is inert unless it starts responding to button, radio button, and checkbox events.</p>
 <h2 id="update-unit-tests">Update Unit Tests</h2>
 <p>Unit testing is an important part of this course. In most cases, I don&#39;t want anyone to radically change the way they implement the midterm simply to make it conform with my tests. Your approach should, however, conform closely enough to my model so that most tests pass with no changes to the tests, or only minor changes to the tests. In some cases, we may need to sit down together so that we can bring your code more closely in line with my tests without losing your unique approach to the problems posed by the midterm.</p>
 <p>In any case, be sure you have the most recent copy of the unit tests.</p>
