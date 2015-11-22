@@ -2,6 +2,7 @@
 <li><a href="#update-unit-tests">Update Unit Tests</a></li>
 <li><a href="#update-mixins">Update Mixins</a></li>
 <li><a href="#proper-naming">Proper Naming</a></li>
+<li><a href="#naming-getlinks">Naming GetLinks</a></li>
 <li><a href="#form-panels-and-keyword-links">Form panels and keyword Links</a></li>
 <li><a href="#jshint">JSHint</a></li>
 <li><a href="#when-to-load-dynamic">When to Load Scripts Dynamically</a></li>
@@ -60,6 +61,67 @@ diff views<span class="hljs-regexp">/mixins.jade /</span>home<span class="hljs-r
 <li>I want to be sure you can follow a specification laid out in a unit test.</li>
 <li>I want to be sure that you can fix certain problems, such as name mismatches, that frequently occur in code.</li>
 </ul>
+<h2 id="naming-getlinks">Naming GetLinks</h2>
+<p>A number of students wrote, or have written, something like this:</p>
+<pre><code class="lang-javascript">elfDownloads.dataTypeSelection = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#localData'</span>).is(<span class="hljs-string">':checked'</span>)) {
+
+        <span class="hljs-comment">// CODE OMITTED HERE</span>
+
+    }
+    elfDownloads.getLinkData();
+};
+
+elfDownloads.getBitlyData = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'getBitlyData called: '</span>, <span class="hljs-built_in">Object</span>.keys[elfDownloads.dataType]);
+    <span class="hljs-keyword">if</span> (elfDownloads.dataType === elfDownloads.dataTypes.dtLocal) {
+        elfBitly.getBitlyLinks(elfDownloads.dataType);
+    } <span class="hljs-keyword">else</span> {
+        elfBitly.getBitlyLinks(elfDownloads.accessToken);
+    }
+};
+</code></pre>
+<p>I wanted you to rename:</p>
+<ul>
+<li>elfDownloads.getBitlyData -&gt; elfDownloads.getLinkData</li>
+<li>elfBitly.getBitlyLinks -&gt; elfBitly.getLinks</li>
+</ul>
+<p>The result might be something like this:</p>
+<pre><code class="lang-javascript">elfDownloads.dataTypeSelection = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#localData'</span>).is(<span class="hljs-string">':checked'</span>)) {
+
+        <span class="hljs-comment">// CODE OMITTED HERE</span>
+
+    }
+    elfDownloads.getLinkData();
+};
+
+elfDownloads.getLinkData = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    elfDownloads.clearControls();
+    elfBitly.getLinks(elfDownloads.dataType);
+};
+</code></pre>
+<p>The following tests in <strong>test-downloads</strong> tried to establish the specification for these naming conventions. That is, they tried to help you update your code so that it supported the expected naming conventions:</p>
+<pre><code class="lang-javascript">    it<span class="hljs-list">(<span class="hljs-quoted">'Expects</span> elfDownloads to contain getLinkData <span class="hljs-list">(<span class="hljs-keyword">but</span> not getBitlyData)</span>', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">downloadKeys</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'getLinkData</span>')</span>)</span>.toBeGreaterThan<span class="hljs-list">(<span class="hljs-keyword">-1</span>)</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">downloadKeys</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'getBitlyData</span>')</span>)</span>.toBe<span class="hljs-list">(<span class="hljs-keyword">-1</span>)</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'Shows</span> that elfDownloads.getLinkData is a function', function<span class="hljs-list">()</span> {
+        expect<span class="hljs-list">(<span class="hljs-keyword">typeof</span> elfDownloads.getLinkData)</span>.toBe<span class="hljs-list">(<span class="hljs-quoted">'function</span>')</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+
+    it<span class="hljs-list">(<span class="hljs-quoted">'shows</span> that we call to get more links on last line of radio button select', function<span class="hljs-list">()</span> {
+        spyOn<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>, <span class="hljs-quoted">'getLinkData</span>')</span><span class="hljs-comment">;</span>
+        elfDownloads.dataTypeSelection<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>.getLinkData)</span>.toHaveBeenCalled<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+</code></pre>
+<p>The point here is that the tests, the specs, specify what is expected of you, the developer.</p>
 <h2 id="form-panels-and-keyword-links">Form panels and keyword Links</h2>
 <p>Here is the code for my input controls in <strong>bitly.jade</strong>:</p>
 <pre><code class="lang-javascript">+<span class="hljs-function"><span class="hljs-title">elfFormPanel</span><span class="hljs-params">(<span class="hljs-string">"Bitly Link Record"</span>)</span></span><span class="hljs-class">.elfDiv</span>
