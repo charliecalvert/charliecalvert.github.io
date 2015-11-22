@@ -2,7 +2,9 @@
 <li><a href="#handle-check-box-and-radio-button-selections">Handle Check Box and Radio Button Selections</a></li>
 <li><a href="#call-delicious">Use Ajax to Call Delicious</a></li>
 <li><a href="#suppress-form-submit">Suppress Form Submit</a></li>
-<li><a href="#pass-parameters">Pass Parameters</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#pass-parameters">Pass Parameters</a></li>
+<li><a href="#empty-list">Pass Parameters: Empty List</a></li>
+<li><a href="#parameter-arguments">Pass Parameters: The Arguments</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Comments on <strong>Boostrap Delicous</strong>.</p>
 <h2 id="handle-check-box-and-radio-button-selections">Handle Check Box and Radio Button Selections</h2>
 <p>Here is the code that should appear inside our <strong>document ready</strong> function.</p>
@@ -167,12 +169,14 @@
 <li>To many calls to <strong>$(&quot;#myList&quot;).empty()</strong></li>
 <li>Missing parameter in the declaration of <strong>delicious</strong></li>
 </ul>
-<p>These are checkboxes, and so more than one of them can be selected. If we clear the list when responding to our check for each check box, then the following happens:</p>
+<h3 id="empty-list">Pass Parameters: Empty List</h3>
+<p>Let&#39;s deal with empty list issue first.</p>
+<p>In general, this is not the right place to clear the controls. Do that just before you populate them. For instance, in the callDelicious method. The problem is that these are checkboxes, and so more than one of them can be selected. If we clear the list when responding to our check for each check box, then the following happens:</p>
 <ul>
 <li>Suppose the first checkbox is checked</li>
 <li>Our code responds to this by<ul>
 <li>emptying the list</li>
-<li>and Attempting the fill the list</li>
+<li>and Attempting to fill the list</li>
 </ul>
 </li>
 <li>Suppose the second check box is checked</li>
@@ -181,18 +185,9 @@
 </ul>
 </li>
 </ul>
-<p>And lets just stop right there. We filled the list, in the first case, and emptied it in the second case. This means our work showing the results of the first checkbox was obliterated. This will never do. Instead, we should call <strong>empty</strong> once at the beginning of the function:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">displayCheckboxSelection</span>(<span class="hljs-params"></span>)
-</span>{
-    <span class="hljs-keyword">var</span> tag, query = <span class="hljs-string">''</span>;
-    <span class="hljs-keyword">var</span> options = [<span class="hljs-string">'bootstrap'</span>, <span class="hljs-string">'javascript'</span>, <span class="hljs-string">'nodejs'</span>];
-
-    $(<span class="hljs-string">"#myList"</span>).empty();
-
-    <span class="hljs-comment">// Complete implementation for this method shown above.</span>
-</code></pre>
-<p>Even better, call <strong>empty</strong> just before we fill the list in our <strong>callDelicious</strong> method, as shown above.</p>
-<p>Notice also that the student&#39;s call to the <strong>delicious</strong> method passes in a parameter:</p>
+<p>And lets just stop right there. We filled the list, in the first case, and emptied it in the second case. This means our work showing the results of the first checkbox was obliterated. This will never do. Instead, we should call <strong>empty</strong> in <strong>callDelicious</strong>, just before we display data, as shown above.</p>
+<h3 id="parameter-arguments">Pass Parameters: The Arguments</h3>
+<p>Notice also that the student&#39;s call to the <strong>delicious</strong> method passes in the string <strong>javascript</strong> as its single argument:</p>
 <pre><code class="lang-javascript">delicious<span class="hljs-list">(<span class="hljs-quoted">'javascript</span>')</span><span class="hljs-comment">;</span>
 </code></pre>
 <p>But the <strong>delicious</strong> method, as declared in the student&#39;s code, does not take a parameter:</p>
@@ -204,7 +199,7 @@
     resultList(subject);
 }
 </code></pre>
-<p>The solution is to give the method a parameter, and not to try to retrieve the user&#39;s input at this point in our code:</p>
+<p>One possible, but ultimately incorrect, solution would be to give the <strong>delicious</strong> method a parameter, and not to try to retrieve the user&#39;s input at this point in our code:</p>
 <pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">delicious</span>(<span class="hljs-params">subject</span>) </span>{
 <span class="hljs-pi">    'use strict'</span>;
     <span class="hljs-built_in">console</span>.log(subject);
@@ -213,4 +208,5 @@
 }
 </code></pre>
 <p>Notice that the call to <strong>$(&quot;#subject&quot;).val();</strong> has been removed.</p>
+<p>That would solve our immediate problem, but it would introduce other problems in our code. A better solution would be to invoke <strong>callDelicious</strong> directly as shown above. Notice the invocation of <strong>callDelicious</strong> near the end of the method.</p>
 </div></body></html>
