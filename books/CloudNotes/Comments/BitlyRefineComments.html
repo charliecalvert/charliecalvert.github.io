@@ -3,6 +3,8 @@
 <li><a href="#consistent-naming">Consistent Naming</a></li>
 <li><a href="#use-proper-access-token">Use Proper Access Token</a></li>
 <li><a href="#include-jade-for-the-table">Include Jade for the Table</a></li>
+<li><a href="#include-jade-for-the-radio-buttons">Include Jade for the Radio Buttons</a></li>
+<li><a href="#render-the-links">Render the Links</a></li>
 <li><a href="#render-the-table">Render the Table</a></li>
 <li><a href="#clear-data">Clear Data</a></li>
 <li><a href="#don-t-forget-the-movement-object">Don&#39;t forget the Movement Object</a></li>
@@ -87,6 +89,39 @@ from the <strong>elfDownloads object:</strong>.</p>
         <span class="hljs-tag">table</span>.table#tableLinks
 </code></pre>
 <p>Without this code, the rest of your project will never work as the code that you insert into your table will not have a home in your HTML.</p>
+<h2 id="include-jade-for-the-radio-buttons">Include Jade for the Radio Buttons</h2>
+<p>Something like this:</p>
+<pre><code class="lang-jade">+<span class="hljs-function"><span class="hljs-title">elfPanelType</span><span class="hljs-params">(<span class="hljs-string">"Options"</span>, <span class="hljs-string">"panel-primary"</span>)</span></span><span class="hljs-class">.elfDiv</span>
+    <span class="hljs-tag">div</span><span class="hljs-class">.row</span>
+        <span class="hljs-tag">div</span><span class="hljs-class">.col-sm-6</span>
+            +<span class="hljs-function"><span class="hljs-title">elfPanel</span><span class="hljs-params">(<span class="hljs-string">"Iterate"</span>, <span class="hljs-string">"panel-default"</span>)</span></span>
+                +<span class="hljs-function"><span class="hljs-title">downloadButton</span><span class="hljs-params">(<span class="hljs-string">"Get Bitly Data"</span>, <span class="hljs-string">"elfDownloads.getBitlyData()"</span>)</span></span>
+        <span class="hljs-tag">div</span><span class="hljs-class">.col-sm-6</span>
+            +<span class="hljs-function"><span class="hljs-title">elfRadioPanel</span><span class="hljs-params">(<span class="hljs-string">"Radio Buttons"</span>, <span class="hljs-string">"dataSource"</span>)</span></span>
+                +<span class="hljs-function"><span class="hljs-title">elfRadio</span><span class="hljs-params">(<span class="hljs-string">"Local Data"</span>, <span class="hljs-string">"localData"</span>)</span></span>
+                +<span class="hljs-function"><span class="hljs-title">elfRadio</span><span class="hljs-params">(<span class="hljs-string">"Cloud Data"</span>, <span class="hljs-string">"cloudData"</span>)</span></span>
+</code></pre>
+<h2 id="render-the-links">Render the Links</h2>
+<p>In <strong>elf-bitly.js</strong> don&#39;t call <strong>elfBitly.display</strong>. That method should be deleted and moved to <strong>elfDisplay</strong>. The following code, for instance, is wrong, since it calls <strong>elfBitly.display</strong>:</p>
+<pre><code class="lang-javascript">$.getJSON(url, function(<span class="hljs-literal">result</span>) {
+        elfBitly.bitlyLinks = <span class="hljs-literal">result</span>;
+        elfBitly.display();
+</code></pre>
+<p>You should instead call code in <strong>elfDisplay</strong>:</p>
+<pre><code class="lang-javascript">$.getJSON(url, function(<span class="hljs-literal">result</span>) {
+    elfBitly.bitlyLinks = <span class="hljs-literal">result</span>;
+    elfDisplay.render();
+    elfDisplay.renderTable(elfBitly.getLinkHistoryArray());
+</code></pre>
+<p>The code in <strong>elfDisplay.render</strong> is similar to the code that was in <strong>elfBitly.display</strong>:</p>
+<pre><code class="lang-javascript">render: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> index = elfBitly.linkIndex;
+    <span class="hljs-keyword">var</span> bitlyLink = elfBitly.getLinkHistoryItem(index);
+    elfDisplay.showRecord(bitlyLink);
+},
+</code></pre>
+<p>I changed the name of the method from <strong>display</strong> to <strong>render</strong> because I thought that <strong>elfDisplay.display</strong> sounded awkward and repetitious.</p>
 <h2 id="render-the-table">Render the Table</h2>
 <p>Here is the correct code for rendering the table:</p>
 <pre><code class="lang-javascript">renderTable: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">links</span>) </span>{
