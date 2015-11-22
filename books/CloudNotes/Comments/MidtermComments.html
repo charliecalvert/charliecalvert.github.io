@@ -6,6 +6,7 @@
 <li><a href="#form-panels-and-keyword-links">Form panels and keyword Links</a></li>
 <li><a href="#jshint">JSHint</a></li>
 <li><a href="#error-messages">Error Messages</a></li>
+<li><a href="#mixins">Mixins</a></li>
 <li><a href="#when-to-load-dynamic">When to Load Scripts Dynamically</a></li>
 <li><a href="#debug-work-around">Script Debug Workaround</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Week08-Midterm</p>
@@ -196,6 +197,26 @@ About to render error </span><span class="hljs-expression">{ [<span class="hljs-
 GET /delicious 500 93.348 ms - 2369</span>
 </code></pre>
 <p>As you can see, without the good error handler, it is almost impossible to know what is wrong, with it, the problem becomes obvious right away. In particular, this error usually results from a missing <strong>include mixins...</strong> statement in our jade.</p>
+<h2 id="mixins">Mixins</h2>
+<p>We created files such as <strong>bitly.jade</strong>, <strong>delicious.jade</strong>, and <strong>twitter.jade</strong>. If you use mixins in these files, then you must <strong>include</strong> them at the top of the <strong>jade</strong> file. One student made an interesting mistake. It happens that our <strong>delicous.jade</strong> file did not use mixins. But this student added one mixin to the file:</p>
+<pre><code class="lang-javascript">block <span class="hljs-attribute">content</span>
+
++<span class="hljs-function"><span class="hljs-title">elfPanel</span><span class="hljs-params">(<span class="hljs-string">"Image Display"</span>)</span></span>.elfDiv<span class="hljs-id">#imagePanel</span>
+  img<span class="hljs-id">#image</span>
+
+<span class="hljs-tag">div</span><span class="hljs-class">.panel</span><span class="hljs-class">.panel-default</span>
+  <span class="hljs-tag">div</span><span class="hljs-class">.panel-heading</span> Text Input
+  <span class="hljs-tag">div</span><span class="hljs-class">.panel-body</span>
+     <span class="hljs-tag">div</span><span class="hljs-class">.form-group</span>
+        <span class="hljs-function"><span class="hljs-title">label</span><span class="hljs-params">(for=<span class="hljs-string">'subject'</span>)</span></span> Subject
+        input<span class="hljs-id">#subject</span>.<span class="hljs-function"><span class="hljs-title">form-control</span><span class="hljs-params">(type=<span class="hljs-string">'text'</span>, placeholder=<span class="hljs-string">"subject"</span>)</span></span>
+        br
+        <span class="hljs-tag">button</span><span class="hljs-class">.btn</span><span class="hljs-class">.btn-primary</span>(onclick=<span class="hljs-string">"elfDelicious.delicious()"</span>) Delicous
+  div
+</code></pre>
+<p>Once the mixin was added, even if most of the file did not use mixins, then we have to have add an <strong>include</strong> statement:</p>
+<pre><code class="lang-javascript"><span class="hljs-preprocessor"><span class="hljs-keyword">include</span> mixin-radios</span>
+</code></pre>
 <h2 id="when-to-load-dynamic">When to Load Scripts Dynamically</h2>
 <p>At least one student decided to load JavaScript not in <strong>layout.jade</strong> but dynamically as needed:</p>
 <pre><code class="lang-javascript">$(<span class="hljs-string">'input[id="delicious"]'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
