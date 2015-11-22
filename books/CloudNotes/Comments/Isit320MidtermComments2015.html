@@ -3,6 +3,7 @@
 <li><a href="#update-mixins">Update Mixins</a></li>
 <li><a href="#proper-naming">Proper Naming</a></li>
 <li><a href="#naming-getlinks">Naming GetLinks</a></li>
+<li><a href="#update-data-types">Update Data Types</a></li>
 <li><a href="#form-panels-and-keyword-links">Form panels and keyword Links</a></li>
 <li><a href="#jshint">JSHint</a></li>
 <li><a href="#error-messages">Error Messages</a></li>
@@ -124,6 +125,44 @@ elfDownloads.getLinkData = <span class="hljs-function"><span class="hljs-keyword
     })</span><span class="hljs-comment">;</span>
 </code></pre>
 <p>The point here is that the tests, the specs, specify what is expected of you, the developer.</p>
+<h2 id="update-data-types">Update Data Types</h2>
+<p>Our <strong>elfDownloads.dataTypes</strong> originally looked like this:</p>
+<pre><code class="lang-javascript">elfDownloads.dataTypes = {
+    <span class="hljs-string">'dtLocal'</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-string">'dtCloud'</span>: <span class="hljs-number">1</span>
+};
+</code></pre>
+<p>But now we have not just two choices, but four choices. As a result, we need to create an object that looks like this:</p>
+<pre><code class="lang-javascript">elfDownloads.dataTypes = {
+    <span class="hljs-string">'dtLocal'</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-string">'dtDelicious'</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">'dtBitly'</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-string">'dtTwitter'</span>: <span class="hljs-number">3</span>
+};
+</code></pre>
+<p>The following test, when added to <strong>test-downloads.js</strong>, provides reasonable checks to confirm that we are defining this type correctly:</p>
+<pre><code class="lang-javascript">it<span class="hljs-list">(<span class="hljs-quoted">'shows</span> that our datatypes have four options', function<span class="hljs-list">()</span> {
+    var linkTypes = Object.getOwnPropertyNames<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>.dataTypes)</span>.sort<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+    console.log<span class="hljs-list">(<span class="hljs-keyword">linkTypes</span>)</span><span class="hljs-comment">;</span>
+    expect<span class="hljs-list">(<span class="hljs-keyword">linkTypes</span>.length)</span>.toBeGreaterThan<span class="hljs-list">(<span class="hljs-number">3</span>)</span><span class="hljs-comment">;</span>
+    expect<span class="hljs-list">(<span class="hljs-keyword">linkTypes</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'dtBitly</span>')</span> !== <span class="hljs-number">-1</span>)</span>.toBeTruthy<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+    expect<span class="hljs-list">(<span class="hljs-keyword">linkTypes</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'dtDelicious</span>')</span> !== <span class="hljs-number">-1</span>)</span>.toBeTruthy<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+    expect<span class="hljs-list">(<span class="hljs-keyword">linkTypes</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'dtLocal</span>')</span> !== <span class="hljs-number">-1</span>)</span>.toBeTruthy<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+    expect<span class="hljs-list">(<span class="hljs-keyword">linkTypes</span>.indexOf<span class="hljs-list">(<span class="hljs-quoted">'dtTwitter</span>')</span> !== <span class="hljs-number">-1</span>)</span>.toBeTruthy<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+})</span><span class="hljs-comment">;</span>
+</code></pre>
+<p>Tests like this are very useful in class setting. They might also be useful in a corporate setting, since they help to clearly define the specification for our object.</p>
+<p>If we don&#39;t declare these types correctly, then code like the following, found in <strong>elfDownloads.dataTypeSelection</strong>, will not work correctly:</p>
+<pre><code class="lang-javascript"><span class="hljs-component">if (elfDownloads.dataType !== elfDownloads.dataTypes.dtLocal) {
+    elfDownloads<span class="hljs-string">.dataType</span> = elfDownloads<span class="hljs-string">.dataTypes.dtLocal</span>;
+if (elfDownloads<span class="hljs-string">.dataType</span> !== elfDownloads<span class="hljs-string">.dataTypes.dtBitly)</span> {
+    elfDownloads<span class="hljs-string">.dataType</span> = elfDownloads<span class="hljs-string">.dataTypes.dtBitly</span>;
+if (elfDownloads<span class="hljs-string">.dataType</span> !== elfDownloads<span class="hljs-string">.dataTypes.dtDelicious)</span> {
+    elfDownloads<span class="hljs-string">.dataType</span> = elfDownloads<span class="hljs-string">.dataTypes.dtDelicious</span>;
+if (elfDownloads<span class="hljs-string">.dataType</span> !== elfDownloads<span class="hljs-string">.dataTypes.dtTwitter)</span> {
+    elfDownloads<span class="hljs-string">.dataType</span> = elfDownloads<span class="hljs-string">.dataTypes.dtTwitter</span>;
+}</span>;
+</code></pre>
 <h2 id="form-panels-and-keyword-links">Form panels and keyword Links</h2>
 <p>Here is the code for my input controls in <strong>bitly.jade</strong>:</p>
 <pre><code class="lang-javascript">+<span class="hljs-function"><span class="hljs-title">elfFormPanel</span><span class="hljs-params">(<span class="hljs-string">"Bitly Link Record"</span>)</span></span><span class="hljs-class">.elfDiv</span>
