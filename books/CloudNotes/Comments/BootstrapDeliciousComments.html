@@ -138,11 +138,11 @@
 });
 </code></pre>
 <p>For now, however, we are ensuring that even if we had a form, our button does not trigger form submit by setting the button <strong>type</strong> to <strong>button</strong>:</p>
-<pre><code class="lang-jade"><span class="hljs-tag">button</span><span class="hljs-class">.btn</span><span class="hljs-class">.btn-primary</span>(type=<span class="hljs-string">"button"</span>, onclick=<span class="hljs-string">"delicious()"</span>) Search Delicious
+<pre><code class="lang-jade"><span class="hljs-tag">button</span><span class="hljs-class">.btn</span><span class="hljs-class">.btn-primary</span>(type=<span class="hljs-string">"button"</span>, onclick=<span class="hljs-string">"deliciousEventHandler()"</span>) Search Delicious
 </code></pre>
 <h2 id="pass-parameters">Pass Parameters</h2>
 <p>Consider the following functions:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">delicious</span>(<span class="hljs-params"></span>) </span>{
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">deliciousEventHandler</span>(<span class="hljs-params"></span>) </span>{
 <span class="hljs-pi">    'use strict'</span>;
     <span class="hljs-keyword">var</span> subject = $(<span class="hljs-string">"#subject"</span>).val();
     <span class="hljs-built_in">console</span>.log(subject);
@@ -154,14 +154,14 @@
 </span>{
     <span class="hljs-keyword">if</span> ($(<span class="hljs-string">"#chJavaScript"</span>).is(<span class="hljs-string">':checked'</span>)) {
         $(<span class="hljs-string">"#myList"</span>).empty();
-        delicious(<span class="hljs-string">'javascript'</span>);
+        deliciousEventHandler(<span class="hljs-string">'javascript'</span>);
     } <span class="hljs-keyword">else</span> {
         $(<span class="hljs-string">"#checkBoxDisplay01"</span>).html(<span class="hljs-string">"CheckBox01 not Checked"</span>);
     }
 
     <span class="hljs-keyword">if</span> ($(<span class="hljs-string">"#chBootstrap"</span>).is(<span class="hljs-string">':checked'</span>)) {
         $(<span class="hljs-string">"#myList"</span>).empty();
-        delicious(<span class="hljs-string">'bootstrap'</span>);
+        deliciousEventHandler(<span class="hljs-string">'bootstrap'</span>);
         etc...
 </code></pre>
 <p>There are two problems with this code:</p>
@@ -188,25 +188,34 @@
 <p>And lets just stop right there. We filled the list, in the first case, and emptied it in the second case. This means our work showing the results of the first checkbox was obliterated. This will never do. Instead, we should call <strong>empty</strong> in <strong>callDelicious</strong>, just before we display data, as shown above.</p>
 <h3 id="parameter-arguments">Pass Parameters: The Arguments</h3>
 <p>Notice also that the student&#39;s call to the <strong>delicious</strong> method passes in the string <strong>javascript</strong> as its single argument:</p>
-<pre><code class="lang-javascript">delicious<span class="hljs-list">(<span class="hljs-quoted">'javascript</span>')</span><span class="hljs-comment">;</span>
+<pre><code class="lang-javascript">deliciousEventHandler<span class="hljs-list">(<span class="hljs-quoted">'javascript</span>')</span><span class="hljs-comment">;</span>
 </code></pre>
-<p>But the <strong>delicious</strong> method, as declared in the student&#39;s code, does not take a parameter:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">delicious</span>(<span class="hljs-params"></span>) </span>{
+<p>But the <strong>deliciousEventHandler</strong> method does not take a parameter:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">deliciousEventHandler</span>(<span class="hljs-params"></span>) </span>{
 <span class="hljs-pi">    'use strict'</span>;
     <span class="hljs-keyword">var</span> subject = $(<span class="hljs-string">"#subject"</span>).val();
-     <span class="hljs-built_in">console</span>.log(subject);
+    <span class="hljs-built_in">console</span>.log(subject);
     callDelicious(subject);
-    resultList(subject);
 }
 </code></pre>
 <p>One possible, but ultimately incorrect, solution would be to give the <strong>delicious</strong> method a parameter, and not to try to retrieve the user&#39;s input at this point in our code:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">delicious</span>(<span class="hljs-params">subject</span>) </span>{
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">deliciousEventHandler</span>(<span class="hljs-params">subject</span>) </span>{
 <span class="hljs-pi">    'use strict'</span>;
     <span class="hljs-built_in">console</span>.log(subject);
     callDelicious(subject);
-    resultList(subject);
 }
 </code></pre>
 <p>Notice that the call to <strong>$(&quot;#subject&quot;).val();</strong> has been removed.</p>
-<p>That would solve our immediate problem, but it would introduce other problems in our code. A better solution would be to invoke <strong>callDelicious</strong> directly as shown above. Notice the invocation of <strong>callDelicious</strong> near the end of the method.</p>
+<p>That would solve our immediate problem, but it would introduce other problems in our code. A better solution would be to restore our original <strong>deliciousEventHandler</strong> method:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">deliciousEventHandler</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> subject = $(<span class="hljs-string">"#subject"</span>).val();
+    <span class="hljs-built_in">console</span>.log(subject);
+    callDelicious(subject);
+}
+</code></pre>
+<p>Instead of calling this method directly, instead invoke <strong>callDelicious</strong> as shown in the <strong>displayCheckboxSelection</strong> method quoted in full above. Notice the invocation of <strong>callDelicious</strong> near the end of the <strong>displayCheckboxSelection</strong> method:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">callDelicious</span><span class="hljs-params">(query)</span></span>
+</code></pre>
+<p>Notice also that <strong>deliciousEventHandler</strong> is not called at all in <strong>displayCheckboxSelection</strong>. The <strong>deliciousEventHandler</strong> method should only be called from our <strong>HTML</strong> based button click method.</p>
 </div></body></html>
