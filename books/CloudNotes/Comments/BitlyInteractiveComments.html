@@ -6,7 +6,8 @@
 <li><a href="#icon-missing">Fav-Icon Missing - 404</a></li>
 <li><a href="#package-start">Careful in package.json</a></li>
 <li><a href="#iterate">Iterating Past the End of the Array</a></li>
-<li><a href="#test-with-chrome">Test with Chrome</a></li><!--TOC_End--></ul><h1 id="week06-bitlyinteractive">Week06-BitlyInteractive</h1>
+<li><a href="#test-with-chrome">Test with Chrome</a></li>
+<li><a href="#calling-showrecord">Calling ShowRecord</a></li><!--TOC_End--></ul><h1 id="week06-bitlyinteractive">Week06-BitlyInteractive</h1>
 <p>by Charlie Calvert</p>
 <h2 id="links">Links</h2>
 <ul>
@@ -248,4 +249,43 @@ app.<span class="hljs-keyword">use</span>(favicon(path.join(__dirname, <span cla
 </code></pre><p>Replace PhantomJS with Chrome:</p>
 <pre><code>sed -<span class="hljs-tag">i</span> -- <span class="hljs-string">"s/browsers: \['PhantomJS'\]/browsers: \['Chrome'\]/"</span> karma<span class="hljs-class">.conf</span><span class="hljs-class">.js</span>
 sed -<span class="hljs-tag">i</span> -- <span class="hljs-string">"s/karma-phantomjs-launcher/karma-chrome-launcher/"</span> karma<span class="hljs-class">.conf</span><span class="hljs-class">.js</span>
-</code></pre></div></body></html>
+</code></pre><h2 id="calling-showrecord">Calling ShowRecord</h2>
+<p>Since we call showRecord in our <strong>display</strong> method, then we are also going to have to declare and implement <strong>showRecord</strong> in the same object:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> bitlyUrlParser = {
+
+    <span class="hljs-comment">// CODE OMITTED HERE</span>
+
+    display: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        <span class="hljs-keyword">var</span> index = <span class="hljs-keyword">this</span>.linkIndex;
+        <span class="hljs-keyword">var</span> bitlyLink = <span class="hljs-keyword">this</span>.getLinkHistoryItem(index);
+        <span class="hljs-keyword">this</span>.showRecord(bitlyLink);
+    },
+
+    <span class="hljs-comment">// CODE OMITTED HERE</span>
+
+    showRecord: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">bitlyLink</span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        <span class="hljs-keyword">if</span> (bitlyLink.private) {
+            $(<span class="hljs-string">'#checkBoxPrivate'</span>).prop(<span class="hljs-string">'checked'</span>, <span class="hljs-literal">true</span>);
+        }
+        etc ...
+    }
+}
+</code></pre>
+<p>In our case, we could also implement <strong>display</strong> like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> bitlyUrlParser = {
+
+    <span class="hljs-comment">// CODE OMITTED HERE</span>
+
+    display: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        <span class="hljs-keyword">var</span> index = bitlyUrlParser.linkIndex;
+        <span class="hljs-keyword">var</span> bitlyLink = bitlyUrlParser.getLinkHistoryItem(index);
+        bitlyUrlParser.showRecord(bitlyLink);
+    },
+
+    <span class="hljs-comment">// CODE OMITTED HERE</span>
+}
+</code></pre>
+</div></body></html>
