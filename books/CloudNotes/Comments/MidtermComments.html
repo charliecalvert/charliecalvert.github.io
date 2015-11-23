@@ -12,6 +12,7 @@
 <li><a href="#jshint">JSHint</a></li>
 <li><a href="#error-messages">Error Messages</a></li>
 <li><a href="#mixins">Mixins</a></li>
+<li><a href="#all-tests">Copy All Tests</a></li>
 <li><a href="#when-to-load-dynamic">When to Load Scripts Dynamically</a></li>
 <li><a href="#debug-work-around">Script Debug Workaround</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Week08-Midterm comments</p>
@@ -380,6 +381,31 @@ GET /delicious 500 93.348 ms - 2369</span>
 <p>Once the mixin was added, even if most of the file did not use mixins, then we have to have add an <strong>include</strong> statement:</p>
 <pre><code class="lang-javascript"><span class="hljs-preprocessor"><span class="hljs-keyword">include</span> mixin-radios</span>
 </code></pre>
+<h2 id="all-tests">Copy All Tests</h2>
+<p>Be sure that you have copied in all the tests from JsObjects. First run one of these commands to see if there are any differences between your <strong>specs</strong> directory and the ELF_TEMPLATES BitlyRefine specs:</p>
+<pre><code class="lang-bash">diff spec/ <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/Isit320Midterm2015/
+meld spec/ <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/Isit320Midterm2015/
+</code></pre>
+<p>If something is wrong, you might get results like this if you used <strong>diff</strong>:</p>
+<pre><code class="lang-bash">diff spec/test-urls.js /home/charlie/Git/JsObjects/Utilities/Templates/UnitTest/Isit320Midterm2015/test-urls.js
+8c8
+<span class="hljs-header">&lt;     var accessToken = '2ac4b4ccf91019cff6a6b3f23bcbe05ec2bf7a8c';
+---</span>
+&gt;     var accessToken = elfDownloads.accessToken;
+12d11
+&lt; 
+14c13
+<span class="hljs-header">&lt;         expect(url).toContain(elfBitly.localUrl);
+---</span>
+&gt;         expect(url).toContain(<span class="hljs-emphasis">'data/bitly-links.json'</span>);
+17,18c16,17
+&lt;     it(<span class="hljs-emphasis">'gets a cloud url'</span>, function() {
+&lt;         var url = elfBitly.getUrl(elfDownloads.dataTypes.dtCloud);
+</code></pre>
+<p>This kind of output occurs if there are significant differences between the tests you have in your in your folder and the tests I wanted you to run. To fix this problem, consider running this command:</p>
+<pre><code class="lang-bash">cp <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/Isit320Midterm2015/* spec/
+</code></pre>
+<p>Now the <strong>diff</strong> command should come back relatively clean.</p>
 <h2 id="when-to-load-dynamic">When to Load Scripts Dynamically</h2>
 <p>At least one student decided to load JavaScript not in <strong>layout.jade</strong> but dynamically as needed:</p>
 <pre><code class="lang-javascript">$(<span class="hljs-string">'input[id="delicious"]'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
@@ -396,8 +422,7 @@ GET /delicious 500 93.348 ms - 2369</span>
 </code></pre>
 <p><strong>NOTE</strong>: <em>The Chrome and Firefox debuggers have a hard time with code like this, but there is a simple work around covered near the end of this document in a section called <strong>Script Debug Work Around</strong>.</em></p>
 <p>The problem with the above code is that that the script will frequently be loaded before the HTML has loaded. As a result, the buttons and other controls do not get hooked up properly. The solution is to do this:</p>
-<pre><code class="lang-javascript">`<span class="javascript"></span>``<span class="javascript">javascript
-$(<span class="hljs-string">'input[id="delicious"]'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<pre><code class="lang-javascript">$(<span class="hljs-string">'input[id="delicious"]'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     elfMidterm.clear();
     $(<span class="hljs-string">'#displayContainer'</span>).load(<span class="hljs-string">'/delicious'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response, status, xhr</span>) </span>{
         <span class="hljs-keyword">if</span> (status == <span class="hljs-string">'error'</span>) {
@@ -407,7 +432,7 @@ $(<span class="hljs-string">'input[id="delicious"]'</span>).click(<span class="h
         }
         $.getScript(<span class="hljs-string">'javascripts/link/delicious.js'</span>);
     });
-});</span>
+});
 </code></pre>
 <p>By putting the <strong>getScript</strong> call in the callback, we can be certain script gets loaded after the HTML is ready. As a results, checkboxes, radiobuttons and other controls get hooked up properly.</p>
 <h2 id="debug-work-around">Script Debug Workaround</h2>
