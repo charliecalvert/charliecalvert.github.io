@@ -10,6 +10,7 @@
 <li><a href="#update-mixins">Update Mixins</a></li>
 <li><a href="#proper-naming">Proper Naming</a></li>
 <li><a href="#properly-qualify-names">Properly Qualify Names</a></li>
+<li><a href="#loading-bitly">Loading Bitly</a></li>
 <li><a href="#naming-getlinks">Naming GetLinks</a></li>
 <li><a href="#update-data-types">Update Data Types</a></li>
 <li><a href="#form-panels-and-keyword-links">Form panels and keyword Links</a></li>
@@ -266,6 +267,63 @@ diff views<span class="hljs-regexp">/mixins.jade /</span>home<span class="hljs-r
 
     <span class="hljs-comment">// CODE OMITTED</span>
 };
+</code></pre>
+<h2 id="loading-bitly">Loading Bitly</h2>
+<p>We need to check to make sure we are using a valid Bitly access token. I&#39;ve added the following code to the <strong>getJSON</strong> call in <strong>getLinks</strong>:</p>
+<pre><code class="lang-javascript">console.log('got data <span class="hljs-keyword">with</span> url:, ', url);
+<span class="hljs-keyword">if</span> (<span class="hljs-literal">result</span>.status_code !== <span class="hljs-number">200</span>) {
+    alert(<span class="hljs-literal">result</span>.status_txt + '\n' + url);
+}
+</code></pre>
+<p>With that added in, this is my implementation of the code that loads the local and cloud versions of the bitly data:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfBitly = {
+
+    linkIndex: <span class="hljs-number">0</span>,
+
+    bitlyLinks: <span class="hljs-literal">null</span>,
+
+    baseUrl: <span class="hljs-string">'https://api-ssl.bitly.com/v3/user/link_history'</span>,
+
+    localUrl: <span class="hljs-string">'./data/bitly-links.json'</span>,
+
+    deliciousFeedUrl: <span class="hljs-string">'http://feeds.delicious.com/v2/json/charliecalvert/'</span>,
+
+    getUrl: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">userSelection</span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+
+        <span class="hljs-keyword">var</span> params = <span class="hljs-string">'?access_token='</span>;
+        <span class="hljs-keyword">var</span> query = <span class="hljs-string">'&amp;query=image'</span>;
+        <span class="hljs-keyword">var</span> url;
+
+        <span class="hljs-keyword">if</span> (userSelection === elfDownloads.dataTypes.dtLocal) {
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.localUrl;
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (userSelection === elfDownloads.dataTypes.dtBitly) {
+            url = <span class="hljs-keyword">this</span>.baseUrl + params;
+            <span class="hljs-keyword">return</span> url += elfDownloads.accessToken;
+        } <span class="hljs-keyword">else</span> {
+            alert(<span class="hljs-string">'We do not handle that request.'</span>);
+        }
+    },
+
+    getLinks: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">accessToken</span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        <span class="hljs-keyword">var</span> url = elfBitly.getUrl(accessToken);
+
+        $.getJSON(url, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'got data with url:, '</span>, url);
+            <span class="hljs-keyword">if</span> (result.status_code !== <span class="hljs-number">200</span>) {
+                alert(result.status_txt + <span class="hljs-string">'\n'</span> + url);
+            }
+            elfBitly.bitlyLinks = result;
+            elfDisplay.render();
+            elfDisplay.renderTable(elfBitly.getLinkHistoryArray());
+            $(<span class="hljs-string">'#displayLinks'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+        }).fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">jqxhr, textStatus, error</span>) </span>{
+            <span class="hljs-keyword">var</span> err = textStatus + <span class="hljs-string">', '</span> + error;
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Request3 Failed: '</span> + err);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'url:'</span>, url ? url : <span class="hljs-string">'no url'</span>);
+        });
+    },
 </code></pre>
 <h2 id="naming-getlinks">Naming GetLinks</h2>
 <p>A number of students wrote, or have written, something like this:</p>
