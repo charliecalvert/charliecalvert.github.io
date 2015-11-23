@@ -13,6 +13,7 @@
 <li><a href="#error-messages">Error Messages</a></li>
 <li><a href="#mixins">Mixins</a></li>
 <li><a href="#all-tests">Copy All Tests</a></li>
+<li><a href="#content-block">Jade in Content Block</a></li>
 <li><a href="#when-to-load-dynamic">When to Load Scripts Dynamically</a></li>
 <li><a href="#debug-work-around">Script Debug Workaround</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Week08-Midterm comments</p>
@@ -406,6 +407,48 @@ meld spec/ <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/Isit320Mid
 <pre><code class="lang-bash">cp <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/Isit320Midterm2015/* spec/
 </code></pre>
 <p>Now the <strong>diff</strong> command should come back relatively clean.</p>
+<h2 id="content-block">Jade in Content Block</h2>
+<p>Make sure your jade in <strong>index.jade</strong> is inside the content block. Consider this bit of code:</p>
+<pre><code class="lang-jade">extends layout
+<span class="hljs-built_in">include</span> mixin-radios
+<span class="hljs-built_in">include</span> mixin-inputs
+<span class="hljs-built_in">include</span> mixin-buttons
+<span class="hljs-built_in">include</span> mixins
+
+block content
+    h1= title
+    p Welcome <span class="hljs-built_in">to</span> <span class="hljs-comment">#{title}</span>
+
+    +elfPanel(<span class="hljs-string">'Options'</span>)
+        <span class="hljs-operator">div</span>.panel.panel-default
+            <span class="hljs-operator">div</span>.panel-heading Iterate
+            <span class="hljs-operator">div</span>.panel-body
+                <span class="hljs-operator">div</span>.row
+   <span class="hljs-comment"> // CODE OMITTED HERE</span>
+hr
+<span class="hljs-comment">#displayContainer</span>
+</code></pre>
+<p>The HTML that we want to see should be inside the content block. The H1 and P elements, for instance, are inside the <strong>content block</strong>. The HR and the <strong>displayContainer</strong>, however, are outside it. As a result, they are not rendered. They are invisible. To fix this, move them to the right:</p>
+<pre><code class="lang-jade">extends layout
+<span class="hljs-built_in">include</span> mixin-radios
+<span class="hljs-built_in">include</span> mixin-inputs
+<span class="hljs-built_in">include</span> mixin-buttons
+<span class="hljs-built_in">include</span> mixins
+
+block content
+    h1= title
+    p Welcome <span class="hljs-built_in">to</span> <span class="hljs-comment">#{title}</span>
+
+    +elfPanel(<span class="hljs-string">'Options'</span>)
+        <span class="hljs-operator">div</span>.panel.panel-default
+            <span class="hljs-operator">div</span>.panel-heading Iterate
+            <span class="hljs-operator">div</span>.panel-body
+                <span class="hljs-operator">div</span>.row
+   <span class="hljs-comment"> // CODE OMITTED HERE</span>
+    hr
+    <span class="hljs-comment">#displayContainer</span>
+</code></pre>
+<p><strong>NOTE</strong>: <em>Remember to look at the HTML for your application at run time. Is it what you expect to see? In this case, when I looked at the students HTML, I saw that <strong>displayContainer</strong> was missing. Once I knew that, it was relatively easy to look at the Jade and see what was wrong. The student had included a DIV with an ID of <strong>displaycontainer</strong> in their jade, but it was indented improperly and hence was not rendered into HTML.</em></p>
 <h2 id="when-to-load-dynamic">When to Load Scripts Dynamically</h2>
 <p>At least one student decided to load JavaScript not in <strong>layout.jade</strong> but dynamically as needed:</p>
 <pre><code class="lang-javascript">$(<span class="hljs-string">'input[id="delicious"]'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
