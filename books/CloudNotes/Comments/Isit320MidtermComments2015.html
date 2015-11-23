@@ -3,6 +3,7 @@
 <li><a href="#set-up-event-handlers">Set up Event Handlers</a></li>
 <li><a href="#update-unit-tests">Update Unit Tests</a></li>
 <li><a href="#copy-tests">Copy Over Unit Tests</a></li>
+<li><a href="#all-tests">Copy All Tests</a></li>
 <li><a href="#update-mixins">Update Mixins</a></li>
 <li><a href="#proper-naming">Proper Naming</a></li>
 <li><a href="#properly-qualify-names">Properly Qualify Names</a></li>
@@ -12,7 +13,6 @@
 <li><a href="#jshint">JSHint</a></li>
 <li><a href="#error-messages">Error Messages</a></li>
 <li><a href="#mixins">Mixins</a></li>
-<li><a href="#all-tests">Copy All Tests</a></li>
 <li><a href="#content-block">Jade in Content Block</a></li>
 <li><a href="#when-to-load-dynamic">When to Load Scripts Dynamically</a></li>
 <li><a href="#debug-work-around">Script Debug Workaround</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
@@ -128,6 +128,31 @@ Only <span class="hljs-keyword">in</span> /home/charlie/Git/JsObjects/Utilities/
 Only <span class="hljs-keyword">in</span> /home/charlie/Git/JsObjects/Utilities/Templates/UnitTest/Isit320Midterm2015/: test-sanity.js
 </code></pre>
 <p>This is a red flag that something is wrong. It&#39;s okay if a few tests are missing, or if a few fail, but this is too much.</p>
+<h2 id="all-tests">Copy All Tests</h2>
+<p>Be sure that you have copied in all the tests from JsObjects. First run one of these commands to see if there are any differences between your <strong>specs</strong> directory and the ELF_TEMPLATES BitlyRefine specs:</p>
+<pre><code class="lang-bash">diff spec/ <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/Isit320Midterm2015/
+meld spec/ <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/Isit320Midterm2015/
+</code></pre>
+<p>If something is wrong, you might get results like this if you used <strong>diff</strong>:</p>
+<pre><code class="lang-bash">diff spec/test-urls.js /home/charlie/Git/JsObjects/Utilities/Templates/UnitTest/Isit320Midterm2015/test-urls.js
+8c8
+<span class="hljs-header">&lt;     var accessToken = '2ac4b4ccf91019cff6a6b3f23bcbe05ec2bf7a8c';
+---</span>
+&gt;     var accessToken = elfDownloads.accessToken;
+12d11
+&lt; 
+14c13
+<span class="hljs-header">&lt;         expect(url).toContain(elfBitly.localUrl);
+---</span>
+&gt;         expect(url).toContain(<span class="hljs-emphasis">'data/bitly-links.json'</span>);
+17,18c16,17
+&lt;     it(<span class="hljs-emphasis">'gets a cloud url'</span>, function() {
+&lt;         var url = elfBitly.getUrl(elfDownloads.dataTypes.dtCloud);
+</code></pre>
+<p>This kind of output occurs if there are significant differences between the tests you have in your in your folder and the tests I wanted you to run. To fix this problem, consider running this command:</p>
+<pre><code class="lang-bash">cp <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/Isit320Midterm2015/* spec/
+</code></pre>
+<p>Now the <strong>diff</strong> command should come back relatively clean.</p>
 <h2 id="update-mixins">Update Mixins</h2>
 <p>You should be working my most recent mixins. To test that, run the following and be sure they come back clean:</p>
 <pre><code class="lang-bash">diff views<span class="hljs-regexp">/mixin-buttons.jade /</span>home<span class="hljs-regexp">/charlie/</span>Git<span class="hljs-regexp">/JsObjects/</span>Utilities<span class="hljs-regexp">/Templates/</span>JadeMixins/mixin-buttons.jade
@@ -382,31 +407,6 @@ GET /delicious 500 93.348 ms - 2369</span>
 <p>Once the mixin was added, even if most of the file did not use mixins, then we have to have add an <strong>include</strong> statement:</p>
 <pre><code class="lang-javascript"><span class="hljs-preprocessor"><span class="hljs-keyword">include</span> mixin-radios</span>
 </code></pre>
-<h2 id="all-tests">Copy All Tests</h2>
-<p>Be sure that you have copied in all the tests from JsObjects. First run one of these commands to see if there are any differences between your <strong>specs</strong> directory and the ELF_TEMPLATES BitlyRefine specs:</p>
-<pre><code class="lang-bash">diff spec/ <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/Isit320Midterm2015/
-meld spec/ <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/Isit320Midterm2015/
-</code></pre>
-<p>If something is wrong, you might get results like this if you used <strong>diff</strong>:</p>
-<pre><code class="lang-bash">diff spec/test-urls.js /home/charlie/Git/JsObjects/Utilities/Templates/UnitTest/Isit320Midterm2015/test-urls.js
-8c8
-<span class="hljs-header">&lt;     var accessToken = '2ac4b4ccf91019cff6a6b3f23bcbe05ec2bf7a8c';
----</span>
-&gt;     var accessToken = elfDownloads.accessToken;
-12d11
-&lt; 
-14c13
-<span class="hljs-header">&lt;         expect(url).toContain(elfBitly.localUrl);
----</span>
-&gt;         expect(url).toContain(<span class="hljs-emphasis">'data/bitly-links.json'</span>);
-17,18c16,17
-&lt;     it(<span class="hljs-emphasis">'gets a cloud url'</span>, function() {
-&lt;         var url = elfBitly.getUrl(elfDownloads.dataTypes.dtCloud);
-</code></pre>
-<p>This kind of output occurs if there are significant differences between the tests you have in your in your folder and the tests I wanted you to run. To fix this problem, consider running this command:</p>
-<pre><code class="lang-bash">cp <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/Isit320Midterm2015/* spec/
-</code></pre>
-<p>Now the <strong>diff</strong> command should come back relatively clean.</p>
 <h2 id="content-block">Jade in Content Block</h2>
 <p>Make sure your jade in <strong>index.jade</strong> is inside the content block. Consider this bit of code:</p>
 <pre><code class="lang-jade">extends layout
