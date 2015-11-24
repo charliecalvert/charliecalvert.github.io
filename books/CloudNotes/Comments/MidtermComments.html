@@ -17,7 +17,8 @@
 <li><a href="#mixins">Mixins</a></li>
 <li><a href="#content-block">Jade in Content Block</a></li>
 <li><a href="#when-to-load-dynamic">When to Load Scripts Dynamically</a></li>
-<li><a href="#debug-work-around">Script Debug Workaround</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#debug-work-around">Script Debug Workaround</a></li>
+<li><a href="#images">Images</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Week08-Midterm comments</p>
 <p>by Charlie Calvert</p>
 <h2 id="jshint">JSHint</h2>
@@ -589,4 +590,34 @@ block content
 <ul>
 <li><a href="http://stackoverflow.com/a/691661/253576">Reference</a></li>
 </ul>
+<h2 id="images">Images</h2>
+<p>The code from display.js that helps you create links for images in bitly.</p>
+<pre><code class="lang-javascript">hyperlinkUrl: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index, text, url</span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> anchor = <span class="hljs-string">'&lt;a href="'</span> + url + <span class="hljs-string">'" target="_blank"&gt;'</span> + text + <span class="hljs-string">'&lt;/a&gt;'</span>;
+    <span class="hljs-keyword">var</span> details = <span class="hljs-string">'&lt;a onclick="elfDisplay.displayImage('</span> + index + <span class="hljs-string">')"&gt;Details&lt;/a&gt;'</span>;
+    <span class="hljs-keyword">return</span> {
+        title: anchor,
+        keyword: details
+    };
+},
+
+displayImage: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> link = elfBitly.getLinkHistoryItem(index);
+    $(<span class="hljs-string">'#image'</span>).attr(<span class="hljs-string">'src'</span>, link.keyword_link);
+},
+
+renderTable: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">links</span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    $.each(links, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index, link</span>) </span>{
+        <span class="hljs-keyword">var</span> links = elfDisplay.hyperlinkUrl(index, link.title, link.keyword_link);
+        <span class="hljs-keyword">var</span> title = <span class="hljs-string">'&lt;td&gt;'</span> + links.title + <span class="hljs-string">'&lt;/td&gt;'</span>;
+        <span class="hljs-keyword">var</span> keyword = <span class="hljs-string">'&lt;td&gt;'</span> + links.keyword + <span class="hljs-string">'&lt;/td&gt;'</span>;
+        <span class="hljs-keyword">var</span> tableRowStart = <span class="hljs-string">'&lt;tr class="linkTitle" index='</span> + index + <span class="hljs-string">'&gt;'</span>;
+        $(<span class="hljs-string">'#tableLinks'</span>).append(tableRowStart + title + keyword + <span class="hljs-string">'&lt;tr&gt;'</span>);
+    });
+    $(<span class="hljs-string">'.linkTitle'</span>).click(elfDisplay.showTableSelection);
+},
+</code></pre>
 </div></body></html>
