@@ -3,7 +3,7 @@
 <li><a href="#updates">Updates</a></li>
 <li><a href="#data-directory">Create a Spec Data Directory</a></li>
 <li><a href="#test-your-work">Test your work</a></li>
-<li><a href="#movement-tests">Movement Tests</a></li>
+<li><a href="#the-logger">The logger</a></li>
 <li><a href="#delicious-tests">Delicious Tests</a></li>
 <li><a href="#other-tests">Other Tests</a></li>
 <li><a href="#favicon">Favicon</a></li>
@@ -64,13 +64,59 @@
 <p>Copy in the delicious test suite:</p>
 <pre><code>cp <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/HyperExplorer/test-delicious.js spec/.
 </code></pre><p>Make sure they all pass.</p>
-<h2 id="movement-tests">Movement Tests</h2>
-<p>Make sure you have created spec/fixtures/bitly.html:</p>
-<pre><code>jade views/bitly<span class="hljs-class">.jade</span> --out spec/fixtures/
-</code></pre><p>Copy over <strong>test-movement</strong> and make sure all the tests pass:</p>
-<pre><code class="lang-bash">cp <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/HyperExplorer/test-movement.js spec/.
+<h2 id="the-logger">The logger</h2>
+<p>In <strong>elf-log.js</strong></p>
+<pre><code class="lang-javascript">(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">
+    'use strict'</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">ElfLog</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">this</span>.debugLevel = <span class="hljs-keyword">this</span>.logLevelWarn;
+    }
+
+    <span class="hljs-comment">//var levels = ['error', 'warn', 'info', 'silent'];</span>
+    <span class="hljs-keyword">var</span> that;
+
+    ElfLog.prototype.logLevelError = <span class="hljs-number">0</span>;
+    ElfLog.prototype.logLevelWarn = <span class="hljs-number">1</span>;
+    ElfLog.prototype.logLevelDetails = <span class="hljs-number">2</span>;
+    ElfLog.prototype.logLevelInfo = <span class="hljs-number">3</span>;
+    ElfLog.prototype.logLevelSilent = <span class="hljs-number">4</span>;
+
+    ElfLog.prototype.debugLevel = <span class="hljs-literal">undefined</span>;
+
+    ElfLog.prototype.setLevel = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">level</span>) </span>{
+        <span class="hljs-keyword">this</span>.debugLevel = level;
+    };
+
+    ElfLog.prototype.log = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">level, message</span>) </span>{
+        <span class="hljs-comment">// console.log("Level:", level, 'debugLevel: ', this.debugLevel);</span>
+        <span class="hljs-keyword">if</span> (level &gt;= <span class="hljs-keyword">this</span>.debugLevel) {
+            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> message !== <span class="hljs-string">'string'</span>) {
+                message = <span class="hljs-built_in">JSON</span>.stringify(message);
+            }
+            <span class="hljs-built_in">console</span>.log(level+<span class="hljs-string">': '</span>+message);
+        }
+    };
+
+    that = <span class="hljs-keyword">new</span> ElfLog();
+    <span class="hljs-built_in">window</span>.elfLog = that;
+})();
 </code></pre>
-<p>Key Points:</p>
+<p>Use it like this:</p>
+<pre><code class="lang-javascript">elfLog.<span class="hljs-built_in">set</span>Level(elfLog.<span class="hljs-keyword">log</span>LevelDetails); // Done <span class="hljs-keyword">once</span> per application
+elfLog.<span class="hljs-keyword">log</span>(elfLog.<span class="hljs-keyword">log</span>LevelDetails, 'ElfDisplay.Render index: ' + index);
+<span class="hljs-comment">## Movement Tests</span>
+
+Make sure you have created spec/fixtures/bitly.html:
+</code></pre>
+<p>jade views/bitly.jade --out spec/fixtures/</p>
+<pre><code>
+Copy over **test-movement** <span class="hljs-built_in">and</span> <span class="hljs-keyword">make</span> sure <span class="hljs-keyword">all</span> the tests pas<span class="hljs-variable">s:</span>
+
+```bash
+<span class="hljs-keyword">cp</span> $ELF_TEMPLATES/UnitTest/HyperExplorer/test-movement.js spec/.
+</code></pre><p>Key Points:</p>
 <ul>
 <li>If you spy on function, it is not really called. We can just check if it is called.<ul>
 <li>Therefore, don&#39;t check methods down stream of it to see if they are called</li>
@@ -155,7 +201,21 @@ it<span class="hljs-list">(<span class="hljs-quoted">'shows</span> getLinkHistor
     expect<span class="hljs-list">(<span class="hljs-keyword">elfBitly</span>.linkIndex)</span>.toBe<span class="hljs-list">(<span class="hljs-number">12</span>)</span><span class="hljs-comment">;</span>
 })</span><span class="hljs-comment">;</span>
 </code></pre>
-<h2 id="favicon">Favicon</h2>
+<p>Here are some results:</p>
+<pre><code>Test Delicous Fixture
+    ✓ expects <span class="hljs-tag">a</span> checkbox with an id of <span class="hljs-id">#chJavaScript</span>
+    ✓ expects <span class="hljs-tag">a</span> checkbox with an id of <span class="hljs-id">#chJavaScript</span> to be <span class="hljs-tag">a</span> checkbox
+    ✓ expects <span class="hljs-tag">a</span> checkbox with an id of <span class="hljs-id">#chBootstrap</span>
+    ✓ expects <span class="hljs-tag">a</span> checkbox with an id of <span class="hljs-id">#chBootstrap</span> to be <span class="hljs-tag">a</span> checkbox
+    ✓ expects <span class="hljs-tag">a</span> checkbox with an id of <span class="hljs-id">#chNodeJs</span>
+    ✓ expects <span class="hljs-tag">a</span> checkbox with an id of <span class="hljs-id">#chNodeJs</span> to be <span class="hljs-tag">a</span> checkbox
+    ✓ expects selecting <span class="hljs-id">#chBootstrap</span> to cause displayCheckBoxSelection to have been called
+    ✓ expects selecting <span class="hljs-id">#chBootstrap</span> to cause callDelicious to be called
+    ✓ expects selecting <span class="hljs-id">#chBootstrap</span> to cause callDelicious to be called with bootstrap
+    ✓ expects selecting <span class="hljs-id">#chJavaScript</span> to cause callDelicious to be called with javascript
+    ✓ expects selecting <span class="hljs-id">#chNodeJs</span> to cause callDelicious to be called with nodejs
+    ✓ selecting <span class="hljs-id">#chNodeJs</span> &amp; <span class="hljs-id">#chJavaScript</span> to cause callDelicious to be called with javascript+nodejs
+</code></pre><h2 id="favicon">Favicon</h2>
 <p>Be sure your favicon is set up correctly in <strong>app.js</strong> around line 18. The correct code will probably look like this:</p>
 <pre><code class="lang-javascript">app.<span class="hljs-keyword">use</span>(favicon(path.<span class="hljs-keyword">join</span>(__dirname, <span class="hljs-string">'public'</span>, <span class="hljs-string">'favicon.png'</span>)));
 </code></pre>

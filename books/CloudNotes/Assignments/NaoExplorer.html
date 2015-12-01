@@ -5,6 +5,11 @@
 <li><a href="#files-to-create">Files to Create</a></li>
 <li><a href="#error-handler">Error Handler</a></li>
 <li><a href="#unit-test-for-buttons">Unit Test for Buttons</a></li>
+<li><a href="#logging">Logging</a></li>
+<li><a href="#parse-behaviors">Parse Behaviors</a></li>
+<li><a href="#the-robot">The Robot</a></li>
+<li><a href="#launcher-and-control">Launcher and Control</a></li>
+<li><a href="#display">Display</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="nao-explorer">Nao Explorer</h2>
 <p>Start with this command:</p>
 <pre><code><span class="hljs-title">CreateExpressProject</span> Week10-NaoExplorer
@@ -103,6 +108,339 @@ button
     })</span><span class="hljs-comment">;</span>
 </code></pre>
 <p>Note that with jQuery we have to index into the result: <strong>button[0]</strong>. You should feel comfortable with either technique.</p>
+<h2 id="logging">Logging</h2>
+<p>In <strong>elf-log.js</strong>:</p>
+<pre><code class="lang-javascript">(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">
+    'use strict'</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">ElfLog</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">this</span>.debugLevel = <span class="hljs-keyword">this</span>.logLevelWarn;
+    }
+
+    <span class="hljs-comment">//var levels = ['error', 'warn', 'info', 'silent'];</span>
+    <span class="hljs-keyword">var</span> that;
+
+
+    ElfLog.prototype.logLevelError = <span class="hljs-number">0</span>;
+    ElfLog.prototype.logLevelWarn = <span class="hljs-number">1</span>;
+    ElfLog.prototype.logLevelDetails = <span class="hljs-number">2</span>;
+    ElfLog.prototype.logLevelInfo = <span class="hljs-number">3</span>;
+    ElfLog.prototype.logLevelSilent = <span class="hljs-number">4</span>;
+
+    ElfLog.prototype.debugLevel = <span class="hljs-literal">undefined</span>;
+
+    ElfLog.prototype.setLevel = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">level</span>) </span>{
+        <span class="hljs-keyword">this</span>.debugLevel = level;
+    };
+
+    ElfLog.prototype.log = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">level, message</span>) </span>{
+        <span class="hljs-comment">// console.log("Level:", level, 'debugLevel: ', this.debugLevel);</span>
+        <span class="hljs-keyword">if</span> (level &gt;= <span class="hljs-keyword">this</span>.debugLevel) {
+            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> message !== <span class="hljs-string">'string'</span>) {
+                message = <span class="hljs-built_in">JSON</span>.stringify(message);
+            }
+            <span class="hljs-built_in">console</span>.log(level+<span class="hljs-string">': '</span>+message);
+        }
+    };
+
+    that = <span class="hljs-keyword">new</span> ElfLog();
+    <span class="hljs-built_in">window</span>.elfLog = that;
+})();
+</code></pre>
+<h2 id="parse-behaviors">Parse Behaviors</h2>
+<p>This is <strong>parse-behavior.js</strong>:</p>
+<pre><code class="lang-javascript">var ElfParseBehaviors = <span class="hljs-list">(<span class="hljs-keyword">function</span><span class="hljs-list">()</span> {
+
+    <span class="hljs-quoted">'use</span> strict'<span class="hljs-comment">;</span>
+
+    var behaviors<span class="hljs-comment">;</span>
+    var that<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.infoCount = <span class="hljs-number">0</span><span class="hljs-comment">;</span>
+
+    function ParseBehaviors<span class="hljs-list">(<span class="hljs-keyword">behaviorsInit</span>)</span> {
+        behaviors = behaviorsInit<span class="hljs-comment">;</span>
+        that = this<span class="hljs-comment">;</span>
+    }
+
+    var getInfoCount = function<span class="hljs-list">()</span> {
+        elfLog.log<span class="hljs-list">(<span class="hljs-keyword">elfLog</span>.logLevelDetails, <span class="hljs-quoted">'ParseBehaviors</span>.getInfoCount called')</span><span class="hljs-comment">;</span>
+        var count = <span class="hljs-number">0</span><span class="hljs-comment">;</span>
+        $.each<span class="hljs-list">(<span class="hljs-keyword">behaviors</span>.result, function<span class="hljs-list">(<span class="hljs-keyword">index</span>, item)</span> {
+            // console.log<span class="hljs-list">(<span class="hljs-keyword">typeof</span> item)</span><span class="hljs-comment">;</span>
+            if <span class="hljs-list">(<span class="hljs-keyword">item</span>.indexOf<span class="hljs-list">('[I]')</span> !== <span class="hljs-number">-1</span>)</span> {
+                count++<span class="hljs-comment">;</span>
+            }
+        })</span><span class="hljs-comment">;</span>
+        that.infoCount = count<span class="hljs-comment">;</span>
+        return count<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.getBehaviors = function<span class="hljs-list">()</span> {
+        elfLog.log<span class="hljs-list">(<span class="hljs-keyword">elfLog</span>.logLevelDetails, <span class="hljs-quoted">'ParseBehaviors</span>.getBehaviors called')</span><span class="hljs-comment">;</span>
+        var infoCount = getInfoCount<span class="hljs-list">(<span class="hljs-keyword">behaviors</span>.result)</span><span class="hljs-comment">;</span>
+        return JSON.parse<span class="hljs-list">(<span class="hljs-keyword">elfBehaviors</span>.result[infoCount])</span><span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.getBehaviorsAsArray = function<span class="hljs-list">()</span> {
+        elfLog.log<span class="hljs-list">(<span class="hljs-keyword">elfLog</span>.logLevelDetails, <span class="hljs-quoted">'ParseBehaviors</span>.getBehaviorAsArray called')</span><span class="hljs-comment">;</span>
+        var b = this.getBehaviors<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var arrayOfBehaviorArrays = []<span class="hljs-comment">;</span>
+        $.each<span class="hljs-list">(<span class="hljs-keyword">b</span>, function<span class="hljs-list">(<span class="hljs-keyword">index</span>, value)</span> {
+            var behaviorArray = value.split<span class="hljs-list">(<span class="hljs-quoted">'/</span>')</span><span class="hljs-comment">;</span>
+            arrayOfBehaviorArrays.push<span class="hljs-list">(<span class="hljs-keyword">behaviorArray</span>)</span><span class="hljs-comment">;</span>
+        })</span><span class="hljs-comment">;</span>
+        return arrayOfBehaviorArrays<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    function isNotInArray<span class="hljs-list">(<span class="hljs-keyword">value</span>, valueArray)</span> {
+        return <span class="hljs-list">(<span class="hljs-keyword">valueArray</span>.indexOf<span class="hljs-list">(<span class="hljs-keyword">value</span>)</span> === <span class="hljs-number">-1</span>)</span><span class="hljs-comment">;</span>
+    }
+
+    ParseBehaviors.prototype.getAnimationTypes = function<span class="hljs-list">()</span> {
+        elfLog.log<span class="hljs-list">(<span class="hljs-keyword">elfLog</span>.logLevelDetails, <span class="hljs-quoted">'ParseBehaviors</span>.getAnimationTypes called')</span><span class="hljs-comment">;</span>
+        var b = this.getBehaviorsAsArray<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var animationTypes = []<span class="hljs-comment">;</span>
+        $.each<span class="hljs-list">(<span class="hljs-keyword">b</span>, function<span class="hljs-list">(<span class="hljs-keyword">index</span>, valueArray)</span> {
+            var value = valueArray[<span class="hljs-number">1</span>]<span class="hljs-comment">;</span>
+            if <span class="hljs-list">(<span class="hljs-keyword">valueArray</span>[<span class="hljs-number">0</span>] === <span class="hljs-quoted">'animations</span>' <span class="hljs-keyword">&amp;&amp;</span> isNotInArray<span class="hljs-list">(<span class="hljs-keyword">value</span>, animationTypes)</span>)</span> {
+                animationTypes.push<span class="hljs-list">(<span class="hljs-keyword">value</span>)</span><span class="hljs-comment">;</span>
+            }
+        })</span><span class="hljs-comment">;</span>
+        return animationTypes<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    /* ParseBehaviors.prototype.getAnimationTypes = function<span class="hljs-list">()</span> {
+        var b = this.getBehaviorsAsArray<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var animationTypes = []<span class="hljs-comment">;</span>
+        $.each<span class="hljs-list">(<span class="hljs-keyword">b</span>, function <span class="hljs-list">(<span class="hljs-keyword">index</span>, valueArray)</span> {
+            var value = valueArray[<span class="hljs-number">1</span>]<span class="hljs-comment">;</span>
+            if <span class="hljs-list">(<span class="hljs-keyword">valueArray</span>[<span class="hljs-number">0</span>] === <span class="hljs-quoted">'animations</span>' <span class="hljs-keyword">&amp;&amp;</span> isNotInArray<span class="hljs-list">(<span class="hljs-keyword">value</span>, animationTypes)</span>)</span> {
+                animationTypes.push<span class="hljs-list">(<span class="hljs-keyword">value</span>)</span><span class="hljs-comment">;</span>
+            }
+        })</span><span class="hljs-comment">;</span>
+        return animationTypes<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">; */</span>
+
+    ParseBehaviors.prototype.getAnimationCategoryFromType = function<span class="hljs-list">(<span class="hljs-keyword">type</span>)</span> {
+        elfLog.log<span class="hljs-list">(<span class="hljs-keyword">elfLog</span>.logLevelDetails, <span class="hljs-quoted">'ParseBehaviors</span>.getAnimationCategoryFromType called')</span><span class="hljs-comment">;</span>
+        var b = this.getBehaviorsAsArray<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var animationCategories = []<span class="hljs-comment">;</span>
+        $.each<span class="hljs-list">(<span class="hljs-keyword">b</span>, function<span class="hljs-list">(<span class="hljs-keyword">index</span>, valueArray)</span> {
+            var value = valueArray[<span class="hljs-number">2</span>]<span class="hljs-comment">;</span>
+            if <span class="hljs-list">(<span class="hljs-keyword">valueArray</span>[<span class="hljs-number">0</span>] === <span class="hljs-quoted">'animations</span>' <span class="hljs-keyword">&amp;&amp;</span> valueArray[<span class="hljs-number">1</span>] === type <span class="hljs-keyword">&amp;&amp;</span> isNotInArray<span class="hljs-list">(<span class="hljs-keyword">value</span>, animationCategories)</span>)</span> {
+                animationCategories.push<span class="hljs-list">(<span class="hljs-keyword">value</span>)</span><span class="hljs-comment">;</span>
+            }
+        })</span><span class="hljs-comment">;</span>
+        return animationCategories<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.getAnimationActions = function<span class="hljs-list">(<span class="hljs-keyword">type</span>, category)</span> {
+        elfLog.log<span class="hljs-list">(<span class="hljs-keyword">elfLog</span>.logLevelDetails, <span class="hljs-quoted">'ParseBehaviors</span>.getAnimationActions called')</span><span class="hljs-comment">;</span>
+        var b = this.getBehaviorsAsArray<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var animationActions = []<span class="hljs-comment">;</span>
+        $.each<span class="hljs-list">(<span class="hljs-keyword">b</span>, function<span class="hljs-list">(<span class="hljs-keyword">index</span>, valueArray)</span> {
+            var value = valueArray[<span class="hljs-number">3</span>]<span class="hljs-comment">;</span>
+            if <span class="hljs-list">(<span class="hljs-keyword">valueArray</span>[<span class="hljs-number">0</span>] === <span class="hljs-quoted">'animations</span>' <span class="hljs-keyword">&amp;&amp;</span>
+                valueArray[<span class="hljs-number">1</span>] === type <span class="hljs-keyword">&amp;&amp;</span>
+                valueArray[<span class="hljs-number">2</span>] === category <span class="hljs-keyword">&amp;&amp;</span>
+                isNotInArray<span class="hljs-list">(<span class="hljs-keyword">value</span>, animationActions)</span>)</span> {
+                animationActions.push<span class="hljs-list">(<span class="hljs-keyword">value</span>)</span><span class="hljs-comment">;</span>
+            }
+        })</span><span class="hljs-comment">;</span>
+        return animationActions<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.getAnimations = function<span class="hljs-list">()</span> {
+        elfLog.log<span class="hljs-list">(<span class="hljs-keyword">elfLog</span>.logLevelDetails, <span class="hljs-quoted">'ParseBehaviors</span>.getAnimations called')</span><span class="hljs-comment">;</span>
+        var b = this.getBehaviors<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var singleBehavior<span class="hljs-comment">;</span>
+        $.each<span class="hljs-list">(<span class="hljs-keyword">b</span>, function<span class="hljs-list">(<span class="hljs-keyword">index</span>, value)</span> {
+            // singleBehavior = index + ': ' + value.split<span class="hljs-list">(<span class="hljs-quoted">'/</span>')</span> + '\n'<span class="hljs-comment">;</span>
+            singleBehavior = index + ': [' + value.split<span class="hljs-list">(<span class="hljs-quoted">'/</span>')</span> + ']\n'<span class="hljs-comment">;</span>
+            console.log<span class="hljs-list">(<span class="hljs-keyword">singleBehavior</span>)</span><span class="hljs-comment">;</span>
+            $<span class="hljs-list">(<span class="hljs-quoted">'#robotResult</span>')</span>.append<span class="hljs-list">(<span class="hljs-keyword">singleBehavior</span>)</span><span class="hljs-comment">;</span>
+        })</span><span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    return ParseBehaviors<span class="hljs-comment">;</span>
+
+})</span><span class="hljs-list">()</span><span class="hljs-comment">;</span>
+</code></pre>
+<h2 id="the-robot">The Robot</h2>
+<pre><code class="lang-javascript">
+var ElfParseBehaviors = <span class="hljs-list">(<span class="hljs-keyword">function</span><span class="hljs-list">()</span> {
+
+    <span class="hljs-quoted">'use</span> strict'<span class="hljs-comment">;</span>
+
+    var behaviors<span class="hljs-comment">;</span>
+    var that<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.infoCount = <span class="hljs-number">0</span><span class="hljs-comment">;</span>
+
+    function ParseBehaviors<span class="hljs-list">(<span class="hljs-keyword">behaviorsInit</span>)</span> {
+        behaviors = behaviorsInit<span class="hljs-comment">;</span>
+        that = this<span class="hljs-comment">;</span>
+    }
+
+    var getInfoCount = function<span class="hljs-list">()</span> {
+        elfLog.log<span class="hljs-list">(<span class="hljs-keyword">elfLog</span>.logLevelDetails, <span class="hljs-quoted">'ParseBehaviors</span>.getInfoCount called')</span><span class="hljs-comment">;</span>
+        var count = <span class="hljs-number">0</span><span class="hljs-comment">;</span>
+        $.each<span class="hljs-list">(<span class="hljs-keyword">behaviors</span>.result, function<span class="hljs-list">(<span class="hljs-keyword">index</span>, item)</span> {
+            // console.log<span class="hljs-list">(<span class="hljs-keyword">typeof</span> item)</span><span class="hljs-comment">;</span>
+            if <span class="hljs-list">(<span class="hljs-keyword">item</span>.indexOf<span class="hljs-list">('[I]')</span> !== <span class="hljs-number">-1</span>)</span> {
+                count++<span class="hljs-comment">;</span>
+            }
+        })</span><span class="hljs-comment">;</span>
+        that.infoCount = count<span class="hljs-comment">;</span>
+        return count<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.getBehaviors = function<span class="hljs-list">()</span> {
+        elfLog.log<span class="hljs-list">(<span class="hljs-keyword">elfLog</span>.logLevelDetails, <span class="hljs-quoted">'ParseBehaviors</span>.getBehaviors called')</span><span class="hljs-comment">;</span>
+        var infoCount = getInfoCount<span class="hljs-list">(<span class="hljs-keyword">behaviors</span>.result)</span><span class="hljs-comment">;</span>
+        return JSON.parse<span class="hljs-list">(<span class="hljs-keyword">elfBehaviors</span>.result[infoCount])</span><span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.getBehaviorsAsArray = function<span class="hljs-list">()</span> {
+        elfLog.log<span class="hljs-list">(<span class="hljs-keyword">elfLog</span>.logLevelDetails, <span class="hljs-quoted">'ParseBehaviors</span>.getBehaviorAsArray called')</span><span class="hljs-comment">;</span>
+        var b = this.getBehaviors<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var arrayOfBehaviorArrays = []<span class="hljs-comment">;</span>
+        $.each<span class="hljs-list">(<span class="hljs-keyword">b</span>, function<span class="hljs-list">(<span class="hljs-keyword">index</span>, value)</span> {
+            var behaviorArray = value.split<span class="hljs-list">(<span class="hljs-quoted">'/</span>')</span><span class="hljs-comment">;</span>
+            arrayOfBehaviorArrays.push<span class="hljs-list">(<span class="hljs-keyword">behaviorArray</span>)</span><span class="hljs-comment">;</span>
+        })</span><span class="hljs-comment">;</span>
+        return arrayOfBehaviorArrays<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    function isNotInArray<span class="hljs-list">(<span class="hljs-keyword">value</span>, valueArray)</span> {
+        return <span class="hljs-list">(<span class="hljs-keyword">valueArray</span>.indexOf<span class="hljs-list">(<span class="hljs-keyword">value</span>)</span> === <span class="hljs-number">-1</span>)</span><span class="hljs-comment">;</span>
+    }
+
+    ParseBehaviors.prototype.getAnimationTypes = function<span class="hljs-list">()</span> {
+        elfLog.log<span class="hljs-list">(<span class="hljs-keyword">elfLog</span>.logLevelDetails, <span class="hljs-quoted">'ParseBehaviors</span>.getAnimationTypes called')</span><span class="hljs-comment">;</span>
+        var b = this.getBehaviorsAsArray<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var animationTypes = []<span class="hljs-comment">;</span>
+        $.each<span class="hljs-list">(<span class="hljs-keyword">b</span>, function<span class="hljs-list">(<span class="hljs-keyword">index</span>, valueArray)</span> {
+            var value = valueArray[<span class="hljs-number">1</span>]<span class="hljs-comment">;</span>
+            if <span class="hljs-list">(<span class="hljs-keyword">valueArray</span>[<span class="hljs-number">0</span>] === <span class="hljs-quoted">'animations</span>' <span class="hljs-keyword">&amp;&amp;</span> isNotInArray<span class="hljs-list">(<span class="hljs-keyword">value</span>, animationTypes)</span>)</span> {
+                animationTypes.push<span class="hljs-list">(<span class="hljs-keyword">value</span>)</span><span class="hljs-comment">;</span>
+            }
+        })</span><span class="hljs-comment">;</span>
+        return animationTypes<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    /* ParseBehaviors.prototype.getAnimationTypes = function<span class="hljs-list">()</span> {
+        var b = this.getBehaviorsAsArray<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var animationTypes = []<span class="hljs-comment">;</span>
+        $.each<span class="hljs-list">(<span class="hljs-keyword">b</span>, function <span class="hljs-list">(<span class="hljs-keyword">index</span>, valueArray)</span> {
+            var value = valueArray[<span class="hljs-number">1</span>]<span class="hljs-comment">;</span>
+            if <span class="hljs-list">(<span class="hljs-keyword">valueArray</span>[<span class="hljs-number">0</span>] === <span class="hljs-quoted">'animations</span>' <span class="hljs-keyword">&amp;&amp;</span> isNotInArray<span class="hljs-list">(<span class="hljs-keyword">value</span>, animationTypes)</span>)</span> {
+                animationTypes.push<span class="hljs-list">(<span class="hljs-keyword">value</span>)</span><span class="hljs-comment">;</span>
+            }
+        })</span><span class="hljs-comment">;</span>
+        return animationTypes<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">; */</span>
+
+    ParseBehaviors.prototype.getAnimationCategoryFromType = function<span class="hljs-list">(<span class="hljs-keyword">type</span>)</span> {
+        elfLog.log<span class="hljs-list">(<span class="hljs-keyword">elfLog</span>.logLevelDetails, <span class="hljs-quoted">'ParseBehaviors</span>.getAnimationCategoryFromType called')</span><span class="hljs-comment">;</span>
+        var b = this.getBehaviorsAsArray<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var animationCategories = []<span class="hljs-comment">;</span>
+        $.each<span class="hljs-list">(<span class="hljs-keyword">b</span>, function<span class="hljs-list">(<span class="hljs-keyword">index</span>, valueArray)</span> {
+            var value = valueArray[<span class="hljs-number">2</span>]<span class="hljs-comment">;</span>
+            if <span class="hljs-list">(<span class="hljs-keyword">valueArray</span>[<span class="hljs-number">0</span>] === <span class="hljs-quoted">'animations</span>' <span class="hljs-keyword">&amp;&amp;</span> valueArray[<span class="hljs-number">1</span>] === type <span class="hljs-keyword">&amp;&amp;</span> isNotInArray<span class="hljs-list">(<span class="hljs-keyword">value</span>, animationCategories)</span>)</span> {
+                animationCategories.push<span class="hljs-list">(<span class="hljs-keyword">value</span>)</span><span class="hljs-comment">;</span>
+            }
+        })</span><span class="hljs-comment">;</span>
+        return animationCategories<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.getAnimationActions = function<span class="hljs-list">(<span class="hljs-keyword">type</span>, category)</span> {
+        elfLog.log<span class="hljs-list">(<span class="hljs-keyword">elfLog</span>.logLevelDetails, <span class="hljs-quoted">'ParseBehaviors</span>.getAnimationActions called')</span><span class="hljs-comment">;</span>
+        var b = this.getBehaviorsAsArray<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var animationActions = []<span class="hljs-comment">;</span>
+        $.each<span class="hljs-list">(<span class="hljs-keyword">b</span>, function<span class="hljs-list">(<span class="hljs-keyword">index</span>, valueArray)</span> {
+            var value = valueArray[<span class="hljs-number">3</span>]<span class="hljs-comment">;</span>
+            if <span class="hljs-list">(<span class="hljs-keyword">valueArray</span>[<span class="hljs-number">0</span>] === <span class="hljs-quoted">'animations</span>' <span class="hljs-keyword">&amp;&amp;</span>
+                valueArray[<span class="hljs-number">1</span>] === type <span class="hljs-keyword">&amp;&amp;</span>
+                valueArray[<span class="hljs-number">2</span>] === category <span class="hljs-keyword">&amp;&amp;</span>
+                isNotInArray<span class="hljs-list">(<span class="hljs-keyword">value</span>, animationActions)</span>)</span> {
+                animationActions.push<span class="hljs-list">(<span class="hljs-keyword">value</span>)</span><span class="hljs-comment">;</span>
+            }
+        })</span><span class="hljs-comment">;</span>
+        return animationActions<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.getAnimations = function<span class="hljs-list">()</span> {
+        elfLog.log<span class="hljs-list">(<span class="hljs-keyword">elfLog</span>.logLevelDetails, <span class="hljs-quoted">'ParseBehaviors</span>.getAnimations called')</span><span class="hljs-comment">;</span>
+        var b = this.getBehaviors<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        var singleBehavior<span class="hljs-comment">;</span>
+        $.each<span class="hljs-list">(<span class="hljs-keyword">b</span>, function<span class="hljs-list">(<span class="hljs-keyword">index</span>, value)</span> {
+            // singleBehavior = index + ': ' + value.split<span class="hljs-list">(<span class="hljs-quoted">'/</span>')</span> + '\n'<span class="hljs-comment">;</span>
+            singleBehavior = index + ': [' + value.split<span class="hljs-list">(<span class="hljs-quoted">'/</span>')</span> + ']\n'<span class="hljs-comment">;</span>
+            console.log<span class="hljs-list">(<span class="hljs-keyword">singleBehavior</span>)</span><span class="hljs-comment">;</span>
+            $<span class="hljs-list">(<span class="hljs-quoted">'#robotResult</span>')</span>.append<span class="hljs-list">(<span class="hljs-keyword">singleBehavior</span>)</span><span class="hljs-comment">;</span>
+        })</span><span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    return ParseBehaviors<span class="hljs-comment">;</span>
+
+})</span><span class="hljs-list">()</span><span class="hljs-comment">;</span>
+</code></pre>
+<h2 id="launcher-and-control">Launcher and Control</h2>
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    elfControl.initialize();
+});
+</code></pre>
+<p>And control:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfControl = {
+    initialize: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+
+        elfLog.setLevel(elfLog.logLevelDetails);
+
+        $(<span class="hljs-string">'#leftArm'</span>).click(elfArm.armServerCall);
+
+        $(<span class="hljs-string">'#behaviors'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+            elfRobot.callingRobot();
+            $.getJSON(<span class="hljs-string">'/behaviors'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result, status, details</span>) </span>{
+                elfDisplay.clear();
+                elfDisplay.appendRobotResult(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+            }).fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'error'</span>);
+            });
+        });
+
+        $(<span class="hljs-string">'#parse'</span>).click(elfRobot.parseBehaviors);
+        $(<span class="hljs-string">'#getAnimationCount'</span>).click(elfRobot.getAnimationCount);
+        $(<span class="hljs-string">'#showAllObjects'</span>).click(elfRobot.showAllObjects);
+        $(<span class="hljs-string">'#getAnimationTypes'</span>).click(elfRobot.getAnimationTypes);
+        $(<span class="hljs-string">'#getAnimationCategoryFromType'</span>).click(elfRobot.getAnimationCategoryFromType);
+        $(<span class="hljs-string">'#getAnimationActions'</span>).click(elfRobot.getAnimationActions);
+        $(<span class="hljs-string">'#network'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+            elfRobot.callingRobot();
+            elfRobot.basicServerCall(<span class="hljs-string">'/network'</span>);
+        });
+    }
+};
+</code></pre>
+<h2 id="display">Display</h2>
+<p>In <strong>display.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfDisplay = {
+
+    appendRobotResult: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value</span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        $(<span class="hljs-string">'#robotResult'</span>).append(value + <span class="hljs-string">'\n'</span>);
+    },
+
+    clear: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        $(<span class="hljs-string">'#robotResult'</span>).empty();
+    }
+};
+</code></pre>
 <h2 id="turn-it-in">Turn it in</h2>
 <p>For now, just make sure that you have:</p>
 <ul>
