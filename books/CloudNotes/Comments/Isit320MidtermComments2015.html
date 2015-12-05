@@ -18,6 +18,7 @@
 <li><a href="#content-block">Jade in Content Block</a></li>
 <li><a href="#when-to-load-dynamic">When to Load Scripts Dynamically</a></li>
 <li><a href="#debug-work-around">Script Debug Workaround</a></li>
+<li><a href="#handle-all-three-routes">Handle All Three Routes</a></li>
 <li><a href="#images">Images</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Week08-Midterm comments</p>
 <p>by Charlie Calvert</p>
@@ -63,7 +64,8 @@ GET /delicious 500 93.348 ms - 2369</span>
 </code></pre>
 <p>As you can see, without the good error handler, it is almost impossible to know what is wrong, with it, the problem becomes obvious right away. In particular, this error usually results from a missing <strong>include mixins...</strong> statement in our jade.</p>
 <h2 id="one-layout-jade">One layout.jade</h2>
-<p>A rather subtle, and quite pernicious, bug can be introduced in our programs if we try to <strong>extend</strong> the file called <strong>layout.jade</strong> in the wrong places. This bug took me awhile to track down, and appeared in more than one student&#39;s midterm. It can cause a strange, repetitive loading of our jade files that quickly brings a program to its knees.</p>
+<p>Make sure you insert only one copy of layout.jade in your project when it runs. An error occurs if load layout.jade from multiple files.</p>
+<p>This bug can be introduced in our programs if we try to <strong>extend</strong> the file called <strong>layout.jade</strong> in the wrong places. Making this mistake can cause a strange, repetitive loading of our jade files that quickly brings a program to its knees.</p>
 <p>Our single page application has one main page defined in <strong>index.jade</strong>. That page <strong>extends layout.jade</strong>:</p>
 <pre><code><span class="hljs-keyword">extends</span> layout
 <span class="hljs-preprocessor"><span class="hljs-keyword">include</span> mixin-buttons
@@ -590,6 +592,35 @@ block content
 <ul>
 <li><a href="http://stackoverflow.com/a/691661/253576">Reference</a></li>
 </ul>
+<h2 id="handle-all-three-routes">Handle All Three Routes</h2>
+<p>Make sure that you have code in <strong>routes/index.js</strong> for handling all three routes that load the HTML for our application. There needs to be one route for <strong>Bitly</strong>, one for <strong>Delicious</strong>, and one for <strong>Twitter</strong>:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/delicious'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    res.render(<span class="hljs-string">'delicious'</span>, {
+        title: <span class="hljs-string">'Delcious'</span>
+    });
+});
+
+router.get(<span class="hljs-string">'/bitly'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'bitly called'</span>);
+    <span class="hljs-keyword">try</span> {
+        res.render(<span class="hljs-string">'bitly'</span>, {
+            title: <span class="hljs-string">'Bitly'</span>
+        });
+    } <span class="hljs-keyword">catch</span> (e) {
+        <span class="hljs-built_in">console</span>.log(e);
+        next(e);
+    }
+});
+
+router.get(<span class="hljs-string">'/twitter'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    res.render(<span class="hljs-string">'twitter'</span>, {
+        title: <span class="hljs-string">'Twitter'</span>
+    });
+});
+</code></pre>
 <h2 id="images">Images</h2>
 <p>The code from display.js that helps you create links for images in bitly.</p>
 <pre><code class="lang-javascript">hyperlinkUrl: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index, text, url</span>) </span>{
