@@ -2,7 +2,11 @@
 <li><a href="#grunt-check">Grunt Check</a></li>
 <li><a href="#setup-pages">Setup Pages</a></li>
 <li><a href="#methods-in-elfdelicious">Methods in elfDelicious</a></li>
-<li><a href="#forms-not-needed">Forms not Needed</a></li><!--TOC_End--></ul><h1 id="week11-hyperexplorer">Week11-HyperExplorer</h1>
+<li><a href="#forms-not-needed">Forms not Needed</a></li>
+<li><a href="#call-rendertable-and-appendurl">Call renderTable and appendUrl</a></li>
+<li><a href="#optional-tests">Optional Tests</a></li>
+<li><a href="#test-directories">Test Directories</a></li>
+<li><a href="#link-index">Link Index</a></li><!--TOC_End--></ul><h1 id="week11-hyperexplorer">Week11-HyperExplorer</h1>
 <p>by Charlie Calvert</p>
 <h2 id="grunt-check">Grunt Check</h2>
 <p>Be sure that <strong>grunt check</strong> passes. By this time, most of the errors returned from <strong>grunt jscs</strong> are probably pretty trivial, but be sure that you final is clean before turning it in. You should also be sure that <strong>grunt jshint</strong> passes.</p>
@@ -31,12 +35,13 @@
 }
 </code></pre>
 <h2 id="methods-in-elfdelicious">Methods in elfDelicious</h2>
-<p>Most of you delicious and twitter in objects. This means that your code in your jade files needs to reference this objects. Don&#39;t write this:</p>
+<p>Most of you delicious and twitter in objects. This means that your code in your jade files needs to qualify the methods in these objects with the object name. Don&#39;t write this:</p>
 <pre><code class="lang-javascript"><span class="hljs-tag">button</span><span class="hljs-class">.btn</span><span class="hljs-class">.btn-primary</span>(onclick=<span class="hljs-string">"delicious()"</span>) Search Delicious
 </code></pre>
 <p>Instead write this:</p>
 <pre><code class="lang-javascript"><span class="hljs-tag">button</span><span class="hljs-class">.btn</span><span class="hljs-class">.btn-primary</span>(onclick=<span class="hljs-string">"elfDelicious.delicious()"</span>) Search Delicious
 </code></pre>
+<p>The difference is <strong>delicious</strong> vs <strong>elfDelicious.delicious</strong>.</p>
 <h2 id="forms-not-needed">Forms not Needed</h2>
 <p>In most cases, we don&#39;t really need HTML <strong>forms</strong> for our code. But if you do use a form, be sure to handle the submit button in your setup methods for <strong>twitter</strong>, <strong>delicious</strong>, <strong>bitly</strong> or any place you use forms:</p>
 <pre><code class="lang-javascript">$(<span class="hljs-string">"#target"</span>).submit(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
@@ -58,4 +63,95 @@
 <pre><code class="lang-jade">+<span class="hljs-function"><span class="hljs-title">elfPanel</span><span class="hljs-params">(<span class="hljs-string">"Options"</span>)</span></span><span class="hljs-id">#target</span>.elfDiv
 </code></pre>
 <p>Whether you use HTML <strong>forms</strong> or not is up to you, but we have tended not to use them in most of our code.</p>
+<h2 id="call-rendertable-and-appendurl">Call renderTable and appendUrl</h2>
+<p>In your delicious code, and elsewhere, you want to make sure that you are calling <strong>appendUrl</strong> and perhaps also <strong>renderTable</strong> from inside of <strong>elfDelicious.callDelicious</strong> and inside of <strong>elfTwitter.search</strong> and <strong>elfTwitter.timeLine</strong>. Depending on your approach to this part of the project, some of your code might look a bit like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfDelicious = {
+
+    deliciousLinks: <span class="hljs-literal">null</span>,
+
+    deliciousSetup: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// CODE OMITTED HERE</span>
+    },
+
+    delicious: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        <span class="hljs-keyword">var</span> subject = $(<span class="hljs-string">'#subject'</span>).val();
+        elfDelicious.callDelicious(subject);
+    },
+
+    detailDelicious: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        $(<span class="hljs-string">'#deliciousDetails'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(elfDelicious.deliciousLinks[index], <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+    },
+
+    appendUrl: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index, deliciousLink</span>) </span>{
+        <span class="hljs-comment">// CODE OMITTED HERE</span>
+    },
+
+    callDelicious: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">subject</span>) </span>{
+<span class="hljs-pi">        'use strict'</span>;
+        <span class="hljs-keyword">var</span> feedUrl = <span class="hljs-string">'http://feeds.delicious.com/v2/json/charliecalvert/'</span> + subject;
+        $.ajax({
+            url: feedUrl,
+
+            dataType: <span class="hljs-string">'jsonp'</span>,
+
+            success: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+                <span class="hljs-comment">// SOMEWHERE IN HERE CALL APPEND URL</span>
+                <span class="hljs-comment">// IF YOU WANT THE TABLE, THEN ALSO CALL RENDERTABLE</span>
+            }
+        });
+    },
+
+    <span class="hljs-comment">// CODE OMITTED HERE</span>
+};
+</code></pre>
+<h2 id="optional-tests">Optional Tests</h2>
+<p>Most tests begin with <strong>test-</strong>. To include them, put this in the files object found in <strong>karma.conf.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-symbol">'spec</span>/test*.js',
+</code></pre>
+<p>Some tests are optional (extra credit) and begin with <strong>opt</strong>. These are mostly twitter tests, which were added so late in the quarter that I did not want to insist that you include them in the final. Instead I made them optional. These tests begin with <strong>spec/opt-test-</strong>. To include them, write the following in the <strong>files</strong> object found in <strong>karma.conf.js</strong> :</p>
+<pre><code class="lang-javascript"><span class="hljs-symbol">'spec</span>/opt-test*.js',
+</code></pre>
+<p>When included these tests in my project, I had about 126 total tests.</p>
+<p>You may also see some tests that begin <strong>charlie-test-</strong>. You can ignore these tests.</p>
+<h2 id="test-directories">Test Directories</h2>
+<p>In <strong>$ELF_TEMPLATES/UnitTest/HyperExplorer</strong> there are two directories called <strong>data</strong> and <strong>fixtures</strong>. Your data directory should hold files like:</p>
+<ul>
+<li>bitly-links.js</li>
+<li>delicious-javascript-links.js</li>
+<li>tweets.js</li>
+<li>tweets-timeline.js</li>
+</ul>
+<p>There is also a fixture directory. Your fixture directory should hold files like this:</p>
+<ul>
+<li>bitly.html</li>
+<li>delicious.html</li>
+<li>fixture.html</li>
+<li>test-local-cloud.html</li>
+<li>twitter.html</li>
+</ul>
+<p>To create some of the fixture code, expand the code in the files directory for <strong>karma.conf.js</strong>:</p>
+<pre><code class="lang-javascript">jade: {
+    compile: {
+        options: {
+            pretty: <span class="hljs-literal">true</span>,
+            data: {
+                debug: <span class="hljs-literal">false</span>
+            }
+        },
+        files: {
+            <span class="hljs-symbol">'spec</span>/fixtures/delicious.html': [<span class="hljs-symbol">'views</span>/delicious.jade', <span class="hljs-char">'$ELF_TEMPLATES/JadeMixins/*.jade'</span>],
+            <span class="hljs-symbol">'spec</span>/fixtures/fixture.html': [<span class="hljs-symbol">'views</span>/fixture.jade', <span class="hljs-char">'$ELF_TEMPLATES/JadeMixins/*.jade'</span>],
+            <span class="hljs-symbol">'spec</span>/fixtures/twitter.html': [<span class="hljs-symbol">'views</span>/twitter.jade', <span class="hljs-char">'$ELF_TEMPLATES/JadeMixins/*.jade'</span>]
+
+        }
+    }
+},
+</code></pre>
+<h2 id="link-index">Link Index</h2>
+<p>in bitly.js, in getLinks, set linkIndex to 0:</p>
+<pre><code class="lang-javascript">$.getJSON(url, function(<span class="hljs-literal">result</span>) {
+    elfBitly.linkIndex = <span class="hljs-number">0</span>;
+</code></pre>
 </div></body></html>
