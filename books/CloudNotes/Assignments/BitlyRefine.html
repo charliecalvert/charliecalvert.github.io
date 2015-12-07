@@ -9,7 +9,8 @@
 <li><a href="#set-up-the-title">Set up the Title</a></li>
 <li><a href="#unit-tests">Unit Tests</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
-<li><a href="#all-tests">Copy All Tests</a></li><!--TOC_End--></ul><h1 id="overview">Overview</h1>
+<li><a href="#all-tests">Copy All Tests</a></li>
+<li><a href="#delicious-links">Delicious Links</a></li><!--TOC_End--></ul><h1 id="overview">Overview</h1>
 <p>Your goal is to refine the BitlyInteractive program into something reasonably attractive and easy to use.</p>
 <p><a href="https://s3.amazonaws.com/bucket01.elvenware.com/images/BitlyRefine01.png"><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/BitlyRefine01Small.png" alt="BitlyRefine"></a></p>
 <h2 id="create-project">Create Project</h2>
@@ -312,4 +313,22 @@ ETC ...
 <pre><code class="lang-bash">cp <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/BitlyRefine/* spec/
 </code></pre>
 <p>Now the <strong>diff</strong> command should come back clean.</p>
+<h2 id="delicious-links">Delicious Links</h2>
+<p>elfDelicious.deliciousLInks should be declared like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-variable"><span class="hljs-keyword">var</span> elfDelicious</span> = {
+
+    deliciousLinks: <span class="hljs-literal">null</span>,
+</code></pre>
+<p>It should contain the contents of the delicious-javascript-links.js file which is part, I believe, of the Week0X.DeliciousQuery project. It is also in $ELF_TEMPLATES/WebServices. Once you find it, I would put it in Week1X-HyperExplore/spec/data directory. Make sure that Karma loads it by writing something like this in the files object of karma.conf.js:</p>
+<pre><code>'spec/<span class="hljs-typedef"><span class="hljs-keyword">data</span>/*.js'</span>
+</code></pre><p>That way both it and bitly-links.js will be loaded by karma. The file&#39;s contents should be loaded automatically and assigned to elfDelicious.deliciousLinks by this code in our tests:</p>
+<pre><code class="lang-javascript">beforeEach<span class="hljs-list">(<span class="hljs-keyword">function</span><span class="hljs-list">()</span> {
+    spyOn<span class="hljs-list">($, <span class="hljs-quoted">'ajax</span>')</span>.and.callFake<span class="hljs-list">(<span class="hljs-keyword">function</span><span class="hljs-list">(<span class="hljs-keyword">ajaxObject</span>)</span> {
+        ajaxObject.success<span class="hljs-list">(<span class="hljs-keyword">deliciousLinks</span>)</span><span class="hljs-comment">;</span>
+        return {
+            fail: function<span class="hljs-list">()</span> {}
+        }<span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+})</span><span class="hljs-comment">;</span>
+</code></pre>
 </div></body></html>
