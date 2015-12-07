@@ -2,6 +2,7 @@
 <li><a href="#focused-tests">Focused Tests</a></li>
 <li><a href="#async">Async</a></li>
 <li><a href="#spyon">SpyOn</a></li>
+<li><a href="#spyon-ajax">SpyOn Ajax</a></li>
 <li><a href="#install-jasmine-node">Install Jasmine-node</a></li>
 <li><a href="#create-route">Create Route</a></li>
 <li><a href="#basic-jasmine-node">Basic Jasmine-Node</a></li>
@@ -75,6 +76,75 @@ a string, the second a function. We expect the first parameter, the string, to
 be &quot;Sources.html&quot;. </p>
 <p>When we mock an object, it is never called. Instead it is stubbed. A fake object
 is put in its place.</p>
+<h2 id="spyon-ajax">SpyOn Ajax</h2>
+<p>Like this:</p>
+<pre><code class="lang-javascript">beforeEach<span class="hljs-list">(<span class="hljs-keyword">function</span><span class="hljs-list">()</span> {
+    spyOn<span class="hljs-list">($, <span class="hljs-quoted">'ajax</span>')</span>.and.callFake<span class="hljs-list">(<span class="hljs-keyword">function</span><span class="hljs-list">(<span class="hljs-keyword">ajaxObject</span>)</span> {
+        ajaxObject.success<span class="hljs-list">(<span class="hljs-keyword">deliciousLinks</span>)</span><span class="hljs-comment">;</span>
+        return {
+            fail: function<span class="hljs-list">()</span> {}
+        }<span class="hljs-comment">;</span>
+    })</span><span class="hljs-comment">;</span>
+})</span><span class="hljs-comment">;</span>
+</code></pre>
+<p>Or like this:</p>
+<pre><code class="lang-javascript">spyOn($, <span class="hljs-string">'getJSON'</span>).<span class="hljs-keyword">and</span>.callFake(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(url, success)</span></span> {
+    success(bitlyLinks);
+    <span class="hljs-keyword">return</span> {
+        fail: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span> {}
+    };
+});
+</code></pre>
+<p>Or, if you want to go all the way, handling, <strong>success</strong>, <strong>done</strong>, <strong>fail</strong> and <strong>always</strong>, then like this:</p>
+<pre><code class="lang-javascript">beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span></span> {
+    spyOn($, <span class="hljs-string">'getJSON'</span>).<span class="hljs-keyword">and</span>.callFake(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(url, params, success)</span></span> {
+        success(tweets);
+        <span class="hljs-keyword">return</span> {
+            done: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span></span> {
+                <span class="hljs-keyword">return</span> {
+                    fail: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span></span> {
+                        <span class="hljs-keyword">return</span> {
+                                always: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span></span> {
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    });
+});
+</code></pre>
+<p>The latter is for calls like this:</p>
+<pre><code class="lang-javascript">searchFull: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> searchQuery = $(<span class="hljs-string">'#searchQuery'</span>).val();
+    $.getJSON(<span class="hljs-string">'/search'</span>, {
+        <span class="hljs-string">'q'</span>: searchQuery
+    }, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{
+        $(<span class="hljs-string">'#tweetData'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+        elfTwitter.clearControls();
+        $.each(result.statuses, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">index, tweet</span>) </span>{
+            <span class="hljs-keyword">if</span> (tweet.entities.urls.length &gt; <span class="hljs-number">0</span>) {
+                elfTwitter.appendUrl(<span class="hljs-string">'#tweetList'</span>, index, tweet.text, tweet.entities.urls[<span class="hljs-number">0</span>].url);
+            } <span class="hljs-keyword">else</span> {
+                elfTwitter.renderTable(tweet.text, tweet.user.name);
+                $(<span class="hljs-string">'#tweetList'</span>).append(<span class="hljs-string">'&lt;li&gt;'</span> + tweet.text + <span class="hljs-string">'&lt;/li&gt;'</span>);
+            }
+        });
+    }).done(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'second success'</span>);
+        })
+        .fail(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">jqxhr, textStatus, error</span>) </span>{
+            <span class="hljs-keyword">var</span> err = textStatus + <span class="hljs-string">', '</span> + error;
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Request Failed: '</span> + err);
+            <span class="hljs-built_in">console</span>.log(jqxhr);
+            $(<span class="hljs-string">'#displayContainer'</span>).html(jqxhr.responseText);
+        })
+        .always(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Always'</span>);
+        });
+},
+</code></pre>
 <h1 id="install-jasmine-node">Install Jasmine-node</h1>
 <pre><code>sudo npm install -g jasmine-<span class="hljs-keyword">node</span><span class="hljs-identifier"></span><span class="hljs-title"></span>
 </code></pre><p>You will also want to install request locally:</p>
