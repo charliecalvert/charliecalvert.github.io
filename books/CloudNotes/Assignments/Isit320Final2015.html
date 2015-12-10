@@ -9,7 +9,9 @@
 <li><a href="#unit-test-count">Unit Test Count</a></li>
 <li><a href="#optional-tests">Optional Tests</a></li>
 <li><a href="#test-directories">Test Directories</a></li>
-<li><a href="#exclude-data-folder-from-jscs">Exclude Data Folder from JSCS</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#exclude-data-folder-from-jscs">Exclude Data Folder from JSCS</a></li>
+<li><a href="#changes">Changes</a></li>
+<li><a href="#showrecord">ShowRecord</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>This document describes the steps needed to complete the Final for Isit 320 in 2015.</p>
 <h2 id="goals">Goals</h2>
 <ul>
@@ -116,4 +118,23 @@
 <li>tweets-timeline.js</li>
 </ul>
 <p>Sometimes these files follow JSON syntax, which uses double quotes, while our JSCS rule says that we want to use single quotes. Since we did not really create the content for these files, and since we want to use their data exactly as it was sent to use by our web services, we should not edit them. The best solution I could see was just to exclude them from our JSCS tests. That way we could keep the data sent to us by delicious, twitter and bitly exactly as we got it without needing to change the rules for the rest of our code.</p>
+<h2 id="changes">Changes</h2>
+<p>I made some last minute changes on Thursday, Dec 10 in the AM</p>
+<p>I&#39;ve made yet one more change to <a href="http://www.ccalvert.net/books/CloudNotes/Comments/HyperExplorerComments.html#datatypeselection">elfDownloads.dataTypeSelection</a>.</p>
+<p>This change, which simplifies our code, does require a change to the last test in <strong>test-downloads.js</strong>, since we are now calling <strong>elfDownloads.getLinkData</strong> from inside the bitly options and not calling it at the end of the method. This is at least a somewhat cleaner design. The changed test:</p>
+<pre><code class="lang-javascript">it<span class="hljs-list">(<span class="hljs-quoted">'shows</span> that we don\<span class="hljs-quoted">'t</span> call to get more links on last line of radio button select', function<span class="hljs-list">()</span> {
+        spyOn<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>, <span class="hljs-quoted">'getLinkData</span>')</span><span class="hljs-comment">;</span>
+        elfDownloads.dataTypeSelection<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+        expect<span class="hljs-list">(<span class="hljs-keyword">elfDownloads</span>.getLinkData)</span>.not.toHaveBeenCalled<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+})</span><span class="hljs-comment">;</span>
+</code></pre>
+<p>Notice that we now call <strong>not.toHaveBeenCalled</strong>.</p>
+<p><strong>NOTE</strong>: <em>My recent changes to <strong>dataTypeSelection</strong> broke the old version of the test shown above. Therefore, you probably want to copy over the new versions of tests:</em></p>
+<pre><code>meld spec/ <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/HyperExplorer/
+</code></pre><p>Or, possibly copy them all over, with copy set to interactive mode. (Just remove the -i if you don&#39;t want to be prompted before each file is replaced:</p>
+<pre><code>cp -i <span class="hljs-variable">$ELF</span>_TEMPLATES/UnitTest/HyperExplorer/*.js spec/.
+</code></pre><h2 id="showrecord">ShowRecord</h2>
+<p>I noticed a few folks were still having trouble with matching the names in bitly.jade to the ID&#39;s used in <strong>elfDisplay.showRecord</strong>. As a result, I have written a new, optional set of unit tests called <strong>opt-test-bitly-show-record.js</strong>.</p>
+<p>I also moved one test out of <strong>test-interface.js</strong> and put it in <strong>opt-test-bitly-show-record.js</strong>. I made the move because the test was similar to whole series of tests that I created in <strong>opt-test-bitly-show-record.js</strong>. These tests simply check for the existence of an input control with a specific ID. These changes mean that you now have to use the same ID&#39;s I use for your input controls if you want the optional tests to pass, but it is, I hope, a small price to pay for helping people to get this part of their code to work.</p>
+<p>With all the required and optional unit tests, including those in <strong>charlie-test-delicious-analysis.js</strong>, we now have 153 tests.</p>
 </div></body></html>
