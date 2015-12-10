@@ -8,7 +8,8 @@
 <li><a href="#elastic-ip">Elastic IP</a></li>
 <li><a href="#unit-test-count">Unit Test Count</a></li>
 <li><a href="#optional-tests">Optional Tests</a></li>
-<li><a href="#test-directories">Test Directories</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#test-directories">Test Directories</a></li>
+<li><a href="#exclude-data-folder-from-jscs">Exclude Data Folder from JSCS</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>This document describes the steps needed to complete the Final for Isit 320 in 2015.</p>
 <h2 id="goals">Goals</h2>
 <ul>
@@ -99,4 +100,20 @@
     }
 },
 </code></pre>
+<h2 id="exclude-data-folder-from-jscs">Exclude Data Folder from JSCS</h2>
+<p>My configuration object for JSCS in <strong>Gruntfile.js</strong> looks like this:</p>
+<pre><code><span class="hljs-tag">jscs</span>: <span class="hljs-rules">{
+    <span class="hljs-rule"><span class="hljs-attribute">src</span>:<span class="hljs-value"> [<span class="hljs-string">'**/*.js'</span>, <span class="hljs-string">'!spec/data/*.js'</span>],
+    options: {
+        config: <span class="hljs-string">'.jscsrc'</span>
+    </span></span></span>}
+},
+</code></pre><p>This excludes the following files, that we did not create, from our JSCS tests:</p>
+<ul>
+<li>bitly-links.js</li>
+<li>delicious-javascript-links.js</li>
+<li>tweets.js</li>
+<li>tweets-timeline.js</li>
+</ul>
+<p>Sometimes these files follow JSON syntax, which uses double quotes, while our JSCS rule says that we want to use single quotes. Since we did not really create the content for these files, and since we want to use their data exactly as it was sent to use by our web services, we should not edit them. The best solution I could see was just to exclude them from our JSCS tests. That way we could keep the data sent to us by delicious, twitter and bitly exactly as we got it without needing to change the rules for the rest of our code.</p>
 </div></body></html>
