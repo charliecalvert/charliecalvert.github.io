@@ -133,7 +133,9 @@
 <pre><code class="lang-javascript"><span class="hljs-symbol">'spec</span>/opt-test*.js',
 </code></pre>
 <p>When included these tests in my project, I had about 126 total tests.</p>
-<p>You may also see some tests that begin <strong>charlie-test-</strong>. You can ignore these tests.</p>
+<p>You may also see some tests that begin <strong>charlie-test-</strong>. You can ignore these tests.  Of course, if you did want to use them, you should add the following to the <strong>files</strong> configuration object in <strong>karma.conf.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-symbol">'spec</span>/charlie-test*.js'
+</code></pre>
 <h2 id="test-directories">Test Directories</h2>
 <p>In <strong>$ELF_TEMPLATES/UnitTest/HyperExplorer</strong> there are two directories called <strong>data</strong> and <strong>fixtures</strong>. Your data directory should hold files like:</p>
 <ul>
@@ -190,21 +192,17 @@
 <pre><code class="lang-javascript">elfDownloads.dataTypeSelection = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
 <span class="hljs-pi">    'use strict'</span>;
     <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#localData'</span>).is(<span class="hljs-string">':checked'</span>)) {
-        $(<span class="hljs-string">'#radioButtonDisplay01'</span>).html(<span class="hljs-string">'You clicked Local'</span>);
-        <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> We shouldn't need to make this check</span>
+        <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> We shouldn't need to make this check?</span>
         <span class="hljs-keyword">if</span> (elfDownloads.dataType !== elfDownloads.dataTypes.dtLocal) {
             elfDownloads.dataType = elfDownloads.dataTypes.dtLocal;
             elfCallServer.loadBitly();
-        } <span class="hljs-keyword">else</span> {
-            <span class="hljs-keyword">return</span>;
+            elfDownloads.getLinkData();
         }
     } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#bitlyData'</span>).is(<span class="hljs-string">':checked'</span>)) {
-        $(<span class="hljs-string">'#radioButtonDisplay01'</span>).html(<span class="hljs-string">'You clicked Bitly '</span>);
         <span class="hljs-keyword">if</span> (elfDownloads.dataType !== elfDownloads.dataTypes.dtBitly) {
             elfDownloads.dataType = elfDownloads.dataTypes.dtBitly;
             elfCallServer.loadBitly();
-        } <span class="hljs-keyword">else</span> {
-            <span class="hljs-keyword">return</span>;
+            elfDownloads.getLinkData();
         }
     } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#deliciousData'</span>).is(<span class="hljs-string">':checked'</span>)) {
         <span class="hljs-keyword">if</span> (elfDownloads.dataType !== elfDownloads.dataTypes.dtDelicious) {
@@ -212,18 +210,13 @@
             elfDownloads.dataType = elfDownloads.dataTypes.dtDelicious;
             elfCallServer.loadDelicious();
         }
-        <span class="hljs-keyword">return</span>;
     } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#twitterData'</span>).is(<span class="hljs-string">':checked'</span>)) {
         <span class="hljs-keyword">if</span> (elfDownloads.dataType !== elfDownloads.dataTypes.dtTwitter) {
             $(<span class="hljs-string">'#radioButtonDisplay01'</span>).html(<span class="hljs-string">'You clicked Twitter '</span>);
             elfDownloads.dataType = elfDownloads.dataTypes.dtTwitter;
             elfCallServer.loadTwitter();
         }
-        <span class="hljs-keyword">return</span>;
-    } <span class="hljs-keyword">else</span> {
-        <span class="hljs-keyword">return</span>;
     }
-    elfDownloads.getLinkData();
 };
 </code></pre>
 </div></body></html>
