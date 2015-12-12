@@ -11,7 +11,8 @@
 <li><a href="#link-index">Link Index</a></li>
 <li><a href="#call-delicious">Call Delicious</a></li>
 <li><a href="#datatypeselection">DataTypeSelection</a></li>
-<li><a href="#delicious-radio-buttons">Delicious Radio Buttons</a></li><!--TOC_End--></ul><h1 id="week11-hyperexplorer">Week11-HyperExplorer</h1>
+<li><a href="#delicious-radio-buttons">Delicious Radio Buttons</a></li>
+<li><a href="#delicious-check-boxes">Delicious Check Boxes</a></li><!--TOC_End--></ul><h1 id="week11-hyperexplorer">Week11-HyperExplorer</h1>
 <p>by Charlie Calvert</p>
 <h2 id="images">Images</h2>
 <p>If you try to load an image and it fails, do this in your jade:</p>
@@ -219,7 +220,19 @@
 };
 </code></pre>
 <h2 id="delicious-radio-buttons">Delicious Radio Buttons</h2>
-<p>I used the bootstrap buttons that acted like radioButtons rather than real radioButtons, and so my code looked like this:</p>
+<p>I used the bootstrap buttons that acted like radioButtons rather than real radioButtons:</p>
+<pre><code class="lang-jade"><span class="hljs-tag">div</span><span class="hljs-class">.panel</span><span class="hljs-class">.panel-default</span>
+    <span class="hljs-tag">div</span><span class="hljs-class">.panel-heading</span> Click <span class="hljs-tag">a</span> <span class="hljs-tag">button</span> to search delicious
+    <span class="hljs-tag">div</span><span class="hljs-class">.panel-body</span>
+        <span class="hljs-tag">div</span><span class="hljs-class">.btn-group</span><span class="hljs-class">.elves</span>(role=<span class="hljs-string">"group"</span>)
+            <span class="hljs-tag">button</span><span class="hljs-class">.btn</span><span class="hljs-class">.btn-default</span>#<span class="hljs-function"><span class="hljs-title">radioJavaScript</span><span class="hljs-params">(type=<span class="hljs-string">"button"</span> name=<span class="hljs-string">'radioChoice'</span>)</span></span> JavaScript
+            <span class="hljs-tag">button</span><span class="hljs-class">.btn</span><span class="hljs-class">.btn-default</span>(type=<span class="hljs-string">"button"</span> name=<span class="hljs-string">'radioChoice'</span>) Bootstrap
+            <span class="hljs-tag">button</span><span class="hljs-class">.btn</span><span class="hljs-class">.btn-default</span>(type=<span class="hljs-string">"button"</span> name=<span class="hljs-string">'radioChoice'</span>) Node
+</code></pre>
+<p>Then I set it up like this <strong>elfDelicious.deliciousSetup</strong>:</p>
+<pre><code class="lang-jade">$('.btn-<span class="hljs-keyword">group</span> <span class="hljs-title">.btn</span>').click(elfDelicious.displayRadioButtonSelection);
+</code></pre>
+<p>And then handle clicks on the &quot;radio buttons&quot; like this:</p>
 <pre><code class="lang-javascript">displayRadioButtonSelection: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 <span class="hljs-pi">    'use strict'</span>;
     <span class="hljs-keyword">var</span> id = $(<span class="hljs-keyword">this</span>).text();
@@ -228,4 +241,21 @@
 }
 </code></pre>
 <p>We get the text from the button, which will be <strong>javascript</strong>, <strong>bootstrap</strong> or <strong>nodejs</strong>. Then we pass that string to <strong>callDelicious</strong> which retrieves the data for us.</p>
+<h2 id="delicious-check-boxes">Delicious Check Boxes</h2>
+<p>Some students had some trouble with the Delicious section. We should have something like this in <strong>deliciousSetup</strong>, where the name for all the check boxes is <strong>deliciousCheckBox</strong>:</p>
+<pre><code><span class="hljs-variable">$(</span><span class="hljs-string">'input[name=deliciousCheckBox]:checkbox'</span>).click(elfDelicious.displayCheckboxSelection);
+</code></pre><p>And then in the JADE, something like this, where we again spell out the name:</p>
+<pre><code><span class="hljs-tag">div</span><span class="hljs-class">.panel</span><span class="hljs-class">.panel-default</span>
+   <span class="hljs-tag">div</span><span class="hljs-class">.panel-heading</span> Select one or more CheckBoxes to search Delicious
+   <span class="hljs-tag">div</span><span class="hljs-class">.panel-body</span>
+       <span class="hljs-tag">div</span>
+           input#<span class="hljs-function"><span class="hljs-title">chJavaScript</span><span class="hljs-params">(type=<span class="hljs-string">'checkbox'</span>, name=<span class="hljs-string">'deliciousCheckBox'</span>, value=<span class="hljs-string">'JavaScript'</span>)</span></span>
+           <span class="hljs-function"><span class="hljs-title">label</span><span class="hljs-params">(for=<span class="hljs-string">'chJavaScript'</span>)</span></span> JavaScript
+       <span class="hljs-tag">div</span>
+           input#<span class="hljs-function"><span class="hljs-title">chBootstrap</span><span class="hljs-params">(type=<span class="hljs-string">'checkbox'</span>, name=<span class="hljs-string">'deliciousCheckBox'</span>, value=<span class="hljs-string">'Bootstrap'</span>)</span></span>
+           <span class="hljs-function"><span class="hljs-title">label</span><span class="hljs-params">(for=<span class="hljs-string">'chBootstrap'</span>)</span></span>  Bootstrap
+       <span class="hljs-tag">div</span>
+           input#<span class="hljs-function"><span class="hljs-title">chNodeJs</span><span class="hljs-params">(type=<span class="hljs-string">'checkbox'</span>, name=<span class="hljs-string">'deliciousCheckBox'</span>, value=<span class="hljs-string">'NodeJs'</span>)</span></span>
+           <span class="hljs-function"><span class="hljs-title">label</span><span class="hljs-params">(for=<span class="hljs-string">'chNodeJs'</span>)</span></span>  NodeJs
+</code></pre><p>It didn&#39;t really matter what the name of the checkboxes was, so long as it matched the name of the selector in <strong>deliciousSetup</strong>. In this case, the match was on the word <strong>deliciousCheckBox</strong>.</p>
 </div></body></html>
