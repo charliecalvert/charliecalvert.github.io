@@ -5,7 +5,7 @@
 var elf = {};
 
 elf.Control = (function() {
-
+    'use strict';
     function Control() {
         $('table').addClass('table-striped table-bordered');
         $("#Prog272Week09").click(function() {
@@ -19,6 +19,7 @@ elf.Control = (function() {
 })();
 
 $(document).ready(function() {
+    'use strict';
     console.log('Document ready called');
     new elf.Control();
 });
