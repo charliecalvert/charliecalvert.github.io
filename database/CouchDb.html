@@ -45,8 +45,8 @@ C:\Program Files (x86)\Apache Software Foundation\CouchDB</p>
 it. You can control Windows services via the control panel:</p>
 <pre><code>Control Panel<span class="hljs-string">\System</span> <span class="hljs-keyword">and</span> Security<span class="hljs-string">\Administrative</span> Tools
 </code></pre><p>The configuration file is likely stored here:</p>
-<pre><code>C:<span class="hljs-command">\Program</span> Files (x86)<span class="hljs-command">\Apache</span><span class="hljs-command">\CouchDB</span><span class="hljs-command">\etc</span><span class="hljs-command">\couchdb</span><span class="hljs-command">\default</span>.ini
-C:<span class="hljs-command">\Program</span> Files (x86)<span class="hljs-command">\Apache</span><span class="hljs-command">\CouchDB</span><span class="hljs-command">\etc</span><span class="hljs-command">\couchdb</span><span class="hljs-command">\local</span>.ini
+<pre><code>C:<span class="hljs-tag">\<span class="hljs-name">Program</span></span> Files (x86)<span class="hljs-tag">\<span class="hljs-name">Apache</span></span><span class="hljs-tag">\<span class="hljs-name">CouchDB</span></span><span class="hljs-tag">\<span class="hljs-name">etc</span></span><span class="hljs-tag">\<span class="hljs-name">couchdb</span></span><span class="hljs-tag">\<span class="hljs-name">default</span></span>.ini
+C:<span class="hljs-tag">\<span class="hljs-name">Program</span></span> Files (x86)<span class="hljs-tag">\<span class="hljs-name">Apache</span></span><span class="hljs-tag">\<span class="hljs-name">CouchDB</span></span><span class="hljs-tag">\<span class="hljs-name">etc</span></span><span class="hljs-tag">\<span class="hljs-name">couchdb</span></span><span class="hljs-tag">\<span class="hljs-name">local</span></span>.ini
 </code></pre><p>Apparently default.ini can be overwritten during an upgrade or install,
 so you might want to edit local.ini.</p>
 <p>For details, see this, which describes a hierarchy of configuration files:</p>
@@ -66,21 +66,21 @@ linux config file is here:</p>
 <pre><code><span class="hljs-regexp">/etc/</span>couchdb/<span class="hljs-keyword">default</span>.ini
 <span class="hljs-regexp">/etc/</span>couchdb/local.ini
 </code></pre><p>You can confirm the above by typing:</p>
-<pre><code>couch-config <span class="hljs-comment">--config-dir</span>
+<pre><code>couch-<span class="hljs-built_in">config</span> --<span class="hljs-built_in">config</span>-<span class="hljs-keyword">dir</span>
 </code></pre><p>Remember that local.ini will not be effected if you upgrade.</p>
 <p>You want to find the <strong>bind_address</strong> and change it from <strong>localhost</strong>
 (127.0.0.1) to the IP address of your server. </p>
 <p>On AWS, and possibly on your local Linux server, set the IP to 0.0.0.0 in local.ini:</p>
-<pre><code>[httpd]
-port = <span class="hljs-number">5984</span>
-bind_address = <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span>
+<pre><code><span class="hljs-section">[httpd]</span>
+<span class="hljs-attr">port</span> = <span class="hljs-number">5984</span>
+<span class="hljs-attr">bind_address</span> = <span class="hljs-number">0.0</span>.<span class="hljs-number">0.0</span>
 </code></pre><p>The bind address by default is set to localhost (127.0.0.1). That is fine if you only access the database from your current server. But if you want to access it from another machine, you can change it to 0.0.0.0. I have a feeling this might not be very secure, but you should not be using the document as a guide to setting up your release server. I&#39;m just getting you up and running so you can do development in a relatively trusted environment.</p>
 <p>Near the bottom of <strong>local.ini</strong> you can set the password for the administrator. The process is much the same as that described above. Look for the section called <strong>[admins]</strong> and set the <strong>admin</strong> password to something appropriate for you. I believe that it looks like this by default:</p>
-<pre><code><span class="hljs-title">[admins]</span>
+<pre><code><span class="hljs-section">[admins]</span>
 <span class="hljs-comment">;admin = mysecretpassword</span>
 </code></pre><p>Since the semicolon is a comment in these kinds of files, change it to look like this:</p>
-<pre><code><span class="hljs-title">[admins]</span>
-<span class="hljs-setting">admin = <span class="hljs-value">unbreakable</span></span>
+<pre><code><span class="hljs-section">[admins]</span>
+<span class="hljs-attr">admin</span> = unbreakable
 </code></pre><p>You can use <strong>nano</strong> or <strong>vim</strong> or the editor of your choice to edit the 
 <strong>ini</strong> file. If you are trying to run curl on your AWS server to talk to CouchDb
 after changing the IP address to 0.0.0.0 then you can just use localhost:</p>
@@ -101,17 +101,17 @@ provides more security and should hide your password when it is sent.</p>
 <pre><code>sudo service couchdb <span class="hljs-literal">stop</span>
 sudo service couchdb <span class="hljs-literal">start</span>
 </code></pre><p>Old Method:</p>
-<pre><code>sudo /etc/init.d/couchdb <span class="hljs-operator"><span class="hljs-keyword">stop</span>
-sudo /etc/init.<span class="hljs-keyword">d</span>/couchdb <span class="hljs-keyword">start</span></span>
+<pre><code>sudo /etc/init.d/couchdb <span class="hljs-keyword">stop</span>
+sudo /etc/init.<span class="hljs-keyword">d</span>/couchdb <span class="hljs-keyword">start</span>
 </code></pre><p>Test your work from the linux command line:</p>
 <pre><code>curl <span class="hljs-string">http:</span><span class="hljs-comment">//192.168.2.19:5984/</span>
 </code></pre><p>If curl is not available or not your tool of choice, you can try it from a browser. That would probably be the preferred route to take on your Windows machine.</p>
 <h2 id="logging-in-with-http-authentication">Logging in with HTTP Authentication</h2>
 <p>You can access CouchDb with a library called <strong><a href="https://github.com/dscape/nano">nano</a></strong>. Do not confuse this library with the <strong>nano</strong> editor we use at he Linux command prompt. Here&#39;s how we normally log in with <strong>nano</strong>:</p>
-<pre><code>var nano = require<span class="hljs-list">(<span class="hljs-quoted">'nano</span>')</span><span class="hljs-list">(<span class="hljs-quoted">'http</span><span class="hljs-keyword">://192</span>.<span class="hljs-number">168.2</span>.<span class="hljs-number">21</span>:<span class="hljs-number">5984</span>')</span><span class="hljs-comment">;</span>
+<pre><code>var nano = require('nano')('http<span class="hljs-symbol">://192</span>.<span class="hljs-number">168.2</span>.<span class="hljs-number">21</span>:<span class="hljs-number">5984</span>')<span class="hljs-comment">;</span>
 </code></pre><p>Now let&#39;s log in as an adminstrator named <strong>ccalvert</strong> with an
 unbreakable password of <strong>foobar</strong>:</p>
-<pre><code>var nano = require<span class="hljs-list">(<span class="hljs-quoted">'nano</span>')</span><span class="hljs-list">(<span class="hljs-quoted">'http</span><span class="hljs-keyword">://ccalvert</span><span class="hljs-keyword">:foobar</span>@<span class="hljs-number">192.168</span>.<span class="hljs-number">2.21</span>:<span class="hljs-number">5984</span>')</span><span class="hljs-comment">;</span>
+<pre><code>var nano = require('nano')('http<span class="hljs-symbol">://ccalvert</span><span class="hljs-symbol">:foobar</span>@<span class="hljs-number">192.168</span>.<span class="hljs-number">2.21</span>:<span class="hljs-number">5984</span>')<span class="hljs-comment">;</span>
 </code></pre><h2 id="error-document-update-conflict">Error: Document Update Conflict</h2>
 <p>When you first start with CouchDb, you are likely to get &quot;Document 
 Update Conflict&quot; errors when you try to insert data. This error 
@@ -132,36 +132,36 @@ Express response object, the JSON data you want to insert, and the name
 you want to give your to document.</p>
 <pre><code><span class="hljs-keyword">var</span> sendToCouch = function(response, data, docName) { 
     <span class="hljs-keyword">var</span> <span class="hljs-keyword">prog</span> = nano.<span class="hljs-keyword">db</span>.<span class="hljs-keyword">use</span>(dbName);
-    <span class="hljs-keyword">prog</span>.<span class="hljs-literal">get</span>(docName, function(<span class="hljs-keyword">error</span>, existing) {
+    <span class="hljs-keyword">prog</span>.<span class="hljs-built_in">get</span>(docName, function(<span class="hljs-keyword">error</span>, existing) {
         <span class="hljs-keyword">if</span>(!<span class="hljs-keyword">error</span>) { 
-            console.<span class="hljs-literal">log</span>(<span class="hljs-string">"Document exists. Doing Update."</span>);
+            console.<span class="hljs-built_in">log</span>(<span class="hljs-string">"Document exists. Doing Update."</span>);
             data._rev = existing._rev;
             doInsert(response, data, docName);
         }  <span class="hljs-keyword">else</span> {
-            console.<span class="hljs-literal">log</span>(<span class="hljs-string">"Document does not exist. Doing insert."</span>);
+            console.<span class="hljs-built_in">log</span>(<span class="hljs-string">"Document does not exist. Doing insert."</span>);
             doInsert(response, data, docName);
         }
     });
 }
 </code></pre><p>The key line in the above code is this one, where we add the rev to
 the document we are inserting if it is an update scenario:</p>
-<pre><code><span class="hljs-typedef"><span class="hljs-keyword">data</span>._rev = existing._rev;</span>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">data</span>._rev = existing._rev;</span>
 </code></pre><p>Here is the doInsert method:</p>
-<pre><code><span class="hljs-keyword">var</span> doInsert = function(response, data, docName) {'<span class="hljs-keyword">use</span> strict';
-    <span class="hljs-keyword">var</span> <span class="hljs-keyword">prog</span> = nano.<span class="hljs-keyword">db</span>.<span class="hljs-keyword">use</span>(dbName);
-    <span class="hljs-keyword">prog</span>.insert(data, docName, function(<span class="hljs-keyword">err</span>, body) {
-        console.<span class="hljs-literal">log</span>('<span class="hljs-keyword">In</span> sendToCouch callback');
+<pre><code>var doInsert = function(response, data, docName) {<span class="hljs-string">'use strict'</span><span class="hljs-comment">;</span>
+    var prog = nano.db.use(dbName)<span class="hljs-comment">;</span>
+    prog.insert(data, docName, function(<span class="hljs-keyword">err</span>, body) {
+        console.log(<span class="hljs-string">'In sendToCouch callback'</span>)<span class="hljs-comment">;</span>
         <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">err</span>) {
             response.send({
                 <span class="hljs-string">"Result"</span> : <span class="hljs-string">"Success"</span>
-            });
-            <span class="hljs-keyword">return</span>;
+            })<span class="hljs-comment">;</span>
+            <span class="hljs-keyword">return</span><span class="hljs-comment">;</span>
         } <span class="hljs-keyword">else</span> {
-            response.send(500, <span class="hljs-keyword">err</span>);
-            <span class="hljs-keyword">return</span>;
+            response.send(<span class="hljs-number">500</span>, <span class="hljs-keyword">err</span>)<span class="hljs-comment">;</span>
+            <span class="hljs-keyword">return</span><span class="hljs-comment">;</span>
         }
-    });
-};
+    })<span class="hljs-comment">;</span>
+}<span class="hljs-comment">;</span>
 </code></pre><p>For a working example, see <a href="https://github.com/charliecalvert/JsObjects/tree/master/HtmlCssJavascript/UnitTestCouchDb01">UnitTestCouchDb01</a> in JsObjects.</p>
 <h2 id="design-documents">Design Documents</h2>
 <p>Use <a href="http://guide.couchdb.org/draft/design.html">design documents</a> to keep a list of your views. These are JSON documents tbat begin with an ID of <strong>_design/</strong>:</p>
@@ -201,29 +201,29 @@ to our CouchDb database.</p>
 <li><a href="https://github.com/dscape/nano#attachments-functions">https://github.com/dscape/nano#attachments-functions</a></li>
 <li><a href="http://wiki.apache.org/couchdb/HTTP_Document_API#Attachments">http://wiki.apache.org/couchdb/HTTP_Document_API#Attachments</a></li>
 </ul>
-<pre><code>app.get(<span class="hljs-string">"/attachHtml"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{<span class="hljs-string">'use strict'</span>;
-   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'/attachHtml called'</span>);
+<pre><code>app.get(<span class="hljs-string">"/attachHtml"</span>, function(request, response) {<span class="hljs-string">'use strict'</span><span class="hljs-comment">;</span>
+   console.log(<span class="hljs-string">'/attachHtml called'</span>)<span class="hljs-comment">;</span>
 
-   <span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
+   var fs = require(<span class="hljs-string">'fs'</span>)<span class="hljs-comment">;</span>
 
-    fs.readFile(__dirname + <span class="hljs-string">'/Templates/Basic.html'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, data</span>) </span>{
-        <span class="hljs-keyword">if</span> (!err) {
-            <span class="hljs-keyword">var</span> prog = nano.db.use(dbName);
+    fs.readFile(__dirname + <span class="hljs-string">'/Templates/Basic.html'</span>, function(<span class="hljs-keyword">err</span>, data) {
+        <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">err</span>) {
+            var prog = nano.db.use(dbName)<span class="hljs-comment">;</span>
             prog.attachment.insert(<span class="hljs-string">'basic'</span>, <span class="hljs-string">'basic.html'</span>, data, <span class="hljs-string">'text/html'</span>,
-                <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err1, body</span>) </span>{
+                function(err1, body) {
                 <span class="hljs-keyword">if</span> (!err1) {
-                    <span class="hljs-built_in">console</span>.log(body);
+                    console.log(body)<span class="hljs-comment">;</span>
                 } <span class="hljs-keyword">else</span> {
-                    <span class="hljs-built_in">console</span>.log(err1);
-                    response.send(<span class="hljs-number">500</span>, err1);
+                    console.log(err1)<span class="hljs-comment">;</span>
+                    response.send(<span class="hljs-number">500</span>, err1)<span class="hljs-comment">;</span>
                 }
-            });
+            })<span class="hljs-comment">;</span>
         } <span class="hljs-keyword">else</span> {
-            <span class="hljs-built_in">console</span>.log(err);
-            response.send(<span class="hljs-number">500</span>, err);
+            console.log(<span class="hljs-keyword">err</span>)<span class="hljs-comment">;</span>
+            response.send(<span class="hljs-number">500</span>, <span class="hljs-keyword">err</span>)<span class="hljs-comment">;</span>
         }
-    }); 
-});
+    })<span class="hljs-comment">; </span>
+})<span class="hljs-comment">;</span>
 </code></pre><h2 id="sending-back-express-and-nano-errors">Sending Back Express and Nano Errors</h2>
 <p>Send a 500 (Internal Server Error) HTTP Error code:</p>
 <pre><code>    <span class="hljs-keyword">function</span>(<span class="hljs-built_in">err</span>, body) {
@@ -240,7 +240,7 @@ to our CouchDb database.</p>
     }
 </code></pre><p>All that needs to be done is send the error code as the first parameter
 to response.send:</p>
-<pre><code><span class="hljs-built_in">response</span>.send(<span class="hljs-number">500</span>, <span class="hljs-built_in">err</span>);
+<pre><code>response.send(<span class="hljs-number">500</span>, <span class="hljs-keyword">err</span>)<span class="hljs-comment">;</span>
 </code></pre><p>Here is more information on HTTP code. As you can see, some are error
 codes, some -- such as 200 -- signify success. Your code (and many other
 tools) can decide what to do with an HTTP message depending on the 
@@ -274,13 +274,13 @@ message. By sending back a 500 HTTP Error Code we ensure that our
 error handler will be called. The <strong>showNanoError</strong> has special 
 processing for Nano messages, then we pass the whole error onto our
 regular Prog282 error handler. As you recall, it looks like this:</p>
-<pre><code>    var showError = <span class="hljs-keyword">function</span>(<span class="hljs-built_in">request</span>, ajaxOptions, thrownError) {
-        showDebug(<span class="hljs-string">"Error occurred: = "</span> + ajaxOptions + <span class="hljs-string">" "</span> + thrownError);
-        showDebug(<span class="hljs-built_in">request</span>.status);
-        showDebug(<span class="hljs-built_in">request</span>.statusText);
-        showDebug(<span class="hljs-built_in">request</span>.getAllResponseHeaders());
-        showDebug(<span class="hljs-built_in">request</span>.responseText);
-    };
+<pre><code>    var showError = function(request, ajaxOptions, thrownError) {
+        showDebug(<span class="hljs-string">"Error occurred: = "</span> + ajaxOptions + <span class="hljs-string">" "</span> + thrownError)<span class="hljs-comment">;</span>
+        showDebug(request.status)<span class="hljs-comment">;</span>
+        showDebug(request.statusText)<span class="hljs-comment">;</span>
+        showDebug(request.getAllResponseHeaders())<span class="hljs-comment">;</span>
+        showDebug(request.responseText)<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
 </code></pre><p>Clear there are ways to streamline this process, but even if it is 
 overkill, it is nonetheless likely to give you good error support during
 the development process.</p>
@@ -296,22 +296,22 @@ sudo apt-get install erlang
 cd myapp
 erica <span class="hljs-keyword">push</span> http:<span class="hljs-comment">//192.168.2.18:5984/myapp</span>
 </code></pre><p>Create an app called bar:</p>
-<pre><code><span class="hljs-label">erica</span> create-webapp appid<span class="hljs-label">=bar</span>
-<span class="hljs-label">cd</span> <span class="hljs-keyword">bar
-</span><span class="hljs-label">erica</span> <span class="hljs-keyword">push </span>http://<span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">2</span>.<span class="hljs-number">18</span>:<span class="hljs-number">5984</span>/<span class="hljs-keyword">bar</span>
+<pre><code><span class="hljs-symbol">erica</span> create-webapp appid<span class="hljs-symbol">=bar</span>
+<span class="hljs-symbol">cd</span> <span class="hljs-keyword">bar
+</span><span class="hljs-symbol">erica</span> <span class="hljs-keyword">push </span>http://<span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">2</span>.<span class="hljs-number">18</span>:<span class="hljs-number">5984</span>/<span class="hljs-keyword">bar</span>
 </code></pre><p>A script to install Erica on Linux.</p>
-<pre><code><span class="hljs-shebang">#!/bin/sh
+<pre><code><span class="hljs-meta">#!/bin/sh
 </span>
 sudo apt-get install erlang
 
 GIT_DIR=~/git
 ERICA_DIR=<span class="hljs-variable">$GIT_DIR</span>/erica
 
-<span class="hljs-keyword">if</span> [ ! <span class="hljs-operator">-d</span> <span class="hljs-string">"<span class="hljs-variable">$GIT_DIR</span>"</span> ]; <span class="hljs-keyword">then</span>
+<span class="hljs-keyword">if</span> [ ! <span class="hljs-_">-d</span> <span class="hljs-string">"<span class="hljs-variable">$GIT_DIR</span>"</span> ]; <span class="hljs-keyword">then</span>
     /bin/mkdir <span class="hljs-variable">$GIT_DIR</span>
 <span class="hljs-keyword">fi</span>
 
-<span class="hljs-keyword">if</span> [ ! <span class="hljs-operator">-d</span> <span class="hljs-string">"<span class="hljs-variable">$ERICA_DIR</span>"</span> ]; <span class="hljs-keyword">then</span>
+<span class="hljs-keyword">if</span> [ ! <span class="hljs-_">-d</span> <span class="hljs-string">"<span class="hljs-variable">$ERICA_DIR</span>"</span> ]; <span class="hljs-keyword">then</span>
     <span class="hljs-built_in">cd</span> <span class="hljs-variable">$GIT_DIR</span>
     git <span class="hljs-built_in">clone</span> git://github.com/benoitc/erica.git
     <span class="hljs-built_in">cd</span> erica
@@ -323,25 +323,25 @@ ERICA_DIR=<span class="hljs-variable">$GIT_DIR</span>/erica
 WORK_DIR=~/dev
 APP_DIR=<span class="hljs-variable">$WORK_DIR</span>/goober1
 
-<span class="hljs-keyword">if</span> [ ! <span class="hljs-operator">-d</span> <span class="hljs-string">"<span class="hljs-variable">$WORK_DIR</span>"</span> ]; <span class="hljs-keyword">then</span>
+<span class="hljs-keyword">if</span> [ ! <span class="hljs-_">-d</span> <span class="hljs-string">"<span class="hljs-variable">$WORK_DIR</span>"</span> ]; <span class="hljs-keyword">then</span>
     /bin/mkdir <span class="hljs-variable">$WORK_DIR</span>
 <span class="hljs-keyword">fi</span>
 
 <span class="hljs-built_in">cd</span> <span class="hljs-variable">$WORK_DIR</span>
-<span class="hljs-keyword">if</span> [ ! <span class="hljs-operator">-d</span> <span class="hljs-string">"<span class="hljs-variable">$APP_DIR</span>"</span> ]; <span class="hljs-keyword">then</span>
+<span class="hljs-keyword">if</span> [ ! <span class="hljs-_">-d</span> <span class="hljs-string">"<span class="hljs-variable">$APP_DIR</span>"</span> ]; <span class="hljs-keyword">then</span>
     mkdir <span class="hljs-variable">$APP_DIR</span>
     <span class="hljs-built_in">pwd</span>
     <span class="hljs-built_in">cd</span> <span class="hljs-variable">$APP_DIR</span>
     <span class="hljs-built_in">pwd</span>
     erica create-webapp
     <span class="hljs-built_in">cd</span> myapp
-    erica push http://<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">5984</span>/myapp
+    erica push http://127.0.0.1:5984/myapp
 <span class="hljs-keyword">fi</span>
 </code></pre><h2 id="couchapp">CouchApp</h2>
 <p>To install on Linux:</p>
 <pre><code>sudo apt-<span class="hljs-keyword">get</span> install couchdb -y
 </code></pre><p>Or, if you want to try the node version:</p>
-<pre><code>npm <span class="hljs-operator"><span class="hljs-keyword">install</span> -<span class="hljs-keyword">g</span> couchapp</span>
+<pre><code>npm <span class="hljs-keyword">install</span> -<span class="hljs-keyword">g</span> couchapp
 </code></pre><ul>
 <li><a href="http://couchapp.org/page/index">http://couchapp.org/page/index</a></li>
 <li><a href="http://couchapp.org/page/getting-started">http://couchapp.org/page/getting-started</a></li>
@@ -349,7 +349,7 @@ APP_DIR=<span class="hljs-variable">$WORK_DIR</span>/goober1
 </ul>
 <h3 id="install-couchapp">Install CouchApp</h3>
 <p>Here is how to install CouchApp for use with <strong>Node:</strong></p>
-<pre><code>npm <span class="hljs-operator"><span class="hljs-keyword">install</span> -<span class="hljs-keyword">g</span> couchapp</span>
+<pre><code>npm <span class="hljs-keyword">install</span> -<span class="hljs-keyword">g</span> couchapp
 </code></pre><p>To install couchapp without Node: </p>
 <ul>
 <li><a href="http://sourceforge.net/projects/pywin32/">http://sourceforge.net/projects/pywin32/</a></li>
@@ -358,7 +358,7 @@ APP_DIR=<span class="hljs-variable">$WORK_DIR</span>/goober1
 <p>When you are done, make sure couchapp.bat or couchapp.exe is on your path. If you installed
 via Python (rather than the totally stand alone option), this might mean
 you do add something like this to your path</p>
-<pre><code>c:<span class="hljs-command">\Python</span>27<span class="hljs-command">\Scripts</span>
+<pre><code>c:<span class="hljs-tag">\<span class="hljs-name">Python</span></span>27<span class="hljs-tag">\<span class="hljs-name">Scripts</span></span>
 </code></pre><p>It will be the scripts directory that holds you couchapp.bat file.</p>
 <h2 id="couchapp-pages">CouchApp Pages</h2>
 <p><a href="http://couchapp.org/page/pages-install">http://couchapp.org/page/pages-install</a>

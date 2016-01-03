@@ -1,0 +1,186 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>UpstartAndSystemd</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>UpstartAndSystemd</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#upstart">Upstart</a></li>
+<li><a href="#systemd">systemd</a></li>
+<li><a href="#elastic-ip">Elastic IP</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#hints">Hints</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<p>There are two ways to start projects on Ubuntu based distros:</p>
+<ul>
+<li>upstart</li>
+<li>systemd</li>
+</ul>
+<p>If you are using ubuntu 15.10 or above, you should use <strong>systemd</strong>. Before that, you should use <strong>upstart</strong>.</p>
+<p>Use the following command to get your ubuntu version number</p>
+<pre><code class="lang-bash">$ELF_UTILS/SetupLinuxBox/UbuntuReleaseNumber.sh
+</code></pre>
+<p>A sample run:</p>
+<pre><code class="lang-bash">$ELF_UTILS<span class="hljs-regexp">/SetupLinuxBox/</span>UbuntuReleaseNumber.sh 
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=<span class="hljs-number">15.10</span>
+DISTRIB_CODENAME=wily
+DISTRIB_DESCRIPTION=<span class="hljs-string">"Ubuntu 15.10"</span>
+No LSB modules are available.
+Distributor <span class="hljs-string">ID:</span>    Ubuntu
+<span class="hljs-string">Description:</span>    Ubuntu <span class="hljs-number">15.10</span>
+<span class="hljs-string">Release:</span>    <span class="hljs-number">15.10</span>
+<span class="hljs-string">Codename:</span>    wily
+</code></pre>
+<p>The contents of the script, at the time of this writing, is as follows:</p>
+<pre><code class="lang-bash">cat /etc/lsb-release
+lsb_release -<span class="hljs-literal">a</span>
+</code></pre>
+<p>Probably either command would do the job, but I run them both for completeness.</p>
+<h2 id="upstart">Upstart</h2>
+<p>Upstart can be used to keep your program running after you close 
+your shell and to ensure that it restarts automatically when you
+reboot the system. Take a momement to learn about upstart:</p>
+<ul>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/NodeCode/ExpressSend">UpStart Example in JsObjects</a></li>
+<li><a href="http://upstart.ubuntu.com/index.html">UpStart home page</a></li>
+</ul>
+<p>A sample script:</p>
+<pre><code class="lang-bash"><span class="hljs-comment"># This is an upstart script: http://upstart.ubuntu.com/index.html</span>
+description <span class="hljs-string">"a script to keep node.js server in memory even after rebooting"</span>
+author      <span class="hljs-string">"Charle Calvert - http://www.elvenware.com/charlie"</span>i
+
+<span class="hljs-comment"># Start after all drives mounted</span>
+<span class="hljs-built_in">start</span> <span class="hljs-keyword">on</span> <span class="hljs-title">started</span> <span class="hljs-title">mountall</span>
+<span class="hljs-built_in">stop</span> <span class="hljs-keyword">on</span> <span class="hljs-title">shutdown</span>
+
+<span class="hljs-comment"># Automatically Respawn:</span>
+respawn
+respawn limit <span class="hljs-number">99</span> <span class="hljs-number">5</span>
+
+script
+    export HOME=<span class="hljs-string">"/root"</span>
+
+<span class="hljs-comment"># The following assumes nodejs is in /usr/bin</span>
+<span class="hljs-comment"># It also assumes that the server is in /home/charlie/ExpressSend</span>
+    exec /usr/bin/nodejs /home/charlie/bin/hyperexplore/bin/www &gt;&gt; /var/<span class="hljs-built_in">log</span>/node.<span class="hljs-built_in">log</span> <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span>
+<span class="hljs-function"><span class="hljs-keyword">end</span> <span class="hljs-title">script</span></span>
+
+<span class="hljs-built_in">post</span>-<span class="hljs-built_in">start</span> script
+   <span class="hljs-comment"># Optionally put a script here that will notifiy you node has (re)started</span>
+   <span class="hljs-comment"># /root/bin/hoptoad.sh "node.js has started!"</span>
+<span class="hljs-function"><span class="hljs-keyword">end</span> <span class="hljs-title">script</span></span>
+</code></pre>
+<p>Create a link our project:</p>
+<pre><code class="lang-bash"><span class="hljs-variable">$ </span>ln -s ~<span class="hljs-regexp">/Git/isit</span>32<span class="hljs-number">0</span>-calvert-<span class="hljs-number">2015</span>/Week1<span class="hljs-number">0</span>-HyperExplore/ ~<span class="hljs-regexp">/bin/hyperexplore</span>
+</code></pre>
+<p>Our upstart script is called <strong>NodeRoutesParams</strong>. If you look inside it, you will see that
+it assumes your copy of NodeRoutesParams is in <strong>~/bin</strong>:</p>
+<pre><code>exec <span class="hljs-regexp">/usr/</span>bin<span class="hljs-regexp">/nodejs $HOME/</span>bin<span class="hljs-regexp">/NodeRoutesParams/</span>bin<span class="hljs-regexp">/www &gt;&gt; /</span>var<span class="hljs-regexp">/log/</span>node.log <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span>
+exec <span class="hljs-regexp">/usr/</span>bin<span class="hljs-regexp">/nodejs /</span>home<span class="hljs-regexp">/ubuntu/</span>bin<span class="hljs-regexp">/hyperexplore/</span>bin<span class="hljs-regexp">/www &gt;&gt; /</span>var<span class="hljs-regexp">/log/</span>node.log <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span>
+</code></pre><p>That is why we created a symbolic link in that folder. That way, regardless of where
+you keep <strong>NodeRoutesParams</strong> on your system, our script can find it.    </p>
+<p>Copy the <strong>NodeRoutesParams</strong> file to the <strong>/etc/init</strong> directory:</p>
+<pre><code>sudo cp hyper-explore<span class="hljs-selector-class">.conf</span> /etc/init/.
+</code></pre><p>Start the program</p>
+<pre><code>sudo <span class="hljs-literal">start</span> hyper-explore
+</code></pre><p>Stop the program</p>
+<pre><code>sudo <span class="hljs-literal">stop</span> hyper-explore
+</code></pre><p>If you reboot the system, your program will start automatically.</p>
+<p>Error messages and and other output are in: /var/log/node.log</p>
+<p>Browse to your instance:</p>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">elasticIp</span>&gt;</span>:30025/
+</code></pre><p>If you were testing all this out on your copy of Lubunutu,
+you would do this:</p>
+<pre><code><span class="hljs-number">127.0.0.1:30025</span>/
+</code></pre><h2 id="systemd">systemd</h2>
+<p>Upstart is being replaced by <strong>systemd</strong>. This caused a huge uproar in the Linux community, but it is happening. Fortunately, if you understand Upstart it is not hard to switch to <strong>systemd</strong>. You should switch to <strong>systemd</strong> if running on Ubuntu 15.10 or later, otherwise, stick with <strong>upstart</strong>.</p>
+<pre><code class="lang-bash">cat /etc/lsb-release
+$ELF_UTILS/SetupLinuxBox/UbuntuReleaseNumber.sh 
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=<span class="hljs-number">15.10</span>
+DISTRIB_CODENAME=wily
+DISTRIB_DESCRIPTION=<span class="hljs-string">"Ubuntu 15.10"</span>
+</code></pre>
+<p>A sample <strong>systemd</strong> start up script (aka service file) called <strong>hyper-explore.service</strong>:</p>
+<pre><code><span class="hljs-section">[Service]</span>
+<span class="hljs-attr">ExecStart</span>=/usr/bin/node /home/charlie/bin/hyperexplore/bin/www
+<span class="hljs-attr">Restart</span>=always
+<span class="hljs-attr">StandardOutput</span>=syslog
+<span class="hljs-attr">StandardError</span>=syslog
+<span class="hljs-attr">SyslogIdentifier</span>=hyper-explore
+<span class="hljs-attr">User</span>=charlie
+<span class="hljs-attr">Group</span>=charlie
+<span class="hljs-attr">Environment</span>=NODE_ENV=production
+<span class="hljs-section">
+[Install]</span>
+<span class="hljs-attr">WantedBy</span>=multi-user.target
+</code></pre><p>When examining the above, check carefully, looking for changes that you will need to make:</p>
+<ul>
+<li>ExecStart path to your <strong>bin/www</strong> file</li>
+<li>SyslogIdentifier</li>
+<li>User</li>
+<li>Group</li>
+</ul>
+<p>For instance, the <strong>User</strong> and <strong>Group</strong> would be <strong>ubuntu</strong> on EC2.</p>
+<p>Deploy the service file:</p>
+<pre><code>sudo cp hyper-explore.service <span class="hljs-regexp">/etc/</span>systemd<span class="hljs-regexp">/system/</span>.
+</code></pre><p>Start the service:</p>
+<pre><code>systemctl <span class="hljs-built_in">enable</span> hyper-explore
+systemctl start hyper-explore
+</code></pre><p>Get the status:</p>
+<pre><code>systemctl <span class="hljs-keyword">status</span> hyper-explore
+</code></pre><p>Sample output from status request when all is good:</p>
+<pre><code class="lang-bash">$ systemctl status hyper-explore
+● hyper-explore.service
+   Loaded: loaded (/etc/systemd/system/hyper-explore.service; enabled; vendor preset: enabled)
+   Active: active (running) since Thu <span class="hljs-number">2015</span>-<span class="hljs-number">12</span>-<span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">01</span> PST; <span class="hljs-number">4s</span> ago
+ Main PID: <span class="hljs-number">4102</span> (<span class="hljs-keyword">node</span><span class="hljs-title">)
+   CGroup</span>: /system.slice/hyper-explore.service
+           └─<span class="hljs-number">4102</span> /usr/bin/<span class="hljs-keyword">node</span> <span class="hljs-title">/home</span>/charlie/bin/hyperexplore/bin/www
+
+Dec <span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">01</span> forestpath systemd[<span class="hljs-number">1</span>]: <span class="hljs-literal">Started</span> hyper-explore.service.
+Dec <span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">02</span> forestpath <span class="hljs-keyword">node</span><span class="hljs-title">-sample</span>[<span class="hljs-number">4102</span>]: <span class="hljs-keyword">In</span> bin/www the environment is production
+</code></pre>
+<p>The first and second links below will get you up to speed fairly quickly.</p>
+<ul>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-deploy-node-js-applications-using-systemd-and-nginx">Sysdemd for Node Developers</a></li>
+<li><a href="http://patrakov.blogspot.com/2011/01/writing-systemd-service-files.html">Systemd get started</a></li>
+<li><a href="https://wiki.ubuntu.com/SystemdForUpstartUsers">SystemD for Upstart Users</a></li>
+</ul>
+<p>Other:</p>
+<ul>
+<li><a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/System_Administrators_Guide/sect-Managing_Services_with_systemd-Unit_Files.html">systemd on Redhat</a></li>
+</ul>
+<h2 id="elastic-ip">Elastic IP</h2>
+<p>Be sure that you create, properly associate and submit an <strong>Elastic IP</strong> for your instance running on EC2. In order to confirm that your project is running on EC2, I must be able to reach it, and I can&#39;t do that if you only have a <strong>Public IP</strong>. The <strong>Public IP</strong> addresses automatically associated with your instance on EC2 is not necessarily permanent. To create a permenant IP address, you need an <strong>Elastic IP</strong>, as explained <a href="http://www.elvenware.com/charlie/development/cloud/WebServices.html#elastic">here</a>.</p>
+<p><strong>NOTE</strong>: <em>Once you create an Elastic IP address, your Elastic IP and Public IP address are usually the same. At that point, your Public IP address should be permanent, but only because you have created an Elastic IP address and associated it with your instance.</em></p>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Submit the <strong>Elastic IP</strong> address of your instance running on EC2. I&#39;m not checking to see if the program is working correctly, only that it is running at all. Also, add your <strong>hyper-explore.conf</strong> and/or <strong>hyper-explore.service</strong> file to your <strong>HyperExplore</strong> project.</p>
+<h2 id="hints">Hints</h2>
+<p>The below is aimed at updstart users, but it should be obvious how it applies to those who might be using <strong>systemd</strong>. Here are some additional nodes:</p>
+<ul>
+<li>Create a <strong>hyper-explore.conf</strong> in your final folder.<ul>
+<li>Look at the <strong>JsObjects/JavaScript/NodeCode/ExpressSend</strong> project for hints</li>
+<li>In particular, modify the line that begins with the word <strong>exec</strong></li>
+</ul>
+</li>
+<li>In <strong>bin/www</strong> set the port to 30025 unless you are running more than one application</li>
+<li>If you are running more than one app, go to the AWS console and open up ports 30026, 30027, as described below:<ul>
+<li>Go to the AWS console for EC2 and select <strong>instances</strong></li>
+<li>Select your running instance (in green) from Instances Menu</li>
+<li>Check the name of the security group (launch-wizard-1)</li>
+<li>Select <strong>Security Groups</strong> from the menu</li>
+<li>Select your security group</li>
+<li>Choose <strong>Inbound | Edit | Add</strong></li>
+<li>Open ports 30026, 30027, etc and set the source to <strong>Anywhere.</strong></li>
+</ul>
+</li>
+<li>Copy hyper-explore.conf to <strong>/etc/init/hyper-explore.conf</strong><ul>
+<li>sudo cp hyper-explore.conf /etc/init/.</li>
+</ul>
+</li>
+<li>Create a link to your final folder from the bin folder:</li>
+</ul>
+<pre><code>ln -s ~<span class="hljs-regexp">/Git/isit</span>320-lastName-<span class="hljs-number">2015</span>/Week10-HyperExplore ~<span class="hljs-regexp">/bin/hyper</span>-explore;
+</code></pre><p>When everything is set up, test your work:</p>
+<pre><code>sudo <span class="hljs-literal">start</span> hyper-explore
+</code></pre><p>Then go to the appropriate URL and see if your application is working correctly. For problems, check the logs:</p>
+<p><strong>cat /var/log/node.conf</strong>.</p>
+<p>Or, on systemd:</p>
+<pre><code>systemctl <span class="hljs-keyword">status</span> hyper-explore
+</code></pre><p><strong>NOTE</strong>: <em>It is often simplest to do your work on your home machine. For instance, do your work on the Mac, in Pristince Lubuntu, or in Cloud 9. Then commit and push your work, and pull it on EC2. If you do decide to work on EC2, make sure you first commit all your work on your home machine, and then pull it on EC2. Then make your changes on EC2, commit and push, and then pull on your home machine.</em></p>
+</div></body></html>
