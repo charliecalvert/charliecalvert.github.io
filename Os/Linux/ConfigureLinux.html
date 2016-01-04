@@ -1,17 +1,17 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ConfigureLinux</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>ConfigureLinux</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#configure-linux">Configure Linux</a></li>
 <li><a href="#update-the-machine">Update the Machine</a></li>
+<li><a href="#gcc-make">Install gcc and make</a></li>
 <li><a href="#ubuntu-versions">Ubuntu Versions</a></li>
 <li><a href="#install-geany">Install Geany</a></li>
 <li><a href="#set-up-environment">Set up Environment</a></li>
 <li><a href="#install-git">Install Git</a></li>
 <li><a href="#install-node">Install Node</a></li>
 <li><a href="#install-lamp">Install Lamp</a></li>
-<li><a href="#install-mongodb">Install MongoDb</a></li>
 <li><a href="#install-ssh">Install SSH</a></li>
 <li><a href="#install-openjdk">Install OpenJdk</a></li>
 <li><a href="#install-oracle-sun-java">Install Oracle/Sun Java</a></li>
 <li><a href="#install-webstorm">Install WebStorm</a></li>
-<li><a href="#gcc-make">Install gcc and make</a></li><!--TOC_End--></ul><h1 id="configure-linux">Configure Linux</h1>
+<li><a href="#install-mongodb">Install MongoDb</a></li><!--TOC_End--></ul><h1 id="configure-linux">Configure Linux</h1>
 <p>I provide my students with a preconfigured version of Lubuntu. Nevertheless, there are various reasons why you might need to configure part or all of Linux box to use in one of my courses. This document is aimed to help both you and me configure Linux boxes.</p>
 <p>Your instance of Linux might be:</p>
 <ul>
@@ -31,20 +31,29 @@
 <h1 id="update-the-machine">Update the Machine</h1>
 <p>Our first job on a new install, and one that you should perform regularly after the install, is updating the OS. It is possible to have this done automatically, and in the Desktop versions there are tools to do it through the GUI called the Software updater. Nevertheless, I frequently do it by hand from the bash shell. </p>
 <p>To update from the shell (command prompt), all you need do is issue the following two commands.</p>
-<pre><code>sudo apt-<span class="hljs-built_in">get</span> <span class="hljs-keyword">update</span>
+<pre><code class="lang-bash">sudo apt-<span class="hljs-built_in">get</span> <span class="hljs-keyword">update</span>
 sudo apt-<span class="hljs-built_in">get</span> upgrade
-</code></pre><p>The process listed above is simple to perform, and usually completes in only a few minutes or less.</p>
-<h2 id="ubuntu-versions">Ubuntu Versions</h2>
-<p>An upgrade from one release (version) to another, takes longer. For instance, moving from Ubuntu 13.10 to 14.04 takes a long time. That is natural, since it is a more complex process. It would be like upgrading from Windows Vista to Windows 8. Only without the cost, and usually without the hassle. Please note that on slow machines an upgrade from one release to another release can take several hours. Nevertheless, if you want to update from one version of the distro to the next version, then use this command:</p>
-<pre><code><span class="hljs-keyword">do</span>-<span class="hljs-keyword">release</span>-<span class="hljs-keyword">upgrade</span>
-</code></pre><p>Ubuntu ships twice a year, once in April and once in October. It uses dates to track its <a href="https://wiki.ubuntu.com/Releases">releases</a>:</p>
+</code></pre>
+<p>The process listed above is simple to perform, and usually completes in only a few minutes or less.</p>
+<h2 id="gcc-make">Install gcc and make</h2>
+<p>Though not always necessary, it is a good idea to install to gcc and make. In particular, there are times when the VirtualBox Guest Additions appear to rely on having them installed. These utilities are not always needed, but I the need is just frequent enough to make it worthwhile installing them.</p>
+<p>The steps are simple. You have probably already done the first two, but just in case, I will remind you to be sure your system is up to date before installing <strong>gcc</strong>.</p>
+<pre><code>sudo apt-get <span class="hljs-keyword">update</span>
+sudo apt-<span class="hljs-keyword">get</span> <span class="hljs-keyword">upgrade</span>
+sudo apt-<span class="hljs-keyword">get</span> <span class="hljs-keyword">install</span> <span class="hljs-keyword">build</span>-essential
+</code></pre><h2 id="ubuntu-versions">Ubuntu Versions</h2>
+<p>An upgrade from one release (version) to another, takes longer. For instance, moving from Ubuntu 13.10 to 14.04 takes a long time. That is natural, since it is a more complex process. It would be like upgrading from Windows Vista to Windows 8. Only without the financial cost, and usually without the hassle. Please note that on slow machines an upgrade from one release to another release can take several hours. Nevertheless, if you want to update from one version of the distro to the next version, then use this command:</p>
+<pre><code class="lang-bash"><span class="hljs-keyword">do</span>-<span class="hljs-keyword">release</span>-<span class="hljs-keyword">upgrade</span>
+</code></pre>
+<p>Ubuntu and Lubuntu ship twice a year, once in April and once in October. They use dates to track <a href="https://wiki.ubuntu.com/Releases">releases</a>:</p>
 <ul>
 <li><strong>Ubuntu 13.04</strong>: Shipped April, 2013</li>
 <li><strong>Ubuntu 13.10</strong>: Shipped October, 2013</li>
 <li><strong>Lubuntu 15.04</strong>: Shipped April, 2015</li>
-<li><strong>Ubuntu 15.10</strong>: Scheduled to ship October 22, 2015.</li>
+<li><strong>Ubuntu 15.10</strong>: Shipped October, 2015.</li>
+<li>And so on...</li>
 </ul>
-<p>Every two years, on even years, in April, a <a href="https://wiki.ubuntu.com/LTS">LTS (Long Term Support)</a> release is shipped. For instance, one was released in April of 2014: Ubuntu 14.04. The next LTS release should therefore come in April of 2016: Ubuntu 16.04. A corollary of this rule is that releases shipped in October are not LTS releases, and will therefore be maintained for only 9 months.</p>
+<p>Every two years, on even years, in April, an <a href="https://wiki.ubuntu.com/LTS">LTS (Long Term Support)</a> release is shipped. For instance, one was released in April of 2014: Ubuntu 14.04. The next LTS release should therefore come in April of 2016: Ubuntu 16.04. A corollary of this rule is that releases shipped in odd numbered years and in October are not LTS releases, and will therefore be maintained for only 9 months.</p>
 <ul>
 <li>LTS: 5 Years of maintenance. Shipped in April of even numbered years.</li>
 <li>Other: 9 Months of maintenance. Shipped in October of each year.</li>
@@ -71,30 +80,32 @@ sudo apt-<span class="hljs-keyword">get</span> <span class="hljs-keyword">instal
 sudo apt-<span class="hljs-keyword">get</span> <span class="hljs-keyword">install</span> chromium-browser
 </code></pre><h2 id="set-up-environment">Set up Environment</h2>
 <p>At the bottom of your <strong>.bashrc</strong> place this:</p>
-<pre><code><span class="hljs-keyword">if</span> [ -z <span class="hljs-string">"<span class="hljs-variable">$SSH_AUTH_SOCK</span>"</span> ] ; <span class="hljs-keyword">then</span>
-    <span class="hljs-built_in">eval</span> `ssh-agent` 
-<span class="hljs-keyword">fi</span>
+<pre><code class="lang-bash">    <span class="hljs-keyword">if</span> [ -z <span class="hljs-string">"<span class="hljs-variable">$SSH_AUTH_SOCK</span>"</span> ] ; <span class="hljs-keyword">then</span>
+        <span class="hljs-built_in">eval</span> `ssh-agent` 
+    <span class="hljs-keyword">fi</span>
 
-<span class="hljs-comment"># Basic Paths</span>
-<span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:<span class="hljs-variable">$HOME</span>/npm/bin
-<span class="hljs-built_in">export</span> JSOBJECTS=<span class="hljs-variable">$HOME</span>/Git/JsObjects
-<span class="hljs-built_in">export</span> NODE_PATH=:<span class="hljs-variable">$HOME</span>/npm/lib/node_modules    
-<span class="hljs-built_in">export</span> PYTHONPATH=<span class="hljs-variable">${PYTHONPATH}</span>:<span class="hljs-variable">$JSOBJECTS</span>/Python/:<span class="hljs-variable">$JSOBJECTS</span>/Python/Utils/:
+    <span class="hljs-comment"># Basic Paths</span>
+    <span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:<span class="hljs-variable">$HOME</span>/npm/bin
+    <span class="hljs-built_in">export</span> JSOBJECTS=<span class="hljs-variable">$HOME</span>/Git/JsObjects
+    <span class="hljs-built_in">export</span> NODE_PATH=:<span class="hljs-variable">$HOME</span>/npm/lib/node_modules    
+    <span class="hljs-built_in">export</span> PYTHONPATH=<span class="hljs-variable">${PYTHONPATH}</span>:<span class="hljs-variable">$JSOBJECTS</span>/Python/:<span class="hljs-variable">$JSOBJECTS</span>/Python/Utils/:
 
-<span class="hljs-comment"># Java Path Support</span>
-<span class="hljs-built_in">export</span> JAVA_HOME=/usr/lib/jvm/java-8-oracle
+    <span class="hljs-comment"># Java Path Support</span>
+    <span class="hljs-built_in">export</span> JAVA_HOME=/usr/lib/jvm/java-8-oracle
 
-<span class="hljs-comment"># Android Path Support</span>
-<span class="hljs-built_in">export</span> ANDROID_HOME=<span class="hljs-string">"<span class="hljs-variable">$HOME</span>/Android/Sdk"</span>
-<span class="hljs-built_in">export</span> ANDROID_PLATFORM_TOOLS=<span class="hljs-string">"<span class="hljs-variable">$HOME</span>/Android/Sdk/platform-tools"</span>
-<span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:<span class="hljs-variable">$ANDROID_HOME</span>/tools:<span class="hljs-variable">$ANDROID_PLATFORM_TOOLS</span>:
+    <span class="hljs-comment"># Android Path Support</span>
+    <span class="hljs-built_in">export</span> ANDROID_HOME=<span class="hljs-string">"<span class="hljs-variable">$HOME</span>/Android/Sdk"</span>
+    <span class="hljs-built_in">export</span> ANDROID_PLATFORM_TOOLS=<span class="hljs-string">"<span class="hljs-variable">$HOME</span>/Android/Sdk/platform-tools"</span>
+    <span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:<span class="hljs-variable">$ANDROID_HOME</span>/tools:<span class="hljs-variable">$ANDROID_PLATFORM_TOOLS</span>:
 
-<span class="hljs-comment"># Other</span>
-<span class="hljs-built_in">export</span> CHROME_BIN=/usr/bin/chromium-browser
-</code></pre><p>After making this change, you need to process your updated <strong>.bashrc</strong> file:</p>
+    <span class="hljs-comment"># Other</span>
+    <span class="hljs-built_in">export</span> CHROME_BIN=/usr/bin/chromium-browser
+</code></pre>
+<p>After making this change, you need to process your updated <strong>.bashrc</strong> file:</p>
 <pre><code><span class="hljs-built_in">source</span> ~/.bashrc
-</code></pre><h2 id="install-git">Install Git</h2>
-<p>The command is simple:</p>
+</code></pre><p>I also maintain the code to code in .bashrc <a href="https://github.com/charliecalvert/JsObjects/blob/master/Utilities/SetupLinuxBox/BashrcExtras">here</a>.</p>
+<h2 id="install-git">Install Git</h2>
+<p>The command to install <strong>git</strong> is simple:</p>
 <pre><code>sudo apt-<span class="hljs-keyword">get</span> install git
 </code></pre><p>Then create a directory called Git:</p>
 <pre><code><span class="hljs-built_in">cd</span>
@@ -111,11 +122,6 @@ sudo apt-<span class="hljs-keyword">get</span> <span class="hljs-keyword">instal
 <p>The explanation is found here:</p>
 <ul>
 <li><a href="http://www.elvenware.com/charlie/development/database/mysql/MySql.html#installOnLinux">Lamp Install on Elvenware</a></li>
-</ul>
-<h2 id="install-mongodb">Install MongoDb</h2>
-<p>The explanation is found here:</p>
-<ul>
-<li><a href="http://www.elvenware.com/charlie/development/database/NoSql/MongoDb.html#install">MongoDb on Elvenware</a></li>
 </ul>
 <h2 id="install-ssh">Install SSH</h2>
 <p>On EC2, SSH is already installed. But on a fresh Ubuntu install, the steps are simple:</p>
@@ -179,11 +185,9 @@ sudo <span class="hljs-keyword">update</span>-alternatives --config java
 <span class="hljs-attr">Comment[en_US]</span>=Jetbrains JavaScript HTML
 </code></pre><p>The process for install PyCharm is nearly identical, with only the obvious changes in name and path. I install PyCharm in:</p>
 <pre><code>~<span class="hljs-regexp">/bin/pycharm</span>
-</code></pre><h2 id="gcc-make">Install gcc and make</h2>
-<p>Though not always necessary, it is a good idea to install to gcc and make. These utilities are not always needed, but I the need is just frequent enough to make it worthwhile installing them.</p>
-<p>The steps are simple:</p>
-<pre><code>sudo apt-get <span class="hljs-keyword">update</span>
-sudo apt-<span class="hljs-keyword">get</span> <span class="hljs-keyword">upgrade</span>
-sudo apt-<span class="hljs-keyword">get</span> <span class="hljs-keyword">install</span> <span class="hljs-keyword">build</span>-essential
-</code></pre><p>When you are done, </p>
+</code></pre><h2 id="install-mongodb">Install MongoDb</h2>
+<p>We probably will not be installing MongoDb on our machines, but if you are curious, there is an explanation is found here:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/database/NoSql/MongoDb.html#install">MongoDb on Elvenware</a></li>
+</ul>
 </div></body></html>
