@@ -3,6 +3,7 @@
 <li><a href="#create-home">Create Repo Home</a></li>
 <li><a href="#ssh">Setup SSH</a></li>
 <li><a href="#load-ssh-key">Load SSH Key</a></li>
+<li><a href="#automating-the-load-process">Automating the load process</a></li>
 <li><a href="#build-repository">Build Repository</a></li>
 <li><a href="#configure">Configure Git</a></li>
 <li><a href="#commit">Commit your Work</a></li>
@@ -46,13 +47,14 @@
 <p>Name your git repository like this, where <strong>isit320</strong> should be name of your class:</p>
 <pre><code>isit320_lastname-<span class="hljs-built_in">year</span>
 </code></pre><p>For instance, your repository might have a name like this, depending
-on the class you are in:</p>
+on the class you are in and the current year:</p>
 <pre><code>pro<span class="hljs-name">g219</span>_calvert<span class="hljs-number">-2015</span>
 pro<span class="hljs-name">g270</span>_calvert<span class="hljs-number">-2015</span>
 pro<span class="hljs-name">g272</span>_calvert<span class="hljs-number">-2015</span>
 isit<span class="hljs-number">320</span>_calvert<span class="hljs-number">-2015</span>
 isit<span class="hljs-number">322</span>_calvert<span class="hljs-number">-2015</span>
-</code></pre><p>Then make the following selections:</p>
+</code></pre><p><strong>NOTE</strong>: *Throughout this and similar documents, the year field should be set to the current year. I may have written or last updated this document one or more years ago, but you should use your common sense when using the year field. If it is 2016, then set the year to 2016, even if my example uses some other year.</p>
+<p>Then make the following selections:</p>
 <ul>
 <li>Set the Type: Git</li>
 <li>Set the Project options: Wiki, IssueTracking</li>
@@ -96,13 +98,21 @@ Identity <span class="hljs-string">added:</span> <span class="hljs-regexp">/home
 <pre><code><span class="hljs-keyword">if</span> [ -z <span class="hljs-string">"<span class="hljs-variable">$SSH_AUTH_SOCK</span>"</span> ] ; <span class="hljs-keyword">then</span>
     <span class="hljs-built_in">eval</span> `ssh-agent` 
 <span class="hljs-keyword">fi</span>
-</code></pre><p>You will need to load your SSH key with <strong>ssh-add</strong> each time your start a new bash (command line) session. Or at least you will need to do so each time you reboot lubuntu. If you don&#39;t want to perform this task manually, you could add the following code at the bottom of your <strong>~/.bashrc</strong> file:</p>
+</code></pre><p>You will need to load your SSH key with <strong>ssh-add</strong> each time your start a new bash (command line) session. Or at least you will need to do so each time you reboot lubuntu. </p>
+<pre><code><span class="hljs-symbol">ssh</span>-<span class="hljs-keyword">add </span>~/.ssh/Isit320-Fall-<span class="hljs-number">2015</span>
+</code></pre><h2 id="automating-the-load-process">Automating the load process</h2>
+<p>If you don&#39;t want to perform this task manually, you could add the following code at the bottom of your <strong>~/.bashrc</strong> file:</p>
 <pre><code><span class="hljs-symbol">ssh</span>-<span class="hljs-keyword">add </span>~/.ssh/Isit320-Fall-<span class="hljs-number">2015</span>
 </code></pre><p>To add the line, open your <strong>~/.bashrc</strong> file in either nano or geany. For instance:</p>
 <pre><code><span class="hljs-attribute">geany</span> ~/.bashrc
 </code></pre><p>Adding this line is guarrenteed to load your private key for you because your <strong>.bashrc</strong> is processed each time you open the bash shell (command line). If you ever want to manually load your <strong>.bashrc</strong> file, you can execute this code:</p>
 <pre><code><span class="hljs-built_in">source</span> ~/.bashrc
 </code></pre><p>To learn more, search for the Linux <strong>source</strong> command with Google.</p>
+<p>Alternatively, I have created an alias in our <strong>.bash_aliases</strong> file called <strong>sshadd</strong>. (Not <strong>ssh-add</strong> but <strong>sshadd</strong>.) It depends on a symbolic link in your <strong>~/.ssh</strong> directory. Create the link like this:</p>
+<pre><code class="lang-bash"><span class="hljs-built_in">cd</span> ~/.ssh
+ln <span class="hljs-_">-s</span> main-key Isit320-Fall-2015
+</code></pre>
+<p>Where Isit320-Fall-2015 is the name of the private key you want to load when you type <strong>sshadd</strong>. This second approach means you can decide when you want to load the key. This is perhaps better than loading it automatically each time you start a new bash shell instance.</p>
 <p>One final tip. I like to zip up both the private and public key and upload it to my Google Drive. That way I can download it at home, and use the private key at both home and school. You don&#39;t have to do it that way, but it allows you to skip the step of creating a new key at home, and uploading that public key to BitBucket. Either system works, and there are arguments in favor of each system, but I want to at least suggest that you do things this way.</p>
 <h2 id="build-repository">Build Repository</h2>
 <p>On your hard drive, enter the following, where <strong>lastname</strong> should be your last name, in all lower case letters:</p>
