@@ -716,7 +716,8 @@ reference it each time I make a connection. (On Windows we use Pageant to
 perform this task.)</p>
 <p>First I need to be sure ssh-agent is load. Then I add the key to the store. 
 Notice that in the first command we use backticks:</p>
-<pre><code>eval%20%60ssh-agent%60%0Assh-add%20MyKey.pem
+<pre><code>eval `ssh-agent`
+ssh-add MyKey.pem
 </code></pre><p>Try putting this in .bashrc to load ssh-agent when
 you log in to your bash shell:</p>
 <pre><code><span class="hljs-keyword">if</span> [ -z <span class="hljs-string">"<span class="hljs-variable">$SSH_AUTH_SOCK</span>"</span> ] ; <span class="hljs-keyword">then</span>
@@ -960,7 +961,13 @@ to clone. Then enter the following command:</p>
 </code></pre><p>More specifically:</p>
 <pre><code>git clone -<span class="hljs-selector-tag">b</span> test git@bitbucket<span class="hljs-selector-class">.org</span>:charlie/myrepo.git
 </code></pre><p>Here is another example, working with local files:</p>
-<pre><code>BRANCH%3Dchasyte%0AREPOSITORY%3Dfile%3A////home/charlie/git/myrepo%0Amkdir%20%0Acd%20%24BRANCH%0Agit%20init%0Agit%20remote%20add%20-t%20%24BRANCH%20-f%20origin%20%24REPOSITORY%0Agit%20checkout%20%24BRANCH
+<pre><code>BRANCH=chasyte
+REPOSITORY=file:////home/charlie/git/myrepo
+mkdir 
+cd $BRANCH
+git init
+git remote add -t $BRANCH -f origin $REPOSITORY
+git checkout $BRANCH
 </code></pre><h2 id="git-checkout-a-specific-branch">Git Checkout a Specific Branch</h2>
 <p>Sometimes you want to just look at the state of your repository at
 some point in the past. You don&#39;t necessarily want to switch to that
