@@ -1,12 +1,90 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>NpmUtilities</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><link href="/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><script src="/libs/scripts/elvenware.js" type="text/javascript"></script><script src="/libs/scripts/Control.js"></script></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>NpmUtilities</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#step-one">Step One</a></li>
+<li><a href="#step-two">Step Two</a></li>
+<li><a href="#step-three">Step Three</a></li>
+<li><a href="#step-four">Step Four</a></li>
+<li><a href="#step-five">Step Five</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#pad-number">Pad Number</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
-<p>In this project we are going to start creating some utilities and put them in our NPM package.</p>
-<p>Put the following utilities in your utils.js file:</p>
+<p>In this project we are going to start creating some utilities and put them in our NPM package. We will then create a project and use our utilities.</p>
+<h2 id="step-one">Step One</h2>
+<p>Put the following utilities in you <strong>npm package</strong> in a file called <strong>utils.js</strong>:</p>
 <ul>
 <li>writeFile(fileName, contents)</li>
 <li>readFile(fileName)</li>
 <li>padNumber(numberToPad, width, padValue)</li>
 </ul>
+<p>Maybe <strong>utils.js</strong> should look something like this, as a starting point:</p>
+<pre><code class="lang-javascript">module.exports = {
+    writeFile: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(fileName, contents, callback)</span> </span>{
+        <span class="hljs-keyword">callback</span>({ <span class="hljs-string">"result"</span>: <span class="hljs-string">"writeFile Result TBD"</span>});
+    },
+    readFile: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(fileName, callback)</span> </span>{
+        <span class="hljs-keyword">callback</span>({ <span class="hljs-string">"result"</span>: <span class="hljs-string">"readFile Result TBD"</span>});
+    },
+    padNumber: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(numberToPad, width, padValue)</span> </span>{
+        <span class="hljs-keyword">return</span> { <span class="hljs-string">"result"</span>: <span class="hljs-string">"numberToPad result TBD"</span>};
+    }
+};
+</code></pre>
+<p>And then we need to ask our npm module <strong>index.js</strong> file to pass this along to the rest of the world:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> utils = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./utils'</span>);
+
+exports.getPackageDescription = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">var</span> myDescription = <span class="hljs-string">"This is Charlie Calvert's isit322 test package"</span>;
+  <span class="hljs-built_in">console</span>.log(myDescription);
+  <span class="hljs-keyword">return</span> myDescription;
+};
+
+exports.getNine = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> <span class="hljs-number">9</span>; };
+
+exports.utils = utils;
+</code></pre>
+<p>Do you see what is going on here? We <strong>requre</strong> our <strong>utils</strong> module at the top of the file. Then we export it at the bottom.</p>
+<p>Update the version of your package and then push it to NPM:</p>
+<pre><code><span class="hljs-built_in">npm</span> version minor
+<span class="hljs-built_in">npm</span> publish
+</code></pre><h2 id="step-two">Step Two</h2>
+<p>Create a project</p>
+<pre><code class="lang-bash"><span class="hljs-attribute">CreateAllExpress</span> Week03-UseNpmPackage
+</code></pre>
+<p>Install your package. For instance, I type:</p>
+<pre><code class="lang-bash">npm <span class="hljs-keyword">install</span> isit322-calvert <span class="hljs-comment">--save</span>
+</code></pre>
+<h2 id="step-three">Step Three</h2>
+<p>Now we want to be able to call each of these functions from our npm <strong>utils</strong> module. On the server side, here is how to use one function as I defined it above:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> utils = <span class="hljs-built_in">require</span>(<span class="hljs-string">'isit322-calvert'</span>).utils;
+</code></pre>
+<p>Or, if you are willing to trade a bit of typing for some additional flexibility, like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> isit = <span class="hljs-built_in">require</span>(<span class="hljs-string">'isit322-calvert'</span>).utils;
+<span class="hljs-keyword">var</span> utils = isit.utils;
+</code></pre>
+<p>Now use one of the methods:</p>
+<pre><code class="lang-javascript">router.get('/readFile', function(request, response) {
+    utils.readFile('sam.txt', function(<span class="hljs-literal">result</span>) {
+        response.send(<span class="hljs-literal">result</span>);
+    });
+});
+</code></pre>
+<h2 id="step-four">Step Four</h2>
+<p>On the client side, something like this:</p>
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-string">'use strict'</span>;
+    $.getJSON(<span class="hljs-string">'/readFile'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+        $(<span class="hljs-string">'#readFile'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result));
+    });
+});
+</code></pre>
+<p>Back on the server side, add this to <strong>index.jade</strong>:</p>
+<pre><code class="lang-javascript">pre<span class="hljs-meta">#readFile</span>
+</code></pre>
+<h2 id="step-five">Step Five</h2>
+<p>You should call all the functions in your npm library. I suppose that should both the two in <strong>index.js</strong> and the ones in <strong>utils.js</strong>. Show the results from each call in a separate <strong>PRE</strong> tag.</p>
+<p>You should fully implement all the methods in the npm package. You will need, of course, to use <a href="https://nodejs.org/api/fs.html#fs_fs_readfile_file_options_callback">fs.readFile</a> and <a href="https://nodejs.org/api/fs.html#fs_fs_writefile_file_data_options_callback">fs.writeFile</a>.</p>
+<p>And you will need to require <strong>fs</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
+</code></pre>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Push your work from your local drive to your repository and submit the assignment. Best to mention github url when submitting assignment.</p>
 <h2 id="pad-number">Pad Number</h2>
 <p>Given the number 5, the following call sets <strong>result</strong> to the string &#39;005&#39;:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> <span class="hljs-literal">result</span> = padNumber(<span class="hljs-number">5</span>, <span class="hljs-number">3</span>, '<span class="hljs-number">0</span>');
