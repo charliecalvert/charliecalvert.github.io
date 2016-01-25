@@ -2,7 +2,8 @@
 <li><a href="#step-02">Step 02</a></li>
 <li><a href="#step-03">Step 03</a></li>
 <li><a href="#step-04">Step 04</a></li>
-<li><a href="#not-yet">Not yet</a></li>
+<li><a href="#step05">Step05</a></li>
+<li><a href="#step06">Step06</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><p>Session Basics</p>
 <h2 id="step-01">Step 01</h2>
 <p>CreateAllExpress Week04-SessionBasics</p>
@@ -32,14 +33,68 @@ tar xvfz redis-<span class="hljs-number">3.0</span>.<span class="hljs-number">6<
 </code></pre>
 <h2 id="step-04">Step 04</h2>
 <p>In <strong>routes/index.js</strong>:</p>
-<pre><code class="lang-javascript">var foo = <span class="hljs-keyword">function</span>(<span class="hljs-built_in">request</span>, <span class="hljs-built_in">response</span>, <span class="hljs-keyword">next</span>) {
-  console.<span class="hljs-built_in">log</span>(<span class="hljs-string">"My foo middleware"</span>);
-  <span class="hljs-keyword">next</span>();
-};
+<pre><code class="lang-javascript">var foo = function(request, response, <span class="hljs-keyword">next</span>) {
+  console.log(<span class="hljs-string">"My foo middleware"</span>)<span class="hljs-comment">;</span>
+  <span class="hljs-keyword">next</span>()<span class="hljs-comment">;</span>
+}<span class="hljs-comment">;</span>
+
+router.get(<span class="hljs-string">'/'</span>, foo, function(req, res, <span class="hljs-keyword">next</span>) { <span class="hljs-string">'use strict'</span><span class="hljs-comment">;</span>
+  res.render(<span class="hljs-string">'index'</span>, { <span class="hljs-keyword">title</span>: <span class="hljs-string">'SessionBar'</span> })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
 </code></pre>
-<h2 id="not-yet">Not yet</h2>
-<p>var session = require(&#39;express-session&#39;);</p>
-<p><a href="https://www.npmjs.com/package/uuid">https://www.npmjs.com/package/uuid</a></p>
+<h2 id="step05">Step05</h2>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> session = <span class="hljs-keyword">require</span>(<span class="hljs-string">'express-session'</span>);
+
+<span class="hljs-keyword">var</span> uuid = <span class="hljs-keyword">require</span>(<span class="hljs-string">'uuid'</span>);
+
+app.<span class="hljs-keyword">use</span>(session({
+    genid: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req)</span> </span>{
+        <span class="hljs-keyword">return</span> uuid.v4(); <span class="hljs-comment">// use UUIDs for session IDs</span>
+    },
+    secret: process.env.SESSION_SECRET || <span class="hljs-string">'keyboard cat'</span>,
+    resave: <span class="hljs-keyword">true</span>,
+    saveUninitialized: <span class="hljs-keyword">true</span>
+}));
+</code></pre>
+<ul>
+<li><a href="https://www.npmjs.com/package/uuid">https://www.npmjs.com/package/uuid</a></li>
+</ul>
+<h2 id="step06">Step06</h2>
+<p>In <strong>routes/index.js</strong></p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/page01'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+<span class="hljs-meta">  'use strict'</span>;
+  <span class="hljs-keyword">var</span> info = <span class="hljs-string">""</span>;
+  <span class="hljs-keyword">if</span> (req.session.lastPage) {
+    info = previous + req.session.lastPage + <span class="hljs-string">'. '</span>;
+  }
+
+  req.session.lastPage = <span class="hljs-string">'/page01'</span>;
+  res.send(<span class="hljs-string">'Welcome to Page01.&lt;br /&gt;'</span> + info);
+});
+
+router.get(<span class="hljs-string">'/page02'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+<span class="hljs-meta">  'use strict'</span>;
+  <span class="hljs-keyword">var</span> info = <span class="hljs-string">""</span>;
+  <span class="hljs-keyword">if</span> (req.session.lastPage) {
+    info = previous + req.session.lastPage + <span class="hljs-string">'. '</span>;
+  }
+
+  req.session.lastPage = <span class="hljs-string">'/page02'</span>;
+  res.send(<span class="hljs-string">'Welcome to Page02.&lt;br /&gt;'</span> + info);
+});
+
+router.get(<span class="hljs-string">'/page03'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+<span class="hljs-meta">  'use strict'</span>;
+  <span class="hljs-built_in">console</span>.log(req.session);
+  <span class="hljs-keyword">var</span> info = <span class="hljs-string">""</span>;
+  <span class="hljs-keyword">if</span> (req.session.lastPage) {
+    info = previous + req.session.lastPage + <span class="hljs-string">'. '</span>;
+  }
+
+  req.session.lastPage = <span class="hljs-string">'/page03'</span>;
+  res.send(<span class="hljs-string">'Welcome to Page03.&lt;br /&gt;'</span> + info);
+});
+</code></pre>
 <h2 id="turn-it-in">Turn it in</h2>
-<p>Push and submit the assignment.</p>
+<p>Push the repository and submit the assignment.</p>
 </div></body></html>
