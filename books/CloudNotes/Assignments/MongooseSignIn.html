@@ -3,11 +3,11 @@
 <li><a href="#step-two">Step Two</a></li>
 <li><a href="#step-two">Step Two</a></li>
 <li><a href="#step-three">Step Three</a></li>
-<li><a href="#step-five">Step Five</a></li>
-<li><a href="#step-six">Step Six</a></li>
-<li><a href="#step-seven-view-data-on-mongolab">Step Seven View Data on MongoLab</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
-<p>Mongoose sign in has two major parts:</p>
+<li><a href="#step-four">Step Four</a></li>
+<li><a href="#mongolab">MongoLab</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<p>Mongoose sign in has three major parts:</p>
 <ul>
+<li>A collection for your users in <a href="https://mongolab.com/">MongoLab</a>. If you don&#39;t have an account create one.</li>
 <li>An interface built in express and jade (no angular) that allows the user to enter a username and password</li>
 <li>A Mongooose library for storing and retrieving the user names and passwords</li>
 </ul>
@@ -22,23 +22,22 @@
 <p>Create an express app</p>
 <pre><code>CreateAllExpress Week05-MongooseSignIn
 <span class="hljs-built_in">cd</span> Week05-MongooseSignIn
-</code></pre><p>Don&#39;t forget port 30025, the title and <strong>nodemon</strong>.</p>
-<ul>
+</code></pre><ul>
 <li><a href="https://drive.google.com/file/d/0B25UTAlOfPRGVXR3SHFJa05sNjQ/view?usp=sharing">https://drive.google.com/file/d/0B25UTAlOfPRGVXR3SHFJa05sNjQ/view?usp=sharing</a></li>
 </ul>
-<p>Some npm packages we are using. This is no-op, it is just fyi:</p>
+<p>Some npm packages we are using. You need do nothing as <strong>AllInclusive</strong> should handle this. So this is a no-op, it is just an fyi:</p>
 <pre><code>npm <span class="hljs-keyword">install</span> bcrypt-nodejs <span class="hljs-comment">--save</span>
 npm <span class="hljs-keyword">install</span> mongoose <span class="hljs-comment">--save</span>
 npm <span class="hljs-keyword">install</span> passport <span class="hljs-comment">--save</span>
 npm <span class="hljs-keyword">install</span> passport-<span class="hljs-keyword">local</span> <span class="hljs-comment">--save</span>
 npm <span class="hljs-keyword">install</span> express-<span class="hljs-keyword">session</span> <span class="hljs-comment">--save</span>
 </code></pre><h2 id="step-two">Step Two</h2>
-<p>Setup Mongoose in the root of the project in a file called <strong>db.js</strong>.
+<p>Setup Mongoose in a file called <strong>routes/db.js</strong>.
 The <strong>getUrl</strong> method is designed to work with <a href="https://mongolab.com/">MongoLab</a>. Fill
 in your own <strong>userName</strong>, <strong>password</strong>, <strong>siteAndPort</strong> and database name:</p>
 <pre><code><span class="hljs-built_in">module</span>.exports = {
     getUrl: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-        <span class="hljs-keyword">var</span> baseUrl = <span class="hljs-string">'mongodb://'</span>;
+    <span class="hljs-keyword">var</span> baseUrl = <span class="hljs-string">'mongodb://'</span>;
         <span class="hljs-keyword">var</span> userName = <span class="hljs-string">'USER-NAME'</span>;
         <span class="hljs-keyword">var</span> password = <span class="hljs-string">'PASSWORD'</span>;
         <span class="hljs-keyword">var</span> siteAndPort = <span class="hljs-string">'ds?????.mongolab.com:?????'</span>;
@@ -54,32 +53,29 @@ in your own <strong>userName</strong>, <strong>password</strong>, <strong>siteAn
 <pre><code class="lang-bash">cp -r $ELF_TEMPLATES/SignIn/models/ .
 </code></pre>
 <h2 id="step-two">Step Two</h2>
-<p>Front end</p>
-<p>In <strong>views/layout.jade</strong></p>
-<pre><code>doctype <span class="hljs-selector-tag">html</span>
-<span class="hljs-selector-tag">html</span>
-  head
-    title= title
-    link(rel=<span class="hljs-string">'stylesheet'</span>, href=<span class="hljs-string">'/stylesheets/style.css'</span>)
-    link(rel=<span class="hljs-string">'stylesheet'</span>, href=<span class="hljs-string">'http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'</span>)
-  <span class="hljs-selector-tag">body</span>
-    block <span class="hljs-attribute">content</span>
-</code></pre><p>In index.jade:</p>
-<p>And then retrieve the jade for the various dialogs needed to complete the sign in process:</p>
+<p>Let&#39;s work on the front end. Retrieve the jade for the various dialogs needed to complete the sign in process:</p>
 <pre><code>cp $ELF_TEMPLATES/SignIn/views/*.jade views/.
-</code></pre><p>Be careful about the whitespace in these files.</p>
-<h2 id="step-three">Step Three</h2>
-<p>Set up MongoDb database for storing the user name. We will use two libraries
-called Mongoose and Passport.</p>
+</code></pre><p>We just copied in three files:</p>
+<pre><code>login<span class="hljs-selector-class">.jade</span>
+logout<span class="hljs-selector-class">.jade</span>
+register.jade
+</code></pre><h2 id="step-three">Step Three</h2>
+<p>Set up Passport. Also setup the MongoDb database for storing the user name. To accomplish these tasks We will use three libraries
+called <strong>express-session</strong>, <strong>Mongoose</strong> and <strong>Passport</strong>, all of which should already be in <strong>AllInclusive</strong>.</p>
 <p>In <strong>app.js</strong>, about line 8.</p>
-<pre><code><span class="hljs-keyword">var</span> dbConfig = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./db'</span>);
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> dbConfig = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./routes/db'</span>);
 <span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
 <span class="hljs-comment">// Connect to DB</span>
-mongoose.connect(dbConfig.url);
-</code></pre><p>On about line 13, comment out the existing routes call:</p>
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Mongoose URL:'</span>, dbConfig.getUrl());
+mongoose.connect(dbConfig.getUrl());
+</code></pre>
+<p>And remove the line that reads, as we will include it later:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> routes = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./routes/index'</span>)
+</code></pre>
+<p>On about line 13, comment out the existing routes call:</p>
 <pre><code>// <span class="hljs-keyword">var</span> routes = require(<span class="hljs-string">'./routes/index'</span>);
 </code></pre><p>In app.js around line 28:</p>
-<pre><code><span class="hljs-comment">// Configuring Passport</span>
+<pre><code class="lang-javascript"><span class="hljs-comment">// Configuring Passport</span>
 <span class="hljs-keyword">var</span> passport = <span class="hljs-keyword">require</span>(<span class="hljs-string">'passport'</span>);
 <span class="hljs-keyword">var</span> expressSession = <span class="hljs-keyword">require</span>(<span class="hljs-string">'express-session'</span>);
 app.<span class="hljs-keyword">use</span>(expressSession({
@@ -95,8 +91,19 @@ app.<span class="hljs-keyword">use</span>(passport.session());
 initPassport(passport);
 
 <span class="hljs-keyword">var</span> routes = <span class="hljs-keyword">require</span>(<span class="hljs-string">'./routes/index'</span>)(passport);
-</code></pre><p>##Step Four</p>
-<p>Backend</p>
+</code></pre>
+<h2 id="step-four">Step Four</h2>
+<p>Copy in passport specific JavaScript files:</p>
+<pre><code class="lang-bash">cp -r $ELF_TEMPLATES/SignIn/passport/ .
+</code></pre>
+<p>You just copied the following files into a folder called <strong>passport</strong> :</p>
+<ul>
+<li>init.js</li>
+<li>login.js</li>
+<li>signup.js</li>
+</ul>
+<p>##Step Five</p>
+<p>Set up the routes for logging in and signing up.</p>
 <p>Passport provides authentication. If the user can be authenticated, then they will be allowed to do something, otherwise will they will be redirected to another screen:</p>
 <ul>
 <li>Success: You get to do it</li>
@@ -104,8 +111,8 @@ initPassport(passport);
 </ul>
 <p>Here is the classic <strong>authenticate</strong> middleware in action:</p>
 <pre><code><span class="hljs-selector-tag">router</span><span class="hljs-selector-class">.post</span>(<span class="hljs-string">'/login'</span>, passport.authenticate(<span class="hljs-string">'login'</span>, {
-    <span class="hljs-attribute">successRedirect</span>: <span class="hljs-string">'/home'</span>,
-    <span class="hljs-attribute">failureRedirect</span>: <span class="hljs-string">'/'</span>
+    <span class="hljs-attribute">successRedirect</span>: <span class="hljs-string">'/'</span>,
+    <span class="hljs-attribute">failureRedirect</span>: <span class="hljs-string">'/login'</span>
   }));
 </code></pre><p>In <strong>routes/index.js</strong></p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
@@ -164,93 +171,12 @@ initPassport(passport);
     <span class="hljs-keyword">return</span> router;
 };
 </code></pre>
-<h2 id="step-five">Step Five</h2>
-<p>Passport</p>
-<pre><code class="lang-bash">cp -r $ELF_TEMPLATES/SignIn/passport/ .
-</code></pre>
-<h2 id="step-six">Step Six</h2>
-<p>Add css. Append this to <strong>public/css/style.css</strong>:</p>
-<pre><code><span class="hljs-selector-class">.form-signin</span>{
-    <span class="hljs-attribute">max-width</span>: <span class="hljs-number">330px</span>;
-    <span class="hljs-attribute">padding</span>: <span class="hljs-number">15px</span>;
-    <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span> auto;
-}
-<span class="hljs-selector-class">.form-signin</span> <span class="hljs-selector-class">.form-signin-heading</span>, <span class="hljs-selector-class">.form-signin</span> <span class="hljs-selector-class">.checkbox</span>{
-    <span class="hljs-attribute">margin-bottom</span>: <span class="hljs-number">10px</span>;
-}
-<span class="hljs-selector-class">.form-signin</span> <span class="hljs-selector-class">.checkbox</span>{
-    <span class="hljs-attribute">font-weight</span>: normal;
-}
-<span class="hljs-selector-class">.form-signin</span> <span class="hljs-selector-class">.form-control</span>{
-    <span class="hljs-attribute">position</span>: relative;
-    <span class="hljs-attribute">font-size</span>: <span class="hljs-number">16px</span>;
-    <span class="hljs-attribute">height</span>: auto;
-    <span class="hljs-attribute">padding</span>: <span class="hljs-number">10px</span>;
-    <span class="hljs-attribute">-webkit-box-sizing</span>: border-box;
-    <span class="hljs-attribute">-moz-box-sizing</span>: border-box;
-    <span class="hljs-attribute">box-sizing</span>: border-box;
-}
-<span class="hljs-selector-class">.form-signin</span> <span class="hljs-selector-class">.form-control</span><span class="hljs-selector-pseudo">:focus</span>{
-    <span class="hljs-attribute">z-index</span>: <span class="hljs-number">2</span>;
-}
-<span class="hljs-selector-class">.form-signin</span> <span class="hljs-selector-tag">input</span><span class="hljs-selector-attr">[type="text"]</span>{
-    <span class="hljs-attribute">margin-bottom</span>: -<span class="hljs-number">1px</span>;
-    <span class="hljs-attribute">border-bottom-left-radius</span>: <span class="hljs-number">0</span>;
-    <span class="hljs-attribute">border-bottom-right-radius</span>: <span class="hljs-number">0</span>;
-}
-<span class="hljs-selector-class">.form-signin</span> <span class="hljs-selector-tag">input</span><span class="hljs-selector-attr">[type="password"]</span>{
-    <span class="hljs-attribute">margin-bottom</span>: <span class="hljs-number">10px</span>;
-    <span class="hljs-attribute">border-top-left-radius</span>: <span class="hljs-number">0</span>;
-    <span class="hljs-attribute">border-top-right-radius</span>: <span class="hljs-number">0</span>;
-}
-<span class="hljs-selector-class">.form-signin</span> <span class="hljs-selector-tag">input</span><span class="hljs-selector-attr">[type="password"]</span><span class="hljs-selector-class">.nomargin</span>{
-    <span class="hljs-attribute">margin-bottom</span>: <span class="hljs-number">0px</span>;
-    <span class="hljs-attribute">border-top-left-radius</span>: <span class="hljs-number">0</span>;
-    <span class="hljs-attribute">border-top-right-radius</span>: <span class="hljs-number">0</span>;
-}
-<span class="hljs-selector-class">.account-wall</span>{
-    <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">20px</span>;
-    <span class="hljs-attribute">padding</span>: <span class="hljs-number">40px</span> <span class="hljs-number">0px</span> <span class="hljs-number">20px</span> <span class="hljs-number">0px</span>;
-    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#f7f7f7</span>;
-    <span class="hljs-attribute">-moz-box-shadow</span>: <span class="hljs-number">0px</span> <span class="hljs-number">2px</span> <span class="hljs-number">2px</span> <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.3</span>);
-    <span class="hljs-attribute">-webkit-box-shadow</span>: <span class="hljs-number">0px</span> <span class="hljs-number">2px</span> <span class="hljs-number">2px</span> <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.3</span>);
-    <span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">0px</span> <span class="hljs-number">2px</span> <span class="hljs-number">2px</span> <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.3</span>);
-}
-<span class="hljs-selector-class">.signup-wall</span>{
-    <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">20px</span>;
-    <span class="hljs-attribute">padding</span>: <span class="hljs-number">20px</span> <span class="hljs-number">0px</span> <span class="hljs-number">20px</span> <span class="hljs-number">0px</span>;
-    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#f7f7f7</span>;
-    <span class="hljs-attribute">-moz-box-shadow</span>: <span class="hljs-number">0px</span> <span class="hljs-number">2px</span> <span class="hljs-number">2px</span> <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.3</span>);
-    <span class="hljs-attribute">-webkit-box-shadow</span>: <span class="hljs-number">0px</span> <span class="hljs-number">2px</span> <span class="hljs-number">2px</span> <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.3</span>);
-    <span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">0px</span> <span class="hljs-number">2px</span> <span class="hljs-number">2px</span> <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.3</span>);
-}
-<span class="hljs-selector-class">.login-title</span>{
-    <span class="hljs-attribute">color</span>: <span class="hljs-number">#555</span>;
-    <span class="hljs-attribute">font-size</span>: <span class="hljs-number">18px</span>;
-    <span class="hljs-attribute">font-weight</span>: <span class="hljs-number">400</span>;
-    <span class="hljs-attribute">display</span>: block;
-}
-<span class="hljs-selector-class">.profile-img</span>{
-    <span class="hljs-attribute">width</span>: <span class="hljs-number">96px</span>;
-    <span class="hljs-attribute">height</span>: <span class="hljs-number">96px</span>;
-    <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span> auto <span class="hljs-number">10px</span>;
-    <span class="hljs-attribute">display</span>: block;
-    <span class="hljs-attribute">-moz-border-radius</span>: <span class="hljs-number">50%</span>;
-    <span class="hljs-attribute">-webkit-border-radius</span>: <span class="hljs-number">50%</span>;
-    <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">50%</span>;
-}
-<span class="hljs-selector-class">.new-account</span>{
-    <span class="hljs-attribute">display</span>: block;
-    <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">10px</span>;
-}
-<span class="hljs-selector-tag">h1</span><span class="hljs-selector-class">.error-message</span>{
-    <span class="hljs-attribute">color</span>: red;
-}
-<span class="hljs-selector-tag">ul</span><span class="hljs-selector-class">.user-details</span>{
-    <span class="hljs-attribute">list-style</span>: none;
-}
-</code></pre><h2 id="step-seven-view-data-on-mongolab">Step Seven View Data on MongoLab</h2>
-<p>When viewing the data on MongoLab, select <strong>edit table view</strong> in the view of your <strong>users</strong> collection and paste in the following code:</p>
+<p>##Turn it in</p>
+<p>Submit four screen shots as PNG attachments. Each screen shot except the last should contain your first and last names. Model your screen shots after the four images found in this assignment.</p>
+<p>Also check in your code in <strong>Week10-MongooseSignIn</strong> or some similar name beginning with <strong>Week10</strong>. If there might be any question at all as to where I would find your code, please include the folder name when you submit the assignment.</p>
+<h2 id="mongolab">MongoLab</h2>
+<p>In MongoLab you should be able to see the <strong>Users</strong> table where your users are stored.</p>
+<p>When viewing the data on MongoLab, you can optionally select <strong>edit table view</strong> in the view of your <strong>users</strong> collection and paste in the following code:</p>
 <pre><code>{
     "<span class="hljs-attr">_id</span>": <span class="hljs-string">"id"</span>,
     "<span class="hljs-attr">username</span>": <span class="hljs-string">"username"</span>,
@@ -261,7 +187,4 @@ initPassport(passport);
 }
 </code></pre><p>When you are done, you are view of the data could look something like this:</p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/SignIn04.png" alt="MongoLab"></p>
-<p>##Turn it in</p>
-<p>Submit four screen shots as PNG attachments. Each screen shot except the last should contain your first and last names. Model your screen shots after the four images found in this assignment.</p>
-<p>Also check in your code in <strong>Week10-MongooseSignIn</strong> or some similar name beginning with <strong>Week10</strong>. If there might be any question at all as to where I would find your code, please include the folder name when you submit the assignment.</p>
 </div></body></html>
