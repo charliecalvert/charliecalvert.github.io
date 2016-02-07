@@ -29,4 +29,29 @@ module.exports = {
 
 };
 </code></pre>
+<p>Here is the Server side for one of my methods:</p>
+<pre><code class="lang-javascript">router.get('/readFile', function(request, response) {
+    console.log('readFile: ', request.query);
+    utils.readFile(request.query.fileName, function(<span class="hljs-literal">result</span>) {
+        <span class="hljs-literal">result</span>.fileName = request.query.fileName;
+        response.send(<span class="hljs-literal">result</span>);
+    });
+});
+</code></pre>
+<p>Here is the client side:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readFile</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> fileToRead = {fileName: <span class="hljs-string">'qux.txt'</span>};
+    $.getJSON(<span class="hljs-string">'/readFile'</span>, fileToRead, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{
+        $(<span class="hljs-string">'#readFile'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result));
+    }).done(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            showDebug(<span class="hljs-string">"readFile second success"</span>);
+        })
+        .fail(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">jqxhr, textStatus, error</span>) </span>{
+            showDebug(<span class="hljs-string">"readFile error: "</span> + jqxhr.status + <span class="hljs-string">' '</span> + textStatus + <span class="hljs-string">' '</span> + error);
+        })
+        .always(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            showDebug(<span class="hljs-string">"readFile complete"</span>);
+        });
+}
+</code></pre>
 </div></body></html>
