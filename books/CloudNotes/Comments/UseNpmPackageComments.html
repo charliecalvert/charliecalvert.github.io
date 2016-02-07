@@ -30,7 +30,12 @@ module.exports = {
 };
 </code></pre>
 <p>Here is the Server side for one of my methods:</p>
-<pre><code class="lang-javascript">router.get('/readFile', function(request, response) {
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> isit = require('isit322-calvert');
+<span class="hljs-keyword">var</span> utils = isit.utils;
+
+// <span class="hljs-type">Code</span> omitted here.
+
+router.get('/readFile', function(request, response) {
     console.log('readFile: ', request.query);
     utils.readFile(request.query.fileName, function(<span class="hljs-literal">result</span>) {
         <span class="hljs-literal">result</span>.fileName = request.query.fileName;
@@ -38,8 +43,40 @@ module.exports = {
     });
 });
 </code></pre>
-<p>Here is the client side:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readFile</span>(<span class="hljs-params"></span>) </span>{
+<p>On the client side I have added some buttons and a debug section to my Jade:</p>
+<pre><code class="lang-jade">extends layout
+
+block content
+  h1= <span class="hljs-keyword">title</span>
+  p Welcome to <span class="hljs-meta">#{title}</span>
+
+  <span class="hljs-keyword">button</span><span class="hljs-meta">#readFileButton Read File</span>
+  <span class="hljs-keyword">button</span><span class="hljs-meta">#writeFileButton Write File</span>
+  <span class="hljs-keyword">button</span><span class="hljs-meta">#padNumberButton Pad Number</span>
+
+  hr
+
+  pre<span class="hljs-meta">#packageDescription</span>
+  pre<span class="hljs-meta">#getNine</span>
+  pre<span class="hljs-meta">#readFile</span>
+  pre<span class="hljs-meta">#writeFile</span>
+  pre<span class="hljs-meta">#padNumber</span>
+  div
+    ul<span class="hljs-meta">#debug</span>
+</code></pre>
+<p>On the client side I went beyond the assignment and set up the buttons and implement a method showing debug information. </p>
+<p>In the code excerpt shown below I also include the code for one of the button handlers.</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">UseNpmPackage</span>(<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-string">'#readFileButton'</span>).click(readFile);
+    $(<span class="hljs-string">'#writeFileButton'</span>).click(writeFile);
+    $(<span class="hljs-string">'#padNumberButton'</span>).click(padNumber);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showDebug</span>(<span class="hljs-params">value</span>) </span>{
+    $(<span class="hljs-string">'#debug'</span>).append(<span class="hljs-string">'&lt;li&gt;'</span> + value + <span class="hljs-string">'&lt;/li&gt;'</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readFile</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> fileToRead = {fileName: <span class="hljs-string">'qux.txt'</span>};
     $.getJSON(<span class="hljs-string">'/readFile'</span>, fileToRead, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{
         $(<span class="hljs-string">'#readFile'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result));
@@ -53,5 +90,9 @@ module.exports = {
             showDebug(<span class="hljs-string">"readFile complete"</span>);
         });
 }
+
+<span class="hljs-comment">// Code for handling other buttons and getNine and getPackageDescription is omitted.</span>
+
+<span class="hljs-comment">// I then went even further and wrapped all this in the modular pathern.</span>
 </code></pre>
 </div></body></html>
