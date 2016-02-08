@@ -1,6 +1,7 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Ec2Provision</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><!-- script(src="/libs/scripts/Control.js")--><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>Ec2Provision</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#description">Description</a></li>
 <li><a href="#provision-ec2">Provision EC2</a></li>
 <li><a href="#videos">Videos</a></li>
+<li><a href="#-bashrc">.bashrc</a></li>
 <li><a href="#ssh">SSH</a></li>
 <li><a href="#bash_aliases">bash_aliases</a></li>
 <li><a href="#install-node">Install Node</a></li>
@@ -43,20 +44,11 @@
 <li><a href="https://youtu.be/4w0hKs35cdg">Billing on AWS</a></li>
 <li><a href="https://www.youtube.com/playlist?list=PLe8CjTxuUQ3_RmFD4ROFth7nX_UoUP6pV">PlayList</a></li>
 </ul>
-<h2 id="ssh">SSH</h2>
-<p>We are going to create a second SSH key and put the public portion of it on GitHub. We could reuse or previous key, but I want you to get practice creating and storing keys. (It&#39;s easy once you get used to it.)</p>
-<p>On your EC2 instance, type <strong>cd</strong> and press enter to get to your home directory. Type <strong>pwd</strong> to be sure you are in the right place:</p>
-<pre><code>ubuntu<span class="hljs-variable">@ip</span>-<span class="hljs-number">172</span>-<span class="hljs-number">31</span>-<span class="hljs-number">33</span>-<span class="hljs-number">240</span><span class="hljs-symbol">:~</span><span class="hljs-variable">$ </span>pwd
-/home/ubuntu
-</code></pre><p>In your home directory, paste in the following by right clicking on the ssh window:</p>
-<pre><code>ssh-keygen -t rsa -P <span class="hljs-string">''</span> -f ~<span class="hljs-regexp">/.ssh/id</span>_rsa
-cat ~<span class="hljs-regexp">/.ssh/id</span>_rsa.pub <span class="hljs-meta">&gt;&gt; </span>~<span class="hljs-regexp">/.ssh/authorized</span>_keys
-</code></pre><p>Navigate to the .ssh directory and cat your public file:</p>
-<pre><code><span class="hljs-selector-tag">cd</span> <span class="hljs-selector-class">.ssh</span>
-<span class="hljs-selector-tag">cat</span> <span class="hljs-selector-tag">id_rsa</span><span class="hljs-selector-class">.pub</span>
-</code></pre><p>Select the entire key with the mouse and press <strong>Ctrl-C</strong> to copy it. Then go to gitgub or bitbucket, as appropriate. Choose manage account, and add you new public ssh key, calling it something like Prog219AwsKey.</p>
-<p>Type <strong>cd</strong> to go to the home directory. Then type: <strong>nano .bashrc</strong></p>
-<p>Scroll to the bottom, and paste in the following:</p>
+<h2 id="-bashrc">.bashrc</h2>
+<p>In Windows you have the Windows (or DOS) Command Prompt (CMD). You also have Power Shell. On Linux you have the bash shell. On Lubuntu, you typically open it by selecting LxTerminal. On plain Ubuntu, just select Terminal. The bash shell is the Linux command line where we do most of our work. Though intimidating to new-comers, the Linux bash shell is very powerful and very useful.  </p>
+<p>The hidden <strong>~/.bashrc</strong> file contains code that is run each time you open a bash shell. The code in this file ensures that your bash environment is set up correctly.</p>
+<p>Type <strong>cd</strong> to go to the home directory. Then type either: <strong>geany .bashrc</strong> or <strong>nano .bashrc</strong>.</p>
+<p>Scroll to the bottom of the file, and paste in the following:</p>
 <pre><code><span class="hljs-keyword">if</span> [ -z <span class="hljs-string">"$SSH_AUTH_SOCK"</span> ] ; <span class="hljs-keyword">then</span>
     eval <span class="hljs-string">`ssh-agent`</span>
 fi
@@ -64,16 +56,32 @@ fi
 export PATH=<span class="hljs-string">"$PATH:$HOME/npm/bin"</span>
 
 export NODE_PATH=:$HOME/npm/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">node_modules</span></span>
-</code></pre><p>Type <strong>Ctrl-O + enter</strong> to save, and <strong>Ctrl-X</strong> to exit nano.</p>
-<p>Now process your updated <strong>.bashrc</strong> file from the command line: <strong>source ~/.bashrc</strong></p>
-<p>Make the key only readable by you, the owner:</p>
+</code></pre><p>If you are using <strong>nano</strong>, type <strong>Ctrl-O + enter</strong> to save, and <strong>Ctrl-X</strong> to exit.</p>
+<p>Now process your updated <strong>.bashrc</strong> file from the command line: <strong>source ~/.bashrc</strong>.</p>
+<p>One final task we should complete at this time: <em>make sure you have ~/bin folder.</em> If the folder does not exist already, type the following code to create it:</p>
+<pre><code class="lang-bash"><span class="hljs-built_in">mkdir</span> ~/bin
+</code></pre>
+<h2 id="ssh">SSH</h2>
+<p>We are going to create a second SSH key and put the public portion of it on GitHub. We could reuse our previous key, but I want you to get practice creating and storing keys. (It&#39;s easy once you get used to it.)</p>
+<p>On your EC2 instance, type <strong>cd</strong> and press enter to get to your home directory. Type <strong>pwd</strong> to be sure you are in the right place:</p>
+<pre><code>ubuntu<span class="hljs-variable">@ip</span>-<span class="hljs-number">172</span>-<span class="hljs-number">31</span>-<span class="hljs-number">33</span>-<span class="hljs-number">240</span><span class="hljs-symbol">:~</span><span class="hljs-variable">$ </span>pwd
+/home/ubuntu
+</code></pre><p>In your home directory, paste in the following by right clicking on the bash shell:</p>
+<pre><code>ssh-keygen -t rsa -P <span class="hljs-string">''</span> -f ~<span class="hljs-regexp">/.ssh/id</span>_rsa
+cat ~<span class="hljs-regexp">/.ssh/id</span>_rsa.pub <span class="hljs-meta">&gt;&gt; </span>~<span class="hljs-regexp">/.ssh/authorized</span>_keys
+</code></pre><p>Navigate to the .ssh directory and cat your public file:</p>
+<pre><code><span class="hljs-selector-tag">cd</span> <span class="hljs-selector-class">.ssh</span>
+<span class="hljs-selector-tag">cat</span> <span class="hljs-selector-tag">id_rsa</span><span class="hljs-selector-class">.pub</span>
+</code></pre><p>Select the entire public key with the mouse and press <strong>Ctrl-C</strong> to copy it. Then go to gitgub or bitbucket, as appropriate. Choose <strong>manage account</strong>, and add you new public ssh key, calling it something like Prog219AwsKey, modifying the name as appropriate to the class you are in.</p>
+<p>Make the key readable only by you, the owner:</p>
 <pre><code>chmod <span class="hljs-number">400</span> ~<span class="hljs-regexp">/.ssh/id</span>_rsa
 </code></pre><p>Then type the following to load the private key. (Like loading a key into Pageant):</p>
 <pre><code><span class="hljs-symbol">ssh</span>-<span class="hljs-keyword">add </span>~/.ssh/id_rsa
 </code></pre><p>It might look like this:</p>
 <pre><code>ubuntu<span class="hljs-variable">@ip</span>-<span class="hljs-number">172</span>-<span class="hljs-number">31</span>-<span class="hljs-number">33</span>-<span class="hljs-number">240</span><span class="hljs-symbol">:~/</span>.ssh<span class="hljs-variable">$ </span>ssh-add id_rsa
 Identity <span class="hljs-symbol">added:</span> id_rsa (id_rsa)
-</code></pre><p>Go to your Git Folder and clone your repo, using your github or bitbucket git url as appropriate:</p>
+</code></pre><p>Also, add a <strong>main-key</strong>, as explained in the automating section of the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/GitNewRepo.html#automating-the-load-process">GitNewRepo</a> assignment.</p>
+<p>Go to your Git Folder and clone your repo, using your github or bitbucket git url as appropriate. The command might look something like this:</p>
 <pre><code>cd Git
 git <span class="hljs-keyword">clone</span> <span class="hljs-title">git</span>@bitbucket.com:lastname/reponame.git
 </code></pre><p>And also install JsObjects:</p>
