@@ -51,7 +51,7 @@
 <li>destinationDir</li>
 </ul>
 <p>Pass <strong>requestQuery</strong> to your <strong>getJSON</strong> (or equivalent) call.</p>
-<p>On the server side, capture both properties sent from the client. Send them on to our updated <strong>elven-site-tools</strong>, which is now at 1.0.2. This contains a breaking change. In <strong>routes/index.js</strong>, update the <strong>/walk</strong> route to look like this:</p>
+<p>On the server side, capture both properties sent from the client. Send them on to our updated <strong>elven-site-tools</strong>, which is now at 1.0.3. This contains a breaking change. In <strong>routes/index.js</strong>, update the <strong>/walk</strong> route to look like this:</p>
 <pre><code class="lang-javascript">router.get(<span class="hljs-string">'/walk'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'In walk'</span>, request.query);
   <span class="hljs-keyword">var</span> directoryToWalk = request.query.directoryToWalk;
@@ -87,30 +87,30 @@
 });
 </code></pre>
 <h2 id="elven-site-tools">Step Four</h2>
-<p>Something will have to be done about about the breaking change in <strong>elven-site-tools</strong>. By the time we reached version 1.0.2 the parameters passed to <strong>makePage</strong> had changed, as shown immediately above. The function now takes <strong>destinationDir</strong>.</p>
+<p>Something will have to be done about about the breaking change in <strong>elven-site-tools</strong>. The parameters passed to <strong>makePage</strong> have changed, as shown immediately above. The function now takes <strong>destinationDir</strong>.</p>
 <p>The main reason for <strong>NpmAllInclusive</strong> was to save time during class. Saving disk space is also important, but not crucial. We now have two choices:</p>
 <ul>
 <li>Use a local <strong>node_modules</strong> directories for older versions of our program, and save the <em>all-inclusive ~/tmp/node_modules</em> directory for the one we need in class.</li>
 <li>Manually switch our version of <strong>elven-site-tools</strong> in the <strong>~/tmp</strong> directory.</li>
 </ul>
-<p>It actually would not be hard to switch back and forth, since we are only changing one package. To get a specific version of a package do something like this: <strong>npm install elven-site-tools@1.0.2</strong>. Here <strong>@1.0.2</strong> is the version you want. So remove the old version with <strong>rm -r node_modules/elven-site-tools</strong>, and then install the one needed for your current project. You want 0.1.0 for earlier projects in this series. You want the latest, which right now is 1.0.2, for this project. Discussion area or in class for questions...</p>
-<p>Let&#39;s talk for a moment about the case where you want a local version of <strong>node_modules</strong> rather than to link to the all-inclusive one <strong>~/tmp</strong>. When we want a local version of <strong>node_modules</strong> we simply specify the version of <strong>elven-site-tools</strong> that we want in <strong>package.json</strong>. For instance, if placed in <strong>package.json</strong>, the first example below will install 0.1.0, while the second installs 1.0.2:</p>
+<p>It actually would not be hard to switch back and forth, since we are only changing one package. To get a specific version of a package do something like this: <strong>npm install elven-site-tools@1.0.3</strong>. Here <strong>@1.0.3</strong> is the version you want. So remove the old version with <strong>rm -r node_modules/elven-site-tools</strong>, and then install the one needed for your current project. You want 0.1.0 for earlier projects in this series. You want the latest, which right now is 1.0.3, for this project. Discussion area or in class for questions...</p>
+<p>Let&#39;s talk for a moment about the case where you want a local version of <strong>node_modules</strong> rather than to link to the all-inclusive one <strong>~/tmp</strong>. When we want a local version of <strong>node_modules</strong> we simply specify the version of <strong>elven-site-tools</strong> that we want in <strong>package.json</strong>. For instance, if placed in <strong>package.json</strong>, the first example below will install 0.1.0, while the second installs 1.0.3:</p>
 <pre><code><span class="hljs-string">"elven-site-tools"</span>: <span class="hljs-string">"0.1.0"</span>,
-<span class="hljs-string">"elven-site-tools"</span>: <span class="hljs-string">"1.0.2"</span>,
+<span class="hljs-string">"elven-site-tools"</span>: <span class="hljs-string">"1.0.3"</span>,
 </code></pre><p>Pick one or the other for your package.json depending on your needs.</p>
 <ul>
 <li>ElvenSiteConfig: Use 0.1.0</li>
-<li>ElvenSiteOptions: Use 1.0.2</li>
+<li>ElvenSiteOptions: Use 1.0.3</li>
 </ul>
 <p>This would make it fairly easy for us to track the right version of the <strong>elven-site-tools</strong> in our project under normal circumstances. But NpmAllInclusive complicates things a bit. We should still put something like the above in the <strong>package.json</strong> file for our project. But in the <strong>~/tmp</strong> directory, we want to run one of the following commands, depending on our needs:</p>
 <pre><code>npm install elven-site-tools<span class="hljs-symbol">@0</span><span class="hljs-number">.1</span><span class="hljs-number">.0</span>
-npm install elven-site-tools<span class="hljs-symbol">@1</span><span class="hljs-number">.0</span><span class="hljs-number">.2</span>
+npm install elven-site-tools<span class="hljs-symbol">@1</span><span class="hljs-number">.0</span><span class="hljs-number">.3</span>
 </code></pre><p>The first is for <strong>ElvenSiteConfig</strong> or earlier, the second for <strong>ElvenSiteOptions</strong> or later. Check your work like this:</p>
 <pre><code>cat ~<span class="hljs-regexp">/tmp/</span>node_modules<span class="hljs-regexp">/elven-site-tools/</span><span class="hljs-keyword">package</span>.json
 </code></pre><p>If all else fails, delete the package manually, then reinstall it:</p>
 <pre><code><span class="hljs-keyword">rm</span> -r ~/tmp/node_modules/elven-site-tools
 <span class="hljs-keyword">cd</span> ~/tmp
-npm install elven-site-tools@1.0.2
+npm install elven-site-tools@1.0.3
 <span class="hljs-keyword">cd</span> -
 </code></pre><p>The last command switches you back to the directory you were in before you navigated to the <strong>~/tmp</strong> directory.</p>
 <h2 id="turn-it-in">Turn it in</h2>
