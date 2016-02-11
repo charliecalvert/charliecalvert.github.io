@@ -5,6 +5,7 @@
 <li><a href="#install-geany">Install Geany</a></li>
 <li><a href="#set-up-environment">Set up Environment</a></li>
 <li><a href="#install-git">Install Git</a></li>
+<li><a href="#jsobjects">JsObjects</a></li>
 <li><a href="#install-node">Install Node</a></li>
 <li><a href="#install-lamp">Install Lamp</a></li>
 <li><a href="#install-ssh">Install SSH</a></li>
@@ -12,7 +13,8 @@
 <li><a href="#install-oracle-sun-java">Install Oracle/Sun Java</a></li>
 <li><a href="#install-webstorm">Install WebStorm</a></li>
 <li><a href="#install-android-sdk">Install Android SDK</a></li>
-<li><a href="#install-mongodb">Install MongoDb</a></li><!--TOC_End--></ul><h1 id="configure-linux">Configure Linux</h1>
+<li><a href="#install-mongodb">Install MongoDb</a></li>
+<li><a href="#chrome-bin-setup">Chrome Bin Setup</a></li><!--TOC_End--></ul><h1 id="configure-linux">Configure Linux</h1>
 <p>I provide my students with a preconfigured version of Lubuntu. Nevertheless, there are various reasons why you might need to configure part or all of Linux box to use in one of my courses. This document is aimed to help both you and me configure Linux boxes.</p>
 <p>Your instance of Linux might be:</p>
 <ul>
@@ -120,7 +122,8 @@ for your copy of Lubuntu is the same as the user name.)</p>
 <pre><code><span class="hljs-built_in">cd</span>
 <span class="hljs-built_in">mkdir</span> Git
 <span class="hljs-built_in">cd</span> Git
-</code></pre><p>If you are one of my students, you might want to check out a read only copy of JsObjects:</p>
+</code></pre><h2 id="jsobjects">JsObjects</h2>
+<p>If you are one of my students, you might want to check out a read only copy of JsObjects:</p>
 <pre><code>git <span class="hljs-keyword">clone</span> <span class="hljs-title">http</span>://github.com/charliecalvert/JsObjects.git
 </code></pre><h2 id="install-node">Install Node</h2>
 <p>The explanation is found here:</p>
@@ -150,20 +153,24 @@ for your copy of Lubuntu is the same as the user name.)</p>
 <p>The following appears to work fine with Eclipse:</p>
 <pre><code>sudo apt-<span class="hljs-keyword">get</span> isntall openjdk<span class="hljs-number">-8</span>-jdk
 </code></pre><h2 id="install-oracle-sun-java">Install Oracle/Sun Java</h2>
-<p>Java gets installed in the <strong>/usr/lib/jvm</strong> directory.</p>
-<p>The new improved way:</p>
+<p>Setting up Java is optional on EC2 or other Ubuntu server instances, but it is usually required on Ubuntu or Lubuntu desktop because you need it for WebStorm.</p>
+<p>Navigate to: <strong>~/Git/JsObjects/Utilities/SetupLinuxBox</strong></p>
+<pre><code>cd ~<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>SetupLinuxBox
+</code></pre><p>Then run the the Java install script: <strong>./InstallOracleJdk.sh</strong></p>
+<p>You will be prompted enumerable times and receive warnings of various kinds, (don&#39;t try to use the mouse, just enter or tab key) but if you just keep following the path of least resistance, it will eventually install. You can check your work by typing java --version</p>
+<pre><code><span class="hljs-keyword">java </span>-version
+<span class="hljs-keyword">java </span>version <span class="hljs-string">"1.8.0_72"</span>
+<span class="hljs-keyword">Java(TM) </span>SE Runtime Environment (<span class="hljs-keyword">build </span><span class="hljs-number">1</span>.<span class="hljs-number">8</span>.<span class="hljs-number">0</span>_72-<span class="hljs-keyword">b15)
+</span><span class="hljs-keyword">Java </span>HotSpot(TM) <span class="hljs-number">64</span>-<span class="hljs-keyword">Bit </span>Server VM (<span class="hljs-keyword">build </span><span class="hljs-number">25</span>.<span class="hljs-number">72</span>-<span class="hljs-keyword">b15, </span>mixed mode)
+</code></pre><p>Java usually gets installed in the <strong>/usr/lib/jvm</strong> directory.</p>
+<p>The code found in my script probably looks like this:</p>
 <pre><code>sudo<span class="hljs-built_in"> add-apt-repository </span>ppa:webupd8team/java
 sudo apt-get update
 sudo apt-get install oracle-java8-installer
 </code></pre><p>And you can test it like this:</p>
 <pre><code>java -<span class="hljs-built_in">version</span>
 </code></pre><p>The reference for the above is <a href="http://www.webupd8.org/2012/09/install-oracle-java-8-in-ubuntu-via-ppa.html">here</a>.</p>
-<p>The old, now obsolete way to install Java:</p>
-<pre><code>sudo apt-<span class="hljs-built_in">add</span>-repository <span class="hljs-keyword">pp</span><span class="hljs-variable">a:flexiondotorg</span>/java
-sudo apt-<span class="hljs-built_in">get</span> <span class="hljs-keyword">update</span>
-sudo apt-<span class="hljs-built_in">get</span> install <span class="hljs-keyword">sun</span>-java6-jdk <span class="hljs-keyword">sun</span>-java6-plugin
-sudo <span class="hljs-keyword">update</span>-alternatives --config java
-</code></pre><h2 id="install-webstorm">Install WebStorm</h2>
+<h2 id="install-webstorm">Install WebStorm</h2>
 <p>You can download WebStorm from the JetBrains site:</p>
 <ul>
 <li><a href="https://www.jetbrains.com/">https://www.jetbrains.com/</a></li>
@@ -213,4 +220,12 @@ sudo <span class="hljs-keyword">update</span>-alternatives --config java
 <ul>
 <li><a href="http://www.elvenware.com/charlie/development/database/NoSql/MongoDb.html#install">MongoDb on Elvenware</a></li>
 </ul>
+<h2 id="chrome-bin-setup">Chrome Bin Setup</h2>
+<p>Don&#39;t do this on EC2, as you would not normally install Chrome on EC2 since there is no front end (GUI) for Ubuntu Server. But on Ubuntu and Lubuntu Desktop, it is needed in some circumstances related to development.</p>
+<p>Under SystemCheck Common, this will fix <strong>CHROME_BIN</strong> errors.</p>
+<p>Normally you would put this line near the bottom of <strong>~/.bashrc</strong>.</p>
+<pre><code><span class="hljs-keyword">export</span> CHROME_BIN=<span class="hljs-regexp">/usr/</span>bin/chromium-browser
+</code></pre><p>After making the change run <strong>source ~/.bashrc</strong>.</p>
+<p><strong>NOTE</strong>: <em>If you are trying to get <strong>SystemCheck</strong> to pass, then do your work in the same bash shell where you are running SystemCheck. In particular, exit the program, run the command, then run <strong>SystemCheck</strong> again.</em></p>
+<p>Though the path rarely varies, to confirm the path to Chromium on your system, type <strong>which chromium-browser</strong>. Whether you specify the path to Chromium or Chrome is more or less optional. There is no wrong choice, it just depends on your preferences.</p>
 </div></body></html>
