@@ -4,7 +4,9 @@
 <li><a href="#interface">Step Three: Client Interface</a></li>
 <li><a href="#server">Step Four: Server</a></li>
 <li><a href="#step-five">Step Five</a></li>
-<li><a href="#turn-it-in">Turn It In</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#turn-it-in">Turn It In</a></li>
+<li><a href="#pass-data">Hint: Passing Data</a></li>
+<li><a href="#interact">Client Server Interactions</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>The Node Route Basics assignment gives you practice create NodeJs Express routes and calling them with <strong>$.getJSON</strong> or <strong>$.ajax</strong>.</p>
 <p>If you need help with this this assignment, study the NodeRoutes
 examples in JsObjects.</p>
@@ -101,4 +103,82 @@ called <strong>radius</strong> and it should return the calculated circumference
 <h2 id="turn-it-in">Turn It In</h2>
 <p>Check your code into your Git repository and submit the URL of your
 repository or of the project you submitted.</p>
+<h2 id="pass-data">Hint: Passing Data</h2>
+<p>First, an example showing how to call a route without parameters:</p>
+<pre><code class="lang-javascript">function callServerWithoutParms() {
+
+    $.getJSON('/walk', function (<span class="hljs-literal">result</span>) {
+        elf.display.showApacheFiles(<span class="hljs-literal">result</span>.htmlFilesWritten, <span class="hljs-literal">result</span>.destinationDir);
+        elf.display.fillDisplayArea(<span class="hljs-type">JSON</span>.stringify(<span class="hljs-literal">result</span>, null, <span class="hljs-number">4</span>));
+    }).done(function () {
+            elf.display.showDebug('<span class="hljs-type">Walk</span> loaded second success');
+        })
+        .fail(function (jqxhr, textStatus, error) {
+            elf.display.showDebug('<span class="hljs-type">Walk</span> loaded error: ' + jqxhr.status + ' ' + textStatus + ' ' + error);
+        })
+        .always(function () {
+            elf.display.showDebug('<span class="hljs-type">Walk</span> loaded complete');
+        });
+
+}
+</code></pre>
+<p>Now an example showing how to call a route with parameters:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callServerWithParms</span>(<span class="hljs-params"></span>) </span>{
+
+    <span class="hljs-comment">// Get Data We Want to Pass to the Server</span>
+    <span class="hljs-keyword">var</span> dirsToWalk = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'dirsToWalk'</span>);
+    <span class="hljs-keyword">var</span> directory = dirsToWalk.options[sourceIndex].value;
+    <span class="hljs-keyword">var</span> destinationDirs = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'destinationDirs'</span>);
+    <span class="hljs-keyword">var</span> destinationDir = destinationDirs.options[destinationIndex].value;
+
+    <span class="hljs-keyword">var</span> highlight = $(<span class="hljs-string">'#highlight'</span>).prop(<span class="hljs-string">'checked'</span>);
+
+    <span class="hljs-comment">// Put that data in JavaScript Object</span>
+    <span class="hljs-keyword">var</span> requestQuery = {
+        directoryToWalk: directory,
+        destinationDir: destinationDir,
+        highlight: highlight,
+    };
+
+    <span class="hljs-comment">// Call the server and pass the data as a parameter.</span>
+    $.getJSON(<span class="hljs-string">'/walk'</span>, requestQuery, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{
+        elf.display.showApacheFiles(result.htmlFilesWritten, result.destinationDir);
+        elf.display.fillDisplayArea(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+    }).done(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            elf.display.showDebug(<span class="hljs-string">'Walk loaded second success'</span>);
+        })
+        .fail(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">jqxhr, textStatus, error</span>) </span>{
+            elf.display.showDebug(<span class="hljs-string">'Walk loaded error: '</span> + jqxhr.status + <span class="hljs-string">' '</span> + textStatus + <span class="hljs-string">' '</span> + error);
+        })
+        .always(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            elf.display.showDebug(<span class="hljs-string">'Walk loaded complete'</span>);
+        });
+
+}
+</code></pre>
+<p>Below, in the next section, we look more closely at passing parameters.</p>
+<h3 id="interact">Client Server Interactions</h3>
+<p>Look at these code excerpts from the code shown above. We look specifically at the call to the server:</p>
+<pre><code class="lang-javascript">
+    // <span class="hljs-type">Put</span> that data <span class="hljs-keyword">in</span> <span class="hljs-type">JavaScript</span> <span class="hljs-type">Object</span>
+    <span class="hljs-keyword">var</span> requestQuery = {
+        directoryToWalk: directory,
+        destinationDir: destinationDir,
+        highlight: highlight,
+    };
+
+    // <span class="hljs-type">Call</span> the server <span class="hljs-keyword">and</span> pass the data <span class="hljs-keyword">as</span> a parameter.
+    $.getJSON('/walk', requestQuery, function (<span class="hljs-literal">result</span>) {
+</code></pre>
+<p>And here is what it looks like on the server. Notice how we
+use the request object to discover the parameters passed
+by the client:</p>
+<pre><code class="lang-javascript">
+router.get(<span class="hljs-string">'/walk'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'In walk'</span>, request.query);
+    <span class="hljs-keyword">var</span> directoryToWalk = request.query.directoryToWalk;
+    <span class="hljs-keyword">var</span> destinationDir = request.query.destinationDir;
+    <span class="hljs-keyword">var</span> highlight = request.query.highlight;
+</code></pre>
 </div></body></html>
