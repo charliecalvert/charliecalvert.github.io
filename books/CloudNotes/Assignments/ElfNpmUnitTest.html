@@ -4,6 +4,7 @@
 <li><a href="#some-more-utilities">Some more utilities</a></li>
 <li><a href="#test">Test</a></li>
 <li><a href="#custom-reporter">Custom reporter</a></li>
+<li><a href="#elflog">ElfLog</a></li>
 <li><a href="#update-your-package">Update your Package</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>The goal of Elf Npm Unit Test is to refine our <strong>Isit322-lastname</strong> packages with new code and unit tests.</p>
@@ -201,6 +202,79 @@ jasmineRep.addReporter(customReporter)<span class="hljs-comment">;</span>
 jasmineRep.execute()<span class="hljs-comment">;</span>
 </code></pre>
 <p>This is mostly cut and paste, so go ahead and do it, just so you will know how to create started if you ever want to create a custom reporter. Not really likely, but it could be useful at some point.</p>
+<h2 id="elflog">ElfLog</h2>
+<p>A recent copy of elfLog for use on the server.</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 11/30/15.
+ */</span>
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">elfLog</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+}
+
+elfLog.logLevelMinorDetails = <span class="hljs-number">0</span>;
+elfLog.logLevelDetails = <span class="hljs-number">1</span>;
+elfLog.logLevelWarn = <span class="hljs-number">2</span>;
+elfLog.logLevelError = <span class="hljs-number">3</span>;
+elfLog.logLevelInfo = <span class="hljs-number">4</span>;
+elfLog.logLevelSilent = <span class="hljs-number">5</span>;
+
+elfLog.debugLevel = <span class="hljs-literal">undefined</span>;
+
+elfLog.init = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">this</span>.debugLevel = <span class="hljs-keyword">this</span>.logLevelSilent;
+};
+
+elfLog.setLevel = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">level</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">this</span>.debugLevel = level;
+};
+
+elfLog.getLevel = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">level</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">switch</span> (level) {
+        <span class="hljs-keyword">case</span> <span class="hljs-number">0</span>:
+            <span class="hljs-keyword">return</span> <span class="hljs-string">'Minor-Details'</span>;
+        <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>:
+            <span class="hljs-keyword">return</span> <span class="hljs-string">'Details'</span>;
+        <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>:
+            <span class="hljs-keyword">return</span> <span class="hljs-string">'Warning'</span>;
+        <span class="hljs-keyword">case</span> <span class="hljs-number">3</span>:
+            <span class="hljs-keyword">return</span> <span class="hljs-string">'Error'</span>;
+        <span class="hljs-keyword">case</span> <span class="hljs-number">4</span>:
+            <span class="hljs-keyword">return</span> <span class="hljs-string">'Information'</span>;
+        <span class="hljs-keyword">case</span> <span class="hljs-number">5</span>:
+            <span class="hljs-keyword">return</span> <span class="hljs-string">'Silent'</span>;
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">return</span> <span class="hljs-string">'Unknown level'</span>;
+    }
+};
+
+elfLog.setMessage = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">level, message</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">if</span> (level &gt;= <span class="hljs-keyword">this</span>.debugLevel) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> message !== <span class="hljs-string">'string'</span>) {
+            message = <span class="hljs-built_in">JSON</span>.stringify(message);
+        }
+        <span class="hljs-keyword">var</span> output = <span class="hljs-keyword">this</span>.getLevel(level) + <span class="hljs-string">': '</span> + message;
+        <span class="hljs-keyword">return</span> output;
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-string">''</span>;
+};
+
+elfLog.log = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">level, message</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    message = <span class="hljs-keyword">this</span>.setMessage(level, message);
+    <span class="hljs-keyword">if</span> (message.trim().length &gt; <span class="hljs-number">0</span>) {
+        <span class="hljs-built_in">console</span>.log(message);
+    }
+};
+
+elfLog.init();
+
+<span class="hljs-built_in">module</span>.exports = elfLog;
+</code></pre>
 <h2 id="update-your-package">Update your Package</h2>
 <p>You will need to update the package:</p>
 <pre><code class="lang-bash"><span class="hljs-built_in">npm</span> version minor
