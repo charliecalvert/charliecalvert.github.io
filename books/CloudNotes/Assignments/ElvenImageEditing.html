@@ -10,6 +10,15 @@
 <ul>
 <li><a href="http://bit.ly/california-images">http://bit.ly/california-images</a></li>
 </ul>
+<p>The images, by default, have spaces in their names. This is almost always a problem waiting to happen. To fix it, unzip the images into:</p>
+<pre><code><span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html/im</span>ages<span class="hljs-regexp">/california</span>
+</code></pre><p>Like this:</p>
+<pre><code><span class="hljs-keyword">mkdir</span> /<span class="hljs-keyword">var</span>/www/html/images/california
+cp California.<span class="hljs-keyword">zip</span> /<span class="hljs-keyword">var</span>/www/html/images/california
+unzip California.<span class="hljs-keyword">zip</span>
+</code></pre><p>Navigate to the directory where the images are now stored, and run the following command:</p>
+<pre><code><span class="hljs-keyword">find</span> -name <span class="hljs-string">"* *"</span> -<span class="hljs-built_in">type</span> <span class="hljs-keyword">f</span> | <span class="hljs-built_in">rename</span> <span class="hljs-string">"s/ /_/g"</span>
+</code></pre><p>This command changes a filename like <strong>foo bar.zip</strong> to <strong>foo_bar.zip</strong>.</p>
 <h2 id="install">Step One: Install</h2>
 <p>Get the latest copy of ElvenImages and set up a script that will help you &quot;install&quot; it. There are three steps:</p>
 <ol>
@@ -24,13 +33,13 @@ cd ~/Source
 ./renewElvenImages
 </code></pre><h2 id="config-file">Step Two: Setup The Config File</h2>
 <p>Like MakeHtml, we have a config file. It looks something like this:</p>
-<pre><code><span class="hljs-string">"elvenImages"</span>: {
-        <span class="hljs-string">"baseDir"</span>: <span class="hljs-string">"/var/www/html"</span>,        
+<pre><code>    <span class="hljs-string">"elvenImages"</span>: {
+        <span class="hljs-string">"baseDir"</span>: <span class="hljs-string">"/var/www/html"</span>,
+        <span class="hljs-string">"markdownFileWithImages"</span>: <span class="hljs-string">"/home/charlie/Documents/AllTest/california.md"</span>,
         <span class="hljs-string">"allImagesJsonFile"</span>: <span class="hljs-string">"all-images.json"</span>,
-    <span class="hljs-string">"markdownFileWithImages"</span>: <span class="hljs-string">"/home/bcuser/Documents/AllTest/canada02.md"</span>,
-        <span class="hljs-string">"imageDir"</span>: <span class="hljs-string">"/images/canada/"</span>,
-        <span class="hljs-string">"notUsedDir"</span>: <span class="hljs-string">"/home/bcuser/temp/not-used/"</span>
-    },
+        <span class="hljs-string">"imageDir"</span>: <span class="hljs-string">"/images/california/"</span>,
+        <span class="hljs-string">"notUsedDir"</span>: <span class="hljs-string">"/home/charlie/temp/not-used/california"</span>
+    }
 </code></pre><p>Make sure it points at <strong>bcuser</strong> or <strong>ubuntu</strong> as appropriate. (This program will probably be run most often from pristine lubuntu, so <strong>bcuser</strong> is the most common choice.)</p>
 <p>As a general rul, you can leave the <strong>baseDir</strong> and <strong>allImagesJsonFile</strong> alone. You should, however, commonly want to edit:</p>
 <ul>
@@ -43,9 +52,9 @@ cd ~/Source
 <pre><code><span class="hljs-built_in">npm</span> start
 </code></pre><p>Now open the <strong>markdownFileWithImages</strong> in a markdown edit. Delete the images you don&#39;t want, add comments for the images you do want.</p>
 <p>I decided, at least for now, to not put the full path to the images in the <strong>markdownFileWithImages</strong>. Instead I used the relative path expected on our website. Here is an example full path:</p>
-<pre><code><span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html/im</span>ages<span class="hljs-regexp">/canada/</span>somefile.jpg
+<pre><code><span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html/im</span>ages<span class="hljs-regexp">/california/</span>somefile.jpg
 </code></pre><p>Here is an example relative path of the type I&#39;m now using:</p>
-<pre><code><span class="hljs-regexp">/images/</span>canada<span class="hljs-regexp">/somefile.jpg</span>
+<pre><code><span class="hljs-regexp">/images/</span>california<span class="hljs-regexp">/somefile.jpg</span>
 </code></pre><p>This means that you won&#39;t see an image in the markdown editor by default. To fix this issue, create a symbolic link from the root of the system to the apache images directory:</p>
 <pre><code>sudo ln -s <span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html/im</span>ages <span class="hljs-regexp">/images</span>
 </code></pre><p>After doing this, the images should show up when you open them in an editor.</p>
