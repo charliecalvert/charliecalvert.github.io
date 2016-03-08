@@ -5,6 +5,7 @@
 <li><a href="#listing-files-with-ls">Listing Files with ls</a></li>
 <li><a href="#pwd">Change or Check Your Current Location: CD and PWD</a></li>
 <li><a href="#copy">Copying or Moving Files</a></li>
+<li><a href="#copying-and-nested-folders">Copying and Nested Folders</a></li>
 <li><a href="#directories">Directories</a></li>
 <li><a href="#more-examples">More Examples</a></li>
 <li><a href="#the-nano-editor">The Nano Editor</a></li><!--TOC_End--></ul><h1 id="working-with-files-in-linux-and-os-x-">Working with Files in Linux (and OS X)</h1>
@@ -438,6 +439,64 @@ file and report its status.</p>
 </code></pre>
 <p>Note that we have used the move (mv) command to rename the file. This is
 common practice in Linux.</p>
+<h2 id="copying-and-nested-folders">Copying and Nested Folders</h2>
+<p>When copying files you can sometimes end up with nested folders. Conside a command like this:</p>
+<pre><code class="lang-bash">cp -r ~<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/JavaScript/</span>NodeCode<span class="hljs-regexp">/MakeHtml/</span> ~<span class="hljs-regexp">/Source/M</span>akeHtml
+</code></pre>
+<p>This looks to me at first as if it ought to copy MakeHtml to <strong>~/Source/MakeHtml</strong>. But that is not what happens if <strong>~/SourceMakeHtml</strong> already exists. In that case it copies <strong>MakeHtml</strong> to <strong>~/Source/MakeHtml/MakeHtml</strong>.</p>
+<p>Consider the following script, which illustrates the point. Save it to your <strong>~/temp</strong> directory as <strong>cptest</strong>, make it executable with <strong>chmod +x cptest</strong>, and run it. Open it in geany and make changes, then run it. After a bit, you should see the difference between copying with a period as the destination and copying with a directory name as the destination.</p>
+<pre><code class="lang-bash"><span class="hljs-meta">#! /bin/bash
+</span>
+mkdir -v /tmp/barfoo
+<span class="hljs-built_in">echo</span> <span class="hljs-string">'test'</span> &gt; /tmp/barfoo/<span class="hljs-built_in">test</span>
+ls -lahd /tmp/b*
+
+<span class="hljs-built_in">echo</span> <span class="hljs-_">-e</span> <span class="hljs-string">'\n--- Copy with period to create barfoo ---------------------\n'</span>
+cp -rv /tmp/barfoo/ ~/temp/.
+
+<span class="hljs-built_in">echo</span> <span class="hljs-_">-e</span> <span class="hljs-string">'\n--- Copy with period does not nest even if barfoo exists --\n'</span>
+cp -rv /tmp/barfoo/ ~/temp/.
+
+<span class="hljs-built_in">echo</span> <span class="hljs-_">-e</span> <span class="hljs-string">'\n---- Copy with dir name creates nested barfoo -------------\n'</span>
+cp -rv /tmp/barfoo/ ~/temp/barfoo
+<span class="hljs-built_in">echo</span> <span class="hljs-_">-e</span> <span class="hljs-string">'\n-----------------------------------------------------------'</span>
+
+ls -gGahd ~/temp/b*
+rm -rv /tmp/barfoo
+rm -rv ~/temp/barfoo
+</code></pre>
+<p>It creates the following output:</p>
+<pre><code class="lang-bash">$ ./cptest
+<span class="hljs-string">mkdir:</span> created directory ‘<span class="hljs-regexp">/tmp/</span>barfoo’
+drwxrwxr-x <span class="hljs-number">2</span> charlie charlie <span class="hljs-number">4.0</span>K Mar  <span class="hljs-number">8</span> <span class="hljs-number">09</span>:<span class="hljs-number">13</span> <span class="hljs-regexp">/tmp/</span>barfoo
+
+--- Copy with period to create barfoo ---------------------
+
+‘<span class="hljs-regexp">/tmp/</span>barfoo<span class="hljs-regexp">/’ -&gt; ‘/</span>home<span class="hljs-regexp">/charlie/</span>temp<span class="hljs-regexp">/./</span>barfoo’
+‘<span class="hljs-regexp">/tmp/</span>barfoo<span class="hljs-regexp">/test’ -&gt; ‘/</span>home<span class="hljs-regexp">/charlie/</span>temp<span class="hljs-regexp">/./</span>barfoo/test’
+
+--- Copy with period does not nest even <span class="hljs-keyword">if</span> barfoo exists --
+
+‘<span class="hljs-regexp">/tmp/</span>barfoo<span class="hljs-regexp">/test’ -&gt; ‘/</span>home<span class="hljs-regexp">/charlie/</span>temp<span class="hljs-regexp">/./</span>barfoo/test’
+
+---- Copy with dir name creates nested barfoo -------------
+
+‘<span class="hljs-regexp">/tmp/</span>barfoo<span class="hljs-regexp">/’ -&gt; ‘/</span>home<span class="hljs-regexp">/charlie/</span>temp<span class="hljs-regexp">/barfoo/</span>barfoo’
+‘<span class="hljs-regexp">/tmp/</span>barfoo<span class="hljs-regexp">/test’ -&gt; ‘/</span>home<span class="hljs-regexp">/charlie/</span>temp<span class="hljs-regexp">/barfoo/</span>barfoo/test’
+
+-----------------------------------------------------------
+drwxrwxr-x <span class="hljs-number">3</span> <span class="hljs-number">4.0</span>K Mar  <span class="hljs-number">8</span> <span class="hljs-number">09</span>:<span class="hljs-number">13</span> <span class="hljs-regexp">/home/</span>charlie<span class="hljs-regexp">/temp/</span>barfoo
+removed ‘<span class="hljs-regexp">/tmp/</span>barfoo/test’
+removed <span class="hljs-string">directory:</span> ‘<span class="hljs-regexp">/tmp/</span>barfoo’
+removed ‘<span class="hljs-regexp">/home/</span>charlie<span class="hljs-regexp">/temp/</span>barfoo/test’
+removed ‘<span class="hljs-regexp">/home/</span>charlie<span class="hljs-regexp">/temp/</span>barfoo<span class="hljs-regexp">/barfoo/</span>test’
+removed <span class="hljs-string">directory:</span> ‘<span class="hljs-regexp">/home/</span>charlie<span class="hljs-regexp">/temp/</span>barfoo/barfoo’
+removed <span class="hljs-string">directory:</span> ‘<span class="hljs-regexp">/home/</span>charlie<span class="hljs-regexp">/temp/</span>barfoo’
+</code></pre>
+<p>Notice that the last copy command creates nested barfoo folders:</p>
+<pre><code class="lang-bash">‘<span class="hljs-regexp">/tmp/</span>barfoo<span class="hljs-regexp">/’ -&gt; ‘/</span>home<span class="hljs-regexp">/charlie/</span>temp<span class="hljs-regexp">/barfoo/</span>barfoo’
+‘<span class="hljs-regexp">/tmp/</span>barfoo<span class="hljs-regexp">/test’ -&gt; ‘/</span>home<span class="hljs-regexp">/charlie/</span>temp<span class="hljs-regexp">/barfoo/</span>barfoo<span class="hljs-regexp">/test’</span>
+</code></pre>
 <h2 id="directories">Directories</h2>
 <p>To delete an empty directory you can use <strong>rmdir</strong>. To delete a folder recursively, removing all its contents including nested sub-directories, use <strong>rm -r</strong>:</p>
 <pre><code>rm -r &lt;<span class="hljs-keyword">my</span>-folder&gt;
