@@ -1,0 +1,97 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>FunctionalCityStateComments</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><!-- script(src="/libs/scripts/Control.js")--><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>FunctionalCityStateComments</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#mapping">Mapping</a></li>
+<li><a href="#filtering">Filtering</a></li>
+<li><a href="#merging">Merging</a></li>
+<li><a href="#utils">Utils</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<p>Comments on the Functional City State assignment.</p>
+<h2 id="mapping">Mapping</h2>
+<p>The first one should be easy for most of you:</p>
+<pre><code class="lang-javascript">    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">iterateWithForEach</span><span class="hljs-params">()</span> </span>{
+        elfUtils.clear();
+        elfUtils.readData(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(states)</span> </span>{
+            states.<span class="hljs-keyword">forEach</span>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(item)</span> </span>{
+                <span class="hljs-keyword">var</span> data = item.state.name + <span class="hljs-string">', '</span> + item.state.abbreviation;
+                elfUtils.show(data);
+            });
+        });
+    }
+</code></pre>
+<p>The second problem is the same as the first, only we use <strong>map</strong> instead of <strong>for each</strong>:</p>
+<pre><code class="lang-javascript">function mapIt() {
+        elfUtils.clear();
+        elfUtils.readData(function(states) {
+            var <span class="hljs-keyword">state</span>Abbreviation = states.map(function(item) {
+                return item.<span class="hljs-keyword">state</span>.name + ', ' + item.<span class="hljs-keyword">state</span>.abbreviation;
+            });
+            elfUtils.showArray(<span class="hljs-keyword">state</span>Abbreviation);
+        });
+    }
+</code></pre>
+<h2 id="filtering">Filtering</h2>
+<p>I think you can see fairly easily how to do Filter example:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">filterArray</span><span class="hljs-params">()</span> </span>{
+        clear();
+        <span class="hljs-keyword">var</span> data = [<span class="hljs-string">'Able'</span>, <span class="hljs-string">'Bravo'</span>, <span class="hljs-string">'Charlie'</span>, <span class="hljs-string">'Delta'</span>, <span class="hljs-string">'Echo'</span>, <span class="hljs-string">'Foxtrot'</span>];
+        data = data.filter(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(item)</span> </span>{
+                <span class="hljs-keyword">return</span> (item[<span class="hljs-number">0</span>] === <span class="hljs-string">'A'</span>);
+        });
+        show(data);
+}
+</code></pre>
+<p>It&#39;s really just a matter of passing a predicate (function that returns a boolean value) to the built-in filter method. Set up a condition in the predicate that only returns true for the rows that you want to pass the filter. All other rows fail, and are excluded from the results.</p>
+<h2 id="merging">Merging</h2>
+<p>In Part IV, call <strong>mergeAll</strong> to flatten the two arrays into one array, then call map to make the resulting data a bit more presentable. It&#39;s arguable that the call to map isn&#39;t even needed, but it is nice to see what it can do for us:</p>
+<pre><code class="lang-javascript">function mapSimple() {
+        clear();
+        <span class="hljs-keyword">var</span> <span class="hljs-literal">result</span> = states1.mergeAll().map(function(data) {
+                <span class="hljs-keyword">return</span> <span class="hljs-type">JSON</span>.stringify(data.state, null, <span class="hljs-number">4</span>) + '&lt;hr&gt;';
+        });
+        $(<span class="hljs-string">"#output2"</span>).html(<span class="hljs-literal">result</span>);
+}
+</code></pre>
+<p>The point is that we can use method chaining to do it all in one call. We don&#39;t have call <strong>mergeAll</strong> first, then in a separate step, call <strong>map</strong>. We can simply use method chaining to link the calls together. We don&#39;t do this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> <span class="hljs-literal">result</span> = states1.mergeAll();
+<span class="hljs-keyword">var</span> result2 = <span class="hljs-literal">result</span>.map(function etc....
+</code></pre>
+<p>Instead we chain them together:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">states1</span><span class="hljs-selector-class">.mergeAll</span>()<span class="hljs-selector-class">.map</span>(<span class="hljs-selector-tag">function</span> <span class="hljs-selector-tag">etc</span>....
+</code></pre>
+<p>This is more concise and easier to read.</p>
+<p>And then finally, the last one really is a bit tricky, but it is perhaps a fun challenge for some developers. It is a nice little puzzle. See if you can figure out how it works:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mergeMap</span><span class="hljs-params">()</span> </span>{
+        clear();
+        <span class="hljs-keyword">var</span> data = states2.map(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(obj)</span> </span>{
+            <span class="hljs-keyword">return</span> obj.states;
+        }).mergeAll().map(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(item)</span> </span>{
+            <span class="hljs-keyword">return</span> item.state.name +  <span class="hljs-string">"; "</span> + item.state.capital;
+        });
+        showArray(data);
+}
+</code></pre>
+<h2 id="utils">Utils</h2>
+<p>At least in part, ElfUtils looks like this:</p>
+<pre><code><span class="hljs-keyword">var</span> elf = {};
+
+elf.Utils = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+
+    <span class="hljs-comment">// Code omitted here</span>
+
+    ElfUtils.prototype.show = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+        $(<span class="hljs-string">"#output"</span>).append(<span class="hljs-string">'&lt;li&gt;{ '</span> + data + <span class="hljs-string">' }&lt;/li&gt;'</span>);
+    };
+
+    ElfUtils.prototype.showArray = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+        data.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">row</span>) </span>{
+            $(<span class="hljs-string">"#output"</span>).append(<span class="hljs-string">'&lt;li&gt; {'</span> + row + <span class="hljs-string">'} &lt;/li&gt;'</span>);
+        });
+    };
+
+    <span class="hljs-comment">// Code omitted here</span>
+
+    <span class="hljs-keyword">return</span> ElfUtils;
+
+})();
+</code></pre><p>Use it like this:</p>
+<pre><code><span class="hljs-keyword">var</span> elfUtils = <span class="hljs-keyword">new</span> elf.Utils();
+</code></pre></div></body></html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>TwitterRefine</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><!-- script(src="/libs/scripts/Control.js")--><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>TwitterRefine</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#twitter-refine">Twitter Refine</a></li>
+<li><a href="#step-zero">Step Zero</a></li>
+<li><a href="#step-one">Step One</a></li>
+<li><a href="#step-two">Step Two</a></li>
+<li><a href="#step-three">Step Three</a></li>
+<li><a href="#step-four">Step Four</a></li>
+<li><a href="#startup">Startup</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#hints">Hints</a></li><!--TOC_End--></ul><h1 id="twitter-refine">Twitter Refine</h1>
+<p>The goal is to:</p>
+<ul>
+<li>Add a new route: <strong>/user-data</strong></li>
+<li>Pass arbitrary searches to our search function</li>
+</ul>
+<h2 id="step-zero">Step Zero</h2>
+<p>Copy your TwitterInteractive project into a new folder of your repository called <strong>Week07-TwitterRefine</strong>. Make the appropriate changes to the program name in:</p>
+<ul>
+<li><strong>bin/www</strong></li>
+<li><strong>routes/index.js</strong></li>
+<li><strong>package.json</strong></li>
+</ul>
+<p>And anywhere else that is appropriate.</p>
+<h2 id="step-one">Step One</h2>
+<p>Add a button labeled <strong>User Timeline</strong> and two input controls labeled <strong>Search Query</strong>, <strong>Timeline Query</strong>. For the input control, use <strong>elfInputB</strong> or something else that pleases you.</p>
+<ul>
+<li><a href="https://s3.amazonaws.com/bucket01.elvenware.com/images/TwitterRefine01.png">Click here to a screenshot of my interface</a></li>
+</ul>
+<h2 id="step-two">Step Two</h2>
+<p>Put this code in <strong>index.jade</strong>. You can replace your existing code, or edit it. In the end, it should look like this:</p>
+<pre><code>+elfPanel(<span class="hljs-string">"Debug"</span>, <span class="hljs-string">"panel-default"</span>)<span class="hljs-selector-class">.elfDiv</span>
+    +elfInputB(<span class="hljs-string">"Search Query"</span>, <span class="hljs-string">"search"</span>, <span class="hljs-string">"timeline"</span>)<span class="hljs-selector-id">#searchQuery</span>
+    +elfInputB(<span class="hljs-string">"Timeline Query"</span>, <span class="hljs-string">"timeline"</span>, <span class="hljs-string">"timeline"</span>)<span class="hljs-selector-id">#timelineQuery</span>
+    hr
+    <span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-default</span>#getTimeline(type=<span class="hljs-string">'button'</span>) Timeline
+    <span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-default</span>#search(type=<span class="hljs-string">'button'</span>) Search
+</code></pre><h2 id="step-three">Step Three</h2>
+<p>Make the search query configurable so the user can search on any subject they choose, rather than just <strong>nodejs</strong>.</p>
+<p>Here is how to send a custom query from the client to the server. Make these changes in <strong>control.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clearControls</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    $(<span class="hljs-string">'#tweetList'</span>).empty();
+    $(<span class="hljs-string">'#tableLinks'</span>).empty();
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">search</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> searchQuery = $(<span class="hljs-string">'#searchQuery'</span>).val();
+    $.getJSON(<span class="hljs-string">'/search'</span>, {<span class="hljs-string">"q"</span>: searchQuery}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+        $(<span class="hljs-string">'#tweetData'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+        clearControls();
+        <span class="hljs-comment">// ITERATE OVER RESULTS AND SHOW EACH TWEET</span>
+    });
+}
+</code></pre>
+<p>The code above:</p>
+<ul>
+<li>Is called when the search button is clicked</li>
+<li>Retrieves the user query from the input control where it was entered</li>
+<li>Passes the query on to the server with this code: <strong>{&#39;q&#39;: searchQuery}</strong></li>
+</ul>
+<p>It so happens that this is the format that twitter wants for the query string. </p>
+<p>Now rewrite the <strong>search</strong> route in <strong>routes/index.js</strong> so it can handle a random query:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/search'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req, res, next)</span> {</span>
+    console.<span class="hljs-built_in">log</span>(<span class="hljs-string">"Search called"</span>);
+    var client = getClient();
+
+    console.<span class="hljs-built_in">log</span>(req.query);
+
+    client.get(<span class="hljs-string">'search/tweets'</span>, req.query, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(error, tweets, response)</span> {</span>
+        <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">error</span>) {
+            res.send(tweets);
+        } <span class="hljs-keyword">else</span> {
+            console.<span class="hljs-built_in">log</span>(<span class="hljs-built_in">error</span>);
+            res.send({
+                fail: <span class="hljs-built_in">error</span>
+            });
+        }
+    });
+});
+</code></pre>
+<p>The query sent by the user can be retrieved from <strong>express</strong> with the <strong>query</strong> property of the <strong>request</strong> object:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">req</span><span class="hljs-selector-class">.query</span>
+</code></pre>
+<p>If the user entered <strong>#nodejs</strong> in the search box, then the query would look like this if echoed to the console:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">console</span><span class="hljs-selector-class">.log</span>(<span class="hljs-selector-tag">req</span><span class="hljs-selector-class">.query</span>);
+</code></pre>
+<p>That code yields this on the command line:</p>
+<pre><code class="lang-javascript">{ <span class="hljs-attribute">q</span>: <span class="hljs-string">'#nodejs'</span> }
+</code></pre>
+<h2 id="step-four">Step Four</h2>
+<p>We want to create a new route that searches on a user timeline. In effect, you are searching for tweets by a particular user, rather than tweets on a particular subject. The version of the query shown below will need to be modified slightly to complete the assignment. Right now it contains a hardcoded search on my screen name. You will want to make it possible for the user to enter a random search on any screen name, including your own:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/time-line'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> client = getClient();
+    <span class="hljs-keyword">var</span> params = {
+        screen_name: <span class="hljs-string">'calvertbc'</span>
+    };
+    client.get(<span class="hljs-string">'statuses/user_timeline'</span>, params, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error, tweets, response</span>) </span>{
+        <span class="hljs-keyword">if</span> (!error) {
+            <span class="hljs-built_in">console</span>.log(tweets);
+            res.send(tweets);
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-built_in">console</span>.log(error);
+            res.send({
+                fail: error
+            });
+        }
+    });
+
+});
+</code></pre>
+<p>For the <strong>timeline</strong> you will can create the search query in a manner very similar to the one shown in the previous section. However, the method should include code that looks something like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> timeline = $(<span class="hljs-string">"#timelineQuery"</span>).val();
+$.getJSON('/time-line', {<span class="hljs-string">"screen_name"</span>: timeline}, function(<span class="hljs-literal">result</span>) {
+</code></pre>
+<h2 id="startup">Startup</h2>
+<p><strong>NOTE</strong>: <em>No one has to follow the structure defined in this section. But if you need help building the application, this section might help.</em></p>
+<p>Normally, we would create a method like this that would initilize our buttons:</p>
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    $(<span class="hljs-string">'#getTimeline'</span>).click(twitterRefine.getTimeline);
+    $(<span class="hljs-string">'#search'</span>).click(twitterRefine.search);
+});
+</code></pre>
+<p>Let&#39;s move it into its own method:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> init: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    $(<span class="hljs-string">'#getTimeline'</span>).click(twitterRefine.getTimeline);
+    $(<span class="hljs-string">'#search'</span>).click(twitterRefine.search);
+}
+
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    init();
+});
+</code></pre>
+<p>Then, as we refine the code further, let&#39;s move it into an object that holds all the main methods for the program:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> twitterRefine = {
+
+    init: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        $(<span class="hljs-string">'#search'</span>).click(twitterRefine.search);
+        $(<span class="hljs-string">'#getTimeline'</span>).click(twitterRefine.getTimeline);
+    },
+
+    <span class="hljs-comment">// LOTS OF CODE OMITTED HERE</span>
+};
+
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    twitterRefine.init();
+});
+</code></pre>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>As usual. Submit your repository URL and/or the name of the folder designated above.</p>
+<h2 id="hints">Hints</h2>
+<p>We allow the user to enter a string such as one of the following, and then display the results of a twitter search on that string. These sites get an awful lot of stupid adds, but still there is some useful material found on these searches:</p>
+<ul>
+<li><strong>#javascript</strong></li>
+<li><strong>#node.js</strong></li>
+<li><strong>#jQuery</strong></li>
+<li><strong>#html5</strong></li>
+<li><strong>#html</strong></li>
+<li><strong>#css3</strong></li>
+<li><strong>#css</strong></li>
+<li><strong>#nodejs</strong></li>
+<li><strong>#js</strong></li>
+<li><strong>#developer</strong></li>
+</ul>
+<p>When looking for user timelines, try these names, which are more useful than the hashtags above:</p>
+<ul>
+<li>martinfowler</li>
+<li>KentBeck</li>
+<li>jeresig</li>
+<li>codinghorror</li>
+<li>unclebobmartin</li>
+<li>WardCunningham</li>
+</ul>
+<p>This Elvenware page may be a useful reference:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/cloud/TwitterAccountsToFollow.html">Twitter Accounts to Follow</a></li>
+</ul>
+</div></body></html>

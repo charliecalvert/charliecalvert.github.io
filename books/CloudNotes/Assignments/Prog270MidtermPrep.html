@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Prog270MidtermPrep</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><!-- script(src="/libs/scripts/Control.js")--><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>Prog270MidtermPrep</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#screenshots">Screenshots</a></li>
+<li><a href="#copy-css-js-and-images">Copy CSS, Js and Images</a></li>
+<li><a href="#clean">Clean</a></li>
+<li><a href="#copy-alltest">Copy from Repository to Documents AllTest</a></li>
+<li><a href="#copy-renewmakehtml">Copy RenewMakeHtml</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#big-picture">Big Picture</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<p>The Prog 270 Midterm Prep helps you work on the Prisitine Lubuntu side of your midterm.
+A summary of this assignment might read like this: <em>Do the midterm except for the parts on EC2.</em>
+In particular:</p>
+<ul>
+<li>Create one or more partial or complete midterm pages in <strong>~/Documents/AllTest</strong></li>
+<li>Create or save your images in <strong>/var/www/html/images</strong></li>
+<li>Run MakeHtml</li>
+<li>Run on LocalHost and confirm that your site looks right.</li>
+<li>Copy your latest <strong>AllTest</strong> files to your repository and push.</li>
+</ul>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/make-html-work-flow.png" alt="MakeHtmlWorkFlow"></p>
+<h2 id="screenshots">Screenshots</h2>
+<p>Include three screen shots</p>
+<ul>
+<li>Your Home Page running on Local Host.</li>
+<li>Two select pages with bitmaps running on Local Host.</li>
+</ul>
+<h2 id="copy-css-js-and-images">Copy CSS, Js and Images</h2>
+<p>Put this script in the root folder of your repository. Run it to back back up
+your css, js, and image files to a folder in your  repository called
+<strong>ApacheHelpers</strong>.</p>
+<pre><code class="lang-bash"><span class="hljs-meta">#! /bin/bash
+</span>
+<span class="hljs-comment"># Declare destination dir for AllTest in</span>
+<span class="hljs-comment"># one place so it is easy to modify</span>
+REPO=<span class="hljs-variable">$GIT_HOME</span>/prog270-calvert-2016
+
+<span class="hljs-comment"># Declare destination for CSS, JavaScript and Images</span>
+CSS_JS_IMAGE=<span class="hljs-variable">$REPO</span>/ApacheHelpers
+
+<span class="hljs-comment"># Copy AllTest</span>
+cp -r ~/Documents/AllTest <span class="hljs-variable">$REPO</span>/
+
+<span class="hljs-comment"># Ensure destination dir exists for CSS, JS and Images</span>
+mkdir -p <span class="hljs-variable">$CSS_JS_IMAGE</span>
+<span class="hljs-comment"># Copy CSS, JavaScript and Images</span>
+cp -r /var/www/html/css <span class="hljs-variable">$CSS_JS_IMAGE</span>/.
+cp -r /var/www/html/images <span class="hljs-variable">$CSS_JS_IMAGE</span>/.
+cp -r /var/www/html/js <span class="hljs-variable">$CSS_JS_IMAGE</span>/.
+cp /var/www/html/clean <span class="hljs-variable">$CSS_JS_IMAGE</span>/.
+</code></pre>
+<h2 id="clean">Clean</h2>
+<p>When testing your code, you want to make sure you are not relying on any
+files already sitting in <strong>/var/www/html</strong>. This script deletes all the
+HTML files and folders from /var/www/html. It also creates a zip folder
+containing the most recent contents of your <strong>js</strong>, <strong>css</strong> and <strong>images</strong>
+folders. Save the code as <strong>/var/www/html/clean</strong>. Make it executable with
+<strong>chmod +x clean</strong>, then run the script as needed.</p>
+<p><strong>NOTE</strong>: <em>Where I write <LIST ANY OTHER FILES/FOLDERS> you should do exactly
+that, and of course you have to then remove the text in angle brackets.</em></p>
+<pre><code class="lang-bash"><span class="hljs-meta">#! /bin/bash
+</span>
+rm *.html &lt;LIST ANY OTHER FILES&gt;
+rm -r MoreFiles Assignments &lt;LIST ANY OTHER FOLDERS&gt;
+rm apache-helpers.zip
+zip -r apache-helpers css/ js/ images/
+</code></pre>
+<h2 id="copy-alltest">Copy from Repository to Documents AllTest</h2>
+<p>From the root of your repository, issue this command.</p>
+<pre><code><span class="hljs-keyword">cp</span> -<span class="hljs-keyword">rv</span> AllTest/ ~/Documents/.
+</code></pre><h2 id="copy-renewmakehtml">Copy RenewMakeHtml</h2>
+<pre><code>cp ~<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/JavaScript/</span>NodeCode<span class="hljs-regexp">/MakeHtml/</span>renewMakeHtml .
+</code></pre><p>Then run <strong>renewMakeHtml</strong>.</p>
+<pre><code><span class="hljs-built_in">cd</span> ~/Source
+./renewMakeHtml
+<span class="hljs-built_in">cd</span> MakeHtml
+</code></pre><p>After doing this on EC2 don&#39;t forget to open up <strong>config/ElvenConfig.json</strong> in nano and change the path from <strong>bcuser</strong> to <strong>ubuntu</strong>:</p>
+<pre><code><span class="hljs-attribute">nano</span> config/ElvenConfig.json
+</code></pre><p>Then change it like this:</p>
+<pre><code class="lang-json">{
+  "<span class="hljs-attr">calvert</span>": {
+    "<span class="hljs-attr">base-dir</span>": <span class="hljs-string">"/home/ubuntu/"</span>,
+    "<span class="hljs-attr">site-dirs</span>": [
+      <span class="hljs-string">"Documents/AllTest"</span>,
+      <span class="hljs-string">"Documents/AllSite"</span>
+    ],
+    "<span class="hljs-attr">destination-dirs</span>": [
+      <span class="hljs-string">"/var/www/html/"</span>,
+      <span class="hljs-string">"/home/ubuntu/temp/test-site/"</span>
+    ]
+  }
+}
+</code></pre>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Push your repository. Attach the three bitmaps you created to the assignment.</p>
+<h2 id="big-picture">Big Picture</h2>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/create-web-site-activities.png" alt="Create Site Activies"></p>
+</div></body></html>
