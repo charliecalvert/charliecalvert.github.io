@@ -93,6 +93,44 @@ block content
 
 <span class="hljs-comment">// Code for handling other buttons and getNine and getPackageDescription is omitted.</span>
 
-<span class="hljs-comment">// I then went even further and wrapped all this in the modular pathern.</span>
+<span class="hljs-comment">// I then went even further and wrapped all this in the modular pattern.</span>
+</code></pre>
+<p>An alternate solution:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">padNumber</span>(<span class="hljs-params">numberToPad, width, padValue</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    padValue = padValue || <span class="hljs-string">'0'</span>;
+    numberToPad = numberToPad.toString();
+    <span class="hljs-keyword">if</span> (numberToPad.length &gt;= width) {
+        <span class="hljs-keyword">return</span> numberToPad;
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(width - numberToPad.length + <span class="hljs-number">1</span>).join(padValue) + numberToPad;
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">writeFile</span>(<span class="hljs-params">fileName, contents, callback</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    fs.writeFile(fileName, contents, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+        callback({
+            result: <span class="hljs-string">'success'</span>
+        });
+    });
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readFile</span>(<span class="hljs-params">fileName, callback</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    fs.readFile(fileName, <span class="hljs-string">'utf8'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, fileContents</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) {
+            <span class="hljs-keyword">throw</span> (err);
+        }
+        callback({
+            <span class="hljs-string">'result'</span>: fileContents
+        });
+    });
+}
+
+
+<span class="hljs-built_in">module</span>.exports.padNumber = padNumber;
+exports.writeFile = writeFile;
+exports.readFile = readFile;
 </code></pre>
 </div></body></html>
