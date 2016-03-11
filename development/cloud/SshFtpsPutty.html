@@ -34,7 +34,7 @@ are available here:</p>
 </ul>
 <p>Linux users can follow this link to learn how to set up
 <a href="/charlie/os/linux/LinuxDays/LinuxFAQ.html#ssh">SSH</a>, and then return to
-this document to learn more. </p>
+this document to learn more.</p>
 <h2 id="ping">Pinging a Machine</h2>
 <p>Sometimes you might try to use SSH, SFTP or HTTP to communicate with a
 machine and get an error. There could be many probable causes for
@@ -110,10 +110,10 @@ for the section on Putty. It assumes that you have SSH installed. On Ubuntu, ins
 </code></pre><p><a href="http://www.elvenware.com/charlie/os/linux/LinuxDays/LinuxFAQ.html#ssh">http://www.elvenware.com/charlie/os/linux/LinuxDays/LinuxFAQ.html#ssh</a></p>
 <p>Issue these commands to generate a key pair and copy the public key part into your <strong>authorized keys</strong>file:</p>
 <pre><code class="lang-%7B.code%7D">    cd
-    ssh-keygen -t rsa -P <span class="hljs-string">''</span> -f ~<span class="hljs-regexp">/.ssh/id</span>_rsa 
+    ssh-keygen -t rsa -P <span class="hljs-string">''</span> -f ~<span class="hljs-regexp">/.ssh/id</span>_rsa
     cat ~<span class="hljs-regexp">/.ssh/id</span>_rsa.pub <span class="hljs-meta">&gt;&gt; </span>~<span class="hljs-regexp">/.ssh/authorized</span>_keys
 </code></pre>
-<p>The code starts by moving you to your home directory with the <strong>cd</strong> command. After issuing the <strong>ssh-keygen</strong> command you will have a private key and matching public key. The private key is called <strong>id_rsa</strong> and the public key is <strong>id_rsa.pub.</strong> The last line ensures that a copy of the public key was also placed in a file called <strong>~/.ssh/authorized_keys</strong>. As you can see, this file is located in a directory called <strong>.ssh</strong>. </p>
+<p>The code starts by moving you to your home directory with the <strong>cd</strong> command. After issuing the <strong>ssh-keygen</strong> command you will have a private key and matching public key. The private key is called <strong>id_rsa</strong> and the public key is <strong>id_rsa.pub.</strong> The last line ensures that a copy of the public key was also placed in a file called <strong>~/.ssh/authorized_keys</strong>. As you can see, this file is located in a directory called <strong>.ssh</strong>.</p>
 <p>This is so important that I will repeat it in slightly different form:</p>
 <ul>
 <li><strong>ssh-keygen</strong> ensured that you have a private key and public key on your current machine. In this case they are called <strong>id_rsa</strong> and <strong>id_rsa.pub,</strong>where the latter is the public key.</li>
@@ -121,14 +121,47 @@ for the section on Putty. It assumes that you have SSH installed. On Ubuntu, ins
 </ul>
 <p>And place this at the bottom of your .bashrc file:</p>
 <pre><code><span class="hljs-keyword">if</span> [ -z <span class="hljs-string">"<span class="hljs-variable">$SSH_AUTH_SOCK</span>"</span> ] ; <span class="hljs-keyword">then</span>
-    <span class="hljs-built_in">eval</span> `ssh-agent` 
+    <span class="hljs-built_in">eval</span> `ssh-agent`
 <span class="hljs-keyword">fi</span>
 </code></pre><p>Now restart your shell. Not the whole machine, just the terminal window. Alternatively, you can force the OS to process your updated <strong>.bashrc</strong> by using the <strong>source</strong> command:</p>
 <pre><code><span class="hljs-built_in">source</span> ~/.bashrc
 </code></pre><p>Now load the key:</p>
 <pre><code><span class="hljs-symbol">ssh</span>-<span class="hljs-keyword">add </span>~/.ssh/id_rsa
 </code></pre><p>If all goes well you should see a message with the words <strong>Identity added</strong> in it. You are now ready to SSH to remote machine, or use Git or other tools to copy files to a remote server.</p>
-<h2 id="moreSsh">More on Using SSH to Access Another Machine</h2>
+<p>This script is not that useful, but it does help spell out the details off what you can do with ssh-keygen:</p>
+<pre><code><span class="hljs-meta">#! /bin/bash
+</span>
+KEY_NAME=Test-Key
+SSH_DIR=<span class="hljs-variable">$HOME</span>/.ssh
+FULL_PATH=<span class="hljs-variable">$SSH_DIR</span>/<span class="hljs-variable">$KEY_NAME</span>
+PUBLIC_KEY=<span class="hljs-variable">$FULL_PATH</span>.pub
+AUTHORIZED_KEY_FILE=<span class="hljs-variable">$SSH_DIR</span>/authorized_keys_<span class="hljs-built_in">test</span>
+
+<span class="hljs-built_in">cd</span> <span class="hljs-variable">$HOME</span>
+<span class="hljs-built_in">pwd</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">$FULL_PATH</span>
+
+<span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">setupKey</span></span>() {
+    <span class="hljs-comment"># -t: Type of key</span>
+    <span class="hljs-comment"># -P: Passphrase which is initially empty</span>
+    <span class="hljs-comment"># -f: The file name of the key to create</span>
+    <span class="hljs-comment"># -v: Describe what you are doing</span>
+    ssh-keygen -v -t rsa -P <span class="hljs-string">''</span> <span class="hljs-_">-f</span> <span class="hljs-variable">$FULL_PATH</span>
+    cat <span class="hljs-variable">$PUBLIC_KEY</span> &gt;&gt; <span class="hljs-variable">$AUTHORIZED_KEY_FILE</span>
+
+    <span class="hljs-comment"># Change the passphrase</span>
+    ssh-keygen -p <span class="hljs-_">-f</span> <span class="hljs-variable">$FULL_PATH</span>
+}
+
+<span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">removeKey</span></span>() {
+    rm -v <span class="hljs-variable">$FULL_PATH</span>
+    rm -v <span class="hljs-variable">$PUBLIC_KEY</span>
+    rm -v <span class="hljs-variable">$AUTHORIZED_KEY_FILE</span>
+}
+
+<span class="hljs-comment"># removeKey</span>
+setupKey
+</code></pre><h2 id="moreSsh">More on Using SSH to Access Another Machine</h2>
 <p>You can now SSH into your own <strong>localhost</strong> machine without being prompted for a password. To SSH to another machine you must copy your public key to that machine. But you need do nothing else to SSH into your own machine. Granted, there is not much utility in SSHing into your own machine, but it is a good exercise to help you see if everything is set up right. It might look a bit like this in practice, where the first line is the command you give to start the SSH session:</p>
 <pre><code class="lang-%7B.code%7D">$ ssh localhost
 The authenticity <span class="hljs-keyword">of</span> host <span class="hljs-symbol">'localhost</span> (<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>)' can<span class="hljs-symbol">'t</span> be established.
@@ -151,7 +184,7 @@ Welcome <span class="hljs-keyword">to</span> Linux Mint
 <pre><code><span class="hljs-selector-tag">ssh</span> 192<span class="hljs-selector-class">.168</span><span class="hljs-selector-class">.2</span><span class="hljs-selector-class">.23</span>
 </code></pre><p>For help setting up SSH, see the script called setupSsh.sh, as explained at the <a href="#scripts">end of this document</a>.</p>
 <p>##Ssh Config</p>
-<p>So here are a few words on the ~/.ssh/config file which can help you use SSH with less hastle. </p>
+<p>So here are a few words on the ~/.ssh/config file which can help you use SSH with less hastle.</p>
 <p>To ssh directly to an EC2 ubuntu server, I put this in the config file:</p>
 <pre><code>Host ubuntu
     HostName <span class="hljs-number">54</span><span class="hljs-selector-class">.XXX</span><span class="hljs-selector-class">.XXX</span><span class="hljs-selector-class">.XXX</span>
@@ -234,7 +267,7 @@ to the section on <a href="#pageant">Loading a Private Key with Pageant</a>. If 
 are not using a PEM file, continue reading to learn how to create a
 public/private key pair with PuttyGen. The key point to grasp is the
 following: Normally you would use would use PuttyGen to create a
-public/private key pair. However. If you downloaded a PEM private key 
+public/private key pair. However. If you downloaded a PEM private key
 from someplace like EC2, then all you need to do is <a href="#pem">convert the PEM
 file</a> into a Putty PPK file.*</p>
 <p>Putty comes with an easy to use tool called PuttyGen that allows you to
@@ -352,11 +385,11 @@ Putty"></a></p>
 server using PuTTY. From this command prompt you can control all the
 features of the Linux OS. (Click to Enlarge)</strong></p>
 <p>You have now finished converting the PEM file to a Putty PPK file.</p>
-<p>You can now use the <strong>Category | Connection | SSH | Auth | Private key</strong> 
-field to associate this key with your Putty session. However, this does not 
-work quite as you hope if you have associated a password (passphrase) with 
-your private key. In fact, I usually leave this field blank, and instead use 
-a tool called Pageant. </p>
+<p>You can now use the <strong>Category | Connection | SSH | Auth | Private key</strong>
+field to associate this key with your Putty session. However, this does not
+work quite as you hope if you have associated a password (passphrase) with
+your private key. In fact, I usually leave this field blank, and instead use
+a tool called Pageant.</p>
 <h2 id="git-and-putty">Git and Putty</h2>
 <p>On Windows, we have no built in SSH client. As result, we use a tool called Putty, which is an open source, third party, project.</p>
 <h3 id="step-one-download">Step One: Download</h3>
@@ -366,8 +399,8 @@ a tool called Pageant. </p>
 <li>A Windows installer</li>
 </ul>
 <p>If you are admin on your machine, use the installer, otherwise use the
-zip file. </p>
-<p>Download the zip  file or installer from here: </p>
+zip file.</p>
+<p>Download the zip  file or installer from here:</p>
 <ul>
 <li><a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">Putty</a></li>
 </ul>
@@ -379,12 +412,12 @@ zip file. </p>
 </ul>
 <p>The two lines above are just two ways of saying the same thing. I show them both hoping that at least one of them will make sense to you. Create the <strong>Bin</strong> directory and put it on your path. Restart your command session.</p>
 <h3 id="step-three-putty-in-bin">Step Three: Putty in Bin</h3>
-<p>If you are not admin on your machine, then put the contents of the Putty zip file in your bin directory. Otherwise, just leave the Putty files where they were installed, but make sure they are on your path. </p>
+<p>If you are not admin on your machine, then put the contents of the Putty zip file in your bin directory. Otherwise, just leave the Putty files where they were installed, but make sure they are on your path.</p>
 <p>Create an environment variable called GIT_SSH. It should be set to:</p>
 <pre><code>c:<span class="hljs-tag">\<span class="hljs-name">Users</span></span><span class="hljs-tag">\<span class="hljs-name">charles</span></span>.calvert<span class="hljs-tag">\<span class="hljs-name">Bin</span></span><span class="hljs-tag">\<span class="hljs-name">PLINK</span></span>.EXE
 </code></pre><p>You can use the Windows GUI tools for manipulating the environment, or you can try using the built-in SETX utility:</p>
 <pre><code>setx GIT_SSH=c:<span class="hljs-tag">\<span class="hljs-name">Users</span></span><span class="hljs-tag">\<span class="hljs-name">charles</span></span>.calvert<span class="hljs-tag">\<span class="hljs-name">Bin</span></span><span class="hljs-tag">\<span class="hljs-name">PLINK</span></span>.EXE
-</code></pre><p>You will probably need to restart the Windows Command Line after making this change. To test your work, echo it from the command line. For instance:    </p>
+</code></pre><p>You will probably need to restart the Windows Command Line after making this change. To test your work, echo it from the command line. For instance:</p>
 <pre><code>&gt;echo <span class="hljs-comment">%GIT_SSH%</span>
 c:<span class="hljs-tag">\<span class="hljs-name">Users</span></span><span class="hljs-tag">\<span class="hljs-name">charles</span></span>.calvert<span class="hljs-tag">\<span class="hljs-name">Bin</span></span><span class="hljs-tag">\<span class="hljs-name">PLINK</span></span>.EXE
 </code></pre><p>You should also make sure <strong>Git.exe</strong> is on your path. It can usually be found here. When working with this path, be careful to get the spaces right:</p>
@@ -419,11 +452,11 @@ CTRL-C to exit the process. (Don&#39;t log in.)</p>
         email = charlie<span class="hljs-meta">@elvenware</span>.com
         name = Charlie at A134
 </code></pre><h2 id="pageant">Loading a Private Key with Pageant</h2>
-<p>Pageant is one of the most important tools in the Putty suite of utilities. 
-You can use it to keep your private key and password in memory. You can load this 
-file in the morning when you sign in, and then never have to enter the 
+<p>Pageant is one of the most important tools in the Putty suite of utilities.
+You can use it to keep your private key and password in memory. You can load this
+file in the morning when you sign in, and then never have to enter the
 password again until Pagaent is unloaded from memory. If you simply put your
-computer to sleep at night, instead of shutting it down, then you can go for 
+computer to sleep at night, instead of shutting it down, then you can go for
 days without ever having to think about passwords, Pageant or SSH. Everything
 will simply work, very securely, without you having to do anything.</p>
 <p>Figure 07 shows Pagaent running with two private keys loaded:</p>
@@ -450,7 +483,7 @@ will simply work, very securely, without you having to do anything.</p>
 in Figure 08.</p>
 <p><img src="images/Putty08.png" alt="Browse for your PPK"></p>
 <p><strong>Figure 08: Browse for your PPK so PuTTY can use it for authentication.</strong></p>
-<p>Finally, it is helpful if you have a way to be able to easily check to be sure that pageant is load. It is best if you can see Pageant in the <strong>notification area</strong>. Start pageant, then go to the do-hickey in the Windows Notification area and set &quot;Show icon and notifications. The Windows Notification Area is usually found at the bottom right of your screen, on the task bar.* </p>
+<p>Finally, it is helpful if you have a way to be able to easily check to be sure that pageant is load. It is best if you can see Pageant in the <strong>notification area</strong>. Start pageant, then go to the do-hickey in the Windows Notification area and set &quot;Show icon and notifications. The Windows Notification Area is usually found at the bottom right of your screen, on the task bar.*</p>
 <p>##EC2 Cloud Only</p>
 <p>Assume that you are on a heavily locked down machine, or perhaps a Chromebook, and want to connect to an EC2 instance. We assume that you can&#39;t install anything: not ssh, not putty, not cygwin -- absolutely nothing. All you have is a browser. How do you proceed?</p>
 <p>You will need two tools:</p>
@@ -458,13 +491,13 @@ in Figure 08.</p>
 <li><a href="https://codeanywhere.com">CodeAnywhere</a></li>
 <li><a href="https://chrome.google.com/webstore/detail/secure-shell/pnhechapfaindjhompbnflcldabbghjo?utm_source=chrome-ntp-icon">Secure Shell</a> extension for Chrome</li>
 </ul>
-<p>Actually, there are other tools you can use, but these are the ones we are using in this case. </p>
+<p>Actually, there are other tools you can use, but these are the ones we are using in this case.</p>
 <p>You will also need to know the following commands. The first two are run on CodeAnywhere. The last one is run in the Developer Tools for your Secure Shell web page.</p>
 <ul>
 <li>Convert a private key to public: <strong>ssh-keygen -y -f &lt;PRIVATE_KEY&gt; &gt; &lt;PUBLIC_KEY&gt;</strong></li>
 <li>For instance: <strong>ssh-keygen -y -f id_rsa &gt; id_rsa.pub</strong></li>
 <li>Give file readonly by owner only: <strong>chmod 400 &lt;FILE_NAME&gt;</strong></li>
-<li>For instance: <strong>chmod 400 id_rsa</strong> </li>
+<li>For instance: <strong>chmod 400 id_rsa</strong></li>
 <li>Clear the .ssh folder from Secure Shell: <strong>term_.command.removeDirectory(&#39;/.ssh/&#39;)</strong></li>
 <li>Details: Open the Developer Tools (F12) for Chrome and enter the command above.</li>
 </ul>
@@ -610,7 +643,7 @@ to filter out all the files that are the same on your Windows box and on
 your Linux box. In other words, it provides a means of seeing only the
 files that you have updated on your Windows or Linux box, and ignoring
 all the other files. To see a list of only the files that differ between
-your selected directories on your Windows and Linux boxes: </p>
+your selected directories on your Windows and Linux boxes:</p>
 <ul>
 <li>Select <strong>View | Directory Comparison | Hide identical files</strong>. Make
 sure the check mark is now set before the <strong>Hide identical files</strong>
