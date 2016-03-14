@@ -167,6 +167,15 @@
   &lt;/a&gt;
 &lt;/div&gt;
 </code></pre>
+<p>When we embed HTML in markdown, then we are writing inline HTML. There are specific rules for writing inline HTML. The HTML we want to render should start flush left.  In particular, we cannot indent the beginning or end of a block of HTML. That&#39;s clear enough.</p>
+<p>The rub comes if we put empty lines in the HTML we want to display. A markdown parser will treat each block of text as a new syntactical element, as a new block. If that block of text is indented, then all is lost. So the fix is to either not indent any blocks, or to eliminate empty lines. In the code above, I opted for the latter solution, but I tested the former, and it also worked.</p>
+<p><strong>NOTE</strong>: <em>Each markdown parser has its own qwirks, so we may also encounter something in the specific behavior of the tool we are using to translate markdown to HTML. Such is life.</em></p>
+<p>When the markdown parser hits an empty line, it thinks it has come to the end of the inline HTML. Then another rule kicks in. Markdown treats indented text as PRE code, as pre=formated text. So it starts trying to render the HTML as text, rather than leaving it as HTML to be viewed in a browser. You can see the rendered HTML text at the end of your screenshot. The primary problem, of course, is not that the text is visible, but that it is not being treated as HTML code.</p>
+<p>Here is a more technical explanation of the rules for writing inline HTML:</p>
+<ul>
+<li><a href="https://daringfireball.net/projects/markdown/syntax#html">https://daringfireball.net/projects/markdown/syntax#html</a></li>
+</ul>
+<p>In particular, the line that is relevant here is this one: &quot;and the start and end tags of the block should not be indented with tabs or spaces.&quot; By removing empty lines, I&#39;m limiting the start and end tags for our blocks to the beginning and end of the entire chunk (block) of in-line HTML. If we leave the spaces in, then some of the blocks start with indents, and then chaos results.</p>
 <h2 id="turn-it-in">Turn it in</h2>
 <p>Create examples of the following, showing examples of the <strong>default</strong>, <strong>primary</strong>, <strong>success</strong>, etc styles when possible.</p>
 <ul>
