@@ -2,7 +2,10 @@
 <li><a href="#copy-midterm">Copy Midterm</a></li>
 <li><a href="#two-pages">Two Pages</a></li>
 <li><a href="#page-one">Page One</a></li>
-<li><a href="#load-the-pages">Load the Pages</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#load-the-pages">Load the Pages</a></li>
+<li><a href="#server-side">Server Side</a></li>
+<li><a href="#nodemon-warning">Nodemon Warning</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Elven Site Pix Picker</p>
 <h2 id="copy-midterm">Copy Midterm</h2>
 <pre><code><span class="hljs-keyword">cp</span> -r Week08-Midterm Week10-ElvenSitePixPicker
@@ -62,4 +65,53 @@ div#pageLoad
     });
 }
 </code></pre>
+<h2 id="server-side">Server Side</h2>
+<p>Here are the methods found in <strong>routes/index.js</strong> for calling into the image code in <strong>elven-stite-tools</strong>.</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/makeMarkdown'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'makeMarkdown route called'</span>);
+    <span class="hljs-keyword">var</span> makeMarkdown = <span class="hljs-keyword">new</span> imageHelp.MakeMarkdown();
+
+    makeMarkdown.loadAndRun(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">report</span>) </span>{
+        <span class="hljs-keyword">if</span> (report.spacesInFileNames) {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-='</span>);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'You have spaces in one or more file names.'</span>);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'The problem is probably in your images directory.'</span>);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'FileNames or Directories with spaces in their '</span>);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'names is not a good idea. Run this command in '</span>);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'the offending directory and then restart:'</span>);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-='</span>);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'find -name "* *" -type f | rename "s/ /_/g"'</span>);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-='</span>);
+            response.send({ error: <span class="hljs-string">'spaces in file name'</span> });
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (report.markdownFileExists) {
+            response.send({ error: <span class="hljs-string">'Markdown file exists: '</span> + report.markdownFileWithImages });
+        } <span class="hljs-keyword">else</span> {
+            response.send({
+                <span class="hljs-string">'success'</span>: <span class="hljs-string">'makeMarkdown'</span>,
+                <span class="hljs-string">'report'</span>: report
+            });
+        }
+        <span class="hljs-built_in">console</span>.log(report);
+    });
+});
+
+router.get(<span class="hljs-string">'/deleteMarkdown'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+    <span class="hljs-keyword">var</span> makeMarkdown = <span class="hljs-keyword">new</span> imageHelp.MakeMarkdown();
+    makeMarkdown.deleteMarkdownFileWithImages(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(result);
+        response.send({ <span class="hljs-string">'result'</span>: <span class="hljs-string">'file deleted'</span>});
+    })
+});
+</code></pre>
+<p>On the client side, these are simple button clicks, with no parameters (requestQuery) being passed.</p>
+<h2 id="nodemon-warning">Nodemon Warning</h2>
+<p>There is one catch here. Since <strong>all-images.json</strong> gets rewritten, you have to tell nodemon to ignore that file or it will keep restarting your application.</p>
+<p>Save the following as <strong>nodemon.json</strong> in the root of your project:</p>
+<pre><code class="lang-javascript">{
+  "<span class="hljs-attr">verbose</span>": <span class="hljs-literal">false</span>,
+  "<span class="hljs-attr">ignore</span>": [<span class="hljs-string">"all-images.json"</span>]
+}
+</code></pre>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Tell me the project and branch.</p>
 </div></body></html>
