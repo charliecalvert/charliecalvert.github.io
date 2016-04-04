@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>AndroidX86Cordova</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><!-- script(src="/libs/scripts/Control.js")--><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>AndroidX86Cordova</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#androidx86-cordova">AndroidX86 Cordova</a></li>
+<li><a href="#setup">Setup</a></li>
+<li><a href="#android-sdk">Android SDK</a></li>
+<li><a href="#create-a-project">Create a project</a></li>
+<li><a href="#build-failed">Build Failed</a></li>
+<li><a href="#connect-adb">Connect ADB</a></li>
+<li><a href="#install">Install</a></li>
+<li><a href="#edit">Edit</a></li>
+<li><a href="#push-to-your-repository">Push to Your Repository</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#hint">Hint</a></li><!--TOC_End--></ul><h1 id="androidx86-cordova">AndroidX86 Cordova</h1>
+<p>The goal of this assignment is to get a simple, default, Android Cordova application running on your phone or on an AndroidX86 build.
+Preliminaries. Be sure the following installed:</p>
+<pre><code class="lang-bash">sudo apt-get <span class="hljs-keyword">install</span> lib32stdc++<span class="hljs-number">6</span>
+sudo apt-<span class="hljs-keyword">get</span> <span class="hljs-keyword">install</span> lib32z1
+</code></pre>
+<p>In general, when doing development, it can also be useful to install the C++ compiler, though it is probably not essential to this process. In particular, if you get an error saying that <strong>make</strong> is missing, then install <strong>build-essential</strong>:</p>
+<pre><code>sudo apt-get <span class="hljs-keyword">install</span> <span class="hljs-keyword">build</span>-essential
+</code></pre><h2 id="setup">Setup</h2>
+<p>This should already have been done for you. But if you ever need to do it:</p>
+<ul>
+<li>Download the Android SDK. Not Android Studio, just the SDK.</li>
+<li>Decompress the archive with a command similar to this:<ul>
+<li><strong>tar xvfz android-sdk_r24.4.1-linux.tgz</strong></li>
+</ul>
+</li>
+<li>Move the archive to the ~/Android directory<ul>
+<li><strong>mkdir ~/Android</strong></li>
+<li><strong>mv android-sdk-linux/ ~/Android/Sdk</strong></li>
+</ul>
+</li>
+</ul>
+<p>Now you can start the Android Manager:</p>
+<pre><code>android
+</code></pre><h2 id="android-sdk">Android SDK</h2>
+<p>The following is done inside the Android Manager, launched in the previous section. The goal is install the Android API verison 23.</p>
+<p><strong>Note</strong>: <em>The version of the Android API that you need can change over time, but if you need to get version 24 or 22 instead of 23, it should not be too difficult to adapt these instructions to help you achieve that goal. Also note that the big danger here is installing way more than you need. Gigabyte upon gigabyte more than you need. Install as little as possible.</em></p>
+<p>Install Android API 23 by doing the following:</p>
+<ul>
+<li>First un-check all Android 6.0 (API 23)</li>
+</ul>
+<p>Then be sure the following is already installed:</p>
+<ul>
+<li>Android SDK Tools (Already installed)</li>
+</ul>
+<p>Now prepare to add the following items by placing a check in front of them:</p>
+<ul>
+<li>Android SDK Platform-Tools</li>
+<li>Android SDK Build Tools</li>
+<li>Check Android 6.0 (API 23)<ul>
+<li>SDK Platform</li>
+</ul>
+</li>
+<li>Extras: Android Support Library</li>
+</ul>
+<p>Now select the <strong>Install Five Packages</strong> button. You may get an error about failing to stop the ADB server. Since ADB is probably not yet installed, this error is expected, and you can ignore.</p>
+<h2 id="create-a-project">Create a project</h2>
+<p>Go to your repository and do the following</p>
+<pre><code class="lang-bash"><span class="hljs-symbol">cordova</span> create Week01-CordovaStarter
+<span class="hljs-symbol">cd</span> Week01-CordovaStarter
+<span class="hljs-symbol">cordova</span> platform <span class="hljs-keyword">add </span><span class="hljs-keyword">android
+</span><span class="hljs-symbol">cordova</span> <span class="hljs-keyword">build </span><span class="hljs-keyword">android</span>
+</code></pre>
+<h2 id="build-failed">Build Failed</h2>
+<p>If your build fails like this:</p>
+<pre><code class="lang-bash"><span class="hljs-meta">:CordovaLib:processDebugResources</span> FAILED
+
+FAILURE: Build failed with an exception.
+
+<span class="hljs-bullet">* </span>What went wrong:
+Execution failed for task <span class="hljs-emphasis">':CordovaLib:processDebugResources'</span>.
+&gt; java.io.IOException: Cannot run program "/home/bcuser/Android/Sdk/build-tools/22.0.1/aapt": error=2, No such file or directory
+</code></pre>
+<p>You might be able to fix it with these commands, which were mentioned earlier:</p>
+<pre><code class="lang-bash">sudo apt-get <span class="hljs-keyword">install</span> lib32stdc++<span class="hljs-number">6</span>
+sudo apt-<span class="hljs-keyword">get</span> <span class="hljs-keyword">install</span> lib32z1
+</code></pre>
+<h2 id="connect-adb">Connect ADB</h2>
+<p>To connect to your Android X86, do the following:</p>
+<ul>
+<li><strong>adb connect [YOUR IP from netcfg]</strong></li>
+</ul>
+<p>To see your connections:</p>
+<ul>
+<li><strong>adb devices</strong></li>
+</ul>
+<p>For instance:</p>
+<pre><code>charlie<span class="hljs-variable">@forestpath</span><span class="hljs-symbol">:~/temp/Week01-Foo</span>
+<span class="hljs-variable">$ </span>adb connect <span class="hljs-number">192.168</span>.<span class="hljs-number">2.33</span>
+connected to <span class="hljs-number">192.168</span>.<span class="hljs-number">2.33</span><span class="hljs-symbol">:</span><span class="hljs-number">5555</span>
+charlie<span class="hljs-variable">@forestpath</span><span class="hljs-symbol">:~/temp/Week01-Foo</span>
+<span class="hljs-variable">$ </span>adb devices
+List of devices attached
+<span class="hljs-number">192.168</span>.<span class="hljs-number">2.33</span><span class="hljs-symbol">:</span><span class="hljs-number">5555</span>    device
+</code></pre><h2 id="install">Install</h2>
+<p>To install:</p>
+<pre><code>adb <span class="hljs-keyword">install</span> [YOUR APK <span class="hljs-keyword">file</span>]
+</code></pre><p>A bit like this, perhaps:</p>
+<pre><code>$ adb <span class="hljs-keyword">install</span> platforms/android/<span class="hljs-keyword">build</span>/outputs/apk/android-debug.apk
+<span class="hljs-number">10208</span> KB/s (<span class="hljs-number">1822587</span> <span class="hljs-keyword">bytes</span> <span class="hljs-keyword">in</span> <span class="hljs-number">0.174</span>s)
+    pkg: /<span class="hljs-keyword">data</span>/<span class="hljs-keyword">local</span>/tmp/android-debug.apk
+<span class="hljs-keyword">Success</span>
+</code></pre><p>To uninstall:</p>
+<ul>
+<li><strong>adb uninstall [URL of your APP from config.xml in project root]</strong></li>
+</ul>
+<p>Perhaps something like this:</p>
+<pre><code>$ adb uninstall io<span class="hljs-selector-class">.cordova</span><span class="hljs-selector-class">.hellocordova</span>
+Success
+</code></pre><h2 id="edit">Edit</h2>
+<p>Edit the H1 element in <strong>www/index.html</strong> to include your last name. Rebuild the application and reinstall it.</p>
+<h2 id="push-to-your-repository">Push to Your Repository</h2>
+<p>This part of the assignment is optional for now. If you have not done so already, create a private repository on BitBucket or Github.</p>
+<p>Use this naming scheme:</p>
+<ul>
+<li>isit322-lastname-2016</li>
+</ul>
+<p>Push your work to the repository.</p>
+<p>Information on SSH is here:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#sshKeys">http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#sshKeys</a></li>
+</ul>
+<p>Be sure to share the repository with me. I&#39;m ccalvert on BitBucket and charliecalvert on GitHub.</p>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Submit a screen shot of your Cordova project running in Androidx86 inside VirtualBox.</p>
+<p>Be sure that:</p>
+<ul>
+<li>Your name is visible in the application in the H1 tag of your <strong>www/index.html</strong> file.</li>
+<li>The <strong>DEVICE IS READY</strong> bar is green.</li>
+<li>The VirtualBox chrome is visible. For instance, the words <strong>Oracle VM VirtualBox</strong> should appear at the top, and the icons near the words <strong>Right Ctrl</strong> (or the MAC/Linux equivalent host key) are visible on the bottom.</li>
+</ul>
+<p>Here is the body of index.html, with the place where I want to see your name called out in square brackets:</p>
+<pre><code class="lang-html">    <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"app"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>[YOUR NAME GOES HERE]<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"deviceready"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"blink"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"event listening"</span>&gt;</span>Connecting to Device<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"event received"</span>&gt;</span>Device is Ready<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"cordova.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"js/index.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+</code></pre>
+<p><img src="https://drive.google.com/uc?export=view&amp;id=0B25UTAlOfPRGb3BKVmdtMG5XZVU" alt="AndroidX86Cordrova"></p>
+<p>You need not write APACHE YOURNAME. It can be YOURNAME CORDOVA or whatever (within reason) strikes your fancy, so long as it is in the H1 tag and it contains your name.</p>
+<h2 id="hint">Hint</h2>
+<p>Commands to remember:</p>
+<ul>
+<li>cordova create Week01-Test com.lastname.test_lastname IsitTestCalvert</li>
+<li>cordova platform add android</li>
+<li>cordova build android</li>
+<li>adb uninstall io.cordova.hellocordova</li>
+<li>adb install platforms/android/build/outputs/apk/android-debug.apk</li>
+</ul>
+<p>For instance:</p>
+<ul>
+<li>cordova create Week01Test com.elvenware.test_calvert IsitTestCalvert</li>
+<li>cordova create [Directory] [URL] [Name]</li>
+</ul>
+</div></body></html>

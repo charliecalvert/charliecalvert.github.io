@@ -1,0 +1,261 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>HyperExplorerComments</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><!-- script(src="/libs/scripts/Control.js")--><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>HyperExplorerComments</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#week11-hyperexplorer">Week11-HyperExplorer</a></li>
+<li><a href="#images">Images</a></li>
+<li><a href="#put-your-name-in-title">Put Your Name in Title</a></li>
+<li><a href="#grunt-check">Grunt Check</a></li>
+<li><a href="#setup-pages">Setup Pages</a></li>
+<li><a href="#methods-in-elfdelicious">Methods in elfDelicious</a></li>
+<li><a href="#forms-not-needed">Forms not Needed</a></li>
+<li><a href="#call-rendertable-and-appendurl">Call renderTable and appendUrl</a></li>
+<li><a href="#optional-tests">Optional Tests</a></li>
+<li><a href="#test-directories">Test Directories</a></li>
+<li><a href="#link-index">Link Index</a></li>
+<li><a href="#call-delicious">Call Delicious</a></li>
+<li><a href="#datatypeselection">DataTypeSelection</a></li>
+<li><a href="#delicious-radio-buttons">Delicious Radio Buttons</a></li>
+<li><a href="#delicious-check-boxes">Delicious Check Boxes</a></li><!--TOC_End--></ul><h1 id="week11-hyperexplorer">Week11-HyperExplorer</h1>
+<p>by Charlie Calvert</p>
+<h2 id="images">Images</h2>
+<p>If you try to load an image and it fails, do this in your jade:</p>
+<pre><code class="lang-jade">+elfPanel(<span class="hljs-string">"Image Display"</span>).elfDiv
+    img(<span class="hljs-keyword">onerror</span>=<span class="hljs-string">"this.src = 'images/default.png'"</span>)<span class="hljs-meta">#image</span>
+</code></pre>
+<h2 id="put-your-name-in-title">Put Your Name in Title</h2>
+<p>Be sure to put your name in <strong>routes/index.js</strong>. I&#39;m grading a lot of assignments, and I want to be able to tell immediately whose assignment is running:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    res.render(<span class="hljs-string">'index'</span>, {
+        title: <span class="hljs-string">'Hyperlink-Explorer-Calvert'</span>,
+        author: <span class="hljs-string">'Charles Calvert'</span>
+    });
+});
+</code></pre>
+<h2 id="grunt-check">Grunt Check</h2>
+<p>Be sure that <strong>grunt check</strong> passes. By this time, most of the errors returned from <strong>grunt jscs</strong> are probably pretty trivial, but be sure that you final is clean before turning it in. You should also be sure that <strong>grunt jshint</strong> passes.</p>
+<h2 id="setup-pages">Setup Pages</h2>
+<p>Be sure you call initialize or setup on your pages when you load them.</p>
+<p>In the <strong>call-server.js</strong> file that I gave you is the following code:</p>
+<pre><code class="lang-javascript">loadTwitter: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    $(<span class="hljs-string">'#displayContainer'</span>).load(<span class="hljs-string">'/twitter'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response, status, xhr</span>) </span>{
+        <span class="hljs-keyword">if</span> (status == <span class="hljs-string">'error'</span>) {
+            <span class="hljs-keyword">var</span> msg = <span class="hljs-string">'Sorry but there was an error: '</span>;
+            <span class="hljs-comment">// $( '#error' ).html( msg + xhr.status + ' ' + xhr.statusText );</span>
+            <span class="hljs-built_in">console</span>.log(msg + xhr.status + <span class="hljs-string">' '</span> + xhr.statusText);
+        } <span class="hljs-keyword">else</span> {
+            elfTwitter.twitterSetup();
+        }
+    });
+}
+</code></pre>
+<p>As you can see, this code calls elfTwitter.twitterSetup. It will not work, of course, unless the <strong>twitterSetup</strong> method exists:</p>
+<pre><code class="lang-javascript">twitterSetup: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    elfTwitter.clearControls();
+    $(<span class="hljs-string">'#getTimeline'</span>).click(elfTwitter.getTimeline);
+    $(<span class="hljs-string">'#search'</span>).click(elfTwitter.search);
+}
+</code></pre>
+<h2 id="methods-in-elfdelicious">Methods in elfDelicious</h2>
+<p>Most of you delicious and twitter in objects. This means that your code in your jade files needs to qualify the methods in these objects with the object name. Don&#39;t write this:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-primary</span>(onclick=<span class="hljs-string">"delicious()"</span>) Search Delicious
+</code></pre>
+<p>Instead write this:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-primary</span>(onclick=<span class="hljs-string">"elfDelicious.delicious()"</span>) Search Delicious
+</code></pre>
+<p>The difference is <strong>delicious</strong> vs <strong>elfDelicious.delicious</strong>.</p>
+<h2 id="forms-not-needed">Forms not Needed</h2>
+<p>In most cases, we don&#39;t really need HTML <strong>forms</strong> for our code. But if you do use a form, be sure to handle the submit button in your setup methods for <strong>twitter</strong>, <strong>delicious</strong>, <strong>bitly</strong> or any place you use forms:</p>
+<pre><code class="lang-javascript">$(<span class="hljs-string">"#target"</span>).submit(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    event.preventDefault();
+    <span class="hljs-keyword">var</span> userFormData = $(<span class="hljs-keyword">this</span>).serialize();
+    etc...
+});
+</code></pre>
+<p>Bit if you don&#39;t want to handle forms explicitly, then be sure to remove them from your jade. In other words, don&#39;t do this: </p>
+<pre><code class="lang-jade"><span class="hljs-keyword">form</span>#<span class="hljs-keyword">target</span>
+</code></pre>
+<p>Instead do something like this:</p>
+<pre><code class="lang-jade"><span class="hljs-meta">#target</span>
+</code></pre>
+<p>Don&#39;t do this:</p>
+<pre><code class="lang-jade">+elfFormPanel(<span class="hljs-string">"Options"</span>)<span class="hljs-selector-id">#target</span>.elfDiv
+</code></pre>
+<p>Instead do this:</p>
+<pre><code class="lang-jade">+elfPanel(<span class="hljs-string">"Options"</span>)<span class="hljs-selector-id">#target</span>.elfDiv
+</code></pre>
+<p>Whether you use HTML <strong>forms</strong> or not is up to you, but we have tended not to use them in most of our code.</p>
+<h2 id="call-rendertable-and-appendurl">Call renderTable and appendUrl</h2>
+<p>In your delicious code, and elsewhere, you want to make sure that you are calling <strong>appendUrl</strong> and perhaps also <strong>renderTable</strong> from inside of <strong>elfDelicious.callDelicious</strong> and inside of <strong>elfTwitter.search</strong> and <strong>elfTwitter.timeLine</strong>. Depending on your approach to this part of the project, some of your code might look a bit like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfDelicious = {
+
+    deliciousLinks: <span class="hljs-literal">null</span>,
+
+    deliciousSetup: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// CODE OMITTED HERE</span>
+    },
+
+    delicious: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-keyword">var</span> subject = $(<span class="hljs-string">'#subject'</span>).val();
+        elfDelicious.callDelicious(subject);
+    },
+
+    detailDelicious: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        $(<span class="hljs-string">'#deliciousDetails'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(elfDelicious.deliciousLinks[index], <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+    },
+
+    appendUrl: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index, deliciousLink</span>) </span>{
+        <span class="hljs-comment">// CODE OMITTED HERE</span>
+    },
+
+    callDelicious: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">subject</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-keyword">var</span> feedUrl = <span class="hljs-string">'http://feeds.delicious.com/v2/json/charliecalvert/'</span> + subject;
+        $.ajax({
+            url: feedUrl,
+
+            dataType: <span class="hljs-string">'jsonp'</span>,
+
+            success: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+                <span class="hljs-comment">// SOMEWHERE IN HERE CALL APPEND URL</span>
+                <span class="hljs-comment">// IF YOU WANT THE TABLE, THEN ALSO CALL RENDERTABLE</span>
+            }
+        });
+    },
+
+    <span class="hljs-comment">// CODE OMITTED HERE</span>
+};
+</code></pre>
+<h2 id="optional-tests">Optional Tests</h2>
+<p>Most tests begin with <strong>test-</strong>. To include them, put this in the files object found in <strong>karma.conf.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-symbol">'spec</span>/test*.js',
+</code></pre>
+<p>Some tests are optional (extra credit) and begin with <strong>opt</strong>. These are mostly twitter tests, which were added so late in the quarter that I did not want to insist that you include them in the final. Instead I made them optional. These tests begin with <strong>spec/opt-test-</strong>. To include them, write the following in the <strong>files</strong> object found in <strong>karma.conf.js</strong> :</p>
+<pre><code class="lang-javascript"><span class="hljs-symbol">'spec</span>/opt-test*.js',
+</code></pre>
+<p>When included these tests in my project, I had about 126 total tests.</p>
+<p>You may also see some tests that begin <strong>charlie-test-</strong>. You can ignore these tests.  Of course, if you did want to use them, you should add the following to the <strong>files</strong> configuration object in <strong>karma.conf.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-symbol">'spec</span>/charlie-test*.js'
+</code></pre>
+<h2 id="test-directories">Test Directories</h2>
+<p>In <strong>$ELF_TEMPLATES/UnitTest/HyperExplorer</strong> there are two directories called <strong>data</strong> and <strong>fixtures</strong>. Your data directory should hold files like:</p>
+<ul>
+<li>bitly-links.js</li>
+<li>delicious-javascript-links.js</li>
+<li>tweets.js</li>
+<li>tweets-timeline.js</li>
+</ul>
+<p>There is also a fixture directory. Your fixture directory should hold files like this:</p>
+<ul>
+<li>bitly.html</li>
+<li>delicious.html</li>
+<li>fixture.html</li>
+<li>test-local-cloud.html</li>
+<li>twitter.html</li>
+</ul>
+<p>To create some of the fixture code, expand the code in the files directory for <strong>karma.conf.js</strong>:</p>
+<pre><code class="lang-javascript">jade: {
+    compile: {
+        options: {
+            pretty: <span class="hljs-literal">true</span>,
+            data: {
+                debug: <span class="hljs-literal">false</span>
+            }
+        },
+        files: {
+            <span class="hljs-symbol">'spec</span>/fixtures/delicious.html': [<span class="hljs-symbol">'views</span>/delicious.jade', <span class="hljs-string">'$ELF_TEMPLATES/JadeMixins/*.jade'</span>],
+            <span class="hljs-symbol">'spec</span>/fixtures/fixture.html': [<span class="hljs-symbol">'views</span>/fixture.jade', <span class="hljs-string">'$ELF_TEMPLATES/JadeMixins/*.jade'</span>],
+            <span class="hljs-symbol">'spec</span>/fixtures/twitter.html': [<span class="hljs-symbol">'views</span>/twitter.jade', <span class="hljs-string">'$ELF_TEMPLATES/JadeMixins/*.jade'</span>]
+
+        }
+    }
+},
+</code></pre>
+<h2 id="link-index">Link Index</h2>
+<p>in bitly.js, in getLinks, set linkIndex to 0:</p>
+<pre><code class="lang-javascript">$.getJSON(url, function(<span class="hljs-literal">result</span>) {
+    elfBitly.linkIndex = <span class="hljs-number">0</span>;
+</code></pre>
+<h2 id="call-delicious">Call Delicious</h2>
+<p>In <strong>delicious.jade</strong>, call <strong>elfDelicious.delicious</strong>, not <strong>elfDelicious.callDelicious</strong>:</p>
+<pre><code class="lang-jade"><span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-primary</span>(type=<span class="hljs-string">"button"</span>, onclick=<span class="hljs-string">"elfDelicious.delicious()"</span>) Search Delicious
+</code></pre>
+<p>You need to call delicious so that the index gets sets correctly. Like this:</p>
+<pre><code class="lang-javascript">delicious: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> subject = $(<span class="hljs-string">'#subject'</span>).val();
+    elfDelicious.callDelicious(subject);
+},
+</code></pre>
+<h2 id="datatypeselection">DataTypeSelection</h2>
+<p>On some student&#39;s assignments, When I switch to Twitter (or sometimes Delicious) I see results from Bitly at first in the Bitly Table Links. A number of things could cause this, but frequently it is related to the implemenation of elfDownloads.dataTypeSelection. In particular, sometimes a call to <strong>elfDownloads.getLinkData</strong>, down at the very bottom of the method, gets triggered.</p>
+<p>Here is my current <strong>elfDownloads.dataTypeSelection()</strong>. Frankly, it is not very nice code, it is overly convoluted. But it did clear the problem up on my system, and in the programs of some students. It is question of calling <strong>return</strong> at the right time to so that <strong>elfDownloads.getLinkData</strong> does not get called:</p>
+<pre><code class="lang-javascript">elfDownloads.dataTypeSelection = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#localData'</span>).is(<span class="hljs-string">':checked'</span>)) {
+        <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> We shouldn't need to make this check?</span>
+        <span class="hljs-keyword">if</span> (elfDownloads.dataType !== elfDownloads.dataTypes.dtLocal) {
+            elfDownloads.dataType = elfDownloads.dataTypes.dtLocal;
+            elfCallServer.loadBitly();
+            elfDownloads.getLinkData();
+        }
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#bitlyData'</span>).is(<span class="hljs-string">':checked'</span>)) {
+        <span class="hljs-keyword">if</span> (elfDownloads.dataType !== elfDownloads.dataTypes.dtBitly) {
+            elfDownloads.dataType = elfDownloads.dataTypes.dtBitly;
+            elfCallServer.loadBitly();
+            elfDownloads.getLinkData();
+        }
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#deliciousData'</span>).is(<span class="hljs-string">':checked'</span>)) {
+        <span class="hljs-keyword">if</span> (elfDownloads.dataType !== elfDownloads.dataTypes.dtDelicious) {
+            elfDownloads.dataType = elfDownloads.dataTypes.dtDelicious;
+            elfCallServer.loadDelicious();
+        }
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#twitterData'</span>).is(<span class="hljs-string">':checked'</span>)) {
+        <span class="hljs-keyword">if</span> (elfDownloads.dataType !== elfDownloads.dataTypes.dtTwitter) {
+            elfDownloads.dataType = elfDownloads.dataTypes.dtTwitter;
+            elfCallServer.loadTwitter();
+        }
+    }
+};
+</code></pre>
+<h2 id="delicious-radio-buttons">Delicious Radio Buttons</h2>
+<p>I used the bootstrap buttons that acted like radioButtons rather than real radioButtons:</p>
+<pre><code class="lang-jade"><span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.panel</span><span class="hljs-selector-class">.panel-default</span>
+    <span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.panel-heading</span> Click <span class="hljs-selector-tag">a</span> <span class="hljs-selector-tag">button</span> to search delicious
+    <span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.panel-body</span>
+        <span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.btn-group</span><span class="hljs-selector-class">.elves</span>(role=<span class="hljs-string">"group"</span>)
+            <span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-default</span>#radioJavaScript(type=<span class="hljs-string">"button"</span> name=<span class="hljs-string">'radioChoice'</span>) JavaScript
+            <span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-default</span>(type=<span class="hljs-string">"button"</span> name=<span class="hljs-string">'radioChoice'</span>) Bootstrap
+            <span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-default</span>(type=<span class="hljs-string">"button"</span> name=<span class="hljs-string">'radioChoice'</span>) Node
+</code></pre>
+<p>Then I set it up like this <strong>elfDelicious.deliciousSetup</strong>:</p>
+<pre><code class="lang-jade">$('.btn-<span class="hljs-keyword">group</span> <span class="hljs-title">.btn</span>').click(elfDelicious.displayRadioButtonSelection);
+</code></pre>
+<p>And then handle clicks on the &quot;radio buttons&quot; like this:</p>
+<pre><code class="lang-javascript">displayRadioButtonSelection: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> id = $(<span class="hljs-keyword">this</span>).text();
+    $(<span class="hljs-string">'#radioButtonDisplay01'</span>).html(<span class="hljs-string">'You clicked '</span> + id);
+    elfDelicious.callDelicious(id);
+}
+</code></pre>
+<p>We get the text from the button, which will be <strong>javascript</strong>, <strong>bootstrap</strong> or <strong>nodejs</strong>. Then we pass that string to <strong>callDelicious</strong> which retrieves the data for us.</p>
+<h2 id="delicious-check-boxes">Delicious Check Boxes</h2>
+<p>Some students had some trouble with the Delicious section. We should have something like this in <strong>deliciousSetup</strong>, where the name for all the check boxes is <strong>deliciousCheckBox</strong>:</p>
+<pre><code><span class="hljs-variable">$(</span><span class="hljs-string">'input[name=deliciousCheckBox]:checkbox'</span>).click(elfDelicious.displayCheckboxSelection);
+</code></pre><p>And then in the JADE, something like this, where we again spell out the name:</p>
+<pre><code>div.panel.panel-default
+   div.panel-heading <span class="hljs-keyword">Select</span> one <span class="hljs-keyword">or</span> more CheckBoxes <span class="hljs-keyword">to</span> <span class="hljs-keyword">search</span> Delicious
+   <span class="hljs-keyword">div</span>.panel-<span class="hljs-keyword">body</span>
+       <span class="hljs-keyword">div</span>
+           <span class="hljs-keyword">input</span>#chJavaScript(<span class="hljs-keyword">type</span>=<span class="hljs-string">'checkbox'</span>, <span class="hljs-keyword">name</span>=<span class="hljs-string">'deliciousCheckBox'</span>, <span class="hljs-keyword">value</span>=<span class="hljs-string">'JavaScript'</span>)
+           label(<span class="hljs-keyword">for</span>=<span class="hljs-string">'chJavaScript'</span>) JavaScript
+       <span class="hljs-keyword">div</span>
+           <span class="hljs-keyword">input</span>#chBootstrap(<span class="hljs-keyword">type</span>=<span class="hljs-string">'checkbox'</span>, <span class="hljs-keyword">name</span>=<span class="hljs-string">'deliciousCheckBox'</span>, <span class="hljs-keyword">value</span>=<span class="hljs-string">'Bootstrap'</span>)
+           label(<span class="hljs-keyword">for</span>=<span class="hljs-string">'chBootstrap'</span>)  Bootstrap
+       <span class="hljs-keyword">div</span>
+           <span class="hljs-keyword">input</span>#chNodeJs(<span class="hljs-keyword">type</span>=<span class="hljs-string">'checkbox'</span>, <span class="hljs-keyword">name</span>=<span class="hljs-string">'deliciousCheckBox'</span>, <span class="hljs-keyword">value</span>=<span class="hljs-string">'NodeJs'</span>)
+           label(<span class="hljs-keyword">for</span>=<span class="hljs-string">'chNodeJs'</span>)  NodeJs
+</code></pre><p>It didn&#39;t really matter what the name of the checkboxes was, so long as it matched the name of the selector in <strong>deliciousSetup</strong>. In this case, the match was on the word <strong>deliciousCheckBox</strong>.</p>
+</div></body></html>
