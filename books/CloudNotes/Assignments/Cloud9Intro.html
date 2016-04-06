@@ -2,8 +2,10 @@
 <li><a href="#step-zero">Step Zero</a></li>
 <li><a href="#step-one">Step One</a></li>
 <li><a href="#step-two">Step Two</a></li>
-<li><a href="#step">Step</a></li>
-<li><a href="#step-two">Step Two</a></li>
+<li><a href="#bash">Step Three</a></li>
+<li><a href="#step-four">Step Four</a></li>
+<li><a href="#step-five">Step Five</a></li>
+<li><a href="#step-six">Step Six</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h1 id="cloud-9-intro">Cloud 9 Intro</h1>
 <p>Sign into Cloud 9 and set up a workspace based on your repository. Typically, your repository will have a name like this:</p>
 <ul>
@@ -43,17 +45,41 @@
 </code></pre><p>In Cloud 9, click the vertical <strong>Workspace</strong> tab on the far left to toggle the <strong>Favorites</strong>.</p>
 <p>Notice that there is a settings gear in the Favorites window. Select <strong>Show Home in Favorites</strong> so you can see your <strong>Home</strong>, <strong>bin</strong> and <strong>Git</strong> directories.</p>
 <h2 id="step-two">Step Two</h2>
-<p>Switch to your <strong>Git</strong> folder:</p>
+<p>Using the bash shell, switch to your <strong>Git</strong> folder:</p>
 <pre><code><span class="hljs-built_in">cd</span> ~/Git
 </code></pre><p>Clone my <a href="https://github.com/charliecalvert/JsObjects/blob/master/README.md">JsObjects</a> repository:</p>
 <pre><code>git <span class="hljs-keyword">clone</span> <span class="hljs-title">http</span>://github.com/charliecalvert/JsObjects.git
-</code></pre><p>If you have not done so already run <strong>git pull</strong> on JsObjects. Copy <strong>SystemCheck</strong> into your bin directory:</p>
-<pre><code class="lang-bash">cp $JSOBJECTS/Utilities/SetupLinuxBox/SystemCheck ~/bin/.
+</code></pre><h2 id="bash">Step Three</h2>
+<p>Rename the .bash_aliases file that comes with Cloud9:</p>
+<pre><code>mv ~/<span class="hljs-selector-class">.bash_aliases</span> ~/<span class="hljs-selector-class">.bash_aliases</span><span class="hljs-selector-class">.old</span>
+</code></pre><p>Create a symbolic link to our ~/.bash_aliases file:</p>
+<pre><code>ln -s ~<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>SetupLinuxBox<span class="hljs-regexp">/.bash_aliases ~/</span>.bash_aliases
+<span class="hljs-keyword">source</span> ~<span class="hljs-regexp">/.bash_aliases</span>
+</code></pre><p>The first line creates a symbolic link from the home directory to the <strong>.bash_aliases</strong> file in <strong>JsObjects</strong>. The second line processes the file so that the code in it becomes active. We only need to do this once.</p>
+<p>Our bash aliases file contains lots of shortcuts or aliases that can help us navigate the system. For instance, try typing any of the following to see how we can quickly move to various parts of JsObjects:</p>
+<pre><code><span class="hljs-keyword">jo
+</span><span class="hljs-keyword">joj
+</span><span class="hljs-keyword">jou
+</span>slb
+</code></pre><h2 id="step-four">Step Four</h2>
+<p>Locate the <strong>SystemCheck</strong> utility and run it:</p>
+<pre><code class="lang-bash">cd ~Git<span class="hljs-regexp">/JsObjects/U</span>tilities<span class="hljs-regexp">/SetupLinuxBox/</span>
+.<span class="hljs-regexp">/SystemCheck</span>
 </code></pre>
+<p><strong>NOTE</strong>: <em>Using our aliases, we can navigate to the <strong>SetupLinuxBox</strong> directory by typing slb and pressing return.</em></p>
+<p>On Cloud 9, not all the <strong>SystemCheck</strong> options have to work. But be sure that the following return <strong>OK</strong> for all options:</p>
+<ul>
+<li>Basic</li>
+<li>Node</li>
+<li>Lamp</li>
+</ul>
 <p>If NODE_PATH does not exist, add this to the end of your .bashrc:</p>
-<pre><code>export NODE_PATH=$<span class="hljs-symbol">NODE_PATH:</span>$HOME/npm/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">node_modules</span></span>
-</code></pre><p>Don&#39;t forget to source your .bashrc file: <strong>source ~/.bashrc
-</strong></p>
+<pre><code>export NODE_PATH=:$HOME/npm/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">node_modules</span></span>
+export PATH=<span class="hljs-string">"$PATH:$HOME/npm/bin"</span>
+</code></pre><p>You might also check your bash prompt (PS1), which looks a bit like this on my system:</p>
+<pre><code>PS1='<span class="hljs-tag">\<span class="hljs-name">[</span></span><span class="hljs-tag">\</span>033[01;32m<span class="hljs-tag">\<span class="hljs-name">]</span></span><span class="hljs-formula">${C9_USER}@$</span>{C9_PROJECT}<span class="hljs-tag">\<span class="hljs-name">[</span></span><span class="hljs-tag">\</span>033[00m<span class="hljs-tag">\<span class="hljs-name">]</span></span>:<span class="hljs-tag">\<span class="hljs-name">[</span></span><span class="hljs-tag">\</span>033[01;34m<span class="hljs-tag">\<span class="hljs-name">]</span></span><span class="hljs-tag">\<span class="hljs-name">w</span></span><span class="hljs-tag">\<span class="hljs-name">[</span></span><span class="hljs-tag">\</span>033[00m<span class="hljs-tag">\<span class="hljs-name">]</span></span><span class="hljs-formula">$(__git_ps1 " (%s)")<span class="hljs-tag">\<span class="hljs-name">n</span></span>$</span> '
+</code></pre><p>Note the <strong>\n</strong> right before the final $.</p>
+<p>Don&#39;t forget to source your <strong>.bashrc</strong> file: <strong>source ~/.bashrc</strong></p>
 <p>Type <strong>SystemCheck</strong> or <strong>syscheck</strong> and check you system:</p>
 <pre><code>=======================
 Menu
@@ -62,17 +88,19 @@ Menu
 b) Basic System Check
 n) Node
 c) Common
+l) Lamp
 p) PhoneGap
 x) Exit
 
 Please make a selection: b
-</code></pre><p>Make sure b and n are good. Take a screen shot of the output from b and n. Call them</p>
+</code></pre><p>Make sure b, l and n are good. Take a screen shot of the output from b and n. Call them</p>
 <ul>
 <li>Cloud9IntroOptionB.png</li>
 <li>Cloud9IntroOptionN.png</li>
 </ul>
 <p><strong>syscheck</strong> is an <strong>alias</strong> pointing at the copy of SystemCheck in your JsObjects directory. So it may be easier to use, but it is harder to remember to use it since there are many aliases in <strong>.bash_aliases</strong>. Having the script in your <strong>~/bin</strong> directory is probably simplest for most people. The point being that we might want to run <strong>SystemCheck</strong> from time to time to be sure everything is still set up right.*</p>
-<h2 id="step">Step</h2>
+<h2 id="step-five">Step Five</h2>
+<h2 id="step-six">Step Six</h2>
 <p>Take a screen shot displaying the following:</p>
 <ul>
 <li>The root file system from the Project page on left</li>
@@ -84,7 +112,6 @@ Please make a selection: b
 <p>The screenshot you want to create will be similar to, but not identical too, the image shown below:</p>
 <p><a href="https://s3.amazonaws.com/bucket01.elvenware.com/images/Cloud9Intro01.png"><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/Cloud9IntroSmall01.png" alt="Cloud9Small"></a></p>
 <p><strong>Image01</strong>: <em>The Cloud 9 IDE. Click the image above to expand it.</em></p>
-<h2 id="step-two">Step Two</h2>
 <h2 id="turn-it-in">Turn it in</h2>
 <p>Submit your work and attach the screenshots.</p>
 </div></body></html>
