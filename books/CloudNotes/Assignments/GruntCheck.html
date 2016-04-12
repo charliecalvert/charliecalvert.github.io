@@ -1,5 +1,6 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>GruntCheck</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><!-- script(src="/libs/scripts/Control.js")--><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>GruntCheck</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#grunt-check">Grunt Check</a></li>
-<li><a href="#setup">Setup</a></li>
+<li><a href="#setup">Setup JSCS</a></li>
+<li><a href="#grunt">Setup Grunt</a></li>
 <li><a href="#clean-code">Clean Code</a></li>
 <li><a href="#long-lines">Very Long Lines</a></li>
 <li><a href="#updated-unit-tests">Updated Unit Tests</a></li>
@@ -8,27 +9,52 @@
 <p>More specifically, the goal of this assignment is to be able to run the following custom commands and have them come back clean:</p>
 <pre><code>grunt<span class="hljs-built_in"> check
 </span>grunt test
-</code></pre><p>The emphasis here is on learning to format your code correctly. In particular, see the <a href="https://google.github.io/styleguide/javascriptguide.xml">Google style guide</a>. The JSCS tests in this project follow the Google style guides, except that our indent is four spaces rather than two.</p>
-<p>This assignment turned out to be more difficult than I thought it would be at first. The main problem came when shortening lines longer than 120 characters. Yet, these style guidelines are reasonable, and we should follow them. Furthermore, it has proved nearly impossible to get either me or my students to properly format their code without some kind of hard metric, and this provides one for us.</p>
+</code></pre><p>The emphasis here is on learning to format your code correctly. In particular, see the <a href="https://google.github.io/styleguide/javascriptguide.xml">Google style guide</a>. The <a href="https://github.com/jscs-dev/node-jscs">JSCS</a> tests in this project follow the Google style guides, except that our indent is four spaces rather than two.</p>
+<p>Note that I want you shorten lines longer than 120 characters. This can be complicated at time, but I believe this and the other style guidelines are reasonable, and we should follow them. Furthermore, it has proved nearly impossible to get either my students or me to properly format our code without some kind of hard metric, and this provides one for us.</p>
 <p><strong>NOTE</strong>: <em>When viewing the Google style guide, you may find it easiest to select the <strong>Toggle All Summaries</strong> option at the top of the file.</em></p>
 <p>See also:</p>
 <ul>
 <li><a href="http://jsbeautifier.org/">jsbeautifier.org</a></li>
 </ul>
-<h2 id="setup">Setup</h2>
-<p>You need to create two files:</p>
+<p>In this assignment we will need to create two files:</p>
 <ul>
 <li><strong>.jscsrc</strong>: Configure JSCS</li>
 <li><strong>Gruntfile.js</strong>: Configure Grunt</li>
 </ul>
-<p>One is used to configure <strong>grunt</strong>, the other to configure <strong>jscs</strong>. Another configuration file that we have dealt with regularly is <strong>.bowerrc</strong>. It is used, of course, to configure <strong>bower</strong>. I mention it only because it is similar to <strong>.jscsrc</strong>.</p>
-<p>Here is the <strong>.jscsrc</strong> config file:</p>
+<p>One is used to configure <strong>grunt</strong>, the other to configure <strong>jscs</strong>.</p>
+<h2 id="setup">Setup JSCS</h2>
+<p>JSCS enforces rules that help us properly format our code. Properly formatted code is <strong><em>much</em></strong> easier to read than poorly formatted code. Most professional teams adopt a specific set of rules for formatting their code. These rules are usually strictly enforced, and most developers quickly get very annoyed with developers who do not follow these rules. JSCS provides a means of checking your code before you push it to git so you can be sure it meets specific formatting standards.</p>
+<p>The <strong>.jscsrc</strong> begins with a period, so it is a hidden file. That means you will need to type something like <strong>ls -la</strong> to check for its existence.</p>
+<p>The <strong>.jscsrc</strong> file is a configuration file, just as <strong>.bashrc</strong> and <strong>.bowerrc</strong> are configuration files. We use these files to configure the tools we use. The <strong>.bashrc</strong> file contains code that configures our bash shell. It tweaks the shell to work the way we want it to work. The <strong>.bowerrc</strong> file does the same for bower, and this <strong>.jscsrc</strong> file configures the way that JSCS works.</p>
+<p>Here is the <strong>.jscsrc</strong> config file I suggest we use in this class:</p>
 <pre><code class="lang-javascript">{
     "<span class="hljs-attr">preset</span>": <span class="hljs-string">"google"</span>,
     "<span class="hljs-attr">validateIndentation</span>": <span class="hljs-number">4</span>,
-    "<span class="hljs-attr">excludeFiles</span>": [<span class="hljs-string">"**/node_modules/**"</span>, <span class="hljs-string">"**/components/**"</span>]
+    "<span class="hljs-attr">excludeFiles</span>": [<span class="hljs-string">"**/node_modules/**"</span>, <span class="hljs-string">"**/components/**"</span>, <span class="hljs-string">"**/bower-components/**"</span>],
+    "<span class="hljs-attr">maximumLineLength</span>": <span class="hljs-number">120</span>
 }
 </code></pre>
+<p>This file says that we will follow the Google code formatting standards, except that we want:</p>
+<ul>
+<li>4 spaces for indentation</li>
+<li>To skip reporting on files in certain directories that contain code we did not create.</li>
+<li>To not allow lines of code to exceed 120 characters.</li>
+</ul>
+<p>In some cases, it may makes sense to add this line to our <strong>.jscsrc</strong> file:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"requireCamelCaseOrUpperCaseIdentifiers"</span>: <span class="hljs-literal">false</span>
+</code></pre>
+<p>On very, very, very rare occasions it might be necessary to turn off a rule for a specific line in your code:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// jscs:disable specificRule</span>
+<span class="hljs-comment">// Code here will be ignored by JSCS.</span>
+<span class="hljs-comment">// jscs:enable specificRule</span>
+</code></pre>
+<p>For instance:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// jscs:disable maximumLineLength</span>
+<span class="hljs-comment">// Code here will be ignored by JSCS.</span>
+<span class="hljs-comment">// jscs:enable maximumLineLength</span>
+</code></pre>
+<p><strong>NOTE</strong>: <em>In general, when grading homework, I will consider it an error if I find you have turned off jscs rules. In most cases, only do so if I have specifically asked you to. The same goes for modifications to your <strong>.jscsrc</strong> file. In general, it will be considered an error if you don&#39;t check that file in, or if you modify it in ways I don&#39;t specifically spell out in class or in an assignment. I don&#39;t mean to be overly dogmatic, but it is important that I make clear what I am expecting to see in most cases.</em></p>
+<h2 id="grunt">Setup Grunt</h2>
 <p>Here is <strong>Gruntfile.js</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">grunt</span>) </span>{
 <span class="hljs-meta">    'use strict'</span>;
