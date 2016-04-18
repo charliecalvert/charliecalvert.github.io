@@ -8,7 +8,7 @@
 <li><a href="#step-six">Step Six</a></li>
 <li><a href="#turn-it-in-">Turn it in.</a></li>
 <li><a href="#hint">Hint</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
-<p>This documents describes the Basic Unit Testing assignment. It belongs in a folder called <strong>Week05-AngularTests.</strong></p>
+<p>This documents describes the Basic Unit Testing assignment.</p>
 <h2 id="overview">Overview</h2>
 <ul>
 <li>Create an express project</li>
@@ -32,9 +32,9 @@ git pull
 <p>Now copy the file to your repository:</p>
 <pre>
 # Do this once on Pristine Lubuntu or similar:
-cp -r AngularJasmine/ ~/Git/progXXX-lastname-201X/Week03-AngularJasmine
+cp -r AngularJasmine/ ~/Git/progXXX-lastname-201X/Week03-AngularBasicUnitTest
 # Do this once on Cloud9:
-cp -r AngularJasmine/ ~/workspace/Week03-AngularJasmine
+cp -r AngularJasmine/ ~/workspace/Week03-AngularBasicUnitTest
 </pre>
 
 <p>Now navigate to the copy of <strong>AngularJasmine</strong> in your repository. Don&#39;t use the one in my repository!</p>
@@ -44,10 +44,10 @@ npm install && bower install && cd test && bower install
 </pre>
 
 <h2 id="step-two">Step Two</h2>
-<p>Open the project in WebStorm or the Cloud 9 editor. Right click on <strong>test/index.html</strong>. Select <strong>Run</strong>.</p>
-<p>Run the project itself from the project root:</p>
-<pre><code><span class="hljs-built_in">npm</span> start
-</code></pre><h2 id="step-three">Step Three</h2>
+<p>To run the tests in the Cloud 9 editor, open <strong>test/index.html</strong> and select <strong>Run</strong></p>
+<p>If you are using WebStorm, right click on <strong>test/index.html</strong>. Select <strong>Run</strong>.</p>
+<p>To run the application, at the bash shell type <strong>npm start</strong>. In Cloud9 choose &quot;Preview running application.&quot;</p>
+<h2 id="step-three">Step Three</h2>
 <p>In this project we use Jasmine to compose a test suite called &quot;Angular Basic Tests:&quot;</p>
 <pre><code class="lang-javascript">describe(<span class="hljs-string">'Angular Basic Tests'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 <span class="hljs-meta">        'use strict'</span>;
@@ -79,7 +79,7 @@ npm install && bower install && cd test && bower install
 });
 </code></pre>
 <p>Finally, we use standard Jasmine syntax to declare three simple tests that prove we can load our Controller and access variables declared on our scope:</p>
-<pre><code>/*global describe, it */
+<pre><code class="lang-javascript">/*global describe, it */
 describe(<span class="hljs-string">'Angular Basic Tests'</span>, <span class="hljs-keyword">function</span>() {
         <span class="hljs-string">'use strict'</span>;
 
@@ -107,7 +107,8 @@ describe(<span class="hljs-string">'Angular Basic Tests'</span>, <span class="hl
         expect(elvenController.hint).toBe(<span class="hljs-string">'My hint.'</span>);
     });
 });
-</code></pre><p>These tests are designed to prove that our tests are working and that we can access our Controller. In and of themselves, they are not particularly useful.</p>
+</code></pre>
+<p>These tests are designed to prove that our tests are working and that we can access our Controller. In and of themselves, they are not particularly useful.</p>
 <h2 id="step-four">Step Four</h2>
 <p>Note that in <strong>bower.json</strong> we use Jasmine 2.4.1.</p>
 <p>In <strong>test/bower.json</strong>:</p>
@@ -148,9 +149,9 @@ describe(<span class="hljs-string">'Angular Basic Tests'</span>, <span class="hl
 <p>Refresh your browser to confirm its works. The image shown here is a bit out of date, but it gives the general idea of what you should see:</p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/angular-basic-unit-tests-01.png" alt="jasmine"></p>
 <h2 id="step-five">Step Five</h2>
-<p>If it has not been done already, create a file to test. Otherwise, just review the existing copy of <strong>control.js</strong>.</p>
+<p>Let&#39;s review the code in <strong>control.js</strong>. To create this file, I took the following steps:</p>
 <ul>
-<li>Create a file called <strong>public/javascripts/Control.js</strong></li>
+<li>Created a file called <strong>public/javascripts/Control.js</strong></li>
 <li>Create a simple angular controller using <strong>ControllerAs</strong></li>
 <li>Add the <strong>ng-app</strong> and <strong>Control.js</strong> to <strong>views/layout.jade</strong></li>
 <li>Add the controller to <strong>views/index.jade</strong></li>
@@ -166,9 +167,7 @@ describe(<span class="hljs-string">'Angular Basic Tests'</span>, <span class="hl
     })<span class="hljs-comment">;</span>
 
 })()<span class="hljs-comment">;</span>
-</code></pre><p>Or:</p>
-<pre><code>    copy %ELF_TEMPLATES%\AngularControl.js public\javascripts\<span class="hljs-keyword">control</span>.js
-</code></pre><p>In <strong>layout.jade</strong>:</p>
+</code></pre><p>In <strong>layout.jade</strong> you will find something like this:</p>
 <pre><code>    doctype html
 html
   head
@@ -184,10 +183,8 @@ html
     script(<span class="hljs-name">src=</span>'components/angular/angular.js')
     script(<span class="hljs-name">src=</span><span class="hljs-string">"javascripts/Control.js"</span>)
 
-  body(<span class="hljs-name">ng-app=</span><span class="hljs-string">"elvenApp"</span>)
+  body(<span class="hljs-name">data-ng-app=</span><span class="hljs-string">"elvenApp"</span>)
     block content
-</code></pre><p>Or:</p>
-<pre><code>copy %ELF_TEMPLATES%\AngularLayout.jade views\<span class="hljs-keyword">layout</span>.jade
 </code></pre><p>Make sure you have the following code in <strong>index.jade</strong>:</p>
 <pre><code>extends layout
 
@@ -197,8 +194,6 @@ block content
 
   <span class="hljs-comment">#elvenController(ng-controller="ElvenController as elvenController")</span>
     p <span class="hljs-template-variable">{{elvenController.hint}}</span>
-</code></pre><p>Or:</p>
-<pre><code><span class="hljs-selector-tag">copy</span> %<span class="hljs-selector-tag">ELF_TEMPLATES</span>%\<span class="hljs-selector-tag">AngularIndex</span><span class="hljs-selector-class">.jade</span> <span class="hljs-selector-tag">views</span>\<span class="hljs-selector-tag">index</span><span class="hljs-selector-class">.jade</span>
 </code></pre><h2 id="step-six">Step Six</h2>
 <p>Create methods in your controller called <strong>square</strong> and <strong>add</strong>. They first should square a single parameter passed into it, the second should add the two parameters passed into it.</p>
 <p>Write two tests to prove the methods work. The tests should have descriptions and matching code a bit like this:</p>
@@ -207,7 +202,7 @@ block content
 <li>it(&quot;should add 3 and 2 and get 5&quot; etc....</li>
 </ul>
 <h2 id="turn-it-in-">Turn it in.</h2>
-<p>Save your work in a folder of your repository called <strong>Week03-AngularTests</strong>. Submit your work and include a note stating the folder where you saved your work, particularly if it differs from the default value specified in this paragraph.</p>
+<p>Make sure you have saved your work in the proper folder of your repository. Submit your work and include a note stating the folder where you saved your work, particularly if it differs from the default value specified in this paragraph.</p>
 <h2 id="hint">Hint</h2>
 <p>Note that we set the power to port 30025 and we use <strong>nodemon</strong> rather than node:</p>
 <ul>
