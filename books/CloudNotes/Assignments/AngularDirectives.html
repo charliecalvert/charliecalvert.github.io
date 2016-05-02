@@ -26,6 +26,8 @@ npm install
 </code></pre><p>Then:</p>
 <pre><code>grunt<span class="hljs-built_in"> check
 </span>grunt test
+</code></pre><p>Also do this:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> -<span class="hljs-keyword">g</span> phantomjs-<span class="hljs-keyword">prebuilt</span>
 </code></pre><h2 id="step-02">Step 02</h2>
 <p>Let&#39;s add into <strong>index.jade</strong> some HTML5 directives. First, very simple:</p>
 <pre>
@@ -34,7 +36,7 @@ bar
 </pre>
 
 <p>This creates the following HTML:</p>
-<pre><code class="lang-html"><span class="hljs-attribute">hr</span>
+<pre><code class="lang-html"><span class="hljs-section">&lt;hr&gt;</span>
 <span class="hljs-section">&lt;bar&gt;</span><span class="hljs-section">&lt;/bar&gt;</span>
 </code></pre>
 <h2 id="step-02a">Step 02a</h2>
@@ -99,6 +101,7 @@ elf-marie
 <pre><code class="lang-javascript">elfApp.directive(<span class="hljs-string">'elfMarie'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 <span class="hljs-meta">      'use strict'</span>;
     <span class="hljs-keyword">return</span> {
+              controller: <span class="hljs-string">'MainController'</span>,
         template: <span class="hljs-string">'First: {{marie.firstName}} '</span> +
             <span class="hljs-string">'&lt;br&gt;Last: {{marie.lastName}}'</span> +
             <span class="hljs-string">'&lt;br&gt;City: {{marie.city}}'</span>
@@ -143,17 +146,31 @@ div#marie
 </code></pre>
 <p>Be sure to modify your <strong>elfMarie</strong> directive to match the code shown above.</p>
 <p>Finally, insert code into <strong>routes/index.js</strong> that will allow us to response to requests for <strong>marie</strong> by converting <strong>marie.jade</strong> to <strong>marie.html</strong> and sending back the HTML via HTTP.</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, nest</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    res.render(req.params.id, {
+        title: <span class="hljs-string">' Angular Directive Calvert'</span>
+    });
+});
+</code></pre>
 <h2 id="testing">Testing</h2>
-<p>In the <strong>files</strong> section of <strong>karma.conf.js</strong>:</p>
+<p>In the <strong>files</strong> section of <strong>karma.conf.js</strong>, above <strong>public/javascripts</strong> and below <strong>jasmine-jquery</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-symbol">'public</span>/components/angular/angular.js',
 <span class="hljs-symbol">'public</span>/components/angular-mocks/angular-mocks.js',
 </code></pre>
-<p>Now add code to <strong>spec/test-basic.js</strong> that will set things up so we can:</p>
+<p>And install phantomjs globally:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> -<span class="hljs-keyword">g</span> phantom-<span class="hljs-keyword">prebuilt</span>
+</code></pre><p>Make sure these are in <strong>karma.conf.js</strong>:</p>
+<pre><code>        preprocessors: {
+                '<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/<span class="hljs-keyword">*</span>.html': []
+        },
+</code></pre><p>Now add code to <strong>spec/test-basic.js</strong> that will set things up so we can:</p>
 <ul>
 <li>Load the <strong>elfApp</strong> module from <strong>control.js</strong></li>
 <li>Load the <strong>MainController</strong> from <strong>control.js</strong></li>
 <li>Initialize <strong>$compile</strong> and <strong>$templateCache</strong> so we can convert angular templates into valid HTML</li>
 </ul>
+<p>Here is the code for <strong>test-basic</strong>:</p>
 <pre><code class="lang-javascript">describe(<span class="hljs-string">'Elvenware Simple Plain Suite'</span>, <span class="hljs-keyword">function</span>() {
 
     <span class="hljs-string">'use strict'</span>;
