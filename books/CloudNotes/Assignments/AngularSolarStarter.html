@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>AngularSolarStarter</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><!-- script(src="/libs/scripts/Control.js")--><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>AngularSolarStarter</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#step-one">Step One</a></li>
+<li><a href="#step-two">Step Two</a></li>
+<li><a href="#data">Step Three: Get the data</a></li>
+<li><a href="#main-jade">Step Four: Main Jade</a></li>
+<li><a href="#step-five">Step Five</a></li>
+<li><a href="#directive">Step Six: Directive</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<p>Angular Solar Starter</p>
+<p>The goal of this assignment is to load a file called <strong>Renewable.json</strong> and iterate over its contents. This JSON file contains an array of objects. We will use a number control to iterate through the array and a directive to display the objects.</p>
+<p>Our goal, at this stage, is to get a proof of concept app running. This will be the first of multiple iterations.</p>
+<p>![Angular Solar Starter]: <a href="https://s3.amazonaws.com/bucket01.elvenware.com/images/angular-solar-explorer-01.png">https://s3.amazonaws.com/bucket01.elvenware.com/images/angular-solar-explorer-01.png</a></p>
+<p>To ensure our code works, we will take the first steps toward writing tests with HTML fixtures loaded from disk.</p>
+<h2 id="step-one">Step One</h2>
+<p>From the root of your repository, copy the <strong>AngularDirectiveTesting</strong> project to a new project call <strong>SolarExplorer</strong>. Then navigate to your new project folder:</p>
+<pre>
+cp -r Week04-AngularDirectiveTesting/ Week05-SolarExplorer
+cd Week05-SolarExplorer
+</pre>
+
+<p>If necessary, install your packages: <strong>npm install &amp;&amp; bower install</strong>.</p>
+<p>In <strong>routes/index.js</strong> change the <strong>title</strong> to <strong>AngularSolarExplorer lastname</strong>, where <strong>lastname</strong> is your last name. Make similar changes in <strong>bin/www</strong> and <strong>package.json</strong>.</p>
+<p>Run <strong>karma start</strong> to confirm all is working.</p>
+<h2 id="step-two">Step Two</h2>
+<p>Let&#39;s build in Angular Routing right from the start by copying in the relevant files from <strong>AngularRoutes</strong>:</p>
+<pre>
+cp ../Week03-AngularRoutes/views/main.jade views/.
+cp ../Week03-AngularRoutes/views/about.jade views/.
+cp ../Week03-AngularRoutes/public/javascripts/about.js public/javascripts/.
+cp ../Week03-AngularRoutes/public/javascripts/main.js public/javascripts/.
+cp ../Week03-AngularRoutes/public/javascripts/app.js public/javascripts/.
+</pre>
+
+<p>In <strong>layout.jade</strong>, make sure you are loading:</p>
+<ul>
+<li>angular-route.js</li>
+<li>app.js</li>
+<li>main.js</li>
+<li>about.js</li>
+</ul>
+<p>Use <strong>bower install</strong> to ensure that <strong>angular-route</strong> is available and that it is &quot;saved&quot; to <strong>bower.json</strong>.</p>
+<p><strong>NOTE</strong>: <em>I&#39;m intentionally being a little vague here. If you need a reminder on how to set up <strong>layout.jade</strong> or <strong>bower.json</strong>, see the Angular Routes assignment.</em></p>
+<p>Stop loading <strong>control.js</strong>, but don&#39;t delete it yet.</p>
+<p>In <strong>index.jade</strong>, set up your menu as in <strong>AngularRoutes</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">nav</span><span class="hljs-selector-class">.navbar-inverse</span><span class="hljs-selector-class">.navbar-fixed-top</span>
+  <span class="hljs-selector-class">.container</span>
+    navbar-<span class="hljs-selector-tag">header</span>
+      <span class="hljs-selector-tag">ul</span><span class="hljs-selector-class">.nav</span><span class="hljs-selector-class">.nav-pills</span>
+        li(ng-class=<span class="hljs-string">"{ active: isActive('/')}"</span>)
+          a(ng-href=<span class="hljs-string">'#/'</span>) Home
+        li(ng-class=<span class="hljs-string">"{ active: isActive('/about')}"</span>)
+          a(ng-href=<span class="hljs-string">'#/about'</span>) About
+</code></pre>
+<p>Beneath this, and at the same level as the nav, create a second container, as in <strong>Angular Routes</strong>. Include a <strong>DIV</strong> with <strong>data-ng-view</strong> in this second <strong>.container</strong>. For instance, the second container, the one not in the <strong>nav</strong>, might look like this:</p>
+<pre><code class="lang-javascript">.container
+  h1= title
+  p Welcome <span class="hljs-keyword">to</span> <span class="hljs-comment">#{title}</span>
+
+  <span class="hljs-keyword">div</span>(data-ng-view=<span class="hljs-string">""</span>)
+</code></pre>
+<h2 id="data">Step Three: Get the data</h2>
+<p>Create a folder called <strong>public/data</strong>. Download three files I created based on public data provided by the government. Put them in your data directory. The simplest way to get them is shown below. Just block copy the lines, navigate to the root of your project, and paste them in:</p>
+<pre>
+cd public
+mkdir data
+cd data
+wget https://s3.amazonaws.com/bucket01.elvenware.com/downloads/Renewable.json
+wget https://s3.amazonaws.com/bucket01.elvenware.com/downloads/EnergyTypes.json
+wget https://s3.amazonaws.com/bucket01.elvenware.com/downloads/RenewableTypes.json
+</pre>
+
+<p>Alternatively, you can download them and save them to disk:</p>
+<ul>
+<li><a href="https://s3.amazonaws.com/bucket01.elvenware.com/downloads/Renewable.json">Renewable</a></li>
+<li><a href="https://s3.amazonaws.com/bucket01.elvenware.com/downloads/EnergyTypes.json">EnergyTypes</a></li>
+<li><a href="https://s3.amazonaws.com/bucket01.elvenware.com/downloads/RenewableTypes.json">RenewableTypes</a></li>
+</ul>
+<h2 id="main-jade">Step Four: Main Jade</h2>
+<p>Add a button and a number control to <strong>main.jade</strong>:</p>
+<pre><code>button.btn.btn-primary(ng-click=<span class="hljs-string">"mainController.getRenewable()"</span>) Energy Renewable
+
+div
+    label
+        | <span class="hljs-built_in">Number</span>:
+        input(type=<span class="hljs-string">'number'</span>, name=<span class="hljs-string">'input'</span>, ng-model=<span class="hljs-string">'mainController.index'</span>, <span class="hljs-built_in">min</span>=<span class="hljs-string">'0'</span>, <span class="hljs-built_in">max</span>=<span class="hljs-string">'10'</span>, required=<span class="hljs-string">''</span>)
+
+hr
+</code></pre><p>When the button is clicked, a method on your controller called <strong>getRenwewable</strong> will be called. When the input control is incremented or decremented, a value on your controller called <strong>index</strong> is modified. In particular, <strong>index</strong> will contain the same value as the input control.</p>
+<h2 id="step-five">Step Five</h2>
+<p>Set up <strong>main.js</strong> and use dependency injection to pass in <strong>$http</strong> as the sole parameter to the anonymous callback for your <strong>MainController</strong>:</p>
+<pre><code class="lang-javascript">  elfApp.controller(<span class="hljs-string">'MainController'</span>, <span class="hljs-keyword">function</span>($http) {
+     // CODE OMITTED HERE
+  });
+</code></pre>
+<p>Inside the controller add a method to load your JSON and store it in a variable called <strong>renawable</strong>. In particular, we are, at this stage, loading only the <strong>Renewable.json</strong> file:</p>
+<pre><code class="lang-javascript">mainController.getRenewable = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span> {
+    console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'getRenewable'</span>);
+    $http.get(<span class="hljs-string">'data/Renewable.json'</span>)
+        .<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(res)</span></span>{
+            console.<span class="hljs-built_in">log</span>(res.<span class="hljs-keyword">data</span>[<span class="hljs-number">0</span>]);
+            mainController.renewable = res.<span class="hljs-keyword">data</span>;
+        });
+}
+</code></pre>
+<p>We also add our <strong>index</strong> for tracking the data in the <strong>INPUT</strong> control:</p>
+<pre><code class="lang-javascript">mainController.<span class="hljs-keyword">index</span> = <span class="hljs-number">0</span>;
+</code></pre>
+<h2 id="directive">Step Six: Directive</h2>
+<p>Create a directive and display all eight fields of the JSON:</p>
+<p>elfApp.directive(&#39;elfRenewable&#39;, function() {
+    &#39;use strict&#39;;
+    return {
+        controller: &#39;MainController&#39;,
+        controllerAs: &#39;mainController&#39;,
+        template: &#39;First: {{mainController.renewable[mainController.index].Year}} &#39; +
+        &#39;<br>Solar: {{mainController.renewable[mainController.index][&quot;Solar (quadrillion Btu)&quot;]}}&#39; +
+        &#39;<br>Geothermal: {{mainController.renewable[mainController.index][&quot;Geothermal (quadrillion Btu)&quot;]}}&#39; +
+        // CODE OMITTED HERE...
+    };
+});</p>
+</div></body></html>
