@@ -13,7 +13,6 @@ bower install bootstrap --save
 
 <p>From the root of your project, get the data:</p>
 <pre>
-cd public
 mkdir data
 cd data
 wget https://s3.amazonaws.com/bucket01.elvenware.com/downloads/Renewable.json
@@ -26,6 +25,18 @@ wget https://s3.amazonaws.com/bucket01.elvenware.com/downloads/RenewableTypes.js
   console.log('<span class="hljs-type">Renewables</span> called');
   response.send({ <span class="hljs-literal">result</span>: '<span class="hljs-type">Success</span>'});
 });
+</code></pre>
+<p>If that works, then get it to read the JSON:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/renewables'</span>, function(request, response) {
+  console.log(<span class="hljs-string">'Renewables called'</span>)<span class="hljs-comment">;</span>
+
+  fs.readFile(<span class="hljs-string">'data/Renewable.json'</span>, <span class="hljs-string">'utf8'</span>, function(<span class="hljs-keyword">err</span>, data) {
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">err</span>) throw <span class="hljs-keyword">err</span><span class="hljs-comment">;</span>
+      console.log(data)<span class="hljs-comment">;</span>
+      response.send({ result: <span class="hljs-string">'Success'</span>, renewables: data })<span class="hljs-comment">;</span>
+  })<span class="hljs-comment">;</span>
+
+})<span class="hljs-comment">;</span>
 </code></pre>
 <h2 id="later">Later</h2>
 <p>Don&#39;t do this yet:</p>
