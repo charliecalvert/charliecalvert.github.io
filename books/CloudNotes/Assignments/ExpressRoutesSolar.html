@@ -43,18 +43,27 @@ wget https://s3.amazonaws.com/bucket01.elvenware.com/downloads/RenewableTypes.js
 <h2 id="turn-it-in">Turn it in</h2>
 <p>Put a button on the main HTML file. When they click it, call the renewables routes and display the JSON in a PRE tag. This is the same thing we did in ExpressRoutes, but this time we are loading a JSON file rather than adding two numbers.</p>
 <h2 id="more-complete-error">More complete Error</h2>
-<p>On server</p>
-<pre><code class="lang-javascript">fs.readFile(<span class="hljs-string">'data/Renewabasdfle.json'</span>, <span class="hljs-string">'utf8'</span>, function(<span class="hljs-keyword">err</span>, data) {
+<p>On server, include the built in file system package near the top of your file:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> router = express.Router();
+<span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
+</code></pre>
+<p>Then, in your <strong>/renewables</strong> route, do something like this:</p>
+<pre><code class="lang-javascript">fs.readFile(<span class="hljs-string">'data/Renewable.json'</span>, <span class="hljs-string">'utf8'</span>, function (<span class="hljs-keyword">err</span>, data) {
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">err</span>) {
-      <span class="hljs-comment">// response.send(err, 404);</span>
-      response.status(<span class="hljs-number">404</span>).send(<span class="hljs-keyword">err</span>)<span class="hljs-comment">;</span>
+        <span class="hljs-comment">// response.send(err, 404);</span>
+        response.status(<span class="hljs-number">404</span>).send(<span class="hljs-keyword">err</span>)<span class="hljs-comment">;</span>
     } <span class="hljs-keyword">else</span> {
-      console.log(data)<span class="hljs-comment">;</span>
-      response.send({ result: <span class="hljs-string">'Success'</span>, renewables: data })<span class="hljs-comment">;</span>
+        var json = JSON.parse(data)<span class="hljs-comment">;</span>
+        console.log(json)<span class="hljs-comment">;</span>
+        response.send({result: <span class="hljs-string">'Success'</span>, renewables: json})<span class="hljs-comment">;</span>
     }
 })<span class="hljs-comment">;</span>
 </code></pre>
-<p>On client:</p>
+<p>Note that we translated the string that we loaded from the file system in JSON with this call:</p>
+<pre><code class="lang-javascript"><span class="hljs-title">var</span> json = <span class="hljs-type">JSON</span>.parse(<span class="hljs-class"><span class="hljs-keyword">data</span>);</span>
+</code></pre>
+<p>On the client lets begin to handle all the events associated with a call to getJSON:</p>
 <pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
 <span class="hljs-meta">    'use strict'</span>;
     $.getJSON(<span class="hljs-string">'/renewables'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">response</span>) </span>{
