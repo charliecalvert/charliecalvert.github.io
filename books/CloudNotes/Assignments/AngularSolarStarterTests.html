@@ -3,8 +3,18 @@
 <li><a href="#week-06-branch">Week 06 Branch</a></li>
 <li><a href="#merge-week06-into-master">Merge Week06 into Master</a></li>
 <li><a href="#httpbackend">HttpBackend</a></li>
-<li><a href="#mocking-json-requests">Mocking JSON Requests</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#mocking-json-requests">Mocking JSON Requests</a></li>
+<li><a href="#all-tests">All Tests</a></li>
+<li><a href="#create-json-javascript">Create JSON JavaScript</a></li>
+<li><a href="#testing-renewables">Testing Renewables</a></li>
+<li><a href="#simple-format-directive">Simple Format Directive</a></li>
+<li><a href="#create-renewables-utils">Create renewables-utils</a></li>
+<li><a href="#create-test-renewables">Create test-renewables</a></li>
+<li><a href="#test-simple-format">Test Simple Format</a></li>
+<li><a href="#test-simple-format-backend">Test Simple Format Backend</a></li>
+<li><a href="#suite-titles">Suite Titles</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Look at <a href="https://docs.google.com/presentation/d/1QHZunZfwAQIplala60HkLaGYaRGzJ5eO4oKIg_S1iyk/edit#slide=id.g9ad18c47f_0_91">directive template names</a> slide.</p>
+<p><strong>NOTE</strong> <em>Be sure to remove controller as from <strong>public/javascripts/app.js</strong>. In general, scour your files looking for and removing the case sensitive references to <strong>mainController</strong>.</em></p>
 <h2 id="git-branch">Git Branch</h2>
 <p>Create a new branch and check it out:</p>
 <pre>
@@ -175,4 +185,242 @@ git checkout week06
 
 });
 </code></pre>
+<h2 id="all-tests">All Tests</h2>
+<p>Now it is time to start filling out all our tests. When done, all our tests should look at least a bit like this:</p>
+<pre>
+$ karma start
+11 05 2016 11:40:58.127:WARN [karma]: No captured browser, open http://localhost:9876/
+11 05 2016 11:40:58.140:INFO [karma]: Karma v0.13.22 server started at http://localhost:9876/
+11 05 2016 11:40:58.146:INFO [launcher]: Starting browser PhantomJS
+11 05 2016 11:40:58.689:INFO [PhantomJS 2.1.1 (Linux 0.0.0)]: Connected on socket /#JH6RX6HZ4uCmsKBMAAAA with id 91505964
+
+  Elvenware Fixture and Template Cache Suite
+    ✓ expects true to be true
+    ✓ should find the index
+    ✓ should have a getRenewable method
+    ✓ should be possible to access the fixture
+    ✓ tests template loaded through simple raw text
+    ✓ tests template loaded through more complex raw text
+    ✓ tests scope variable access in template loaded through fixture
+
+  Elvenware Simple Mocks with HttpBackend Suite
+    ✓ proves we can run tests
+    ✓ should find the index
+    ✓ should have a getRenewable method
+    ✓ proves we can detect request
+
+  Renewables Suite
+    ✓ proves we can run tests
+    ✓ proves we can get renewableUtils name
+    ✓ proves we can get renewableUtils method called getNine
+    ✓ proves we can get from renewableUtils a particular renewable object by index
+    ✓ proves we can transform our json into a new array consisting only of years
+    ✓ proves our array of years contains the expected data
+    ✓ proves we can transform our json into an array with three properties: geo, solar, and wind
+    ✓ proves that getSimpleStringFormat returns the expected string data
+    ✓ proves that getSimpleFormat returns the expected numeric data
+
+  Simple Format HttpBackend Suite
+    ✓ expects true to be true
+    ✓ tests simple-format directive loaded through fixture with httpBackend
+    ✓ tests that we can index through simple-format directive
+
+  Simple Format Suite
+    ✓ expects true to be true
+    ✓ should find the index
+    ✓ should be possible to access the fixture
+</pre>
+
+<h2 id="create-json-javascript">Create JSON JavaScript</h2>
+<p>Create a JavaScript file called <strong>spec/data/json-as-js-renewables.js</strong>. Inside it, put <strong>renewables.json</strong>. It should begin a bit like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-variable"><span class="hljs-keyword">var</span> renewables</span> = [{
+    <span class="hljs-string">"Year"</span>: <span class="hljs-string">"2017"</span>,
+    <span class="hljs-string">"Solar (quadrillion Btu)"</span>: <span class="hljs-string">"0.8045307"</span>,
+    <span class="hljs-string">"Geothermal (quadrillion Btu)"</span>: <span class="hljs-string">"0.2349284"</span>,
+    <span class="hljs-string">"Other biomass (quadrillion Btu)"</span>: <span class="hljs-string">"0.50916"</span>,
+    <span class="hljs-string">"Wind power (quadrillion Btu)"</span>: <span class="hljs-string">"2.202328"</span>,
+    <span class="hljs-string">"Liquid biofuels (quadrillion Btu)"</span>: <span class="hljs-string">"1.2329197"</span>,
+    <span class="hljs-string">"Wood biomass (quadrillion Btu)"</span>: <span class="hljs-string">"1.9860924"</span>,
+    <span class="hljs-string">"Hydropower (quadrillion Btu)"</span>: <span class="hljs-string">"2.5859957"</span>
+}, {
+    <span class="hljs-string">"Year"</span>: <span class="hljs-string">"2016"</span>,
+    etc.
+</code></pre>
+<p>There is no real need to format, syntax check or run JSCS on this file. As a result, you can exclude the entire <strong>data</strong> directory from those tools. In general, whenever we create a data directory, we should tell JSCS and JsBeautify to leave it alone. It might be useful to run JsHint over that directory, but it is not strictly necessary.</p>
+<h2 id="testing-renewables">Testing Renewables</h2>
+<p>Add this to <strong>karma.conf.js</strong> files:</p>
+<pre><code class="lang-javascript">'spec/<span class="hljs-class"><span class="hljs-keyword">data</span>/*.js',</span>
+</code></pre>
+<p>Put it right before or after you load the tests:</p>
+<pre><code class="lang-javascript"><span class="hljs-symbol">'spec</span>/**/*.html',
+<span class="hljs-symbol">'spec</span>/data/*.js',
+<span class="hljs-symbol">'spec</span>/test*.js'
+</code></pre>
+<h2 id="simple-format-directive">Simple Format Directive</h2>
+<p>The html directive:</p>
+<pre><code class="lang-javascript">elfApp.directive(<span class="hljs-string">'elfSimpleFormat'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">  'use strict'</span>;
+  <span class="hljs-keyword">return</span> {
+      controller: <span class="hljs-string">'MainController'</span>,
+      template: <span class="hljs-string">'Solar: {{simpleFormat[index].solar}}'</span> +
+          <span class="hljs-string">'&lt;br&gt;Geo: {{simpleFormat[index].geo}}'</span> +
+          <span class="hljs-string">'&lt;br&gt;Wind: {{simpleFormat[index].wind}}'</span>
+
+  };
+});
+</code></pre>
+<p>You make it like this:</p>
+<pre><code class="lang-javascript">elfApp.directive(<span class="hljs-string">'elfSimpleFormat'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">return</span> {
+        controller: <span class="hljs-string">'MainController'</span>,
+        templateUrl: <span class="hljs-string">'simple-format'</span>
+    };
+});
+</code></pre>
+<p>You will need to create a <strong>simple-format.jade</strong> file and get it set up to test as a fixture:</p>
+<p>  jade views/simple-format.jade --out=&#39;spec/fixtures/&#39;</p>
+<p>You will, of course, have to add this directive to <strong>main.jade</strong>. You can just append it to the end of the file for now.</p>
+<p>Call the <strong>renewableUtils.simpleFormat</strong> from within <strong>$scope.getRenewables</strong>. It makes no sense to call it until you have loaded <strong>renewables.json</strong>. In particular, since it relies on <strong>renewables.json</strong> being present, it won&#39;t work properly until you have loaded that file.</p>
+<p>In <strong>.jscsrc</strong> exclude the <strong>data</strong> folder. In <strong>Gruntfile.js</strong> don&#39;t try to beautify the <strong>data</strong> folder.</p>
+<p>Don&#39;t forget to run <strong>grunt check</strong> and clean up all errors such as missing use strict, invalid quote marks, etc.</p>
+<p><strong>NOTE</strong>: <em>With JSCS, you can use single quotes for a string, and double quotes for embedded quotes inside a string: &#39;My &quot;embedded&quot; string&#39;.</em></p>
+<p>With angular, you can usually delete an <strong>$(document).ready()</strong> statements as it takes care of this for you.</p>
+<h2 id="create-renewables-utils">Create renewables-utils</h2>
+<p>You need to create a file called <strong>renewables-utils.js</strong>. For now, we can put it in the <strong>public/javascripts</strong> folder. Later on we can spend some time organizing our files so they are divided by category and easier to find.</p>
+<p>Don&#39;t forget to add it to <strong>layout.jade</strong>!</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfApp = angular.module(<span class="hljs-string">'elfApp'</span>);
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">RenewableUtils</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+
+    <span class="hljs-keyword">var</span> renewables;
+
+    <span class="hljs-keyword">this</span>.name = <span class="hljs-string">'renewableUtils'</span>;
+
+    <span class="hljs-keyword">this</span>.init = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">initRenewables</span>) </span>{
+        renewables = initRenewables;
+    };
+
+    <span class="hljs-keyword">this</span>.getItemCount = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// YOUR CODE HERE</span>
+    };
+
+    <span class="hljs-keyword">this</span>.getByIndex = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>) </span>{
+        <span class="hljs-comment">// YOUR CODE HERE</span>
+    };
+
+    <span class="hljs-keyword">this</span>.getYears = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> renewables.map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">renewable</span>) </span>{
+            <span class="hljs-keyword">return</span> renewable.Year;
+        });
+    };
+
+    <span class="hljs-comment">// YOU WRITE THE LASt TWO METHODS</span>
+}
+
+elfApp.service(<span class="hljs-string">'renewableUtils'</span>, RenewableUtils);
+</code></pre>
+<h2 id="create-test-renewables">Create test-renewables</h2>
+<p>We need to test <strong>renewable-utils.js</strong> in <strong>spec/test-renewables.js</strong></p>
+<pre><code class="lang-javascript">describe('Renewables Suite', function() {
+    'use strict'<span class="hljs-comment">;</span>
+
+    var $httpBackend<span class="hljs-comment">;</span>
+    var scope<span class="hljs-comment">;</span>
+    var mainController<span class="hljs-comment">;</span>
+
+    // Set up the module
+    beforeEach(<span class="hljs-name">module</span>('elfApp'))<span class="hljs-comment">;</span>
+
+    beforeEach(<span class="hljs-name">inject</span>(<span class="hljs-name">function</span>(<span class="hljs-name">_</span>$compile_, _$rootScope_, _$httpBackend_, _$controller_) {
+        scope = _$rootScope_.$new()<span class="hljs-comment">;</span>
+        var $compile = _$compile_<span class="hljs-comment">;</span>
+        $httpBackend = _$httpBackend_<span class="hljs-comment">;</span>
+        mainController = _$controller_('MainController', {
+            $scope: scope
+        })<span class="hljs-comment">;</span>
+    }))<span class="hljs-comment">;</span>
+
+    beforeEach(<span class="hljs-name">function</span>() {
+        //scope.renewableUtils.init(<span class="hljs-name">renewables</span>)<span class="hljs-comment">;</span>
+        var requestHandler = $httpBackend
+            .when('GET', 'data/Renewable.json')
+            .respond(<span class="hljs-name">renewables</span>)<span class="hljs-comment">;</span>
+
+        $httpBackend.expectGET('data/Renewable.json')<span class="hljs-comment">;</span>
+        scope.getRenewable()<span class="hljs-comment">;</span>
+        $httpBackend.flush()<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    afterEach(<span class="hljs-name">function</span>() {
+        $httpBackend.verifyNoOutstandingExpectation()<span class="hljs-comment">;</span>
+        $httpBackend.verifyNoOutstandingRequest()<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('proves we can run tests', function() {
+        expect(<span class="hljs-name">true</span>).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('proves we can get renewableUtils name', function() {
+        expect(<span class="hljs-name">scope</span>.renewableUtils.name).toBe('renewableUtils')<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('proves we can get renewableUtils method called getNine', function() {
+        expect(<span class="hljs-name">scope</span>.renewableUtils.getItemCount()).toBe(<span class="hljs-number">12</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('proves we can get from renewableUtils a particular renewable object by index', function() {
+        var renewable = scope.renewableUtils.getByIndex(<span class="hljs-number">0</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">renewable</span>.Year).toBe('<span class="hljs-number">2017</span>')<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('proves we can transform our json into a new array consisting only of years', function() {
+        var years = scope.renewableUtils.getYears()<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">years</span>.length).toBe(<span class="hljs-number">12</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('proves our array of years contains the expected data', function() {
+        var years = scope.renewableUtils.getYears()<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">years</span>[<span class="hljs-number">0</span>]).toBe('<span class="hljs-number">2017</span>')<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">years</span>[<span class="hljs-number">1</span>]).toBe('<span class="hljs-number">2016</span>')<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">years</span>[<span class="hljs-number">5</span>]).toBe('<span class="hljs-number">2012</span>')<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('proves we can transform our json into an array with three properties: geo, solar, and wind', function() {
+        var simpleFormat = scope.renewableUtils.getSimpleFormat()<span class="hljs-comment">;</span>
+        var keys = Object.keys(<span class="hljs-name">simpleFormat</span>[<span class="hljs-number">0</span>])<span class="hljs-comment">;</span>
+        keys.sort()<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">keys</span>).toEqual(['geo', 'solar', 'wind'])<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('proves that getSimpleStringFormat returns the expected string data', function() {
+        var simpleFormat = scope.renewableUtils.getSimpleStringFormat()<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">simpleFormat</span>[<span class="hljs-number">0</span>].geo).toBe('<span class="hljs-number">0.2349284</span>')<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">simpleFormat</span>[<span class="hljs-number">0</span>].wind).toBe('<span class="hljs-number">2.202328</span>')<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">simpleFormat</span>[<span class="hljs-number">0</span>].solar).toBe('<span class="hljs-number">0.8045307</span>')<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">simpleFormat</span>[<span class="hljs-number">5</span>].geo).toBe('<span class="hljs-number">0.211592042</span>')<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">simpleFormat</span>[<span class="hljs-number">5</span>].wind).toBe('<span class="hljs-number">1.3393646844</span>')<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">simpleFormat</span>[<span class="hljs-number">5</span>].solar).toBe('<span class="hljs-number">0.227349746</span>')<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('proves that getSimpleFormat returns the expected numeric data', function() {
+        var simpleFormat = scope.renewableUtils.getSimpleFormat()<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">simpleFormat</span>[<span class="hljs-number">0</span>].geo).toBe(<span class="hljs-number">0.2349284</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">simpleFormat</span>[<span class="hljs-number">0</span>].wind).toBe(<span class="hljs-number">2.202328</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">simpleFormat</span>[<span class="hljs-number">0</span>].solar).toBe(<span class="hljs-number">0.8045307</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">simpleFormat</span>[<span class="hljs-number">5</span>].geo).toBe(<span class="hljs-number">0.211592042</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">simpleFormat</span>[<span class="hljs-number">5</span>].wind).toBe(<span class="hljs-number">1.3393646844</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">simpleFormat</span>[<span class="hljs-number">5</span>].solar).toBe(<span class="hljs-number">0.227349746</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<h2 id="test-simple-format">Test Simple Format</h2>
+<p>We need to create <strong>spec/test-simple-format.js</strong>.</p>
+<pre><code class="lang-javascript">
+</code></pre>
+<h2 id="test-simple-format-backend">Test Simple Format Backend</h2>
+<p>We need to create <strong>spec/test-simple-format-backend.js</strong>, which is our holy grail.</p>
+<h2 id="suite-titles">Suite Titles</h2>
+<p>Get the suite titles right for each test.</p>
 </div></body></html>

@@ -4,6 +4,13 @@
 <li><a href="#merge-week06-into-master">Merge Week06 into Master</a></li>
 <li><a href="#get-started">Get Started</a></li>
 <li><a href="#test">Test</a></li>
+<li><a href="#create-json-javascript">Create JSON JavaScript</a></li>
+<li><a href="#create-energy-utils">Create Energy Utils</a></li>
+<li><a href="#spec-energy-utils">Spec Energy Utils</a></li>
+<li><a href="#tests">Tests</a></li>
+<li><a href="#spec-routes">Spec Routes</a></li>
+<li><a href="#spec-routes-students">Spec Routes Students</a></li>
+<li><a href="#interface">Interface</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="branches">Branches</h2>
 <h2 id="git-branch">Git Branch</h2>
 <p>Create a new branch and check it out:</p>
@@ -205,6 +212,189 @@ describe('Elvenware Simple Plain Suite', function () {
         })<span class="hljs-comment">;</span>
 })<span class="hljs-comment">;</span>
 </code></pre>
+<h2 id="create-json-javascript">Create JSON JavaScript</h2>
+<p>Create a JavaScript file called <strong>spec/data/json-as-js-renewables.js</strong>. Inside it, put <strong>renewables.json</strong>. It should begin a bit like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-variable"><span class="hljs-keyword">var</span> renewables</span> = [{
+    <span class="hljs-string">"Year"</span>: <span class="hljs-string">"2017"</span>,
+    <span class="hljs-string">"Solar (quadrillion Btu)"</span>: <span class="hljs-string">"0.8045307"</span>,
+    <span class="hljs-string">"Geothermal (quadrillion Btu)"</span>: <span class="hljs-string">"0.2349284"</span>,
+    <span class="hljs-string">"Other biomass (quadrillion Btu)"</span>: <span class="hljs-string">"0.50916"</span>,
+    <span class="hljs-string">"Wind power (quadrillion Btu)"</span>: <span class="hljs-string">"2.202328"</span>,
+    <span class="hljs-string">"Liquid biofuels (quadrillion Btu)"</span>: <span class="hljs-string">"1.2329197"</span>,
+    <span class="hljs-string">"Wood biomass (quadrillion Btu)"</span>: <span class="hljs-string">"1.9860924"</span>,
+    <span class="hljs-string">"Hydropower (quadrillion Btu)"</span>: <span class="hljs-string">"2.5859957"</span>
+}, {
+    <span class="hljs-string">"Year"</span>: <span class="hljs-string">"2016"</span>,
+    etc.
+</code></pre>
+<p>There is no real need to format, syntax check or run JSCS on this file. As a result, you can exclude the entire <strong>data</strong> directory from those tools. In general, whenever we create a data directory, we should tell JSCS and JsBeautify to leave it alone. It might be useful to run JsHint over that directory, but it is not strictly necessary.</p>
+<h2 id="create-energy-utils">Create Energy Utils</h2>
+<p>We want to take an object and return its properties in an array:</p>
+<p>var start = { a: 1, b: 2 };</p>
+<p>return finish = [[]]</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">objectToArray</span>(<span class="hljs-params">obj</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-comment">// Write your code here</span>
+    <span class="hljs-keyword">return</span> objectAsArray;
+}
+</code></pre>
+<h2 id="spec-energy-utils">Spec Energy Utils</h2>
+<p>Create <strong>spec/spec-energy-utils.js</strong>.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> request = <span class="hljs-built_in">require</span>(<span class="hljs-string">'supertest'</span>);
+<span class="hljs-keyword">var</span> app = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../app'</span>);
+<span class="hljs-keyword">var</span> renewables = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./data/json-as-js-renewables'</span>);
+<span class="hljs-keyword">var</span> energyUtils = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../routes/energy-utils'</span>);
+
+describe(<span class="hljs-string">'Elvenware Energy Utils Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+
+    it(<span class="hljs-string">'shows we can test'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">true</span>);
+    });
+
+    it(<span class="hljs-string">'objectToArray confirm works'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> sortedArray = energyUtils.objectToArray(renewables[<span class="hljs-number">0</span>]);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; sortedArray.length - <span class="hljs-number">1</span>; i++) {
+            expect(sortedArray[i][<span class="hljs-number">1</span>]).toBeLessThan(sortedArray[i + <span class="hljs-number">1</span>][<span class="hljs-number">1</span>]);
+        }
+    });
+});
+</code></pre>
+<h2 id="tests">Tests</h2>
+<p>Consider using <strong>nodemon</strong> instead of <strong>node</strong> for <strong>test-server</strong> in <strong>package.json</strong>.</p>
+<p>Create an <strong>objectToArray</strong> method in <strong>routes/energy-utils.js</strong>. Require this file in <strong>index.js</strong>.</p>
+<p>In <strong>index.js</strong> add routes:</p>
+<ul>
+<li>renewableByIndex</li>
+<li>renewableByYear</li>
+<li>renewablesSorted (renewableByIndexSorted)</li>
+</ul>
+<h2 id="spec-routes">Spec Routes</h2>
+<p>Your code should pass the following tests in <strong>spec/spec-routes.js</strong>:</p>
+<pre><code class="lang-javascript">var request = require('supertest')<span class="hljs-comment">;</span>
+var app = require('../app')<span class="hljs-comment">;</span>
+var energyUtils = require('../routes/energy-utils')<span class="hljs-comment">;</span>
+
+describe('Elvenware Routes Suite', function() {
+    'use strict'<span class="hljs-comment">;</span>
+
+    it('shows we can test', function() {
+        expect(<span class="hljs-name">true</span>).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('shows we can call renewables route without error and get a <span class="hljs-number">200</span> back', function(<span class="hljs-name">done</span>) {
+        request(<span class="hljs-name">app</span>)
+            .get('/renewables')
+            .expect(<span class="hljs-number">200</span>)
+            .expect('Content-Type', /json/)
+            .end(<span class="hljs-name">function</span>(<span class="hljs-name">err</span>, res) {
+                if (<span class="hljs-name">err</span>) { throw err<span class="hljs-comment">; }</span>
+                done()<span class="hljs-comment">;</span>
+            })<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('call renewables routes and see that first object body has Year set to <span class="hljs-number">2017</span>', function(<span class="hljs-name">done</span>) {
+        request(<span class="hljs-name">app</span>)
+            .get('/renewables')
+            .expect(<span class="hljs-number">200</span>)
+            .expect('Content-Type', /json/)
+            .expect(<span class="hljs-name">function</span>(<span class="hljs-name">response</span>) {
+                expect(<span class="hljs-name">response</span>.body.result).toBe('Success')<span class="hljs-comment">;</span>
+                //console.log(<span class="hljs-name">response</span>.body.renewables)<span class="hljs-comment">;</span>
+                expect(<span class="hljs-name">response</span>.body.renewables[<span class="hljs-number">0</span>].Year).toBe('<span class="hljs-number">2017</span>')<span class="hljs-comment">;</span>
+            })
+            .end(<span class="hljs-name">function</span>(<span class="hljs-name">err</span>, res) {
+                if (<span class="hljs-name">err</span>) { throw err<span class="hljs-comment">; }</span>
+                done()<span class="hljs-comment">;</span>
+            })<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('shows we can call renewableByIndex route and can get a single renewable object by Index', function(<span class="hljs-name">done</span>) {
+        request(<span class="hljs-name">app</span>)
+            .get('/renewableByIndex/1')
+            .expect(<span class="hljs-number">200</span>)
+            .expect('Content-Type', /json/)
+            .expect(<span class="hljs-name">function</span>(<span class="hljs-name">response</span>) {
+                expect(<span class="hljs-name">response</span>.body.result).toBe('Success')<span class="hljs-comment">;</span>
+                //console.log(<span class="hljs-name">response</span>.body.renewables)<span class="hljs-comment">;</span>
+                expect(<span class="hljs-name">response</span>.body.renewables.Year).toBe('<span class="hljs-number">2016</span>')<span class="hljs-comment">;</span>
+            })
+            .end(<span class="hljs-name">function</span>(<span class="hljs-name">err</span>, res) {
+                if (<span class="hljs-name">err</span>) { throw err<span class="hljs-comment">; }</span>
+                done()<span class="hljs-comment">;</span>
+            })<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('can call renewablesByIndexSorted route with an index and gets energy object as sorted array', function(<span class="hljs-name">done</span>) {
+        request(<span class="hljs-name">app</span>)
+            .get('/renewablesByIndexSorted/1')
+            .expect(<span class="hljs-number">200</span>)
+            .expect('Content-Type', /json/)
+            .expect(<span class="hljs-name">function</span>(<span class="hljs-name">response</span>) {
+                expect(<span class="hljs-name">response</span>.body.result).toBe('Success')<span class="hljs-comment">;</span>
+                var powers = response.body.sortedEnergy<span class="hljs-comment">;</span>
+                for (<span class="hljs-name">var</span> i = <span class="hljs-number">0</span><span class="hljs-comment">; i &lt; powers.length - 1; i++) {</span>
+                    expect(<span class="hljs-name">powers</span>[i][<span class="hljs-number">1</span>]).toBeLessThan(<span class="hljs-name">powers</span>[i + <span class="hljs-number">1</span>][<span class="hljs-number">1</span>])<span class="hljs-comment">;</span>
+                }
+            })
+            .end(<span class="hljs-name">function</span>(<span class="hljs-name">err</span>, res) {
+                if (<span class="hljs-name">err</span>) { throw err<span class="hljs-comment">; }</span>
+                done()<span class="hljs-comment">;</span>
+            })<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('call renewableByYear and get renewable object with specific year', function(<span class="hljs-name">done</span>) {
+        request(<span class="hljs-name">app</span>)
+            .get('/renewableByYear/2016')
+            .expect(<span class="hljs-number">200</span>)
+            .expect('Content-Type', /json/)
+            .expect(<span class="hljs-name">function</span>(<span class="hljs-name">response</span>) {
+                // console.log('expect called')<span class="hljs-comment">;</span>
+                expect(<span class="hljs-name">response</span>.body.result).toBe('Success')<span class="hljs-comment">;</span>
+                //console.log(<span class="hljs-name">response</span>.body.renewables)<span class="hljs-comment">;</span>
+                var renewable = response.body.renewable<span class="hljs-comment">;</span>
+                expect(<span class="hljs-name">renewable</span>.Year).toBe('<span class="hljs-number">2016</span>')<span class="hljs-comment">;</span>
+            })
+            .end(<span class="hljs-name">function</span>(<span class="hljs-name">err</span>, res) {
+                if (<span class="hljs-name">err</span>) { throw err<span class="hljs-comment">; }</span>
+                done()<span class="hljs-comment">;</span>
+            })<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<h2 id="spec-routes-students">Spec Routes Students</h2>
+<p>Students should write these two tests in <strong>spec/spec-routes-student.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 5/11/16.
+ */</span>
+
+<span class="hljs-keyword">var</span> request = <span class="hljs-built_in">require</span>(<span class="hljs-string">'supertest'</span>);
+<span class="hljs-keyword">var</span> app = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../app'</span>);
+
+describe(<span class="hljs-string">"Spec Routes Student Suite"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+
+    it(<span class="hljs-string">'shows renewables route returns an object array with length set to 12'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">done</span>) </span>{
+        expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">false</span>);
+    });
+
+    it(<span class="hljs-string">'call renewables route, parse text property of response object and show first object contains 2017'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">done</span>) </span>{
+        expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">false</span>);
+    });
+
+});
+</code></pre>
+<h2 id="interface">Interface</h2>
+<p>Add <strong>getByYear</strong> and <strong>getByIndex</strong> buttons to jade and response methods to <strong>control.js</strong>.</p>
+<p>Create a <strong>.basicDiv</strong> class in <strong>style.css</strong>. You might right something like this, or whatever strikes your fancy:</p>
+<pre><code class="lang-css"><span class="hljs-selector-class">.basicDiv</span> {
+  <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">5px</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">5px</span>;
+  <span class="hljs-attribute">border</span>: solid seagreen <span class="hljs-number">2px</span>;
+}
+</code></pre>
+<p>We will probably replace this with <strong>bootstrap</strong> css later on, or you can do so now.</p>
+<p>For now, my interface looks like this:</p>
 <h2 id="turn-it-in">Turn it in</h2>
 <p>The usual...</p>
 </div></body></html>
