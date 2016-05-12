@@ -13,7 +13,8 @@
 <li><a href="#test-simple-format">Test Simple Format</a></li>
 <li><a href="#test-simple-format-backend">Test Simple Format Backend</a></li>
 <li><a href="#suite-titles">Suite Titles</a></li>
-<li><a href="#hints">Hints</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#hints">Hints</a></li>
+<li><a href="#before-each">Before Each</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Look at <a href="https://docs.google.com/presentation/d/1QHZunZfwAQIplala60HkLaGYaRGzJ5eO4oKIg_S1iyk/edit#slide=id.g9ad18c47f_0_91">directive template names</a> slide.</p>
 <p><strong>NOTE</strong> <em>Be sure to remove controller as from <strong>public/javascripts/app.js</strong>. In general, scour your files looking for and removing the case sensitive references to <strong>mainController</strong>.</em></p>
 <h2 id="git-branch">Git Branch</h2>
@@ -439,4 +440,64 @@ elfApp.service(<span class="hljs-string">'renewableUtils'</span>, RenewableUtils
     <span class="hljs-symbol">'spec</span>/test-*.js'
 ],
 </code></pre>
+<h2 id="before-each">Before Each</h2>
+<p>This beforeEach statement loads your angular module:</p>
+<pre><code class="lang-javascript">beforeEach(<span class="hljs-name">module</span>('elfApp'))<span class="hljs-comment">;</span>
+</code></pre>
+<p>Specically, it loads the module that you define like this in <strong>app.js</strong> and use in <strong>main.js</strong> and <strong>about.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> myModule = angular.<span class="hljs-built_in">module</span>(<span class="hljs-string">'elfApp'</span>, [<span class="hljs-string">'ngRoute'</span>]);
+</code></pre>
+<p>This <strong>beforeEach</strong> loads you HTML fixture:</p>
+<pre><code class="lang-javascript">beforeEach(<span class="hljs-name">function</span>() {
+    jasmine.getFixtures().fixturesPath = 'base/spec/fixtures/'<span class="hljs-comment">;</span>
+    loadFixtures('renewable.html')<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>This before each does three things:</p>
+<pre><code class="lang-javascript">beforeEach(inject(<span class="hljs-keyword">function</span>(<span class="hljs-number">_</span>$compile<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$rootScope<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$templateCache<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>) {
+    scope = <span class="hljs-number">_</span>$rootScope<span class="hljs-number">_</span>.$new();
+    $compile = <span class="hljs-number">_</span>$compile<span class="hljs-number">_</span>;
+    $templateCache = <span class="hljs-number">_</span>$templateCache<span class="hljs-number">_</span>;
+
+    mainController = <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>(<span class="hljs-string">'MainController'</span>, {
+        $scope: scope
+    });
+}));
+</code></pre>
+<p>First, it gets the scope that you are using in your application. I believe that this is a global scope object for the entire app, and this line narrows the scope down to work only with the scope of your controller:</p>
+<pre><code class="lang-javascript">mainController = <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>(<span class="hljs-string">'MainController'</span>, {
+    $scope: scope
+});
+</code></pre>
+<p>The above code also loads your controller.</p>
+<p>These line gets the compile and templateCache, both of which are needed to process our fixture so that it is converted from an angular template to live HTML that contains resolved references to scope variables:</p>
+<pre><code class="lang-javascript">$compile = <span class="hljs-number">_</span>$compile<span class="hljs-number">_</span>;
+$templateCache = <span class="hljs-number">_</span>$templateCache<span class="hljs-number">_</span>;
+</code></pre>
+<p>There are also beforeEach and afterEach calls to load <strong>$httpBackend</strong>:</p>
+<pre><code class="lang-javascript">beforeEach(inject(<span class="hljs-keyword">function</span>(<span class="hljs-number">_</span>$compile<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$rootScope<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$httpBackend<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>) {
+    scope = <span class="hljs-number">_</span>$rootScope<span class="hljs-number">_</span>.$new();
+    var $compile = <span class="hljs-number">_</span>$compile<span class="hljs-number">_</span>;
+    $httpBackend = <span class="hljs-number">_</span>$httpBackend<span class="hljs-number">_</span>;
+    mainController = <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>(<span class="hljs-string">'MainController'</span>, {
+        $scope: scope
+    });
+}));
+
+afterEach(<span class="hljs-keyword">function</span>() {
+    $httpBackend.verifyNoOutstandingExpectation();
+    $httpBackend.verifyNoOutstandingRequest();
+});
+</code></pre>
+<p>The beforeEach shown above is the same as the ones we looked at before, except it does not get the compile and templateCache for handling fixtures, and instead it gets httpBackend. We use <strong>httpBackend</strong> for mocking calls to the server. Instead of aclled $http.get directly, we use httpBackend calls such as this to mock or fake the call to the server. Instead of making a real call, we just return pre-defined data:</p>
+<pre><code class="lang-javascript">var requestHandler = $httpBackend
+    .<span class="hljs-keyword">when</span>(<span class="hljs-string">'GET'</span>, <span class="hljs-string">'data/Renewable.json'</span>)
+    .respond(PUT THE MOCK DATA HERE);
+
+$httpBackend.expectGET(<span class="hljs-string">'data/Renewable.json'</span>);
+scope.getRenewable();
+$httpBackend.flush();
+expect(scope.renewable[<span class="hljs-number">0</span>].Year).toEqual(<span class="hljs-string">'2017'</span>);
+</code></pre>
+<p>The <strong>afterEach</strong> code will raise an error if your set up a call to <strong>httpBackend</strong> but don&#39;t ever execute it by calling <strong>httpBackend.flush()</strong>.</p>
 </div></body></html>
