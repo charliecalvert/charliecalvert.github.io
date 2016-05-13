@@ -9,8 +9,8 @@
 <li><a href="#testing-renewables">Testing Renewables</a></li>
 <li><a href="#simple-format-directive">Simple Format Directive</a></li>
 <li><a href="#create-renewables-utils">Create renewables-utils</a></li>
-<li><a href="#testing-simple-format">Testing Simple Format</a></li>
 <li><a href="#create-test-renewables">Create test-renewables</a></li>
+<li><a href="#testing-simple-format">Testing Simple Format</a></li>
 <li><a href="#test-simple-format">Test Simple Format</a></li>
 <li><a href="#test-simple-format-backend">Test Simple Format Backend</a></li>
 <li><a href="#suite-titles">Suite Titles</a></li>
@@ -102,7 +102,7 @@ $ karma start
 </code></pre>
 <p>Make sure it works.</p>
 <p>Now angularize it by loading the <strong>MainController</strong>, this time adding code to load $httpBackend and adding one test to be sure we can access the <strong>$scope</strong> of our <strong>MainController</strong>:</p>
-<pre><code class="lang-javascripts">describe(<span class="hljs-string">'Elvenware Test Mocks Suite'</span>, <span class="hljs-keyword">function</span>() {
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Elvenware Test Mocks Suite'</span>, <span class="hljs-keyword">function</span>() {
 
     <span class="hljs-string">'use strict'</span>;
 
@@ -270,28 +270,46 @@ elfApp.service(<span class="hljs-string">'renewableUtils'</span>, RenewableUtils
 <p>Finally, we put our object in something called an Angular service:</p>
 <pre><code class="lang-javascript">elfApp.service(<span class="hljs-string">'renewableUtils'</span>, RenewableUtils)<span class="hljs-comment">;</span>
 </code></pre>
-<p>A service is a major Angular tools like a <strong>controller</strong> or <strong>directive</strong>. It is very similar to an angular factory, which we will likely study later in the quarter.</p>
+<p>A service is a major Angular tools like a <strong>controller</strong> or <strong>directive</strong>. It is very similar to an angular <strong>factory</strong>, which we will likely study later in the quarter. In general, we tend to refer to Angular tools of this type as <strong>providers</strong>.</p>
 <p>As you can hopefully see, a service is designed to help you create a clearly partitioned place for you objects. In other words, a service is wrapper for an object. We wrap it so it can be partitioned from the rest of our code, so it can support code injection, and in general, so it acts in the way that Angular believes your objects ought to can.</p>
 <p>As stated above, you can, and should use code injection to inject this object into your controllers or other objects as needed. Here for instance, is how we will inject this service into our <strong>MainController</strong>:</p>
 <pre><code class="lang-javascript">elfApp.controller(<span class="hljs-string">'MainController'</span>, <span class="hljs-keyword">function</span>($scope, $http, renewableUtils) {
-     // WE WILL SEE HOW TO USE THE OBJECT LATER
+     // WE WILL SEE HOW TO USE THIS OBJECT IN ONE MOMENT
+     $scope.getRenewable = function() {
+         // console.log(<span class="hljs-string">'getRenewable'</span>);
+         $http.get(<span class="hljs-string">'data/Renewable.json'</span>)
+             .then(function(res) {
+                 renewableUtils.init(res.data);
+                 $scope.renewable = res.data;
+                 $scope.renewableUtils = renewableUtils;
+                 $scope.simpleFormat = renewableUtils.getSimpleFormat();
+             });
+     };
+
 })
 </code></pre>
-<p>For the curious, here are the angular docs on Services:</p>
+<p>Note that inside our <strong>MainController</strong>, we updated the call to <strong>getRenewable</strong>. It now initializes the renewableUtils object. In particular, it passes the content of our <strong>Renewable.json</strong> file to the object. The object can then be used to perform certain operations on that object.</p>
+<p>For the curious, and we should all be curious, here are the angular docs on factories, provides, services and so on:</p>
 <ul>
 <li><a href="https://docs.angularjs.org/guide/providers">Providers</a></li>
 <li><a href="https://docs.angularjs.org/guide/services">Services</a></li>
 </ul>
-<h2 id="testing-simple-format">Testing Simple Format</h2>
-<p>You created a <strong>simple-format.jade</strong> file. Now convert it to HTML so it can be used as a fixture in our tests:</p>
-<p>  jade views/simple-format.jade --out=&#39;spec/fixtures/&#39;</p>
-<p>Call the <strong>renewableUtils.simpleFormat</strong> from within <strong>$scope.getRenewable</strong>. It makes no sense to call it until you have loaded <strong>renewables.json</strong>. In particular, since it relies on <strong>renewables.json</strong> being present, it won&#39;t work properly until you have loaded that file.</p>
-<p>In <strong>.jscsrc</strong> exclude the <strong>data</strong> folder. In <strong>Gruntfile.js</strong> don&#39;t try to beautify the <strong>data</strong> folder.</p>
-<p>Don&#39;t forget to run <strong>grunt check</strong> and clean up all errors such as missing use strict, invalid quote marks, etc.</p>
-<p><strong>NOTE</strong>: <em>With JSCS, you can use single quotes for a string, and double quotes for embedded quotes inside a string: &#39;My &quot;embedded&quot; string&#39;.</em></p>
-<p>With angular, you can usually delete an <strong>$(document).ready()</strong> statements as it takes care of this for you.</p>
 <h2 id="create-test-renewables">Create test-renewables</h2>
-<p>We need to test <strong>renewable-utils.js</strong> in <strong>spec/test-renewables.js</strong></p>
+<p>As you no doubt noticed, we did not complete <strong>RenewableUtils</strong> object found in <strong>renewables-utils.js</strong>. To help you complete that task, I have created a suite of unit tests that should guide you step by step through the process of implementing the <strong>renewable-utils.js</strong> object. The tests are shown below.</p>
+<p>Put these tests for <strong>renewable-utils.js</strong> in a file called <strong>spec/test-renewables.js</strong>. Update the implementation of <strong>RenewableUtils</strong> so that all these tests will pass.</p>
+<p>Before you work with these tests, take a careful look at the third call to <strong>beforeEach</strong> found in the tests:</p>
+<pre><code class="lang-javascript">beforeEach(<span class="hljs-keyword">function</span>() {
+    //scope.renewableUtils.init(renewables);
+    var requestHandler = $httpBackend
+        .when(<span class="hljs-string">'GET'</span>, <span class="hljs-string">'data/Renewable.json'</span>)
+        .respond(renewables);
+
+    $httpBackend.expectGET(<span class="hljs-string">'data/Renewable.json'</span>);
+    scope.getRenewable();
+    $httpBackend.flush();
+});
+</code></pre>
+<p>As we did earlier in this assignment, we use <strong>$httpBackend</strong> to ensure that any calls to $http.get will &quot;mock load&quot; our data. In particular, it will load our renewables data by called <strong>MainController.getRenwable</strong>.</p>
 <pre><code class="lang-javascript">describe('Renewables Suite', function() {
     'use strict'<span class="hljs-comment">;</span>
 
@@ -384,6 +402,14 @@ elfApp.service(<span class="hljs-string">'renewableUtils'</span>, RenewableUtils
     })<span class="hljs-comment">;</span>
 })<span class="hljs-comment">;</span>
 </code></pre>
+<h2 id="testing-simple-format">Testing Simple Format</h2>
+<p>You created a <strong>simple-format.jade</strong> file. Now convert it to HTML so it can be used as a fixture in our tests:</p>
+<p>  jade views/simple-format.jade --out=&#39;spec/fixtures/&#39;</p>
+<p>Call the <strong>renewableUtils.simpleFormat</strong> from within <strong>$scope.getRenewable</strong>. It makes no sense to call it until you have loaded <strong>renewables.json</strong>. In particular, since it relies on <strong>renewables.json</strong> being present, it won&#39;t work properly until you have loaded that file.</p>
+<p>In <strong>.jscsrc</strong> exclude the <strong>data</strong> folder. In <strong>Gruntfile.js</strong> don&#39;t try to beautify the <strong>data</strong> folder.</p>
+<p>Don&#39;t forget to run <strong>grunt check</strong> and clean up all errors such as missing use strict, invalid quote marks, etc.</p>
+<p><strong>NOTE</strong>: <em>With JSCS, you can use single quotes for a string, and double quotes for embedded quotes inside a string: &#39;My &quot;embedded&quot; string&#39;.</em></p>
+<p>With angular, you can usually delete an <strong>$(document).ready()</strong> statements as it takes care of this for you.</p>
 <h2 id="test-simple-format">Test Simple Format</h2>
 <p>We need to create <strong>spec/test-simple-format.js</strong>.</p>
 <pre><code class="lang-javascript">
