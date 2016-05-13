@@ -10,11 +10,7 @@
 <li><a href="#simple-format-directive">Simple Format Directive</a></li>
 <li><a href="#create-renewables-utils">Create renewables-utils</a></li>
 <li><a href="#create-test-renewables">Create test-renewables</a></li>
-<li><a href="#testing-simple-format">Testing Simple Format</a></li>
-<li><a href="#test-simple-format">Test Simple Format</a></li>
-<li><a href="#test-simple-format-backend">Test Simple Format Backend</a></li>
-<li><a href="#suite-titles">Suite Titles</a></li>
-<li><a href="#hints">Hints</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#before-each">Before Each</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Look at <a href="https://docs.google.com/presentation/d/1QHZunZfwAQIplala60HkLaGYaRGzJ5eO4oKIg_S1iyk/edit#slide=id.g9ad18c47f_0_91">directive template names</a> slide. This shows that we can use a template called <strong>elfRenewable</strong> in several difference ways in our angular templates. In other words there are more choices than just <elf-renewable></elf-renewable></p>
 <p><strong>NOTE</strong> <em>Be sure to remove controller as from <strong>public/javascripts/app.js</strong>. In general, scour your files looking for and removing the case sensitive references to <strong>mainController</strong>. Don&#39;t remove <strong>MainController</strong>, but do remove <strong>mainController</strong>. Look at least in all your javascript jade and html files.</em></p>
@@ -274,7 +270,9 @@ elfApp.service(<span class="hljs-string">'renewableUtils'</span>, RenewableUtils
 <p>As you can hopefully see, a service is designed to help you create a clearly partitioned place for you objects. In other words, a service is wrapper for an object. We wrap it so it can be partitioned from the rest of our code, so it can support code injection, and in general, so it acts in the way that Angular believes your objects ought to can.</p>
 <p>As stated above, you can, and should use code injection to inject this object into your controllers or other objects as needed. Here for instance, is how we will inject this service into our <strong>MainController</strong>:</p>
 <pre><code class="lang-javascript">elfApp.controller(<span class="hljs-string">'MainController'</span>, <span class="hljs-keyword">function</span>($scope, $http, renewableUtils) {
-     // WE WILL SEE HOW TO USE THIS OBJECT IN ONE MOMENT
+
+     // CODE FOR mainData and index THAT HAS NOT CHANGED OMITTED HERE
+
      $scope.getRenewable = function() {
          // console.log(<span class="hljs-string">'getRenewable'</span>);
          $http.get(<span class="hljs-string">'data/Renewable.json'</span>)
@@ -288,7 +286,7 @@ elfApp.service(<span class="hljs-string">'renewableUtils'</span>, RenewableUtils
 
 })
 </code></pre>
-<p>Note that inside our <strong>MainController</strong>, we updated the call to <strong>getRenewable</strong>. It now initializes the renewableUtils object. In particular, it passes the content of our <strong>Renewable.json</strong> file to the object. The object can then be used to perform certain operations on that object.</p>
+<p>Note that inside our <strong>MainController</strong>, we updated the call to <strong>getRenewable</strong>. It now initializes the renewableUtils object. In particular, it passes the content of our <strong>Renewable.json</strong> file to the object. The object can then be used to perform certain operations on that JSON data. A main task of our program will be to manipulate the data found in JSON files and show the results to the user. So this is clearly a very important part of our program.</p>
 <p>For the curious, and we should all be curious, here are the angular docs on factories, provides, services and so on:</p>
 <ul>
 <li><a href="https://docs.angularjs.org/guide/providers">Providers</a></li>
@@ -309,7 +307,9 @@ elfApp.service(<span class="hljs-string">'renewableUtils'</span>, RenewableUtils
     $httpBackend.flush();
 });
 </code></pre>
-<p>As we did earlier in this assignment, we use <strong>$httpBackend</strong> to ensure that any calls to $http.get will &quot;mock load&quot; our data. In particular, it will load our renewables data by called <strong>MainController.getRenwable</strong>.</p>
+<p>As we did earlier in this assignment, we use <strong>$httpBackend</strong> to ensure that any calls to <strong>$http.get</strong> will &quot;mock load&quot; our data. In particular, it will load our renewables data by called <strong>MainController.getRenwable</strong>. You saw this method in the previous section. As you recall, it loads <strong>Renewable.json</strong> and passes it to our RenewableUtils object. This ensures that our utilities have data on which they can perform various operations. The object is meant to manipulate the data found in the JSON file, so obviously it needs a copy of the JSON before it can work its magic.</p>
+<p><strong>NOTE</strong>: <em>Don&#39;t just hurry through the assignment at this point. Take some time to make sure you understand what is happening. These kinds of operations are performed all the time in JavaScript programs, and you need to be sure you understand how they work. In particular, we need to properly partition off our objects, then feed them exactly the right amount of data so they can perform their task.</em></p>
+<p>Here are the tests. Your job is to get them to pass by changing RenewableUtils. The tests themselves should not change:</p>
 <pre><code class="lang-javascript">describe('Renewables Suite', function() {
     'use strict'<span class="hljs-comment">;</span>
 
@@ -329,8 +329,7 @@ elfApp.service(<span class="hljs-string">'renewableUtils'</span>, RenewableUtils
         })<span class="hljs-comment">;</span>
     }))<span class="hljs-comment">;</span>
 
-    beforeEach(<span class="hljs-name">function</span>() {
-        //scope.renewableUtils.init(<span class="hljs-name">renewables</span>)<span class="hljs-comment">;</span>
+    beforeEach(<span class="hljs-name">function</span>() {        
         var requestHandler = $httpBackend
             .when('GET', 'data/Renewable.json')
             .respond(<span class="hljs-name">renewables</span>)<span class="hljs-comment">;</span>
@@ -402,97 +401,11 @@ elfApp.service(<span class="hljs-string">'renewableUtils'</span>, RenewableUtils
     })<span class="hljs-comment">;</span>
 })<span class="hljs-comment">;</span>
 </code></pre>
-<h2 id="testing-simple-format">Testing Simple Format</h2>
-<p>You created a <strong>simple-format.jade</strong> file. Now convert it to HTML so it can be used as a fixture in our tests:</p>
-<p>  jade views/simple-format.jade --out=&#39;spec/fixtures/&#39;</p>
-<p>Call the <strong>renewableUtils.simpleFormat</strong> from within <strong>$scope.getRenewable</strong>. It makes no sense to call it until you have loaded <strong>renewables.json</strong>. In particular, since it relies on <strong>renewables.json</strong> being present, it won&#39;t work properly until you have loaded that file.</p>
-<p>In <strong>.jscsrc</strong> exclude the <strong>data</strong> folder. In <strong>Gruntfile.js</strong> don&#39;t try to beautify the <strong>data</strong> folder.</p>
-<p>Don&#39;t forget to run <strong>grunt check</strong> and clean up all errors such as missing use strict, invalid quote marks, etc.</p>
-<p><strong>NOTE</strong>: <em>With JSCS, you can use single quotes for a string, and double quotes for embedded quotes inside a string: &#39;My &quot;embedded&quot; string&#39;.</em></p>
-<p>With angular, you can usually delete an <strong>$(document).ready()</strong> statements as it takes care of this for you.</p>
-<h2 id="test-simple-format">Test Simple Format</h2>
-<p>We need to create <strong>spec/test-simple-format.js</strong>.</p>
-<pre><code class="lang-javascript">
-</code></pre>
-<p>c</p>
-<h2 id="test-simple-format-backend">Test Simple Format Backend</h2>
-<p>We need to create <strong>spec/test-simple-format-backend.js</strong>, which is our holy grail.</p>
-<h2 id="suite-titles">Suite Titles</h2>
-<p>Get the suite titles right for each test.</p>
-<h2 id="hints">Hints</h2>
-<p>In <strong>karma.conf.js</strong> be sure you are loading <strong>angular</strong>, <strong>angular-mocks</strong> and <strong>angular-route</strong>:</p>
-<pre><code class="lang-javascript">files: [
-    <span class="hljs-symbol">'public</span>/components/jquery/dist/jquery.min.js',
-    <span class="hljs-symbol">'public</span>/components/angular/angular.js',
-    <span class="hljs-symbol">'public</span>/components/angular-mocks/angular-mocks.js',
-    <span class="hljs-symbol">'public</span>/components/angular-route/angular-route.js',
-    <span class="hljs-symbol">'node_modules</span>/jasmine-jquery/lib/*.js',  
-    <span class="hljs-symbol">'public</span>/javascripts/app.js',
-    <span class="hljs-symbol">'public</span>/javascripts/*.js',
-    <span class="hljs-symbol">'spec</span>/**/*.html',
-    <span class="hljs-symbol">'spec</span>/data/*.js',
-    <span class="hljs-symbol">'spec</span>/test-*.js'
-],
-</code></pre>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>You know the drill. This will be in the <strong>Week05-Angular_SolarExplorer</strong> in your <strong>week06</strong> branch.</p>
 <h2 id="before-each">Before Each</h2>
-<p><strong>beforeEach</strong> methods load before each test is run. <strong>afterEach</strong> methods are loaded after each test is run.</p>
-<p>This <strong>beforeEach</strong> statement loads your angular module:</p>
-<pre><code class="lang-javascript">beforeEach(<span class="hljs-name">module</span>('elfApp'))<span class="hljs-comment">;</span>
-</code></pre>
-<p>Specically, it loads the module that you define like this in <strong>app.js</strong> and use in <strong>main.js</strong> and <strong>about.js</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> myModule = angular.<span class="hljs-built_in">module</span>(<span class="hljs-string">'elfApp'</span>, [<span class="hljs-string">'ngRoute'</span>]);
-</code></pre>
-<p>This <strong>beforeEach</strong> loads you HTML fixture:</p>
-<pre><code class="lang-javascript">beforeEach(<span class="hljs-name">function</span>() {
-    jasmine.getFixtures().fixturesPath = 'base/spec/fixtures/'<span class="hljs-comment">;</span>
-    loadFixtures('renewable.html')<span class="hljs-comment">;</span>
-})<span class="hljs-comment">;</span>
-</code></pre>
-<p>This before each does three things:</p>
-<pre><code class="lang-javascript">beforeEach(inject(<span class="hljs-keyword">function</span>(<span class="hljs-number">_</span>$compile<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$rootScope<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$templateCache<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>) {
-    scope = <span class="hljs-number">_</span>$rootScope<span class="hljs-number">_</span>.$new();
-    $compile = <span class="hljs-number">_</span>$compile<span class="hljs-number">_</span>;
-    $templateCache = <span class="hljs-number">_</span>$templateCache<span class="hljs-number">_</span>;
-
-    mainController = <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>(<span class="hljs-string">'MainController'</span>, {
-        $scope: scope
-    });
-}));
-</code></pre>
-<p>First, it gets the scope that you are using in your application. I believe that this is a global scope object for the entire app, and this line narrows the scope down to work only with the scope of your controller:</p>
-<pre><code class="lang-javascript">mainController = <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>(<span class="hljs-string">'MainController'</span>, {
-    $scope: scope
-});
-</code></pre>
-<p>The above code also loads your controller.</p>
-<p>These line gets the compile and templateCache, both of which are needed to process our fixture so that it is converted from an angular template to live HTML that contains resolved references to scope variables:</p>
-<pre><code class="lang-javascript">$compile = <span class="hljs-number">_</span>$compile<span class="hljs-number">_</span>;
-$templateCache = <span class="hljs-number">_</span>$templateCache<span class="hljs-number">_</span>;
-</code></pre>
-<p>There are also beforeEach and afterEach calls to load <strong>$httpBackend</strong>:</p>
-<pre><code class="lang-javascript">beforeEach(inject(<span class="hljs-keyword">function</span>(<span class="hljs-number">_</span>$compile<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$rootScope<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$httpBackend<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>) {
-    scope = <span class="hljs-number">_</span>$rootScope<span class="hljs-number">_</span>.$new();
-    var $compile = <span class="hljs-number">_</span>$compile<span class="hljs-number">_</span>;
-    $httpBackend = <span class="hljs-number">_</span>$httpBackend<span class="hljs-number">_</span>;
-    mainController = <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>(<span class="hljs-string">'MainController'</span>, {
-        $scope: scope
-    });
-}));
-
-afterEach(<span class="hljs-keyword">function</span>() {
-    $httpBackend.verifyNoOutstandingExpectation();
-    $httpBackend.verifyNoOutstandingRequest();
-});
-</code></pre>
-<p>The beforeEach shown above is the same as the ones we looked at before, except it does not get the compile and templateCache for handling fixtures, and instead it gets httpBackend. We use <strong>httpBackend</strong> for mocking calls to the server. Instead of aclled $http.get directly, we use httpBackend calls such as this to mock or fake the call to the server. Instead of making a real call, we just return pre-defined data:</p>
-<pre><code class="lang-javascript">var requestHandler = $httpBackend
-    .<span class="hljs-keyword">when</span>(<span class="hljs-string">'GET'</span>, <span class="hljs-string">'data/Renewable.json'</span>)
-    .respond(PUT THE MOCK DATA HERE);
-
-$httpBackend.expectGET(<span class="hljs-string">'data/Renewable.json'</span>);
-scope.getRenewable();
-$httpBackend.flush();
-expect(scope.renewable[<span class="hljs-number">0</span>].Year).toEqual(<span class="hljs-string">'2017'</span>);
-</code></pre>
-<p>The <strong>afterEach</strong> code will raise an error if your set up a call to <strong>httpBackend</strong> but don&#39;t ever execute it by calling <strong>httpBackend.flush()</strong>.</p>
+<p>I have moved the section on <strong>beforeEach</strong> here:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/web/UnitTests/Jasmine.html#before-each">Jasmine Unit Tests and beforeEach</a></li>
+</ul>
 </div></body></html>
