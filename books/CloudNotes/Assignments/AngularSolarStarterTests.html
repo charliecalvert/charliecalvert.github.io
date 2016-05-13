@@ -1,12 +1,14 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>AngularSolarStarterTests</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><!-- script(src="/libs/scripts/Control.js")--><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>AngularSolarStarterTests</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#branching">Branching</a></li>
-<li><a href="#httpbackend">HttpBackend</a></li>
+<li><a href="#loading-files">Loading Files</a></li>
 <li><a href="#all-tests">All Tests</a></li>
+<li><a href="#httpbackend">HttpBackend</a></li>
 <li><a href="#get-started">Get Started</a></li>
 <li><a href="#mocking-json-requests">Mocking JSON Requests</a></li>
 <li><a href="#create-json-javascript">Create JSON JavaScript</a></li>
 <li><a href="#testing-renewables">Testing Renewables</a></li>
 <li><a href="#simple-format-directive">Simple Format Directive</a></li>
+<li><a href="#testing-simple-format">Testing Simple Format</a></li>
 <li><a href="#create-renewables-utils">Create renewables-utils</a></li>
 <li><a href="#create-test-renewables">Create test-renewables</a></li>
 <li><a href="#test-simple-format">Test Simple Format</a></li>
@@ -21,14 +23,17 @@
 <ul>
 <li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/GitBranchWeeks.html">Git Branch Weeks</a></li>
 </ul>
-<h2 id="httpbackend">HttpBackend</h2>
-<p>Use the Angular <strong>$httpBackend</strong> object from <strong>angular-mocks</strong> to fake or &quot;mock&quot; the loading of JSON from the server.</p>
-<p><strong>NOTE</strong>: <em>Angular mocks and httpBackend do much more than just allow us to mock loading JSON, but lets start there, and move on to mocking whole objects a bit later on. If you have not done so already, to install angular-mocks type this: <strong>npm install angular-mocks --save-dev</strong>.</em></p>
-<p>For more on httpbackend, seeL</p>
-<ul>
-<li>The last few slides here: <a href="http://bit.ly/unittestasync">http://bit.ly/unittestasync</a></li>
-<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/Angular.html#mocking-objects-with-httpbackend">Elvenware on httpBackend</a></li>
-</ul>
+<h2 id="loading-files">Loading Files</h2>
+<p>Before getting started, make sure you are loading <strong>angular-route.js</strong> in the files section of <strong>karma-conf.js</strong>. We load this file in <strong>layout.jade</strong>, so we should be sure to load it here.</p>
+<pre><code class="lang-javascript">files: [
+  <span class="hljs-symbol">'public</span>/components/jquery/dist/jquery.min.js',
+  <span class="hljs-symbol">'public</span>/components/angular/angular.js',
+  <span class="hljs-symbol">'public</span>/components/angular-mocks/angular-mocks.js',
+  <span class="hljs-symbol">'public</span>/components/angular-route/angular-route.js',
+  <span class="hljs-symbol">'node_modules</span>/jasmine-jquery/lib/*.js',
+  etc...
+</code></pre>
+<p>We also need <strong>angular-mocks</strong> in our tests, but not in our program. That is why it is included here but not in <strong>layout.jade</strong>.</p>
 <h2 id="all-tests">All Tests</h2>
 <p>Now it is time to start filling out all our tests. When done, all our tests should look at least a bit like this:</p>
 <pre>
@@ -76,6 +81,14 @@ $ karma start
 </pre>
 
 <p>It will take us a while to get there. But this gives you sense of where we are headed.</p>
+<h2 id="httpbackend">HttpBackend</h2>
+<p>Use the Angular <strong>$httpBackend</strong> object from <strong>angular-mocks</strong> to fake or &quot;mock&quot; the loading of JSON from the server.</p>
+<p><strong>NOTE</strong>: <em>Angular mocks and httpBackend do much more than just allow us to mock loading JSON, but lets start there, and move on to mocking whole objects a bit later on. If you have not done so already, to install angular-mocks type this: <strong>npm install angular-mocks --save-dev</strong>.</em></p>
+<p>For more on httpbackend, seeL</p>
+<ul>
+<li>The last few slides here: <a href="http://bit.ly/unittestasync">http://bit.ly/unittestasync</a></li>
+<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/Angular.html#mocking-objects-with-httpbackend">Elvenware on httpBackend</a></li>
+</ul>
 <h2 id="get-started">Get Started</h2>
 <p>Create a test called <strong>spec/test-mocks.js</strong>:</p>
 <pre><code class="lang-javascripts">describe(<span class="hljs-string">'Elvenware Test Mocks Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
@@ -127,7 +140,7 @@ $ karma start
 <p>Notice that we also have an <strong>afterEach</strong> section. This ensures that there are no pending http request after our tests. In particular, we are going to use <strong>$httpBackend</strong> to mock the act of loading JSON. When doing so, we will set up some mock $http requests. The <strong>afterEach</strong> method tests that we actually called these mocks, rather than leave them hanging. This helps us ensure that we are doing what we set out to do, and that the next test starts with a clean slate.</p>
 <p>As mentioned earlier, we add a test from our <strong>test-basic</strong> file that ensures we can access the index declared out <strong>MainController&#39;s</strong> scope. It is just a sanity check to ensure we are in a stable state and can access our <strong>MainController</strong>.</p>
 <h2 id="mocking-json-requests">Mocking JSON Requests</h2>
-<p>Here is a test that actually mocks the <strong>$http.get</strong> call in our <strong>getRenewable</strong> method. This method, as you know,   retrieves data from the server. Only this time, instead of getting data from a real server, we put in our own mock data instead:</p>
+<p>Here is a test that actually mocks the <strong>$http.get</strong> call in our <strong>getRenewable</strong> method. This method, as you know, retrieves data from the server. Only this time, instead of getting data from a real server, we put in our own mock data instead:</p>
 <pre><code class="lang-javascript">it(<span class="hljs-string">'proves we can mock getting JSON data'</span>, <span class="hljs-keyword">function</span>() {
 
   var renewable = [{
@@ -153,6 +166,7 @@ $ karma start
 
 });
 </code></pre>
+<p>Put this method at the bottom of your <strong>test-mocks.js</strong> and make sure it works.</p>
 <h2 id="create-json-javascript">Create JSON JavaScript</h2>
 <p>Create a JavaScript file called <strong>spec/data/json-as-js-renewables.js</strong>. Inside it, put <strong>renewables.json</strong>. It should begin a bit like this:</p>
 <pre><code class="lang-javascript"><span class="hljs-variable"><span class="hljs-keyword">var</span> renewables</span> = [{
@@ -179,7 +193,8 @@ $ karma start
 <span class="hljs-symbol">'spec</span>/test*.js'
 </code></pre>
 <h2 id="simple-format-directive">Simple Format Directive</h2>
-<p>The html directive:</p>
+<p>Now lets create a new directive called <strong>elfSimpleFormat</strong>. Declare it just below the point in <strong>main.js</strong> where you declare the <strong>elfRenewable</strong> directive.</p>
+<p>The HTML version of our new directive looks like this:</p>
 <pre><code class="lang-javascript">elfApp.directive(<span class="hljs-string">'elfSimpleFormat'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 <span class="hljs-meta">  'use strict'</span>;
   <span class="hljs-keyword">return</span> {
@@ -191,7 +206,13 @@ $ karma start
   };
 });
 </code></pre>
-<p>You make it like this:</p>
+<p>As you can see, this declaration uses <strong>template</strong> rather than <strong>templateUrl</strong>. You should:</p>
+<ul>
+<li>Convert this HTML to jade</li>
+<li>Save it to a file called <strong>simple-format.jade</strong></li>
+<li>Convert the directive to use <strong>templateUrl</strong> rather than <strong>template</strong>.</li>
+</ul>
+<p>It should, of course, look like this:</p>
 <pre><code class="lang-javascript">elfApp.directive(<span class="hljs-string">'elfSimpleFormat'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 <span class="hljs-meta">    'use strict'</span>;
     <span class="hljs-keyword">return</span> {
@@ -200,9 +221,9 @@ $ karma start
     };
 });
 </code></pre>
-<p>You will need to create a <strong>simple-format.jade</strong> file and get it set up to test as a fixture:</p>
+<h2 id="testing-simple-format">Testing Simple Format</h2>
+<p>You created a <strong>simple-format.jade</strong> file. Now convert it to HTML so it can be used as a fixture in our tests:</p>
 <p>  jade views/simple-format.jade --out=&#39;spec/fixtures/&#39;</p>
-<p>You will, of course, have to add this directive to <strong>main.jade</strong>. You can just append it to the end of the file for now.</p>
 <p>Call the <strong>renewableUtils.simpleFormat</strong> from within <strong>$scope.getRenewable</strong>. It makes no sense to call it until you have loaded <strong>renewables.json</strong>. In particular, since it relies on <strong>renewables.json</strong> being present, it won&#39;t work properly until you have loaded that file.</p>
 <p>In <strong>.jscsrc</strong> exclude the <strong>data</strong> folder. In <strong>Gruntfile.js</strong> don&#39;t try to beautify the <strong>data</strong> folder.</p>
 <p>Don&#39;t forget to run <strong>grunt check</strong> and clean up all errors such as missing use strict, invalid quote marks, etc.</p>
