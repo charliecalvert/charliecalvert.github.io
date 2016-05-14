@@ -3,6 +3,7 @@
 <li><a href="#get-started">Get Started</a></li>
 <li><a href="#starting-the-jasmine-tests">Starting the Jasmine Tests</a></li>
 <li><a href="#creating-a-test">Creating a Test</a></li>
+<li><a href="#route-exists">Test if a Route Exists</a></li>
 <li><a href="#return-value">Test the Return Value from a Route</a></li>
 <li><a href="#create-json-javascript">Create JSON JavaScript</a></li>
 <li><a href="#create-energy-utils">Create Energy Utils</a></li>
@@ -104,55 +105,44 @@ Executed 1 of 1 spec SUCCESS in 0.006 sec.
 <p>Now you add in the <a href="https://github.com/visionmedia/supertest"><strong>supertest</strong></a> package to your <strong>node_modules</strong> folder and your <strong>package.json</strong> file. This package will allow us to test our routes from the command line:</p>
 <pre>
   npm install supertest --save-dev  
-<pre>  
+</pre>  
 
-supertest is a very powerful tool. It makes http requests to our server, and provides support for testing the validity of the values returned from these requests. In short, it allows us to emulate a call from the browser to our http server, but without ever having to launch a browser.
-
-## Test if a Route Exists {#route-exists}
-
-The following code belongs in **spec-routes.js**. It replaces the existing code. Or to state the same thing somewhat differently, it adds to calls to require and a test case to our previously existing test suit.
-
-The code in the new tests shows that we can call a route, and that the call succeeds. Please note that this simple test is meant only to prove that the route exists, and that it does not raise an error:
-
-```javascript
-var request = require('supertest');
-var app = require('../app');
+<p><a href="https://github.com/visionmedia/supertest"><strong>supertest</strong></a> is a powerful tool. It allows us to emulate a call from the browser to our HTTP server, but without ever having to launch a browser. It makes real HTTP requests to our server, and provides support for testing the validity of the values returned from these requests.</p>
+<h2 id="route-exists">Test if a Route Exists</h2>
+<p>The following code belongs in <strong>spec-routes.js</strong>. It replaces the existing code. Or to state the same thing somewhat differently, it adds to calls to require and a test case to our previously existing test suit.</p>
+<p>The code in the new tests shows that we can call a route, and that the call succeeds. Please note that this simple test is meant only to prove that the route exists, and that it does not raise an error:</p>
+<pre><code class="lang-javascript">var request = require('supertest')<span class="hljs-comment">;</span>
+var app = require('../app')<span class="hljs-comment">;</span>
 
 describe('Elvenware Spec Routes Suite', function () {
     it('shows we can test', function () {
-        expect(true).toBe(true);
-    });
+        expect(<span class="hljs-name">true</span>).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
 
 
-    it('renewables', function (done) {
-        request(app)
+    it('renewables', function (<span class="hljs-name">done</span>) {
+        request(<span class="hljs-name">app</span>)
             .get('/renewables')
-            .expect(200)
+            .expect(<span class="hljs-number">200</span>)
             .expect('Content-Type', /json/)
-            .end(function (err, res) {
-                if (err) throw err;
-                done();
-            });
-    });
+            .end(<span class="hljs-name">function</span> (<span class="hljs-name">err</span>, res) {
+                if (<span class="hljs-name">err</span>) throw err<span class="hljs-comment">;</span>
+                done()<span class="hljs-comment">;</span>
+            })<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
 
-});
-```
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>The code starts with a call to the supertest request method. It then asks supertest to make an HTTP request of our server side code on the <strong>&#39;/renewables&#39;</strong> route. It then checks to see that the return value is 200. HTTP returns 200 when a call succeeds. We also check to see that the returned type is JSON.</p>
+<p>You have probably noticed that we pass in the <strong>app.js</strong> file from the root of our project as the sole parameter to request. You might be wondering how giving this code to supertest allows supertest to call our route. An in depth explanation would be too complex in the current context. However, the curious should examine the following code from <strong>app.js</strong> as it provides the link between <strong>app.js</strong> and our route in <strong>routes/index.js</strong>:</p>
+<pre><code class="lang-javascript">// On about <span class="hljs-built_in">line</span> <span class="hljs-number">8</span> of app.js Link in <span class="hljs-built_in">index</span>.<span class="hljs-keyword">j</span><span class="hljs-variable">s:</span>
+var routes = require(<span class="hljs-string">'./routes/index'</span>);
 
-The code starts with a call to the supertest request method. It then asks supertest to make an HTTP request of our server side code on the **'/renewables'** route. It then checks to see that the return value is 200. HTTP returns 200 when a call succeeds. We also check to see that the returned type is JSON.
+// Then <span class="hljs-keyword">on</span> about <span class="hljs-built_in">line</span> <span class="hljs-number">25</span> send routes <span class="hljs-keyword">on</span> the root URL <span class="hljs-keyword">to</span> <span class="hljs-built_in">index</span>.<span class="hljs-keyword">j</span><span class="hljs-variable">s:</span>
 
-You have probably noticed that we pass in the **app.js** file from the root of our project as the sole parameter to request. You might be wondering how giving this code to supertest allows supertest to call our route. An in depth explanation would be too complex in the current context. However, the curious should examine the following code from **app.js** as it provides the link between **app.js** and our route in **routes/index.js**:
-
-```javascript
-// On about line 8 of app.js Link in index.js:
-var routes = require('./routes/index');
-
-// Then on about line 25 send routes on the root URL to index.js:
-
-app.use('/', routes);
-```
-
-The last call tells express to send commands like these to **routes/index.js**:
-
+app.use(<span class="hljs-string">'/'</span>, routes);
+</code></pre>
+<p>The last call tells express to send commands like these to <strong>routes/index.js</strong>:</p>
 <pre>
 http://localhost:30025/
 http://localhost:30025/renewables
