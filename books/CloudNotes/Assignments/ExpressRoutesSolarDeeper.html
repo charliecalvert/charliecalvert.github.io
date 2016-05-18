@@ -4,7 +4,8 @@
 <li><a href="#spec-routes-students">Spec Routes Students</a></li>
 <li><a href="#components">Components</a></li>
 <li><a href="#require">Require</a></li>
-<li><a href="#module-pattern">Module Pattern</a></li><!--TOC_End--></ul><h2 id="more-tests">More Tests</h2>
+<li><a href="#require-js-modules">Require JS Modules</a></li>
+<li><a href="#create-html">Create HTML</a></li><!--TOC_End--></ul><h2 id="more-tests">More Tests</h2>
 <p>Consider using <strong>nodemon</strong> instead of <strong>node</strong> for <strong>test-server</strong> in <strong>package.json</strong>.</p>
 <p>Create an <strong>objectToArray</strong> method in <strong>routes/energy-utils.js</strong>. Require this file in <strong>index.js</strong>.</p>
 <p>In <strong>index.js</strong> add routes:</p>
@@ -126,10 +127,12 @@ describe(<span class="hljs-string">"Spec Routes Student Suite"</span>, <span cla
 <span class="hljs-meta">    'use strict'</span>;
 
     it(<span class="hljs-string">'shows renewables route returns an object array with length set to 12'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">done</span>) </span>{
+      <span class="hljs-comment">// FILL IN THE CODE FOR THE TEST HERE. THEN REMOVE THE BOOLEAN TEST SHOWN BELOW THIS LINE</span>
         expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">false</span>);
     });
 
-    it(<span class="hljs-string">'call renewables route, parse text property of response object and show first object contains 2017'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">done</span>) </span>{
+    it(<span class="hljs-string">'shows the renewables route, parse text property of response object and show first object contains 2017'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">done</span>) </span>{
+        <span class="hljs-comment">// FILL IN THE CODE FOR THE TEST HERE. THEN REMOVE THE BOOLEAN TEST SHOWN BELOW THIS LINE</span>
         expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">false</span>);
     });
 
@@ -139,15 +142,22 @@ describe(<span class="hljs-string">"Spec Routes Student Suite"</span>, <span cla
 <p>Our next goal is to create client side components. We will learn about:</p>
 <ul>
 <li>Require</li>
-<li>The Module Pattern</li>
+<li>Loading HTML with the jQUery <a href="http://api.jquery.com/load/">load</a> method.</li>
 </ul>
 <h2 id="require">Require</h2>
-<p>Install requirejs:</p>
+<p>RequireJs provides:</p>
+<ul>
+<li>More control over the loading of JavaScript files. Load scripts on demand</li>
+<li>Support for JavaScript modules that stand alone and do not pollute the global name space</li>
+<li>An asynchronous alternative to the synchronous commonjs require calls used on the server</li>
+<li>A form of code injection similar to what we have in angular</li>
+</ul>
+<p>To install <strong>requirejs</strong>:</p>
 <pre>
 bower install requirejs --save
 </pre>
 
-<p>In <strong>layout.jade</strong>:</p>
+<p>In <strong>layout.jade</strong> we load <strong>requirejs</strong> and specify a file, usually called <strong>main.js</strong>, where we configure <strong>require</strong> and load the core files for our application:</p>
 <pre>
 doctype html
 html
@@ -160,29 +170,32 @@ html
     block content
 </pre>
 
-<p>In <strong>public/javascripts/main.js</strong>:</p>
+<p>In <strong>public/javascripts/main.js</strong> we configure require and bootstrap our application:</p>
+<p><strong>NOTE</strong>: <em>By bootstrap I mean &quot;load the core files of our application&quot;. I&#39;m not referring to the CSS library.</em></p>
 <pre><code class="lang-javascript">requirejs.config({
     baseUrl: <span class="hljs-string">'.'</span>,
     paths: {
         jquery: <span class="hljs-string">'components/jquery/dist/jquery'</span>,
         bootstrap: <span class="hljs-string">'components/bootstrap/dist/js/bootstrap'</span>,
-        control: <span class="hljs-string">'javascripts/control'</span>,
-        work: <span class="hljs-string">'javascripts/work'</span>,
-        about: <span class="hljs-string">'javascripts/about'</span>,
-        funcObj: <span class="hljs-string">'javascripts/func-obj'</span>
+        control: <span class="hljs-string">'javascripts/control'</span>
     }
 });
 
 requirejs([<span class="hljs-string">'jquery'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($)</span> </span>{
 
-    requirejs([<span class="hljs-string">'bootstrap'</span>, <span class="hljs-string">"control"</span>, <span class="hljs-string">'work'</span>, <span class="hljs-string">'about'</span>, <span class="hljs-string">'funcObj'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(bootstrap, control, work, about, funcObj)</span> </span>{
+    requirejs([<span class="hljs-string">'bootstrap'</span>, <span class="hljs-string">'control'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(bootstrap, control)</span> </span>{
         control.init();
     });
 });
 </code></pre>
-<h2 id="module-pattern">Module Pattern</h2>
-<p>In <strong>public/javascripts/control.js</strong>:</p>
-<pre><code class="lang-javascript">define([<span class="hljs-string">'jquery'</span>, <span class="hljs-string">'about'</span>, <span class="hljs-string">'work'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$, about, work</span>) </span>{
+<p>We configure requirejs in a call to <strong>requirejs.config</strong>. The key tasks are:</p>
+<ul>
+<li>State the <a href="http://requirejs.org/docs/api.html#config-baseUrl">baseUrl</a>, which in this case is the <strong>public</strong> folder of our application.</li>
+<li>We then define maps that tell require JS how to find modules that not stored directly in the baseUrl. After making defining these paths, we can refer to individual moduels by these names, rather than having to spell out the whole path. For instance, we can write <strong>control</strong> rather than <strong>javascripts/control</strong>.</li>
+</ul>
+<h2 id="require-js-modules">Require JS Modules</h2>
+<p>Require JS modules are defined in specific way, usually through calls to function named <strong>define</strong>. For instance, in <strong>public/javascripts/control.js</strong> we define our first require js module:</p>
+<pre><code class="lang-javascript">define([<span class="hljs-string">'jquery'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$</span>) </span>{
     <span class="hljs-comment">//Do setup work here</span>
 
     <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showBar</span>(<span class="hljs-params"></span>) </span>{
@@ -200,14 +213,23 @@ requirejs([<span class="hljs-string">'jquery'</span>], <span class="hljs-functio
         init: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
             <span class="hljs-comment">//console.log(this.color);</span>
             that = <span class="hljs-keyword">this</span>;
-            $(<span class="hljs-string">'#aboutButton'</span>).click(about.init);
-            $(<span class="hljs-string">'#workButton'</span>).click(work.init);
             $(<span class="hljs-string">'#elf-view'</span>).load(<span class="hljs-string">'/main'</span>, <span class="hljs-keyword">this</span>.setup);
         }
     };
 
     <span class="hljs-keyword">return</span> control;
 });
+</code></pre>
+<p>We begin by calling the require js <strong>define</strong> function:</p>
+<pre><code class="lang-javascript">define([<span class="hljs-string">'jquery'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($)</span> </span>{
+  <span class="hljs-comment">// DEFINE THE OBJECT STORED IN THIS MODULE AND RETURN IT</span>
+});
+</code></pre>
+<p>Inside the define function we define the object stored in our module, and return it. You need do nothing special when writing your object. Just define it using standard JavaScript code and it is ready to use. It automatically inherits the features of a require module because it is declared this way. It is as if you declared it using the module pattern, but it is perhaps simpler to understand, and easier to use as part of a larger application architecture.</p>
+<p>Many of the major libraries that are commonly used automatically implement the requirejs define function or do something similar. In other words, jQuery, and many other libraries, are requirejs modules. Or maybe it would be more correct to say that the meet the requirements of a requirejs module. This is the case because requirejs is so popular, and so commonly used. Some libraries do not support requirejs, and we will have to take special steps to load them.</p>
+<h2 id="create-html">Create HTML</h2>
+<p>You might have noticed that we make this call in our module:</p>
+<pre><code class="lang-javascript">$(<span class="hljs-string">'#elf-view'</span>).load(<span class="hljs-string">'/main'</span>, <span class="hljs-keyword">this</span>.setup);
 </code></pre>
 <p>In <strong>work.jade</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-selector-tag">h1</span> Main
