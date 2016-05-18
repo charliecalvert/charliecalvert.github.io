@@ -4,7 +4,9 @@
 <li><a href="#test-simple-format">Test Simple Format</a></li>
 <li><a href="#simple-format-directive">Simple Format Directive</a></li>
 <li><a href="#test-simple-format-backend">Test Simple Format Backend</a></li>
-<li><a href="#exercises">Exercises</a></li>
+<li><a href="#simple-format-page">Simple Format Page</a></li>
+<li><a href="#test-rewewable-by-year">Test Rewewable by Year</a></li>
+<li><a href="#get-by-year-page">Get By Year Page</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#suite-titles">Suite Titles</a></li>
 <li><a href="#hints">Hints</a></li>
@@ -277,10 +279,52 @@ cd ..
 });
 </code></pre>
 <p>This code calls the <strong>getRenewable</strong> method on our <strong>MainController&#39;s</strong> scope.</p>
-<h2 id="exercises">Exercises</h2>
+<h2 id="simple-format-page">Simple Format Page</h2>
+<p>We are going to add a new page to the application and use it to display the <strong>SimpleFormat</strong> directory. When we are done, our Single Page App (SPA) will have three &quot;pages&quot;:</p>
+<ul>
+<li>Home</li>
+<li>Simple Format</li>
+<li>About</li>
+</ul>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/angular-solar-simple-01.png" alt="Home Page">
+<strong>Caption</strong>: <em>The Home page displays the elf renewable directive.</em></p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/angular-solar-simple-01.png" alt="Simple Format Page">
+<strong>Caption</strong>: <em>The Simple Format page displays the simple format directive.</em></p>
+<p>In <strong>index.jade</strong>, between home and about, add the following menu item:</p>
+<pre><code class="lang-javascript">li(<span class="hljs-name">ng-class=</span><span class="hljs-string">"{ active: isActive('/simple-format')}"</span>)
+  a(<span class="hljs-name">ng-href=</span>'#/simple-format') Simple Format
+</code></pre>
+<p>In <strong>app.js</strong>, between Home and About, add the following angular route:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-class">.when</span>(<span class="hljs-string">'/simple-format'</span>, {
+    <span class="hljs-attribute">templateUrl</span>: <span class="hljs-string">'simple-format-page'</span>,
+    <span class="hljs-attribute">controller</span>: <span class="hljs-string">'SimpleFormatController'</span>
+})
+</code></pre>
+<p>Make a copy of <strong>main.js</strong> and call it <strong>simple-format-page.js</strong>. We want to display the <strong>elfRenewable</strong> directive on the main page and the <strong>elfSimpleFormat</strong> directive on the <strong>simple-format-page</strong>. As a result, you should:</p>
+<ul>
+<li>remove the <strong>elfSimpleFormat</strong> directive from <strong>main.js</strong></li>
+<li>remove the <strong>elfRenewable</strong> directive from <strong>simple-format-page.js</strong>.</li>
+</ul>
+<p>Copy <strong>main.jade</strong> to <strong>simple-format-page.jade</strong> and perform similar operations. For instance:</p>
+<ul>
+<li>remove the <strong>elfSimpleFormat</strong> tag from <strong>main.jade</strong></li>
+<li>remove the <strong>elfRenewable</strong> tag from <strong>simple-format-page.jade</strong></li>
+</ul>
+<p>Change the name of the <strong>controller</strong> in <strong>simple-format-page.js</strong> from <strong>MainController</strong> to <strong>SimpleFormatController</strong>:</p>
+<pre><code class="lang-javascript">elfApp.controller(<span class="hljs-string">'SimpleFormatController'</span>, <span class="hljs-keyword">function</span>($scope, $http, renewableUtils) {
+  etc...
+});
+</code></pre>
+<p>Be sure to load <strong>simple-format-page.js</strong> in <strong>layout.jade</strong>.</p>
+<h2 id="test-rewewable-by-year">Test Rewewable by Year</h2>
+<p>Copy <strong>main.js</strong> to <strong>renewableByYear.js</strong>. Set the controller name <strong>RenewableByYearController</strong>:</p>
+<pre><code class="lang-javascript">elfApp.controller(<span class="hljs-string">'RenewableByYearController'</span>, <span class="hljs-keyword">function</span>($scope, $http, renewableUtils) {
+
+});
+</code></pre>
 <p>Write a method:</p>
 <ul>
-<li>on <strong>renewableUtils</strong> called <strong>getByYear</strong>. Pass it a year, and it should return an object with<ul>
+<li>on <strong>renewableUtils</strong> called <strong>getByYear(year)</strong>. Pass it a year, and it should return an object with<ul>
 <li>An <strong>index</strong> property set to the index of the object with that year</li>
 <li>The object at that index</li>
 </ul>
@@ -292,8 +336,18 @@ cd ..
 </ul>
 </li>
 </ul>
-<p>Your code should pass these tests:</p>
-<pre><code class="lang-javascript">describe(<span class="hljs-string">'Simple Format Exercises Suite'</span>, <span class="hljs-keyword">function</span> () {
+<p>When implementing <strong>renewableUtils.getByYear(year)</strong> be sure you can handle the year in either string or numeric format. For instance, consider either:</p>
+<ul>
+<li>Doing a test to see the <strong>year</strong> parameter is a number and if so converting it to string.</li>
+<li>Using <strong>==</strong> rather than <strong>===</strong> so that you can compare a string like <strong>&#39;2017&#39;</strong> to the number <strong>2017</strong> and get back true.</li>
+</ul>
+<p>Don&#39;t forget to run:</p>
+<pre>
+jade views/renewable-by-year.jade --out spec/fixtures
+</pre>
+
+<p>Your code should pass these tests which should be found in <strong>test-renewable-by-year.js</strong>:</p>
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Renewable By Year Suite'</span>, <span class="hljs-keyword">function</span> () {
 
     <span class="hljs-string">'use strict'</span>;
 
@@ -310,14 +364,14 @@ cd ..
         $compile = <span class="hljs-number">_</span>$compile<span class="hljs-number">_</span>;
         $templateCache = <span class="hljs-number">_</span>$templateCache<span class="hljs-number">_</span>;
         $httpBackend = <span class="hljs-number">_</span>$httpBackend<span class="hljs-number">_</span>;
-        mainController = <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>(<span class="hljs-string">'MainController'</span>, {
+        mainController = <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>(<span class="hljs-string">'RenewableByYearController'</span>, {
             $scope: scope
         });
     }));
 
     beforeEach(function () {
         jasmine.getFixtures().fixturesPath = <span class="hljs-string">'base/spec/fixtures/'</span>;
-        loadFixtures(<span class="hljs-string">'simple-format.html'</span>);
+        loadFixtures(<span class="hljs-string">'renewable-by-year.html'</span>);
     });
 
     beforeEach(function () {
@@ -326,7 +380,7 @@ cd ..
             .respond(renewables);
 
         $httpBackend.expectGET(<span class="hljs-string">'data/Renewable.json'</span>);
-        scope.getRenewable();
+        scope.getRenewableByYear();
         $httpBackend.flush();
     });
 
@@ -335,7 +389,7 @@ cd ..
     });
 
     it(<span class="hljs-string">'proves renewables.getByYear returns index &amp; expected object'</span>, function() {
-        var renewable = {
+        var renewableByYear = {
             <span class="hljs-string">"Year"</span>: <span class="hljs-string">"2015"</span>,
             <span class="hljs-string">"Solar (quadrillion Btu)"</span>: <span class="hljs-string">"0.532293912"</span>,
             <span class="hljs-string">"Geothermal (quadrillion Btu)"</span>: <span class="hljs-string">"0.22367033"</span>,
@@ -347,26 +401,50 @@ cd ..
         };
 
         var result = scope.renewableUtils.getByYear(<span class="hljs-string">'2015'</span>);
-        expect(result).toEqual({ index:<span class="hljs-number">2</span>, renewable: renewable })
+        expect(result).toEqual({ index:<span class="hljs-number">2</span>, renewable: renewableByYear });
+        var result = scope.renewableUtils.getByYear(<span class="hljs-number">2015</span>);
+        expect(result).toEqual({ index:<span class="hljs-number">2</span>, renewable: renewableByYear });
+
     });
 
-    it(<span class="hljs-string">'tests that we can get an item in simpleFormat by Year'</span>, function () {
+    it(<span class="hljs-string">'tests that we can get a renewable object by Year'</span>, function () {
         var renewableByYear = scope.getByYear(<span class="hljs-string">'2015'</span>);
+        //console.log(renewableByYear);
         expect(JSON.stringify(renewableByYear)).toContain(<span class="hljs-string">'0.532293912'</span>);
     });
 
-    it(<span class="hljs-string">'tests that we can get an item in simpleFormat by Year'</span>, function () {
-        var simpleFormatHtml = document.getElementById(<span class="hljs-string">'simpleFormat'</span>);
-        $templateCache.put(<span class="hljs-string">'simple-format'</span>, simpleFormatHtml);
-        var element = $compile(<span class="hljs-string">'&lt;elf-simple-format&gt;&lt;/elf-simple-format&gt;'</span>)(scope);
+    it(<span class="hljs-string">'tests that we can get a renewable object by Year in our elfRenewableByYear directive'</span>, function () {
+        var simpleFormatHtml = document.getElementById(<span class="hljs-string">'renewableByYear'</span>);
+        $templateCache.put(<span class="hljs-string">'renewable-by-year'</span>, simpleFormatHtml);
+        var element = $compile(<span class="hljs-string">'&lt;elf-renewable-by-year&gt;&lt;/elf-renewable-by-year&gt;'</span>)(scope);
         scope.$digest();
         var renewableByYear = scope.getByYear(<span class="hljs-string">'2015'</span>);
+        //console.log(renewableByYear);
         scope.$digest();
+        //console.log(element.text());
         expect(element.text()).toContain(<span class="hljs-string">'1.8151574968'</span>);
     });
 
 });
 </code></pre>
+<h2 id="get-by-year-page">Get By Year Page</h2>
+<p>Create a page called <strong>Renewable By Year</strong>. Allow the user to enter a year using an input control. Retrieve the user input, call your <strong>getByYear</strong> function, and display the year.</p>
+<ul>
+<li>Menu Item Title: <strong>Renewable By Year</strong>,<ul>
+<li>url: <strong>renewable-by-year</strong></li>
+<li>Make corresponding changes in <strong>app.js</strong> and <strong>index.jade</strong>.</li>
+</ul>
+</li>
+<li>Controller Name: <strong>RenewableByYearController</strong> in <strong>renewable-by-year.js</strong><ul>
+<li>The jade page associated with this controller should be called <strong>renewable-by-year-page.jade</strong></li>
+<li>In this file create a directive called <strong>renewable-by-year</strong>. Use to display the results of your call to <strong>getByYear</strong></li>
+</ul>
+</li>
+<li>Jade Name for controller: <strong>renewable-by-year-page.jade</strong>.</li>
+<li>Jade Name for directive: <strong>renewable-by-year.jade</strong></li>
+</ul>
+<p>This is a matter of taste. Nevertheless, when doing this kind of work, I find it helpful to keep my tests running and keep my app running in Chrome with the developers tools turned to the <strong>console</strong> page. I use the errors as I see as guides to help me see what needs to be done next, and what I have not yet done correctly.</p>
+<p><strong>NOTE</strong>: <em>Watch the console and network pages in the Chrome developer tools carefully as you do this kind of work. Check, for instance, if you have remembered to load your new JavaScript page in <strong>layout.jade</strong>.</em></p>
 <h2 id="turn-it-in">Turn it in</h2>
 <p>The usual.</p>
 <h2 id="suite-titles">Suite Titles</h2>
