@@ -46,6 +46,8 @@
 <li><a href="#rebase">Rebase</a></li>
 <li><a href="#restructure-you-repository">Restructure you Repository</a></li>
 <li><a href="#permanent-delete">Permanent Delete</a></li>
+<li><a href="#git-mv">Git mv vs Bash mv</a></li>
+<li><a href="#incremental">Incremental: One Step at a Time</a></li>
 <li><a href="#permenant-delete-with-bfg">Permenant Delete with BFG</a></li>
 <li><a href="#git-deletions-and-workflow">Git Deletions and Workflow</a></li>
 <li><a href="#undo-an-add-in-git">Undo an Add in Git</a></li>
@@ -1364,7 +1366,33 @@ rm</em> to delete files.</p>
 </code></pre><p>It is difficult to emphasize too often how very important it is to put <strong>node_modules</strong> in your <strong>.gitignore</strong> file. Please look on GitHub, BitBucket, etc when you are through with this process and make sure it is now included.</p>
 <p><strong>NOTES</strong>: <em>I&#39;ve heard it said, but not tested that you can remove multiple copies of nested folders like this:</em></p>
 <pre><code>git <span class="hljs-keyword">filter</span>-branch --tree-<span class="hljs-keyword">filter</span> <span class="hljs-string">'git rm -rf --ignore-unmatch */foo/* '</span> HEAD
-</code></pre><h3 id="permenant-delete-with-bfg">Permenant Delete with BFG</h3>
+</code></pre><h2 id="git-mv">Git mv vs Bash mv</h2>
+<p>There is usually not a lot of difference between <strong>git mv</strong> and <strong>mv</strong>. Nevertheless, I suggest you use <strong>git mv</strong> and <strong>git rm</strong> when renaming or deleting folders that are already under git control.</p>
+<p>Though it is not always a problem, there are cases when using <strong>git mv</strong> rather than just <strong>mv</strong> is better able to preserver your history. Every time you commit, git saves the state of your file. So it remembers what a file looked like the first time you committed it, and each subsequent time. If you use mv instead of git mv, then git can think that you simply deleted one file and created a new file. Then you history won&#39;t be attached to the new file, and you can see what it looked like in the past. If you use git mv then your history for a file will be preserved.</p>
+<p>Usually, however, git can be smart about what happens when you use mv instead of git mv. In other words, it seems to me, and I am not certain about this, that it can usually figure out that a deleted file and a new file are so exactly similar that you must have done a rename, and so it preserves the file history. But I don&#39;t think it is good idea to count on this, instead use git mv to be safe.</p>
+<p>At first, you won&#39;t care much about the history of files since you won&#39;t really understand how to go back in time to previous version. But over time, you will learn how to do this. Then you may find occasions when you are glad you preserved the whole history of a file. But frankly, this topic is complicated, and I would take what I say here with a grain of salt. All I can really assert is just that it is safer and easier to use git mv rather than mv.</p>
+<p>See this discussion:</p>
+<p><a href="http://stackoverflow.com/a/1094392/253576">http://stackoverflow.com/a/1094392/253576</a> (Links to an external site.)</p>
+<p>Notice that the guy says they are the same, but the top comment on his reply is that &quot;git mv&quot; has a few safeties built in. The discussion goes on from there, but I don&#39;t want to try to recap it. It gets pretty technical pretty quickly.</p>
+<h2 id="incremental">Incremental: One Step at a Time</h2>
+<p>I see students get in trouble by renaming a lot of files, and especially entire folders, then not immediately committing their work. Sometimes they even delete or rename a whole project folder, and then recreate a new one with the same name:</p>
+<pre>
+rm -r Week0X-SomeProject
+mkdir Week0X-SomeProject
+</pre>
+
+<p>This formula can lead to chaos. If you want to do something like this, I would do it like this:</p>
+<pre>
+git rm -r Week0X-SomeProject
+git add
+git commit -m "Deleting hopeless messed up folder.
+</pre>
+
+<p>And, depending on circumstances, sometimes try a <strong>git push</strong> and <strong>git pull</strong> after the above to make sure all is still okay.</p>
+<p>Then: <strong>mkdir Week0X-SomeProject</strong> or the equivalent, which might be a copy operation or a run of <strong>CreateAllExpress</strong> etc.</p>
+<p>The point being that one should work one step at a time. Don&#39;t make dozens of changes at once without seeing if you can successfully commit and possibly also push and pull.</p>
+<p>The same is true in your code, don&#39;t make dozens of changes at once without checking to see if your tests still pass and your program runs. If you must make those changes very quickly because you are following along in class and have to move to the next step, then when you are done for the day, comment out nearly all the steps, leaving only the first one visible. Get it to work, then un-comment a bit more of your work, get it set up correctly, etc. Always one step at a time!</p>
+<h3 id="permenant-delete-with-bfg">Permenant Delete with BFG</h3>
 <p>A tool called BFG can make permanently deleting files from a repository
 fairly easy. Do this if you accidentally committed something with
 a password in it, or some huge files or directories (node_modules,
