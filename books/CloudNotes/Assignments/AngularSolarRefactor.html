@@ -1,5 +1,6 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>AngularSolarRefactor</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><!-- script(src="/libs/scripts/Control.js")--><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>AngularSolarRefactor</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
-<li><a href="#refactor-folders">Refactor Folders</a></li>
+<li><a href="#refactor-client-folders">Refactor Client Folders</a></li>
+<li><a href="#refactor-server-folders">Refactor Server Folders</a></li>
 <li><a href="#http-errors">Handling HTTP Errors</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>This assignment stands on its own, but it is closely tied to the midterm. Here is one way to think about it:</p>
 <ul>
@@ -11,7 +12,7 @@
 <li>We will work through the renewables section in class and in this assignment</li>
 <li>The energy pages will be touched on in class, but not covered in such depth</li>
 </ul>
-<h2 id="refactor-folders">Refactor Folders</h2>
+<h2 id="refactor-client-folders">Refactor Client Folders</h2>
 <p>As our program grows in complexity, we need to create folders that can group related features. For instance, we should put all our renewables related files in one place.</p>
 <p>Move all our renewables related files into a folder called <strong>renewables</strong>:</p>
 <pre>
@@ -21,6 +22,16 @@ git mv renewable-by-year.js renewables-utils.js renewables/.
 git mv simple-format-page.js renewables/.
 </pre>
 
+<p>We also want to rename <strong>public/javascripts/main.js</strong> to <strong>public/javascripts/renewables/renewables-page.js</strong>:</p>
+<pre>
+git mv main.js renewables/renewables-page.js
+</pre>
+
+<p>This accomplishes two things:</p>
+<ul>
+<li>It gives the page a meaningful name. After all, what did the name <strong>main.js</strong> tell us about the contents of the file? A name like <strong>renewables-page.js</strong>, while perhaps not ideal, is much more descriptive.</li>
+<li>It moves this last piece of our renewables logic into the <strong>renewables</strong> folder where other files of this type live. The point is to use folders to group related files.</li>
+</ul>
 <p>Now make the obvious related changes in <strong>layout.jade</strong>.</p>
 <p>Less obvious are the changes we need to make in <strong>karma.conf.js</strong>. As we move toward multiple folders, change the way we load files in the <strong>files</strong> section at the top of <strong>karma.conf.js</strong>:</p>
 <pre><code class="lang-javascript">'public/javascripts/<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/<span class="hljs-keyword">*</span>.js',
@@ -32,6 +43,60 @@ git mv simple-format-page.js renewables/.
 <li><a href="http://man7.org/linux/man-pages/man7/glob.7.html">http://man7.org/linux/man-pages/man7/glob.7.html</a></li>
 <li><a href="http://gruntjs.com/configuring-tasks#globbing-patterns">http://gruntjs.com/configuring-tasks#globbing-patterns</a></li>
 </ul>
+<h2 id="refactor-server-folders">Refactor Server Folders</h2>
+<p>Move all the <strong>renewable</strong> related jade files into a folder called <strong>views/renewables</strong>.</p>
+<p>When you are done, you might see something like this in <strong>views/renewables</strong>:</p>
+<pre>
+$ ls -la
+total 28
+drwxrwxr-x 2 charlie charlie 4096 May 23 09:14 .
+drwxrwxr-x 4 charlie charlie 4096 May 23 09:14 ..
+-rw-rw-r-- 1 charlie charlie  863 May 21 19:54 renewable-by-year.jade
+-rw-rw-r-- 1 charlie charlie  791 May 21 19:54 renewable-by-year-page.jade
+-rw-rw-r-- 1 charlie charlie  643 May 21 19:54 renewable.jade
+-rw-rw-r-- 1 charlie charlie  189 May 21 19:54 simple-format.jade
+-rw-rw-r-- 1 charlie charlie  225 May 21 19:54 simple-format-page.jade
+charlie@rohan-elf:~/Git/prog219-calvert-2016/SolarExplorer/views/renewables
+</pre>
+
+<p>Don&#39;t forget to rename <strong>views/main.jade</strong>:</p>
+<pre>
+cd views
+git mv main.jade renewables/renewables-page.jade
+</pre>
+
+<p>This means you need to add a new handler to <strong>routes/index.js</strong> that handles requests for files in the new renewables folder:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/renewables/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response, next</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    response.render(<span class="hljs-string">'renewables/'</span> + request.params.id, {
+        title: <span class="hljs-string">' Angular Directive Calvert'</span>
+    });
+});
+</code></pre>
+<p>Compare this route with the default route we use when asking for jade files other than the home page:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response, next</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    response.render(request.params.id, {
+        title: <span class="hljs-string">' Angular Directive Calvert'</span>
+    });
+});
+</code></pre>
+<p>Notice that we have made two changes:</p>
+<ul>
+<li>The route itself has changed from <strong>/:id</strong> to <strong>/renewables/:id</strong></li>
+<li>The path that response.render uses to find the Jade file has been changed</li>
+</ul>
+<p><strong>NOTE</strong>: <em>We will make additional changes to the system after the midterm is complete. In particular, it is possible create a javascript file in the routes directory dedicated to the renewables routes. But lets move towards that goal at a slow, stately pace. This is enough for now.</em></p>
+<p>Finally, you will need to modify the <strong>elfRenewable</strong> directive to point at this new route:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">templateUrl:</span> <span class="hljs-string">'renewables/renewable'</span>
+</code></pre>
+<p>Make similar changes in <strong>public/javascripts/apps.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-class">.when</span>(<span class="hljs-string">'/simple-format'</span>, {
+    <span class="hljs-attribute">templateUrl</span>: <span class="hljs-string">'renewables/simple-format-page'</span>,
+    <span class="hljs-attribute">controller</span>: <span class="hljs-string">'SimpleFormatController'</span>
+})
+</code></pre>
+<p>You will have to make several such changes which I will leave as an exercise. Don&#39;t forget that you have renamed <strong>main.jade</strong>!</p>
 <h2 id="http-errors">Handling HTTP Errors</h2>
 <p>Add error handler to our calls to $http.get. The first four or five lines are changed. What we have added is the <strong>errorCallback</strong>. It gets called if an error occurs:</p>
 <pre><code class="lang-javascript">$http.get(<span class="hljs-string">'data/EnergyTypes.json'</span>)
