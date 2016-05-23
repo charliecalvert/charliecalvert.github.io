@@ -2,6 +2,7 @@
 <li><a href="#new-files">New Files</a></li>
 <li><a href="#angular-routes">Angular Routes</a></li>
 <li><a href="#energy-types">Energy Types</a></li>
+<li><a href="#msn-types">MSN Types</a></li>
 <li><a href="#energy-selectors">Energy Selectors</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#hints">Hints</a></li>
@@ -93,9 +94,85 @@ h1 Energy Types
 // The remaining to panels are left as an exercise.
 </pre>
 
+<h2 id="msn-types">MSN Types</h2>
+<p>A single energy type looks like this:</p>
+<pre><code class="lang-json">{
+    "<span class="hljs-attr">MSN</span>": <span class="hljs-string">"FFPRBUS"</span>,
+    "<span class="hljs-attr">YYYYMM</span>": <span class="hljs-string">"194913"</span>,
+    "<span class="hljs-attr">Value</span>": <span class="hljs-string">"28.748176"</span>,
+    "<span class="hljs-attr">Column_Order</span>": <span class="hljs-string">"1"</span>,
+    "<span class="hljs-attr">Description</span>": <span class="hljs-string">"Total Fossil Fuels Production"</span>,
+    "<span class="hljs-attr">Unit</span>": <span class="hljs-string">"Quadrillion Btu"</span>
+}
+</code></pre>
+<p>There are two oddities here:</p>
+<ul>
+<li>The MSN property. Here it is FFPREBUS, which we see in the Description stands for &quot;Fossile Fuel Produciton.&quot;</li>
+<li>The YYYYMM property, which contains the year and a month: 1949 is the 13, is the month. I believe they are using 13 to say that they don&#39;t track months for this year, and that this is the production for the entire year. Starting around 1972 they will begin tracking production by month, and then the month field will be easier to understand.</li>
+</ul>
+<p>We want to know all the available MSN types. Just scanning through the file will reveal that there are several different types, such as FFPRBUS and NUETBUS. Since we have 7008 records, it is a bit hard to manually track down all the different types and their counts. So let&#39;s write code to do it, and also to break out our years and months.</p>
+<p>It might be possible to use Angular filters to find our MSN types, but I would prefer to do it myself. This would be a fairly simple task if we only wanted to find the unique MSN types. But it is better to find both the type and the accompanying description. That can get a bit fussy, so I will just give you the code, which I put in <strong>public/javascripts/energy-types/msn-types.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfApp = angular.module(<span class="hljs-string">'elfApp'</span>);
 
+elfApp.factory(<span class="hljs-string">'msnTypes'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getMsnTypes</span>(<span class="hljs-params">energyTypes</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'getMsnTypes called'</span>);
+        <span class="hljs-keyword">var</span> currentMsn = {msn: <span class="hljs-literal">null</span>, description: <span class="hljs-string">''</span>};
+        <span class="hljs-keyword">var</span> msnTypes = [];
 
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insertNewCurrentMsn</span>(<span class="hljs-params">energyType</span>) </span>{
+            currentMsn = <span class="hljs-built_in">Object</span>.create(currentMsn);
+            currentMsn.msn = energyType.MSN;
+            currentMsn.description = energyType.Description;
+            msnTypes.push(currentMsn);
+        }
+
+        insertNewCurrentMsn(energyTypes[<span class="hljs-number">0</span>]);
+
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isUnique</span>(<span class="hljs-params">msn</span>) </span>{
+            <span class="hljs-keyword">var</span> result = <span class="hljs-literal">true</span>;
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; msnTypes.length; i++) {
+                <span class="hljs-keyword">if</span> (msn === msnTypes[i].msn) {
+                    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'msn vs c.msn'</span>, msn, currentMsn.msn);
+                    result = <span class="hljs-literal">false</span>;
+                    <span class="hljs-keyword">break</span>;
+                }
+            }
+            <span class="hljs-keyword">return</span> result;
+        }
+
+        energyTypes.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">energyType, index</span>) </span>{
+            <span class="hljs-comment">// console.log('energyType index and index length', index, msnTypes.length);</span>
+            energyType.Year = energyType.YYYYMM.substr(<span class="hljs-number">0</span>, <span class="hljs-number">4</span>);
+            energyType.Month = energyType.YYYYMM.substr(<span class="hljs-number">4</span>);
+            <span class="hljs-keyword">if</span> (energyType.MSN !== currentMsn.msn) {
+                <span class="hljs-keyword">if</span> (isUnique(energyType.MSN)) {
+                    <span class="hljs-comment">//console.log('isUnique');</span>
+                    insertNewCurrentMsn(energyType);
+                }
+            }
+        });
+        <span class="hljs-keyword">return</span> msnTypes;
+    }
+
+    <span class="hljs-keyword">return</span> getMsnTypes
+});
+</code></pre>
+<p>We can use it like this:</p>
+<pre><code class="lang-javascript">$scope.getEnergyTypes = <span class="hljs-keyword">function</span> () {
+        $http.get(<span class="hljs-string">'data/EnergyTypes.json'</span>)
+            .then(function (response) {                
+                $scope.msnTypes = msnTypes(response.data);
+                etc... // CODE HERE LEFT AS EXERCISE
+              }, function errorCallback(response) {
+          console.log(<span class="hljs-string">'Error:'</span>, response.status, response.statusText);
+      });
+};
+</code></pre>
 <h2 id="energy-selectors">Energy Selectors</h2>
+<p>The goal of the Energy Selectors page is to allow the user to click on an MSN type and see only the records of that type. There are about 7008 objects in our array, and each MSN type encapsulates about 584 of those records.</p>
+<p><img src="" alt="MSN Selection"></p>
+<p><strong>Figure 02</strong> Selecting a subset of the msn types.</p>
 <h2 id="turn-it-in">Turn it in</h2>
 <p>The usual</p>
 <h2 id="hints">Hints</h2>
