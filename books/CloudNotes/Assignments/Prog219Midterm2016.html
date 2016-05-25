@@ -6,6 +6,7 @@
 <li><a href="#msn-types">MSN Types</a></li>
 <li><a href="#energy-selectors">Energy Selectors</a></li>
 <li><a href="#the-menu">The Menu</a></li>
+<li><a href="#testing">Testing</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#hints">Hints</a></li>
 <li><a href="#karma">Karma</a></li>
@@ -111,12 +112,30 @@ h1 Energy Types
 <li>The MSN property. Here it is FFPREBUS, which we see in the Description stands for &quot;Fossile Fuel Produciton.&quot;</li>
 <li>The YYYYMM property, which contains the year and a month: 1949 is the 13, is the month. I believe they are using 13 to say that they don&#39;t track months for this year, and that this is the production for the entire year. Starting around 1972 they will begin tracking production by month, and then the month field will be easier to understand.</li>
 </ul>
-<p>We want to know all the available MSN types. Just scanning through the file will reveal that there are several different types, such as FFPRBUS and NUETBUS. Since we have 7008 records, it is a bit hard to manually track down all the different types and their counts. So let&#39;s write code to do it, and also to break out our years and months. It turns out that the MSN value NUETBUS is used both for Nuclear Production and Nuclear Consumption. As a result, we have to distinguish the different types not on abbreviations such NUETBUS but on the description itself.</p>
+<p>We want to know all the available MSN types. Just scanning through the file will reveal that there are several different types, such as FFPRBUS and NUETBUS. Since we have 7008 records, it is a bit hard to manually track down all the different types and their counts. So let&#39;s write code to do it, and also to break out our years and months. It turns out that the MSN value NUETBUS is used both for Nuclear Production and Nuclear Consumption. As a result, we have to distinguish the different types not on abbreviations such NUETBUS but on the description itself. Figure 01 shows that there are two NUETBUS types, one for consumption and one for production. Here you can see on of each type of object, where the description field differs even though the MSN field is the same:</p>
+<pre><code class="lang-json">{
+    "<span class="hljs-attr">MSN</span>": <span class="hljs-string">"NUETBUS"</span>,
+    "<span class="hljs-attr">YYYYMM</span>": <span class="hljs-string">"201511"</span>,
+    "<span class="hljs-attr">Value</span>": <span class="hljs-string">".630301"</span>,
+    "<span class="hljs-attr">Column_Order</span>": <span class="hljs-string">"2"</span>,
+    "<span class="hljs-attr">Description</span>": <span class="hljs-string">"Nuclear Electric Power Production"</span>,
+    "<span class="hljs-attr">Unit</span>": <span class="hljs-string">"Quadrillion Btu"</span>
+}
+{
+    "<span class="hljs-attr">MSN</span>": <span class="hljs-string">"NUETBUS"</span>,
+    "<span class="hljs-attr">YYYYMM</span>": <span class="hljs-string">"201512"</span>,
+    "<span class="hljs-attr">Value</span>": <span class="hljs-string">".728298"</span>,
+    "<span class="hljs-attr">Column_Order</span>": <span class="hljs-string">"10"</span>,
+    "<span class="hljs-attr">Description</span>": <span class="hljs-string">"Nuclear Electric Power Consumption"</span>,
+    "<span class="hljs-attr">Unit</span>": <span class="hljs-string">"Quadrillion Btu"</span>
+}
+</code></pre>
 <p>It might be possible to use Angular filters to find our MSN types, but I would prefer to do it myself. This would be a fairly simple task if we only wanted to find the unique MSN types. But it is better to find both the type and the accompanying description. That can get a bit fussy, so I will just give you the code, which I put in <strong>public/javascripts/energy-types/msn-types.js</strong>:</p>
 <p><strong>NOTE</strong>: <em>This code changed on Wednesday, May 25, 2016, when I realized the MSN type abbreviation is not unique. The unique field is the description.</em></p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfApp = angular.module(<span class="hljs-string">'elfApp'</span>);
 
 elfApp.factory(<span class="hljs-string">'msnTypes'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
 
     <span class="hljs-keyword">var</span> currentMsn = {msn: <span class="hljs-literal">null</span>, description: <span class="hljs-string">''</span>};
     <span class="hljs-keyword">var</span> msnTypes = [];
@@ -162,7 +181,7 @@ elfApp.factory(<span class="hljs-string">'msnTypes'</span>, <span class="hljs-fu
         <span class="hljs-keyword">return</span> msnTypes;
     }
 
-    <span class="hljs-keyword">return</span> getMsnTypes
+    <span class="hljs-keyword">return</span> getMsnTypes;
 });
 </code></pre>
 <p>The code:</p>
@@ -254,9 +273,10 @@ block content
 </code></pre>
 <p>The menu changes shape to fit properly on a mobile device. The hamburger menu for the mobile device is the bit with the <strong>span.icon-bar</strong> syntax.</p>
 <p>The menu will not automatically collapse when you make a selection. To help fix this problem, we can add the following to <strong>app.js</strong>:</p>
-<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
-    $(<span class="hljs-string">".navbar-nav li.trigger-collapse a"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
-        $(<span class="hljs-string">".navbar-collapse"</span>).collapse(<span class="hljs-string">'hide'</span>);
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    $(<span class="hljs-string">'.navbar-nav li.trigger-collapse a'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+        $(<span class="hljs-string">'.navbar-collapse'</span>).collapse(<span class="hljs-string">'hide'</span>);
     });
 });
 </code></pre>
@@ -265,9 +285,65 @@ block content
 li.trigger-collapse(ng-class="{ active: isActive('/')}")
 </pre>
 
+<h2 id="testing">Testing</h2>
+<p>The tests are in <strong>JsObjects/Utilities/Templates/UnitTest</strong> in the <a href="https://github.com/charliecalvert/JsObjects/tree/master/Utilities/Templates/UnitTest/SolarExplorer"><strong>SolarExplorer</strong></a> folder.</p>
+<p>Run them against your own code, and make sure they pass. Depending on whether I&#39;ve updated them or not, the output might look a bit like this:</p>
+<pre>
+Elvenware Fixture and Template Cache Suite
+  ✓ expects true to be true
+  ✓ should find the index
+  ✓ should have a getRenewable method
+  ✓ should be possible to access the fixture
+  ✓ tests template loaded through simple raw text
+  ✓ tests template loaded through more complex raw text
+  ✓ tests scope variable access in template loaded through fixture
+
+Energy Types Suite
+  ✓ proves we can test
+  ✓ shows we can find each of the 12 MSN types
+
+Elvenware Simple Mocks with HttpBackend Suite
+  ✓ proves we can run tests
+  ✓ should find the index
+  ✓ should have a getRenewable method
+  ✓ proves we can detect request
+
+Renewable By Year Suite
+  ✓ expects true to be true
+  ✓ proves renewables.getByYear returns index & expected object with string year
+  ✓ proves renewables.getByYear returns index & expected object with numeric year
+  ✓ tests that we can get a renewable object by Year from our controller
+  ✓ tests that we can get a renewable object by Year in our elfRenewableByYear directive
+
+Renewables Suite
+  ✓ proves we can run tests
+  ✓ proves we can get renewableUtils name
+  ✓ proves we can get renewableUtils method called getItemCount
+  ✓ proves we can get from renewableUtils a particular renewable object by index
+  ✓ proves we can transform our json into a new array consisting only of years
+  ✓ proves we can get our wood map
+  ✓ proves our array of years contains the expected data
+  ✓ proves we can transform our json into an array with three properties: geo, solar, and wind
+  ✓ proves that getSimpleStringFormat returns the expected string data
+  ✓ proves that getSimpleFormat returns the expected numeric data
+
+Simple Format HttpBackend Suite
+  ✓ expects true to be true
+  ✓ tests simple-format directive loaded through fixture with httpBackend
+  ✓ tests that we can index to the fifth element
+
+Simple Format Fixture Suite
+  ✓ expects true to be true
+  ✓ should find the index
+  ✓ should be possible to access the fixture
+  ✓ should be possible to access the fixture and put real data in it.
+
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 35 of 35 SUCCESS (0.06 secs / 1.045 secs)
+TOTAL: 35 SUCCESS
+</pre>
 
 <h2 id="turn-it-in">Turn it in</h2>
-<p>The usual</p>
+<p>Make sure your tests pass and <strong>grunt check</strong> passes, then the usual. I&#39;m expecting it in your <strong>week08</strong> branch. It would be helpful if you spell out the branch even if you are putting it in <strong>week08</strong>. A possible alternative would be <strong>week08-midterm</strong> for those cases where you want to turn in something different than your current program. For instance, if there were features you are still trying to develop, but don&#39;t want to show for the midterm.</p>
 <h2 id="hints">Hints</h2>
 <p>Various Hints</p>
 <h3 id="karma">Karma</h3>
