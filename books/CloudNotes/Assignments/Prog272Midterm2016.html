@@ -74,4 +74,90 @@ npm install requirejs --save-dev
 npm install jasmine-jquery --save-dev
 </pre>
 
+<p>We need to create a requirejs file explicitly for our tests. Call the file <strong>spec/main-test.js</strong>.</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * @author Charlie Calvert
+ */</span>
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadTestsIntoArray</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> tests = [];
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> file <span class="hljs-keyword">in</span> <span class="hljs-built_in">window</span>.__karma__.files) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/test-/</span>.test(file)) {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Loaded test:'</span>, file);
+            tests.push(file);
+        }
+    }
+    <span class="hljs-keyword">return</span> tests;
+}
+
+<span class="hljs-built_in">require</span>.config({
+    baseUrl: <span class="hljs-string">'/base'</span>,
+
+    paths: {
+        control: <span class="hljs-string">'public/javascripts/control'</span>,
+        home: <span class="hljs-string">'public/javascripts/home'</span>,
+        renewables: <span class="hljs-string">'public/javascripts/renewables/renewables'</span>,
+        <span class="hljs-comment">// THE REST LEFT AS AN EXERCISE</span>
+    },
+    deps: loadTestsIntoArray(),
+    callback: <span class="hljs-built_in">window</span>.__karma__.start
+});
+</code></pre>
+<p>It is one of the oddities of karma that <strong>/base</strong> points to the root of your project.</p>
+<p>Your <strong>karma.conf.js</strong> file should explicitly load <strong>main-test.js</strong> and explicitly ignore <strong>public/javascripts/main.js</strong>.</p>
+<pre><code class="lang-javascript"><span class="hljs-string">frameworks:</span> [<span class="hljs-string">'jasmine'</span>, <span class="hljs-string">'requirejs'</span>],
+<span class="hljs-symbol">
+files:</span> [
+    <span class="hljs-string">'public/components/jquery/dist/jquery.min.js'</span>,
+    <span class="hljs-comment">//'public/components/requirejs/require.js',</span>
+    <span class="hljs-string">'node_modules/jasmine-jquery/lib/*.js'</span>,
+    {
+        <span class="hljs-string">pattern :</span> <span class="hljs-string">'spec/test-*.js'</span>,
+        <span class="hljs-string">included :</span> <span class="hljs-literal">false</span>
+    }, {
+        <span class="hljs-string">pattern :</span> <span class="hljs-string">'public/javascripts/**/*.js'</span>,
+        <span class="hljs-string">included :</span> <span class="hljs-literal">false</span>
+    },
+    <span class="hljs-string">'spec/main-test.js'</span>,
+    <span class="hljs-string">'*.html'</span>
+],
+
+<span class="hljs-comment">// list of files to exclude</span>
+<span class="hljs-string">exclude:</span> [<span class="hljs-string">'public/javascripts/main.js'</span>],
+</code></pre>
+<p>Remove the <strong>plugins</strong> section from the end of <strong>karma.conf.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">singleRun</span>: false,
+
+<span class="sml">/*
+  <span class="hljs-type">YOU</span> <span class="hljs-type">CAN</span> <span class="hljs-type">JUST</span> <span class="hljs-type">DELETE</span> <span class="hljs-type">IT</span>, <span class="hljs-type">BUT</span> <span class="hljs-type">I</span> <span class="hljs-type">WANT</span> <span class="hljs-type">TO</span> <span class="hljs-type">SHOW</span> <span class="hljs-type">YOU</span> <span class="hljs-type">WHAT</span> <span class="hljs-type">TO</span> <span class="hljs-type">DELETE</span>
+plugins: [<span class="hljs-symbol">'karma</span>-jasmine',
+    <span class="hljs-symbol">'karma</span>-spec-reporter',
+    <span class="hljs-symbol">'karma</span>-phantomjs-launcher',
+    <span class="hljs-symbol">'karma</span>-chrome-launcher'
+] */</span>
+</code></pre>
+<p>A simple test of the home page would look like this:</p>
+<pre><code class="lang-javascript">define([<span class="hljs-string">'home'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">home</span>) </span>{
+
+
+    describe(<span class="hljs-string">'Home Page Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">
+        'use strict'</span>;
+
+        it(<span class="hljs-string">'expects true to be true'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">true</span>);
+        });
+
+        it(<span class="hljs-string">'expects home.color to be red'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            expect(home.color).toBe(<span class="hljs-string">'red'</span>);
+        });
+
+        it(<span class="hljs-string">'expects home.size to be big'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            expect(home.size).toBe(<span class="hljs-string">'big'</span>);
+        });
+
+    });
+
+});
+</code></pre>
 </div></body></html>

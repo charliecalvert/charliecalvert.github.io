@@ -1,6 +1,7 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Prog219Midterm2016</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><!-- script(src="/libs/scripts/Control.js")--><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>Prog219Midterm2016</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
-<li><a href="#new-files">New Files</a></li>
-<li><a href="#angular-routes">Angular Routes</a></li>
+<li><a href="#angular-client-side-routes">Angular Client Side Routes</a></li>
+<li><a href="#home-page">Home Page</a></li>
+<li><a href="#new-files">Display EnergyTypes.json</a></li>
 <li><a href="#energy-types">Energy Types</a></li>
 <li><a href="#msn-types">MSN Types</a></li>
 <li><a href="#energy-selectors">Energy Selectors</a></li>
@@ -32,56 +33,54 @@
 <li><a href="http://www.agilemanifesto.org/">http://www.agilemanifesto.org/</a></li>
 <li><a href="http://www.agilemanifesto.org/principles.html">http://www.agilemanifesto.org/principles.html</a></li>
 </ul>
-<h2 id="new-files">New Files</h2>
-<p>Create:</p>
-<ul>
-<li><strong>EnergyTypesController</strong> in <strong>public/javascripts/energy-types/energy-types.js</strong></li>
-<li><strong>energy-types-page.jade</strong> in <strong>views/energy-types/</strong></li>
-<li><strong>energy-types.jade</strong> in <strong>views/energy-types/</strong></li>
-</ul>
-<p>When you load <strong>energy-types.js</strong> in <strong>layout.jade</strong>, don&#39;t forget that you need to specify the directory where it lives.</p>
-<p>In <strong>public/javascripts</strong> we also want to create a <em>home</em> page. For now, it can be very simple:</p>
-<pre>
-h1 Home
-</pre>
-
-<h2 id="angular-routes">Angular Routes</h2>
+<h2 id="angular-client-side-routes">Angular Client Side Routes</h2>
+<p>Recall that in an angular app we often have two sets of routes. One set of routes are sent back to server and handled there. The code for handling these files is often found in <strong>routes/index.js</strong>. A second set of routes are handled on the client side in <strong>public/javascripts/app.js</strong>.  When specifying a route, we use the hash tag (#) to designate a route that should be handled on the client. For instance, this route is handled on the server: <strong>/renewables</strong>. This route is handled on the client: <strong>/#/home</strong>.</p>
 <p>As we add more pages to our app, we have to be sure that our menu and button selections will properly load them. This means making changes to <strong>public/javascripts/app.js</strong>. The routes we need to establish or keep include:</p>
 <ul>
 <li>home (HomeController)</li>
-<li>renewable (main) (MainController, RewnewableController)</li>
+<li>renewable (main) (MainController: renamed to RewnewableController)</li>
 <li>simple-format (SimpleFormatController)</li>
 <li>renewable-by-year (RenewableByYearController)</li>
 <li>energy-types (EnergyTypesController)</li>
 <li>energy-selector (EnergySelectorController)</li>
 <li>about (AboutController)</li>
 </ul>
-<p>When you load <strong>energy-types.js</strong> in <strong>layout.jade</strong>, don&#39;t forget that you need to specify the directory where it lives.</p>
-<p>Make sure menu collapses in mobile device mode:</p>
+<p>You have already seen how to create some of this functionality in previous assignments. &lt;uch of the remainder of this document explains how to create the files associated with the new routes listed here. In particular, we will discuss the <strong>home</strong> page route and the <strong>energy</strong> routes.</p>
+<h2 id="home-page">Home Page</h2>
+<p>In <strong>public/javascripts</strong> we also want to create a <em>home</em> page. For now, it can be very simple:</p>
 <pre>
-li.trigger-collapse(ng-class="{ active: isActive('/')}")
+h1 Home
 </pre>
 
-<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
-    $(<span class="hljs-string">".navbar-nav li.trigger-collapse a"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
-        $(<span class="hljs-string">".navbar-collapse"</span>).collapse(<span class="hljs-string">'hide'</span>);
-    });
-});
-</code></pre>
-<h2 id="energy-types">Energy Types</h2>
-<p>We are not done with this page, but for the midterm, it should look something like this. The design is not important, but the functionality is. In other words, be creative about the way it looks, but be sure your page contains only these features:</p>
+<p>Feel free to add anything you want to this page to make it more interesting.</p>
 <ul>
-<li>Menu</li>
-<li>The permanent elements from index.jade such as the title <strong>Solar Explorer</strong>.</li>
+<li>Set up a route for it in <strong>app.js</strong></li>
+<li>Put the JavaScript for it in <strong>public/javascripts/home.js</strong></li>
+<li>The Jade that defines its appearance is in <strong>views/home.jade</strong></li>
+<li>Menu items or buttons to reach it are defined in <strong>views/index.jade</strong></li>
+</ul>
+<h2 id="new-files">Display EnergyTypes.json</h2>
+<p>One of our goals is to start handling the <strong>EnergyTypes.json</strong> file from our data directory. To that end, create the following:</p>
+<ul>
+<li><strong>EnergyTypesController</strong> in <strong>public/javascripts/energy-types/energy-types.js</strong></li>
+<li><strong>energy-types-page.jade</strong> in <strong>views/energy-types/</strong></li>
+<li><strong>energy-types.jade</strong> in <strong>views/energy-types/</strong></li>
+</ul>
+<p>When you load <strong>energy-types.js</strong> in <strong>layout.jade</strong>, don&#39;t forget that you need to specify the directory where it lives.</p>
+<p>My page looks like this at the time of this writing:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/prog219-midterm-2016-01.png" alt="Energy Types"></p>
+<p><strong>Figure 01</strong>: <em>Note the three bootstrap panels used to display the data in the energy types page.</em></p>
+<p>We may work on this page more later, but for the midterm, it should look something like this.</p>
+<h2 id="energy-types">Energy Types</h2>
+<p>The details of your design are up to you, but you should be sure certain functionality is present. In other words, be creative about the way it looks, but be sure your page contains these features:</p>
+<ul>
+<li>The permanent elements from index.jade such as the menu and the title <strong>Solar Explorer</strong>.</li>
 <li>A title for the loaded page: <strong>Energy Types</strong></li>
 <li>A dynamic record count showing how the length of the array you loaded (7008)</li>
 <li>The ability to iterate over all 7008 records</li>
 <li>A static list of all the unique MSN types</li>
 </ul>
-<p>My page looks like this at the time of this writing:</p>
-<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/prog219-midterm-2016-01.png" alt="Energy Types"></p>
-<p><strong>Figure 01</strong>: <em>Note the three bootstrap panels used to display the data in the energy types page.</em></p>
-<p>Note that my static MSN list and iterable record list are shown inside of bootstrap panels. You don&#39;t have to use them, but it is a reasonable way to organize a page.</p>
+<p>Note that my static MSN list and iterable record list are shown inside of bootstrap panels. You don&#39;t have to use them, but it is a reasonable way to organize a page. Here is some of the code from my jade file for creating the panels:</p>
 <pre>
 h1 Energy Types
 
@@ -97,7 +96,7 @@ h1 Energy Types
 </pre>
 
 <h2 id="msn-types">MSN Types</h2>
-<p>A single energy type looks like this:</p>
+<p>Let&#39;s take a moment to be sure we understand MSN types. Our Energy Types are defined in <strong>data/EnergyTypes.json</strong>. A single energy type from our array of energy types looks like this:</p>
 <pre><code class="lang-json">{
     "<span class="hljs-attr">MSN</span>": <span class="hljs-string">"FFPRBUS"</span>,
     "<span class="hljs-attr">YYYYMM</span>": <span class="hljs-string">"194913"</span>,
@@ -112,54 +111,79 @@ h1 Energy Types
 <li>The MSN property. Here it is FFPREBUS, which we see in the Description stands for &quot;Fossile Fuel Produciton.&quot;</li>
 <li>The YYYYMM property, which contains the year and a month: 1949 is the 13, is the month. I believe they are using 13 to say that they don&#39;t track months for this year, and that this is the production for the entire year. Starting around 1972 they will begin tracking production by month, and then the month field will be easier to understand.</li>
 </ul>
-<p>We want to know all the available MSN types. Just scanning through the file will reveal that there are several different types, such as FFPRBUS and NUETBUS. Since we have 7008 records, it is a bit hard to manually track down all the different types and their counts. So let&#39;s write code to do it, and also to break out our years and months.</p>
+<p>We want to know all the available MSN types. Just scanning through the file will reveal that there are several different types, such as FFPRBUS and NUETBUS. Since we have 7008 records, it is a bit hard to manually track down all the different types and their counts. So let&#39;s write code to do it, and also to break out our years and months. It turns out that the MSN value NUETBUS is used both for Nuclear Production and Nuclear Consumption. As a result, we have to distinguish the different types not on abbreviations such NUETBUS but on the description itself.</p>
 <p>It might be possible to use Angular filters to find our MSN types, but I would prefer to do it myself. This would be a fairly simple task if we only wanted to find the unique MSN types. But it is better to find both the type and the accompanying description. That can get a bit fussy, so I will just give you the code, which I put in <strong>public/javascripts/energy-types/msn-types.js</strong>:</p>
+<p><strong>NOTE</strong>: <em>This code changed on Wednesday, May 25, 2016, when I realized the MSN type abbreviation is not unique. The unique field is the description.</em></p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfApp = angular.module(<span class="hljs-string">'elfApp'</span>);
 
-elfApp.factory(<span class="hljs-string">'msnTypes'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getMsnTypes</span>(<span class="hljs-params">energyTypes</span>) </span>{
-        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'getMsnTypes called'</span>);
-        <span class="hljs-keyword">var</span> currentMsn = {msn: <span class="hljs-literal">null</span>, description: <span class="hljs-string">''</span>};
-        <span class="hljs-keyword">var</span> msnTypes = [];
+elfApp.factory(<span class="hljs-string">'msnTypes'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
 
-        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insertNewCurrentMsn</span>(<span class="hljs-params">energyType</span>) </span>{
-            currentMsn = <span class="hljs-built_in">Object</span>.create(currentMsn);
-            currentMsn.msn = energyType.MSN;
-            currentMsn.description = energyType.Description;
-            msnTypes.push(currentMsn);
-        }
+    <span class="hljs-keyword">var</span> currentMsn = {msn: <span class="hljs-literal">null</span>, description: <span class="hljs-string">''</span>};
+    <span class="hljs-keyword">var</span> msnTypes = [];
+    <span class="hljs-keyword">var</span> count = <span class="hljs-number">0</span>;
 
-        insertNewCurrentMsn(energyTypes[<span class="hljs-number">0</span>]);
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insertMsnType</span>(<span class="hljs-params">energyType</span>) </span>{
+        currentMsn = <span class="hljs-built_in">Object</span>.create(currentMsn);
+        currentMsn.msn = energyType.MSN;
+        currentMsn.description = energyType.Description;
+        msnTypes.push(currentMsn);
+    }
 
-        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isUnique</span>(<span class="hljs-params">msn</span>) </span>{
-            <span class="hljs-keyword">var</span> result = <span class="hljs-literal">true</span>;
-            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; msnTypes.length; i++) {
-                <span class="hljs-keyword">if</span> (msn === msnTypes[i].msn) {
-                    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'msn vs c.msn'</span>, msn, currentMsn.msn);
-                    result = <span class="hljs-literal">false</span>;
-                    <span class="hljs-keyword">break</span>;
-                }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isUniqueMsn</span>(<span class="hljs-params">description</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'isUniqueMsn called:'</span>, count, currentMsn.msn);
+        <span class="hljs-keyword">var</span> result = <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; msnTypes.length; i++) {
+            <span class="hljs-keyword">if</span> (description === msnTypes[i].description) {
+                result = <span class="hljs-literal">false</span>;
+                <span class="hljs-keyword">break</span>;
             }
-            <span class="hljs-keyword">return</span> result;
         }
+        <span class="hljs-keyword">return</span> result;
+    }
 
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">iterateEnergyTypes</span>(<span class="hljs-params">energyTypes</span>) </span>{
         energyTypes.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">energyType, index</span>) </span>{
-            <span class="hljs-comment">// console.log('energyType index and index length', index, msnTypes.length);</span>
+            count = count + <span class="hljs-number">1</span>;
             energyType.Year = energyType.YYYYMM.substr(<span class="hljs-number">0</span>, <span class="hljs-number">4</span>);
             energyType.Month = energyType.YYYYMM.substr(<span class="hljs-number">4</span>);
-            <span class="hljs-keyword">if</span> (energyType.MSN !== currentMsn.msn) {
-                <span class="hljs-keyword">if</span> (isUnique(energyType.MSN)) {
-                    <span class="hljs-comment">//console.log('isUnique');</span>
-                    insertNewCurrentMsn(energyType);
+            <span class="hljs-keyword">if</span> (energyType.Description !== currentMsn.description) {
+                <span class="hljs-keyword">if</span> (isUniqueMsn(energyType.Description)) {
+                    insertMsnType(energyType);
                 }
             }
         });
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getMsnTypes</span>(<span class="hljs-params">energyTypes</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'getMsnTypes called'</span>);
+        <span class="hljs-keyword">if</span> (msnTypes.length === <span class="hljs-number">0</span>) {
+            iterateEnergyTypes(energyTypes);
+        }
         <span class="hljs-keyword">return</span> msnTypes;
     }
 
     <span class="hljs-keyword">return</span> getMsnTypes
 });
 </code></pre>
+<p>The code:</p>
+<ul>
+<li>Is passed our array of <strong>energyTypes</strong> loaded from <strong>data/EnergyTypes.json</strong></li>
+<li>Uses <strong>forEach</strong> to iterate over the <strong>energyTypes</strong> array.</li>
+</ul>
+<p>While iterating over the energy types:</p>
+<ul>
+<li>For each item in the array it pulls out the Year and Month from the <strong>YYYYMM</strong> field.</li>
+<li>It adds this data to the object as new properties called <strong>Year</strong> and <strong>Month</strong></li>
+</ul>
+<p>It also</p>
+<ul>
+<li>Defines a JavaScript object called <strong>currentMsn</strong> with two properties: <strong>msn</strong>, <strong>description</strong></li>
+<li>Defines an array called <strong>msnTypes</strong> for holding our <strong>currentMsn</strong> objects.</li>
+<li>Uses <strong>forEach</strong> to iterate over the <strong>energyTypes</strong> array.</li>
+<li>It checks to see if the description of the MSN type differs from the description of the last unique MSN type that we found</li>
+<li>If it is different, it checks to see if it is unique, that is, if it is already in our list of known MSN types</li>
+<li>If it is not in the list, it is added to the list.</li>
+</ul>
 <p>We can use it like this:</p>
 <pre><code class="lang-javascript">$scope.getEnergyTypes = <span class="hljs-keyword">function</span> () {
         $http.get(<span class="hljs-string">'data/EnergyTypes.json'</span>)
@@ -173,7 +197,7 @@ elfApp.factory(<span class="hljs-string">'msnTypes'</span>, <span class="hljs-fu
 };
 </code></pre>
 <h2 id="energy-selectors">Energy Selectors</h2>
-<p>The goal of the Energy Selectors page is to allow the user to click on an MSN type and see only the records of that type. There are about 7008 objects in our array, and each MSN type encapsulates about 584 of those records.</p>
+<p>The goal of the Energy Selectors page is to allow the user to click on an MSN type and see only the records of that type. There are about 7008 objects in our array, and each MSN type encapsulates about 584 of those records. The distinction between types is made on the <strong>Description</strong> property, not the <strong>MSN</strong> property.</p>
 <p>Your pages don&#39;t have to look like the images shown below. Feel free to make the page uniquely your own. You have freedom to do what you want so long as your page includes:</p>
 <ul>
 <li>A clickable list of MSN types</li>
@@ -186,7 +210,7 @@ elfApp.factory(<span class="hljs-string">'msnTypes'</span>, <span class="hljs-fu
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/prog219-midterm-2016-03.png" alt="MSN Selection"></p>
 <p><strong>Figure 03</strong> Bottom portion of the page for selecting a subset of the msn types.</p>
 <h2 id="the-menu">The Menu</h2>
-<p>The menu is a pain. I would certainly need a whole day, and perhaps two days to really explain it in depth. We don&#39;t have time for that, so here is my <strong>index.jade</strong> with just a couple items left as an exercise:</p>
+<p>Bootstrap menus are not easy to understand. I would certainly need a whole day, and perhaps two days to really explain it in depth. We don&#39;t have time for that, so here is my <strong>index.jade</strong>. As an exercise, I&#39;ve left just a couple items for you to complete:</p>
 <pre><code class="lang-javascript">extends layout
 
 block content
@@ -210,7 +234,7 @@ block content
                         ul.dropdown-menu(role='menu')
                             <span class="hljs-keyword">li</span>.trigger-<span class="hljs-keyword">collapse</span>(ng-<span class="hljs-keyword">class</span>=<span class="hljs-string">"{ active: isActive('/renewables')}"</span>)
                                 a(ng-href='#/renewables') Renewables
-                            <span class="hljs-comment">// ADD TWO MORE MENU ITEMS HERE    </span>
+                            <span class="hljs-comment">// ADD TWO MORE MENU ITEMS HERE (ByYear, ByIndex)    </span>
                     <span class="hljs-keyword">li</span>.<span class="hljs-keyword">collapse</span>.dropdown
                         a.dropdown-toggle(data-toggle='dropdown')
                             | Energy
@@ -218,6 +242,7 @@ block content
                         ul.dropdown-menu(role='menu')
                             <span class="hljs-comment">// ADD THE ENERGY MENU ITEMS HERE.</span>
                             <span class="hljs-comment">// BASE THEM ON THE RENEWABLES Menu item above</span>
+                            <span class="hljs-comment">// THEY SHOULD Energy Types AND Energy Selectors</span>
                     <span class="hljs-keyword">li</span>.trigger-<span class="hljs-keyword">collapse</span>(ng-<span class="hljs-keyword">class</span>=<span class="hljs-string">"{ active: isActive('/about')}"</span>)
                         a(ng-href='#/<span class="hljs-keyword">about</span>') <span class="hljs-keyword">About</span>
     .container
@@ -227,7 +252,20 @@ block content
 
         div(data-ng-<span class="hljs-keyword">view</span>=<span class="hljs-string">""</span>)
 </code></pre>
-<p>The key point to grasp is that it changes shape to fit properly on a mobile device. The hamburger menu for the mobile device is the bit with the <strong>span.icon-bar</strong> syntax.</p>
+<p>The menu changes shape to fit properly on a mobile device. The hamburger menu for the mobile device is the bit with the <strong>span.icon-bar</strong> syntax.</p>
+<p>The menu will not automatically collapse when you make a selection. To help fix this problem, we can add the following to <strong>app.js</strong>:</p>
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-string">".navbar-nav li.trigger-collapse a"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+        $(<span class="hljs-string">".navbar-collapse"</span>).collapse(<span class="hljs-string">'hide'</span>);
+    });
+});
+</code></pre>
+<p>Or perhaps there is a way to make this work:</p>
+<pre>
+li.trigger-collapse(ng-class="{ active: isActive('/')}")
+</pre>
+
+
 <h2 id="turn-it-in">Turn it in</h2>
 <p>The usual</p>
 <h2 id="hints">Hints</h2>
