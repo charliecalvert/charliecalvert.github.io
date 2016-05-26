@@ -107,7 +107,8 @@ git mv main.jade renewables/renewables-page.jade
 </code></pre>
 <p>You will have to make several such changes which I will leave as an exercise. Don&#39;t forget that you have renamed <strong>main.jade</strong>!</p>
 <h2 id="http-errors">Handling HTTP Errors</h2>
-<p>Add error handler to our calls to $http.get. The first four or five lines are changed. What we have added is the <strong>errorCallback</strong>. It gets called if an error occurs:</p>
+<p>Add error handler to our calls to $http.get. Suppose, for instance, that you wanted to load the JSON file in the data directory that is called EnergyTypes.json. In other words, you wanted to load this file: <strong>data/EnergyTypes.json</strong>. Sometimes we make mistakes simple in specifying the file name, writing <strong>EnergTypes.json</strong> instead of <strong>EnergyTypes.json</strong>. The missing y doesn&#39;t mean much to us, but it baffles the computer. So we need to handle not only the case when the file loads successfully, but also the case where the file fails to load, perhaps because of a typo like that shown above.</p>
+<p>Look at the example below. What we have added to our previous implementations of this method is the <strong>errorCallback</strong>. It gets called if an error occurs:</p>
 <pre><code class="lang-javascript">$http.get(<span class="hljs-string">'data/EnergyTypes.json'</span>)
         .<span class="hljs-keyword">then</span>(<span class="hljs-keyword">function</span>(res) {
             $scope.energyTypes = res.data;
@@ -117,6 +118,7 @@ git mv main.jade renewables/renewables-page.jade
             console.log(<span class="hljs-string">'Error:'</span>, response.status, response.statusText);
         });
 </code></pre>
+<p>So if we did type in the name of a file that did not exists, the console.log statement near the end of the method would print out our error. You might want to have better ways of calling out the error, but at least this is a start. If you look at our calls to $.gitJSON and $.load, you will see that they also have error handling similar to this.</p>
 <p>You can think about the call a bit like this:</p>
 <pre><code class="lang-javascript">$http.get(<span class="hljs-string">'data/EnergyTypes.json'</span>)
         .<span class="hljs-keyword">then</span>(<span class="hljs-keyword">function</span>(res) {
