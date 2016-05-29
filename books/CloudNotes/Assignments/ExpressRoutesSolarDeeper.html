@@ -6,6 +6,7 @@
 <li><a href="#components">Components</a></li>
 <li><a href="#require">Require</a></li>
 <li><a href="#require-js-modules">Require JS Modules</a></li>
+<li><a href="#testing-require">Testing Require</a></li>
 <li><a href="#the-worker">The Worker</a></li>
 <li><a href="#create-html">Loading HTML into Our Page</a></li>
 <li><a href="#about-page">About Page</a></li>
@@ -252,6 +253,72 @@ requirejs([<span class="hljs-string">'jquery'</span>], <span class="hljs-functio
 </code></pre>
 <p>Inside the define function we define the object stored in our module, and return it. You need do nothing special when writing your object. Just define it using standard JavaScript code and it is ready to use. It automatically inherits the features of a require module because it is declared this way. It is as if you declared it using the module pattern, but it is perhaps simpler to understand, and easier to use as part of a larger application architecture.</p>
 <p>Many of the major libraries that are commonly used automatically implement the requirejs define function or do something similar. In other words, jQuery, and many other libraries, are requirejs modules. Or maybe it would be more correct to say that the meet the requirements of a requirejs module. This is the case because requirejs is so popular, and so commonly used. Some libraries do not support requirejs, and we will have to take special steps to load them.</p>
+<h2 id="testing-require">Testing Require</h2>
+<p>I&#39;ve created a <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/UnitTests/JasmineRequireJs">sample project</a> to help you see how to test and use require. It is called <strong>JasmineRequireJs</strong> and is hosted on JsObjects.</p>
+<p>Looking at that project, see this part of <a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/UnitTests/JasmineRequireJs/karma.conf.js"><strong>karma.conf.js</strong></a>:</p>
+<pre><code class="lang-javascript">        frameworks: [<span class="hljs-string">'jasmine'</span>, <span class="hljs-string">'requirejs'</span>],
+
+        files: [
+            <span class="hljs-string">'public/components/jquery/dist/jquery.min.js'</span>,
+            <span class="hljs-string">'node_modules/jasmine-jquery/lib/*.js'</span>, {
+                pattern: <span class="hljs-string">'spec/test-*.js'</span>,
+                included: <span class="hljs-literal">false</span>
+            }, {
+                pattern: <span class="hljs-string">'public/javascripts/**/*.js'</span>,
+                included: <span class="hljs-literal">false</span>
+            },
+            <span class="hljs-string">'spec/main-test.js'</span>
+        ],
+
+        // list <span class="hljs-keyword">of</span> files <span class="hljs-keyword">to</span> exclude
+        exclude: [<span class="hljs-string">'public/javascripts/main.js'</span>],
+</code></pre>
+<p>Note the exclusion of <strong>public/javascripts/main.js</strong> and inclusion of <strong>spec/main-test.js</strong> that there are no frameworks loaded at the very bottom of the file.</p>
+<p>I use <strong>test-XXX.js</strong> as the naming convention for require based tests, and <strong>spec-XXX.js</strong> for jasmine server side tests.</p>
+<p>Look at <a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/UnitTests/JasmineRequireJs/spec/main-test.js">this sample</a> <strong>main-test.js</strong> file:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadTestsIntoArray</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> tests = [];
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> file <span class="hljs-keyword">in</span> <span class="hljs-built_in">window</span>.__karma__.files) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/test-/</span>.test(file)) {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Loaded test:'</span>, file);
+            tests.push(file);
+        }
+    }
+    <span class="hljs-keyword">return</span> tests;
+}
+
+<span class="hljs-built_in">require</span>.config({
+    baseUrl: <span class="hljs-string">'/base'</span>,
+
+    paths: {
+        home: <span class="hljs-string">'public/javascripts/home'</span>
+    },
+    deps: loadTestsIntoArray(),
+    callback: <span class="hljs-built_in">window</span>.__karma__.start
+});
+</code></pre>
+<p>Look at the way we <a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/UnitTests/JasmineRequireJs/spec/test-basic.js">wrap our tests</a> in a require <strong>define</strong> function:</p>
+<pre><code class="lang-javascript">define([<span class="hljs-string">'home'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">home</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+
+    describe(<span class="hljs-string">'Elvenware Simple Plain Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+
+        it(<span class="hljs-string">'expects true to be true'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">true</span>);
+        });
+
+        it(<span class="hljs-string">'expects home.color to be red'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            expect(home.color).toBe(<span class="hljs-string">'red'</span>);
+        });
+
+        it(<span class="hljs-string">'expects home.size to be big'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            expect(home.size).toBe(<span class="hljs-string">'big'</span>);
+        });
+    });
+
+});
+</code></pre>
 <h2 id="the-worker">The Worker</h2>
 <p>It is now time to create our first component.
 We will call the component worker and define it like this in <strong>public/javascripts/work.js</strong>:</p>
