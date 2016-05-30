@@ -254,7 +254,7 @@ requirejs([<span class="hljs-string">'jquery'</span>], <span class="hljs-functio
 <p>Inside the define function we define the object stored in our module, and return it. You need do nothing special when writing your object. Just define it using standard JavaScript code and it is ready to use. It automatically inherits the features of a require module because it is declared this way. It is as if you declared it using the module pattern, but it is perhaps simpler to understand, and easier to use as part of a larger application architecture.</p>
 <p>Many of the major libraries that are commonly used automatically implement the requirejs define function or do something similar. In other words, jQuery, and many other libraries, are requirejs modules. Or maybe it would be more correct to say that the meet the requirements of a requirejs module. This is the case because requirejs is so popular, and so commonly used. Some libraries do not support requirejs, and we will have to take special steps to load them.</p>
 <h2 id="testing-require">Testing Require</h2>
-<p>I&#39;ve created a <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/UnitTests/JasmineRequireJs">sample project</a> to help you see how to test and use require. It is called <strong>JasmineRequireJs</strong> and is hosted on JsObjects.</p>
+<p>I&#39;ve created a <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/UnitTests/JasmineRequireJs">sample project</a> to help you see how to test and use requirejs. It is called <strong>JasmineRequireJs</strong> and is hosted on JsObjects.</p>
 <p>Looking at that project, see this part of <a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/UnitTests/JasmineRequireJs/karma.conf.js"><strong>karma.conf.js</strong></a>:</p>
 <pre><code class="lang-javascript"><span class="hljs-string">frameworks:</span> [<span class="hljs-string">'jasmine'</span>, <span class="hljs-string">'requirejs'</span>],
 <span class="hljs-symbol">
@@ -273,9 +273,9 @@ files:</span> [
 <span class="hljs-comment">// list of files to exclude</span>
 <span class="hljs-string">exclude:</span> [<span class="hljs-string">'public/javascripts/main.js'</span>],
 </code></pre>
-<p>Note the exclusion of <strong>public/javascripts/main.js</strong> and inclusion of <strong>spec/main-test.js</strong> that there are no frameworks loaded at the very bottom of the file.</p>
-<p>I use <strong>test-XXX.js</strong> as the naming convention for require based tests, and <strong>spec-XXX.js</strong> for jasmine server side tests.</p>
-<p>Look at <a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/UnitTests/JasmineRequireJs/spec/main-test.js">this sample</a> <strong>main-test.js</strong> file:</p>
+<p>You are going to have to port this code directly into your SolarVoyager. Just replace the similar lines of code in that your <strong>karma.conf.js</strong> with the lines shown above. Note the exclusion of <strong>public/javascripts/main.js</strong> and inclusion of <strong>spec/main-test.js</strong> that there are no frameworks loaded at the very bottom of the file.</p>
+<p><strong>NOTE</strong> <em>I use <strong>test-XXX.js</strong> as the naming convention for require based tests, and <strong>spec-XXX.js</strong> for jasmine server side tests.</em></p>
+<p>Look at <a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/UnitTests/JasmineRequireJs/spec/main-test.js">this sample</a> <strong>main-test.js</strong> file from the <strong>spec</strong> directory:</p>
 <pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadTestsIntoArray</span>(<span class="hljs-params"></span>) </span>{
 <span class="hljs-meta">    'use strict'</span>;
     <span class="hljs-keyword">var</span> tests = [];
@@ -298,7 +298,8 @@ files:</span> [
     callback: <span class="hljs-built_in">window</span>.__karma__.start
 });
 </code></pre>
-<p>Look at the way we <a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/UnitTests/JasmineRequireJs/spec/test-basic.js">wrap our tests</a> in a require <strong>define</strong> function:</p>
+<p>Again, you will need to copy this file into your <strong>SolarVoyager</strong> project. You are going to have to add a good deal to the <strong>paths</strong> section of <strong>require.config</strong>. But of course you can use <strong>/public/javascripts/main</strong> as a guide as to what is needed. The two files are very similar, but note that in <strong>spec/main-tests.js</strong> we write <strong>public/javascripts/home</strong> while in <strong>public/javascripts/main.js</strong> we write <strong>javascripts/home</strong>. This is necessary because the tests don&#39;t assume that you code lives in the <strong>public</strong> folder.</p>
+<p>Finally, look at the way we <a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/UnitTests/JasmineRequireJs/spec/test-basic.js">wrap our tests</a> in a require <strong>define</strong> function:</p>
 <pre><code class="lang-javascript">define([<span class="hljs-string">'home'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">home</span>) </span>{
 <span class="hljs-meta">    'use strict'</span>;
 
@@ -312,13 +313,23 @@ files:</span> [
             expect(home.color).toBe(<span class="hljs-string">'red'</span>);
         });
 
-        it(<span class="hljs-string">'expects home.size to be big'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-            expect(home.size).toBe(<span class="hljs-string">'big'</span>);
-        });
     });
 
 });
 </code></pre>
+<p>You can save this test into <strong>SolarVoyager</strong> as <strong>spec/test-basic.js</strong>. Then type <strong>karma start</strong>. If your tests pass, then you have things set up correctly and you can begin writing requirejs tests in earnest.</p>
+<p>The results might look something like this:</p>
+<pre>
+PhantomJS 2.1.1 (Linux 0.0.0) LOG LOG: 'Loaded test:', '/base/spec/test-basic.js'
+
+  Elvenware Simple Plain Suite
+    ✓ expects true to be true
+    ✓ expects color to be red
+
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 2 of 2 SUCCESS (0 secs / 0.001 secs)
+TOTAL: 2 SUCCESS
+</pre>
+
 <h2 id="the-worker">The Worker</h2>
 <p>It is now time to create our first component.
 We will call the component worker and define it like this in <strong>public/javascripts/work.js</strong>:</p>
