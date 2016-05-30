@@ -204,6 +204,46 @@ grep -r --include=\*.jade work
      $(<span class="hljs-string">'#debug'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(response, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
  })
 </code></pre>
+<p>For instance, the code, with much omitted, might look like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getRenewable</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'getRenewable called'</span>);
+
+      $.getJSON(<span class="hljs-string">'/renewables'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+              <span class="hljs-comment">//console.log(response);</span>
+              renewables.renewablesList = response.renewables;
+              <span class="hljs-comment">//console.log('RenewablesList', renewablesList);</span>
+              showRenewable(renewables.renewablesList[index]);
+              <span class="hljs-comment">// $('#debug').html(JSON.stringify(response, null, 4));</span>
+          })
+          .fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a, b, c</span>) </span>{
+              <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Error'</span>, a, b, c);
+              $(<span class="hljs-string">'#debug'</span>).html(<span class="hljs-string">'Error occured: '</span>, a.status);
+          })
+          .done(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+              <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'second success'</span>);
+          })
+          .always(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+              <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'complete'</span>);
+          });
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showRenewable</span>(<span class="hljs-params">renewable</span>) </span>{
+      renewable = getSimpleKeys(renewable);
+      $(<span class="hljs-string">'#yearView'</span>).val(renewable.year);
+      <span class="hljs-comment">// YOUR CODE HERE</span>
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getSimpleKeys</span>(<span class="hljs-params">renewable</span>) </span>{
+      <span class="hljs-comment">// jscs:disable requireDotNotation</span>
+      <span class="hljs-keyword">return</span> {
+          year: renewable.Year,
+          solar: renewable[<span class="hljs-string">'Solar (quadrillion Btu)'</span>],
+          <span class="hljs-comment">// YOUR CODE HERE</span>
+      };
+      <span class="hljs-comment">// jscs:enable requireDotNotation</span>
+  }
+</code></pre>
+<p><strong>NOTE</strong>: <em>The code shown above demonstrates how to get jscs to ignore places where just can&#39;t use dot notation.</em></p>
 <h2 id="iteration">Button Iteration</h2>
 <p>When the user clicks on the red and green buttons, this code is called:</p>
 <pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">indexChange</span>(<span class="hljs-params">test</span>) </span>{
