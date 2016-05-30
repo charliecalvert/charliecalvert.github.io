@@ -5,7 +5,8 @@
 <li><a href="#testing">Testing</a></li>
 <li><a href="#menu">Menu</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
-<li><a href="#hints">Hints</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#hints">Hints</a></li>
+<li><a href="#hard-test">The Hardest Test</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>We are now turning a major corner in the course. Rather than learning new technologies, we are going to spend most of our time refactoring code and adding new features.</p>
 <p>A well designed architecture supports the <a href="https://en.wikipedia.org/wiki/Open/closed_principle">Open Closed Principle</a>:</p>
 <ul>
@@ -232,4 +233,19 @@ karma start
 </code></pre><p>If you have any <strong>fits</strong> or <strong>fdescribes</strong> in your code, please remove them so I can see all your tests running. Make sure you have the latest tests from JsObjects.</p>
 <h2 id="hints">Hints</h2>
 <p>Be sure you renamed work.js to home.js. Rename all associated buttons, menus and files.</p>
+<h2 id="hard-test">The Hardest Test</h2>
+<p>There are several ways to solve this problem. However, I should mention that to get the test called <em>&#39;expects get renewable to be defined&#39;</em> in <strong>spec/test-renewables.js</strong> to pass, I made some changes to the way my code is structured in <strong>public/javascript/renewables-page.js</strong>:</p>
+<pre><code class="lang-javascript">var renewables = {
+        color: <span class="hljs-string">'red'</span>,
+        <span class="hljs-built_in">size</span>: <span class="hljs-string">'big'</span>,
+        renewablesList: [],         &lt; ==== HERE
+        getRenewable: getRenewable, &lt; ==== HERE
+        init: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                console.<span class="hljs-built_in">log</span>(renewables.color);
+</code></pre>
+<p>Then in <strong>getRenewable</strong>, I wrote code like this:</p>
+<pre><code class="lang-javascript">$.getJSON(<span class="hljs-string">'/renewables'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{                
+                renewables.renewablesList = response.renewables; <span class="xml"><span class="hljs-tag">&lt; =<span class="hljs-string">===</span> <span class="hljs-attr">HERE</span>                
+                <span class="hljs-attr">showRenewable</span>(<span class="hljs-attr">renewables.renewablesList</span>[<span class="hljs-attr">index</span>]); &lt; =<span class="hljs-string">===</span> <span class="hljs-attr">HERE</span></span></span>
+</code></pre>
 </div></body></html>
