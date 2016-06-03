@@ -11,6 +11,8 @@
 <li><a href="#simple-directive-">Simple Directive:</a></li>
 <li><a href="#loading-data">Loading Data</a></li>
 <li><a href="#testing">Testing</a></li>
+<li><a href="#test-fixture">Test Fixture</a></li>
+<li><a href="#test-directive">Test Directive</a></li>
 <li><a href="#git-hints">Git Hints</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>Build an Angular SPA (Single Page App) and deploy it to Heroku. In the app, load and display some JSON.</p>
 <h2 id="accounts">Accounts</h2>
@@ -249,6 +251,7 @@ elf-first-description
 <p>We need to install angular-mocks to support testing:</p>
 <pre>
 bower install angular-mocks --save-dev
+npm install jasmine-jquery --save-dev
 </pre>
 
 <p>In <strong>karma.conf.js</strong> let&#39;s make sure that we:</p>
@@ -271,6 +274,166 @@ bower install angular-mocks --save-dev
     <span class="hljs-symbol">'spec</span>/test*.js'
 ],
 </code></pre>
+<p>In <strong>Gruntfile.js</strong>, ensure that we build our HTML to use in our tests:</p>
+<pre><code class="lang-javascript">jade: {
+    compile: {
+        options: {
+            pretty: <span class="hljs-literal">true</span>,
+            data: {
+                debug: <span class="hljs-literal">false</span>
+            }
+        },
+        files: {
+            <span class="hljs-symbol">'spec</span>/fixtures/home-page.html': [<span class="hljs-symbol">'views</span>/home-page.jade'],
+            <span class="hljs-symbol">'spec</span>/fixtures/first-page.html': [<span class="hljs-symbol">'views</span>/first-page.jade'],
+            <span class="hljs-symbol">'spec</span>/fixtures/about-page.html': [<span class="hljs-symbol">'views</span>/about-page.jade']
+        }
+    }
+},
+</code></pre>
+<p>And a small modification at the bottom of the page where we add Jade to test task:</p>
+<pre><code class="lang-javascript">    grunt.registerTask(<span class="hljs-string">'test'</span>, [<span class="hljs-string">'jshint'</span>, <span class="hljs-string">'jade'</span>, <span class="hljs-string">'karma'</span>])<span class="hljs-comment">;</span>
+</code></pre>
+<p>Finally, let&#39;s modify <strong>spec/test-basic.js</strong>:</p>
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Elvenware Simple Plain Suite'</span>, <span class="hljs-keyword">function</span> () {
+
+    <span class="hljs-string">'use strict'</span>;
+
+    var scope;
+
+    beforeEach(module(<span class="hljs-string">'elfApp'</span>));
+
+    /*
+     * instantiate the controller without the directive
+     */
+    beforeEach(inject(function (<span class="hljs-number">_</span>$rootScope<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>) {
+        scope = <span class="hljs-number">_</span>$rootScope<span class="hljs-number">_</span>.$new();
+        <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>(<span class="hljs-string">'HomeController'</span>, {
+            $scope: scope
+        });
+    }));
+
+    it(<span class="hljs-string">'expects true to be true'</span>, function () {
+        expect(true).toBe(true);
+    });
+
+    it(<span class="hljs-string">'should find the description'</span>, function () {
+        expect(scope.description).toBe(<span class="hljs-string">'HomeController Data'</span>);
+    });
+
+});
+</code></pre>
+<p>Now run <strong>grunt test</strong>.</p>
+<h2 id="test-fixture">Test Fixture</h2>
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Elvenware Test Fixture Suite'</span>, <span class="hljs-keyword">function</span> () {
+
+    <span class="hljs-string">'use strict'</span>;
+
+    var scope;
+    var $templateCache;
+    var $compile;
+
+    beforeEach(module(<span class="hljs-string">'elfApp'</span>));
+
+    /*
+     * instantiate the controller without the directive
+     * Get the Angular compiler and templateCache for processing Angular templates
+     */
+    beforeEach(inject(function (<span class="hljs-number">_</span>$compile<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$rootScope<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$templateCache<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>) {
+        scope = <span class="hljs-number">_</span>$rootScope<span class="hljs-number">_</span>.$new();
+        $compile = <span class="hljs-number">_</span>$compile<span class="hljs-number">_</span>;
+        $templateCache = <span class="hljs-number">_</span>$templateCache<span class="hljs-number">_</span>;
+
+        <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>(<span class="hljs-string">'HomeController'</span>, {
+            $scope: scope
+        });
+    }));
+
+    beforeEach(function () {
+        jasmine.getFixtures().fixturesPath = <span class="hljs-string">'base/spec/fixtures/'</span>;
+        loadFixtures(<span class="hljs-string">'home-page.html'</span>);
+    });
+
+    it(<span class="hljs-string">'expects true to be true'</span>, function () {
+        expect(true).toBe(true);
+    });
+
+    it(<span class="hljs-string">'should be possible to access the fixture'</span>, function() {
+        var spanElement = document.getElementsByTagName(<span class="hljs-string">'h1'</span>);
+        expect(spanElement[<span class="hljs-number">0</span>].innerHTML).toBe(<span class="hljs-string">'Home'</span>);
+    });
+});
+</code></pre>
+<h2 id="test-directive">Test Directive</h2>
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Elvenware Home Directive Suite'</span>, <span class="hljs-keyword">function</span> () {
+
+    <span class="hljs-string">'use strict'</span>;
+
+    var scope;
+    var $templateCache;
+    var $compile;
+
+    beforeEach(module(<span class="hljs-string">'elfApp'</span>));
+
+    /*
+     * instantiate the controller without the directive
+     * Get the Angular compiler and templateCache for processing Angular templates
+     */
+    beforeEach(inject(function (<span class="hljs-number">_</span>$compile<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$rootScope<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$templateCache<span class="hljs-number">_</span>, <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>) {
+        scope = <span class="hljs-number">_</span>$rootScope<span class="hljs-number">_</span>.$new();
+        $compile = <span class="hljs-number">_</span>$compile<span class="hljs-number">_</span>;
+        $templateCache = <span class="hljs-number">_</span>$templateCache<span class="hljs-number">_</span>;
+
+        <span class="hljs-number">_</span>$controller<span class="hljs-number">_</span>(<span class="hljs-string">'HomeController'</span>, {
+            $scope: scope
+        });
+    }));
+
+    beforeEach(function () {
+        jasmine.getFixtures().fixturesPath = <span class="hljs-string">'base/spec/fixtures/'</span>;
+        loadFixtures(<span class="hljs-string">'home-description.html'</span>);
+    });
+
+    it(<span class="hljs-string">'expects true to be true'</span>, function () {
+        expect(true).toBe(true);
+    });
+
+    it(<span class="hljs-string">'should be possible to access the fixture'</span>, function() {
+        var spanElement = document.getElementById(<span class="hljs-string">'homeDescription'</span>);
+        //console.log(spanElement);
+        expect(spanElement.innerHTML).toContain(<span class="hljs-string">'{{desc'</span>);
+    });
+
+    it(<span class="hljs-string">'should be able to see the fixture content'</span>, function() {
+        var el = document.getElementById(<span class="hljs-string">'homeDescription'</span>);
+        //console.log(el);
+        $templateCache.put(<span class="hljs-string">'home-description'</span>, el);
+        var element = $compile(<span class="hljs-string">'&lt;elf-home-description&gt;&lt;/elf-home-description&gt;'</span>)(scope);
+        scope.$digest();
+        //console.log(element);
+        expect(element.text()).toContain(<span class="hljs-string">'HomeController Data'</span>);
+    });
+});
+</code></pre>
+<p>If all the tests are working, the output should look something like this:</p>
+<pre>
+Elvenware Simple Plain Suite
+  ✓ expects true to be true
+  ✓ should find the description
+
+Elvenware Test Fixture Suite
+  ✓ expects true to be true
+  ✓ should be possible to access the fixture
+
+Elvenware Home Directive Suite
+  ✓ expects true to be true
+  ✓ should be possible to access the fixture
+  ✓ should be able to see the directive content
+
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 7 of 7 SUCCESS (0.038 secs / 0.025 secs)
+TOTAL: 7 SUCCESS
+</pre>
+
 <h2 id="git-hints">Git Hints</h2>
 <p>You probably won&#39;t need this, but just in case you need to reset the url for your repository:</p>
 <p>git remote set-url origin git@github.com:charliecalvert/Prog272-Calvert.git</p>
