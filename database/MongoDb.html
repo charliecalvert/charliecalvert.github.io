@@ -2,6 +2,7 @@
 <li><a href="#install">Install</a></li>
 <li><a href="#uninstall">Uninstall</a></li>
 <li><a href="#older-versions-of-ubuntu">Older Versions of Ubuntu</a></li>
+<li><a href="#install-on-cloud-9">Install on Cloud 9</a></li>
 <li><a href="#install-the-npm-package">Install the NPM Package</a></li>
 <li><a href="#stopStart">Start and Stop MongoDb</a></li>
 <li><a href="#sample-session">Sample Session</a></li>
@@ -101,7 +102,32 @@ sudo apt-<span class="hljs-built_in">get</span> install mongodb-org
 </code></pre><p>But don&#39;t try to paste that in, paste in the line from the script. The above pseudo command is just an attempt to explain what the second line in the script does. It is not a valid method of running the second line.</p>
 <p>There is an alternative method, but it is not recommended, as it probably won&#39;t install the latest MongoDb. Nevertheless, it could work. So if the above fails, you could try:</p>
 <pre><code>sudo apt-get <span class="hljs-keyword">install</span> mongodb  // <span class="hljs-keyword">Only</span> <span class="hljs-keyword">do</span> this <span class="hljs-keyword">if</span> the above fails
-</code></pre><h2 id="install-the-npm-package">Install the NPM Package</h2>
+</code></pre><h2 id="install-on-cloud-9">Install on Cloud 9</h2>
+<p>MongoDb is preinstalled on Cloud 9. To set it up do this:</p>
+<pre>
+cd
+mkdir data
+echo 'mongod --bind_ip=$IP --dbpath=data --nojournal --rest "$@"' > ~/bin/mongod
+chmod a+x ~/bin/mongod
+mongod
+</pre>
+
+<p>Then to view the database:</p>
+<pre><code>mongo
+</code></pre><p>Here is a typical URL for accessing a database:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"mongodb://0.0.0.0:27017/test"</span>,
+</code></pre>
+<p>And here is what a <strong>MongoTalk.json</strong> configuration file might look like:</p>
+<pre><code class="lang-javascript">{
+    "<span class="hljs-attr">urls</span>": [
+        <span class="hljs-string">"mongodb://0.0.0.0:27017/test"</span>,
+        <span class="hljs-string">"mongodb://127.0.0.1:27017/test"</span>,
+        <span class="hljs-string">"mongodb://USERNAME:PASSWORD@dsXXX.mongolab.som:XXXX/DATABASE"</span>
+    ],
+    "<span class="hljs-attr">selectedUrl</span>": <span class="hljs-number">0</span>
+}
+</code></pre>
+<h2 id="install-the-npm-package">Install the NPM Package</h2>
 <p>If the <strong>package.json</strong> file for your project does not already include <a href="https://www.npmjs.org/package/mongodb">mongodb</a>, use <strong>npm</strong> to install the Node <strong>mongodb</strong> driver into your local project:</p>
 <pre><code>sudo npm <span class="hljs-keyword">install</span> mongodb
 </code></pre><h2 id="stopStart">Start and Stop MongoDb</h2>
@@ -156,10 +182,12 @@ system.indexes
 <span class="hljs-built_in">test</span>Data
 <span class="hljs-built_in">test</span>_insert
 </code></pre><p>Insert data into a collection called <strong>test01</strong>. The collection will be created if it does not exist:</p>
-<pre><code>&gt; db.test01.<span class="hljs-keyword">insert</span>({firstName: <span class="hljs-string">"Susan"</span>})
-WriteResult({ <span class="hljs-string">"nInserted"</span> : <span class="hljs-number">1</span> })
-&gt;
-</code></pre><p>A somewhat more complex example is shown here:</p>
+<pre>
+db.test01.insert({firstName: "Susan"})
+WriteResult({ "nInserted" : 1 })
+</pre>
+
+<p>A somewhat more complex example is shown here:</p>
 <pre>
 db.test02.insert({  
    "firstName": "Abe10001",
