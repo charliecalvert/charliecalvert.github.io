@@ -137,14 +137,25 @@ finalWalk
 system.indexes
 <span class="hljs-built_in">test</span>Data
 <span class="hljs-built_in">test</span>_insert
-</code></pre><p>Insert data:</p>
-<pre><code>&gt; db.test_insert.<span class="hljs-keyword">insert</span>({firstName: <span class="hljs-string">"Susan"</span>})
+</code></pre><p>Insert data into a collection called <strong>test01</strong>. The collection will be created if it does not exist:</p>
+<pre><code>&gt; db.test01.<span class="hljs-keyword">insert</span>({firstName: <span class="hljs-string">"Susan"</span>})
 WriteResult({ <span class="hljs-string">"nInserted"</span> : <span class="hljs-number">1</span> })
 &gt;
-</code></pre><p>A somewhat more complex example:</p>
+</code></pre><p>A somewhat more complex example is shown here:</p>
 <pre>
+db.test02.insert({  
+   "firstName": "Abe10001",
+   "lastName": "Lincoln10001",
+   "address": "10001 Green Street",
+   "city": "Bellevue",
+   "state": "WA",
+   "zip": 98002
+})
+</pre>
 
-    >  db.test_insert.insert({  
+<p>Note that we are inserting into a collection called test02. When you paste in the above, the output should look like this:</p>
+<pre>
+    >  db.test02.insert({  
     ...   "firstName": "Abe10001",
     ...   "lastName": "Lincoln10001",
     ...   "address": "10001 Green Street",
@@ -152,12 +163,10 @@ WriteResult({ <span class="hljs-string">"nInserted"</span> : <span class="hljs-n
     ...   "state": "WA",
     ...   "zip": 98002
     ... })
-
 </pre>
 
-<p>Use <strong>find</strong> to see the contents of <strong>test_insert</strong>:</p>
-<pre><code>    &gt; db.test_insert.find()
-    { <span class="hljs-string">"_id"</span> : ObjectId(<span class="hljs-string">"537a7175a6b3c70a4adb3e88"</span>), <span class="hljs-string">"firstName"</span> : <span class="hljs-string">"Susan"</span> }
+<p>Use <strong>find</strong> to see the contents of <strong>test02</strong>:</p>
+<pre><code>    &gt; db.test02.find()    
     {
         <span class="hljs-string">"_id"</span>: ObjectId(<span class="hljs-string">"537a6ba7ceccfa98291d56dd"</span>),
         <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Abe10001"</span>,
@@ -169,19 +178,29 @@ WriteResult({ <span class="hljs-string">"nInserted"</span> : <span class="hljs-n
     }
     etc...
     &gt;
-</code></pre><p>You can ask to <strong>project</strong> only certain fields. The following projection asks not to see the _id field, which is displayed by default, and to see the firstName and lastName fields. (What you see here assumes that additional rows have been inserted):</p>
-<pre><code>&gt; db.test_insert.find({}, {<span class="hljs-string">"\_id"</span>: <span class="hljs-number">0</span>, firstName: <span class="hljs-number">1</span>, <span class="hljs-string">"lastName"</span>: <span class="hljs-number">1</span>});
+</code></pre><p>By default, you can can insert nearly any valid JSON into your tables. This means we could insert the data we inserted into <strong>test01</strong> into <strong>test02</strong> or vice versa. Though the JSON has a different structure, it will not cause problems. For instance:</p>
+<pre>
+db.test02.insert({longshot: "RubyFind"})
+
+> db.test02.find()
+{ "\_id" : ObjectId("5754550586f9d37ae11eb9cd"), "firstName" : "Abe10001", "lastName" : "Lincoln10001", "address" : "10001 Green Street", "city" : "Bellevue", "state" : "WA", "zip" : 98002 }
+{ "\_id" : ObjectId("5754568286f9d37ae11eb9ce"), "longshot" : "RubyFind" }
+</pre>
+
+<p>As you can see, the first and second objects have very different structures, yet they both co-exist in the collection. This behavior is, of course, very different from what we see in a SQL database.</p>
+<p>You can ask to <strong>project</strong> only certain fields. The following projection asks not to see the _id field, which is displayed by default, and to see the firstName and lastName fields. (What you see here assumes that additional rows have been inserted):</p>
+<pre><code>&gt; db.test02.find({}, {<span class="hljs-string">"\_id"</span>: <span class="hljs-number">0</span>, firstName: <span class="hljs-number">1</span>, <span class="hljs-string">"lastName"</span>: <span class="hljs-number">1</span>});
 { <span class="hljs-string">"firstName"</span> : <span class="hljs-string">"Abe10000"</span>, <span class="hljs-string">"lastName"</span> : <span class="hljs-string">"Lincoln10000"</span> }
 { <span class="hljs-string">"firstName"</span> : <span class="hljs-string">"Abe10001"</span>, <span class="hljs-string">"lastName"</span> : <span class="hljs-string">"Lincoln10001"</span> }
 { <span class="hljs-string">"firstName"</span> : <span class="hljs-string">"Abe10002"</span>, <span class="hljs-string">"lastName"</span> : <span class="hljs-string">"Lincoln10002"</span> }
 { <span class="hljs-string">"firstName"</span> : <span class="hljs-string">"Abe10003"</span>, <span class="hljs-string">"lastName"</span> : <span class="hljs-string">"Lincoln10003"</span> }
 { <span class="hljs-string">"firstName"</span> : <span class="hljs-string">"Abe10004"</span>, <span class="hljs-string">"lastName"</span> : <span class="hljs-string">"Lincoln10004"</span> }
 </code></pre><p>This query asks to only the rows where firstName is equal to Abe0001.</p>
-<pre><code>&gt; db.test_insert.find({firstName: <span class="hljs-string">"Abe10001"</span>}, {<span class="hljs-string">"\_id"</span>: <span class="hljs-number">0</span>, firstName: <span class="hljs-number">1</span>, <span class="hljs-string">"lastName"</span>: <span class="hljs-number">1</span>});
+<pre><code>&gt; db.test02.find({firstName: <span class="hljs-string">"Abe10001"</span>}, {<span class="hljs-string">"\_id"</span>: <span class="hljs-number">0</span>, firstName: <span class="hljs-number">1</span>, <span class="hljs-string">"lastName"</span>: <span class="hljs-number">1</span>});
 { <span class="hljs-string">"firstName"</span> : <span class="hljs-string">"Abe10001"</span>, <span class="hljs-string">"lastName"</span> : <span class="hljs-string">"Lincoln10001"</span> }
 &gt;
 </code></pre><p>Now let&#39;s delete all the records:</p>
-<pre><code>&gt; db.test_insert.remove({})
+<pre><code>&gt; db.test02.remove({})
 WriteResult({ <span class="hljs-string">"nRemoved"</span> : <span class="hljs-number">5</span> })
 &gt;
 </code></pre><p>You can use the similar rules to those you used for <strong>find</strong> if you want to remove only specific records.</p>
