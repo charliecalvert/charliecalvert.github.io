@@ -5,6 +5,7 @@
 <li><a href="#install-the-npm-package">Install the NPM Package</a></li>
 <li><a href="#stopStart">Start and Stop MongoDb</a></li>
 <li><a href="#sample-session">Sample Session</a></li>
+<li><a href="#mongoHelp">Mongo: Getting Help</a></li>
 <li><a href="#set-up-a-mongolab-url">Set up a MongoLab URL</a></li>
 <li><a href="#working-with-mongo-data">Working with Mongo Data</a></li>
 <li><a href="#getting-started">Getting Started</a></li>
@@ -104,11 +105,21 @@ sudo apt-<span class="hljs-built_in">get</span> install mongodb-org
 <p>If the <strong>package.json</strong> file for your project does not already include <a href="https://www.npmjs.org/package/mongodb">mongodb</a>, use <strong>npm</strong> to install the Node <strong>mongodb</strong> driver into your local project:</p>
 <pre><code>sudo npm <span class="hljs-keyword">install</span> mongodb
 </code></pre><h2 id="stopStart">Start and Stop MongoDb</h2>
+<p>I believe these are the commands for the recent versions of Ubuntu:</p>
+<pre>
+    sudo systemctl start mongodb
+    sudo systemctl stop mongodb
+    sudo systemctl enable mongodb
+</pre>
+
 <p>Use these commands to stop, to start and restart MongoDb on older versions of Ubuntu:</p>
-<pre><code>sudo service mongodb <span class="hljs-literal">start</span>
-sudo service mongodb <span class="hljs-literal">stop</span>
-sudo service mongodb restart
-</code></pre><p>To see if MongoDb is running, or to learn a bit about your instance, go
+<pre>
+    sudo service mongodb start
+    sudo service mongodb stop
+    sudo service mongodb restart
+</pre>
+
+<p>To see if MongoDb is running, or to learn a bit about your instance, go
 to this address:</p>
 <ul>
 <li><a href="http://localhost:28017/">http://localhost:28017/</a></li>
@@ -116,7 +127,14 @@ to this address:</p>
 <p>The key is that it is a port 1000 above the port you use to query
 the database. The page you find will reveal at least a few minimal
 facts about your running instance of MongoDb.</p>
-<h2 id="sample-session">Sample Session</h2>
+<p>On recent versions of MongoDb <strong><a href="http://localhost:28017/">http://localhost:28017/</a></strong> won&#39;t work unless you add this to <strong>/etc/mongod.conf</strong> and then restart mongodb:</p>
+<pre><code><span class="hljs-comment"># network interfaces</span>
+<span class="hljs-attr">net:</span>
+<span class="hljs-attr">  port:</span> <span class="hljs-number">27017</span>
+<span class="hljs-attr">  bindIp:</span> <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>
+  http.enabled: <span class="hljs-literal">true</span>
+  http.RESTInterfaceEnabled: <span class="hljs-literal">true</span>
+</code></pre><h2 id="sample-session">Sample Session</h2>
 <p>You can view the content on your MongoDb server without writing any code. First you need to start the mongo client:</p>
 <pre><code>$ mongo
 MongoDB <span class="hljs-built_in">shell</span> <span class="hljs-built_in">version</span>: <span class="hljs-number">2.6</span><span class="hljs-number">.1</span>
@@ -207,7 +225,7 @@ WriteResult({ <span class="hljs-string">"nRemoved"</span> : <span class="hljs-nu
 <pre><code>&gt; db.test_insert.remove({firstName: <span class="hljs-string">"Abe10003"</span>})
 WriteResult({ <span class="hljs-string">"nRemoved"</span> : <span class="hljs-number">1</span> })
 &gt;
-</code></pre><p>##Mongo: Getting Help {#mongoHelp}</p>
+</code></pre><h2 id="mongoHelp">Mongo: Getting Help</h2>
 <p><strong>Mongo</strong> is the command line utility you can use to query your MongoDB collections and to maintain your database. Start <strong>mongo</strong> by typing <strong>mongo</strong> at the command line.</p>
 <p>When in mongo, type help to get a list of things you can do:</p>
 <pre><code>db.help()                    <span class="hljs-keyword">help</span> <span class="hljs-keyword">on</span> db methods
