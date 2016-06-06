@@ -135,6 +135,11 @@ elf-home-description
 <li>first-page.jade</li>
 </ul>
 <p>Change the H1 element to refect the page contents. In other words, they should have similar, but not identical contents. For instance, change the word <strong>Home</strong> to <strong>First</strong> and <strong>About</strong> as appropriate.</p>
+<p>We will also need to add a new route to <strong>routes/index.js</strong>:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/:id'</span>, function(req, res, <span class="hljs-keyword">next</span>) { <span class="hljs-string">'use strict'</span><span class="hljs-comment">;</span>
+  res.render(req.params.id, { <span class="hljs-keyword">title</span>: <span class="hljs-string">'ibitday'</span> })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
 <h2 id="main-index-page">Main Index Page</h2>
 <p>This is a SPA. As a result, our main page is always loaded. We need to have a location in that page where we load in content for our other &quot;pages&quot;. The end result is that the top few lines of our main page are static. As the user selects items from the menu, the area below this main section morphs to reflect the content of the user&#39;s selection. Thus we have one main page that morphs into other &quot;pages&quot; as the user requests.</p>
 <p>To create a place on the main page where new &quot;pages&quot; can be loaded, add the angular <strong>ng-view</strong> directive to your main page:</p>
@@ -150,31 +155,34 @@ block content
 </code></pre>
 <p>As stated above, we are building a SPA. As a result, the H1 and two paragraph elements shown above are relatively static. The new &quot;pages&quot; loaded when the user makes menu selections are placed inside the <strong>ng-view</strong>.</p>
 <h2 id="menu">Menu</h2>
-<p>extends layout</p>
-<p>block content
-  header.navbar.navbar-inverse.navbar-fixed-top.bs-docs-nav(role=&#39;banner&#39;)
+<pre><code class="lang-javascript">extends layout
+
+block content
+  header.navbar.navbar-inverse.navbar-fixed-top.<span class="hljs-keyword">bs</span>-docs-nav(role='banner')
     .container
       .navbar-header
-        button.navbar-toggle(type=&#39;button&#39;, data-toggle=&#39;collapse&#39;, data-target=&#39;.bs-navbar-collapse&#39;)
+        button.navbar-toggle(<span class="hljs-keyword">type</span>='button', data-toggle='<span class="hljs-keyword">collapse</span>', data-target='.<span class="hljs-keyword">bs</span>-navbar-<span class="hljs-keyword">collapse</span>')
           span.sr-only Toggle navigation
           span.icon-bar
           span.icon-bar
           span.icon-bar
-        a.navbar-brand(href=&#39;.#/&#39;) Solar Explorer
-      nav.collapse.navbar-collapse.bs-navbar-collapse(role=&quot;navigation&quot;)
+        a.navbar-brand(href='.#/') Solar Explorer
+      nav.<span class="hljs-keyword">collapse</span>.navbar-<span class="hljs-keyword">collapse</span>.<span class="hljs-keyword">bs</span>-navbar-<span class="hljs-keyword">collapse</span>(role=<span class="hljs-string">"navigation"</span>)
         ul.nav.navbar-nav
-          li.trigger-collapse(ng-class=&quot;{ active: isActive(&#39;/&#39;)}&quot;)
-            a(ng-href=&#39;#/&#39;) Home
-          li.trigger-collapse(ng-class=&quot;{ active: isActive(&#39;/first&#39;)}&quot;)
-            a(ng-href=&#39;#/first&#39;) First
-          li.trigger-collapse(ng-class=&quot;{ active: isActive(&#39;/about&#39;)}&quot;)
-            a(ng-href=&#39;#/about&#39;) About
+          <span class="hljs-keyword">li</span>.trigger-<span class="hljs-keyword">collapse</span>(ng-<span class="hljs-keyword">class</span>=<span class="hljs-string">"{ active: isActive('/')}"</span>)
+            a(ng-href='#/') Home
+          <span class="hljs-keyword">li</span>.trigger-<span class="hljs-keyword">collapse</span>(ng-<span class="hljs-keyword">class</span>=<span class="hljs-string">"{ active: isActive('/first')}"</span>)
+            a(ng-href='#/first') First
+          <span class="hljs-keyword">li</span>.trigger-<span class="hljs-keyword">collapse</span>(ng-<span class="hljs-keyword">class</span>=<span class="hljs-string">"{ active: isActive('/about')}"</span>)
+            a(ng-href='#/<span class="hljs-keyword">about</span>') <span class="hljs-keyword">About</span>
   .container
     h1= title
     p Welcome to #{title}
-    p Author #{author}</p>
-<pre><code><span class="hljs-function"><span class="hljs-title">div</span><span class="hljs-params">(data-ng-view=<span class="hljs-string">""</span>)</span></span>
-</code></pre><h2 id="simple-directive-">Simple Directive:</h2>
+    p Author #{author}
+
+    div(data-ng-<span class="hljs-keyword">view</span>=<span class="hljs-string">""</span>)
+</code></pre>
+<h2 id="simple-directive-">Simple Directive:</h2>
 <p>Let&#39;s create a directive. An angular directive allows us to create custom HTML element. Examples of angular directives that we have used already are <strong>ng-app</strong> or <strong>ng-view</strong>. We can use these elements in our HTML files, yet they are not part of HTML5. They are custom elements created by the angular team.</p>
 <p>We will call our directive <strong>elfFirstDescription</strong>. Recall that we already referenced it in our <strong>first-page.jade</strong> file:</p>
 <pre>
@@ -203,7 +211,7 @@ elf-first-description
 <p>This is standard bootstrap code with a an angular expression in it. The expression is set off with double curly braces. The word description in the expression forms a link to the variable <strong>$scope.description</strong> found in our controller from <strong>first.js</strong>.</p>
 <p>At some point, see if you can add similar directives to <strong>home.js</strong> and <strong>about.js</strong></p>
 <h2 id="loading-data">Loading Data</h2>
-<p>Here is a JSON file. Save it in <strong>public/javascripts/Presidents.json</strong>:</p>
+<p>Here is a JSON file. Save it in <strong>public/Presidents.json</strong>:</p>
 <pre><code class="lang-json">[
     {
         "<span class="hljs-attr">firstName</span>": <span class="hljs-string">"George"</span>, "<span class="hljs-attr">lastName</span>": <span class="hljs-string">"Washington"</span>, "<span class="hljs-attr">address</span>": <span class="hljs-string">"101 June Street"</span>, "<span class="hljs-attr">city</span>": <span class="hljs-string">"Bellevue"</span>, "<span class="hljs-attr">state</span>": <span class="hljs-string">"WA"</span>
@@ -236,7 +244,7 @@ elf-first-description
 });
 </code></pre>
 <p>Here is the directive to display the data:</p>
-<pre><code class="lang-javascript">elfApp.directive(<span class="hljs-string">'firstData'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<pre><code class="lang-javascript">elfApp.directive(<span class="hljs-string">'elfFirstData'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 <span class="hljs-meta">    'use strict'</span>;
     <span class="hljs-keyword">return</span> {
         controller: <span class="hljs-string">'FirstController'</span>,
