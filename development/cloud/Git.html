@@ -31,6 +31,7 @@
 <li><a href="#git-remote">GIT Remote</a></li>
 <li><a href="#working-with-branches">Working with Branches</a></li>
 <li><a href="#branch-differences">Branch Differences</a></li>
+<li><a href="#update-branch">Update File from Branch</a></li>
 <li><a href="#comparing-two-branches">Comparing Two Branches</a></li>
 <li><a href="#push-a-branches">Push a Branches</a></li>
 <li><a href="#merge-branches">Merge Branches</a></li>
@@ -1087,13 +1088,56 @@ git diff week06:Week05-SolarExplorer/spec/test-mocks.js week07:Week07-SolarExplo
 <p>You might also use <strong>git diff</strong> to compare two different versions of a single file found in two different commits. This asks what did file X look like in commit Y and in commit Z? You issue the command like this:</p>
 <pre><code><span class="hljs-selector-tag">git</span> <span class="hljs-selector-tag">diff</span> <span class="hljs-selector-tag">e78fe3</span> <span class="hljs-selector-tag">a7e46a</span> <span class="hljs-selector-tag">README</span><span class="hljs-selector-class">.md</span>
 </code></pre><p>This compares the difference for a specific file between two commits. If you want to see the changes between all files in the two commits, just leave off the file name in the above command.</p>
+<h2 id="update-branch">Update File from Branch</h2>
+<p>First checkout the branch where you want to update a file:</p>
+<pre>
+git checkout week10
+</pre>
+
+<p>Then patch a specific file from another branch:</p>
+<pre>
+git checkout --patch week09-charlie views/about.jade
+</pre>
+
+<p>This applies the difference from <strong>week09-charlie:views/about</strong> to <strong>week10</strong>. It &quot;merges&quot; the contents of the file in week10 with the contents of the file in <strong>week09-charlie</strong>.</p>
+<p>Suppose <strong>week09-charlie:views/about.jade</strong> looked like this:</p>
+<pre>
+h1 FooBar
+
+p qux.
+</pre>
+
+<p>Suppose <strong>week10:views/about.jade</strong> looked like this:</p>
+<pre>
+h1 FooBar
+</pre>
+
+<p>After the command was issued, week10:views/about.jade would look like this:</p>
+<pre>
+h1 FooBar
+
+p qux.
+</pre>
+
+<p>We call this patching rather than merging because the changes are not automatically added and committed. It is as if you made the changes your self with the editor, and you must manually add and commit if you want to keep them.</p>
 <h2 id="comparing-two-branches">Comparing Two Branches</h2>
 <p>If you want to compare the files from BranchA and BranchB, you might
 do something like this:</p>
 <pre><code>git diff --<span class="hljs-keyword">name</span>-<span class="hljs-keyword">status</span> branchA..branchB
 </code></pre><p>For instance:</p>
 <pre><code>git diff --<span class="hljs-keyword">name</span>-<span class="hljs-keyword">status</span> master..charlie01
-</code></pre><h2 id="push-a-branches">Push a Branches</h2>
+</code></pre><p>Here are the various kinds of status letters you see for the output of the above:</p>
+<ul>
+<li>A: File added</li>
+<li>C: File has been copied. A number should show percent of similarity to original.</li>
+<li>D: Deleted</li>
+<li>M: Modified</li>
+<li>R: Renamed</li>
+<li>T: Type changed</li>
+<li>U: Unmerged file needs to be fixed (merged manually)</li>
+<li>X: An error of some kind has occurred, possibly in git itself.</li>
+</ul>
+<h2 id="push-a-branches">Push a Branches</h2>
 <p>The commands <strong>git push --all</strong> and <strong>git pull -all</strong> should pull and push everything on all branches.</p>
 <p>Here is a push with --all when I had changes on two branches:</p>
 <pre>$ git push --all
