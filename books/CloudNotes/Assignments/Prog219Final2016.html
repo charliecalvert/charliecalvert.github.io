@@ -1,12 +1,212 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Prog219Final2016</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><!-- script(src="/libs/scripts/Control.js")--><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/about">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/development/index.html">Strongly Typed</a></li><li><a href="/development/web/index.html">Web & Scripts</a></li><li><a href="/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>Prog219Final2016</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#database-notes">Database Notes</a></li>
+<li><a href="#settings">Settings</a></li>
+<li><a href="#settings-model">Settings-Model</a></li>
+<li><a href="#settings-database">Settings-Database</a></li>
+<li><a href="#settings-home-page">Settings Home Page</a></li>
 <li><a href="#install">Install</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>The Prog 219 Final for 2016.</p>
+<p><strong>NOTE</strong>: <em>Please do not use hypens (-) in your model (collection) names. They work okay in mongoose, but the mongo shell has a hard time with them. Let&#39;s use underscores instead.</em></p>
+<p>Good: <strong>module.exports = mongoose.model(&#39;prog219_lastname_setting&#39;, settingsSchema);</strong>
+Bad: <strong>module.exports = mongoose.model(&#39;prog219-lastname-setting&#39;, settingsSchema);</strong>
+Bad: <strong>module.exports = mongoose.model(&#39;prog219LastnameSetting&#39;, settingsSchema);</strong></p>
+<h2 id="database-notes">Database Notes</h2>
+<p>In mongo shell, to empty a collection: <strong>db.myCollection.remove({})</strong>.</p>
+<p>Make sure you put your preface your collections with prog219 and end them with your last name:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">module</span>.exports = mongoose.model(<span class="hljs-string">'prog219_calvert_renewables'</span>, renewablesSchema);
+</code></pre>
+<p>In <strong>routes/connect.js</strong>, set your simple url to use a dbs called renew:</p>
+<pre><code class="lang-javascript"><span class="hljs-variable"><span class="hljs-keyword">var</span> url</span>= 'mongodb:<span class="hljs-comment">//127.0.0.1:27017/renew';</span>
+</code></pre>
+<p><strong>NOTE</strong>: <em>Recall that I will be grading many assignments. I don&#39;t want the data in my Mongo Lab (MLab) database as there will be too much of it. So I&#39;m going to put it in my local database. There will be a lot of data in there, and I need to know who created which collections. As a result, this naming scheme is essential.</em></p>
+<p>If you are in both prog219 and prog272, and your last name is ng, then I&#39;m expecting to see something like this in the mongo shell:</p>
+<pre>
+> show collections
+prog219_calvert_renewables
+prog272_calvert_renewables
+prog219_ng_renewables
+prog272_ng_renewables
+</pre>
+
+<h2 id="settings">Settings</h2>
+<p>To help you get started using database in your app, let&#39;s add the ability to track some settings in MongoDB.</p>
+<h2 id="settings-model">Settings-Model</h2>
+<p>We want to save settings:</p>
+<p>The model looks like this, only use your last name:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
+
+<span class="hljs-keyword">var</span> settingsSchema = mongoose.Schema({
+    <span class="hljs-string">"keyNote"</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">"dataSource"</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">"dataType"</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">"comment"</span>: <span class="hljs-built_in">String</span>
+});
+
+<span class="hljs-built_in">module</span>.exports = mongoose.model(<span class="hljs-string">'prog219_lastname_setting'</span>, settingsSchema);
+</code></pre>
+<h2 id="settings-database">Settings-Database</h2>
+<p>Create a file in <strong>routes</strong> called <strong>database</strong>. Beside tne standard code, include this:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// CODE OMITTED HERE</span>
+
+var settings = require(<span class="hljs-string">'../models/settings'</span>)<span class="hljs-comment">;</span>
+
+<span class="hljs-comment">// CODE OMITTED HERE</span>
+
+function saveSettings(request, response) {
+    console.log(<span class="hljs-string">'request body'</span>, request.body)<span class="hljs-comment">;</span>
+
+    var newSettings = new settings({
+        <span class="hljs-string">"keyNote"</span>: <span class="hljs-string">'settings'</span>,
+        <span class="hljs-string">"dataSource"</span>: request.body.dataSource,
+        <span class="hljs-string">"dataType"</span>: request.body.dataType,
+        <span class="hljs-string">"comment"</span>: request.body.comment
+    })<span class="hljs-comment">;</span>
+
+    console.log(<span class="hljs-string">'inserting'</span>, newSettings.comment)<span class="hljs-comment">;</span>
+
+    newSettings.save(function(<span class="hljs-keyword">err</span>) {
+        console.log(<span class="hljs-string">'saved: '</span>, newSettings.dataSource, newSettings.dataType, newSettings.comment)<span class="hljs-comment">;</span>
+        response.send({ result: <span class="hljs-string">'success'</span>, query: request.body})<span class="hljs-comment">;</span>
+
+    })<span class="hljs-comment">;</span>
+}
+
+router.post(<span class="hljs-string">'/updateSettings'</span>, function(request, response) {
+    console.log(<span class="hljs-string">'request body'</span>, request.body)<span class="hljs-comment">;</span>
+    <span class="hljs-keyword">if</span> (!connect.connected) {
+        connect.doConnection()<span class="hljs-comment">;</span>
+    }
+
+    settings.findOne({keyNote: <span class="hljs-string">'settings'</span>}, function(<span class="hljs-keyword">err</span>, doc) {
+        console.log(<span class="hljs-string">'findone'</span>, <span class="hljs-keyword">err</span>, doc)<span class="hljs-comment">;</span>
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">err</span>) {
+            response.send({result: <span class="hljs-string">'error'</span>})<span class="hljs-comment">;</span>
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">if</span>(doc === null) {
+                saveSettings(request, response)<span class="hljs-comment">;</span>
+            } <span class="hljs-keyword">else</span> {
+                doc.dataType = request.body.dataType<span class="hljs-comment">;</span>
+                doc.dataSource = request.body.dataSource<span class="hljs-comment">;</span>
+                doc.comment = request.body.comment<span class="hljs-comment">;</span>
+                doc.save()<span class="hljs-comment">;</span>
+            }
+        }
+    })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+router.get(<span class="hljs-string">'/getSettings'</span>, function(request, response) {
+    console.log(<span class="hljs-string">'request body'</span>, request.body)<span class="hljs-comment">;</span>
+    <span class="hljs-keyword">if</span> (!connect.connected) {
+        connect.doConnection()<span class="hljs-comment">;</span>
+    }
+
+    settings.findOne({keyNote: <span class="hljs-string">'settings'</span>}, function(<span class="hljs-keyword">err</span>, doc) {
+        console.log(<span class="hljs-string">'findone'</span>, <span class="hljs-keyword">err</span>, doc)<span class="hljs-comment">;</span>
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">err</span>) {
+            response.send({result: <span class="hljs-string">'error'</span>})<span class="hljs-comment">;</span>
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">if</span>(doc === null) {
+                response.send({settings: {dataType: <span class="hljs-string">'Database'</span>, dataSource: <span class="hljs-string">'Local MongoDb'</span>, comment: <span class="hljs-string">'Default Comment'</span>}})
+            } <span class="hljs-keyword">else</span> {
+                response.send({settings: doc})<span class="hljs-comment">;</span>
+            }
+        }
+    })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<h2 id="settings-home-page">Settings Home Page</h2>
+<p>Update <strong>home.jade</strong></p>
+<pre>
+//
+   Created by charlie on 5/20/16.
+
+.container
+    h1 Home
+
+    #qux
+        p MainData: {{mainData}}
+
+    .panel.panel-default
+        .panel-heading Settings
+        .panel-body
+            form(ng-submit='submit()')
+                select(ng-model='formData.dataType')
+                    option Database
+                    option JSON
+                hr
+                select(ng-model='formData.dataSource')
+                    option Local MongoDb
+                    option MLab
+                hr
+                input(type="text", ng-model='formData.comment')
+
+                hr
+                button.btn.btn-primary(type="submit") Submit
+    .panel.panel-default
+        .panel-heading Results
+        .panel-body
+            pre Mirror: {{resultMirror}}
+            hr
+            pre Full: {{resultFull}}
+
+</pre>
+
+<p>Update <strong>home.js</strong></p>
+<pre><code class="lang-javascript">var elfApp = angular.module(<span class="hljs-string">'elfApp'</span>);
+
+elfApp.controller(<span class="hljs-string">'HomeController'</span>, <span class="hljs-keyword">function</span> ($scope, $http) {
+    <span class="hljs-string">'use strict'</span>;
+
+    $scope.mainData = <span class="hljs-string">'HomeController MainData'</span>;
+    $scope.resultFull = <span class="hljs-string">'/database/saveSettings'</span>;
+    $scope.resultMirror = <span class="hljs-string">'/database/saveSettings'</span>;
+    $scope.list = [<span class="hljs-string">'foo'</span>];
+    $scope.formData = {
+        <span class="hljs-string">'dataType'</span>: <span class="hljs-string">'a'</span>,
+        <span class="hljs-string">'dataSource'</span>: <span class="hljs-string">'b'</span>,
+        <span class="hljs-string">'comment'</span>: <span class="hljs-string">'c'</span>
+    };
+    $scope.text = <span class="hljs-string">'hello'</span>;
+
+    $scope.submit = function () {
+        $http.post(<span class="hljs-string">'/database/updateSettings'</span>, $scope.formData).then(function (result) {
+            $scope.resultFull = JSON.stringify(result, null, <span class="hljs-number">4</span>);
+            $scope.resultMirror = JSON.stringify(result.data.query, null, <span class="hljs-number">4</span>);
+        }, function(err) {
+            console.log(err);
+        });
+        console.log($scope.formData);
+    };
+
+    function readSettings() {
+        $http.get(<span class="hljs-string">'/database/getSettings'</span>).then(function (result) {
+            $scope.resultFull = JSON.stringify(result, null, <span class="hljs-number">4</span>);
+            $scope.resultMirror = JSON.stringify(result.data.settings, null, <span class="hljs-number">4</span>);
+            $scope.formData = {
+                <span class="hljs-string">'dataType'</span>: result.data.settings.dataType,
+                <span class="hljs-string">'dataSource'</span>: result.data.settings.dataSource,
+                <span class="hljs-string">'comment'</span>: result.data.settings.comment
+            };
+        }, function(err) {
+            console.log(err);
+        });
+        console.log($scope.formData);
+    }
+    readSettings();
+});
+</code></pre>
 <h2 id="install">Install</h2>
 <p>Some key files and commands:</p>
 <ul>
 <li>models/renewables.js</li>
 <li>routes/connect.js</li>
 <li>routes/all-mongo.js</li>
+<li>public/javascript/database.js</li>
+</ul>
+<p>Some files that need to change:</p>
+<ul>
+<li>public/javascript/app.js</li>
+<li>app.js</li>
 </ul>
 <p>npm install mongoose --save</p>
 </div></body></html>
