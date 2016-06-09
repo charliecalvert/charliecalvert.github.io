@@ -235,61 +235,64 @@ html
 <span class="hljs-built_in">module</span>.exports = connect;
 </code></pre>
 <p>In <strong>routes/index.js</strong> append all of the following before the module statement:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
-<span class="hljs-keyword">var</span> router = express.Router();
-<span class="hljs-keyword">var</span> scientists = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models/scientists'</span>);
-<span class="hljs-keyword">var</span> allMongo = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./all-mongo'</span>);
-<span class="hljs-keyword">var</span> connect = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./connect'</span>);
+<pre><code class="lang-javascript">var express = require(<span class="hljs-string">'express'</span>)<span class="hljs-comment">;</span>
+var router = express.Router()<span class="hljs-comment">;</span>
+var scientists = require(<span class="hljs-string">'../models/scientists'</span>)<span class="hljs-comment">;</span>
+var allMongo = require(<span class="hljs-string">'./all-mongo'</span>)<span class="hljs-comment">;</span>
+var connect = require(<span class="hljs-string">'./connect'</span>)<span class="hljs-comment">;</span>
 <span class="hljs-comment">//var mongoose = require('mongoose');</span>
 
 <span class="hljs-comment">/* GET home page. */</span>
-router.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{ <span class="hljs-string">'use strict'</span>;
-  res.render(<span class="hljs-string">'index'</span>, { title: <span class="hljs-string">'Week09-MongooseBasics'</span> });
-});
+router.get(<span class="hljs-string">'/'</span>, function(req, res, <span class="hljs-keyword">next</span>) { <span class="hljs-string">'use strict'</span><span class="hljs-comment">;</span>
+  res.render(<span class="hljs-string">'index'</span>, { <span class="hljs-keyword">title</span>: <span class="hljs-string">'Week09-MongooseBasics'</span> })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
 
-<span class="hljs-keyword">var</span> connected = <span class="hljs-literal">false</span>;
+var connected = false<span class="hljs-comment">;</span>
 
-router.get(<span class="hljs-string">'/all-data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
-  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"AllData route invoked."</span>);
+router.get(<span class="hljs-string">'/all-data'</span>, function(request, response) {
+  console.log(<span class="hljs-string">"AllData route invoked."</span>)<span class="hljs-comment">;</span>
   <span class="hljs-keyword">if</span> (!connect.connected) {
-    connect.doConnection();
+    connect.doConnection()<span class="hljs-comment">;</span>
   }
 
-  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"About to find scientists."</span>);
-  scientists.find({}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, data</span>) </span>{
-    <span class="hljs-built_in">console</span>.log(data.length);
-    <span class="hljs-built_in">console</span>.log(data[<span class="hljs-number">0</span>]);
-    allData = data;
+  console.log(<span class="hljs-string">"About to find scientists."</span>)<span class="hljs-comment">;</span>
+  scientists.find({}, function(<span class="hljs-keyword">err</span>, data) {
+    console.log(data.<span class="hljs-keyword">length</span>)<span class="hljs-comment">;</span>
+    console.log(data[<span class="hljs-number">0</span>])<span class="hljs-comment">;</span>
+    allData = data<span class="hljs-comment">;</span>
 
-    allMongo.writeData(<span class="hljs-string">'scientists.json'</span>, allData);
+    allMongo.writeData(<span class="hljs-string">'scientists.json'</span>, allData)<span class="hljs-comment">;</span>
 
     response.send({
       result: <span class="hljs-string">'Success'</span>,
       allData: data
-    });
-  });
-});
+    })<span class="hljs-comment">;</span>
+  })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
 
-router.get(<span class="hljs-string">'/emptyCollection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
-  scientists.remove({}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
-    <span class="hljs-keyword">if</span> (err) {
-      response.send({result: <span class="hljs-string">'err'</span>, err: err});
-    } <span class="hljs-keyword">else</span> {
-      response.send({result: <span class="hljs-string">'collection removed'</span>});
+router.get(<span class="hljs-string">'/emptyCollection'</span>, function(request, response) {
+    <span class="hljs-keyword">if</span> (!connect.connected) {
+            connect.doConnection()<span class="hljs-comment">;</span>
     }
-  });
-});
+  scientists.remove({}, function(<span class="hljs-keyword">err</span>) {
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">err</span>) {
+      response.send({result: <span class="hljs-string">'err'</span>, <span class="hljs-keyword">err</span>: <span class="hljs-keyword">err</span>})<span class="hljs-comment">;</span>
+    } <span class="hljs-keyword">else</span> {
+      response.send({result: <span class="hljs-string">'collection removed'</span>})<span class="hljs-comment">;</span>
+    }
+  })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
 
-router.get(<span class="hljs-string">'/insertValidCollection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
-  allMongo.readDataAndInsert(response);
-});
+router.get(<span class="hljs-string">'/insertValidCollection'</span>, function(request, response) {
+  allMongo.readDataAndInsert(response)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
 
-router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
-  response.render(request.params.id, {});
-});
+router.get(<span class="hljs-string">'/:id'</span>, function(request, response) {
+  response.render(request.params.id, {})<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
 
 
-<span class="hljs-built_in">module</span>.exports = router;
+module.exports = router<span class="hljs-comment">;</span>
 </code></pre>
 <p>In <strong>routes/all-mongo.js</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-comment">/**
