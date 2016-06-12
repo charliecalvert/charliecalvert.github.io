@@ -63,7 +63,7 @@ npm install
 <li>Create a folder called models at the root of your project</li>
 <li>Put this code in a file called <strong>models/presidents.js</strong>:</li>
 </ul>
-<pre><code><span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
 
 <span class="hljs-keyword">var</span> presidentsSchema = mongoose.Schema({
     <span class="hljs-string">"firstName"</span>: <span class="hljs-built_in">String</span>,
@@ -71,8 +71,9 @@ npm install
 });
 
 <span class="hljs-built_in">module</span>.exports = mongoose.model(<span class="hljs-string">'presidents'</span>, presidentsSchema);
-</code></pre><p>While we are at it, let&#39;s create a more complex schema which we can use once we learn the basics. Put the follow code in a file called <strong>models/scientists.js</strong>.</p>
-<pre><code><span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
+</code></pre>
+<p>While we are at it, let&#39;s create a more complex schema which we can use once we learn the basics. Put the follow code in a file called <strong>models/scientists.js</strong>.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
 
 <span class="hljs-keyword">var</span> scientistsSchema = mongoose.Schema({
     <span class="hljs-string">"firstName"</span>: <span class="hljs-built_in">String</span>,
@@ -83,7 +84,8 @@ npm install
 });
 
 <span class="hljs-built_in">module</span>.exports = mongoose.model(<span class="hljs-string">'scientists'</span>, scientistsSchema);
-</code></pre><p>In <strong>routes/index.js</strong> do these two things:</p>
+</code></pre>
+<p>In <strong>routes/index.js</strong> do these two things:</p>
 <pre><code><span class="hljs-keyword">var</span> scientists = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models/scientists'</span>);
 <span class="hljs-keyword">var</span> presidents = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models/presidents'</span>);
 <span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
@@ -321,63 +323,67 @@ module.exports = router<span class="hljs-comment">;</span>
  */</span>
 
 <span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
-<span class="hljs-comment">//var router = express.Router();</span>
 <span class="hljs-keyword">var</span> connect = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./connect'</span>);
-<span class="hljs-keyword">var</span> scientists = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models/scientists'</span>);
+<span class="hljs-keyword">var</span> Scientists = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models/scientists'</span>);
 <span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
-
-<span class="hljs-keyword">var</span> allData;
+<span class="hljs-keyword">var</span> numberOfScientists = <span class="hljs-number">0</span>;
 <span class="hljs-keyword">var</span> totalScientistsSaved = <span class="hljs-number">0</span>;
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">allMongo</span>(<span class="hljs-params"></span>) </span>{
-
+<span class="hljs-meta">    'use strict'</span>;
 }
 
-allMongo.numberOfScientists = <span class="hljs-number">0</span>;
-
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insertScientist</span>(<span class="hljs-params">scientist, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
     <span class="hljs-keyword">if</span> (!connect.connected) {
         connect.doConnection();
     }
-    <span class="hljs-keyword">var</span> newScientist = <span class="hljs-keyword">new</span> scientists({
-        <span class="hljs-string">"firstName"</span>: scientist.firstName,
-        <span class="hljs-string">"lastName"</span>: scientist.lastName,
-        <span class="hljs-string">"subject"</span>: scientist.subject,
-        <span class="hljs-string">"subjects"</span>: scientist.subjects,
-        <span class="hljs-string">"comments"</span>: scientist.comments
+    <span class="hljs-keyword">var</span> newScientist = <span class="hljs-keyword">new</span> Scientists({
+        <span class="hljs-string">'firstName'</span>: scientist.firstName,
+        <span class="hljs-string">'lastName'</span>: scientist.lastName,
+        <span class="hljs-string">'subject'</span>: scientist.subject,
+        <span class="hljs-string">'subjects'</span>: scientist.subjects,
+        <span class="hljs-string">'comments'</span>: scientist.comments
     });
 
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'inserting'</span>, newScientist.lastName);
 
     newScientist.save(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'saved: '</span>, newScientist.lastName);
         totalScientistsSaved++;
-        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'saved: '</span>, newScientist.lastName, allMongo.numberOfScientists, totalScientistsSaved);
-
-        <span class="hljs-keyword">if</span> (totalScientistsSaved === allMongo.numberOfScientists) {
+        <span class="hljs-keyword">if</span> (totalScientistsSaved === numberOfScientists) {
             <span class="hljs-comment">//mongoose.disconnect();</span>
-            response.send({result: <span class="hljs-string">'Success'</span>});
+            response.send({
+                result: <span class="hljs-string">'Success'</span>
+            });
         }
     });
 }
 
 allMongo.writeData = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">fileName, data</span>) </span>{
-    <span class="hljs-keyword">var</span> data = <span class="hljs-built_in">JSON</span>.stringify(data, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
-    fs.writeFile(fileName, data, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, data</span>) </span>{
-        <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">throw</span>(err);
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> dataAsString = <span class="hljs-built_in">JSON</span>.stringify(data, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
+    fs.writeFile(fileName, dataAsString, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, result</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) {
+            <span class="hljs-keyword">throw</span> (err);
+        }
         <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'success writing file'</span>);
     });
-}
+};
 
 allMongo.readDataAndInsert = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
-    fs.readFile(<span class="hljs-string">'ValidScientists.json'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, scientists</span>) </span>{
-        <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">throw</span> (err);
-        scientists = <span class="hljs-built_in">JSON</span>.parse(scientists);
-        allMongo.numberOfScientists = scientists.length;
-        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; scientists.length; i++) {
-            insertScientist(scientists[i], response);
+<span class="hljs-meta">    'use strict'</span>;
+    fs.readFile(<span class="hljs-string">'ValidScientists.json'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, scientistsText</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) {
+            <span class="hljs-keyword">throw</span> (err);
+        }
+        numberOfScientists = scientistsText.length;
+        scientistsText = <span class="hljs-built_in">JSON</span>.parse(scientistsText);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; scientistsText.length; i++) {
+            insertScientist(scientistsText[i], response);
         }
     });
-}
+};
 
 <span class="hljs-built_in">module</span>.exports = allMongo;
 </code></pre>
