@@ -12,6 +12,7 @@
 <li><a href="#containers">Containers</a></li>
 <li><a href="#testing">Testing</a></li>
 <li><a href="#jade-routes">Jade Routes</a></li>
+<li><a href="#menu">Menu</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>The Prog 219 Final for 2016 should contain, at minimum, the following elements:</p>
 <ol>
@@ -27,8 +28,8 @@
 <p>Your next set of priorities include:</p>
 <ul>
 <li>Ensuring your code is thoroughly refactored into<ul>
-<li>Renewable and Energy Types folders on the client and server</li>
-<li>Files in the routes directory for handling various tasks such as responding to requests for  <strong>renewables</strong> data, <strong>high-tech-energy</strong> data and <strong>settings</strong> data.</li>
+<li>Renewable and Energy Types folders on the client and server (public/javascripts, views)</li>
+<li>Files in the routes directory for handling <strong>settings</strong> (database) data.</li>
 </ul>
 </li>
 <li>At least one of the following:<ul>
@@ -36,6 +37,7 @@
 <li>High Tech Energy Types Page</li>
 </ul>
 </li>
+<li>Menu works on both desktop and mobile device</li>
 </ul>
 <p>This demonstrates your ability to take some of the concepts taught in the core portion of the course and implement them on your own with a minimum of hand holding.</p>
 <p>Finally, if you have completed the features outlined above, you can attempt to produce a complete, well structured application:</p>
@@ -211,6 +213,13 @@ router.get(<span class="hljs-string">'/getSettings'</span>, function(request, re
 <span class="hljs-keyword">app</span>.<span class="hljs-keyword">use</span>('/database', database); &lt;= <span class="hljs-keyword">About</span> <span class="hljs-keyword">line</span> 28
 </code></pre>
 <p>Remember that you are also going to need <strong>connect.js</strong> from our earlier assignment. Make sure the database is et  to <strong>renew</strong>.</p>
+<p>In <strong>connect.js</strong> you need to change this line:</p>
+<pre><code class="lang-javascripts">db.once(<span class="hljs-string">'open'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(callback)</span> </span>{
+    connect.connected = <span class="hljs-literal">true</span>;   &lt;== THIS IS CORRECT
+    console.log(<span class="hljs-string">'Opened connection to mongo'</span>);
+});
+</code></pre>
+<p>If you see <strong>connected = true;</strong> then you need to change it as shown above. Change in both simple and mLab. This is around lines 20 and 42 of <strong>routes/connect.js</strong>.</p>
 <h2 id="settings-home-page">Settings Home Page</h2>
 <p>Update <strong>home.jade</strong></p>
 <pre>
@@ -324,6 +333,18 @@ myModule.factory(<span class="hljs-string">'settings'</span>, <span class="hljs-
     <span class="hljs-keyword">return</span> settings;
 });
 </code></pre>
+<p>Then in <strong>home.js</strong>, you will need to use dependency injecttion to access the settings object:</p>
+<pre><code class="lang-javascript">elfApp.controller(<span class="hljs-string">'HomeController'</span>, <span class="hljs-keyword">function</span>($scope, $http, settings) {
+  // LOTS OF CODE OMITTED HERE
+})
+</code></pre>
+<p>Then in the same file, use it like this:</p>
+<pre><code class="lang-javascript">$scope.submit = <span class="hljs-keyword">function</span>() {
+    settings.setSettings($scope.formData);
+    etc ...
+}
+</code></pre>
+<p>Then in your renewables page, again use dependency injection to insert the object into the <strong>RenewablesController</strong>. You can then use it like this:</p>
 <pre><code class="lang-javascript">$scope.getRenewable = <span class="hljs-keyword">function</span>() {
     var dataType = settings.useDatabase ? <span class="hljs-number">0</span> : <span class="hljs-number">1</span>;
     var urls = [<span class="hljs-string">'/database/allRenewables'</span>, <span class="hljs-string">'data/Renewable.json'</span>];
@@ -451,6 +472,8 @@ p#display2
 <li>Read the <a href="http://www.elvenware.com/charlie/development/web/JavaScript/NodeJade.html#loading-jade">Loading Jade</a> section in the Elvenware Jade page.</li>
 <li>See the <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/NodeCode/JadeRoutes">JadeRoutes</a> demo program from JsObjects.</li>
 </ul>
+<h2 id="menu">Menu</h2>
+<p>You should have menu that works both on a mobile device and on desktop.</p>
 <h2 id="turn-it-in">Turn it in</h2>
 <p>Put your work in a branch called <strong>Final</strong> in a folder called <strong>SolarVoyager</strong>. If you do anything else other than this, please spell it out carefully when you turn in the Final. I will <strong>take off points</strong> and will likely ask you to re-submit if I don&#39;t immediately know where to look for final.</p>
 <p>Submit the URL of your program running on Heroku.</p>
