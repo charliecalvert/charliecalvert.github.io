@@ -6,10 +6,15 @@
 <li><a href="#settings-model">Settings-Model</a></li>
 <li><a href="#settings-database">Settings-Database</a></li>
 <li><a href="#settings-home-page">Settings Home Page</a></li>
+<li><a href="#settings-options">Settings Options</a></li>
 <li><a href="#database">Database</a></li>
 <li><a href="#data-choice">Data Choice</a></li>
 <li><a href="#containers">Containers</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>The Prog 272 Final for 2016.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/prog272-final-2016-01.png" alt="Main Page"></p>
+<p><strong>Figure 01</strong>: <em>The main page of the final.</em></p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/prog272-final-2016-01.png" alt="Database Page"></p>
+<p><strong>Figure 01</strong>: <em>The database page is import JSON data into the MongoDb database.</em></p>
 <h2 id="install">Install</h2>
 <p>Some key files and commands:</p>
 <ul>
@@ -208,6 +213,55 @@ define(<span class="hljs-function"><span class="hljs-keyword">function</span>(<s
     <span class="hljs-keyword">return</span> home;
 });
 </code></pre>
+<h2 id="settings-options">Settings Options</h2>
+<p>You know how to load and save the settings for your application. The next step is to change the behavior of the application based on those settings.</p>
+<p>The user can choose to read data from either the database or a JSON file:</p>
+<ul>
+<li>Database</li>
+<li>JSON</li>
+</ul>
+<p>Let&#39;s capture that choice in a simple object to be stored in its own file called <strong>public/javascripts/settings.js</strong>:</p>
+<pre><code class="lang-javascript">define(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+   <span class="hljs-keyword">return</span> {
+        useDatabase: <span class="hljs-literal">true</span>,
+        useLocalMongoDb: <span class="hljs-literal">true</span>,
+        report: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'useDatabase'</span>, <span class="hljs-keyword">this</span>.useDatabase);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'useLocalMongoDb'</span>, <span class="hljs-keyword">this</span>.useLocalMongoDb)
+        },
+        setSettings: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">settings</span>) </span>{
+            <span class="hljs-keyword">this</span>.useDatabase = settings.dataType.toLowerCase() === <span class="hljs-string">'database'</span>;
+            <span class="hljs-keyword">this</span>.useLocalMongoDb = settings.dataSource.toLowerCase() === <span class="hljs-string">'local mongodb'</span>;
+            <span class="hljs-keyword">this</span>.report()
+        }
+    };
+});
+</code></pre>
+<p>Given this object, we can now decide whether to get our data from the database or from a JSON file depending on the options the user choose. For instance, in <strong>public/javascripts/renewables/renewables.js</strong>, we can use the require js dependency injection to access the settings object and decide whether or not to use the mongodb database:</p>
+<pre><code class="lang-javascript">define([<span class="hljs-string">'jquery'</span>, <span class="hljs-string">'settings'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$, settings</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+
+    <span class="hljs-keyword">var</span> index = <span class="hljs-number">0</span>;
+    <span class="hljs-comment">//var useDatabase = true;</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getRenewable</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">//console.log('getRenewable called');</span>
+        <span class="hljs-keyword">var</span> routeType = settings.useDatabase ? <span class="hljs-number">0</span> : <span class="hljs-number">1</span>;
+
+        <span class="hljs-keyword">var</span> renewableRoutes = [<span class="hljs-string">'/allRenewables'</span>, <span class="hljs-string">'/renewables'</span>];
+        $.getJSON(renewableRoutes[routeType], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+            <span class="hljs-comment">// CODE OMITTED HERE</span>
+        });
+    }
+});
+</code></pre>
+<p>Your job is to make sure the settings are set correctly when the user either loads or saves the settings from the database. This typically takes place in <strong>home.js</strong> Again, you will use dependency injection to access the settings object:</p>
+<pre><code class="lang-javascript">define([<span class="hljs-string">'settings'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(settings)</span> </span>{
+  <span class="hljs-comment">// MAKE SURE THE SETTINGS ARE SAVED TO THE settings OBJECT</span>
+  <span class="hljs-comment">// CODE OMITTED HERE</span>
+});
+</code></pre>
+<p>The exact details of what happens in <strong>home.js</strong> are left as an exercise. You will have to add only a small amount of code that saves the settings to the <strong>settings</strong> object. This will involve a call to <strong>settings.setSettings()</strong>.</p>
 <h2 id="database">Database</h2>
 <p>Make sure you put your preface your collections with prog219 and end them with your last name:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">module</span>.exports = mongoose.model(<span class="hljs-string">'prog219_calvert_renewables'</span>, renewablesSchema);

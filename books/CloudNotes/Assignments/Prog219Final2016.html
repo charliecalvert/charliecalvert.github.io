@@ -4,6 +4,7 @@
 <li><a href="#settings-model">Settings-Model</a></li>
 <li><a href="#settings-database">Settings-Database</a></li>
 <li><a href="#settings-home-page">Settings Home Page</a></li>
+<li><a href="#settings-options">Settings Options</a></li>
 <li><a href="#install">Install</a></li>
 <li><a href="#jade-routes">Jade Routes</a></li>
 <li><a href="#can-t-start-mongod">Can&#39;t Start Mongod</a></li>
@@ -15,6 +16,21 @@
 Bad: <strong>module.exports = mongoose.model(&#39;prog219-lastname-setting&#39;, settingsSchema);</strong>
 Bad: <strong>module.exports = mongoose.model(&#39;prog219LastnameSetting&#39;, settingsSchema);</strong></p>
 <h2 id="database-notes">Database Notes</h2>
+<p>If you get <strong>Unclean shutdown detected.</strong>, run this to fix it:</p>
+<pre>
+cd
+./mongod --repair
+</pre>
+
+<p>On Cloud 9, To shutdown we should be able to do <strong>CTRL-C</strong> in the window where mongo is running. Or, try this from inside the mongo shell:</p>
+<pre>
+db.shutdownServer()
+</pre>
+
+<p>For more details on shuting down, go here:</p>
+<ul>
+<li><a href="https://docs.mongodb.com/manual/tutorial/recover-data-following-unexpected-shutdown/">https://docs.mongodb.com/manual/tutorial/recover-data-following-unexpected-shutdown/</a></li>
+</ul>
 <p>In mongo shell, to empty a collection: <strong>db.myCollection.remove({})</strong>.</p>
 <p>Make sure you put your preface your collections with prog219 and end them with your last name:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">module</span>.exports = mongoose.model(<span class="hljs-string">'prog219_calvert_renewables'</span>, renewablesSchema);
@@ -49,7 +65,7 @@ prog272_ng_renewables
 <span class="hljs-built_in">module</span>.exports = mongoose.model(<span class="hljs-string">'prog219_lastname_setting'</span>, settingsSchema);
 </code></pre>
 <h2 id="settings-database">Settings-Database</h2>
-<p>Create a file in <strong>routes</strong> called <strong>database</strong>. Beside tne standard code, include this:</p>
+<p>Create a file in <strong>routes</strong> called <strong>database</strong>. Beside the standard code that can be found in <strong>routes/users.js</strong>, include this code:</p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// CODE OMITTED HERE</span>
 
 var settings = require(<span class="hljs-string">'../models/settings'</span>)<span class="hljs-comment">;</span>
@@ -118,6 +134,14 @@ router.get(<span class="hljs-string">'/getSettings'</span>, function(request, re
     })<span class="hljs-comment">;</span>
 })<span class="hljs-comment">;</span>
 </code></pre>
+<p>You will also need to set up the route in app.js:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// CODE OMITTED HERE</span>
+<span class="hljs-keyword">var</span> database = require('./routes/database'); &lt;= <span class="hljs-keyword">About</span> <span class="hljs-keyword">line</span> 8
+
+<span class="hljs-comment">// CODE OMITTED HERE</span>
+<span class="hljs-keyword">app</span>.<span class="hljs-keyword">use</span>('/database', database); &lt;= <span class="hljs-keyword">About</span> <span class="hljs-keyword">line</span> 28
+</code></pre>
+<p>Remember that you are also going to need <strong>connect.js</strong> from our earlier assignment. Make sure the database is et  to <strong>renew</strong>.</p>
 <h2 id="settings-home-page">Settings Home Page</h2>
 <p>Update <strong>home.jade</strong></p>
 <pre>
@@ -198,6 +222,69 @@ elfApp.controller(<span class="hljs-string">'HomeController'</span>, <span class
     }
     readSettings();
 });
+</code></pre>
+<h2 id="settings-options">Settings Options</h2>
+<p>You know how to load and save the settings for your application. The next step is to change the behavior of the application based on those settings.</p>
+<p>The user can choose to read data from either the database or a JSON file:</p>
+<ul>
+<li>Database</li>
+<li>JSON</li>
+</ul>
+<p>Let&#39;s capture that choice in a simple object to be stored in its own file called <strong>public/javascripts/settings.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> myModule = angular.module(<span class="hljs-string">'elfApp'</span>);
+
+myModule.factory(<span class="hljs-string">'settings'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">settings</span>(<span class="hljs-params"></span>) </span>{
+    }
+
+    settings.useDatabase = <span class="hljs-literal">true</span>;
+    settings.useLocalMongoDb = <span class="hljs-literal">true</span>;
+
+    <span class="hljs-keyword">var</span> report = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'useDatabase'</span>, settings.useDatabase);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'useLocalMongoDb'</span>, settings.useLocalMongoDb)
+    };
+
+    settings.setSettings = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">settings</span>) </span>{
+        <span class="hljs-keyword">this</span>.useDatabase = settings.dataType.toLowerCase() === <span class="hljs-string">'database'</span>;
+        <span class="hljs-keyword">this</span>.useLocalMongoDb = settings.dataSource.toLowerCase() === <span class="hljs-string">'local mongodb'</span>;
+        report()
+    };
+
+    <span class="hljs-keyword">return</span> settings;
+});
+</code></pre>
+<pre><code class="lang-javascript">$scope.getRenewable = <span class="hljs-keyword">function</span>() {
+    var dataType = settings.useDatabase ? <span class="hljs-number">0</span> : <span class="hljs-number">1</span>;
+    var urls = [<span class="hljs-string">'/database/allRenewables'</span>, <span class="hljs-string">'data/Renewable.json'</span>];
+    $http.get(urls[dataType])
+        .then(function(res) {
+            if (settings.useDatabase) {
+                $scope.renewable = renewableUtils.getComplexFormat(res.data.renewables);
+            } else {
+                $scope.renewable = res.data;
+            }
+            renewableUtils.init($scope.renewable);
+            renewableUtils.init($scope.renewable);
+            $scope.renewableUtils = renewableUtils;
+        });
+};
+</code></pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">this</span>.getComplexFormat = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(simpleRenewables)</span> </span>{
+    <span class="hljs-keyword">return</span> simpleRenewables.map(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(renewable)</span> </span>{
+        <span class="hljs-keyword">return</span> {
+            Year: renewable.year,
+            <span class="hljs-string">'Solar (quadrillion Btu)'</span>: renewable.solar,
+            <span class="hljs-string">'Geothermal (quadrillion Btu)'</span>: renewable.geothermal,
+            <span class="hljs-string">'Wind power (quadrillion Btu)'</span>: renewable.wind,
+            <span class="hljs-string">'Other biomass (quadrillion Btu)'</span>: renewable.biomass,
+            <span class="hljs-string">'Liquid biofuels (quadrillion Btu)'</span>: renewable.biofuels,
+            <span class="hljs-string">'Wood biomass (quadrillion Btu)'</span>: renewable.wood,
+            <span class="hljs-string">'Hydropower (quadrillion Btu)'</span>: renewable.hydropower
+        };
+    });
+};
 </code></pre>
 <h2 id="install">Install</h2>
 <p>Some key files and commands:</p>
