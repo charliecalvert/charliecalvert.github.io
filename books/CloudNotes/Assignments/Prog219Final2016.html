@@ -27,8 +27,8 @@
 <p>Your next set of priorities include:</p>
 <ul>
 <li>Ensuring your code is thoroughly refactored into<ul>
-<li>Renewable and Energy Types folders on the client and server</li>
-<li>Files in the routes directory for handling various tasks such as responding to requests for  <strong>renewables</strong> data, <strong>high-tech-energy</strong> data and <strong>settings</strong> data.</li>
+<li>Renewable and Energy Types folders on the client and server (public/javascripts, views)</li>
+<li>Files in the routes directory for handling <strong>settings</strong> (database) data.</li>
 </ul>
 </li>
 <li>At least one of the following:<ul>
@@ -323,6 +323,17 @@ myModule.factory(<span class="hljs-string">'settings'</span>, <span class="hljs-
 
     <span class="hljs-keyword">return</span> settings;
 });
+</code></pre>
+<p>Then in <strong>home.js</strong>, you will need to use dependency injecttion to access the settings object:</p>
+<pre><code class="lang-javascript">elfApp.controller(<span class="hljs-string">'HomeController'</span>, <span class="hljs-keyword">function</span>($scope, $http, settings) {
+  // LOTS OF CODE OMITTED HERE
+})
+</code></pre>
+<p>Then in the same file, use it like this:</p>
+<pre><code class="lang-javascript">$scope.submit = <span class="hljs-keyword">function</span>() {
+    settings.setSettings($scope.formData);
+    etc ...
+}
 </code></pre>
 <pre><code class="lang-javascript">$scope.getRenewable = <span class="hljs-keyword">function</span>() {
     var dataType = settings.useDatabase ? <span class="hljs-number">0</span> : <span class="hljs-number">1</span>;
