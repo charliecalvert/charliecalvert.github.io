@@ -205,61 +205,6 @@ html
 });
 </code></pre>
 <h2 id="step-seven">Step Seven</h2>
-<p>In <strong>routes/connect.js</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-comment">/**
- * Created by charlie on 6/11/2015.
- */</span>
-
-<span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
-
-<span class="hljs-keyword">var</span> connect = {
-
-    connected: <span class="hljs-literal">false</span>,
-
-    simpleConnect: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-        <span class="hljs-keyword">var</span> url= <span class="hljs-string">'mongodb://127.0.0.1:27017/test'</span>;
-        connect.connected = <span class="hljs-literal">true</span>;
-        mongoose.connect(url);
-        <span class="hljs-keyword">var</span> db = mongoose.connection;
-        db.on(<span class="hljs-string">'error'</span>, <span class="hljs-built_in">console</span>.error.bind(<span class="hljs-built_in">console</span>, <span class="hljs-string">'connection error:'</span>));
-        db.once(<span class="hljs-string">'open'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">callback</span>) </span>{
-            connected = <span class="hljs-literal">true</span>;
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Opened connection to mongo'</span>);
-        });
-    },
-
-    mlabConnect:<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-        connect.connected = <span class="hljs-literal">true</span>;
-        <span class="hljs-keyword">var</span> userName = <span class="hljs-string">'csc'</span>;
-        <span class="hljs-keyword">var</span> password = <span class="hljs-string">'Re*lD*t*22#'</span>;
-        <span class="hljs-keyword">var</span> siteAndPort = <span class="hljs-string">'ds049848.mongolab.com:49848'</span>;
-        <span class="hljs-keyword">var</span> databaseName = <span class="hljs-string">'elvenlab01'</span>;
-        <span class="hljs-keyword">var</span> url = <span class="hljs-string">'mongodb://'</span> + userName + <span class="hljs-string">':'</span> + password + <span class="hljs-string">'@'</span> + siteAndPort + <span class="hljs-string">'/'</span> + databaseName;
-        <span class="hljs-built_in">console</span>.log(url);
-        mongoose.connect(url);
-
-        <span class="hljs-comment">// This part is optional</span>
-        <span class="hljs-keyword">var</span> db = mongoose.connection;
-        db.on(<span class="hljs-string">'error'</span>, <span class="hljs-built_in">console</span>.error.bind(<span class="hljs-built_in">console</span>, <span class="hljs-string">'connection error:'</span>));
-        db.once(<span class="hljs-string">'open'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">callback</span>) </span>{
-            connected = <span class="hljs-literal">true</span>;
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Opened connection to mongo'</span>);
-        });
-    },
-
-    doConnection: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">useSimple</span>) </span>{
-        <span class="hljs-keyword">var</span> connectType = useSimple || <span class="hljs-literal">true</span>;
-        <span class="hljs-keyword">if</span> (connectType) {
-            connect.simpleConnect();
-        } <span class="hljs-keyword">else</span> {
-            connect.mlabConnect();
-        }
-    }
-
-};
-
-<span class="hljs-built_in">module</span>.exports = connect;
-</code></pre>
 <p>In <strong>routes/index.js</strong> append all of the following before the module statement:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
 <span class="hljs-keyword">var</span> router = express.Router();
