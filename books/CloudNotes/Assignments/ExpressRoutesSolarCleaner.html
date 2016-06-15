@@ -2,7 +2,8 @@
 <li><a href="#the-hightech-route">The HighTech Route</a></li>
 <li><a href="#turn-it-in">Turn It In</a></li>
 <li><a href="#additional-notes">Additional Notes</a></li>
-<li><a href="#unique-names">Use Unique Names</a></li><!--TOC_End--></ul><p>In <strong>/app.js</strong>, around line 8:</p>
+<li><a href="#unique-names">Use Unique Names</a></li>
+<li><a href="#typical-route">Typical Route</a></li><!--TOC_End--></ul><p>In <strong>/app.js</strong>, around line 8:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> renewables = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./routes/renewables'</span>);
 <span class="hljs-keyword">var</span> routes = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./routes/index'</span>);
 <span class="hljs-keyword">var</span> users = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./routes/users'</span>);
@@ -63,4 +64,37 @@ router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function">
 <p>Additional notes.</p>
 <h3 id="unique-names">Use Unique Names</h3>
 <p>See this elvenware section on <a href="http://www.elvenware.com/charlie/development/web/JavaScript/NodeJade.html#unique-names">unique names</a>.</p>
+<h3 id="typical-route">Typical Route</h3>
+<p>To see an example of how we:</p>
+<ul>
+<li>load jade</li>
+<li>call server side code</li>
+<li>inside one program</li>
+<li>That has both a <strong>routes/index.js</strong> file</li>
+<li>And a <strong>routes/renewables.js</strong> file</li>
+<li>See this example: <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/NodeCode/JadeRoutes">NodeJade</a></li>
+<li>And this text: <a href="http://www.elvenware.com/charlie/development/web/JavaScript/NodeJade.html#loading-jade">loading-jade</a></li>
+</ul>
+<p>Here is a summary of the route for loading <strong>Renewable.json</strong>. In <strong>app.js</strong></p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> renewables = <span class="hljs-keyword">require</span>(<span class="hljs-string">'./routes/renewables'</span>);
+app.<span class="hljs-keyword">use</span>(<span class="hljs-string">'/renewable-routes/'</span>, renewables);
+</code></pre>
+<p>In <strong>routes/renewables</strong>:</p>
+<pre><code class="lang-javascript">router.<span class="hljs-keyword">get</span>(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response)</span> </span>{
+    fs.readFile(<span class="hljs-string">'data/Renewable.json'</span>, <span class="hljs-string">'utf8'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err, data)</span> </span>{
+      CODE OMITTED...
+    });
+});
+</code></pre>
+<p>On the client, ask for the <strong>Renewable.json</strong>:</p>
+<pre><code class="lang-javascript">$.getJSON(<span class="hljs-string">'/renewable-routes'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+</code></pre>
+<p>Switching topics, let&#39;s review loading jade. Also in <strong>reoutes/renewables.js</strong>, you load jade like this:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    response.render(<span class="hljs-string">'renewables/'</span> + request.params.id, {
+        title: <span class="hljs-string">'ElfComponent'</span>
+    });
+});
+</code></pre>
 </div></body></html>
