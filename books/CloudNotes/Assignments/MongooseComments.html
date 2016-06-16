@@ -24,42 +24,14 @@
 <pre><code><span class="hljs-attribute">robocopy</span> Week10-MongooseSubdocs Week11-MongooseComments /mir
 </code></pre><p>Open <strong>Week11-MongooseComments</strong> in WebStorm and change the name from MongooseSubDocs to MongooseComments.</p>
 <h2 id="step-two">Step Two</h2>
-<p>Handle connection to the MongoDb database.</p>
-<p>The goal here is to create a share-able file that can be used when we need to connect to our database. This is needed because our new application is going to have two pieces of middleware both of which need to connect to the Mongoose database:</p>
+<p>Create a connection to the MongoDb database.</p>
+<p>Below you will reusable code that can be used when we need to connect to our database. This is needed because our new application is going to have two pieces of middleware both of which need to connect to the Mongoose database:</p>
 <ul>
 <li><strong>routes/index.js</strong>  will be able to retrieve all the data from the database. In our final, this file might be also used for other tasks such as inserting and deleting scientists and updating the subjects. In short, it handles everything except the comments.</li>
 <li><strong>routes/comments.js</strong> will only handle comments. The point is that the CRUD operations for comments are complex enough that they belongs in their own module. We are following the rule that says each object should do one thing and have only one reason for change. The <strong>comments.js</strong> module follows that rule reasonable well, in that it only will change if our technique for handling <strong>comments</strong> changes.</li>
 </ul>
 <p><strong>NOTE</strong>: <em>It is arguable that we could break more code out of <strong>index.js</strong> and into its own middleware file. I would, in fact, do that, but we have simply run out of time this quarter.</em></p>
-<p>Here is the <strong>connect.js</strong> file that handles the connection to the mongoose database for both <strong>routes/index.js</strong> and <strong>routes/comments.js</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
-
-<span class="hljs-keyword">var</span> connect = {
-
-    connected: <span class="hljs-literal">false</span>,
-
-    doConnection: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-        connect.connected = <span class="hljs-literal">true</span>;
-        <span class="hljs-keyword">var</span> userName = <span class="hljs-string">'csc'</span>;
-        <span class="hljs-keyword">var</span> password = <span class="hljs-string">'Re*lD*t*22#'</span>;
-        <span class="hljs-keyword">var</span> siteAndPort = <span class="hljs-string">'ds049848.mongolab.com:49848'</span>;
-        <span class="hljs-keyword">var</span> databaseName = <span class="hljs-string">'elvenlab01'</span>;
-        <span class="hljs-keyword">var</span> url = <span class="hljs-string">'mongodb://'</span> + userName + <span class="hljs-string">':'</span> + password + <span class="hljs-string">'@'</span> + siteAndPort + <span class="hljs-string">'/'</span> + databaseName;
-        <span class="hljs-built_in">console</span>.log(url);
-        mongoose.connect(url);
-
-        <span class="hljs-comment">// This part is optional</span>
-        <span class="hljs-keyword">var</span> db = mongoose.connection;
-        db.on(<span class="hljs-string">'error'</span>, <span class="hljs-built_in">console</span>.error.bind(<span class="hljs-built_in">console</span>, <span class="hljs-string">'connection error:'</span>));
-        db.once(<span class="hljs-string">'open'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">callback</span>) </span>{
-            connected = <span class="hljs-literal">true</span>;
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Opened connection to mongo'</span>);
-        });
-    }
-};
-
-<span class="hljs-built_in">module</span>.exports = connect;
-</code></pre>
+<p>See the details of how to connect on Elvenware:</p>
 <h2 id="step-three">Step Three</h2>
 <p>Create <strong>routes/comments.js</strong>. </p>
 <ul>

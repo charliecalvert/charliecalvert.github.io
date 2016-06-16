@@ -9,6 +9,7 @@
 <li><a href="#sample-session">Sample Session</a></li>
 <li><a href="#mongoHelp">Mongo: Getting Help</a></li>
 <li><a href="#set-up-a-mongolab-url">Set up a MongoLab URL</a></li>
+<li><a href="#how-to-connect">How to Connect to mLab or a Local Database</a></li>
 <li><a href="#working-with-mongo-data">Working with Mongo Data</a></li>
 <li><a href="#getting-started">Getting Started</a></li>
 <li><a href="#noStart">MongoDb Won&#39;t Start</a></li>
@@ -354,6 +355,86 @@ To connect using a driver via the standard URI (what's this?):
 <p><strong>NOTE</strong>: <em>The dbuser and dbpassword are not the user name and password that you use when you sign on to MongoLab. Instead, these are the database users and passwords for your database. It is an entirely separate user name and password that has nothing to do with your MongoLab account. It is the user for your MongoDb database, not for the site.</em></p>
 <p>To create a database user, click on the USER tab and press <strong>Add database user</strong>.</p>
 <p><img src="http://elvenware.com/charlie/books/CloudNotes/Images/MongoLabUser01.png" alt="Database User"></p>
+<h2 id="how-to-connect">How to Connect to mLab or a Local Database</h2>
+<p>Here is the <strong>connect.js</strong> file that handles the connection from mongoose to MongoDb database. It supports both a local database and a remote mLab instance:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 6/6/16.
+ */</span>
+
+<span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
+
+<span class="hljs-keyword">var</span> connect = {
+
+    connected: <span class="hljs-literal">false</span>,
+
+    simpleConnect: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Connecting with simple.'</span>);
+        <span class="hljs-keyword">var</span> url = <span class="hljs-string">'mongodb://127.0.0.1:27017/renew'</span>;
+        connect.connected = <span class="hljs-literal">true</span>;
+        mongoose.connect(url);
+        <span class="hljs-keyword">var</span> db = mongoose.connection;
+        db.on(<span class="hljs-string">'error'</span>, <span class="hljs-built_in">console</span>.error.bind(<span class="hljs-built_in">console</span>, <span class="hljs-string">'connection error:'</span>));
+        db.once(<span class="hljs-string">'open'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">callback</span>) </span>{
+            connect.connected = <span class="hljs-literal">true</span>;
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Opened connection to mongo'</span>);
+        });
+    },
+
+    <span class="hljs-comment">// mongodb://&lt;dbuser&gt;:&lt;dbpassword&gt;@ds049848.mlab.com:49848/elvenlab01</span>
+    mlabConnect: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Connecting with mlab.'</span>);
+        connect.connected = <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">var</span> userName = <span class="hljs-string">'foobar'</span>;
+        <span class="hljs-keyword">var</span> password = <span class="hljs-string">'foo'</span>;
+        <span class="hljs-keyword">var</span> siteAndPort = <span class="hljs-string">'ds049848.mongolab.com:49848'</span>;
+        <span class="hljs-keyword">var</span> databaseName = <span class="hljs-string">'elvenlab01'</span>;
+        <span class="hljs-keyword">var</span> url = <span class="hljs-string">'mongodb://'</span> + userName + <span class="hljs-string">':'</span> + password + <span class="hljs-string">'@'</span> + siteAndPort + <span class="hljs-string">'/'</span> + databaseName;
+        <span class="hljs-built_in">console</span>.log(url);
+        mongoose.connect(url);
+
+        <span class="hljs-comment">// This part is optional</span>
+        <span class="hljs-keyword">var</span> db = mongoose.connection;
+        db.on(<span class="hljs-string">'error'</span>, <span class="hljs-built_in">console</span>.error.bind(<span class="hljs-built_in">console</span>, <span class="hljs-string">'connection error:'</span>));
+        db.once(<span class="hljs-string">'open'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">callback</span>) </span>{
+            connect.connected = <span class="hljs-literal">true</span>;
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Opened connection to mongo'</span>);
+        });
+    },
+
+    doConnection: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">useSimple</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-keyword">var</span> connectType = useSimple || <span class="hljs-literal">false</span>;
+        <span class="hljs-keyword">if</span> (connectType) {
+            connect.simpleConnect();
+        } <span class="hljs-keyword">else</span> {
+            connect.mlabConnect();
+        }
+    }
+};
+
+<span class="hljs-built_in">module</span>.exports = connect;
+</code></pre>
+<p>This code defaults to using mLab (MongoLab) unless you specify otherwise:</p>
+<pre><code class="lang-javascript"><span class="hljs-variable"><span class="hljs-keyword">var</span> connectType</span> = useSimple || <span class="hljs-literal">false</span>;
+</code></pre>
+<p>It also breaks out the various pieces of the mLab connection string into discreet pieces so that you can more easily create a valid URL:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> userName = <span class="hljs-string">'foobar'</span>;
+<span class="hljs-keyword">var</span> password = <span class="hljs-string">'foo'</span>;
+<span class="hljs-keyword">var</span> siteAndPort = <span class="hljs-string">'ds049848.mongolab.com:49848'</span>;
+<span class="hljs-keyword">var</span> databaseName = <span class="hljs-string">'elvenlab01'</span>;
+</code></pre>
+<p>Note that the goal is to create a URL of this type:</p>
+<pre>
+mongodb://<dbuser>:<dbpassword>@ds049848.mlab.com:49848/<dbname>
+</pre>
+
+<p>Ultimately, you want to change nearly the entire URL, including the number in the site and port portion. The following is not a valid URL, but it should help you see what you are trying to create:</p>
+<pre>
+mongodb://myusername:mypassword@ds1111.mlab.com:11111/mydatabase
+</pre>
+
 <h2 id="working-with-mongo-data">Working with Mongo Data</h2>
 <p>We need to understand updating and deleting records in the database.</p>
 <p>A general review of mongo DB.</p>
