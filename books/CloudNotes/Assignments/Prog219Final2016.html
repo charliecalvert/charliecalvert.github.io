@@ -16,6 +16,7 @@
 <li><a href="#errors">Trouble Shoot Errors</a></li>
 <li><a href="#test-settings">Testing useDatabase Settings</a></li>
 <li><a href="#ignore">Ignore Files Written to Disk</a></li>
+<li><a href="#inserting-data-twice">Inserting Data Twice</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>The Prog 219 Final for 2016 is broken out into their tiers, three sets of priorities. I&#39;ll list the basic priorities first, intermediate level priorities second, and advanced priorities third. The more experience you have as a developer, the deeper into this list you should go. Those with little experience may complete only features from the basic tier and perhaps one or two items from the intermediate level. Those with lots of experience should get deeper into the list of advanced priorities.</p>
 <p><strong>NOTE</strong>: <em>To some degree, you are being graded based on your relationship with others in the class who have a similar level of experience. Exactly what grade people with little experience will get depends in part on how other students with little experience did. Likewise, experienced students will be graded in relationship to other experienced students.</em></p>
@@ -535,6 +536,24 @@ p#display2
 <li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/AngularMongooseBasics.html#ignore-scientists">Ignore Scientists</a></li>
 </ul>
 <p>That may not be the name of the file you want to ignore in this case, but be sure you do teach nodemon to ignore any JSON files that you write to disk during program operation. Either that, or start the program with <strong>node</strong> rather than <strong>nodemon</strong> when turning in the final.</p>
+<h2 id="inserting-data-twice">Inserting Data Twice</h2>
+<p>This was a bug on my end, yet at least a few students should have been able to fix it.</p>
+<p>If you insert multiple times in one session, then <strong>totalRenewablesSaved</strong> gets increment past 12, and the program never sends a message back to the client that it has completed inserting data. The fix is simple: just set <strong>totalRenewablesSaved</strong> to zero before each insert:</p>
+<pre><code class="lang-javascript">allMongo.readDataAndInsert = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    fs.readFile(<span class="hljs-string">'data/Renewable.json'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, renewables</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) {
+            <span class="hljs-keyword">throw</span> (err);
+        }
+        renewables = <span class="hljs-built_in">JSON</span>.parse(renewables);
+        totalRenewablesSaved = <span class="hljs-number">0</span>;    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">=================</span> <span class="hljs-attr">FIX</span> <span class="hljs-attr">IS</span> <span class="hljs-attr">HERE</span>
+        <span class="hljs-attr">allMongo.numberOfRenewables</span> = <span class="hljs-attr">renewables.length</span>;
+        <span class="hljs-attr">for</span> (<span class="hljs-attr">var</span> <span class="hljs-attr">i</span> = <span class="hljs-attr">0</span>; <span class="hljs-attr">i</span> &lt; <span class="hljs-attr">renewables.length</span>; <span class="hljs-attr">i</span>++) {
+            <span class="hljs-attr">insertRenewable</span>(<span class="hljs-attr">renewables</span>[<span class="hljs-attr">i</span>], <span class="hljs-attr">response</span>);
+        }
+    });
+};</span></span>
+</code></pre>
 <h2 id="turn-it-in">Turn it in</h2>
 <p>Put your work in a branch called <strong>Final</strong> in a folder called <strong>SolarExplorer</strong>. If you do anything else other than this, please spell it out carefully when you turn in the Final. I will <strong>take off points</strong> and will likely ask you to re-submit if I don&#39;t immediately know where to look for final.</p>
 <p>Submit the URL of your program running on Heroku.</p>
