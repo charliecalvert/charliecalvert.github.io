@@ -12,6 +12,7 @@
 <li><a href="#testing">Testing</a></li>
 <li><a href="#jade-routes">Jade Routes</a></li>
 <li><a href="#menu">Menu</a></li>
+<li><a href="#disable-buttons">Disable Buttons</a></li>
 <li><a href="#errors">Trouble Shoot Errors</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>The Prog 272 Final for 2016 is broken out into their tiers, three sets of priorities. I&#39;ll list the basic priorities first, intermediate level priorities second, and advanced priorities third. The more experience you have as a developer, the deeper into this list you should go. Those with little experience may complete only features from the basic tier and perhaps one or two items from the intermediate level. Those with lots of experience should get deeper into the list of advanced priorities.</p>
@@ -481,6 +482,24 @@ button.renewablesMenu.btn.btn-info Renewables
 
 <p>And here is the code that sets up the event handler:</p>
 <pre><code class="lang-javascript"><span class="hljs-variable">$(</span><span class="hljs-string">'.renewablesMenu'</span>).click(renewables.init);
+</code></pre>
+<h2 id="disable-buttons">Disable Buttons</h2>
+<p>In some cases, such as the Database page, you want to prevent the user from clicking buttons too quickly. In other words, if a call is going to take a long time, such as inserting the data on mLab, then you don&#39;t want the user to try to view or empty the collection until the insert is completed. Here are some very broad hints on how to proceed:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">enableAll</span>(<span class="hljs-params">disable</span>) </span>{
+    $(<span class="hljs-string">'#convertRenewables'</span>).prop(<span class="hljs-string">'disabled'</span>, disable);
+    $(<span class="hljs-string">'#allRenewables'</span>).prop(<span class="hljs-string">'disabled'</span>, disable);
+    $(<span class="hljs-string">'#emptyRenewables'</span>).prop(<span class="hljs-string">'disabled'</span>, disable);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insertCollection</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">//console.log('getRenewable called');</span>
+
+    $(<span class="hljs-string">'#allRenewables'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">true</span>);
+    $(<span class="hljs-string">'#emptyRenewables'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">true</span>);
+    $.getJSON(<span class="hljs-string">'/insertRenewables'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+            enableAll(<span class="hljs-literal">false</span>);
+            <span class="hljs-comment">// ETC</span>
+    });
 </code></pre>
 <h2 id="errors">Trouble Shoot Errors</h2>
 <p>Always approach errors one at a time. If something is not working:</p>
