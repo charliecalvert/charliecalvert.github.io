@@ -12,6 +12,7 @@
 <li><a href="#how-to-connect">How to Connect to mLab or a Local Database</a></li>
 <li><a href="#working-with-mongo-data">Working with Mongo Data</a></li>
 <li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#backup-and-restore">Backup and Restore</a></li>
 <li><a href="#noStart">MongoDb Won&#39;t Start</a></li>
 <li><a href="#mongoose-subdocuments">Mongoose Subdocuments</a></li>
 <li><a href="#mongoose-gyp-bson">Mongoose Gyp and Bson</a></li><!--TOC_End--></ul><h1 id="mongodb">MongoDb</h1>
@@ -517,7 +518,27 @@ open up a MongoDb database and inserting a row of data into it:</p>
 })();
 
 <span class="hljs-keyword">var</span> q = <span class="hljs-keyword">new</span> QueryMongo();
-</code></pre><h2 id="noStart">MongoDb Won&#39;t Start</h2>
+</code></pre><h2 id="backup-and-restore">Backup and Restore</h2>
+<p>Some useful commands.</p>
+<p>Backup, first with and then without a password:</p>
+<pre>
+mongodump --collection scientists --db test --username mongodevdb --password YourSecretPwd --out /dbbackup
+
+mongodump --collection scientists --db test --out $HOME/Documents/Mongo
+</pre>
+
+<p>Restore a specific collection:</p>
+<pre>
+mongorestore --db elven --collection scientists /home/charlie/Documents/Mongo/test/scientists.bson
+</pre>
+
+<p>Rename a collection. First switch to the <strong>admin</strong> database:</p>
+<pre>
+use admin
+db.runCommand( { renameCollection: "elven.scientiests", to: "elven.scientists" } )
+</pre>
+
+<h2 id="noStart">MongoDb Won&#39;t Start</h2>
 <p>If you try to start MongoDB, and find that it won&#39;t start, or at
 least won&#39;t stay running after it starts, the problem could be that
 you are out of disk space. MongoDB wants lots of diskspace,
