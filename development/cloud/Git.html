@@ -57,6 +57,8 @@
 <li><a href="#git-deletions-and-workflow">Git Deletions and Workflow</a></li>
 <li><a href="#undo-an-add-in-git">Undo an Add in Git</a></li>
 <li><a href="#merging-code">Merging Code</a></li>
+<li><a href="#merge-tool">Merge Tool</a></li>
+<li><a href="#merge-code-example-two-merge-code-two-">Merge Code Example Two {merge-code-two}</a></li>
 <li><a href="#git-tag">Git Tag</a></li>
 <li><a href="#miscelaneous-information">Miscelaneous Information</a></li>
 <li><a href="#learn-about-nodejs">Learn about NodeJS</a></li>
@@ -1675,6 +1677,39 @@ copy of the two different versions of the file held in git.</p>
 <p>All is now well. We can add, commit and push/pull, and life returns to normal.
 It all may seem a bit complicated at first, but frankly, I think that Git chose
 a simple and intuitive way to handle this whole issue.</p>
+<h2 id="merge-tool">Merge Tool</h2>
+<p>Note that you can also use <strong>mergetool</strong> to help you with the process of merging two files.</p>
+<p>Open up your <strong>~/.gitconfig</strong> in geany:</p>
+<pre><code class="lang-code"><span class="hljs-variable">$ </span>geany ~<span class="hljs-regexp">/.gitconfig</span>
+</code></pre>
+<p>The <strong>email</strong>, <strong>name</strong> and <strong>push default</strong> fields should already be filled out. Add a third item called <strong>diff tool</strong> and set it to <strong>meld</strong>. Of course, you can only use meld if you are on a GUI (non-server) instance, and if you have it installed. There are other options you can use, but you will need to research those on your own.</p>
+<pre><code class="lang-code">[user]
+    <span class="hljs-attr">email</span> = charlie@elvenware.com
+    <span class="hljs-attr">name</span> = Charlie on RohanElf
+[push]
+    <span class="hljs-attr">default</span> = simple
+[diff]
+    <span class="hljs-attr">tool</span> = meld
+[merge]
+    <span class="hljs-attr">tool</span> = meld
+</code></pre>
+<p>To insert this automatically, try:</p>
+<pre><code class="lang-code">git config --<span class="hljs-keyword">global</span> <span class="hljs-keyword">merge</span>.tool meld
+</code></pre>
+<p><strong>NOTE</strong>: <em>Besides meld, your options include: opendiff kdiff3 tkdiff xxdiff tortoisemerge gvimdiff diffuse diffmerge ecmerge p4merge araxis bc codecompare emerge vimdiff.</em></p>
+<p>Now, when you hit a conflict, use <strong>mergetool</strong>:</p>
+<pre><code class="lang-code">$ git mergetool
+
+Merging:
+README.md
+
+Normal <span class="hljs-built_in">merge</span> conflict <span class="hljs-keyword">for</span> <span class="hljs-string">'README.md'</span>:
+  {<span class="hljs-built_in">local</span>}: modified <span class="hljs-built_in">file</span>
+  {remote}: modified <span class="hljs-built_in">file</span>
+Hit <span class="hljs-literal">return</span> <span class="hljs-built_in">to</span> <span class="hljs-built_in">start</span> <span class="hljs-built_in">merge</span> resolution tool (meld):
+</code></pre>
+<p><strong>mergetool</strong> will create a file with a name like this <strong>README.md.orig</strong> as a backup file. Feel free to delete this file if you sure the merge has completed successfully.</p>
+<h2 id="merge-code-example-two-merge-code-two-">Merge Code Example Two {merge-code-two}</h2>
 <p>Here is a second example of the contents of a file that needs to be manually merged:</p>
 <pre><code><span class="xml"><span class="hljs-tag">&lt;&lt;&lt;&lt;&lt;&lt;&lt; <span class="hljs-attr">HEAD</span>
 &lt;!<span class="hljs-attr">DOCTYPE</span> <span class="hljs-attr">html</span>&gt;</span>
