@@ -7,7 +7,7 @@ var elf = {};
 elf.Control = (function() {
     'use strict';
     function Control() {
-        $('table').addClass('table-striped table-bordered');
+        $('table').addClass('table table-striped table-bordered');
         $("#Prog272Week09").click(function() {
            $("#displayArea").load("/Prog272/Week09-Prog272.html");
         });
