@@ -2,11 +2,14 @@
 <li><a href="#get-started">Get Started</a></li>
 <li><a href="#ip-address">Fine your IP Address</a></li>
 <li><a href="#ssh-first">SSH First Time</a></li>
-<li><a href="#setting-up-ssh">Setting up SSH</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#setting-up-ssh">Setting up SSH</a></li>
+<li><a href="#scp">Copy a File with scp</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>The goal of this assignment is to set up a Virtual Machine containing an Ubuntu Server instance and to communicate to it from your Pristine Ubuntu Desktop. Link to this document:</p>
 <ul>
 <li><a href="http://bit.ly/linux-server-basics">http://bit.ly/linux-server-basics</a></li>
 </ul>
+<p>In this assignment you will learn how to use SSH to communicate between two Linux instances. You can use these same technology to communicate between machines that are running on the same network, or between machines on two different networks in very different locations. For instance, you can SSH between a machine in Bellevue and another machine running on an AWS server in Portland.</p>
 <h2 id="get-started">Get Started</h2>
 <p>If you are in Pristine Lubuntu, switch back to Windows for this opening part of the exercise.</p>
 <p>Download the 1 GB OVA file for the Ubuntu Linux Server 16.04 with CouchDb to your Windows machine. Don&#39;t download it into Prisiting Lubuntu. The OVA file can be found here:</p>
@@ -90,5 +93,45 @@ Agent pid 1559
 cat ~<span class="hljs-regexp">/.ssh/id</span>_rsa.pub | ssh user<span class="hljs-variable">@123</span>.<span class="hljs-number">45.56</span>.<span class="hljs-number">78</span> <span class="hljs-string">"mkdir -p ~/.ssh &amp;&amp; cat &gt;&gt;  ~/.ssh/authorized_keys"</span>
 cat ~<span class="hljs-regexp">/.ssh/id</span>_rsa.pub | ssh &lt;user&gt;@&lt;hostname&gt; <span class="hljs-string">'umask 0077; mkdir -p .ssh; cat &gt;&gt; .ssh/authorized_keys &amp;&amp; echo "Key copied"'</span>
 </code></pre><p>Or you could do this:</p>
-<pre><code>scp ~<span class="hljs-regexp">/.ssh/id</span>_rsa.pub bcuser<span class="hljs-variable">@192</span>.<span class="hljs-number">168.2</span>.<span class="hljs-number">21</span>
-</code></pre></div></body></html>
+<pre><code>scp ~<span class="hljs-regexp">/.ssh/id</span>_rsa.pub bcuser<span class="hljs-variable">@192</span>.<span class="hljs-number">168.2</span>.<span class="hljs-number">21</span><span class="hljs-symbol">:/home/bcuser/</span>.ssh/.
+</code></pre><p>That will copy the specified public key to your remote machine. Then, ssh to the remote machine, specifying your password as necessary. Then copy the public key into the authorized key file with commands something like these:</p>
+<pre><code>cd ~/<span class="hljs-selector-class">.ssh</span>
+cat id_rsa<span class="hljs-selector-class">.pub</span> &gt;&gt; authorized_keys
+</code></pre><p>This will append your public key to an existing authorized_keys file or create a new file if it does not already exist.</p>
+<h2 id="scp">Copy a File with scp</h2>
+<p>To complete the process, let&#39;s make sure that you know how to copy a file from one machine to another. First, switch your Pristine Lubuntu desktop. Create a disposable file called <strong>LinuxServerTest.md</strong> with the <strong>echo</strong> command, then copy it to the remote machine:</p>
+<pre><code>echo <span class="hljs-string">'## My Title'</span> <span class="hljs-meta">&gt;&gt; </span>LinuxServerTest.md
+scp LinuxServerTest.md bcuser@192.<span class="hljs-number">168.2</span>.<span class="hljs-number">21</span><span class="hljs-symbol">:/home/bcuser/</span>.
+</code></pre><p>The whole process might look something like this:</p>
+<pre><code>charlie<span class="hljs-meta">@rohan</span>-<span class="hljs-string">elf:</span>~/.ssh
+$ cd
+charlie<span class="hljs-meta">@rohan</span>-<span class="hljs-string">elf:</span>~
+$ cd temp/
+charlie<span class="hljs-meta">@rohan</span>-<span class="hljs-string">elf:</span>~/temp
+$ echo <span class="hljs-string">'## My Title'</span> &gt;&gt; LinuxServerTest.md
+charlie<span class="hljs-meta">@rohan</span>-<span class="hljs-string">elf:</span>~/temp
+$ scp LinuxServerTest.md bcuser@<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.21</span>:<span class="hljs-regexp">/home/</span>bcuser/.
+LinuxServerTest.md            <span class="hljs-number">100</span>%   <span class="hljs-number">12</span>     <span class="hljs-number">0.0</span>KB/s   <span class="hljs-number">00</span>:<span class="hljs-number">00</span>    
+charlie<span class="hljs-meta">@rohan</span>-<span class="hljs-string">elf:</span>~/temp
+</code></pre><p>Now ssh to the remote machine and check that the file has been copied correctly:</p>
+<pre><code>$ ssh bcuser@<span class="hljs-number">192.168</span>.<span class="hljs-number">2.21</span>
+Welcome <span class="hljs-keyword">to</span> Ubuntu <span class="hljs-number">16.04</span>.<span class="hljs-number">1</span> LTS (GNU/Linux <span class="hljs-number">4.4</span>.<span class="hljs-number">0</span>-<span class="hljs-number">38</span>-generic x86_64)
+
+ * Documentation:  https:<span class="hljs-comment">//help.ubuntu.com</span>
+ * Management:     https:<span class="hljs-comment">//landscape.canonical.com</span>
+ * Support:        https:<span class="hljs-comment">//ubuntu.com/advantage</span>
+
+<span class="hljs-number">5</span> packages can be updated.
+<span class="hljs-number">2</span> updates are security updates.
+
+
+Last login: Mon Oct  <span class="hljs-number">3</span> <span class="hljs-number">09</span>:<span class="hljs-number">24</span>:<span class="hljs-number">18</span> <span class="hljs-number">2016</span> <span class="hljs-keyword">from</span> <span class="hljs-number">192.168</span>.<span class="hljs-number">2.6</span>
+<span class="hljs-built_in">Agent</span> pid <span class="hljs-number">2017</span>
+bcuser@ubs:~$ cat LinuxServerTest.md
+<span class="hljs-meta">## My Title</span>
+</code></pre><h2 id="turn-it-in">Turn it in</h2>
+<p>Perform the actions described in the section called [Copy a File with scp][#scp]. Only this time, call the file <strong>LinuxServer-LastName.md</strong> and set the title to your last name:</p>
+<pre><code>echo <span class="hljs-string">'## LastName'</span> <span class="hljs-meta">&gt;&gt; </span>LinuxServer-LastName.md
+</code></pre><p>Copy the file from your desktop to your remote machine. SSH to your remote machine and <strong>cat</strong> the contents of your copied file.</p>
+<p>Take a screen shot or two, as necessary, and attach them to the assignment when you turn it in. I&#39;m looking for evidence that you can use the <strong>ssh</strong> and <strong>scp</strong> command without being prompted for a password.</p>
+</div></body></html>
