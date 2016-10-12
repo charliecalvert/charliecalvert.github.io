@@ -106,9 +106,9 @@ public/images/checkerboard.jpg
 <p>At this stage you should be able to run the program and see a floor. The cube from the basics program should be partially buried in the floor, but still visibly rotating.</p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/three-floor-01.png" alt="Three Floor Start"></p>
 <h2 id="naive-walk">Naive Walk</h2>
-<p>Let&#39;s add primitive support for walking through the scene. Since the camera is our eye on the scene, what we will do is move the camera to the left and right, and backward and forward. This is like moving through a room, but always having to face in the same direction, as if you were a courtier coming to visit the king.</p>
-<p>First let&#39;s declare some variables in Control.js above the constructor for tracking movement and the camera position:</p>
-<pre><code>    var keyMove = {
+<p>Let&#39;s add primitive support for walking through the scene. Our camera is the eye on the scene. To change what we see, we move the camera. In particular, if we want to simulate walking through the scene, then we just move the camera along a path. We will be able to move the camera to the left and right, and backward and forward. This is like moving through a room, but always having to face in the same direction, as if you were a courtier coming to visit the king. (We will see how to rotate the camera and change the direction we are facing in a later assignment.)</p>
+<p>First let&#39;s declare some variables in <strong>control.js</strong> above the constructor for tracking movement and the camera position:</p>
+<pre><code class="lang-javascript">    var keyMove = {
         <span class="hljs-string">moveForward :</span> <span class="hljs-literal">false</span>,
         <span class="hljs-string">moveBackward :</span> <span class="hljs-literal">false</span>,
         <span class="hljs-string">moveLeft :</span> <span class="hljs-literal">false</span>,
@@ -120,13 +120,16 @@ public/images/checkerboard.jpg
         <span class="hljs-string">y :</span> <span class="hljs-number">0</span>,
         <span class="hljs-string">z :</span> <span class="hljs-number">2</span>
     }
-</code></pre><p>Now we want to capture mouse events in the constructor:</p>
-<pre><code><span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'keydown'</span>, onKeyDown, <span class="hljs-literal">false</span>);
+</code></pre>
+<p>Now we want to capture mouse events in the constructor for <strong>control.js</strong>. The following code tells the browser to call certain methods when the user presses or releases a key:</p>
+<pre><code class="lang-javascript"><span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'keydown'</span>, onKeyDown, <span class="hljs-literal">false</span>);
 <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'keyup'</span>, onKeyUp, <span class="hljs-literal">false</span>);
-</code></pre><p>This event code causes the methods called <strong>onKeyUp</strong> and <strong>onKeyDown</strong> to be called when the keys are pressed or released. Here is the <strong>onKeyDown</strong> method:</p>
-<pre><code>    var onKeyDown = function(event) {
+</code></pre>
+<p>You can place the above lines in a number of locations, but just below the calls to create the floor is a reasonable spot.</p>
+<p>Note that the <strong>addEventListener</strong> method specifies that the <strong>onKeyDown</strong> method will be called when a key is pressed and a method called <strong>onKeyUp</strong> will be called when a key is released. In short, the event code causes the methods called <strong>onKeyUp</strong> and <strong>onKeyDown</strong> to be called when the keys are pressed or released. Here is the <strong>onKeyDown</strong> method:</p>
+<pre><code class="lang-javascript">var onKeyDown = function(event) {
 
-        <span class="hljs-keyword">switch</span> (event.keyCode) {
+  <span class="hljs-keyword">switch</span> (event.keyCode) {
 
         <span class="hljs-keyword">case</span> <span class="hljs-number">38</span>: <span class="hljs-comment">// up</span>
         <span class="hljs-keyword">case</span> <span class="hljs-number">87</span>: <span class="hljs-comment">// w</span>
@@ -147,15 +150,20 @@ public/images/checkerboard.jpg
         <span class="hljs-keyword">case</span> <span class="hljs-number">68</span>: <span class="hljs-comment">// d</span>
             keyMove.moveRight = true<span class="hljs-comment">;</span>
             <span class="hljs-keyword">break</span><span class="hljs-comment">;</span>
-    }<span class="hljs-comment">;</span>
-</code></pre><p>You also need to compose an <strong>onKeyUp</strong> method that looks the one shown above, but has the opposite effect. In other words, the <strong>boolean</strong> values are set to tell the app that movement to the right, left, back or forward has stopped. The method looks very, very much like the one above, with one important difference which I&#39;m sure you can guess.</p>
+  }
+}<span class="hljs-comment">;</span>
+</code></pre>
+<p>You also need to compose an <strong>onKeyUp</strong> method that looks the one shown above, but has the opposite effect. In other words, the <strong>boolean</strong> values are set to tell the app that movement to the right, left, back or forward has stopped. The method looks very, very much like the one above, with one important difference which I&#39;m sure you can guess.</p>
 <p>Finally we want to change the <strong>render</strong> method to animate the camera when the key presses are detected by the code above. At the top of the render method, add a four part <strong>if block</strong> that moves the <strong>cameraPosition</strong>. I give you the first of the four parts, and you can fill in the rest:</p>
-<pre><code>    <span class="hljs-meta">if</span> (keyMove.<span class="hljs-keyword">moveLeft) </span>{
+<pre><code class="lang-javascript">    <span class="hljs-meta">if</span> (keyMove.<span class="hljs-keyword">moveLeft) </span>{
         cameraPosition.x -= <span class="hljs-number">1</span><span class="hljs-comment">;</span>
     } <span class="hljs-meta">else</span> etc...
-</code></pre><p>Finally, we move the camera to the new position:</p>
-<pre><code><span class="hljs-selector-tag">camera</span><span class="hljs-selector-class">.position</span><span class="hljs-selector-class">.set</span>(<span class="hljs-selector-tag">cameraPosition</span><span class="hljs-selector-class">.x</span>, <span class="hljs-selector-tag">cameraPosition</span><span class="hljs-selector-class">.y</span>, <span class="hljs-selector-tag">cameraPosition</span><span class="hljs-selector-class">.z</span>);
-</code></pre><p>When you are finished you should be able to &quot;jump&quot; right, left, forward and backward. You might experiment with moving smaller increments each time to make the jumps less jarring to the viewer.</p>
+</code></pre>
+<p>We will move in the x and y directions, and always by plus or minus one unit. Note that we declared both <strong>keyMOve</strong> and <strong>cameraPosition</strong>, so you know what those objects look like.</p>
+<p>Finally, just after our four part if statement, we move the camera to the new position:</p>
+<pre><code class="lang-javascript">    <span class="hljs-selector-tag">camera</span><span class="hljs-selector-class">.position</span><span class="hljs-selector-class">.set</span>(<span class="hljs-selector-tag">cameraPosition</span><span class="hljs-selector-class">.x</span>, <span class="hljs-selector-tag">cameraPosition</span><span class="hljs-selector-class">.y</span>, <span class="hljs-selector-tag">cameraPosition</span><span class="hljs-selector-class">.z</span>);
+</code></pre>
+<p>When you are finished you should be able to &quot;jump&quot; right, left, forward and backward. You might experiment with moving smaller increments each time to make the jumps less jarring to the viewer.</p>
 <p>There is much more complex code that allows us to move more smoothly through the screen, but this at least helps us get started moving around in the scene.</p>
 <h2 id="add-more-objects">Add More Objects</h2>
 <p>First, let&#39;s add a few more cubes to the scene. Our goal will be to create a scene that looks something like this:</p>
