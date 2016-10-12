@@ -76,24 +76,28 @@ cp -r Week04-ThreeJsBasics Week04-ThreeFloor
 
     <span class="hljs-keyword">return</span> Floors;
 });
-</code></pre><p>You should save the file into your public/javascripts directory as <strong>floors.js</strong>. Then add it to <strong>main.js</strong> in the <strong>config</strong> section. You would add it near here:</p>
-<pre><code><span class="hljs-selector-tag">require</span><span class="hljs-selector-class">.config</span>({
-    <span class="hljs-attribute">baseUrl </span>: <span class="hljs-string">'.'</span>,
-    paths : {
+</code></pre><p>You should save the file into your <strong>public/javascripts</strong> directory as <strong>floors.js</strong>. Then add it to <strong>main.js</strong> in the <strong>config</strong> section. More specifically, you would add it near here:</p>
+<pre><code>require.config({
+    <span class="hljs-string">baseUrl :</span> <span class="hljs-string">'.'</span>,
+    <span class="hljs-string">paths :</span> {
         <span class="hljs-string">"jquery"</span> : <span class="hljs-string">'components/jquery/dist/jquery-2.1.1'</span>,
         <span class="hljs-string">"three"</span> : <span class="hljs-string">'javascripts/three'</span>,
         <span class="hljs-string">"control"</span> : <span class="hljs-string">'javascripts/control'</span>,
-</code></pre><p>Here is the code to use the module, which belongs in your constructor found in <strong>control.js</strong>, near where you add the cube.</p>
+        <span class="hljs-comment">// YOUR CODE FOR LOADING floors.js GOES HERE</span>
+</code></pre><p>Below is the code to create and use the key method in the <strong>floors</strong> module:</p>
 <pre><code><span class="hljs-keyword">var</span> floors = <span class="hljs-keyword">new</span> Floors();
 floors.drawFloor(scene);
-</code></pre><p>You will also need to modify the define call at the top of <strong>Control.js</strong>:</p>
-<pre><code>define([<span class="hljs-string">"Floors"</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(Floors)</span> </span>{
-</code></pre><p>The code above will cause require to automatically load your <strong>Floors.js</strong> file.</p>
-<p>Create a bitmap called checkerboard.jpg that is 256 X 256 pixels in size and download the one found here. We don&#39;t have rights to use this publicly at this time, but we can use it in our assignments. Put it in an images directory in the public folder.</p>
+</code></pre><p>It belongs in the constructor found in <strong>control.js</strong>. Insert it into your source just after you add the cube.</p>
+<p>You will also need to modify the define call at the top of <strong>control.js</strong>:</p>
+<pre><code class="lang-javascript">define([<span class="hljs-string">"floors"</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(Floors)</span> </span>{
+    <span class="hljs-comment">// LOTS OF CODE OMITTED HERE</span>
+});
+</code></pre>
+<p>The code passed to the define method will cause <strong>require</strong> to automatically load your <strong>floors.js</strong> file.</p>
+<p>Create a bitmap called <strong>checkerboard.jpg</strong> that is 256 X 256 pixels in size or download the one found here. We don&#39;t have rights to use this publicly at this time, but we can use it in our assignments. Put it in an images directory in the public folder.</p>
 <p><img src="https://docs.google.com/uc?export=view&amp;id=0B25UTAlOfPRGVW5LOWl5SUItc3M" alt="bar"></p>
-<p>More later, but this should get you started.</p>
 <h2 id="naive-walk">Naive Walk</h2>
-<p>Let&#39;s add just primitive support for walking through the scene. Since the camera is our eye on the scene, what we will do is move the camera to the left and right, and backward and forward. This is like moving through a room, but always having to face in the same direction, as if you were a courtier coming to visit the king.</p>
+<p>Let&#39;s add primitive support for walking through the scene. Since the camera is our eye on the scene, what we will do is move the camera to the left and right, and backward and forward. This is like moving through a room, but always having to face in the same direction, as if you were a courtier coming to visit the king.</p>
 <p>First let&#39;s declare some variables in Control.js above the constructor for tracking movement and the camera position:</p>
 <pre><code>    var keyMove = {
         <span class="hljs-string">moveForward :</span> <span class="hljs-literal">false</span>,
