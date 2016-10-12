@@ -4,6 +4,9 @@
 <li><a href="#naive-walk">Naive Walk</a></li>
 <li><a href="#add-more-objects">Add More Objects</a></li>
 <li><a href="#add-textures">Add Textures</a></li>
+<li><a href="#add-lights">Add Lights</a></li>
+<li><a href="#sphere">Sphere</a></li>
+<li><a href="#window-resize">Window Resize</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>This is assignment demonstrates key features of <a href="https://threejs.org/">ThreeJs</a>, a 3D library for JavaScript.</p>
 <p>The repository is here: <a href="https://github.com/mrdoob/three.js">https://github.com/mrdoob/three.js</a>.</p>
@@ -186,79 +189,60 @@ public/images/checkerboard.jpg
 <p><img src="https://drive.google.com/uc?export=view&amp;id=0B25UTAlOfPRGN1pyc3JiMWVjUWs" alt="Bar"></p>
 <p>If you look carefully you can see that there is a small space betwen each box. I&#39;m doing this mostly so that you can clearly see when one box ends and the next starts. In a final version of our game, we might not want to include that space. But for now, its useful. To create the space, just add a small value to the z location of each box. You&#39;ll probably want to pick a value well under 1.0.</p>
 <h2 id="add-textures">Add Textures</h2>
-<p>The scene in your program right now probably looks a bit like the one in the screen shots, but the boxes have bright colors on them rather than a nice wooden texture. To add the texture, swap out this call to [MeshNormalMaterial][normal]:</p>
-<pre><code>var material = <span class="hljs-keyword">new</span> THREE.MeshNormalMaterial({
-    <span class="hljs-string">color :</span> <span class="hljs-number">0x00ffff</span>,      
-    <span class="hljs-string">wireframe :</span> wireFrame
+<p>The scene in your program right now probably looks a bit like the one in the screen shots, but the boxes have bright colors on them rather than a nice wooden texture. To add the texture, swap out this call to <a href="http://threejs.org/docs/#Reference/Materials/MeshNormalMaterial">MeshNormalMaterial</a>:</p>
+<pre><code><span class="hljs-keyword">var</span> material = <span class="hljs-keyword">new</span> THREE.MeshNormalMaterial({
+    wireframe : wireFrame
 });
-</code></pre><p>Put this call to [MeshLabertMaterial][material] in its place:</p>
-<p>```var material = new THREE.MeshLambertMaterial({
-    map : THREE.ImageUtils.loadTexture(&#39;images/crate.jpg&#39;)
-});</p>
-<pre><code>
-Here is a <span class="hljs-keyword">create</span> texture which we can <span class="hljs-keyword">use</span> <span class="hljs-keyword">in</span> <span class="hljs-keyword">class</span>, but <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> our <span class="hljs-keyword">final</span> games. <span class="hljs-keyword">Or</span> <span class="hljs-keyword">at</span> <span class="hljs-keyword">least</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">until</span> we <span class="hljs-keyword">get</span> permission <span class="hljs-keyword">to</span> <span class="hljs-keyword">use</span> it. Just <span class="hljs-keyword">right</span> click <span class="hljs-keyword">and</span> download <span class="hljs-keyword">to</span> your images folder.
-
-![Bar](https://drive.google.com/uc?<span class="hljs-keyword">export</span>=<span class="hljs-keyword">view</span>&amp;<span class="hljs-keyword">id</span>=<span class="hljs-number">0</span>B25UTAlOfPRGdmUtMHpCSlQ4bmc)
-
-The results <span class="hljs-keyword">in</span> your program <span class="hljs-keyword">are</span> probably <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> satisfying, <span class="hljs-keyword">as</span> the boxes <span class="hljs-keyword">are</span> hard <span class="hljs-keyword">to</span> see. <span class="hljs-keyword">To</span> fix that, we need <span class="hljs-keyword">to</span> <span class="hljs-keyword">add</span> lights <span class="hljs-keyword">to</span> the scene.
-
-[<span class="hljs-keyword">normal</span>]:<span class="hljs-keyword">http</span>://threejs.org/docs/#<span class="hljs-keyword">Reference</span>/Materials/MeshNormalMaterial
-[material]:<span class="hljs-keyword">http</span>://threejs.org/docs/#<span class="hljs-keyword">Reference</span>/Materials/MeshLambertMaterial
-
-
-## <span class="hljs-keyword">Add</span> Lights
-
-<span class="hljs-keyword">Call</span> it <span class="hljs-keyword">from</span> your <span class="hljs-keyword">constructor</span>:
-</code></pre><p>function addLights() {
-    var light = new THREE.DirectionalLight(0xffffff, 1.5);
-    light.position.set(1, 1, 1);
-    scene.add(light);
-    light = new THREE.DirectionalLight(0xffffff, 0.75);
-    light.position.set(-1, -0.5, -1);
-    scene.add(light);
-}</p>
-<pre><code>
-<span class="hljs-section">## Sphere</span>
-
-Let's add a [<span class="hljs-string">sphere</span>][<span class="hljs-symbol">sphere</span>].
-</code></pre><p>function addSphere(sne, camera, wireFrame, x, y) {
-    var geometry = new THREE.SphereGeometry(.5, 25, 25);
-    var material = new THREE.MeshNormalMaterial({
-    color: 0x00ffff,
+</code></pre><p>Put this call to <a href="http://threejs.org/docs/#Reference/Materials/MeshLambertMaterial">MeshLabertMaterial</a> in its place:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> material = <span class="hljs-built_in">new</span> THREE.MeshLambertMaterial({
+    <span class="hljs-keyword">map</span> : THREE.ImageUtils.loadTexture(<span class="hljs-string">'images/crate.jpg'</span>)
+});
+</code></pre>
+<p>Here is a create texture which we can use in class, but not in our final games. Or at least not until we get permission to use it. Just right click and download to your images folder.</p>
+<p><img src="https://drive.google.com/uc?export=view&amp;id=0B25UTAlOfPRGdmUtMHpCSlQ4bmc" alt="Bar"></p>
+<p>The results in your program are probably less than satisfying, as the boxes are hard to see. To fix that, we need to add lights to the scene.</p>
+<h2 id="add-lights">Add Lights</h2>
+<p>Call it from your constructor:</p>
+<pre><code>function <span class="hljs-keyword">addLights() </span>{
+    var light = new THREE.<span class="hljs-keyword">DirectionalLight(0xffffff, </span><span class="hljs-number">1</span>.<span class="hljs-number">5</span>)<span class="hljs-comment">;</span>
+    light.position<span class="hljs-meta">.set</span>(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)<span class="hljs-comment">;</span>
+    <span class="hljs-keyword">scene.add(light);
+</span>    light = new THREE.<span class="hljs-keyword">DirectionalLight(0xffffff, </span><span class="hljs-number">0</span>.<span class="hljs-number">75</span>)<span class="hljs-comment">;</span>
+    light.position<span class="hljs-meta">.set</span>(-<span class="hljs-number">1</span>, -<span class="hljs-number">0</span>.<span class="hljs-number">5</span>, -<span class="hljs-number">1</span>)<span class="hljs-comment">;</span>
+    <span class="hljs-keyword">scene.add(light);
+</span>}
+</code></pre><h2 id="sphere">Sphere</h2>
+<p>Let&#39;s add a <a href="http://threejs.org/docs/#Reference/Extras.Geometries/SphereGeometry">sphere</a>.</p>
+<pre><code>function addSphere(sne, <span class="hljs-built_in">camera</span>, wireFrame, x, y) {
+    var geometry = <span class="hljs-keyword">new</span> THREE.SphereGeometry(<span class="hljs-number">.5</span>, <span class="hljs-number">25</span>, <span class="hljs-number">25</span>);
+    var material = <span class="hljs-keyword">new</span> THREE.MeshNormalMaterial({
+    <span class="hljs-built_in">color</span>: <span class="hljs-number">0x00ffff</span>,
         wireframe: wireFrame
-    });</p>
-<pre><code>var <span class="hljs-built_in">sphere</span> = <span class="hljs-keyword">new</span> THREE.Mesh(geometry, material);
-<span class="hljs-built_in">sphere</span>.overdraw = <span class="hljs-keyword">true</span>;
-<span class="hljs-built_in">sphere</span>.position.<span class="hljs-built_in">set</span>(x, <span class="hljs-number">0</span>, y);
-scene.<span class="hljs-built_in">add</span>(<span class="hljs-built_in">sphere</span>);
+    });
 
-    <span class="hljs-keyword">return</span> <span class="hljs-built_in">sphere</span>;
-</code></pre><p>}</p>
-<pre><code>
-<span class="hljs-keyword">Call</span> the **addSphere** method just <span class="hljs-keyword">after</span> your **<span class="hljs-keyword">for</span> <span class="hljs-keyword">loop</span>**. Be sure <span class="hljs-keyword">to</span> pass <span class="hljs-keyword">in</span> the correct x <span class="hljs-keyword">and</span> y <span class="hljs-keyword">parameters</span> so the sphere appears <span class="hljs-keyword">at</span> the <span class="hljs-keyword">end</span> <span class="hljs-keyword">of</span> our aisle, <span class="hljs-keyword">as</span> shown <span class="hljs-keyword">in</span> the screen shots above.
+    var <span class="hljs-built_in">sphere</span> = <span class="hljs-keyword">new</span> THREE.Mesh(geometry, material);
+    <span class="hljs-built_in">sphere</span>.overdraw = <span class="hljs-keyword">true</span>;
+    <span class="hljs-built_in">sphere</span>.position.<span class="hljs-built_in">set</span>(x, <span class="hljs-number">0</span>, y);
+    scene.<span class="hljs-built_in">add</span>(<span class="hljs-built_in">sphere</span>);
 
-[sphere]: <span class="hljs-keyword">http</span>://threejs.org/docs/#<span class="hljs-keyword">Reference</span>/Extras.Geometries/SphereGeometry
-
-## Window <span class="hljs-keyword">Resize</span>
-
-One <span class="hljs-keyword">event</span> <span class="hljs-keyword">handler</span> that <span class="hljs-keyword">I</span> should mention <span class="hljs-keyword">is</span> window <span class="hljs-keyword">resize</span>. This <span class="hljs-keyword">event</span> <span class="hljs-keyword">is</span> triggered <span class="hljs-keyword">when</span> the window <span class="hljs-keyword">is</span> resized <span class="hljs-keyword">and</span> it causes the scene <span class="hljs-keyword">to</span> be recalculated so that it fits properly inside the window.
-
-Here <span class="hljs-keyword">is</span> how we hook the <span class="hljs-keyword">event</span>:
-
-    window.addEventListener(<span class="hljs-string">'resize'</span>, onWindowResize, <span class="hljs-literal">false</span>);
-
-And here is how we handle the event:
-</code></pre><p>function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">sphere</span>;
+}
+</code></pre><p>Call the <strong>addSphere</strong> method just after your <strong>for loop</strong>. Be sure to pass in the correct x and y parameters so the sphere appears at the end of our aisle, as shown in the screen shots above.</p>
+<h2 id="window-resize">Window Resize</h2>
+<p>One event handler that I should mention is window resize. This event is triggered when the window is resized and it causes the scene to be recalculated so that it fits properly inside the window.</p>
+<p>Here is how we hook the event:</p>
+<pre><code><span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">'resize'</span>, onWindowResize, <span class="hljs-literal">false</span>);
+</code></pre><p>And here is how we handle the event:</p>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onWindowResize</span>(<span class="hljs-params"></span>) </span>{
+    camera.aspect = <span class="hljs-built_in">window</span>.innerWidth / <span class="hljs-built_in">window</span>.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-}</p>
-<pre><code>
-On <span class="hljs-keyword">the</span> same general subject, you might find <span class="hljs-keyword">it</span> useful <span class="hljs-built_in">to</span> just remove all <span class="hljs-keyword">the</span> HTML (<span class="hljs-keyword">for</span> now) <span class="hljs-built_in">from</span> you index.jade. My code, <span class="hljs-keyword">at</span> <span class="hljs-keyword">any</span> rate, now looks like this:
-</code></pre><p>extends layout</p>
-<p>block content
-```</p>
-<p>As you can see, there is essentially nothing at all happening in <strong>index.jade</strong>. Our HTML body is occupied entirely by Three.Js. Later on we will see how to use CSS to lay HTML over the 3D scene.</p>
+    renderer.setSize(<span class="hljs-built_in">window</span>.innerWidth, <span class="hljs-built_in">window</span>.innerHeight);
+}
+</code></pre><p>On the same general subject, you might find it useful to just remove all the HTML (for now) from you index.jade. My code, at any rate, now looks like this:</p>
+<pre><code><span class="hljs-keyword">extends </span>layout
+
+<span class="hljs-keyword">block </span>content
+</code></pre><p>As you can see, there is essentially nothing at all happening in <strong>index.jade</strong>. Our HTML body is occupied entirely by Three.Js. Later on we will see how to use CSS to lay HTML over the 3D scene.</p>
 <h2 id="turn-it-in">Turn it in</h2>
 <p>Add a .gitignore file to the root of your BitBucket repository. Make sure you include both <strong>.metadata</strong> and <strong>node_modules</strong> in your .gitignore file. Put your project in your BitBucket repository. Reference for .gitignore:</p>
 <ul>
