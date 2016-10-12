@@ -57,25 +57,25 @@ cp -r Week04-ThreeJsBasics Week04-ThreeFloor
       scene.add(mesh);
   }
 
-  Floors.prototype.drawFloor = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">scene</span>) </span>{
-      <span class="hljs-comment">// FLOOR</span>
-      <span class="hljs-keyword">var</span> names = [<span class="hljs-string">'images/checkerboard.jpg'</span>, <span class="hljs-string">'images/FloorBorder256.png'</span>, <span class="hljs-string">'images/WoodenPlanks.png'</span>, <span class="hljs-string">'images/grass02.jpg'</span>, <span class="hljs-string">'images/Grass03.png'</span>];
-      <span class="hljs-keyword">var</span> repeats = [<span class="hljs-number">250</span>, <span class="hljs-number">100</span>, <span class="hljs-number">100</span>, <span class="hljs-number">175</span>];
-      <span class="hljs-keyword">var</span> index = <span class="hljs-number">0</span>;
-      <span class="hljs-comment">//var floorTexture = new THREE.ImageUtils.loadTexture('images/FloorBorder256.png');</span>
-      <span class="hljs-keyword">var</span> floorTexture = <span class="hljs-keyword">new</span> THREE.ImageUtils.loadTexture(names[index]);
-      floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
-      floorTexture.repeat.set(repeats[index], repeats[index]);
-      <span class="hljs-keyword">var</span> floorMaterial = <span class="hljs-keyword">new</span> THREE.MeshBasicMaterial({
-          map: floorTexture,
-          side: THREE.DoubleSide
-      });
-      <span class="hljs-keyword">var</span> floorGeometry = <span class="hljs-keyword">new</span> THREE.PlaneGeometry(<span class="hljs-number">2000</span>, <span class="hljs-number">2000</span>, <span class="hljs-number">10</span>, <span class="hljs-number">10</span>);
-      <span class="hljs-keyword">var</span> floor = <span class="hljs-keyword">new</span> THREE.Mesh(floorGeometry, floorMaterial);
-      floor.position.y = <span class="hljs-number">-0.5</span>;
-      floor.rotation.x = <span class="hljs-built_in">Math</span>.PI / <span class="hljs-number">2</span>;
-      scene.add(floor);
-  };
+    Floors.prototype.drawFloor = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">scene</span>) </span>{
+            <span class="hljs-comment">// FLOOR</span>
+            <span class="hljs-keyword">var</span> names = [<span class="hljs-string">'images/checkerboard.jpg'</span>, <span class="hljs-string">'images/FloorBorder256.png'</span>, <span class="hljs-string">'images/WoodenPlanks.png'</span>, <span class="hljs-string">'images/grass02.jpg'</span>, <span class="hljs-string">'images/Grass03.png'</span>];
+            <span class="hljs-keyword">var</span> repeats = [<span class="hljs-number">250</span>, <span class="hljs-number">100</span>, <span class="hljs-number">100</span>, <span class="hljs-number">175</span>];
+            <span class="hljs-keyword">var</span> index = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">var</span> loader = <span class="hljs-keyword">new</span> THREE.TextureLoader();
+            <span class="hljs-keyword">var</span> floorTexture = loader.load(names[index]);
+            floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+            floorTexture.repeat.set(repeats[index], repeats[index]);
+            <span class="hljs-keyword">var</span> floorMaterial = <span class="hljs-keyword">new</span> THREE.MeshBasicMaterial({
+                    map: floorTexture,
+                    side: THREE.DoubleSide
+            });
+            <span class="hljs-keyword">var</span> floorGeometry = <span class="hljs-keyword">new</span> THREE.PlaneGeometry(<span class="hljs-number">2000</span>, <span class="hljs-number">2000</span>, <span class="hljs-number">10</span>, <span class="hljs-number">10</span>);
+            <span class="hljs-keyword">var</span> floor = <span class="hljs-keyword">new</span> THREE.Mesh(floorGeometry, floorMaterial);
+            floor.position.y = <span class="hljs-number">-0.5</span>;
+            floor.rotation.x = <span class="hljs-built_in">Math</span>.PI / <span class="hljs-number">2</span>;
+            scene.add(floor);
+    };
 
   <span class="hljs-keyword">return</span> Floors;
 });
@@ -97,12 +97,14 @@ cp -r Week04-ThreeJsBasics Week04-ThreeFloor
 <pre><code>var <span class="hljs-built_in">floor</span> = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Floor</span>();
 <span class="hljs-built_in">floor</span>.drawFloor(scene);
 </code></pre><p>It belongs in the constructor found in <strong>control.js</strong>. Insert it into your source just after you add the cube.</p>
-<p>Create a bitmap called <strong>checkerboard.jpg</strong> that is 256 X 256 pixels in size or download the one found here. We don&#39;t have rights to use this publicly at this time, but we can use it in our assignments. Put it in an images directory in the public folder:</p>
+<p>Create a bitmap called <strong>checkerboard.jpg</strong> that is 256 X 256 pixels in size or download the one found here. We don&#39;t have rights to use this publicly at this time, but we can use it in our assignments. Put it in an <strong>images</strong> directory in the <strong>public</strong> folder:</p>
 <pre>
 public/images/checkerboard.jpg
 </pre>
 
 <p><img src="https://docs.google.com/uc?export=view&amp;id=0B25UTAlOfPRGVW5LOWl5SUItc3M" alt="bar"></p>
+<p>At this stage you should be able to run the program and see a floor. The cube from the basics program should be partially buried in the floor, but still visibly rotating.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/three-floor-01.png" alt="Three Floor Start"></p>
 <h2 id="naive-walk">Naive Walk</h2>
 <p>Let&#39;s add primitive support for walking through the scene. Since the camera is our eye on the scene, what we will do is move the camera to the left and right, and backward and forward. This is like moving through a room, but always having to face in the same direction, as if you were a courtier coming to visit the king.</p>
 <p>First let&#39;s declare some variables in Control.js above the constructor for tracking movement and the camera position:</p>
