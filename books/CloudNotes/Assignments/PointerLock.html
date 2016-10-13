@@ -3,6 +3,7 @@
 <li><a href="#the-html">The HTML</a></li>
 <li><a href="#pointerlock-implementation">PointerLock Implementation</a></li>
 <li><a href="#pointerlocksetup">PointerLockSetup</a></li>
+<li><a href="#initialize">Initialize</a></li>
 <li><a href="#set-up-pointerlock">Set up PointerLock</a></li>
 <li><a href="#render-or-animate">Render or Animate</a></li>
 <li><a href="#collision-detection">Collision Detection</a></li>
@@ -83,202 +84,244 @@ block content
 
 }
 </code></pre><h2 id="pointerlock-implementation">PointerLock Implementation</h2>
-<p>Here is my (slightly modified) version of the the boilerplate PointerLock code. This is from the <a href="https://github.com/mrdoob/three.js/blob/master/examples/js/controls/PointerLockControls.js">Three.js site</a>, and is used widely. Put it in a file called <strong>PointerLockControls.js</strong>:</p>
+<p>Here is my (slightly modified) version of the boilerplate <strong>PointerLockControls</strong> code that Mr Doob of ThreeJs fame wrote. This is from the <a href="https://github.com/mrdoob/three.js/blob/master/examples/js/controls/PointerLockControls.js">Three.js site</a>, and is used widely. Note that I have recently (10-12-16) converted the code to support <strong>require.js</strong>, as explained below the declaration of the object. Put this code in a file called <strong>PointerLockControls.js</strong>:</p>
 <pre><code><span class="hljs-comment">/**
  * @author mrdoob / http://mrdoob.com/
  */</span>
 
-THREE.PointerLockControls = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">camera</span>) </span>{
+ define([<span class="hljs-string">'floor'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">Floor</span>) </span>{
+
+     <span class="hljs-keyword">var</span> PointerLockControls = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">camera, threeInit</span>) </span>{
+
+         <span class="hljs-keyword">var</span> scope = <span class="hljs-keyword">this</span>;
+         <span class="hljs-keyword">var</span> THREE = threeInit;
+
+         camera.rotation.set(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
+
+         <span class="hljs-keyword">var</span> pitchObject = <span class="hljs-keyword">new</span> THREE.Object3D();
+         pitchObject.add(camera);
+
+         <span class="hljs-keyword">var</span> yawObject = <span class="hljs-keyword">new</span> THREE.Object3D();
+         yawObject.position.y = <span class="hljs-number">10</span>;
+         yawObject.add(pitchObject);
+
+         <span class="hljs-keyword">var</span> moveForward = <span class="hljs-literal">false</span>;
+         <span class="hljs-keyword">var</span> moveBackward = <span class="hljs-literal">false</span>;
+         <span class="hljs-keyword">var</span> moveLeft = <span class="hljs-literal">false</span>;
+         <span class="hljs-keyword">var</span> moveRight = <span class="hljs-literal">false</span>;
+
+         <span class="hljs-keyword">var</span> isOnObject = <span class="hljs-literal">false</span>;
+         <span class="hljs-keyword">var</span> canJump = <span class="hljs-literal">false</span>;
+
+         <span class="hljs-keyword">var</span> prevTime = performance.now();
+
+         <span class="hljs-keyword">var</span> velocity = <span class="hljs-keyword">new</span> THREE.Vector3();
+
+         <span class="hljs-keyword">var</span> PI_2 = <span class="hljs-built_in">Math</span>.PI / <span class="hljs-number">2</span>;
+
+         <span class="hljs-keyword">var</span> onMouseMove = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">event</span>) </span>{
+
+             <span class="hljs-keyword">if</span> (scope.enabled === <span class="hljs-literal">false</span>) <span class="hljs-keyword">return</span>;
+
+             <span class="hljs-keyword">var</span> movementX = event.movementX || event.mozMovementX || event.webkitMovementX || <span class="hljs-number">0</span>;
+             <span class="hljs-keyword">var</span> movementY = event.movementY || event.mozMovementY || event.webkitMovementY || <span class="hljs-number">0</span>;
+
+             yawObject.rotation.y -= movementX * <span class="hljs-number">0.002</span>;
+             pitchObject.rotation.x -= movementY * <span class="hljs-number">0.002</span>;
+
+             pitchObject.rotation.x = <span class="hljs-built_in">Math</span>.max(-PI_2, <span class="hljs-built_in">Math</span>.min(PI_2, pitchObject.rotation.x));
+
+         };
+
+         <span class="hljs-keyword">var</span> onKeyDown = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">event</span>) </span>{
+
+             <span class="hljs-keyword">switch</span> (event.keyCode) {
+
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">38</span>: <span class="hljs-comment">// up</span>
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">87</span>: <span class="hljs-comment">// w</span>
+                     moveForward = <span class="hljs-literal">true</span>;
+                     <span class="hljs-keyword">break</span>;
+
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">37</span>: <span class="hljs-comment">// left</span>
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">65</span>: <span class="hljs-comment">// a</span>
+                     moveLeft = <span class="hljs-literal">true</span>;
+                     <span class="hljs-keyword">break</span>;
+
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">40</span>: <span class="hljs-comment">// down</span>
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">83</span>: <span class="hljs-comment">// s</span>
+                     moveBackward = <span class="hljs-literal">true</span>;
+                     <span class="hljs-keyword">break</span>;
+
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">39</span>: <span class="hljs-comment">// right</span>
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">68</span>: <span class="hljs-comment">// d</span>
+                     moveRight = <span class="hljs-literal">true</span>;
+                     <span class="hljs-keyword">break</span>;
+
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">32</span>: <span class="hljs-comment">// space</span>
+                     <span class="hljs-keyword">if</span> (canJump === <span class="hljs-literal">true</span>) velocity.y += <span class="hljs-number">350</span>;
+                     canJump = <span class="hljs-literal">false</span>;
+                     <span class="hljs-keyword">break</span>;
+
+             }
+
+         };
+
+         <span class="hljs-keyword">var</span> onKeyUp = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">event</span>) </span>{
+
+             <span class="hljs-keyword">switch</span> (event.keyCode) {
+
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">38</span>: <span class="hljs-comment">// up</span>
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">87</span>: <span class="hljs-comment">// w</span>
+                     moveForward = <span class="hljs-literal">false</span>;
+                     <span class="hljs-keyword">break</span>;
+
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">37</span>: <span class="hljs-comment">// left</span>
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">65</span>: <span class="hljs-comment">// a</span>
+                     moveLeft = <span class="hljs-literal">false</span>;
+                     <span class="hljs-keyword">break</span>;
+
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">40</span>: <span class="hljs-comment">// down</span>
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">83</span>: <span class="hljs-comment">// s</span>
+                     moveBackward = <span class="hljs-literal">false</span>;
+                     <span class="hljs-keyword">break</span>;
+
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">39</span>: <span class="hljs-comment">// right</span>
+                 <span class="hljs-keyword">case</span> <span class="hljs-number">68</span>: <span class="hljs-comment">// d</span>
+                     moveRight = <span class="hljs-literal">false</span>;
+                     <span class="hljs-keyword">break</span>;
+
+             }
+
+         };
+
+         <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'mousemove'</span>, onMouseMove, <span class="hljs-literal">false</span>);
+         <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'keydown'</span>, onKeyDown, <span class="hljs-literal">false</span>);
+         <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'keyup'</span>, onKeyUp, <span class="hljs-literal">false</span>);
+
+         <span class="hljs-keyword">this</span>.enabled = <span class="hljs-literal">false</span>;
+
+         <span class="hljs-keyword">this</span>.getObject = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+
+             <span class="hljs-keyword">return</span> yawObject;
+
+         };
+
+         <span class="hljs-keyword">this</span>.isOnObject = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">boolean</span>) </span>{
+
+             isOnObject = boolean;
+             canJump = boolean;
+
+         };
+
+         <span class="hljs-keyword">this</span>.getDirection = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+
+             <span class="hljs-comment">// assumes the camera itself is not rotated</span>
+
+             <span class="hljs-keyword">var</span> direction = <span class="hljs-keyword">new</span> THREE.Vector3(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">-1</span>);
+             <span class="hljs-keyword">var</span> rotation = <span class="hljs-keyword">new</span> THREE.Euler(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-string">"YXZ"</span>);
+
+             <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">v</span>) </span>{
+
+                 rotation.set(pitchObject.rotation.x, yawObject.rotation.y, <span class="hljs-number">0</span>);
+
+                 v.copy(direction).applyEuler(rotation);
+
+                 <span class="hljs-keyword">return</span> v;
+
+             }
+
+         }();
+
+         <span class="hljs-keyword">this</span>.update = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+
+             <span class="hljs-keyword">if</span> (scope.enabled === <span class="hljs-literal">false</span>) <span class="hljs-keyword">return</span>;
+
+             <span class="hljs-keyword">var</span> time = performance.now();
+             <span class="hljs-keyword">var</span> delta = (time - prevTime) / <span class="hljs-number">1000</span>;
+
+             velocity.x -= velocity.x * <span class="hljs-number">10.0</span> * delta;
+             velocity.z -= velocity.z * <span class="hljs-number">10.0</span> * delta;
+
+             velocity.y -= <span class="hljs-number">9.8</span> * <span class="hljs-number">100.0</span> * delta; <span class="hljs-comment">// 100.0 = mass</span>
+
+             <span class="hljs-keyword">if</span> (moveForward) velocity.z -= <span class="hljs-number">400.0</span> * delta;
+             <span class="hljs-keyword">if</span> (moveBackward) velocity.z += <span class="hljs-number">400.0</span> * delta;
+
+             <span class="hljs-keyword">if</span> (moveLeft) velocity.x -= <span class="hljs-number">400.0</span> * delta;
+             <span class="hljs-keyword">if</span> (moveRight) velocity.x += <span class="hljs-number">400.0</span> * delta;
+
+             <span class="hljs-comment">// I've changed this code to stop all movement if we</span>
+             <span class="hljs-comment">// are about to hit something. Compare to original</span>
+             <span class="hljs-comment">// which only set y.</span>
+             <span class="hljs-keyword">if</span> (isOnObject === <span class="hljs-literal">true</span>) {
+
+                 velocity.y = <span class="hljs-built_in">Math</span>.max(<span class="hljs-number">0</span>, velocity.y);
+                 velocity.x = <span class="hljs-number">0</span>;
+                 velocity.z = <span class="hljs-number">0</span>;
+
+             }
+
+             yawObject.translateX(velocity.x * delta);
+             yawObject.translateY(velocity.y * delta);
+             yawObject.translateZ(velocity.z * delta);
+
+             <span class="hljs-keyword">if</span> (yawObject.position.y &lt; <span class="hljs-number">10</span>) {
+
+                 velocity.y = <span class="hljs-number">0</span>;
+                 yawObject.position.y = <span class="hljs-number">10</span>;
+
+                 canJump = <span class="hljs-literal">true</span>;
+
+             }
+
+             prevTime = time;
+
+         };
+
+     };
+
+     <span class="hljs-keyword">return</span> PointerLockControls;
+ });
+</code></pre><p>Remember that you will need to modify both <strong>main.js</strong> and the top of <strong>control.js</strong>. You need to make these changes so that <strong>require</strong> will know how to load these two new files. We have already seen how to make those changes with <strong>floor.js</strong>, now apply the same knowledge to <strong>PointerLockControls</strong> and <strong>PointerLockSetup</strong>. Because <strong>PointLockControls.js</strong> has been updated to include support for RequireJs, it will not need to be shimmed in.</p>
+<p>I will take one moment to explain how I converted <strong>ThreePointerLock</strong> to support RequireJs. The declaration for the code originally began like this:</p>
+<pre><code class="lang-javascript">THREE.PointerLockControls = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">( camera )</span> </span>{
 
     <span class="hljs-keyword">var</span> scope = <span class="hljs-keyword">this</span>;
-
-    camera.rotation.set(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
-
-    <span class="hljs-keyword">var</span> pitchObject = <span class="hljs-keyword">new</span> THREE.Object3D();
-    pitchObject.add(camera);
-
-    <span class="hljs-keyword">var</span> yawObject = <span class="hljs-keyword">new</span> THREE.Object3D();
-    yawObject.position.y = <span class="hljs-number">10</span>;
-    yawObject.add(pitchObject);
-
-    <span class="hljs-keyword">var</span> moveForward = <span class="hljs-literal">false</span>;
-    <span class="hljs-keyword">var</span> moveBackward = <span class="hljs-literal">false</span>;
-    <span class="hljs-keyword">var</span> moveLeft = <span class="hljs-literal">false</span>;
-    <span class="hljs-keyword">var</span> moveRight = <span class="hljs-literal">false</span>;
-
-    <span class="hljs-keyword">var</span> isOnObject = <span class="hljs-literal">false</span>;
-    <span class="hljs-keyword">var</span> canJump = <span class="hljs-literal">false</span>;
-
-    <span class="hljs-keyword">var</span> prevTime = performance.now();
-
-    <span class="hljs-keyword">var</span> velocity = <span class="hljs-keyword">new</span> THREE.Vector3();
-
-    <span class="hljs-keyword">var</span> PI_2 = <span class="hljs-built_in">Math</span>.PI / <span class="hljs-number">2</span>;
-
-    <span class="hljs-keyword">var</span> onMouseMove = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
-
-        <span class="hljs-keyword">if</span> (scope.enabled === <span class="hljs-literal">false</span>) <span class="hljs-keyword">return</span>;
-
-        <span class="hljs-keyword">var</span> movementX = event.movementX || event.mozMovementX || event.webkitMovementX || <span class="hljs-number">0</span>;
-        <span class="hljs-keyword">var</span> movementY = event.movementY || event.mozMovementY || event.webkitMovementY || <span class="hljs-number">0</span>;
-
-        yawObject.rotation.y -= movementX * <span class="hljs-number">0.002</span>;
-        pitchObject.rotation.x -= movementY * <span class="hljs-number">0.002</span>;
-
-        pitchObject.rotation.x = <span class="hljs-built_in">Math</span>.max(-PI_2, <span class="hljs-built_in">Math</span>.min(PI_2, pitchObject.rotation.x));
-
-    };
-
-    <span class="hljs-keyword">var</span> onKeyDown = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
-
-        <span class="hljs-keyword">switch</span> (event.keyCode) {
-
-            <span class="hljs-keyword">case</span> <span class="hljs-number">38</span>: <span class="hljs-comment">// up</span>
-            <span class="hljs-keyword">case</span> <span class="hljs-number">87</span>: <span class="hljs-comment">// w</span>
-                moveForward = <span class="hljs-literal">true</span>;
-                <span class="hljs-keyword">break</span>;
-
-            <span class="hljs-keyword">case</span> <span class="hljs-number">37</span>: <span class="hljs-comment">// left</span>
-            <span class="hljs-keyword">case</span> <span class="hljs-number">65</span>: <span class="hljs-comment">// a</span>
-                moveLeft = <span class="hljs-literal">true</span>;
-                <span class="hljs-keyword">break</span>;
-
-            <span class="hljs-keyword">case</span> <span class="hljs-number">40</span>: <span class="hljs-comment">// down</span>
-            <span class="hljs-keyword">case</span> <span class="hljs-number">83</span>: <span class="hljs-comment">// s</span>
-                moveBackward = <span class="hljs-literal">true</span>;
-                <span class="hljs-keyword">break</span>;
-
-            <span class="hljs-keyword">case</span> <span class="hljs-number">39</span>: <span class="hljs-comment">// right</span>
-            <span class="hljs-keyword">case</span> <span class="hljs-number">68</span>: <span class="hljs-comment">// d</span>
-                moveRight = <span class="hljs-literal">true</span>;
-                <span class="hljs-keyword">break</span>;
-
-            <span class="hljs-keyword">case</span> <span class="hljs-number">32</span>: <span class="hljs-comment">// space</span>
-                <span class="hljs-keyword">if</span> (canJump === <span class="hljs-literal">true</span>) velocity.y += <span class="hljs-number">350</span>;
-                canJump = <span class="hljs-literal">false</span>;
-                <span class="hljs-keyword">break</span>;
-
-        }
-
-    };
-
-    <span class="hljs-keyword">var</span> onKeyUp = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
-
-        <span class="hljs-keyword">switch</span> (event.keyCode) {
-
-            <span class="hljs-keyword">case</span> <span class="hljs-number">38</span>: <span class="hljs-comment">// up</span>
-            <span class="hljs-keyword">case</span> <span class="hljs-number">87</span>: <span class="hljs-comment">// w</span>
-                moveForward = <span class="hljs-literal">false</span>;
-                <span class="hljs-keyword">break</span>;
-
-            <span class="hljs-keyword">case</span> <span class="hljs-number">37</span>: <span class="hljs-comment">// left</span>
-            <span class="hljs-keyword">case</span> <span class="hljs-number">65</span>: <span class="hljs-comment">// a</span>
-                moveLeft = <span class="hljs-literal">false</span>;
-                <span class="hljs-keyword">break</span>;
-
-            <span class="hljs-keyword">case</span> <span class="hljs-number">40</span>: <span class="hljs-comment">// down</span>
-            <span class="hljs-keyword">case</span> <span class="hljs-number">83</span>: <span class="hljs-comment">// s</span>
-                moveBackward = <span class="hljs-literal">false</span>;
-                <span class="hljs-keyword">break</span>;
-
-            <span class="hljs-keyword">case</span> <span class="hljs-number">39</span>: <span class="hljs-comment">// right</span>
-            <span class="hljs-keyword">case</span> <span class="hljs-number">68</span>: <span class="hljs-comment">// d</span>
-                moveRight = <span class="hljs-literal">false</span>;
-                <span class="hljs-keyword">break</span>;
-
-        }
-
-    };
-
-    <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'mousemove'</span>, onMouseMove, <span class="hljs-literal">false</span>);
-    <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'keydown'</span>, onKeyDown, <span class="hljs-literal">false</span>);
-    <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'keyup'</span>, onKeyUp, <span class="hljs-literal">false</span>);
-
-    <span class="hljs-keyword">this</span>.enabled = <span class="hljs-literal">false</span>;
-
-    <span class="hljs-keyword">this</span>.getObject = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-
-        <span class="hljs-keyword">return</span> yawObject;
-
-    };
-
-    <span class="hljs-keyword">this</span>.isOnObject = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">boolean</span>) </span>{
-
-        isOnObject = boolean;
-        canJump = boolean;
-
-    };
-
-    <span class="hljs-keyword">this</span>.getDirection = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-
-        <span class="hljs-comment">// assumes the camera itself is not rotated</span>
-
-        <span class="hljs-keyword">var</span> direction = <span class="hljs-keyword">new</span> THREE.Vector3(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">-1</span>);
-        <span class="hljs-keyword">var</span> rotation = <span class="hljs-keyword">new</span> THREE.Euler(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-string">"YXZ"</span>);
-
-        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">v</span>) </span>{
-
-            rotation.set(pitchObject.rotation.x, yawObject.rotation.y, <span class="hljs-number">0</span>);
-
-            v.copy(direction).applyEuler(rotation);
-
-            <span class="hljs-keyword">return</span> v;
-
-        }
-
-    }();
-
-    <span class="hljs-keyword">this</span>.update = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-
-        <span class="hljs-keyword">if</span> (scope.enabled === <span class="hljs-literal">false</span>) <span class="hljs-keyword">return</span>;
-
-        <span class="hljs-keyword">var</span> time = performance.now();
-        <span class="hljs-keyword">var</span> delta = (time - prevTime) / <span class="hljs-number">1000</span>;
-
-        velocity.x -= velocity.x * <span class="hljs-number">10.0</span> * delta;
-        velocity.z -= velocity.z * <span class="hljs-number">10.0</span> * delta;
-
-        velocity.y -= <span class="hljs-number">9.8</span> * <span class="hljs-number">100.0</span> * delta; <span class="hljs-comment">// 100.0 = mass</span>
-
-        <span class="hljs-keyword">if</span> (moveForward) velocity.z -= <span class="hljs-number">400.0</span> * delta;
-        <span class="hljs-keyword">if</span> (moveBackward) velocity.z += <span class="hljs-number">400.0</span> * delta;
-
-        <span class="hljs-keyword">if</span> (moveLeft) velocity.x -= <span class="hljs-number">400.0</span> * delta;
-        <span class="hljs-keyword">if</span> (moveRight) velocity.x += <span class="hljs-number">400.0</span> * delta;
-
-        <span class="hljs-comment">// I've changed this code to stop all movement if we</span>
-        <span class="hljs-comment">// are about to hit something. Compare to original</span>
-        <span class="hljs-comment">// which only set y.</span>
-        <span class="hljs-keyword">if</span> (isOnObject === <span class="hljs-literal">true</span>) {
-
-            velocity.y = <span class="hljs-built_in">Math</span>.max(<span class="hljs-number">0</span>, velocity.y);
-            velocity.x = <span class="hljs-number">0</span>;
-            velocity.z = <span class="hljs-number">0</span>;
-
-        }
-
-        yawObject.translateX(velocity.x * delta);
-        yawObject.translateY(velocity.y * delta);
-        yawObject.translateZ(velocity.z * delta);
-
-        <span class="hljs-keyword">if</span> (yawObject.position.y &lt; <span class="hljs-number">10</span>) {
-
-            velocity.y = <span class="hljs-number">0</span>;
-            yawObject.position.y = <span class="hljs-number">10</span>;
-
-            canJump = <span class="hljs-literal">true</span>;
-
-        }
-
-        prevTime = time;
-
-    };
-
+  etc...
 };
-</code></pre><p>Remember that you will need to modify both <strong>Main.js</strong> and the top of <strong>Control.js</strong>. You need to make these changes so that <strong>require</strong> will know how to load these two new files. We have already seen how to make those changes with <strong>Floors.js</strong>, now apply the same knowledge to <strong>PointerLockControls</strong> and <strong>PointerLockSetup</strong>. Remember that <strong>PointerLockControls.js</strong> will need to be shimmed in.</p>
+</code></pre>
+<p>I adopted for <strong>RequireJs</strong> by adding the <strong>define</strong> method and returning the anonymous function we store in the <strong>PointerLockControls</strong> variable. The goal here is simply to define and return out <strong>PointerLockControls</strong> object:</p>
+<pre><code class="lang-javascript">define([<span class="hljs-string">'floor'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(Floor)</span> </span>{
+
+    <span class="hljs-keyword">var</span> PointerLockControls = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(camera, threeInit)</span> </span>{
+
+        <span class="hljs-keyword">var</span> scope = <span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">var</span> THREE = threeInit;
+
+        <span class="hljs-comment">// CODE OMITTED HERE</span>
+    };
+
+<span class="hljs-keyword">return</span> PointerLockControls;
+});
+</code></pre>
+<p>Later in this document, we will see how to use this object with code that looks, in part, like this, where the first line uses <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> to load our <strong>PointerLockControls</strong> object:</p>
+<pre><code class="lang-javascript">define([<span class="hljs-string">'floor'</span>, <span class="hljs-string">'PointerLockControls'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(Floor, PointerLockControls)</span> </span>{
+
+  <span class="hljs-comment">// LOTS OF CODE OMITTED</span>
+  controls = <span class="hljs-keyword">new</span> PointerLockControls(camera, THREE);
+  <span class="hljs-comment">// LOTS OF CODE OMITTED</span>
+});
+</code></pre>
+<p>This is our standard dance for using a RequireJs module:</p>
+<ul>
+<li>In the target module (<strong>PointerLockControls</strong>) use the RequireJs <strong>define</strong> method and have it return an instance of the object you want to create.</li>
+<li>In the <strong>define</strong> method for the object that will consume the target, use dependency injection to load the target.</li>
+<li>Use the target object.</li>
+</ul>
 <h2 id="pointerlocksetup">PointerLockSetup</h2>
-<p>Here is a file I put together to help automate the process of loading the PointerLockControl code. Save it as PointerLockSetup.js:</p>
-<pre><code>define([<span class="hljs-string">'PointerLockControls'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">pointerLock</span>) </span>{
+<p>Here is a file I put together to help automate the process of loading the PointerLockControl code. Save it as <strong>PointerLockSetup.js</strong>:</p>
+<pre><code class="lang-javascript">
+define([<span class="hljs-string">'PointerLockControls'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">pointerLock</span>) </span>{
 <span class="hljs-meta">
     'use strict'</span>;
 
@@ -377,16 +420,19 @@ THREE.PointerLockControls = <span class="hljs-function"><span class="hljs-keywor
     <span class="hljs-keyword">return</span> PointerLockSetup;
 
 });
-</code></pre><p>##Initialize</p>
+</code></pre>
+<h2 id="initialize">Initialize</h2>
 <p>Let&#39;s move the code to initialize the engine out of the constructor and into a method called <strong>init</strong>:</p>
 <pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Control</span><span class="hljs-params">()</span> </span>{
     init();
-    animate();
+    animate();  
 }
-</code></pre><p>We now start the app by first initializing our engine, and by then rendering the game in our render loop.</p>
-<p>You will need to declare a object scoped variables called <strong>size</strong> and <strong>cubes</strong>. Set <strong>size</strong> equal to 20. In <strong>addCube</strong>, when you create the cube, make it size X size X size square, like this:</p>
-<pre><code>var geometry = <span class="hljs-keyword">new</span> THREE.BoxGeometry(<span class="hljs-keyword">size</span>, <span class="hljs-keyword">size</span>, <span class="hljs-keyword">size</span>);
-</code></pre><p>And when you create a cube, in <strong>addCube</strong>, you need to call <strong>cubes.push(cube)</strong>, where cubes is an object scoped array (var cubes = []).</p>
+</code></pre><p>The <strong>render</strong> method from ThreeFloor has been, and should be, renamed to <strong>animate</strong>. We now start the app by first initializing our engine, and by then animating the game in our <strong>animate</strong> loop.</p>
+<p>You will need to declare a object scoped variables called <strong>size</strong> and <strong>cubes</strong>. Set <strong>size</strong> equal to 20. Declare cubes to be an empty array.</p>
+<p>In <strong>addCube</strong>, when you create the cube, make it a square with a width, height and depth of <strong>size</strong>. It looks like this:</p>
+<pre><code class="lang-javascript">    var geometry = <span class="hljs-keyword">new</span> THREE.BoxGeometry(<span class="hljs-keyword">size</span>, <span class="hljs-keyword">size</span>, <span class="hljs-keyword">size</span>);
+</code></pre>
+<p>And when you create a cube, in <strong>addCube</strong>, you need to call <strong>cubes.push(cube)</strong>, where cubes is an object scoped array (var cubes = []).</p>
 <p>After you make the cubes bigger, you are going to have to change the way you lay out the boxes. They are now much bigger than they were before and so they will be further apart.</p>
 <p>The init method looks like this:</p>
 <pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init</span>(<span class="hljs-params"></span>) </span>{
@@ -403,8 +449,8 @@ THREE.PointerLockControls = <span class="hljs-function"><span class="hljs-keywor
 
     addLights();
 
-    <span class="hljs-keyword">var</span> floors = <span class="hljs-keyword">new</span> Floors();
-    floors.drawFloor(scene);
+    <span class="hljs-keyword">var</span> floor = <span class="hljs-keyword">new</span> Floor(THREE);
+    floor.drawFloor(scene);
 
     raycaster = <span class="hljs-keyword">new</span> THREE.Raycaster(<span class="hljs-keyword">new</span> THREE.Vector3(),
         <span class="hljs-keyword">new</span> THREE.Vector3(<span class="hljs-number">0</span>, <span class="hljs-number">-1</span>, <span class="hljs-number">0</span>), <span class="hljs-number">0</span>, <span class="hljs-number">10</span>);
@@ -452,7 +498,8 @@ THREE.PointerLockControls = <span class="hljs-function"><span class="hljs-keywor
 
     renderer.render(scene, camera);
 }
-</code></pre><h2 id="collision-detection">Collision Detection</h2>
+</code></pre><p>Note that the code for handling key strokes such as up, down, left and right, have moved into the <strong>PointLockControls</strong> object created by Mr. Doob.</p>
+<h2 id="collision-detection">Collision Detection</h2>
 <p>Another complicated subject is collision detection. In particular, we need to know if our main character (the camera) bumps into a wall. We can&#39;t have the main character walking through walls if we want this world to make sense to the user.</p>
 <p>In a 2D world it is fairly easy to decide when the main character has bumped into something. Writing such code a 3D world is more complex because objects could be not only in front, behind, or the side of our main character, but also above or below or at some odd angle.</p>
 <p>It turns out that the solution for this problem is found by &quot;looking around&quot; with a technology called ray casting. A &quot;ray&quot; shoots out from the camera at various angles. If it pumps into something, then that information is stored and can be acted upon.</p>
