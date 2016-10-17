@@ -320,8 +320,7 @@ block content
 </ul>
 <h2 id="pointerlocksetup">PointerLockSetup</h2>
 <p>Here is a file I put together to help automate the process of loading the PointerLockControl code. Save it as <strong>PointerLockSetup.js</strong>:</p>
-<pre><code class="lang-javascript">
-define([<span class="hljs-string">'PointerLockControls'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">pointerLock</span>) </span>{
+<pre><code class="lang-javascript">define([<span class="hljs-string">'PointerLockControls'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">pointerLock</span>) </span>{
 <span class="hljs-meta">
     'use strict'</span>;
 
@@ -334,7 +333,9 @@ define([<span class="hljs-string">'PointerLockControls'</span>], <span class="hl
         blocker = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'blocker'</span>);
         instructions = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'instructions'</span>);
 
-        <span class="hljs-keyword">var</span> havePointerLock = <span class="hljs-string">'pointerLockElement'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">document</span> || <span class="hljs-string">'mozPointerLockElement'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">document</span> || <span class="hljs-string">'webkitPointerLockElement'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">document</span>;
+        <span class="hljs-keyword">var</span> havePointerLock = <span class="hljs-string">'pointerLockElement'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">document</span> ||
+            <span class="hljs-string">'mozPointerLockElement'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">document</span> ||
+            <span class="hljs-string">'webkitPointerLockElement'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">document</span>;
 
         <span class="hljs-keyword">if</span> (havePointerLock) {
 
@@ -342,7 +343,9 @@ define([<span class="hljs-string">'PointerLockControls'</span>], <span class="hl
 
             <span class="hljs-keyword">var</span> pointerlockchange = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
 
-                <span class="hljs-keyword">if</span> (<span class="hljs-built_in">document</span>.pointerLockElement === element || <span class="hljs-built_in">document</span>.mozPointerLockElement === element || <span class="hljs-built_in">document</span>.webkitPointerLockElement === element) {
+                <span class="hljs-keyword">if</span> (<span class="hljs-built_in">document</span>.pointerLockElement === element ||
+                    <span class="hljs-built_in">document</span>.mozPointerLockElement === element ||
+                    <span class="hljs-built_in">document</span>.webkitPointerLockElement === element) {
 
                     controls.enabled = <span class="hljs-literal">true</span>;
 
@@ -381,13 +384,17 @@ define([<span class="hljs-string">'PointerLockControls'</span>], <span class="hl
                 instructions.style.display = <span class="hljs-string">'none'</span>;
 
                 <span class="hljs-comment">// Ask the browser to lock the pointer</span>
-                element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+                element.requestPointerLock = element.requestPointerLock ||
+                    element.mozRequestPointerLock ||
+                    element.webkitRequestPointerLock;
 
                 <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/Firefox/i</span>.test(navigator.userAgent)) {
 
                     <span class="hljs-keyword">var</span> fullscreenchange = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
 
-                        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">document</span>.fullscreenElement === element || <span class="hljs-built_in">document</span>.mozFullscreenElement === element || <span class="hljs-built_in">document</span>.mozFullScreenElement === element) {
+                        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">document</span>.fullscreenElement === element ||
+                            <span class="hljs-built_in">document</span>.mozFullscreenElement === element ||
+                            <span class="hljs-built_in">document</span>.mozFullScreenElement === element) {
 
                             <span class="hljs-built_in">document</span>.removeEventListener(<span class="hljs-string">'fullscreenchange'</span>, fullscreenchange);
                             <span class="hljs-built_in">document</span>.removeEventListener(<span class="hljs-string">'mozfullscreenchange'</span>, fullscreenchange);
@@ -400,7 +407,10 @@ define([<span class="hljs-string">'PointerLockControls'</span>], <span class="hl
                     <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'fullscreenchange'</span>, fullscreenchange, <span class="hljs-literal">false</span>);
                     <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'mozfullscreenchange'</span>, fullscreenchange, <span class="hljs-literal">false</span>);
 
-                    element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
+                    element.requestFullscreen = element.requestFullscreen ||
+                        element.mozRequestFullscreen ||
+                        element.mozRequestFullScreen ||
+                        element.webkitRequestFullscreen;
 
                     element.requestFullscreen();
 
@@ -490,7 +500,7 @@ define([<span class="hljs-string">'PointerLockControls'</span>], <span class="hl
 
     <span class="hljs-comment">// drawText(controlObject, position);</span>
 
-    collisionDetection(position);
+  collisionDetection(controls, cubes);
 
     <span class="hljs-comment">// Move the camera</span>
     controls.update();
@@ -502,8 +512,8 @@ define([<span class="hljs-string">'PointerLockControls'</span>], <span class="hl
 <p>Another complicated subject is collision detection. In particular, we need to know if our main character (the camera) bumps into a wall. We can&#39;t have the main character walking through walls if we want this world to make sense to the user.</p>
 <p>In a 2D world it is fairly easy to decide when the main character has bumped into something. Writing such code a 3D world is more complex because objects could be not only in front, behind, or the side of our main character, but also above or below or at some odd angle.</p>
 <p>It turns out that the solution for this problem is found by &quot;looking around&quot; with a technology called ray casting. A &quot;ray&quot; shoots out from the camera at various angles. If it pumps into something, then that information is stored and can be acted upon.</p>
-<p>Here is some code to that does at least a fair job of detecting collisions:</p>
-<pre><code>function collisionDetection(position) {
+<p>Here is some old code to that does at least a fair job of detecting collisions:</p>
+<pre><code class="lang-javascript">function collisionDetection(position) {
     <span class="hljs-comment">// Collision detection</span>
     raycaster.ray.origin.copy(position)<span class="hljs-comment">;</span>
 
@@ -519,7 +529,54 @@ define([<span class="hljs-string">'PointerLockControls'</span>], <span class="hl
         controls.isOnObject(true)<span class="hljs-comment">;</span>
     }
 }
-</code></pre><p>Note that the code sets <strong>controls.isOnObject</strong> to true if a collision occurrs.</p>
+</code></pre>
+<p>Note that the code sets <strong>controls.isOnObject</strong> to true if a collision occurrs.</p>
+<p>Here is updated code that should work a bit better:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> collisionDetection = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(controls, cubes)</span> </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bounceBack</span><span class="hljs-params">(position, ray)</span> </span>{
+        position.x -= ray.bounceDistance.x;
+        position.y -= ray.bounceDistance.y;
+        position.z -= ray.bounceDistance.z;
+    }
+
+    <span class="hljs-keyword">var</span> rays = [
+        <span class="hljs-comment">//   Time    Degrees      words</span>
+        <span class="hljs-keyword">new</span> THREE.Vector3(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>),  <span class="hljs-comment">// 0 12:00,   0 degrees,  deep</span>
+        <span class="hljs-keyword">new</span> THREE.Vector3(<span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>),  <span class="hljs-comment">// 1  1:30,  45 degrees,  right deep</span>
+        <span class="hljs-keyword">new</span> THREE.Vector3(<span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>),  <span class="hljs-comment">// 2  3:00,  90 degress,  right</span>
+        <span class="hljs-keyword">new</span> THREE.Vector3(<span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">-1</span>), <span class="hljs-comment">// 3  4:30, 135 degrees,  right near</span>
+        <span class="hljs-keyword">new</span> THREE.Vector3(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">-1</span>), <span class="hljs-comment">// 4  6:00  180 degress,  near</span>
+        <span class="hljs-keyword">new</span> THREE.Vector3(<span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">-1</span>),<span class="hljs-comment">// 5  7:30  225 degrees,  left near</span>
+        <span class="hljs-keyword">new</span> THREE.Vector3(<span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>), <span class="hljs-comment">// 6  9:00  270 degrees,  left</span>
+        <span class="hljs-keyword">new</span> THREE.Vector3(<span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>)  <span class="hljs-comment">// 7 11:30  315 degrees,  left deep</span>
+    ];
+
+    <span class="hljs-keyword">var</span> position = controls.getObject().position;
+    <span class="hljs-keyword">var</span> rayHits = [];
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> index = <span class="hljs-number">0</span>; index &lt; rays.length; index += <span class="hljs-number">1</span>) {
+
+        <span class="hljs-comment">// Set bounce distance for each vector</span>
+        <span class="hljs-keyword">var</span> bounceSize = <span class="hljs-number">0.01</span>;
+        rays[index].bounceDistance = {
+            x: rays[index].x * bounceSize,
+            y: rays[index].y * bounceSize,
+            z: rays[index].z * bounceSize
+        };
+
+        raycaster.<span class="hljs-keyword">set</span>(position, rays[index]);
+
+        <span class="hljs-keyword">var</span> intersections = raycaster.intersectObjects(cubes);
+
+        <span class="hljs-keyword">if</span> (intersections.length &gt; <span class="hljs-number">0</span> &amp;&amp; intersections[<span class="hljs-number">0</span>].distance &lt;= <span class="hljs-number">3</span>) {
+            controls.isOnObject(<span class="hljs-literal">true</span>);
+            bounceBack(position, rays[index]);
+        }
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+};
+</code></pre>
 <h2 id="text">Text</h2>
 <p>Let&#39;s add some text.</p>
 <p>Put this in your CSS:</p>
