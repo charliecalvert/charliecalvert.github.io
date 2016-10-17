@@ -82,24 +82,20 @@ Agent pid 1559
 <p>Here is the code to copy the key to our server  in a single step.</p>
 <pre><code>ssh-<span class="hljs-keyword">copy</span>-<span class="hljs-built_in">id</span> bcuser@<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.21</span>
 </code></pre><p><strong>note</strong>: <em>You will very likely need to change the IP address from 192.168.2.21 to the IP address of your server.</em></p>
-<p>The command shown above copies the default public key over to the remote machine. This is usually <strong>id_rsa.pub</strong>. I find it safer to specify which key I want to copy over. To do that, use the <strong>-i</strong> flag. Generally, that command looks like this, where <strong>identity-file</strong> is your private key:</p>
+<p>The <strong>ssh-copy-id</strong> command copies the default public key over to the remote machine. The default public key is usually <strong>id_rsa.pub</strong>. I find it safer to specify which key I want to copy over. To do that, use the <strong>-i</strong> flag. Generally, that command looks like this, where <strong>identity-file</strong> is your private key:</p>
 <pre><code>ssh-<span class="hljs-keyword">copy</span>-<span class="hljs-built_in">id</span> -i identity_file bcuser@<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.21</span>
 </code></pre><p>For instance, if you have private key called <strong>prog270-2016</strong> then you would issue this command:</p>
 <pre><code>ssh-<span class="hljs-keyword">copy</span>-<span class="hljs-built_in">id</span> -i prog270<span class="hljs-number">-2016</span> bcuser@<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.21</span>
-</code></pre><p>That would copy prog270-2016.pub into the authorized_keys file on the remote server with the IP address of 192.168.2.21.</p>
-<p>When you are done, you can check your work by trying to ssh into the remote machine. When you do so, if everything is working correctly, you should not be asked for your password:</p>
-<pre><code>
-</code></pre><p>Here are some alternative commands for copying the file to the remote machine:</p>
+</code></pre><p>Alternatively, if you don&#39;t want to use ssh-copy-id, you can use <strong>scp</strong> instead. From your instance of Pristine Lubuntu use SSH to <em>secure copy</em> (scp) your public key from pristine Lubuntu to your EC2 instance:</p>
+<pre><code>scp &lt;YOUR-PUBLIC-KEY&gt; ubuntu@&lt;YOUR-ELASTIC-IP&gt;<span class="hljs-symbol">:/home/ubuntu/</span>.ssh/.
+</code></pre><p>Then on EC2 append your public key to your <strong>authorized keys file</strong>:</p>
+<pre><code>cat ~<span class="hljs-regexp">/.ssh/</span>&lt;YOUR-PUBLIC-KEY&gt; <span class="hljs-meta">&gt;&gt; </span>~<span class="hljs-regexp">/.ssh/authorized</span>_keys
+</code></pre><p>Whether you use <strong>ssh-copy-id</strong> or <strong>scp</strong> to put your public key in the EC2 <strong>authorized_keys</strong> file is mostly a matter of taste. However, the <strong>ssh-copy-id</strong> program is a bit safer. For instance, it checks to make sure you are not putting duplicate keys in the <strong>authorized_keys</strong> file.</p>
+<p>Here are some alternative commands for copying the file to the remote machine:</p>
 <pre><code>cat ~<span class="hljs-regexp">/.ssh/id</span>_rsa.pub | ssh user<span class="hljs-variable">@hostname</span> <span class="hljs-string">'cat &gt;&gt; .ssh/authorized_keys'</span>
 cat ~<span class="hljs-regexp">/.ssh/id</span>_rsa.pub | ssh user<span class="hljs-variable">@123</span>.<span class="hljs-number">45.56</span>.<span class="hljs-number">78</span> <span class="hljs-string">"mkdir -p ~/.ssh &amp;&amp; cat &gt;&gt;  ~/.ssh/authorized_keys"</span>
 cat ~<span class="hljs-regexp">/.ssh/id</span>_rsa.pub | ssh &lt;user&gt;@&lt;hostname&gt; <span class="hljs-string">'umask 0077; mkdir -p .ssh; cat &gt;&gt; .ssh/authorized_keys &amp;&amp; echo "Key copied"'</span>
-</code></pre><p>Or you could do this:</p>
-<pre><code>scp ~<span class="hljs-regexp">/.ssh/id</span>_rsa.pub bcuser<span class="hljs-variable">@192</span>.<span class="hljs-number">168.2</span>.<span class="hljs-number">21</span><span class="hljs-symbol">:/home/bcuser/</span>.ssh/.
-</code></pre><p>That will copy the specified public key to your remote machine. Then, ssh to the remote machine, specifying your password as necessary. Then copy the public key into the authorized key file with commands something like these:</p>
-<pre><code>cd ~/<span class="hljs-selector-class">.ssh</span>
-cat id_rsa<span class="hljs-selector-class">.pub</span> &gt;&gt; authorized_keys
-</code></pre><p>This will append your public key to an existing authorized_keys file or create a new file if it does not already exist.</p>
-<h2 id="no-passwords">No Passwords</h2>
+</code></pre><h2 id="no-passwords">No Passwords</h2>
 <p>We use SSH keys in part to avoid being prompted for passwords. In particular, to avoid being prompted for passwords, two conditions must be met:</p>
 <ul>
 <li>Our private key must be loaded on the desktop PC with <strong>sshadd</strong>﻿ or <strong>ssh-add</strong>.</li>

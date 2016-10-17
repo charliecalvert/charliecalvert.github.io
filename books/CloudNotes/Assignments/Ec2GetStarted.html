@@ -51,11 +51,17 @@
 <li><a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html#install-ssh">SSH and Configuring Linux</a></li>
 </ul>
 <h2 id="step-five">Step Five</h2>
-<p>Add a the public part of your PROG270 Key to your Ubuntu instance in the <strong>~/.ssh/authorized_keys</strong> file. From your instance of Pristine Lubuntu use SSH to <em>secure copy</em> (scp) your file from pristine Lubuntu to your EC2 instance:</p>
+<p>Add a the public part of your PROG270 Key to your Ubuntu instance in the <strong>~/.ssh/authorized_keys</strong> file.</p>
+<p>The <strong>ssh-copy-id</strong> command copies the default public key over to the remote machine. The default public key is usually <strong>id_rsa.pub</strong>. I find it safer to specify which key I want to copy over. To do that, use the <strong>-i</strong> flag. Generally, that command looks like this, where <strong>identity-file</strong> is your private key:</p>
+<pre><code>ssh-<span class="hljs-keyword">copy</span>-<span class="hljs-built_in">id</span> -i identity_file bcuser@<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.21</span>
+</code></pre><p>For instance, if you have private key called <strong>prog270-2016</strong> then you would issue this command:</p>
+<pre><code>ssh-<span class="hljs-keyword">copy</span>-<span class="hljs-built_in">id</span> -i prog270<span class="hljs-number">-2016</span> bcuser@<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.21</span>
+</code></pre><p>Alternatively, if you don&#39;t want to use ssh-copy-id, you can use <strong>scp</strong> instead. From your instance of Pristine Lubuntu use SSH to <em>secure copy</em> (scp) your public key from pristine Lubuntu to your EC2 instance:</p>
 <pre><code>scp &lt;YOUR-PUBLIC-KEY&gt; ubuntu@&lt;YOUR-ELASTIC-IP&gt;<span class="hljs-symbol">:/home/ubuntu/</span>.ssh/.
 </code></pre><p>Then on EC2 append your public key to your <strong>authorized keys file</strong>:</p>
 <pre><code>cat ~<span class="hljs-regexp">/.ssh/</span>&lt;YOUR-PUBLIC-KEY&gt; <span class="hljs-meta">&gt;&gt; </span>~<span class="hljs-regexp">/.ssh/authorized</span>_keys
-</code></pre><p>Don&#39;t forget to put your new private key on Google Drive. Go to the ~/.ssh folder and issue this command:</p>
+</code></pre><p>Whether you use <strong>ssh-copy-id</strong> or <strong>scp</strong> to put your public key in the EC2 <strong>authorized_keys</strong> file is mostly a matter of taste. However, the <strong>ssh-copy-id</strong> program is a bit safer. For instance, it checks to make sure you are not putting duplicate keys in the <strong>authorized_keys</strong> file.</p>
+<p>Don&#39;t forget to put your new private key on Google Drive. Go to the ~/.ssh folder and issue a command similar to this one:</p>
 <pre><code>zip Pro<span class="hljs-name">g270</span>-Ec<span class="hljs-number">2</span>-Calvert<span class="hljs-number">-2016</span> Pro<span class="hljs-name">g270</span>-Ec<span class="hljs-number">2</span>-Calvert<span class="hljs-number">-2016.</span>pem
 </code></pre><p>Now upload the zip file to Google Drive. It doesn&#39;t have to be in our shared folder. Just so you can get it at home.</p>
 <p>Choose <strong>New | File Upload</strong> on Google Drive.</p>
