@@ -11,23 +11,34 @@
 <ul>
 <li><a href="http://bit.ly/noderoutes">http://bit.ly/noderoutes</a></li>
 </ul>
-<p>I have created a project named <strong>Week09-ClickRoute</strong> and made it available for from the <strong>Prog272-Assignments</strong> repository:</p>
+<p>I have created a project named <strong>ClickRoute</strong> and made it available for from the <strong>elven-assignments</strong> repository:</p>
 <pre><code><span class="hljs-string">https:</span><span class="hljs-comment">//github.com/charliecalvert/elven-assignments</span>
-</code></pre><p>Like this:</p>
+</code></pre><p>Clone the repository:</p>
 <p>   git clone <a href="https://github.com/charliecalvert/elven-assignments.git">https://github.com/charliecalvert/elven-assignments.git</a></p>
-<p><strong>NOTE</strong>: This project was created with <strong>express ClickRoute</strong> rather than <strong>yo express</strong>. As a result, you should start it with <strong>npm start</strong> or <strong>node bin/www</strong> or, better, <strong>nodemon bin/www</strong>. Also, the repository used to be called <strong>Prog272-Assignments</strong>.</p>
+<p><strong>NOTE</strong>: <em>This repository used to be called <strong>Prog272-Assignments</strong>. This particular project was created with <strong>express ClickRoute</strong> rather than <strong>yo express</strong>. As a result, you should start it with <strong>npm start</strong> or <strong>node bin/www</strong> or, better, <strong>nodemon bin/www</strong>.</em></p>
 <h2 id="requirejs">RequireJs</h2>
 <p>This project uses <a href="http://requirejs.org">RequireJs</a>. We have not used this technology yet, but most large applications use it, or some similar system. I have a description of it here:</p>
 <ul>
 <li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/Require.html">Requirejs on Elvenware</a></li>
 </ul>
-<p>The basic steps are:</p>
+<p>To use it, first put requirejs in <strong>layout.jade</strong>:</p>
+<pre><code class="lang-text">doctype <span class="hljs-selector-tag">html</span>
+<span class="hljs-selector-tag">html</span>
+  head
+    title= title
+    link(rel=<span class="hljs-string">'stylesheet'</span>, href=<span class="hljs-string">'/stylesheets/style.css'</span>)
+    script(src=<span class="hljs-string">"components/requirejs/require.js"</span> data-main=<span class="hljs-string">"javascripts/main"</span>)
+
+  <span class="hljs-selector-tag">body</span>
+    block <span class="hljs-attribute">content</span>
+</code></pre>
+<p>Load the files you want to use in <strong>public/javascripts/main.js</strong>, as described below.</p>
 <h2 id="step01">Step01 - Copy the project to your repository</h2>
-<p>Clone or pull the repository. Find the <strong>ClickRoute</strong> project. Copy it to your repository and rename it to reflect our current week. For instance, <strong>Week04-ClickRoute</strong>.</p>
+<p>After you clone or pull the repository. Find the <strong>ClickRoute</strong> project. Copy it to your repository and rename it to reflect our current week. For instance, <strong>Week04-ClickRoute</strong>.</p>
 <p><strong>NOTE</strong>: <em>Remember you can copy files from the bash shell with a command similar to this:</em></p>
 <pre><code>cp -r ClickRoute ~<span class="hljs-regexp">/Git/</span>prog272-lastName-<span class="hljs-number">2016</span><span class="hljs-regexp">/Week04-ClickRoute/</span>
 </code></pre><p>Let&#39;s include <strong>$(document).ready(callback)</strong> or <a href="http://requirejs.org/docs/api.html#pageload">DomReady</a> in <strong>Main.js</strong>:</p>
-<pre><code><span class="hljs-built_in">require</span>([<span class="hljs-string">'jquery'</span>, <span class="hljs-string">'ClickEvents'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">jquery, ClickEvents</span>) </span>{
+<pre><code><span class="hljs-built_in">require</span>([<span class="hljs-string">'jquery'</span>, <span class="hljs-string">'ClickEvents'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$, ClickEvents</span>) </span>{
 <span class="hljs-meta">    'use strict'</span>;
 
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Main called'</span>);
@@ -35,10 +46,9 @@
         <span class="hljs-keyword">var</span> clickEvents = <span class="hljs-keyword">new</span> ClickEvents();
     });
 });
-</code></pre><p>And if we want to use jquery in ClickRoutes.js, then be sure to include it:</p>
-<pre><code>define([<span class="hljs-string">"jquery"</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(jquery)</span> </span>{<span class="hljs-string">'use strict'</span>;
-</code></pre><p>If you skip this latter step, then the program will still run without error, but jquery
-events may not be fired until you press refresh.</p>
+</code></pre><p>And if we want to use jquery in <strong>click-routes.js</strong>, then be sure to include it at the top of that file:</p>
+<pre><code>define([<span class="hljs-string">"jquery"</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($)</span> </span>{<span class="hljs-string">'use strict'</span>;
+</code></pre><p>If you skip this latter step, then the program will still run without error, but jquery events may not be fired until you press refresh.</p>
 <h2 id="step02">Step02 - Server Side</h2>
 <p>Define three routes in <strong>routes/index.js</strong>. The routes are as follows:</p>
 <ul>
@@ -51,7 +61,7 @@ events may not be fired until you press refresh.</p>
     <span class="hljs-keyword">var</span> <span class="hljs-literal">result</span> = { <span class="hljs-string">"result"</span>: <span class="hljs-string">"Success"</span> };
     response.send(<span class="hljs-literal">result</span>);
 });
-</code></pre><p>Create similar routes in the same file for Item02 and Item03. For now, that means you should repeat the code shown above, but with slight variations. (There are other ways to handle this sort of thing, but this will do for now.</p>
+</code></pre><p>Create similar routes in the same file for <strong>Item02</strong> and <strong>Item03</strong>. For now, that means you should repeat the code shown above, but with slight variations. (There are other ways to handle this sort of thing, but this will do for now.</p>
 <p>Change the <strong>result</strong> object literal so that it has three properties:</p>
 <ul>
 <li>result</li>
@@ -64,12 +74,12 @@ events may not be fired until you press refresh.</p>
 <li>Set a new property called <strong>route</strong> to the name of the route, such as <strong>/Item01</strong>.</li>
 <li>Set a new property called <strong>message</strong> to the string <strong>The server sent me.</strong></li>
 </ul>
-<p>Again, this means your declaration for this result object will change. To give a very broad hint, consider the following bit of pseudo-code:</p>
+<p>Again, this means your declaration for this result object in <strong>routes/index.js</strong> will change. To give a very broad hint, consider the following bit of pseudo-code:</p>
 <pre><code>    <span class="hljs-keyword">var</span> <span class="hljs-literal">result</span> = { <span class="hljs-string">"result"</span>: <span class="hljs-string">"Success"</span> <span class="hljs-type">WHAT</span> <span class="hljs-type">GOES</span> <span class="hljs-type">HERE</span>? };
-</code></pre><p>The tricky part, I suppose, will be properly parsing these three properties and displaying them exactly as you define in them. In other words the value of the properties you define in <strong>routes/index.js</strong> should appear verbatim on your HTML page at run time. When you click on Item 1, we should see all three properties for Item 1, when you click on Item 2, we should see all three properties of Item 2, etc.</p>
+</code></pre><p>On the client side, you will need parsing the JSON you receive from the server. The three properties should be displayed to the user exactly as you define in them. In other words the value of the properties you define in <strong>routes/index.js</strong> should appear verbatim on your HTML page at run time. When you click on <strong>Item 1</strong>, we should see all three properties for <strong>Item01</strong>, when you click on <strong>Item02</strong>, we should see all three properties of <strong>Item02</strong>, etc.</p>
 <p><strong>Remember</strong>: <em>Put your routes in /routes/index.js</em></p>
 <h2 id="step03">Step03 - Client Side</h2>
-<p>Open up ClickEvent.js and look for the listClick method:</p>
+<p>Open up <strong>click-event.js</strong> and look for the listClick method:</p>
 <pre><code><span class="hljs-keyword">var</span> listClick = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span> </span>{
     <span class="hljs-keyword">var</span> clickText = event.target.innerHTML; <span class="hljs-comment">// was innerText</span>
 };
@@ -78,21 +88,29 @@ events may not be fired until you press refresh.</p>
 <pre><code>$.getJSON('/SOME_ROUTE, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(DATA_FROM_SERVER)</span> {</span>
     <span class="hljs-comment">// Do something such as: $(SOME_SELECTOR).html(DATA_FROM_SERVER);</span>
 });
-</code></pre><p>I want you to dynamically change <strong>/SOME_ROUTE</strong> depending on what list item the user clicked. If they clicked on <strong>Item01</strong>, then set the route to <strong>/Item01</strong>. This should call the appropriate route that you set up on the server in the previous step. There are multiple ways to solve this problem, but it would be nice if you only had to call getJSON once. In other words, set the string to pass as the route, then pass that string in the first parameter to getJSON:</p>
-<pre><code><span class="hljs-keyword">var</span> someString = <span class="hljs-comment">// Define the route based on the information you already have</span>
-$.getJSON(someString, <span class="hljs-function"><span class="hljs-keyword">function</span> ...</span>
-</code></pre><h2 id="step04">Step04 - Parse the data</h2>
+</code></pre><p>I want you to dynamically change <strong>/SOME_ROUTE</strong> depending on what list item the user clicked. If they clicked on <strong>Item01</strong>, then set the route to <strong>/Item01</strong>. This should call the appropriate route that you set up on the server in the previous step. There are multiple ways to solve this problem, but it would be nice if you only had to call <strong>getJSON</strong> once. In other words, set the string to pass as the route, then pass that string in the first parameter to <strong>getJSON</strong>:</p>
+<pre><code class="lang-javascript">    <span class="hljs-keyword">var</span> theRoute = <span class="hljs-comment">// Define the route based on the information you already have</span>
+    $.getJSON(theRoute, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+         <span class="hljs-comment">// CODE OMITTED HERE</span>
+    });
+</code></pre>
+<p>The route is the name of the method on the server side that you want to call. For instance, to call the method on the server side that I give you above, the route would be the string <strong>/Item01</strong>.</p>
+<h2 id="step04">Step04 - Parse the data</h2>
 <p>When you called <strong>response.send</strong> back on the server, you sent an object from the client to the server. On the client side, this object is passed to the <strong>getJSON</strong> callback:</p>
-<pre><code>$.getJSON('/SOME_ROUTE, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(DATA_FROM_SERVER)</span> {</span>
-</code></pre><p>Parse the data sent from the server and display it to the user in three paragraph tags that appear on your HTML page. In Jade, that will look like this:</p>
-<pre><code>p<span class="hljs-selector-id">#result</span>
+<pre><code class="lang-javascript">    $.getJSON(<span class="hljs-string">'/SOME_ROUTE'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">DATA_FROM_SERVER</span>) </span>{
+      <span class="hljs-comment">// CODE OMITTED HERE</span>
+    });
+</code></pre>
+<p>Parse the data sent from the server and display it to the user in three paragraph tags that appear on your HTML page. In Jade, that will look like this:</p>
+<pre><code class="lang-text">p<span class="hljs-selector-id">#result</span>
 p<span class="hljs-selector-id">#route</span>
 p#message
-</code></pre><p>Inside the call to <strong>getJSON</strong>, use jQuery to set each of these paragraphs to one of the properties from the object sent by your server.</p>
+</code></pre>
+<p>Inside the call to <strong>getJSON</strong>, use jQuery to set each of these paragraphs to one of the properties from the object sent by your server.</p>
 <p><strong>Hint</strong>: <em>Compare the ID&#39;s shown above to the properties of the object you set up in <a href="#step02">Step02</a></em>.</p>
 <p>When you are done, the app should respond to clicks on the list items as follows:</p>
 <ul>
-<li>Call getJSON to invoke a route on the server</li>
+<li>Call <strong>getJSON</strong> to invoke a route on the server</li>
 <li>On the server, respond by sending back a custom object with three properties</li>
 <li>On the client receive the data, and display each of the three properties to the user. Each property should appear in a separate paragraph tag that was configured with Jade.</li>
 </ul>
