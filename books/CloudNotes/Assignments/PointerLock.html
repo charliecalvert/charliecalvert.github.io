@@ -44,7 +44,6 @@ block content
     <span class="hljs-attribute">display</span>: block;
 }
 
-
 <span class="hljs-selector-id">#blocker</span> {
 
     <span class="hljs-attribute">position</span>: absolute;
@@ -56,37 +55,30 @@ block content
 
 }
 
-<span class="hljs-selector-id">#instructions</span> {
-
-    <span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>;
-    <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;
-
-    <span class="hljs-attribute">display</span>: -webkit-box;
-    <span class="hljs-attribute">display</span>: -moz-box;
-    <span class="hljs-attribute">display</span>: box;
-
-    <span class="hljs-attribute">-webkit-box-orient</span>: horizontal;
-    <span class="hljs-attribute">-moz-box-orient</span>: horizontal;
-    <span class="hljs-attribute">box-orient</span>: horizontal;
-
-    <span class="hljs-attribute">-webkit-box-pack</span>: center;
-    <span class="hljs-attribute">-moz-box-pack</span>: center;
-    <span class="hljs-attribute">box-pack</span>: center;
-
-    <span class="hljs-attribute">-webkit-box-align</span>: center;
-    <span class="hljs-attribute">-moz-box-align</span>: center;
-    <span class="hljs-attribute">box-align</span>: center;
-
+<span class="hljs-selector-class">.instructions</span> {
+    <span class="hljs-attribute">display</span>: flex;
+    <span class="hljs-attribute">height</span>: <span class="hljs-number">50%</span>;
     <span class="hljs-attribute">color</span>: <span class="hljs-number">#ffffff</span>;
+}
+
+<span class="hljs-selector-class">.instructions-item</span> {
+    <span class="hljs-attribute">flex</span>: <span class="hljs-number">1</span>;
     <span class="hljs-attribute">text-align</span>: center;
+}
 
-    <span class="hljs-attribute">cursor</span>: pointer;
+<span class="hljs-selector-class">.instructions-item--top</span> {
+    <span class="hljs-attribute">align-self</span>: flex-start;
+}
 
+<span class="hljs-selector-class">.instructions-item--bottom</span> {
+    <span class="hljs-attribute">font-size</span>: <span class="hljs-number">40px</span>;
+    <span class="hljs-attribute">align-self</span>: flex-end;
 }
 </code></pre><h2 id="pointerlock-implementation">PointerLock Implementation</h2>
 <p>Here is my (slightly modified) version of the boilerplate <strong>PointerLockControls</strong> code that <a href="https://twitter.com/mrdoob">Mr Doob</a> of ThreeJs fame wrote. This is from the <a href="https://github.com/mrdoob/three.js/blob/master/examples/js/controls/PointerLockControls.js">Three.js site</a>, and is used widely. Note that I have recently (10-12-16) converted the code to support <strong>require.js</strong>, as explained below the declaration of the object. Put this code in a file called <strong>PointerLockControls.js</strong>:</p>
-<pre><code><span class="hljs-comment">/**
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
  * @author mrdoob / http://mrdoob.com/
+ * Modified by Charlie Calvert to support requirejs.
  */</span>
 
  define([<span class="hljs-string">'floor'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">Floor</span>) </span>{
@@ -282,7 +274,8 @@ block content
 
      <span class="hljs-keyword">return</span> PointerLockControls;
  });
-</code></pre><p>Remember that you will need to modify both <strong>main.js</strong> and the top of <strong>control.js</strong>. You need to make these changes so that <strong>require</strong> will know how to load these two new files. We have already seen how to make those changes with <strong>floor.js</strong>, now apply the same knowledge to <strong>PointerLockControls</strong> and <strong>PointerLockSetup</strong>. Because <strong>PointLockControls.js</strong> has been updated to include support for RequireJs, it will not need to be shimmed in.</p>
+</code></pre>
+<p>Remember that you will need to modify both <strong>main.js</strong> and the top of <strong>control.js</strong>. You need to make these changes so that <strong>require</strong> will know how to load these two new files. We have already seen how to make those changes with <strong>floor.js</strong>, now apply the same knowledge to <strong>PointerLockControls</strong> and <strong>PointerLockSetup</strong>. Because <strong>PointLockControls.js</strong> has been updated to include support for RequireJs, it will not need to be shimmed in.</p>
 <p>I will take one moment to explain how I converted <strong>ThreePointerLock</strong> to support RequireJs. The declaration for the code originally began like this:</p>
 <pre><code class="lang-javascript">THREE.PointerLockControls = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">( camera )</span> </span>{
 
@@ -331,7 +324,7 @@ block content
     <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">PointerLockSetup</span>(<span class="hljs-params">controls</span>) </span>{
 
         blocker = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'blocker'</span>);
-        instructions = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'instructions'</span>);
+        instructions = <span class="hljs-built_in">document</span>.getElementsByClassName(<span class="hljs-string">'instructions'</span>)[<span class="hljs-number">0</span>];
 
         <span class="hljs-keyword">var</span> havePointerLock = <span class="hljs-string">'pointerLockElement'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">document</span> ||
             <span class="hljs-string">'mozPointerLockElement'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">document</span> ||
@@ -355,10 +348,7 @@ block content
 
                     controls.enabled = <span class="hljs-literal">false</span>;
 
-                    blocker.style.display = <span class="hljs-string">'-webkit-box'</span>;
-                    blocker.style.display = <span class="hljs-string">'-moz-box'</span>;
-                    blocker.style.display = <span class="hljs-string">'box'</span>;
-
+                    blocker.style.display = <span class="hljs-string">'block'</span>;
                     instructions.style.display = <span class="hljs-string">''</span>;
 
                 }
