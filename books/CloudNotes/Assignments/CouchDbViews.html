@@ -43,45 +43,54 @@
 <p>As you can see, our database involves some of the small, cheap motherboards that you can buy for less than $100.</p>
 <h2 id="crud-like">Almost CRUD: Create, Read, Delete</h2>
 <p>Here are functions for creating the database, and then creating, inserting and deleting documents. We don&#39;t yet have the ability to update an existing record, but we can delete a document and replace it with a new one, which can be similar in effect. For now, we will only be deleting the design document, which is described below.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> readIt = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(docName)</span> </span>{
-    <span class="hljs-keyword">var</span> prog = nano.db.<span class="hljs-keyword">use</span>(dbName);
-    prog.<span class="hljs-keyword">get</span>(docName, {
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> readIt = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">docName</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> db = nano.db.use(dbName);
+    db.get(docName, {
         revs_info: <span class="hljs-literal">true</span>
-    }, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err, body)</span> </span>{
-        <span class="hljs-keyword">if</span> (!err)
-            console.log(body);
+    }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, body</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) {
+            <span class="hljs-keyword">throw</span> err;
+        }
+        <span class="hljs-built_in">console</span>.log(body);
     });
 };
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insert</span><span class="hljs-params">(data)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insert</span>(<span class="hljs-params">data</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> callback = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, body</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) {
+            <span class="hljs-keyword">throw</span> err;
+        }
+        <span class="hljs-built_in">console</span>.log(body);
+        readIt();
+    };
     nano.db.create(dbName);
-    <span class="hljs-keyword">var</span> prog = nano.db.<span class="hljs-keyword">use</span>(dbName);
-
+    <span class="hljs-keyword">var</span> prog = nano.db.use(dbName);
 
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; data.length; i++) {
-        prog.insert(data[i], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err, body)</span> </span>{
-            <span class="hljs-keyword">if</span> (!err)
-                console.log(body);
-            readIt();
-        });
+        prog.insert(data[i], callback);
     }
 }
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">deleteDoc</span><span class="hljs-params">(docUniqueId)</span> </span>{
-    <span class="hljs-keyword">var</span> db = nano.db.<span class="hljs-keyword">use</span>(dbName);
-    db.<span class="hljs-keyword">get</span>(docUniqueId, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err, body)</span> </span>{
-        <span class="hljs-keyword">if</span> (!err) {
-            <span class="hljs-keyword">var</span> latestRev = body._rev;
-            db.destroy(docUniqueId, latestRev, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err, body, header)</span> </span>{
-                <span class="hljs-keyword">if</span> (!err) {
-                    console.log(<span class="hljs-string">"Successfully deleted doc"</span>, docUniqueId);
-                }
-            });
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">deleteDoc</span>(<span class="hljs-params">docUniqueId</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> db = nano.db.use(dbName);
+    db.get(docUniqueId, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, body</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) {
+            <span class="hljs-keyword">throw</span> err;
         }
-    })
+        <span class="hljs-keyword">var</span> latestRev = body._rev;
+        db.destroy(docUniqueId, latestRev, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, body, header</span>) </span>{
+            <span class="hljs-keyword">if</span> (err) {
+                <span class="hljs-keyword">throw</span> err;
+            }
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Successfully deleted doc'</span>, docUniqueId);
+        });
+    });
 }
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">coreDataInsert</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">coreDataInsert</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">var</span> data = [{
             <span class="hljs-string">"_id"</span>: RASPBERRY_PI,
             <span class="hljs-string">"item"</span>: RASPBERRY_PI,
