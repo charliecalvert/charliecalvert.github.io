@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ThreeDataGame</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><script src="/libs/scripts/Control.js"></script><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/charlie/About.html">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/charlie/development/index.html">Strongly Typed</a></li><li><a href="/charlie/development/web/index.html">Web & Scripts</a></li><li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/charlie/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>ThreeDataGame</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#hide-map">Hide Map</a></li>
+<li><a href="#extra-credit">Extra Credit</a></li><!--TOC_End--></ul><p>##NPC Tests</p>
+<p>As explained above, when you encounter an NPC, you should remove the NPC if you have enough points. If the <strong>mainCharacter</strong> does not have enough points, enough <strong>value</strong>, then the <strong>mainCharacter</strong> should be blocked by the NPC.</p>
+<p>You may find a different solution, but I use the &quot;bounceAway&quot; code to prevent the <strong>mainCharacter</strong> from walking through a strong NPC. By a strong NPC, I mean an NPC with more <strong>value</strong> than our main character.   we are not going to be strong enough to overcome it. Otherwise, remove it:</p>
+<pre><code>    <span class="hljs-keyword">if</span> (rayHits.<span class="hljs-keyword">length</span> &gt; <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">if</span> (mainCharacterStrongerThanNpc()) {
+            var cords = utilities.gameToGrid(core, selectedObject.position)<span class="hljs-comment">;</span>
+            removeNpc(cords.xPos, cords.zPos)<span class="hljs-comment">;</span>
+            <span class="hljs-keyword">return</span> true<span class="hljs-comment">;</span>
+        } <span class="hljs-keyword">else</span> {
+            bounceAway(position, rays, rayHits)<span class="hljs-comment">;</span>
+            <span class="hljs-keyword">return</span> false<span class="hljs-comment">;</span>
+        }
+    }
+</code></pre><p>The <strong>mainCharacterStrongEnough</strong> method is a predicate: it returns a <strong>boolean</strong> value. In that method you should compare the <strong>value</strong> of the <strong>mainCharacter</strong> with the <strong>value</strong> of the NPC. If the <strong>mainCharacter</strong> is <strong>strong enough</strong>, then it should overcome the NPC, that is, it should return <strong>true</strong>. Otherwise it should  <strong>false</strong>.</p>
+<p><strong>NOTE</strong>: <em>At this point our collision detection for NPCs and walls is starting to look very similar, it may be possible to combine them into one method, passing in parameters or callbacks to account for minor differences. In any case, be sure both of the use the Rays array of directions.</em></p>
+<p>Remember also that you test for collisions needs to include two conditions:</p>
+<pre><code><span class="hljs-selector-tag">if</span> (<span class="hljs-selector-tag">intersections</span><span class="hljs-selector-class">.length</span> &gt; 0 &amp;&amp; <span class="hljs-selector-tag">intersections</span><span class="hljs-selector-attr">[0]</span><span class="hljs-selector-class">.distance</span> &lt; 15) {
+</code></pre><p>In context, it looks like this:</p>
+<pre><code>for (<span class="hljs-name">var</span> i = <span class="hljs-number">0</span><span class="hljs-comment">; i &lt; rays.length; i += 1) {</span>
+    raycasterNpc.set(<span class="hljs-name">position</span>, rays[i])<span class="hljs-comment">;</span>
+
+    var intersections = raycasterNpc.intersectObjects(<span class="hljs-name">core</span>.Npcs.particles)<span class="hljs-comment">;</span>
+
+    if (<span class="hljs-name">intersections</span>.length &gt; <span class="hljs-number">0</span> <span class="hljs-symbol">&amp;&amp;</span> intersections[<span class="hljs-number">0</span>].distance &lt; <span class="hljs-number">15</span>) {
+        selectedObject = intersections[<span class="hljs-number">0</span>].object<span class="hljs-comment">;</span>
+        controls.isOnObject(<span class="hljs-name">true</span>)<span class="hljs-comment">;               </span>
+        rayHits.push(<span class="hljs-name">i</span>)<span class="hljs-comment">;              </span>
+    }
+}
+</code></pre><h2 id="hide-map">Hide Map</h2>
+<p>Hide the map and the debug data displayed in HTML at the top left of the screen.</p>
+<p>Do something like this, where the first technique is JavaScript, and the second jQuery:</p>
+<pre><code>    <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'keydown'</span>, onkeydown, <span class="hljs-literal">false</span>);
+    $(<span class="hljs-built_in">document</span>).keydown(onkeydown);
+</code></pre><p>Look jQuery <strong>toggle</strong> method to toggle the visibility of an object on and off. Just use the selector for your object (&quot;#myHtmlElementId) and call the <strong>toggle</strong> method on it.</p>
+<h2 id="extra-credit">Extra Credit</h2>
+<p>When the mainCharacter encounters an NPC, show the question associated with the NPC and let the user press T for for true or F for false. If the correct answer is selected, the NPC should disappear, otherwise, the character should be moved back X number of units and the NPC kept in place.</p>
+<p><strong>HINT</strong>: <em>Given the way our game works, you probably don&#39;t want to pop up an HTML dialog. Instead, use a DIV section on your page, or perhaps <em>*threejs</em></em> to display the question. Remember: the mouse is &quot;captured&quot; so you don&#39;t want the user to click on anything. Just handle key strokes.</p>
+</div></body></html>
