@@ -3,6 +3,9 @@
 <li><a href="#priority-one">Priority One</a></li>
 <li><a href="#priority-two">Priority Two</a></li>
 <li><a href="#extra-credit">Extra Credit</a></li>
+<li><a href="#refactor-collisions">Refactor Collisions</a></li>
+<li><a href="#npc-creation">NPC Creation</a></li>
+<li><a href="#npc-detection">NPC Detection</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>The Isit320 2016 Midterm is a chance for you to show what you have learned so far this quarter. There is no absolute right answer for the midterm. Below I list a set of features. Try to complete as many as you can, but do not be concerned if you do not complete everything. If you need to make choices as to which features to complete, aim to complete the ones on the Priority One list.</p>
 <h2 id="basics">Basics</h2>
@@ -38,6 +41,52 @@
 <li>Extra credit: Allow the user to delete a record.</li>
 <li>Extra Credit: Show what direction the camera is facing on the minimap. (Forward, Left, Right, Back)</li>
 </ul>
+<h2 id="refactor-collisions">Refactor Collisions</h2>
+<p>We have avoided refactoring, but it is time to at least start down this road. Take your <strong>collisionDetection</strong> method out of <strong>control.js</strong> and put it in a file called <strong>collisions.js</strong>:</p>
+<ul>
+<li>Block copy and cut <strong>collisionDetection</strong></li>
+<li>Create <strong>collisions.js</strong> on the client side and paste in your code</li>
+<li>Use <a href="http://requirejs.org/docs/api.html#define">define</a> to provide support for <strong>RequireJs</strong></li>
+<li>Define a <strong>Collisions</strong> with a constructor object. An example to follow is provided <strong>floor.js</strong>. Remember to use caps to remind the user to construct the object with new. Remember to export your public method using <strong>prototype</strong>.</li>
+<li>Construct the object in the init method for <strong>control.js</strong>. Call your instance <strong>collisions</strong>. Give it object scope inside <strong>control.js</strong></li>
+<li>You will also have to make changes to <strong>main.js</strong></li>
+</ul>
+<p>Though I don&#39;t describe every detail, I&#39;ve outlined here in broad strokes the steps you have to do to create a new module. Make sure you understand the steps, and know how to find this description, as we will do this a lot in the coming weeks.</p>
+<h2 id="npc-creation">NPC Creation</h2>
+<p>Do the same thing with the <strong>addSphere</strong> method that you did with <strong>collisionDetection.</strong></p>
+<ul>
+<li>FileName: <strong>npcs.js</strong></li>
+<li>ObjectName: <strong>Npcs</strong></li>
+<li>Make <strong>addSphere</strong> public and rename it to <strong>createNpc</strong></li>
+<li>Declare size as private variable inside of <strong>Npcs</strong></li>
+</ul>
+<p>Inside of <strong>control.js</strong> you probably have a array called <strong>npcs</strong> which is used to keep track of the spheres you have been creating. <em>Carefully</em> rename this variable to <strong>npcList</strong> and declare it is a public property of <strong>Npcs</strong>. You will still reference this property from inside <strong>control.js</strong>. Check each place where you reference and make sure it is being handled correctly.</p>
+<p>In <strong>Npcs</strong> delcare a private function called <strong>getName</strong></p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> baseName = <span class="hljs-string">'npc'</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getName</span><span class="hljs-params">(baseName, x, z)</span> </span>{
+  <span class="hljs-keyword">return</span> baseName + x + z;
+}
+</code></pre>
+<p>When you create a new NPC, assign it a name property. Your code might look something like this:</p>
+<pre><code class="lang-javascript">sphere.name = getName(<span class="hljs-keyword">baseName, </span>x, z)<span class="hljs-comment">;</span>
+</code></pre>
+<p>We will use this name to help us find a particular sphere.</p>
+<h2 id="npc-detection">NPC Detection</h2>
+<p>Now add a public method to <strong>Collisions</strong> called <strong>npcDetection</strong>. Call it from the animate method. When you are done your program should now how to detect a collision with an NPC. Remember, we are not using ray tracing at this point. Instead, just detect if you are on the same grid coordinates as the NPC.</p>
+<p>If you find that you have stumbled on an NPC, then remove it. To help you do so, add a method to <strong>Npcs</strong> called <strong>removeNpc</strong>. It might look a little like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-variable"><span class="hljs-keyword">var</span> removeNpc</span> = function(x, z, scene) {
+    core.GridNpc[z][x] = <span class="hljs-number">0</span>;
+
+    <span class="hljs-comment">// remove npc</span>
+    <span class="hljs-variable"><span class="hljs-keyword">var</span> objectName</span> = getName(baseName, x, z);
+    <span class="hljs-variable"><span class="hljs-keyword">var</span> selectedObject</span> = scene.getObjectByName(objectName);
+    <span class="hljs-variable"><span class="hljs-keyword">var</span> index</span> = npcList.indexOf(selectedObject);
+    npcList.splice(index, <span class="hljs-number">1</span>);
+    scene.remove(selectedObject);
+}
+</code></pre>
+<p>Call <strong>removeNpc</strong> from <strong>control.js</strong> when npcDetection finds an NPC.</p>
 <h2 id="turn-it-in">Turn it in</h2>
 <p>Put your work in a Git folder called <strong>Week07-Midterm</strong> and <strong>Week07-DataMaster</strong>. Submit the URL of your repository. Be sure to specify the folder in which you have placed your game and listener. I assume it is in <strong>Week07-Midterm</strong>, but if you think there is any reason why their might be some confusion, please clarify exactly where you put the two key projects.</p>
 <p>Make sure the CouchDb database has your name appended to it: <strong>game-data-lastname</strong>.</p>
