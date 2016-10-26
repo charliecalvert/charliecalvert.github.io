@@ -52,6 +52,11 @@
 <li>You will also have to make changes to <strong>main.js</strong></li>
 </ul>
 <p>Though I don&#39;t describe every detail, I&#39;ve outlined here in broad strokes the steps you have to do to create a new module. Make sure you understand the steps, and know how to find this description, as we will do this a lot in the coming weeks.</p>
+<p>See also:</p>
+<ul>
+<li><a href="http://requirejs.org/docs/why.html#9">http://requirejs.org/docs/why.html#9</a></li>
+<li><a href="https://gist.github.com/jonnyreeves/2474026">https://gist.github.com/jonnyreeves/2474026</a></li>
+</ul>
 <h2 id="npc-creation">NPC Creation</h2>
 <p>Do the same thing with the <strong>addSphere</strong> method that you did with <strong>collisionDetection.</strong></p>
 <ul>
@@ -65,16 +70,17 @@
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> baseName = <span class="hljs-string">'npc'</span>;
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getName</span><span class="hljs-params">(baseName, x, z)</span> </span>{
-  <span class="hljs-keyword">return</span> baseName + x + z;
+    <span class="hljs-keyword">return</span> baseName + <span class="hljs-string">'_'</span> + x + <span class="hljs-string">'_'</span> + z;
 }
 </code></pre>
+<p>Note that you can use the JavaScript <strong>split</strong> function to retrieve the X and Z coordinates from this name. That is, you can use <strong>split</strong> to reverse engineer the <strong>getName</strong> method. The result of this effort should be X and Z coordinates you passed in when creating the name.</p>
 <p>When you create a new NPC, assign it a name property. Your code might look something like this:</p>
 <pre><code class="lang-javascript">sphere.name = getName(<span class="hljs-keyword">baseName, </span>x, z)<span class="hljs-comment">;</span>
 </code></pre>
 <p>We will use this name to help us find a particular sphere.</p>
 <h2 id="npc-detection">NPC Detection</h2>
 <p>Now add a public method to <strong>Collisions</strong> called <strong>npcDetection</strong>. Call it from the animate method. When you are done your program should now how to detect a collision with an NPC. Remember, we are not using ray tracing at this point. Instead, just detect if you are on the same grid coordinates as the NPC.</p>
-<p>If you find that you have stumbled on an NPC, then remove it. To help you do so, add a method to <strong>Npcs</strong> called <strong>removeNpc</strong>. It might look a little like this:</p>
+<p>If you find that you have stumbled on an NPC, then remove it. To help you do so, add a method to <strong>Npcs</strong> called <strong>removeNpc</strong>. It might look a little like this, but it should be a public method of <strong>Npcs</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-variable"><span class="hljs-keyword">var</span> removeNpc</span> = function(x, z, scene) {
     core.GridNpc[z][x] = <span class="hljs-number">0</span>;
 
@@ -86,7 +92,9 @@
     scene.remove(selectedObject);
 }
 </code></pre>
-<p>Call <strong>removeNpc</strong> from <strong>control.js</strong> when npcDetection finds an NPC.</p>
+<p>Call <strong>removeNpc</strong> from <strong>control.js</strong> when <strong>collisions.npcDetection</strong> finds an NPC.</p>
+<p>At some point you will probably want to create a variable with object scope in <strong>control.js</strong> called <strong>mainCharacter</strong>. At minimum <strong>mainCharacter</strong> should be an object literal with two properties, <strong>x</strong> and <strong>z</strong> which track the cameras current position in grid coordinates.</p>
+<p>Recall that Grid coordinates are the coordinates of the grid we define in our JSON files. Grid coordinates are different from, but not unrelated to, the game coordinates.)</p>
 <h2 id="turn-it-in">Turn it in</h2>
 <p>Put your work in a Git folder called <strong>Week07-Midterm</strong> and <strong>Week07-DataMaster</strong>. Submit the URL of your repository. Be sure to specify the folder in which you have placed your game and listener. I assume it is in <strong>Week07-Midterm</strong>, but if you think there is any reason why their might be some confusion, please clarify exactly where you put the two key projects.</p>
 <p>Make sure the CouchDb database has your name appended to it: <strong>game-data-lastname</strong>.</p>
