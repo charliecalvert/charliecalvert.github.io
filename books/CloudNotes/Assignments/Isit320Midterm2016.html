@@ -66,8 +66,15 @@
 <li>Declare size as private variable inside of <strong>Npcs</strong></li>
 </ul>
 <p>Inside of <strong>control.js</strong> you probably have a array called <strong>npcs</strong> which is used to keep track of the spheres you have been creating. <em>Carefully</em> rename this variable to <strong>npcList</strong> and declare it is a public property of <strong>Npcs</strong>. You will still reference this property from inside <strong>control.js</strong>. Check each place where you reference and make sure it is being handled correctly.</p>
-<p>In <strong>Npcs</strong> delcare a private function called <strong>getName</strong></p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> baseName = <span class="hljs-string">'npc'</span>;
+<p>In <strong>Npcs</strong> delcare a private function called <strong>getName</strong> and a couple public properties.</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// When you insert an NPC, put it here.</span>
+<span class="hljs-comment">// When you delete an NPC remove it from this list.</span>
+Npcs.prototype.npcList = [];
+
+<span class="hljs-comment">// Track the coordinates of the NPCs here. Possibly redundant?</span>
+Npcs.prototype.npcCoordinates = [];
+
+<span class="hljs-keyword">var</span> baseName = <span class="hljs-string">'npc'</span>;
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getName</span><span class="hljs-params">(baseName, x, z)</span> </span>{
     <span class="hljs-keyword">return</span> baseName + <span class="hljs-string">'_'</span> + x + <span class="hljs-string">'_'</span> + z;
@@ -80,16 +87,15 @@
 <p>We will use this name to help us find a particular sphere.</p>
 <h2 id="npc-detection">NPC Detection</h2>
 <p>Now add a public method to <strong>Collisions</strong> called <strong>npcDetection</strong>. Call it from the animate method. When you are done your program should now how to detect a collision with an NPC. Remember, we are not using ray tracing at this point. Instead, just detect if you are on the same grid coordinates as the NPC.</p>
-<p>If you find that you have stumbled on an NPC, then remove it. To help you do so, add a method to <strong>Npcs</strong> called <strong>removeNpc</strong>. It might look a little like this, but it should be a public method of <strong>Npcs</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-variable"><span class="hljs-keyword">var</span> removeNpc</span> = function(x, z, scene) {
-    core.GridNpc[z][x] = <span class="hljs-number">0</span>;
-
-    <span class="hljs-comment">// remove npc</span>
-    <span class="hljs-variable"><span class="hljs-keyword">var</span> objectName</span> = getName(baseName, x, z);
-    <span class="hljs-variable"><span class="hljs-keyword">var</span> selectedObject</span> = scene.getObjectByName(objectName);
-    <span class="hljs-variable"><span class="hljs-keyword">var</span> index</span> = npcList.indexOf(selectedObject);
-    npcList.splice(index, <span class="hljs-number">1</span>);
-    scene.remove(selectedObject);
+<p>If you find that you have stumbled on an NPC, then remove it from the <strong>npcList</strong> and from the <strong>scene</strong>. To help you do so, add a method to <strong>Npcs</strong> called <strong>removeNpc</strong>. It might look a little like this, but it should be a public method of <strong>Npcs</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> removeNpc = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x, z, scene, gridNpc)</span> </span>{
+      gridNpc[x][z] = <span class="hljs-number">0</span>;      
+      <span class="hljs-keyword">var</span> objectName = getName(baseName, x, z);
+      <span class="hljs-keyword">var</span> selectedObject = scene.getObjectByName(objectName);
+      <span class="hljs-keyword">var</span> index = <span class="hljs-keyword">this</span>.npcList.indexOf(selectedObject);
+      <span class="hljs-keyword">this</span>.npcList.splice(index, <span class="hljs-number">1</span>);
+      scene.remove(selectedObject);
+  };
 }
 </code></pre>
 <p>Call <strong>removeNpc</strong> from <strong>control.js</strong> when <strong>collisions.npcDetection</strong> finds an NPC.</p>
