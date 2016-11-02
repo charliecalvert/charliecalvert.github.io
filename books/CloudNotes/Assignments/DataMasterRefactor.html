@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>DataMasterRefactor</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><script src="/libs/scripts/Control.js"></script><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/charlie/About.html">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/charlie/development/index.html">Strongly Typed</a></li><li><a href="/charlie/development/web/index.html">Web & Scripts</a></li><li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/charlie/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>DataMasterRefactor</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
-<li><a href="#key-methods">Key Methods</a></li>
+<li><a href="#code-path">Code Path</a></li>
 <li><a href="#couchview02-updates">CouchView02 Updates</a></li>
 <li><a href="#create-branch">Create branch</a></li>
 <li><a href="#remove-angular">Remove Angular</a></li>
@@ -11,10 +11,51 @@
 <li><a href="#name-controller">Name Controller</a></li>
 <li><a href="#run-query">Run Query</a></li>
 <li><a href="#display">Display</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
-<p>We will discuss this assignment on Wednesday. I&#39;m giving it to you now in case you find it useful. It allows you to step away from Angular, and just write standard jQuery code in the DataMaster program. Do only as much as you find useful.</p>
-<p>Our primary goal in the Data Master Refactor assignment will be to strip Angular out of our assignment. I will try to change the structure as little as possible, at least at first. We can make more changes later.</p>
+<p>We will discuss this assignment on Wednesday. I&#39;m giving it to you now in case you find it useful. It allows you to step away from Angular, and just write standard jQuery code in the <strong>DataMaster</strong> program. Do only as much as you find useful.</p>
+<p>Our primary goal in the <strong>Data Master Refactor</strong> assignment will be to strip Angular out of our code. I will try to change the structure as little as possible, at least at first. We can make more changes later.</p>
+<p>Our secondary, but perhaps more important goal, is to establish a framework for building our application. In doing so, we want to support:</p>
+<ul>
+<li><a href="http://edn.embarcadero.com/article/30372">Loose Coupling</a></li>
+<li><a href="http://www.oodesign.com/single-responsibility-principle.html">The Single Responsibility Principle</a></li>
+<li><a href="http://www.oodesign.com/open-close-principle.html">The Open Closed Principle</a></li>
+</ul>
 <p>We also need to make improvements on both the server side and the client side in order to be able to see our data better.</p>
-<h2 id="key-methods">Key Methods</h2>
+<h2 id="code-path">Code Path</h2>
+<ul>
+<li>Program starts</li>
+<li>In <strong>control.js</strong> the <strong>Route</strong> object is constructed</li>
+<li>The user clicks on a link</li>
+<li>Call findRoutes and pass in Route object: <strong>findRoutes(Route)</strong></li>
+<li>Tell Route which route was selected</li>
+<li><strong>findRoutes</strong> calls <strong>route.when</strong> for each possible path</li>
+<li>The <strong>when</strong> method calls the function that needs to be resolved</li>
+<li>These methods call <strong>runQuery</strong> which typically calls the server</li>
+<li>The response is passed to the <strong>queryController</strong> or <strong>nameController</strong> as appropriate</li>
+</ul>
+<p>Now that this framework is in place, all you need to do is implement objects like <strong>queryController</strong> and <strong>nameController</strong> and register them with the system in <strong>findRoutes</strong>. The point here is not that exactly how the system works, though the details are laid bare for you to examine. The point is the following:</p>
+<ul>
+<li>We support the <a href="https://en.wikipedia.org/wiki/Open/closed_principle">Open Closed Principle</a>: <em><strong>Modules, Classes and Functions should be open to extension by closed to modification.</strong></em><ul>
+<li>To add new features to the program we simply add new objects and register them in findRoutes. We don&#39;t have to break existing code.</li>
+</ul>
+</li>
+<li>We support <a href="https://en.wikipedia.org/wiki/Loose_coupling">loose coupling</a>. No object is linked directly to another object. Instead, we use <strong>requireJs</strong> to load objects as needed. We can replace any of the objects at any time.</li>
+<li>We support the <a href="https://en.wikipedia.org/wiki/Single_responsibility_principle">single-responsibility princeple</a>. Our objects and modules all do one thing and have one reason to change.</li>
+</ul>
+<p>Two other important design principle not emphasized yet in this class are:</p>
+<ul>
+<li><a href="http://agiledata.org/essays/tdd.html">Test Driven Development (TDD)</a></li>
+<li><a href="http://www.oodesign.com/dependency-inversion-principle.html">Dependency Inversion Principle</a>.</li>
+</ul>
+<p>Slide decks that might be useful:</p>
+<ul>
+<li>Agile Overview: <a href="http://bit.ly/1qf6V4t">http://bit.ly/1qf6V4t</a></li>
+<li>Refactoring: <a href="http://bit.ly/elfrefactor">http://bit.ly/elfrefactor</a></li>
+</ul>
+<p>As a general rule, these are the rules, ideas and guiding principles that make possible agile development:</p>
+<ul>
+<li><a href="http://www.agilemanifesto.org/">http://www.agilemanifesto.org/</a></li>
+<li><a href="http://www.agilemanifesto.org/principles.html">http://www.agilemanifesto.org/principles.html</a></li>
+</ul>
 <h2 id="couchview02-updates">CouchView02 Updates</h2>
 <p>Thought CouchView02 still uses angular, I have updated it to provide better support on the server and the client for properly displaying data. Go to <strong>JsObjects</strong> and pull the most recent updates. Now run <strong>JsObjects/Data/CouchView02</strong> and take a look at the updates.</p>
 <p>Let&#39;s look at some of the changes by running these commands from the routes folder:</p>
@@ -37,7 +78,12 @@
 </ul>
 <h2 id="require-and-main">Require and Main</h2>
 <p>In <strong>main.js</strong>, insert this code. Note that it include code that will be called each time the user clicks on a hyperlink:</p>
-<pre><code class="lang-javascript">
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * @author: Charlie Calvert
+ * @name: main.js
+ * Created on 10/10/16.
+ */</span>
+
 requirejs.config({
     baseUrl: <span class="hljs-string">'.'</span>,
     paths: {
@@ -55,9 +101,10 @@ requirejs.config({
 requirejs([<span class="hljs-string">'jquery'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$</span>) </span>{
 <span class="hljs-meta">    'use strict'</span>;
 
-    requirejs([<span class="hljs-string">'control'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">control</span>) </span>{
+    requirejs([<span class="hljs-string">'Route'</span>, <span class="hljs-string">'control'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">Route, control</span>) </span>{
         $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 
+            <span class="hljs-keyword">var</span> route = <span class="hljs-keyword">new</span> Route();
             <span class="hljs-comment">/*
              * User clicks control
              * Create Route
@@ -67,7 +114,8 @@ requirejs([<span class="hljs-string">'jquery'</span>], <span class="hljs-functio
              */</span>
             $(<span class="hljs-string">'#databaseOptions ul li a'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">event</span>) </span>{
                 event.preventDefault();
-                control();
+                route.setRoute(event.target.pathname);
+                control(route);
             });
 
         });
@@ -104,7 +152,11 @@ requirejs([<span class="hljs-string">'jquery'</span>], <span class="hljs-functio
 <pre><code class="lang-javascript">myModule.config(<span class="hljs-keyword">function</span> ($routeProvider) { ... })
 </code></pre>
 <p>The new code for <strong>control.js</strong> should look like this:</p>
-<pre><code class="lang-javascript">define(['<span class="hljs-type">Route</span>', 'nameController', 'queryController'], function (<span class="hljs-type">Route</span>, nameController, queryController) {
+<pre><code class="lang-javascript">/**
+ * @name <span class="hljs-type">Control</span>
+ */
+
+define(['<span class="hljs-type">Route</span>', 'nameController', 'queryController'], function (<span class="hljs-type">Route</span>, nameController, queryController) {
 
     <span class="hljs-keyword">var</span> findRoutes = (function ($routeProvider) {
         'use strict';
@@ -168,13 +220,7 @@ requirejs([<span class="hljs-string">'jquery'</span>], <span class="hljs-functio
         });
     });
 
-    <span class="hljs-keyword">var</span> control = function () {
-        <span class="hljs-keyword">var</span> route = new <span class="hljs-type">Route</span>();
-        route.setRoute(event.target.pathname);
-        findRoutes(route);
-    };
-
-    <span class="hljs-keyword">return</span> control;
+    <span class="hljs-keyword">return</span> findRoutes;
 
 });
 </code></pre>
