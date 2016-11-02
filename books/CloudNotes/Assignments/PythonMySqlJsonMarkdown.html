@@ -4,10 +4,11 @@
 <li><a href="#step-two">Step Two</a></li>
 <li><a href="#mysql">MySQL</a></li>
 <li><a href="#python-script">Python Script</a></li>
+<li><a href="#problem">Problem</a></li>
 <li><a href="#show-data">Show Data</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#optional-setup-cgi-dir">Optional Setup cgi dir</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
-<p>Python MySql Json Markdown</p>
+<p>The goal of the Python MySql assignment is to add database support to our program. Here are the major steps invovled:</p>
 <ul>
 <li>Set up Apache Python CGI scripts</li>
 <li>Set up MySQL database and table</li>
@@ -19,13 +20,13 @@
 <ul>
 <li>/usr/lib/cgi-bin</li>
 </ul>
-<p>They will be owned by root, so use sudo as needed.</p>
+<p>They will be owned by root, so be prepared to use <strong>sudo</strong> as needed.</p>
 <p>You will not need them, but the configuration files for Apache are here:</p>
 <ul>
 <li>/etc/apache2</li>
 </ul>
 <h2 id="step-one">Step One</h2>
-<p>Check to ensure Lamp and MySQL are installed. You know how to do this already.</p>
+<p>Check to ensure Lamp and MySQL are installed. You know how to do this already. If they are not installed, then <a href="http://www.elvenware.com/charlie/development/database/mysql/MySql.html#installOnLinux">install them</a>.</p>
 <p>Check the status of Apache CGI. Specifically, you will probably need to turn on CGI in order to access python server side scripts from your HTML code:</p>
 <pre><code><span class="hljs-attribute">sudo</span> a2enmod cgi
 </code></pre><p>This command will return one of two values:</p>
@@ -41,9 +42,11 @@
 <p>Install pip3 and pymysql. We will want these to access MySQL from a Python script:</p>
 <pre><code>sudo apt-get <span class="hljs-keyword">install</span> python3-pip
 sudo pip3 <span class="hljs-keyword">install</span> pymysql
+</code></pre><p>If you get a long error message about ownership try this instead:</p>
+<pre><code>sudo -H pip3 <span class="hljs-keyword">install</span> pymysql
 </code></pre><p>And this might be useful later:</p>
 <pre><code>sudo python3 -m pip <span class="hljs-keyword">install</span> pymongo
-</code></pre><p>Again, you need only pip and pymsql once. Once they are installed, they should stay installed.</p>
+</code></pre><p>Again, you need only install <strong>pip</strong> and <strong>pymsql</strong> once. Once they are installed, they should stay installed.</p>
 <h2 id="step-two">Step Two</h2>
 <p>Create a simple test script to make sure Python CGI is working.</p>
 <p>Create a simple python test script in <strong>/usr/lig/cgi-bin</strong>. Open a blank file called <strong>simple.py</strong> in the <strong>cgi</strong> directory with the <strong>nano</strong> editor.</p>
@@ -148,7 +151,20 @@ conn.<span class="hljs-keyword">close</span>()
 <pre><code>sudo nano /usr/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">cgi</span>-<span class="hljs-title">bin</span>/<span class="hljs-title">get</span>-<span class="hljs-title">presidents</span>.<span class="hljs-title">py</span></span>
 </code></pre><p>When you are done:</p>
 <pre><code>sudo chmod <span class="hljs-number">755</span> /usr/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">cgi</span>-<span class="hljs-title">bin</span>/<span class="hljs-title">get</span>-<span class="hljs-title">presidents</span>.<span class="hljs-title">py</span></span>
-</code></pre><h2 id="show-data">Show Data</h2>
+</code></pre><h2 id="problem">Problem</h2>
+<p>At one point, I found that my script worked at the command line, but not in the browser. In particular, I got an error with <strong>import pymsql</strong>. It turned out that I had installed <strong>pymysql</strong> without sudo, so it ended up in my home directory. To fix this, you may need to uninstall from your home directory and reinstall as sudo:</p>
+<pre>
+sudo pip3 uninstall pymysql
+sudo -H pip3 install pymysql
+</pre>
+
+<p>Check to see what packages are installed for a particular version of Python:</p>
+<pre>
+$ ls /usr/local/lib/python3.5/dist-packages/
+pip  pip-8.1.2.dist-info  pymysql  PyMySQL-0.7.9.dist-info
+</pre>
+
+<h2 id="show-data">Show Data</h2>
 <p>Paste some HTML into a markdown file called <strong>AllTest/presidents.md</strong>:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"getPresidents"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"button"</span>&gt;</span> Get Presidents <span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
@@ -183,7 +199,7 @@ conn.<span class="hljs-keyword">close</span>()
 <p>Run MakeHtml. Take screenshots of your page running both on localhost and on EC2. Put them in our shared Google Drive folder in a folder called <strong>PythonMySQlJson</strong>.</p>
 <p>On the text page of Canvas, include live links to your page on EC2 and to your new Google Drive folder. Don&#39;t put the links in a comment. I want to be able to click them and be taken directly to your work.</p>
 <h2 id="optional-setup-cgi-dir">Optional Setup cgi dir</h2>
-<p>THIS SECTION IS NOT YET COMPLETE. IGNORE IT FOR NOW.</p>
+<p>This seems to be working for me now. The goal is to use <strong>/var/www/cgi</strong> as your CGI directory in addition to <strong>/usr/lib/cgi-bin</strong>.</p>
 <p>Make sure CGI is turned on:</p>
 <pre><code><span class="hljs-keyword">cd</span> /<span class="hljs-keyword">var</span>/www
 sudo <span class="hljs-keyword">mkdir</span> cgi
@@ -191,4 +207,46 @@ sudo chown -R bcuser:bcuser cgi
 </code></pre><p>Create a simple python test script in <strong>/var/www/cgi</strong>. Open a blank file called <strong>simple.py</strong> in the <strong>cgi</strong> directory. Files with a <strong>.py</strong> are python scripts.</p>
 <pre><code><span class="hljs-keyword">cd</span> /<span class="hljs-keyword">var</span>/www/cgi
 nano simple.py
-</code></pre></div></body></html>
+</code></pre><p>Now edit <strong>serve-cgi-bin.conf</strong>:</p>
+<pre><code><span class="hljs-keyword">cd</span> /etc/apache2/<span class="hljs-keyword">conf</span>-available
+sudo nano serve-cgi-bin.<span class="hljs-keyword">conf</span>
+</code></pre><p> Near the end add the following:</p>
+<pre><code class="lang-text"><span class="hljs-section">&lt;IfDefine ENABLE_USR_LIB_CGI_BIN&gt;</span>
+        <span class="hljs-attribute">ScriptAlias</span> /cgi/ /var/www/cgi/
+        <span class="hljs-section">&lt;Directory "/var/www/cgi"&gt;</span>
+                <span class="hljs-attribute">AllowOverride</span> None
+                <span class="hljs-attribute"><span class="hljs-nomarkup">Options</span></span> +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                <span class="hljs-attribute">Require</span> <span class="hljs-literal">all</span> granted
+        <span class="hljs-section">&lt;/Directory&gt;</span>
+<span class="hljs-section">&lt;/IfDefine&gt;</span>
+</code></pre>
+<p>It might be simplest if I just give you my entire file:</p>
+<pre><code class="lang-text"><span class="hljs-section">&lt;IfModule mod_alias.c&gt;</span>
+    <span class="hljs-section">&lt;IfModule mod_cgi.c&gt;</span>
+        <span class="hljs-attribute">Define</span> ENABLE_USR_LIB_CGI_BIN
+    <span class="hljs-section">&lt;/IfModule&gt;</span>
+
+    <span class="hljs-section">&lt;IfModule mod_cgid.c&gt;</span>
+        <span class="hljs-attribute">Define</span> ENABLE_USR_LIB_CGI_BIN
+    <span class="hljs-section">&lt;/IfModule&gt;</span>
+
+    <span class="hljs-section">&lt;IfDefine ENABLE_USR_LIB_CGI_BIN&gt;</span>
+        <span class="hljs-attribute">ScriptAlias</span> /cgi-bin/ /usr/lib/cgi-bin/
+        <span class="hljs-section">&lt;Directory "/usr/lib/cgi-bin"&gt;</span>
+            <span class="hljs-attribute">AllowOverride</span> None
+            <span class="hljs-attribute"><span class="hljs-nomarkup">Options</span></span> +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+            <span class="hljs-attribute">Require</span> <span class="hljs-literal">all</span> granted
+        <span class="hljs-section">&lt;/Directory&gt;</span>
+    <span class="hljs-section">&lt;/IfDefine&gt;</span>
+    <span class="hljs-section">&lt;IfDefine ENABLE_USR_LIB_CGI_BIN&gt;</span>
+                <span class="hljs-attribute">ScriptAlias</span> /cgi/ /var/www/cgi/
+                <span class="hljs-section">&lt;Directory "/var/www/cgi"&gt;</span>
+                        <span class="hljs-attribute">AllowOverride</span> None
+                        <span class="hljs-attribute"><span class="hljs-nomarkup">Options</span></span> +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                        <span class="hljs-attribute">Require</span> <span class="hljs-literal">all</span> granted
+                <span class="hljs-section">&lt;/Directory&gt;</span>
+        <span class="hljs-section">&lt;/IfDefine&gt;</span>
+<span class="hljs-section">&lt;/IfModule&gt;</span>
+</code></pre>
+<!-- URLS -->
+</div></body></html>
