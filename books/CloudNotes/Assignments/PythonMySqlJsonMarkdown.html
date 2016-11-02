@@ -123,7 +123,7 @@ print(<span class="hljs-string">"""
 <pre><code><span class="hljs-keyword">exit</span>;
 </code></pre><h2 id="python-script">Python Script</h2>
 <p>Put this in &#39;/usr/lib/cgi-bin&#39; as <strong>get-presidents.py</strong>:</p>
-<pre><code class="lang-python">#! /usr/bin/<span class="hljs-keyword">python3</span>
+<pre><code class="lang-python"><span class="hljs-meta">#! /usr/bin/python3</span>
 
 import cgitb
 cgitb.enable()
@@ -131,21 +131,21 @@ cgitb.enable()
 import pymysql
 import json
 
-<span class="hljs-keyword">print</span>(<span class="hljs-string">"Content-Type: text/json"</span>)
-<span class="hljs-keyword">print</span>()
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"Content-Type: text/json"</span>)
+<span class="hljs-built_in">print</span>()
 
-conn = pymysql.connect(host=<span class="hljs-string">'localhost'</span>, user=<span class="hljs-string">'root'</span>, passwd=<span class="hljs-string">'foobar'</span>, db=<span class="hljs-string">'prog270'</span>)
+conn = pymysql.<span class="hljs-built_in">connect</span>(host=<span class="hljs-string">'localhost'</span>, user=<span class="hljs-string">'root'</span>, passwd=<span class="hljs-string">'foobar'</span>, db=<span class="hljs-string">'prog270'</span>)
 
 <span class="hljs-built_in">cursor</span> = conn.<span class="hljs-built_in">cursor</span>()
 
-<span class="hljs-built_in">cursor</span>.<span class="hljs-keyword">execute</span>(<span class="hljs-string">"SELECT * FROM presidents"</span>)
+<span class="hljs-built_in">cursor</span>.execute(<span class="hljs-string">"SELECT * FROM presidents"</span>)
 
 rows = <span class="hljs-built_in">cursor</span>.fetchall()
 
-<span class="hljs-keyword">print</span>(json.dumps(rows));
+<span class="hljs-built_in">print</span>(json.dumps(rows));
 
-<span class="hljs-built_in">cursor</span>.<span class="hljs-keyword">close</span>()
-conn.<span class="hljs-keyword">close</span>()
+<span class="hljs-built_in">cursor</span>.<span class="hljs-built_in">close</span>()
+conn.<span class="hljs-built_in">close</span>()
 </code></pre>
 <p>You might want to use this command:</p>
 <pre><code>sudo nano /usr/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">cgi</span>-<span class="hljs-title">bin</span>/<span class="hljs-title">get</span>-<span class="hljs-title">presidents</span>.<span class="hljs-title">py</span></span>
@@ -167,7 +167,7 @@ pip  pip-8.1.2.dist-info  pymysql  PyMySQL-0.7.9.dist-info
 <h2 id="show-data">Show Data</h2>
 <p>Paste some HTML into a markdown file called <strong>AllTest/presidents.md</strong>:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"getPresidents"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"button"</span>&gt;</span> Get Presidents <span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"btn btn-primary"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"getPresidents"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"button"</span>&gt;</span> Get Presidents <span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 
 <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
@@ -200,7 +200,7 @@ pip  pip-8.1.2.dist-info  pymysql  PyMySQL-0.7.9.dist-info
 <p>On the text page of Canvas, include live links to your page on EC2 and to your new Google Drive folder. Don&#39;t put the links in a comment. I want to be able to click them and be taken directly to your work.</p>
 <h2 id="optional-setup-cgi-dir">Optional Setup cgi dir</h2>
 <p>This seems to be working for me now. The goal is to use <strong>/var/www/cgi</strong> as your CGI directory in addition to <strong>/usr/lib/cgi-bin</strong>.</p>
-<p>Make sure CGI is turned on:</p>
+<p>Make sure the CGI directory exists:</p>
 <pre><code><span class="hljs-keyword">cd</span> /<span class="hljs-keyword">var</span>/www
 sudo <span class="hljs-keyword">mkdir</span> cgi
 sudo chown -R bcuser:bcuser cgi
@@ -211,42 +211,42 @@ nano simple.py
 <pre><code><span class="hljs-keyword">cd</span> /etc/apache2/<span class="hljs-keyword">conf</span>-available
 sudo nano serve-cgi-bin.<span class="hljs-keyword">conf</span>
 </code></pre><p> Near the end add the following:</p>
-<pre><code class="lang-text"><span class="hljs-section">&lt;IfDefine ENABLE_USR_LIB_CGI_BIN&gt;</span>
-        <span class="hljs-attribute">ScriptAlias</span> /cgi/ /var/www/cgi/
-        <span class="hljs-section">&lt;Directory "/var/www/cgi"&gt;</span>
-                <span class="hljs-attribute">AllowOverride</span> None
-                <span class="hljs-attribute"><span class="hljs-nomarkup">Options</span></span> +ExecCGI -MultiViews +SymLinksIfOwnerMatch
-                <span class="hljs-attribute">Require</span> <span class="hljs-literal">all</span> granted
-        <span class="hljs-section">&lt;/Directory&gt;</span>
-<span class="hljs-section">&lt;/IfDefine&gt;</span>
+<pre><code class="lang-text"><span class="hljs-params">&lt;IfDefine ENABLE_USR_LIB_CGI_BIN&gt;</span>
+        ScriptAlias <span class="hljs-meta-keyword">/cgi/</span> <span class="hljs-meta-keyword">/var/</span>www<span class="hljs-meta-keyword">/cgi/</span>
+        <span class="hljs-params">&lt;Directory "/var/www/cgi"&gt;</span>
+                AllowOverride None
+                Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                Require all granted
+        <span class="hljs-params">&lt;/Directory&gt;</span>
+<span class="hljs-params">&lt;/IfDefine&gt;</span>
 </code></pre>
 <p>It might be simplest if I just give you my entire file:</p>
-<pre><code class="lang-text"><span class="hljs-section">&lt;IfModule mod_alias.c&gt;</span>
-    <span class="hljs-section">&lt;IfModule mod_cgi.c&gt;</span>
-        <span class="hljs-attribute">Define</span> ENABLE_USR_LIB_CGI_BIN
-    <span class="hljs-section">&lt;/IfModule&gt;</span>
+<pre><code class="lang-text"><span class="hljs-params">&lt;IfModule mod_alias.c&gt;</span>
+    <span class="hljs-params">&lt;IfModule mod_cgi.c&gt;</span>
+        Define ENABLE_USR_LIB_CGI_BIN
+    <span class="hljs-params">&lt;/IfModule&gt;</span>
 
-    <span class="hljs-section">&lt;IfModule mod_cgid.c&gt;</span>
-        <span class="hljs-attribute">Define</span> ENABLE_USR_LIB_CGI_BIN
-    <span class="hljs-section">&lt;/IfModule&gt;</span>
+    <span class="hljs-params">&lt;IfModule mod_cgid.c&gt;</span>
+        Define ENABLE_USR_LIB_CGI_BIN
+    <span class="hljs-params">&lt;/IfModule&gt;</span>
 
-    <span class="hljs-section">&lt;IfDefine ENABLE_USR_LIB_CGI_BIN&gt;</span>
-        <span class="hljs-attribute">ScriptAlias</span> /cgi-bin/ /usr/lib/cgi-bin/
-        <span class="hljs-section">&lt;Directory "/usr/lib/cgi-bin"&gt;</span>
-            <span class="hljs-attribute">AllowOverride</span> None
-            <span class="hljs-attribute"><span class="hljs-nomarkup">Options</span></span> +ExecCGI -MultiViews +SymLinksIfOwnerMatch
-            <span class="hljs-attribute">Require</span> <span class="hljs-literal">all</span> granted
-        <span class="hljs-section">&lt;/Directory&gt;</span>
-    <span class="hljs-section">&lt;/IfDefine&gt;</span>
-    <span class="hljs-section">&lt;IfDefine ENABLE_USR_LIB_CGI_BIN&gt;</span>
-                <span class="hljs-attribute">ScriptAlias</span> /cgi/ /var/www/cgi/
-                <span class="hljs-section">&lt;Directory "/var/www/cgi"&gt;</span>
-                        <span class="hljs-attribute">AllowOverride</span> None
-                        <span class="hljs-attribute"><span class="hljs-nomarkup">Options</span></span> +ExecCGI -MultiViews +SymLinksIfOwnerMatch
-                        <span class="hljs-attribute">Require</span> <span class="hljs-literal">all</span> granted
-                <span class="hljs-section">&lt;/Directory&gt;</span>
-        <span class="hljs-section">&lt;/IfDefine&gt;</span>
-<span class="hljs-section">&lt;/IfModule&gt;</span>
+    <span class="hljs-params">&lt;IfDefine ENABLE_USR_LIB_CGI_BIN&gt;</span>
+        ScriptAlias <span class="hljs-meta-keyword">/cgi-bin/</span> <span class="hljs-meta-keyword">/usr/</span>lib<span class="hljs-meta-keyword">/cgi-bin/</span>
+        <span class="hljs-params">&lt;Directory "/usr/lib/cgi-bin"&gt;</span>
+            AllowOverride None
+            Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+            Require all granted
+        <span class="hljs-params">&lt;/Directory&gt;</span>
+    <span class="hljs-params">&lt;/IfDefine&gt;</span>
+    <span class="hljs-params">&lt;IfDefine ENABLE_USR_LIB_CGI_BIN&gt;</span>
+    ScriptAlias <span class="hljs-meta-keyword">/cgi/</span> <span class="hljs-meta-keyword">/var/</span>www<span class="hljs-meta-keyword">/cgi/</span>
+    <span class="hljs-params">&lt;Directory "/var/www/cgi"&gt;</span>
+      AllowOverride None
+      Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+      Require all granted
+    <span class="hljs-params">&lt;/Directory&gt;</span>
+  <span class="hljs-params">&lt;/IfDefine&gt;</span>
+<span class="hljs-params">&lt;/IfModule&gt;</span>
 </code></pre>
 <!-- URLS -->
 </div></body></html>
