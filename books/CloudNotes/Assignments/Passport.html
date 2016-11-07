@@ -12,7 +12,8 @@
 <li><a href="#control">Control</a></li>
 <li><a href="#account-and-logon">Account and Logon</a></li>
 <li><a href="#permissions">Permissions</a></li>
-<li><a href="#turn-it-in">Turn It In</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#turn-it-in">Turn It In</a></li>
+<li><a href="#hints">Hints</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p><a href="http://passportjs.org/">Passport</a> is a tool that allows you to &quot;sign in with Google&quot;, &quot;sign in with Facebook&quot; or &quot;sign with Twitter&quot;. There are other options as well, including creating a basic sign in where the user enters their own user name and email. But Google, Facebook and Twitter are the options that most poeple want.</p>
 <p>The goal of this assignment is to allow you to add a <strong>Log On</strong> with Goggle and Facebook page to your web application. It will allow users to sign on to your site with their Google or Facebook accounts. It will then be possible to decide whether a user can perform a particular action depending on whether or not she is signed on.</p>
 <p>By having Google, Facebook or Twitter manage the sign on process you free yourself of:</p>
@@ -191,7 +192,7 @@ router.get(<span class="hljs-string">'/info'</span>, <span class="hljs-function"
 
 router.get(<span class="hljs-string">'/account'</span>, ensureAuthenticated, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
 <span class="hljs-meta">    'use strict'</span>;
-    response.render(<span class="hljs-string">'account'</span>, {
+    response.render(<span class="hljs-string">'profile-google'</span>, {
         title: <span class="hljs-string">'Google Account'</span>,
         user: request.user
     });
@@ -257,7 +258,7 @@ router.get('/profile', require('connect-ensure-login').ensureLoggedIn(),
     function(req, res) {
         'use strict';
         console.log(req.user);
-        res.render('profile-temp', {
+        res.render('profile-facebook', {
             title: 'Facebook Profile',
             user: req.user
         });
@@ -390,13 +391,23 @@ function signedIn(request, response, <span class="hljs-keyword">next</span>) {
 }
 
 exports.signedIn = signedIn<span class="hljs-comment">;</span>
-</code></pre><p>Recall the Google Specific code that renders the <strong>account.jade</strong> file. I won&#39;t give you the Jade you need for that page, but here is what my version of that page looks like. I got all this information from my Google account. It was the data that I got when I logged into my account. This is the data that I we are agreeing to share when we, as users, agree to use this strategy to validated ourselves.</p>
+</code></pre><p>Create the <strong>profile-google.jade</strong> file that displays information about the logged in user. Here is what my version of that page looks like. I got all this information from my Google account. It was the data that I got when I logged into my account. This is the data that we are agreeing to share when we, as users, agree to use this strategy to validated ourselves.</p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/passport-google-account.png" alt="Google Account Display"></p>
+<p>Also create <strong>profile-facebook.jade</strong> page.</p>
 <h2 id="permissions">Permissions</h2>
 <p>You want to track who has permissions to access your account information:</p>
 <blockquote>
 <p><a href="https://security.google.com/settings/security/permissions">https://security.google.com/settings/security/permissions</a></p>
 </blockquote>
 <h2 id="turn-it-in">Turn It In</h2>
-<p>Place your work in the appropriate folder in your repository, if it is not there already. Submit your assignment.</p>
+<p>Place your work in the appropriate folder in your repository, if it is not there already. Run <strong>grunt check</strong> one last time. Submit your assignment.</p>
+<h2 id="hints">Hints</h2>
+<p>Error message like this one are odd because they have <strong>facebook</strong> in the path:</p>
+<pre>
+GET http://localhost:30025/facebook/login/components/requirejs/require.js 404 (Not Found)
+</pre>
+
+<p>To fix them, check in <strong>layout.jade</strong> and <strong>main.js</strong> to be sure you are putting a slash in front of the words <strong>components</strong> and <strong>javascripts</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">'jquery'</span>: <span class="hljs-string">'/components/jquery/dist/jquery'</span>,
+</code></pre>
 </div></body></html>
