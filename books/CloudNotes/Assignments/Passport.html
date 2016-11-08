@@ -13,7 +13,8 @@
 <li><a href="#account-and-logon">Account and Logon</a></li>
 <li><a href="#permissions">Permissions</a></li>
 <li><a href="#turn-it-in">Turn It In</a></li>
-<li><a href="#hints">Hints</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#hints">Hints</a></li>
+<li><a href="#passport-middleware">Passport Middleware</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p><a href="http://passportjs.org/">Passport</a> is a tool that allows you to &quot;sign in with Google&quot;, &quot;sign in with Facebook&quot; or &quot;sign with Twitter&quot;. There are other options as well, including creating a basic sign in where the user enters their own user name and email. But Google, Facebook and Twitter are the options that most poeple want.</p>
 <p>The goal of this assignment is to allow you to add a <strong>Log On</strong> with Goggle and Facebook page to your web application. It will allow users to sign on to your site with their Google or Facebook accounts. It will then be possible to decide whether a user can perform a particular action depending on whether or not she is signed on.</p>
 <p>By having Google, Facebook or Twitter manage the sign on process you free yourself of:</p>
@@ -91,7 +92,7 @@ lines near the top:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> session = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express-session'</span>);
 <span class="hljs-keyword">var</span> passport = <span class="hljs-built_in">require</span>(<span class="hljs-string">'passport'</span>);
 </code></pre>
-<p>And in the use section (around line 26 or wherever, after cookie parser and static public):</p>
+<p>Now we add code to set up the session object:</p>
 <pre><code class="lang-javascript"><span class="hljs-selector-tag">app</span><span class="hljs-selector-class">.use</span>(<span class="hljs-selector-tag">session</span>({
     <span class="hljs-attribute">secret</span>: <span class="hljs-string">'keyboard cat'</span>,
     resave: true,
@@ -100,6 +101,7 @@ lines near the top:</p>
 <span class="hljs-selector-tag">app</span><span class="hljs-selector-class">.use</span>(<span class="hljs-selector-tag">passport</span><span class="hljs-selector-class">.initialize</span>());
 <span class="hljs-selector-tag">app</span><span class="hljs-selector-class">.use</span>(<span class="hljs-selector-tag">passport</span><span class="hljs-selector-class">.session</span>());
 </code></pre>
+<p>Put the session code shown above just after the place where we use the <strong>cookieParser</strong> and <strong>express.static</strong> middleware, but before the place where we define the routes and user middleware that looks a bit like this: <strong>app.use(&#39;/&#39;, routes)</strong>.</p>
 <p>While you are at it, set up your <strong>favicon</strong> and update the development error handler:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (app.get(<span class="hljs-string">'env'</span>) === <span class="hljs-string">'development'</span>) {
     app.use(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, req, res, next</span>) </span>{
@@ -429,5 +431,9 @@ GET http://localhost:30025/facebook/login/components/requirejs/require.js 404 (N
 
 <p>To fix them, check in <strong>layout.jade</strong> and <strong>main.js</strong> to be sure you are putting a slash in front of the words <strong>components</strong> and <strong>javascripts</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-string">'jquery'</span>: <span class="hljs-string">'/components/jquery/dist/jquery'</span>,
+</code></pre>
+<h2 id="passport-middleware">Passport Middleware</h2>
+<p>If you get this error then the problem might well be the order in which you are inserting code into app.js, as explained above:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._passport) { <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'passport.initialize() middleware not in use'</span>); }
 </code></pre>
 </div></body></html>
