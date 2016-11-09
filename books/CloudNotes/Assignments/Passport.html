@@ -2,11 +2,9 @@
 <li><a href="#key-places">Key Places</a></li>
 <li><a href="#install-passport">Install Passport</a></li>
 <li><a href="#setup-google">Setup Google</a></li>
-<li><a href="#setup-facebook">Setup Facebook</a></li>
 <li><a href="#basics">Basics</a></li>
 <li><a href="#generic-code">Generic Code</a></li>
 <li><a href="#google-specific-code">Google Specific Code</a></li>
-<li><a href="#facebook-specific-code">Facebook Specific Code</a></li>
 <li><a href="#run">Run</a></li>
 <li><a href="#is-the-user-logged-on-">Is the User Logged On?</a></li>
 <li><a href="#control">Control</a></li>
@@ -79,22 +77,6 @@ Google.</p>
 <ul>
 <li><a href="http://localhost:30025/auth/google/callback">http://localhost:30025/auth/google/callback</a></li>
 </ul>
-<h2 id="setup-facebook">Setup Facebook</h2>
-<p>Go to the Facebook developers site: <a href="https://developers.facebook.com/">https://developers.facebook.com/</a>. Note at the bottom the link to the Login API.</p>
-<p>Visit the Facebook Login for Developers Page: <a href="https://developers.facebook.com/products/login/">https://developers.facebook.com/products/login/</a>. Check out the page you see from the Get Started button.</p>
-<p>After getting oriented, look at the top right, and select the option to create a <strong>New App</strong>.</p>
-<ul>
-<li>Displan Name: Isit320-Lastname</li>
-<li>Category: Education</li>
-</ul>
-<p>Click okay, fill in the capcha, and choose <strong>Facebook Login</strong> as Product and <strong>www</strong> as login.</p>
-<ul>
-<li>Site URL: <a href="http://localhost:30025">http://localhost:30025</a></li>
-<li>Get your App ID and Secret</li>
-<li>Client token on advanced page</li>
-<li>The Valid OAuth redirect APIs: <a href="http://localhost:30025/facebook/login">http://localhost:30025/facebook/login</a></li>
-</ul>
-<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/passport-facebook-oauth.png" alt="OAuth Facebook"></p>
 <h2 id="basics">Basics</h2>
 <p>Once you have passport installed, open up <strong>app.js</strong> and add the following
 lines near the top:</p>
@@ -250,61 +232,6 @@ router.get(<span class="hljs-string">'/google/callback'</span>,
 <li>Use the Google Console to set up local host</li>
 </ul>
 <p>For <strong>process.nextTick</strong>, <a href="http://nodejs.org/api/process.html#process_process_nexttick_callback">see the docs</a>. Instead of making the call immediately, it is more like a callback. We wait until the next time that node is not busy, then make the call. Node runs on an event loop, and in effect this is saying the next time the loop comes around.</p>
-<h2 id="facebook-specific-code">Facebook Specific Code</h2>
-<p>Save the Facebook specific code in <strong>routes/login-facebook.js</strong>:</p>
-<pre><code class="lang-javascript">/<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>
- <span class="hljs-keyword">*</span> Created by charlie on 11/5/16.
- <span class="hljs-keyword">*</span>/
-
-var express = require('express');
-var router = express.Router();
-var passport = require('passport');
-var Strategy = require('passport-facebook').Strategy;
-
-/<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>
- <span class="hljs-keyword">*</span>  Facebook
- <span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/
-
-router.get('/profile', require('connect-ensure-login').ensureLoggedIn(),
-    function(req, res) {
-        'use strict';
-        console.log(req.user);
-        res.render('profile-facebook', {
-            title: 'Facebook Profile',
-            user: req.user
-        });
-    });
-
-passport.use(new Strategy({
-        clientID: process.env.CLIENT_ID,
-        clientSecret: process.env.CLIENT_SECRET,
-        callbackURL: 'http://localhost:30025/facebook/login/return'
-    },
-    function(accessToken, refreshToken, profile, done) {
-        'use strict';
-        // In this example, the user's Facebook profile is supplied as the user
-        // record.  In a production-quality application, the Facebook profile should
-        // be associated with a user record in the application's database, which
-        // allows for account linking and authentication with other identity
-        // providers.
-        return done(null, profile);
-    }));
-
-router.get('/login',
-    passport.authenticate('facebook'));
-
-//router.get('/login/facebook/return',
-router.get('/login/return',
-    passport.authenticate('facebook', {
-        failureRedirect: '/login'
-    }),
-    function(req, res) {
-        'use strict';
-        res.redirect('/');
-    });
-
-module.exports = router;
-</code></pre>
 <p>##Login and Logout</p>
 <p>Let&#39;s take a look at these lines in <strong>login-google.js</strong>:</p>
 <pre><code class="lang-javascript">app.<span class="hljs-keyword">get</span>(<span class="hljs-string">'/google'</span>, passport.authenticate(<span class="hljs-string">'google'</span>, {
@@ -431,6 +358,7 @@ block content
 <p><a href="https://security.google.com/settings/security/permissions">https://security.google.com/settings/security/permissions</a></p>
 </blockquote>
 <h2 id="turn-it-in">Turn It In</h2>
+<p>Your application must support Google and either Twitter or Facebook. For Twitter specific directions, go <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/PassportTwitter.html">here</a>.</p>
 <p>Place your work in the appropriate folder in your repository, if it is not there already. Run <strong>grunt check</strong> one last time. Submit your assignment.</p>
 <h2 id="hints">Hints</h2>
 <p>Error message like this one are odd because they have <strong>facebook</strong> in the path:</p>
