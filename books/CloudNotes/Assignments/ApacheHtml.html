@@ -217,13 +217,69 @@ cp -ruvp /var/www/html/css <span class="hljs-variable">$CSS_JS_IMAGE</span>/.
 cp -ruvp /var/www/html/images <span class="hljs-variable">$CSS_JS_IMAGE</span>/.
 cp -ruvp /var/www/html/js <span class="hljs-variable">$CSS_JS_IMAGE</span>/.
 cp -uvp /var/www/html/clean <span class="hljs-variable">$CSS_JS_IMAGE</span>/.
-</code></pre><p>And here is a script that will copy files from your repository to <strong>~/Documents/AllTest</strong> and <strong>/var/www/html</strong>. Call it CopyFromRepoToAllTestAndApache:</p>
+</code></pre><p>And here is a script that will copy files from your repository to <strong>~/Documents/AllTest</strong> and <strong>/var/www/html</strong>. Call it <strong>CopyFromRepoToAllTestAndApache</strong>:</p>
 <pre><code><span class="hljs-meta">#! /bin/bash
 </span>
 cp -ruvp AllTest/ ~/Documents/.
 cp -ruvp ApacheHelpers/images /var/www/html/.
 cp -ruvp ApacheHelpers/css /var/www/html/.
 cp -ruvp ApacheHelpers/js /var/www/html/.
+</code></pre><p>Here is a fancier version of CopyFromRepoToAllTestAndApache</p>
+<pre><code><span class="hljs-meta">#! /bin/bash
+</span>
+RED=<span class="hljs-string">'\033[0;31m'</span>
+LIGHT_RED=<span class="hljs-string">'\033[1;31m'</span>
+LIGHT_GREEN=<span class="hljs-string">'\033[1;32m'</span>
+YELLOW=<span class="hljs-string">'\033[1;33m'</span>
+BLUE=<span class="hljs-string">'\033[1;36m'</span>
+NC=<span class="hljs-string">'\033[0m'</span> <span class="hljs-comment"># No Color</span>
+
+DEST01=/var/www/html/.
+DEST02=/home/bcuser/Source/firebase/public
+
+<span class="hljs-keyword">function</span> message {
+    <span class="hljs-built_in">echo</span>
+    <span class="hljs-built_in">echo</span> =======================
+    <span class="hljs-built_in">echo</span> <span class="hljs-_">-e</span> <span class="hljs-variable">$LIGHT_RED</span><span class="hljs-variable">$1</span><span class="hljs-string">"<span class="hljs-variable">$NC</span>"</span>    
+    <span class="hljs-built_in">echo</span> =======================
+    <span class="hljs-built_in">echo</span>
+}
+
+<span class="hljs-keyword">function</span> error {
+    <span class="hljs-built_in">echo</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-_">-e</span> <span class="hljs-variable">$LIGHT_RED</span>=!!!!=
+    <span class="hljs-built_in">echo</span> <span class="hljs-_">-e</span> <span class="hljs-variable">$1</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-_">-e</span> <span class="hljs-variable">$LIGHT_RED</span>=!!!!=<span class="hljs-string">"<span class="hljs-variable">$NC</span>"</span>    
+    <span class="hljs-built_in">echo</span>
+}
+
+<span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">copyFiles</span></span>() {
+    cp -ruvp AllTest/ ~/Documents/.
+    <span class="hljs-keyword">if</span> [ <span class="hljs-_">-d</span> <span class="hljs-variable">$1</span> ]; <span class="hljs-keyword">then</span>
+        cp -ruvp ApacheHelpers/images <span class="hljs-variable">$1</span>
+        cp -ruvp ApacheHelpers/css <span class="hljs-variable">$1</span>
+        cp -ruvp ApacheHelpers/js <span class="hljs-variable">$1</span>
+    <span class="hljs-keyword">else</span>
+        error <span class="hljs-variable">$BLUE</span><span class="hljs-variable">$1</span><span class="hljs-variable">$LIGHT_RED</span><span class="hljs-string">' does not exist.'</span>
+    <span class="hljs-keyword">fi</span>
+
+}
+
+<span class="hljs-keyword">while</span> <span class="hljs-literal">true</span>; <span class="hljs-keyword">do</span>
+    message <span class="hljs-string">"Menu"</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-_">-e</span> <span class="hljs-variable">$LIGHT_GREEN</span><span class="hljs-string">"Ubuntu"</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-_">-e</span> <span class="hljs-variable">$LIGHT_GREEN</span><span class="hljs-string">"  a) Copy to <span class="hljs-variable">$DEST01</span>"</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-_">-e</span> <span class="hljs-variable">$LIGHT_GREEN</span><span class="hljs-string">"  b) Copy to <span class="hljs-variable">$DEST02</span>"</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-_">-e</span> <span class="hljs-variable">$LIGHT_RED</span><span class="hljs-string">"  x) Exit"</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-_">-e</span> <span class="hljs-string">"\n<span class="hljs-variable">$NC</span>"</span>
+    <span class="hljs-built_in">read</span> -p <span class="hljs-string">"Please make a selection: "</span> eotuyx
+    <span class="hljs-keyword">case</span> <span class="hljs-variable">$eotuyx</span> <span class="hljs-keyword">in</span>
+        [Aa]* ) copyFiles <span class="hljs-variable">$DEST01</span>; <span class="hljs-built_in">continue</span>;;
+        [Bb]* ) copyFiles <span class="hljs-variable">$DEST02</span>; <span class="hljs-built_in">continue</span>;;
+        [XxQq]* ) <span class="hljs-built_in">break</span>;;
+        * )  <span class="hljs-_">-e</span> <span class="hljs-string">"\n<span class="hljs-variable">$NC</span>"</span> + <span class="hljs-string">"Please answer with c, r or x."</span>;;
+    <span class="hljs-keyword">esac</span>
+<span class="hljs-keyword">done</span>
 </code></pre><h2 id="clean">Clean</h2>
 <p>When testing your code, you want to make sure you are not relying on any files already sitting in <strong>/var/www/html</strong>. This script deletes all the HTML files and folders from <strong>/var/www/html</strong>. It also creates a zip folder containing the most recent contents of your <strong>js</strong>, <strong>css</strong> and <strong>images</strong> folders. Save the code as <strong>/var/www/html/clean</strong>. Make it executable with <strong>chmod +x clean</strong>, then run the script as needed.</p>
 <p><strong>NOTE</strong>: <em>Where I write <LIST ANY OTHER FILES/FOLDERS> you should do exactly that, and of course you have to then remove the text in angle brackets.</em></p>
