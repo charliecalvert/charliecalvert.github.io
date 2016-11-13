@@ -40,7 +40,7 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
-var Strategy = require('passport-facebook').Strategy;
+var FacebookStrategy = require('passport-facebook').Strategy;
 
 /<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>
  <span class="hljs-keyword">*</span>  Facebook
@@ -56,7 +56,7 @@ router.get('/profile', require('connect-ensure-login').ensureLoggedIn(),
         });
     });
 
-passport.use(new Strategy({
+passport.use(new FacebookStrategy({
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
         callbackURL: 'http://localhost:30025/facebook/login/callback'
@@ -79,6 +79,21 @@ router.get('/login/callback',
     });
 
 module.exports = router;
+</code></pre>
+<p>Here is a way to use the <strong>profileFields</strong> property to alter the Facebook Strategy so you can get more information about the user:</p>
+<pre><code class="lang-javascript">passport.use(<span class="hljs-keyword">new</span> FacebookStrategy({
+        clientID: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        callbackURL: <span class="hljs-string">'http://localhost:30025/facebook/login/return'</span>,
+        profileFields: [<span class="hljs-string">'id'</span>, <span class="hljs-string">'displayName'</span>, <span class="hljs-string">'photos'</span>, <span class="hljs-string">'email'</span>]
+    },
+    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">accessToken, refreshToken, profile, done</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'accessToken'</span>, accessToken);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'refreshToken'</span>, refreshToken);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'profile'</span>, profile);
+        <span class="hljs-keyword">return</span> done(<span class="hljs-literal">null</span>, profile);
+    }));
 </code></pre>
 <h2 id="make-public">Make Public</h2>
 <p>You need to make your app public if it is going to be used by more than one person. Since both you and I need to access the app, you should make it public.</p>
