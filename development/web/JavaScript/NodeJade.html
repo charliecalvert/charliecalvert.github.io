@@ -1,7 +1,9 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>NodeJade</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><script src="/libs/scripts/Control.js"></script><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/charlie/About.html">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/charlie/development/index.html">Strongly Typed</a></li><li><a href="/charlie/development/web/index.html">Web & Scripts</a></li><li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/charlie/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>NodeJade</h1><p>Welcomes to NodeJade</p><ul><!--TOC_Start--><li><a href="#jade">Jade</a></li>
+<li><a href="#render-basics">Rendering Jade/Pug</a></li>
 <li><a href="#input-controls">Input Controls</a></li>
 <li><a href="#editors">Editors</a></li>
 <li><a href="#loading-jade">Loading Jade</a></li>
+<li><a href="#render-examples">Render Examples</a></li>
 <li><a href="#unique-names">Use Unique Names</a></li>
 <li><a href="#jade-indent">Jade Indent</a></li><!--TOC_End--></ul><h2 id="jade">Jade</h2>
 <p><strong>NOTE</strong>: <em>Apparently Jade is now called pug, but I&#39;m not ready to accept that yet. Somethings take time...</em></p>
@@ -9,7 +11,7 @@
 Markdown, in that it provides a shorthand syntax for composing
 HTML pages.</p>
 <p>Here is an example of how to layout a Jade template:</p>
-<pre><code>doctype <span class="hljs-number">5</span>
+<pre><code class="lang-text">doctype <span class="hljs-number">5</span>
 html
     head
         title= title
@@ -25,7 +27,8 @@ html
                     <span class="hljs-keyword">a</span>(href=<span class="hljs-string">"/page03"</span>) page03
         h1 <span class="hljs-comment">#{title}</span>
         block content
-</code></pre><p>When working with jade, indentation is crucial. You should indent with either tabs or spaces, but not both. You frequently need to open your file in an editor that allows you to visualize your white space. Then you should count your space, and make sure it follows an exact pattern. Suppose, for instance, that you are uses tabs for your indentation. In the pseudo code shown below, each hyphen (dash -) represents one tab.</p>
+</code></pre>
+<p>When working with jade, indentation is crucial. You should indent with either tabs or spaces, but not both. You frequently need to open your file in an editor that allows you to visualize your white space. Then you should count your space, and make sure it follows an exact pattern. Suppose, for instance, that you are uses tabs for your indentation. In the pseudo code shown below, each hyphen (dash -) represents one tab.</p>
 <p>Example 1 is like what&#39;s shown above:</p>
 <pre><code>doctype
 html
@@ -57,6 +60,31 @@ html
 </span>-<span class="ruby"> - - footer
 </span>-<span class="ruby"> - - - p</span>
 </code></pre><p>When looking at the pseudo code above, the point is that you can explicitly count how many tabs appear before each HTML element. You want to achieve that level of specificity when working with Jade.</p>
+<h2 id="render-basics">Rendering Jade/Pug</h2>
+<p>Jade/Pug allows us to &quot;pass in&quot; variables (locals) that can be used on the page. This is known as templating.</p>
+<p>When Jade is being translated to HTML, the renderer looks at the locals that are passed to it and substitutes these variables for markers on the page.</p>
+<p>For instance, in this well-known chunk of code, where the locals have a property called title:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/'</span>, routeParamMiddleware, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    res.render(<span class="hljs-string">'index'</span>, {
+        title: <span class="hljs-string">'Week09-SessionBasics'</span>
+    });
+});
+</code></pre>
+<p>We can then reference this in our jade like this:</p>
+<pre><code class="lang-text">p Welcome <span class="hljs-keyword">to</span> <span class="hljs-comment">#{title}</span>
+For more details <span class="hljs-keyword">on</span> this process, see <span class="hljs-keyword">the</span> overview here:
+</code></pre>
+<p><a href="https://pugjs.org/api/getting-started.html">https://pugjs.org/api/getting-started.html</a> (Links to an external site.)</p>
+<p>Even if all this is clear, it still may not be obvious that the locals can take a complex object like user, and that we can reference the fields of that object in our Jade:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">response</span><span class="hljs-selector-class">.render</span>(<span class="hljs-string">'account'</span>, {
+    <span class="hljs-attribute">title</span>: <span class="hljs-string">'Google Account'</span>,
+    <span class="hljs-attribute">user</span>: request.user
+});
+</code></pre>
+<p>And in the jade:</p>
+<pre><code class="lang-text">p DisplayName: #{<span class="ruby">user.displayName}</span>
+</code></pre>
 <h2 id="input-controls">Input Controls</h2>
 <p>Declare a text Input:</p>
 <pre><code>input#dirToWalk(<span class="hljs-keyword">type</span>=<span class="hljs-string">'text'</span>, name=<span class="hljs-string">'dirToWalk'</span>)
@@ -93,6 +121,7 @@ app.use(<span class="hljs-string">'/'</span>, routes.<span class="hljs-keyword">
 <li>If he types in <strong><a href="http://www.example.com/foo">http://www.example.com/foo</a></strong> the code is also routed to <strong>routes/index.js</strong>.</li>
 </ul>
 <p>In fact, with the code shown above, most requests from the server will end up going to <strong>routes/index.js</strong>. However, we shall see that it is possible to tell the server to route requests of a certain type to another file. For instance, requests to <strong><a href="http://www.example.com/foo">http://www.example.com/foo</a></strong> could be sent to <strong>routes/foo.js</strong>.</p>
+<h2 id="render-examples">Render Examples</h2>
 <p>When the browser sends a request for an HTML page, express can send the request to <strong>routes/index.js</strong>). Routes found in that file detail how our Jade templates should be rendered.</p>
 <p>Here is an example <strong>routes/index.js</strong>. Study it with care:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
