@@ -12,6 +12,7 @@
 <li><a href="#couchapp">CouchApp</a></li>
 <li><a href="#install-couchapp">Install CouchApp</a></li>
 <li><a href="#couchapp-pages">CouchApp Pages</a></li>
+<li><a href="#tunnel">Tunnel</a></li>
 <li><a href="#links">Links</a></li><!--TOC_End--></ul><h1 id="couchdb">CouchDb</h1>
 <p><a href="http://couchdb.apache.org/" title="CouchDb home page">CouchDb</a> is a NoSQL database based on JSON documents rather than records. We do not use SQL to query it. It uses key/value pairs rather than structured relational data. It is a web focused database that we query using HTTP.</p>
 <p>This is nothing fundamentally different about the internal structure of a SQL database and a NoSQL database. Underneath, they both consist of B-Trees or similar data structures and a series of indexes. The difference is not in the internals, but in the way that you access the data. In many cases, the data itself is structured differently.</p>
@@ -93,7 +94,7 @@ linux config file is here:</p>
 <pre><code><span class="hljs-section">[httpd]</span>
 <span class="hljs-attr">port</span> = <span class="hljs-number">5984</span>
 <span class="hljs-attr">bind_address</span> = <span class="hljs-number">0.0</span>.<span class="hljs-number">0.0</span>
-</code></pre><p>The bind address by default is set to localhost (127.0.0.1). That is fine if you only access the database from your current server. But if you want to access it from another machine, you can change it to 0.0.0.0. I have a feeling this might not be very secure, but you should not be using the document as a guide to setting up your release server. I&#39;m just getting you up and running so you can do development in a relatively trusted environment.</p>
+</code></pre><p>The bind address by default is set to localhost (127.0.0.1). That is fine if you only access the database from your current server or using the tunnel technique described below. But if you want to access it from another machine with no tunnel, you can change it to 0.0.0.0. I have a feeling this might not be very secure, but you should not be using the document as a guide to setting up your release server. I&#39;m just getting you up and running so you can do development in a relatively trusted environment.</p>
 <p>Near the bottom of <strong>local.ini</strong> you can set the password for the administrator. The process is much the same as that described above. Look for the section called <strong>[admins]</strong> and set the <strong>admin</strong> password to something appropriate for you. I believe that it looks like this by default:</p>
 <pre><code><span class="hljs-section">[admins]</span>
 <span class="hljs-comment">;admin = mysecretpassword</span>
@@ -393,7 +394,12 @@ python-2.7.5.msi
 pywin32-218.win32-py2.7.exe
 py2exe-0.6.9.win32-py2.7.exe</p>
 <p>couchapp init<br>couchapp push . <a href="http://localhost:5984/pages">http://localhost:5984/pages</a></p>
-<h2 id="links">Links</h2>
+<h2 id="tunnel">Tunnel</h2>
+<p>After the install, set up a tunnel like this. On your remote machine, type this but with your name and address at end:</p>
+<pre><code>echo 'ssh -L<span class="hljs-number">5984:127.0</span>.<span class="hljs-number">0.1:5984</span> charlie@<span class="hljs-number">192.168.2.27</span>'
+</code></pre><p>Now on the remote browser, put this in your browser address bar:</p>
+<pre><code><span class="hljs-symbol">localhost:</span><span class="hljs-number">5984</span>
+</code></pre><h2 id="links">Links</h2>
 <ul>
 <li><a href="http://wern-ancheta.com/blog/2015/04/26/getting-started-with-couchdb-in-node-dot-js/">http://wern-ancheta.com/blog/2015/04/26/getting-started-with-couchdb-in-node-dot-js/</a></li>
 </ul>
