@@ -1,0 +1,209 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>MongooseSignIn</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><script src="/libs/scripts/Control.js"></script><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/charlie/About.html">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/charlie/development/index.html">Strongly Typed</a></li><li><a href="/charlie/development/web/index.html">Web & Scripts</a></li><li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/charlie/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>MongooseSignIn</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#description">Description</a></li>
+<li><a href="#step-one">Step One</a></li>
+<li><a href="#step-two">Step Two</a></li>
+<li><a href="#define-schema">Define Schema</a></li>
+<li><a href="#step-two">Step Two</a></li>
+<li><a href="#step-three">Step Three</a></li>
+<li><a href="#step-four">Step Four</a></li>
+<li><a href="#step-five">Step Five</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#mongolab">MongoLab</a></li>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#alternative-login">Alternative login</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<p>Mongoose sign in has three major parts:</p>
+<ul>
+<li>A collection for your users in <a href="https://mongolab.com/">MongoLab</a>. If you don&#39;t have an account create one.</li>
+<li>An interface built in express and jade (no angular) that allows the user to enter a username and password</li>
+<li>A Mongooose library for storing and retrieving the user names and passwords</li>
+</ul>
+<p>The code also encrypts and validates user names and passwords.</p>
+<p>The sign in Screen:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/SignIn01.png" alt="Sign In"></p>
+<p>Register a new users:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/SignIn02.png" alt="Sign In"></p>
+<p>Logged in:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/SignIn03.png" alt="Sign In"></p>
+<h2 id="step-one">Step One</h2>
+<p>Create an express app</p>
+<pre><code>CreateAllExpress Week05-MongooseSignIn
+<span class="hljs-built_in">cd</span> Week05-MongooseSignIn
+</code></pre><ul>
+<li><a href="https://drive.google.com/file/d/0B25UTAlOfPRGVXR3SHFJa05sNjQ/view?usp=sharing">https://drive.google.com/file/d/0B25UTAlOfPRGVXR3SHFJa05sNjQ/view?usp=sharing</a></li>
+</ul>
+<p>Some npm packages we are using. You need do nothing as <strong>AllInclusive</strong> should handle this. So this is a no-op, it is just an fyi:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> bcrypt-nodejs <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> mongoose <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> passport <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> passport-<span class="hljs-keyword">local</span> <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> express-<span class="hljs-keyword">session</span> <span class="hljs-comment">--save</span>
+</code></pre><h2 id="step-two">Step Two</h2>
+<p>To connect to the MongoDb database, I&#39;ve been using the <strong>connect.js</strong> file from the <strong>$ELF_TEMPLATES/Database</strong> directory. Copy <strong>connect.js</strong> into the <strong>routes</strong> directory</p>
+<pre><code class="lang-bash">cp $ELF_TEMPLATES/Database/connect.js routes/.
+</code></pre>
+<h3 id="define-schema">Define Schema</h3>
+<p>Define the schema for your database in <strong>models/user.js</strong>. You can do something like the following to copy the file into the models directory:</p>
+<pre><code class="lang-bash">cp -r $ELF_TEMPLATES/SignIn/models .
+</code></pre>
+<p>The above command creates a local project folder called <strong>models</strong> and copies the <strong>user.js</strong> file into it. Issue this command only once, otherwise you will end up with nested folders.</p>
+<p><strong>NOTE</strong>: _If something goes wrong, you can always delete the local <strong>models</strong> directory and try again. (Don&#39;t delete the <strong>$ELF_TEMPLATES/SignIn/models</strong> directory!)_</p>
+<h2 id="step-two">Step Two</h2>
+<p>Let&#39;s work on the front end. Retrieve the jade for the various dialogs needed to complete the sign in process:</p>
+<pre><code>cp -v $ELF_TEMPLATES/SignIn/views/*.jade views/.
+</code></pre><p>We just copied in three files:</p>
+<pre><code>login<span class="hljs-selector-class">.jade</span>
+logout<span class="hljs-selector-class">.jade</span>
+register.jade
+</code></pre><h2 id="step-three">Step Three</h2>
+<p>Set up Passport. Also setup the MongoDb database for storing the user name. To accomplish these tasks We will use three libraries
+called <strong>express-session</strong>, <strong>Mongoose</strong> and <strong>Passport</strong>, all of which should already be in <strong>AllInclusive</strong>.</p>
+<p>In <strong>app.js</strong>, about line 8.</p>
+<p>New way:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// Connect to DB</span>
+<span class="hljs-keyword">var</span> connect = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./routes/connect'</span>);
+connect.doConnection(<span class="hljs-literal">true</span>);
+</code></pre>
+<p>And remove the line that reads, as we will include it later:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> routes = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./routes/index'</span>)
+</code></pre>
+<p>More specifically, on about line 13, comment out the existing routes call:</p>
+<pre><code>// <span class="hljs-keyword">var</span> routes = require(<span class="hljs-string">'./routes/index'</span>);
+</code></pre><p>In app.js around line 28:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// Configuring Passport</span>
+<span class="hljs-keyword">var</span> passport = <span class="hljs-keyword">require</span>(<span class="hljs-string">'passport'</span>);
+<span class="hljs-keyword">var</span> expressSession = <span class="hljs-keyword">require</span>(<span class="hljs-string">'express-session'</span>);
+app.<span class="hljs-keyword">use</span>(expressSession({
+    secret: <span class="hljs-string">'mySecretKey'</span>,
+    resave: <span class="hljs-keyword">true</span>,
+    saveUninitialized: <span class="hljs-keyword">true</span>
+}));
+app.<span class="hljs-keyword">use</span>(passport.initialize());
+app.<span class="hljs-keyword">use</span>(passport.session());
+
+<span class="hljs-comment">// Initialize Passport</span>
+<span class="hljs-keyword">var</span> initPassport = <span class="hljs-keyword">require</span>(<span class="hljs-string">'./passport/init'</span>);
+initPassport(passport);
+
+<span class="hljs-keyword">var</span> routes = <span class="hljs-keyword">require</span>(<span class="hljs-string">'./routes/index'</span>)(passport);
+</code></pre>
+<h2 id="step-four">Step Four</h2>
+<p>Copy in passport specific JavaScript files:</p>
+<pre><code class="lang-bash">cp -r $ELF_TEMPLATES/SignIn/passport/ .
+</code></pre>
+<p>You just copied the following files into a folder called <strong>passport</strong> :</p>
+<ul>
+<li>init.js</li>
+<li>login.js</li>
+<li>signup.js</li>
+</ul>
+<p>Copy <strong>SpaceNeedle.png</strong> to the <strong>public/images</strong> directory:</p>
+<pre>
+cp $ELF_TEMPLATES/SignIn/public/SpaceNeedle.png public/images/.
+</pre>
+
+<h2 id="step-five">Step Five</h2>
+<p>Set up the routes for logging in and signing up.</p>
+<p>Passport provides authentication. If the user can be authenticated, then they will be allowed to do something, otherwise will they will be redirected to another screen:</p>
+<ul>
+<li>Success: You get to do it</li>
+<li>Failure: Access denied!</li>
+</ul>
+<p>Here is the classic <strong>authenticate</strong> middleware in action:</p>
+<pre><code><span class="hljs-selector-tag">router</span><span class="hljs-selector-class">.post</span>(<span class="hljs-string">'/login'</span>, passport.authenticate(<span class="hljs-string">'login'</span>, {
+    <span class="hljs-attribute">successRedirect</span>: <span class="hljs-string">'/'</span>,
+    <span class="hljs-attribute">failureRedirect</span>: <span class="hljs-string">'/login'</span>
+  }));
+</code></pre><p>Be careful with the next command, as it will overwrite your existing <strong>index.js</strong> file. Since this is a new project, the command should not cause any harm. However, if you are working with an existing project, and have already modified <strong>routes/index.js</strong>, then open <strong>$ELF_TEMPLATES/SignIn/routes/index.js</strong> in an editor, and selectively copy in the contents of the file, or use the method described below in the <a href="#alternative-login">alternative login</a>.</p>
+<p>If you starting fresh, and can safely replace your <strong>routes/index.js</strong> file, then start by copying in the default SignIn <strong>index.js</strong> file, overwriting the existing index.js:</p>
+<pre>
+cp $ELF_TEMPLATES/SignIn/routes/index.js routes/.
+</pre>
+
+<p>The most important line is this one:</p>
+<pre><code class="lang-javascript">  router.get('/', isAuthenticated, function (req, res, next) <span class="hljs-meta">{...}</span>)
+</code></pre>
+<p>Here we use the <strong>isauthenticated</strong> middleware to test if we are logged in. If we are logged in, go to the designated page, otherwise go to the login page. Use this same middleware for all the calls you make from the client. That way you can be sure the user is logged in before allowing them to view a page.</p>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Submit four screen shots as PNG attachments. Model your screen shots after the four images found in this assignment. Instead of the logged in image, take one of the bash shell showing serializing and deserializing of the user. (Just convince me you got it to work....)</p>
+<p>Also check in your code in <strong>Week10-MongooseSignIn</strong> or some similar name beginning with <strong>Week10</strong>. If there might be any question at all as to where I would find your code, please include the folder name when you submit the assignment.</p>
+<h2 id="mongolab">MongoLab</h2>
+<p>In MongoLab you should be able to see the <strong>Users</strong> table where your users are stored.</p>
+<p>When viewing the data on MongoLab, you can optionally select <strong>edit table view</strong> in the view of your <strong>users</strong> collection and paste in the following code:</p>
+<pre><code>{
+    "<span class="hljs-attr">_id</span>": <span class="hljs-string">"id"</span>,
+    "<span class="hljs-attr">username</span>": <span class="hljs-string">"username"</span>,
+    "<span class="hljs-attr">email</span>": <span class="hljs-string">"email"</span>,
+    "<span class="hljs-attr">firstName</span>": <span class="hljs-string">"firstName"</span>,
+    "<span class="hljs-attr">lastName</span>": <span class="hljs-string">"lastName"</span>,
+    "<span class="hljs-attr">password</span>": <span class="hljs-string">"password"</span>
+}
+</code></pre><p>When you are done, you are view of the data could look something like this:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/SignIn04.png" alt="MongoLab"></p>
+<h2 id="summary">Summary</h2>
+<pre>
+npm install bcrypt-nodejs --save
+npm install mongoose --save
+npm install passport --save
+npm install passport-local --save
+npm install express-session --save
+cp $ELF_TEMPLATES/Database/connect.js routes/.
+cp -r $ELF_TEMPLATES/SignIn/models .
+cp -v $ELF_TEMPLATES/SignIn/views/\*.jade views/.
+cp -r $ELF_TEMPLATES/SignIn/passport/ .
+if [ ! -d "public/images" ]; then
+  mkdir public/images
+else
+  echo "public/images already exists"
+fi
+cp $ELF_TEMPLATES/SignIn/public/SpaceNeedle.png public/images/.
+</pre>
+
+<p>Before running the following command, be sure to check that your copy of <strong>routes/index.js</strong> does not contain important code. If it does, then copy all the routes from that file into another file and replace your old index.js with the one from $ELF_TEMPLATES. More in the section on the <a href="#alternative-login">alternative login</a>.</p>
+<pre>
+cp $ELF_TEMPLATES/SignIn/routes/index.js routes/.
+</pre>
+
+<p>You will need to do StepThree above manually.</p>
+<h2 id="alternative-login">Alternative login</h2>
+<p>Suppose your index.js looked like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> router = express.Router();
+
+<span class="hljs-comment">/* GET home page. */</span>
+router.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response, next</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    response.render(<span class="hljs-string">'index'</span>, {
+        title: <span class="hljs-string">'Elven Site Options'</span>,
+        author: <span class="hljs-string">'Charlie Calvert'</span>
+    });
+});
+
+router.get(<span class="hljs-string">'/foo'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'foo'</span>);
+    res.send({
+        title: <span class="hljs-string">'Elf Foo'</span>,
+        foo: <span class="hljs-string">'foo'</span>
+    });
+});
+</code></pre>
+<p>Move foo and any similar methods into in <strong>routes/foo.js</strong></p>
+<pre><code class="lang-javascript">var express = require(<span class="hljs-string">'express'</span>)<span class="hljs-comment">;</span>
+var router = express.Router()<span class="hljs-comment">;</span>
+
+router.get(<span class="hljs-string">'/foo'</span>, function(req, res, <span class="hljs-keyword">next</span>) {
+    console.log(<span class="hljs-string">'foo'</span>)<span class="hljs-comment">;</span>
+    res.send({
+        <span class="hljs-keyword">title</span>: <span class="hljs-string">'Elf Foo'</span>,
+        foo: <span class="hljs-string">'foo'</span>
+    })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>Now add the following to app.js about line 8 or 10:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> foo = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./routes/foo'</span>);
+</code></pre>
+<p>And further down:</p>
+<pre><code class="lang-javascript">app.<span class="hljs-keyword">use</span>(<span class="hljs-string">'/foo'</span>, foo);
+</code></pre>
+<p>Now call the foo route like this:</p>
+<pre><code class="lang-javascript">$.getJSON('/foo/foo', function(<span class="hljs-literal">result</span>) <span class="hljs-meta">{...}</span>);
+</code></pre>
+</div></body></html>

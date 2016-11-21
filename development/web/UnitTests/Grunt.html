@@ -1,0 +1,329 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Grunt</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><script src="/libs/scripts/Control.js"></script><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/charlie/About.html">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/charlie/development/index.html">Strongly Typed</a></li><li><a href="/charlie/development/web/index.html">Web & Scripts</a></li><li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/charlie/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>Grunt</h1><p>Welcomes to Grunt</p><ul><!--TOC_Start--><li><a href="#grunt">Grunt</a></li>
+<li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#jshint-setup">JSHint Setup</a></li>
+<li><a href="#jshint-reporters">JsHint Reporters</a></li>
+<li><a href="#checkstyle-errors">JsHint CheckStyle Errors</a></li>
+<li><a href="#stylish-errors">JsHint Stylish Errors</a></li>
+<li><a href="#global-install-of-grunt">Global Install of Grunt</a></li>
+<li><a href="#yeoman">Yeoman</a></li>
+<li><a href="#grunt-yo-and-jshint">Grunt, Yo and Jshint</a></li><!--TOC_End--></ul><h1 id="grunt">Grunt</h1>
+<p>Grunt is a tool that automates certain tasks that JavaScript
+developers perform over and over. In this example, we will
+learn how to automate the task of running JsHint on a 
+particular file.</p>
+<h2 id="getting-started">Getting Started</h2>
+<p>Install Grunt CLI:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> -<span class="hljs-keyword">g</span> grunt-cli
+</code></pre><p>Now install grunt itself into your current project:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> grunt
+</code></pre><h2 id="jshint-setup">JSHint Setup</h2>
+<p>JsHint helps you find syntax errors and &quot;suspicious usage&quot; in your code. Here are some links to the core documentation:</p>
+<ul>
+<li><a href="http://jshint.com/docs/">jshint docs</a></li>
+<li><a href="https://github.com/jshint/jshint">jshint on github</a></li>
+<li><a href="https://github.com/gruntjs/grunt-contrib-jshint">jshint and grunt</a></li>
+</ul>
+<p>Let&#39;s install jshint for grunt:</p>
+<pre><code>npm <span class="hljs-keyword">install </span>grunt-contrib-<span class="hljs-keyword">jshint </span>--save-dev
+</code></pre><p>Or just create package.json file and run <strong>npm install</strong>. Here is a package.json
+file for our project:</p>
+<pre><code>{
+  "<span class="hljs-attr">name</span>": <span class="hljs-string">"Grunt01 Sample"</span>,
+  "<span class="hljs-attr">version</span>": <span class="hljs-string">"0.1.0"</span>,
+  "<span class="hljs-attr">devDependencies</span>": {
+    "<span class="hljs-attr">grunt</span>": <span class="hljs-string">"~0.4.1"</span>,
+    "<span class="hljs-attr">grunt-contrib-jshint</span>": <span class="hljs-string">"~0.6.4"</span>
+  }
+}
+</code></pre><p>Now create your Gruntfile.js. This is the place where you define the
+tasks you want Grunt to urn:</p>
+<pre><code><span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">grunt</span>) </span>{
+
+    grunt.initConfig({
+      jshint: {
+        all: [<span class="hljs-string">'server.js'</span>]
+      }
+    });
+    grunt.loadNpmTasks(<span class="hljs-string">'grunt-contrib-jshint'</span>);
+}
+</code></pre><p>The above file assumes you have JavaScript file called server.js in the current
+directory that you want to run Grunt over.</p>
+<p>To run this file, type:</p>
+<pre><code><span class="hljs-attribute">grunt</span> jshint
+</code></pre><p>The result should, if all goes well, look like this:</p>
+<pre><code>$ grunt jshint
+Running <span class="hljs-string">"jshint:all"</span> (jshint) task
+<span class="hljs-meta">&gt;&gt;</span> <span class="hljs-number">1</span> file lint free.
+
+Done, without errors.
+</code></pre><p>Of course, you might see errors. This could mean one of two things:</p>
+<ul>
+<li>Your server.js file has errors that JsHint has found</li>
+<li>Grunt is not configured correctly</li>
+</ul>
+<p>If you want to check more than one file at a time, you can use wildcards:</p>
+<pre><code><span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">grunt</span>) </span>{
+    grunt.initConfig({
+      jshint: {
+        all: [<span class="hljs-string">'*.js'</span>]
+      }
+    });
+
+    grunt.loadNpmTasks(<span class="hljs-string">'grunt-contrib-jshint'</span>);
+}
+</code></pre><p>Note that when you do this, you will begin checking both your <strong>server.js</strong> and
+<strong>Gruntfile.js</strong>.</p>
+<p>Here is a gruntfile that contains an ignore clause:</p>
+<pre><code>module.exports = <span class="hljs-keyword">function</span>(grunt) {
+
+    grunt.initConfig({
+        jshint: {
+            files: [<span class="hljs-string">'*.js'</span>],
+
+            options: {
+                ignores: [<span class="hljs-string">'angular.js'</span>]
+            }
+        }
+    });
+
+    grunt.loadNpmTasks(<span class="hljs-string">'grunt-contrib-jshint'</span>);
+};
+</code></pre><p>Here is a call to Grunt across a range of directories. It finds all
+directories beneath the current directory and all its subdirectories.
+But it ignores some files, particularly all the files in directories
+call <strong>node_modules</strong>:</p>
+<pre><code>module.exports = function(grunt) {
+
+    grunt.initConfig({
+        jshint: {
+            files: ['<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/<span class="hljs-keyword">*</span>.js'],
+
+            options: {
+                ignores: ['<span class="hljs-keyword">*</span>/angular-mocks.js', 
+                    '<span class="hljs-keyword">*</span>/ui-bootstrap-tpls-<span class="hljs-keyword">*</span>.js',
+                    '<span class="hljs-keyword">*</span>/knockout-<span class="hljs-keyword">*</span>.js', 
+                    '<span class="hljs-keyword">*</span>/Ractive.js', 
+                    '<span class="hljs-keyword">*</span>/<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/angular.js', 
+                    '<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/node_modules/<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>']
+            }
+        }
+    });
+
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+};
+</code></pre><p>Wildcards are confusing. Consider this wildcard:</p>
+<pre><code>src/<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/<span class="hljs-keyword">*</span>.js
+</code></pre><p>This wild card finds all JavaScript files in the current directory
+and any subdirectories:</p>
+<pre><code><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/<span class="hljs-keyword">*</span>.js
+</code></pre><p>In general, code with two asterisks means the current directory and
+any directories further from the root than the current directory. It
+tells Grunt to descend further into the directory tree, looking for
+JavaScript files.0.</p>
+<p>It finds any JavaScript files in the source directory or its 
+sub-directories.</p>
+<p>Here is a file that specifies that output should be written
+to an XML file. Note the report and reporterOutput options:</p>
+<pre><code>module.exports = function(grunt) {
+
+    grunt.initConfig({
+        jshint: {
+            files: ['<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/<span class="hljs-keyword">*</span>.js'],
+
+            options: {
+                ignores: ['<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/node_modules/<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>',
+                    '<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/handlebars.js',
+                    '<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/jquery<span class="hljs-keyword">*</span>.js',
+                    '<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/cordova<span class="hljs-keyword">*</span>.js',
+                    '<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>/qunit<span class="hljs-keyword">*</span>.js'],
+                reporter: 'checkstyle',
+                reporterOutput: 'result.xml'
+            }
+        }
+    });
+
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+};
+</code></pre><h2 id="jshint-reporters">JsHint Reporters</h2>
+<p>Normally, we set up jshint reporting like this in Gruntfile.js:</p>
+<pre><code>reporter : 'checkstyle',
+reporterOutput : '<span class="hljs-literal">result</span>.xml',
+</code></pre><p>The system puts the output into <strong>result.xml</strong>. You can open <strong>result.xml</strong> in a browser:</p>
+<pre><code>firefox <span class="hljs-literal">result</span>.xml
+</code></pre><p>Sometimes, however, you don&#39;t want the output in a file. Instead, you just want to print the output to standard. A package called <strong>jshint-stylish</strong> produces nice output at the command line. First, install it: </p>
+<pre><code>npm <span class="hljs-keyword">install </span><span class="hljs-keyword">jshint-stylish </span>--save-dev
+</code></pre><p>Then modify Gruntfile.js:</p>
+<pre><code><span class="hljs-symbol">reporter:</span> <span class="hljs-keyword">require</span>(<span class="hljs-string">"jshint-stylish"</span>),
+<span class="hljs-regexp">//</span> <span class="hljs-symbol">reporterOutput:</span> <span class="hljs-string">'jshint-results.txt'</span>,
+</code></pre><p>Uncomment the above line if you want to save your errors to a text file instead of displaying them to the command line.</p>
+<h2 id="checkstyle-errors">JsHint CheckStyle Errors</h2>
+<p>Here is an abbreviated sample of the output in <em>result.xml</em>:</p>
+<pre><code class="lang-xml">&lt;<span class="hljs-keyword">file</span> name=<span class="hljs-string">"source/index01.js"</span>&gt;
+    &lt;<span class="hljs-keyword">error</span> <span class="hljs-keyword">line</span>=<span class="hljs-string">"9"</span> column=<span class="hljs-string">"1"</span> message=<span class="hljs-string">"Mixed spaces and tabs."</span> /&gt;
+    &lt;<span class="hljs-keyword">error</span> <span class="hljs-keyword">line</span>=<span class="hljs-string">"10"</span> column=<span class="hljs-string">"1"</span> message=<span class="hljs-string">"Mixed spaces and tabs."</span> /&gt;
+</code></pre>
+<p>These errors tell you that your code has errors in a file called <strong>source/index01.js</strong>. The first error is on line 9, column 1. The second error is on line 10 column 1. Both errors occurred because the developer mixed spaces and tabs when creating white space.</p>
+<h2 id="stylish-errors">JsHint Stylish Errors</h2>
+<p>Here are typical errors you might get when running <strong>JsHint</strong> with the reporter called {#jshint-stylish}.</p>
+<pre><code class="lang-bash">$ grunt jshint
+Running <span class="hljs-string">"jshint:files"</span> (jshint) task
+
+public/javascripts/control.js
+  <span class="hljs-built_in">line</span> <span class="hljs-number">61</span>  <span class="hljs-built_in">col</span> <span class="hljs-number">9</span>   Missing <span class="hljs-string">"use strict"</span> statement.
+  <span class="hljs-built_in">line</span> <span class="hljs-number">64</span>  <span class="hljs-built_in">col</span> <span class="hljs-number">11</span>  Missing semicolon.
+
+  ✖  <span class="hljs-number">1</span> error
+  ⚠  <span class="hljs-number">1</span> warnings
+
+Warnin<span class="hljs-variable">g:</span> Task <span class="hljs-string">"jshint:files"</span> failed. Use --force <span class="hljs-keyword">to</span> <span class="hljs-keyword">continue</span>.
+
+Aborted due <span class="hljs-keyword">to</span> warnings.
+</code></pre>
+<p>Two problems are reported.</p>
+<ol>
+<li>A missing <strong>use strict</strong> statement on line 61, column 9.</li>
+<li>A missing semicolon on line 64, column 11</li>
+</ol>
+<p>The bottom line is this: JsHint should come back clean for all JavaScript files you created for your project. Like this:</p>
+<pre><code class="lang-bash">$ grunt <span class="hljs-keyword">jshint
+</span>Running <span class="hljs-string">"jshint:files"</span> (<span class="hljs-keyword">jshint) </span>task
+
+✔ No problems
+
+
+Done, without errors.
+</code></pre>
+<h2 id="global-install-of-grunt">Global Install of Grunt</h2>
+<p>Though perhaps not recommended, you could link from global install:</p>
+<pre><code><span class="hljs-built_in">npm</span> link grunt
+</code></pre><p>To make this second option work, you first install grunt itself globally:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> -<span class="hljs-keyword">g</span> grunt
+</code></pre><p>Now you can link your current project to the global install like this:</p>
+<pre><code><span class="hljs-built_in">npm</span> link grunt
+</code></pre><p>This is nice because you don&#39;t have to install dozens of copies of 
+grunt on your system, one for each of the small projects we are
+creating. The risk, however, is that you will end up with an out of
+date global copy of grunt. To update your global copy:</p>
+<ul>
+<li><a href="http://elvenware.com/charlie/development/web/JavaScript/NodeJs.html#what-version-of-a-node-package-is-installed">Update node package</a></li>
+</ul>
+<h2 id="yeoman">Yeoman</h2>
+<p><a href="http://yeoman.io/">Yeoman</a> is a utility that will automatically
+create a web application for you, and set up grunt and bower.</p>
+<p>You need to install <a href="https://www.ruby-lang.org/en/installation/">Ruby</a>. </p>
+<p>Now you are ready to build your app:</p>
+<pre><code>gem <span class="hljs-keyword">install</span> compass
+npm <span class="hljs-keyword">install</span> -<span class="hljs-keyword">g</span> yo
+npm <span class="hljs-keyword">install</span> -<span class="hljs-keyword">g</span> generator-webapp
+mkdir MyApp
+yo webapp
+bower <span class="hljs-keyword">install</span> underscore
+grunt
+</code></pre><p>The first three steps are one time only. After that, you only need run the
+last four commands.</p>
+<p>When you are done, CD into the dist directory and open index.html in
+a browser.</p>
+<h2 id="grunt-yo-and-jshint">Grunt, Yo and Jshint</h2>
+<p>Before we begin, note that if you like static type checking, you might well find <strong><a href="http://www.elvenware.com/charlie/development/web/JavaScript/NodeJs.html#jshint">jshint</a></strong> helpful. To a limited degree, at least, <strong>jshint</strong> is to JavaScript as strong type checking is to C#. JsHint and strong type checking are certainly not identical, but they do perform similar functions. In particular, they help you check the syntax of your code, and report errors, before you run your code. Jshint is probably as close as JavaScript is going to come to having static type checking outside of actually using something like TypeScript. </p>
+<p>Okay. Let&#39;s get started. Check to see what npm tools are installed globally:</p>
+<pre><code>npm <span class="hljs-built_in">list</span> -g <span class="hljs-comment">--depth=0</span>
+</code></pre><p>Look through the list of installed files and make sure you see <strong>yo</strong>,  <strong>generator-gruntfile</strong> and <strong>generator-jasmine</strong>. If they are not present, make sure these tools are installed globally by issuing one or more of the following commands:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> -<span class="hljs-keyword">g</span> yo
+npm <span class="hljs-keyword">install</span> -<span class="hljs-keyword">g</span> generator-gruntfile
+npm <span class="hljs-keyword">install</span> -<span class="hljs-keyword">g</span> generator-jasmine
+</code></pre><p>If you have not done so already, create a standard express project and add <strong>jasmine</strong> and <strong>gruntfile</strong> to it:</p>
+<pre><code>express MyProject
+<span class="hljs-built_in">cd</span> MyProject
+yo jasmine    
+yo gruntfile
+</code></pre><p>When running <strong>yo gruntfile</strong> you will be asked about the DOM and minification. We care about the DOM, but not about minification:</p>
+<p>Our gruntfile should depend on the tasks <strong>grunt-contrib-jshint</strong> and <strong>grunt-contrib-watch</strong>. Having <strong>grunt-contrib-qunit</strong> installed is not necessary, but does not cause us any harm. Here are the relevant lines from <strong>Gruntfile.js</strong>:</p>
+<pre><code class="lang-javascript">    <span class="hljs-comment">// These plugins provide necessary tasks</span>
+    grunt.loadNpmTasks(<span class="hljs-string">'grunt-contrib-qunit'</span>)<span class="hljs-comment">;</span>
+    grunt.loadNpmTasks(<span class="hljs-string">'grunt-contrib-jshint'</span>)<span class="hljs-comment">;</span>
+    grunt.loadNpmTasks(<span class="hljs-string">'grunt-contrib-watch'</span>)<span class="hljs-comment">;</span>
+
+    <span class="hljs-comment">// Default task</span>
+    grunt.registerTask(<span class="hljs-string">'default'</span>, [<span class="hljs-string">'jshint'</span>])<span class="hljs-comment">;</span>
+</code></pre>
+<p>To be sure these lines run smoothly, we need to install the relevant tasks:</p>
+<pre><code>npm install grunt --<span class="hljs-built_in">save</span>-<span class="hljs-built_in">dev</span>
+npm install grunt-contrib-qunit --<span class="hljs-built_in">save</span>-<span class="hljs-built_in">dev</span>
+npm install grunt-contrib-jshint --<span class="hljs-built_in">save</span>-<span class="hljs-built_in">dev</span>
+npm install grunt-contrib-watch --<span class="hljs-built_in">save</span>-<span class="hljs-built_in">dev</span>
+</code></pre><p>Now, in <strong>GruntFile.js</strong>, modify the <strong>jshint options</strong> section in <strong>Gruntfile.js</strong> to look like this:</p>
+<pre><code><span class="hljs-string">browser:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-string">globals:</span> { <span class="hljs-string">inject:</span> <span class="hljs-literal">true</span> },
+<span class="hljs-string">boss:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-string">ignores:</span> [
+    <span class="hljs-string">'**/components/**'</span>,
+    <span class="hljs-string">'**/bower_components/**'</span>,
+    <span class="hljs-string">'**/node_modules/**'</span>
+],
+<span class="hljs-string">reporter:</span> <span class="hljs-string">'checkstyle'</span>,
+<span class="hljs-string">reporterOutput:</span> <span class="hljs-string">'result.xml'</span>
+</code></pre><p>The <strong>browser</strong>,  and <strong>boss</strong> properties already exist. I&#39;m adding them just for context. You need to add <strong>ignores</strong>, <strong>reporter</strong> and <strong>reporterOutput</strong>. Some variables that we use such as <strong>inject</strong> that should be ignored. That is, they should not be reported as <strong>undefined</strong>.</p>
+<p>Here is the libtest section, which now points at <strong>public</strong> rather than <strong>src</strong>&quot;</p>
+<pre><code> <span class="hljs-selector-tag">lib_test</span>: {
+    <span class="hljs-attribute">src</span>: [<span class="hljs-string">'public/**/*.js'</span>, <span class="hljs-string">'test/**/*.js'</span>]
+}
+</code></pre><p>Here is the entire <strong>jshint</strong> from GruntFile:</p>
+<pre><code class="lang-javascript"><span class="hljs-attr">jshint:</span> {
+<span class="hljs-attr">    options:</span> {
+<span class="hljs-attr">        node:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-attr">        curly:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-attr">        eqeqeq:</span> <span class="hljs-literal">true</span>,    
+<span class="hljs-attr">        immed:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-attr">        jasmine:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-attr">        latedef:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-attr">        newcap:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-attr">        noarg:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-attr">        sub:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-attr">        undef:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-attr">        unused:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-attr">        eqnull:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-attr">        browser:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-attr">        globals:</span> { inject: <span class="hljs-literal">true</span> },
+<span class="hljs-attr">        boss:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-attr">        ignores:</span> [
+            <span class="hljs-string">'**/components/**'</span>,
+            <span class="hljs-string">'**/bower_components/**'</span>,
+            <span class="hljs-string">'**/node_modules/**'</span>
+        ],
+<span class="hljs-attr">        reporter:</span> <span class="hljs-string">'checkstyle'</span>,
+<span class="hljs-attr">        reporterOutput:</span> <span class="hljs-string">'result.xml'</span>
+    },
+<span class="hljs-attr">    gruntfile:</span> {
+<span class="hljs-attr">        src:</span> <span class="hljs-string">'gruntfile.js'</span>
+    },
+<span class="hljs-attr">    lib_test:</span> {
+<span class="hljs-attr">        src:</span> [<span class="hljs-string">'public/**/*.js'</span>, <span class="hljs-string">'test/**/*.js'</span>]
+    }
+},
+</code></pre>
+<p>Notice that I include <strong>jasmine: true</strong> among the list of <strong>jshint options</strong>. This insures that words like <strong>describe</strong>, <strong>it</strong> and <strong>beforeEach</strong> don&#39;t get flagged as errors by <strong>jshint</strong>. Notice also that I defined a global <strong>inject: true</strong>, because <strong>angular</strong> uses inject in our <strong>jasmine</strong> tests.</p>
+<p>Notice also that <strong>lib_test</strong> is editor to point at the <strong>public</strong> directory included in <strong>express</strong> projects. There is no <strong>lib</strong> directory in an <strong>express</strong> project.</p>
+<p>Now run either <strong>grunt</strong> or <strong>grunt jshint</strong>. Look at <strong>result.xml</strong> in your browser.</p>
+<p>To load <strong>result.xml</strong> in your browser, go to the directory where <strong>result.xml</strong> exists, and type <strong>start result.xml</strong>. It should open up in your default browser. If Chrome is your default browser, then this is something that you might be see:</p>
+<p> <img src="https://drive.google.com/uc?id=0B25UTAlOfPRGREFYcnBkNXh3WWs" alt="Not so good"></p>
+<p>If you don&#39;t see any files in your output, then either you are very careful with your syntax, or you don&#39;t have <strong>grunt</strong> and <strong>jshint</strong> set up correctly. Try adding a bogus line of code such as <strong>foobar fluff</strong> into <strong>control.js</strong>. Make sure you see the line highlighted as an error when your run <strong>grunt</strong>. If you do, remove it and fix any other errors or warning that you might see. </p>
+<p>Remember that we set the global variable <strong>inject: true</strong>. That was needed because angular defines <strong>inject</strong>. Of course, using global to make errors go away is not always the right solution. Usually we fix the problem in our code.  If, for instance, you had made a mistake like this:</p>
+<pre><code>var supper = <span class="hljs-number">2</span><span class="hljs-comment">;</span>
+consolue.log(suppper)<span class="hljs-comment">;   &lt;== suppper is NOT A LEGITIMATE GLOBAL, JUST A TYPO</span>
+</code></pre><p>You should not define <strong>suppper</strong> as a global. Instead, you should correct the typo. In particular, you should write <strong>supper</strong> rather than <strong>suppper</strong>.</p>
+<p>Fix any errors you see.  For instance, in the screen shot shown above, we see &quot;beforeEach&quot; flagged as a global variable. That happened because I had not, at the time I took the screenshot, defined <strong>jasmine: true</strong>. In particular, the second of these three lines was missing from jshint section of <strong>Gruntfile.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">immed:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-string">jasmine:</span> <span class="hljs-literal">true</span>,
+<span class="hljs-string">latedef:</span> <span class="hljs-literal">true</span>,
+</code></pre>
+<p>If I created the define, then run <strong>grunt jshint</strong> again, I would see that the problems with <strong>test.js</strong> went away:</p>
+<p><img src="https://drive.google.com/uc?id=0B25UTAlOfPRGd29iRTk3X1E5Tkk" alt="better"></p>
+<p>This is just one example of what you might need to do to make errors and hints go away. It would, for instance, not be hard to fix the problem on line 11 of <strong>resource.js</strong>. Just remove the unnecessary semicolon and then that error will go away. To make the errors in <strong>control.js</strong> about <strong>headers</strong> and <strong>deletedobject</strong> go away, you could write the variables to the console, or remove them from your code:</p>
+<pre><code>console.<span class="hljs-built_in">log</span>(headers, deletedObject);
+</code></pre><p>Now the errors for line 37 of <strong>control.js</strong> will go away. The goal is to get jshint to come back clean, with no errors reported. </p>
+<p>Here is some more information you might find useful:</p>
+<ul>
+<li><a href="https://github.com/gruntjs/grunt-contrib-jshint">JsHint</a></li>
+<li><a href="http://gruntjs.com/configuring-tasks">Configure</a></li>
+</ul>
+</div></body></html>

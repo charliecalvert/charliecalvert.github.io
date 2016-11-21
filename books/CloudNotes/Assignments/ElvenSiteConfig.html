@@ -1,0 +1,171 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ElvenSiteConfig</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><script src="/libs/scripts/Control.js"></script><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/charlie/About.html">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/charlie/development/index.html">Strongly Typed</a></li><li><a href="/charlie/development/web/index.html">Web & Scripts</a></li><li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/charlie/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>ElvenSiteConfig</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#copy-project">Step One: Copy Project</a></li>
+<li><a href="#config">Step Two: Setup Config</a></li>
+<li><a href="#step-two-five">Step Two.Five</a></li>
+<li><a href="#load-config">Step Three: Load Config</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<p>In Elven Site Config we add configuration files to our ElvenSite.</p>
+<p>See <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/ElvenSiteOptions.html#elven-site-tools">this note</a> on setting up the proper version of <strong>elven-site-tools</strong>.</p>
+<h2 id="copy-project">Step One: Copy Project</h2>
+<p>Navigate to the root of your repository and copy ElvenSiteStarter to ElvenSiteConfig:</p>
+<p>  cp -r Week03-ElvenSiteStarter/ Week05-ElvenSiteConfig</p>
+<p>Open up your project in WebStorm or your preferred editor/IDE.</p>
+<p>Change the title and add an author property for use when rendering your home page:</p>
+<pre><code>  <span class="hljs-selector-tag">res</span><span class="hljs-selector-class">.render</span>(<span class="hljs-string">'index'</span>, { <span class="hljs-attribute">title</span>: <span class="hljs-string">'Elven Site Config'</span>, <span class="hljs-attribute">author</span>: <span class="hljs-string">'Charlie Calvert'</span> });
+</code></pre><p>In <strong>index.jade</strong>, remove the welcome message and insert a paragraph that displays your name in a italics:</p>
+<p> <em>by Charlie Calvert</em>.  </p>
+<p>The title should appear as an H1, and then your italicized attribution.</p>
+<p>Make sure you don&#39;t have a favicon error.</p>
+<h2 id="config">Step Two: Setup Config</h2>
+<p>We want to read a config file. First create a folder for it in the root of your project. I need this folder so I can see your config file:</p>
+<pre><code><span class="hljs-built_in">mkdir</span> config
+</code></pre><p>In the <strong>config</strong> directory, create the following file, where <strong>lastname</strong> is your last name and <strong>base-dir</strong> is your home directory:</p>
+<pre><code class="lang-javascript">{
+    "<span class="hljs-attr">lastname</span>": {
+        "<span class="hljs-attr">base-dir</span>": <span class="hljs-string">"/home/charlie/"</span>,
+        "<span class="hljs-attr">site-dirs</span>": [
+            <span class="hljs-string">"Documents/AllTest"</span>,
+            <span class="hljs-string">"Git/CloudNotes/Assignments"</span>
+        ]
+    }
+}
+</code></pre>
+<p>Create a symbolic link to this file from here: <strong>~/.config</strong>:</p>
+<pre><code><span class="hljs-built_in">cd</span> ~/.config
+ln <span class="hljs-_">-s</span> &lt;PATH-TO-YOUR-CONFIG-FILE&gt; ElvenConfig.json
+</code></pre><p>This directory should already exist on your system. This is your configuration file. To complete the assignment, you must add at least one more folder to the <strong>site-dirs</strong> array, and you must put markdown content in the directory you specify.</p>
+<p>Note the <strong>base-dir</strong> property. We combine this property and a specific item from the <strong>site-dirs</strong> property to get the full path to a folder: <strong>/home/bcuser/Documents/AllTest</strong>. We need <strong>base_dir</strong> to be configurable because:</p>
+<ul>
+<li>We might have different paths to our home dir on different systems or for different users.</li>
+<li>We might not want to store these files in our home directory at all.</li>
+</ul>
+<p>We will build our own config tools, but we will note the presence and try to remain compatible with this:</p>
+<ul>
+<li><a href="https://github.com/lorenwest/node-config">https://github.com/lorenwest/node-config</a></li>
+</ul>
+<p>Here is our code, where you will finish implementing <strong>load</strong> by using the <strong>readFile</strong> method from your <strong>npmPackage</strong>. Call it <strong>routes/elven-config.js</strong>:</p>
+<pre><code class="lang-javascript">/<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>
+ <span class="hljs-keyword">*</span> <span class="hljs-meta">@author</span> Charlie
+ <span class="hljs-keyword">*</span>/
+
+var os = require('os');
+
+function getConfigName() { 'use strict';
+    var configFileName = <span class="hljs-string">"ElvenConfig.json"</span>;
+    var configName = '';
+    if (os.platform() === 'darwin') {
+        configName = process.env.HOME + '/.config/' + configFileName;
+    } else if (os.platform() === 'linux') {
+        configName = process.env.HOME + '/.config/' + configFileName;
+    } else if (os.platform() === 'win32') {        
+        configName = process.env.USERPROFILE + <span class="hljs-string">"\\Config\\"</span> + configFileName;
+    }
+    return configName;
+}
+
+function reportError(err) { 'use strict';
+    console.log('<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>');
+    console.log(err);
+    console.log('<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>');
+    console.log('Error condition in elven-config.js!');
+    console.log('This program requires a config file');
+    console.log('Please put ElvenConfig.json somewhere we can find it.');
+    console.log('Contrl-C to abort');
+    console.log('Error condition!');
+    console.log('<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>');
+}
+
+function elvenConfig() {
+
+}
+
+elvenConfig.configData = {};
+
+var load = function(callback) {
+    'use strict';
+    var configName = getConfigName();
+    try {
+    // PUT YOUR CALL TO READFILE HERE
+    } catch(e) {
+        console.log(e);
+    }
+};
+
+elvenConfig.get = function(property) {
+    console.log('in get', elvenConfig.configData);
+    return elvenConfig.configData.calvert[property];
+};
+
+load();
+
+module.exports = elvenConfig;
+</code></pre>
+<p>You will also need to change the <strong>elvenConfig.get</strong> method to use your last name. The point is that it must be compatible with your <strong>ElvenConfig.json</strong> file.</p>
+<h2 id="step-two-five">Step Two.Five</h2>
+<p>Update <strong>elven-site-tools</strong>.</p>
+<pre><code>npm <span class="hljs-keyword">install</span> elven-site-tools <span class="hljs-comment">--save</span>
+</code></pre><p><strong>NOTE</strong>: <em>The <strong>elven-site-tools</strong> package needs to be updated. At the time of this writing is at <strong>0.1.0</strong>. Because we are installing something new, I have updated the package.json file found in your <strong>~/tmp</strong> directory. Since you already ran <strong>npm install elven-site-tools</strong> above, this could be a no-op for you. I&#39;m simply reminding you that the contents of <strong>~/temp/package.json</strong> was updated. So long as you have a symbolic link to JsObjects set up for that file, then all should be good. Make sure, however, that you are accessing version 0.1.0 of **elven-site-tools.</em></p>
+<p><strong>IMPORTANT</strong>: <em>See <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/ElvenSiteOptions.html#elven-site-tools">this note</a> on setting up the proper version of <strong>elven-site-tools</strong>.</em></p>
+<p>This update fixes the bug reported in the discussion area, and adds a new property to the return value <strong>destinationDir</strong>:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/elven-site-config-01.png" alt="Elven Site Config"></p>
+<p>Some code for creating links:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showHtmlFiles</span><span class="hljs-params">(files, destinationDir)</span> {</span>
+    $(<span class="hljs-string">'#displayList'</span>).empty();
+    files.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(file)</span> {</span>
+        var url = <span class="hljs-string">'http://localhost/'</span> + file.slice(destinationDir.<span class="hljs-built_in">length</span>, file.<span class="hljs-built_in">length</span>);
+        $(<span class="hljs-string">'#displayList'</span>).append(<span class="hljs-string">'&lt;li&gt;&lt;a href="</span><span class="hljs-string">' + url + '</span><span class="hljs-string">" target="</span>_blank<span class="hljs-string">"&gt;'</span> + url + <span class="hljs-string">'&lt;/a&gt;&lt;/li&gt;'</span> );
+    })
+}
+</code></pre>
+<h2 id="load-config">Step Three: Load Config</h2>
+<p>In control.js set up the modular pattern. Here is the start, you do the rest:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elf = {
+    init: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        elf.siteConfig = <span class="hljs-keyword">new</span> elf.SiteConfig();
+    }
+};
+
+elf.SiteConfig = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+
+});
+</code></pre>
+<p>On the client, create two methods called <strong>loadConfig</strong> and <strong>writeConfig</strong>. Implement them with <strong>getJSON</strong>. All calls to <strong>getJSON</strong> must follow this format:</p>
+<pre><code class="lang-javascript">  $.getJSON(&lt;SOME ROUTE&gt;, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(result)</span> {</span>
+      <span class="hljs-comment">// Success: display results</span>
+    }).done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            showDebug(<span class="hljs-string">'Config loaded second success'</span>);
+        })
+        .fail(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(jqxhr, textStatus, error)</span> {</span>
+            showDebug(<span class="hljs-string">'Walk loaded error: '</span> + jqxhr.status + <span class="hljs-string">' '</span> + textStatus + <span class="hljs-string">' '</span> + <span class="hljs-built_in">error</span> );
+        })
+        .always(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            showDebug(<span class="hljs-string">'Config loaded complete'</span>);
+        });
+</code></pre>
+<p>Where <strong>showDebug</strong> adds a list item to a UL element in <strong>index.jade</strong>.</p>
+<p>The <strong>loadConfig</strong> method should call a route on the server in <strong>routes/index.js</strong> called <strong>/config</strong>. It should return the <strong>base-dir</strong> and the <strong>site-dirs</strong>:</p>
+<p>First load the <strong>config</strong> package:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> config = <span class="hljs-built_in">require</span>(<span class="hljs-string">'config'</span>);
+</code></pre>
+<p>Then set up your &#39;/config&#39; route. Inside it, include the following:</p>
+<pre><code><span class="hljs-keyword">var</span> baseDir = config.<span class="hljs-keyword">get</span>(<span class="hljs-string">'base-dir'</span>);
+<span class="hljs-keyword">var</span> siteDirs = config.<span class="hljs-keyword">get</span>(<span class="hljs-string">'site-dirs'</span>);
+<span class="hljs-comment">// Write code here to respond with an object</span>
+<span class="hljs-comment">// that contains both your baseDir and your siteDir</span>
+</code></pre><p>The first two lines call the <strong>get</strong> method that is part of the <strong>config</strong> package. It works much like the <a href="https://github.com/lorenwest/node-config/wiki/Common-Usage"><strong>get</strong></a> from the loren west repository.</p>
+<p>On the server side, use your <strong>readFile</strong> and <strong>writeFile</strong> npm utilities.</p>
+<p>Use a select object to display the paths to your markdown files. The user will choose one path at a time. The point is that you can set up multiple sites with this one tool, where each path leads to the root directory for the markdown files for your site. The user picks the item and send it to the server. You build this dynamically, of course, but in your working code, it might look a bit like this:</p>
+<pre><code>  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"dirsToWalk"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">option</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"/home/charlie/Documents/AllTest"</span>&gt;</span>/home/charlie/Documents/AllTest<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">option</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"/home/charlie/Git/CloudNotes/Assignments"</span>&gt;</span>/home/charlie/Git/CloudNotes/Assignments<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre><p>And here is how to get the selected item out of the <strong>select</strong> element, which we have called &#39;dirsToWalk&#39;:</p>
+<pre><code class="lang-javascript"><span class="hljs-variable"><span class="hljs-keyword">var</span> dirsToWalk</span> = document.getElementById(<span class="hljs-string">"dirsToWalk"</span>);
+<span class="hljs-variable"><span class="hljs-keyword">var</span> directory</span> = dirsToWalk.options[dirsToWalk.selectedIndex].value;
+</code></pre>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Push folder to repository and submit something in Canvas so I know its available.</p>
+<p><strong>NOTE</strong>: <em>Be sure that you application is not throwing favicon error.</em></p>
+</div></body></html>
