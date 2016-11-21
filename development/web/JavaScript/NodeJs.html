@@ -185,7 +185,7 @@ library called fs (FileSystem) and a method called readFileSync.</p>
 <p><strong>NOTE</strong>: <em>You can learn more about fs, readFileSync and the asynchronous method readFile in <a href="http://elvenware.com/charlie/development/web/JavaScript/JsonBasics.html#reading-json-with-node">JsonBasics</a>.</em></p>
 <p>To make this program work, create a directory called Public. In it, put a
 very simple HTML file such as this one:</p>
-<pre><code><span class="hljs-meta">&lt;!DOCTYPE html&gt;</span>
+<pre><code class="lang-HTML"><span class="hljs-meta">&lt;!DOCTYPE html&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"utf-8"</span>&gt;</span>
@@ -198,12 +198,13 @@ very simple HTML file such as this one:</p>
 <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>A simple Node Express program<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
-</code></pre><p>The file shown above is the one that will be read in by the node
+</code></pre>
+<p>The file shown above is the one that will be read in by the node
 readFileSync method, and then served up by the node web server.</p>
 <p>Now start the node webserver by running this command:</p>
 <pre><code><span class="hljs-keyword">node</span> <span class="hljs-title">server</span>.js
 </code></pre><p>Here is another NODE example that uses express:</p>
-<pre><code>    <span class="hljs-keyword">var</span> express = require('express');
+<pre><code class="lang-javascript">    <span class="hljs-keyword">var</span> express = require('express');
     <span class="hljs-keyword">var</span> app = express();
     <span class="hljs-keyword">var</span> fs = require('fs');
 
@@ -229,7 +230,8 @@ readFileSync method, and then served up by the node web server.</p>
 
     app.listen(port);
     console.log('<span class="hljs-type">Express</span> server started on port %s', port);
-</code></pre><p>The first three lines are like import or include statements in other languages
+</code></pre>
+<p>The first three lines are like import or include statements in other languages
 such as Java, C# or C++:</p>
 <pre><code><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
 <span class="hljs-keyword">var</span> app = express();
@@ -249,28 +251,30 @@ page:</p>
 <p>The next lines of code defines the action that our program will take if the
 user goes to the root of our site. For instance, if we are running on localhost,
 then the following method is called when the user goes to <a href="http://localhost:30025">http://localhost:30025</a>:</p>
-<pre><code>    app.get(<span class="hljs-string">'/'</span>, function(req, res) {
+<pre><code class="lang-javascript">    app.get(<span class="hljs-string">'/'</span>, function(req, res) {
         console.log(<span class="hljs-string">"root request sent"</span>)<span class="hljs-comment">;</span>
         var html = fs.readFileSync(<span class="hljs-string">'public/index.html'</span>)<span class="hljs-comment">;</span>
         res.writeHeader(<span class="hljs-number">200</span>, <span class="hljs-string">{"Content-Type": "text/html"}</span>)<span class="hljs-comment">;   </span>
         res.write(html)<span class="hljs-comment">;</span>
         res.<span class="hljs-keyword">end</span>()<span class="hljs-comment">;</span>
     })<span class="hljs-comment">;</span>
-</code></pre><p>This code logs a debug message to the console. Then it reads in an HTML file
+</code></pre>
+<p>This code logs a debug message to the console. Then it reads in an HTML file
 from the file system and packages it up using the HTTP protocol. It then
 sends it to the user. In a typical scenario, the user invoked this method by
 typing a URL in the address bar of a browser. Therefore the HTTP
 packet is delivered to a browser and rendered there so the user can read it.</p>
 <p>The following two lines of code mirror back the current directory and PORT on
 which the node server is running:</p>
-<pre><code>    app.get('/dirname', function(req, <span class="hljs-literal">result</span>) {
+<pre><code class="lang-javascript">    app.get('/dirname', function(req, <span class="hljs-literal">result</span>) {
         <span class="hljs-literal">result</span>.send({'<span class="hljs-literal">result</span>': __dirname});
     });
 
     app.get('/port', function(request, <span class="hljs-literal">result</span>) {
         <span class="hljs-literal">result</span>.send({'<span class="hljs-literal">result</span>': port});
     });
-</code></pre><p>These commands are invoked when the user types one of the following URLS</p>
+</code></pre>
+<p>These commands are invoked when the user types one of the following URLS</p>
 <pre><code><span class="hljs-string">http:</span><span class="hljs-comment">//localhost:30025/dirname</span>
 <span class="hljs-string">http:</span><span class="hljs-comment">//localhost:30025/port</span>
 </code></pre><p>The express library matches up the route designated by the URLs to the app.get
@@ -305,42 +309,146 @@ route:</p>
 </li>
 </ul>
 <p>Suppose you write the following, where a REST parameter is passed as the second parameter to <strong>getJSON</strong>:</p>
-<pre><code>$.getJSON(<span class="hljs-string">'/walker'</span>, {folder: <span class="hljs-string">'Assignments'</span>},  <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
-</code></pre><p>Then on the server end you could write the following to display the value passed from the client:</p>
-<pre><code>console.<span class="hljs-built_in">log</span>('request.<span class="hljs-keyword">query</span>', request.<span class="hljs-keyword">query</span>);
-</code></pre><p>This would produce the following output in the console:</p>
-<pre><code><span class="hljs-selector-tag">request</span><span class="hljs-selector-class">.params</span> { <span class="hljs-attribute">folder</span>: <span class="hljs-string">'Assignments'</span> }
-</code></pre><h2 id="working-with-post">Working with Post</h2>
+<pre><code class="lang-javascript">$.getJSON(<span class="hljs-string">'/walker'</span>, {folder: <span class="hljs-string">'Assignments'</span>},  <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+</code></pre>
+<p>Then on the server end you could write the following to display the value passed from the client:</p>
+<pre><code class="lang-javascript">console.<span class="hljs-built_in">log</span>('request.<span class="hljs-keyword">query</span>', request.<span class="hljs-keyword">query</span>);
+</code></pre>
+<p>This would produce the following output in the console:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">request</span><span class="hljs-selector-class">.params</span> { <span class="hljs-attribute">folder</span>: <span class="hljs-string">'Assignments'</span> }
+</code></pre>
+<h2 id="working-with-post">Working with Post</h2>
 <p>We used to use a tool called bodyParser() when working with post. But
 now we should use connect:</p>
 <pre><code>npm <span class="hljs-keyword">install</span> <span class="hljs-keyword">connect</span> <span class="hljs-comment">--save</span>
 </code></pre><p>And in your code:</p>
-<pre><code>var <span class="hljs-keyword">connect</span> = <span class="hljs-keyword">require</span>( <span class="hljs-string">"connect"</span> );
+<pre><code class="lang-javascript">    var <span class="hljs-keyword">connect</span> = <span class="hljs-keyword">require</span>( <span class="hljs-string">"connect"</span> );
 
-app.<span class="hljs-keyword">use</span>(<span class="hljs-keyword">connect</span>.urlencoded());
-app.<span class="hljs-keyword">use</span>(<span class="hljs-keyword">connect</span>.json());
-</code></pre><p>And then use it:</p>
-<pre><code>app.post('/add', function(request, response) {
-    console.log('add called');
-    console.log(request.body);
-    <span class="hljs-keyword">var</span> operandA = parseInt(request.body.operandA);
-    <span class="hljs-keyword">var</span> operandB = parseInt(request.body.operandB);
-    <span class="hljs-keyword">var</span> <span class="hljs-literal">result</span> = addingMachine.myObject.add(operandA, operandB);
-    response.send({ <span class="hljs-string">"result"</span>: <span class="hljs-literal">result</span> });
-});
-</code></pre><p>Example code is found here:</p>
+    app.<span class="hljs-keyword">use</span>(<span class="hljs-keyword">connect</span>.urlencoded());
+    app.<span class="hljs-keyword">use</span>(<span class="hljs-keyword">connect</span>.json());
+</code></pre>
+<p>And then use it:</p>
+<pre><code class="lang-javascript">    app.post('/add', function(request, response) {
+        console.log('add called');
+        console.log(request.body);
+        <span class="hljs-keyword">var</span> operandA = parseInt(request.body.operandA);
+        <span class="hljs-keyword">var</span> operandB = parseInt(request.body.operandB);
+        <span class="hljs-keyword">var</span> <span class="hljs-literal">result</span> = addingMachine.myObject.add(operandA, operandB);
+        response.send({ <span class="hljs-string">"result"</span>: <span class="hljs-literal">result</span> });
+    });
+</code></pre>
+<p>Example code is found here:</p>
 <ul>
 <li><a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/NodeCode/NodeRoutes01/server.js">NodeRoutes01</a></li>
 <li><a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/NodeCode/NodeRoutes02/server.js">NodeRoutes02</a></li>
 </ul>
+<p>Good job troubleshooting.</p>
+<p>There is some background here that I have not covered sufficiently in class. See the routes methods section on this page:</p>
+<p><a href="https://expressjs.com/en/guide/routing.html">https://expressjs.com/en/guide/routing.html</a> (Links to an external site.)</p>
+<p>In the (slightly updated) NodesRoutes02 (Links to an external site.) program notice that I have two Add methods:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// With a get, the parameters are passed in request.query</span>
+router.get(<span class="hljs-string">'/add'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'add get called'</span>);
+    <span class="hljs-built_in">console</span>.log(request.query);
+    <span class="hljs-keyword">var</span> operandA = <span class="hljs-built_in">parseInt</span>(request.query.operandA);
+    <span class="hljs-keyword">var</span> operandB = <span class="hljs-built_in">parseInt</span>(request.query.operandB);
+    <span class="hljs-keyword">var</span> result = addingMachine.myObject.add(operandA, operandB);
+    response.send({
+        <span class="hljs-string">"result"</span>: result
+    });
+});
+
+<span class="hljs-comment">/* To handle a post, we have to add express.bodyParser, shown above
+   Now our parameters come in on request.body */</span>
+router.post(<span class="hljs-string">'/add'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'add post called'</span>);
+    <span class="hljs-built_in">console</span>.log(request.body);
+    <span class="hljs-keyword">var</span> operandA = <span class="hljs-built_in">parseInt</span>(request.body.operandA);
+    <span class="hljs-keyword">var</span> operandB = <span class="hljs-built_in">parseInt</span>(request.body.operandB);
+    <span class="hljs-keyword">var</span> result = addingMachine.myObject.add(operandA, operandB);
+    response.send({
+        <span class="hljs-string">"result"</span>: result
+    });
+});
+</code></pre>
+<p>One is a POST and one is a GET. Here is the client side code that calls them:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> add = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> operandA = $(<span class="hljs-string">"#operandA"</span>).val();
+        <span class="hljs-keyword">var</span> operandB = $(<span class="hljs-string">"#operandB"</span>).val();
+
+        $.ajax({
+            url: <span class="hljs-string">"/add"</span>,
+            type: <span class="hljs-string">"GET"</span>,
+            data: {
+                <span class="hljs-string">"operandA"</span>: operandA,
+                <span class="hljs-string">"operandB"</span>: operandB
+            },
+            dataType: <span class="hljs-string">"json"</span>,
+            success: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+                $(<span class="hljs-string">"#addResult"</span>).html(operandA + <span class="hljs-string">" + "</span> + operandB + <span class="hljs-string">" = "</span> + data.result);
+            },
+            error: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">jqXHR, textStatus, errorThrown</span>) </span>{
+                <span class="hljs-built_in">console</span>.log(jqXHR.responseText);
+                <span class="hljs-built_in">console</span>.log(textStatus);
+                <span class="hljs-built_in">console</span>.log(errorThrown);
+            }
+        });
+    };
+
+    <span class="hljs-keyword">var</span> addPost = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> operandA = $(<span class="hljs-string">"#operandAPost"</span>).val();
+        <span class="hljs-keyword">var</span> operandB = $(<span class="hljs-string">"#operandBPost"</span>).val();
+
+        $.ajax({
+            url: <span class="hljs-string">"/add"</span>,
+            type: <span class="hljs-string">"POST"</span>,
+            data: {
+                <span class="hljs-string">"operandA"</span>: operandA,
+                <span class="hljs-string">"operandB"</span>: operandB
+            },
+            dataType: <span class="hljs-string">"json"</span>,
+            success: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+                $(<span class="hljs-string">"#addResultPost"</span>).html(operandA + <span class="hljs-string">" + "</span> + operandB + <span class="hljs-string">" = "</span> + data.result);
+            },
+            error: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">jqXHR, textStatus, errorThrown</span>) </span>{
+                <span class="hljs-built_in">console</span>.log(jqXHR.responseText);
+                <span class="hljs-built_in">console</span>.log(textStatus);
+                <span class="hljs-built_in">console</span>.log(errorThrown);
+            }
+        });
+    };
+</code></pre>
+<p>Notice that one does a get and one does a post.</p>
+<pre><code class="lang-javascript">url: <span class="hljs-string">"/add"</span>,
+ type: <span class="hljs-string">"<span class="hljs-keyword">GET</span>"</span>,
+---------
+url: <span class="hljs-string">"/add"</span>,
+type: <span class="hljs-string">"<span class="hljs-keyword">POST</span>"</span>
+</code></pre>
+<p>And notice that the server side code differs:</p>
+<pre><code class="lang-javascript">--- The GET example ---------------------------
+ <span class="hljs-built_in">console</span>.log(request.query);
+    <span class="hljs-keyword">var</span> operandA = <span class="hljs-built_in">parseInt</span>(request.query.operandA);
+    <span class="hljs-keyword">var</span> operandB = <span class="hljs-built_in">parseInt</span>(request.query.operandB);
+--- The POST example --------------------------
+    <span class="hljs-built_in">console</span>.log(request.body);
+    <span class="hljs-keyword">var</span> operandA = <span class="hljs-built_in">parseInt</span>(request.body.operandA);
+    <span class="hljs-keyword">var</span> operandB = <span class="hljs-built_in">parseInt</span>(request.body.operandB);
+</code></pre>
+<p>The get uses request.query and the post uses request.body. I was trying to explain all this earlier, but I was not giving the subject sufficient weight. The get methods sends the query as part of the URL, the POST methods sends the data a little differently, as a port of the HTTP request body. The practical difference is that we can send much more data back and forth with a post than with a get.</p>
+<p>The $.getJSON and $.ajax do the same thing. In fact, $.getJSON calls $.ajax to do the actual work. After a bit, it is simpler to call $.ajax directly, but at first it is easier to call $.getJSON.</p>
 <h2 id="using-a-directory-with-app-use">Using a Directory with app.use</h2>
 <p>There is one more very important line is the code sample shown in the previous
 section:</p>
-<pre><code>app.<span class="hljs-keyword">use</span>(express.<span class="hljs-keyword">static</span>(__dirname + <span class="hljs-string">'/public'</span>));
-</code></pre><p>As you recall, our default route for this node script loads a file called
+<pre><code class="lang-javascript">app.<span class="hljs-keyword">use</span>(express.<span class="hljs-keyword">static</span>(__dirname + <span class="hljs-string">'/public'</span>));
+</code></pre>
+<p>As you recall, our default route for this node script loads a file called
 index.html that is stored in a folder called public:</p>
-<pre><code>    <span class="hljs-variable"><span class="hljs-keyword">var</span> html</span> = fs.readFileSync(__dirname + '/<span class="hljs-keyword">public</span>/index.html');
-</code></pre><p>The app.use command shown above ensures that Express knows to look in the
+<pre><code class="lang-javascript">    <span class="hljs-variable"><span class="hljs-keyword">var</span> html</span> = fs.readFileSync(__dirname + '/<span class="hljs-keyword">public</span>/index.html');
+</code></pre>
+<p>The app.use command shown above ensures that Express knows to look in the
 public directory for your files. If you don&#39;t employ app.use to make directories
 known to express, then your program may not be able to locate your files.</p>
 <p>Inside of index.html, you may want to reference JavaScript and CSS files. If
