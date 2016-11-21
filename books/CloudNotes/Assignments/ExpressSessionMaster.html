@@ -7,7 +7,8 @@
 <li><a href="#sessionstore-fix-hack">SessionStore Fix/Hack</a></li>
 <li><a href="#ui-issues">UI Issues</a></li>
 <li><a href="#ui-menus">UI Menus</a></li>
-<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#moving-to-pug-">Moving to PUG?</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>The goal of this assignment is to combine Sessions and Sign-In. It allows you to track who is signed into which session and something of what they did while they werer in the session.</p>
 <h2 id="background">Background</h2>
 <p>There are several ways to track what the user is doing while using a program. On the client side, the following three options are available:</p>
@@ -137,6 +138,48 @@ var elfSessionExpires = function (doc) {
 <p>Also, change the behavior of the pages so that if you select one menu item, the UI for that feature is visible but the UI for the other features is hidden. For instance, if you select Basics, then the Databases and Authentication pages disappear.</p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/express-session-master-menu.png" alt="menu"></p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/express-session-master-mobile.png" alt="mobile"></p>
+<p>The following mixin can be used:</p>
+<pre><code class="lang-jade">mixin littleMenu
+    nav.navbar.navbar-default.navbar-fixed-top
+        .container-fluid
+           <span class="hljs-comment"> // Brand</span>
+            .navbar-header
+                button.navbar-toggle.collapsed(type=<span class="hljs-string">'button'</span>,
+                        data-toggle=<span class="hljs-string">'collapse'</span>,
+                        data-target=<span class="hljs-string">'#bs-example-navbar-collapse-1'</span>,
+                        aria-expanded=<span class="hljs-string">'false'</span>)
+                    span.sr-only Toggle navigation
+                    span.icon-bar
+                    span.icon-bar
+                    span.icon-bar
+
+                <span class="hljs-keyword">a</span>.navbar-brand(href=<span class="hljs-string">'/'</span>)
+                    img(alt=<span class="hljs-string">'Elvenware'</span>, src=<span class="hljs-string">'favicon.png'</span>)
+           <span class="hljs-comment"> // Nav Links</span>
+            <span class="hljs-comment">#bs-example-navbar-collapse-1.collapse.navbar-collapse</span>
+                ul.nav.navbar-nav
+                    li<span class="hljs-comment">#basics-menu</span>
+                        <span class="hljs-keyword">a</span>.togglePageClick(href=<span class="hljs-string">'/basics-page'</span>)
+                            | Basics
+                            span.sr-only (current)
+                    li<span class="hljs-comment">#database-menu</span>
+                        <span class="hljs-keyword">a</span>.togglePageClick(href=<span class="hljs-string">"/database-page"</span>) Database
+                    li<span class="hljs-comment">#authentication-menu</span>
+                        <span class="hljs-keyword">a</span>.togglePageClick(href=<span class="hljs-string">"/authentication-page"</span>) Authentication
+</code></pre>
 <h2 id="turn-it-in">Turn it in</h2>
 <p>Push your work and submit your assignment.</p>
+<h2 id="moving-to-pug-">Moving to PUG?</h2>
+<p>If you want to move from Jade to Pug, here are the steps:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> pug <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">uninstall</span> jade <span class="hljs-comment">--save</span>
+</code></pre><p>In <strong>app.js</strong> change the single instance of the word <strong>jade</strong> to <strong>pug</strong>.</p>
+<p>In the <strong>views</strong> directory, change all files with the extensions <strong>jade</strong> to have the extension <strong>pug</strong>. This script should do the work for you:</p>
+<pre><code class="lang-bash"><span class="hljs-meta">#! /bin/bash
+</span>
+<span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> *.jade
+<span class="hljs-keyword">do</span>
+  git mv <span class="hljs-string">"<span class="hljs-variable">$file</span>"</span> <span class="hljs-string">"<span class="hljs-variable">${file%.jade}</span>.pug"</span>
+<span class="hljs-keyword">done</span>
+</code></pre>
 </div></body></html>
