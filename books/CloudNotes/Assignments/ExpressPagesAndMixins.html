@@ -5,8 +5,10 @@
 <li><a href="#active-selection">Bootstrap Active Selection</a></li>
 <li><a href="#bootswatch">Bootswatch</a></li>
 <li><a href="#the-javascript">The JavaScript</a></li>
-<li><a href="#the-mixins">The Mixins</a></li>
-<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#radio-mixins">Radio Mixins</a></li>
+<li><a href="#the-mixins">Mixins</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#gravatar">Gravatar</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>In the  Express Pages and Mixins assignment you will learn about Jade, bootstrap and mixins.</p>
 <p>References:</p>
 <ul>
@@ -23,6 +25,7 @@
 <li>Add a new page called <strong>about</strong></li>
 <li>Create bootstrap menus</li>
 <li>Use Jade Mixins</li>
+<li>Call the project <strong>Week11-JadeMixinBasics</strong></li>
 </ul>
 <h2 id="create-page">Create page</h2>
 <p>The details are in the slides listed above, in a slide from noderoutes called <strong>Add About Page</strong>. It&#39;s about the third slide in the deck. Two key lines are:</p>
@@ -30,7 +33,7 @@
 <span class="hljs-comment">// Code omitted here</span>
 <span class="hljs-keyword">app</span>.<span class="hljs-keyword">use</span>('/<span class="hljs-keyword">about</span>', <span class="hljs-keyword">about</span>);
 </code></pre><h2 id="bootstrap">BootStrap</h2>
-<pre><code><span class="hljs-keyword">bower </span><span class="hljs-keyword">install </span><span class="hljs-keyword">bootstrap </span>--save-dev
+<pre><code><span class="hljs-keyword">bower </span><span class="hljs-keyword">install </span><span class="hljs-keyword">bootstrap </span>--save
 </code></pre><pre><code>extends layout
 
 block <span class="hljs-attribute">content</span>
@@ -100,14 +103,20 @@ block <span class="hljs-attribute">content</span>
 <li><strong>Control.js</strong>: For the main page</li>
 <li><strong>About.js</strong>: For the about page</li>
 </ul>
-<p>But a button on each page.</p>
+<p>Put a button on each page.</p>
 <ul>
-<li>First button:     <ul>
+<li>First button:<ul>
+<li>text: Main<ul>
 <li>id: mainButton</li>
 </ul>
 </li>
+</ul>
+</li>
 <li>Second button<ul>
+<li>text: About<ul>
 <li>id: aboutButton</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -115,15 +124,26 @@ block <span class="hljs-attribute">content</span>
 <p>Put the button handler for the main page in <strong>Control.js</strong>.</p>
 <p>Put the button handler for the about in <strong>About.js</strong></p>
 <p>Put document ready in <strong>Control.js.</strong> Use the module pattern for each page:</p>
-<pre><code><span class="hljs-keyword">var</span> = Main = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> = Main = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Main</span><span class="hljs-params">()</span> </span>{
     <span class="hljs-comment">// Code to initialize button handler (click) goes here.</span>
    }
 
    <span class="hljs-keyword">return</span> Main;
 })();
-</code></pre><p>Details are on <a href="http://elvenware.com/charlie/development/web/JavaScript/JavaScriptModules.html">Elvenware</a>.</p>
-<h2 id="the-mixins">The Mixins</h2>
+</code></pre>
+<p>Details are on <a href="http://elvenware.com/charlie/development/web/JavaScript/JavaScriptModules.html">Elvenware</a>.</p>
+<p>If you want to put a button in a form and not have it act like a submit button, then give it a type of button:</p>
+<pre><code class="lang-jade">
+</code></pre>
+<h2 id="radio-mixins">Radio Mixins</h2>
+<p>From the root of your project, copy in the radio and checkbox mixins:</p>
+<pre><code class="lang-bash">cp -v $ELF_TEMPLATES/JadeMixins/mixin-radios.jade views/mixin-radios.pug
+</code></pre>
+<p>In the above, I still have jade as the extension in JsObjects, but I&#39;m copying to a pug file. If you are still using jade:</p>
+<pre><code class="lang-bash">cp -v $ELF_TEMPLATES/JadeMixins/mixin-radios.jade views/.
+</code></pre>
+<h2 id="the-mixins">Mixins</h2>
 <p>Place the following code in <strong>/views/mixins.jade</strong></p>
 <pre><code>mixin bootswatch(theme)
     link(href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.0/" + theme + "/bootstrap.min.css", rel="stylesheet")
@@ -193,9 +213,10 @@ mixin button(<span class="hljs-keyword">style</span>, href, <span class="hljs-ke
     a( <span class="hljs-keyword">class</span>=[<span class="hljs-string">"btn"</span>, <span class="hljs-string">"btn-"</span> + <span class="hljs-keyword">style</span>, <span class="hljs-keyword">size</span>], href=href )
         <span class="hljs-keyword">block</span>
 
-//- <span class="hljs-keyword">List</span> <span class="hljs-keyword">group</span> mixins
-- <span class="hljs-keyword">var</span> groupType
+  //- <span class="hljs-keyword">List</span> <span class="hljs-keyword">group</span> mixins
+
 mixin listGroup(<span class="hljs-keyword">type</span>, <span class="hljs-keyword">id</span>)
+    - <span class="hljs-keyword">var</span> groupType
     - groupType = <span class="hljs-keyword">type</span>
     <span class="hljs-keyword">case</span> groupType
         <span class="hljs-keyword">when</span> <span class="hljs-string">'list'</span>
@@ -226,4 +247,10 @@ mixin listText
         <span class="hljs-keyword">block</span>
 </code></pre><h2 id="turn-it-in">Turn it in</h2>
 <p>Make sure the folder is named correctly. Push your work and submit your assignment.</p>
+<h2 id="gravatar">Gravatar</h2>
+<p>You can use use <a href="http://gravatar.com/">gravatar</a> for the image on your home page. At the command prompt calculate the md5 hash of your <a href="http://gravatar.com/emails/">email</a> for the gravatar you want to use. For instance, at the bash prompt type this:</p>
+<p>```bash
+echo -n &#39;charlie@elvenware.com&#39;| md5sum
+b7b972e6d8e9d877abaee3f91b74b4a8  -
+bash</p>
 </div></body></html>
