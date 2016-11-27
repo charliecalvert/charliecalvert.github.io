@@ -227,33 +227,56 @@ define(['<span class="hljs-type">Route</span>', 'nameController', 'queryControll
 </code></pre>
 <h2 id="new-routeprovider">New RouteProvider</h2>
 <p>Since we have removed Angular, we need a substitute for the Angular <strong>RouteProvider</strong> object. Place the following object in a file called <strong>Route.js</strong>. Modify <strong>layout.jade</strong> so that this file gets loaded.</p>
-<pre><code class="lang-javascript">define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+<pre><code class="lang-javascript">define([<span class="hljs-string">'runQuery'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">runQuery</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
 
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Route</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> that;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Route</span>(<span class="hljs-params"></span>) </span>{
         <span class="hljs-keyword">this</span>.route = <span class="hljs-string">''</span>;
+        that = <span class="hljs-keyword">this</span>;
     }
 
-    Route.prototype.setRoute = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(routeInit)</span> </span>{
+    Route.prototype.setRoute = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">routeInit</span>) </span>{
         <span class="hljs-keyword">this</span>.route = routeInit;
     };
 
-    Route.prototype.when = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(route, control)</span> </span>{
-        <span class="hljs-keyword">if</span> (route === <span class="hljs-keyword">this</span>.route) {
-            <span class="hljs-keyword">var</span> resolver = {
-                getController: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
-                    <span class="hljs-keyword">return</span> control.controller
-                }
-            };
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">root</span>(<span class="hljs-params">control</span>) </span>{
+        $(<span class="hljs-string">'#elfContent'</span>).load(control.templateUrl, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+            that.resolveRequest(control)
+        });
+    }
 
+    Route.prototype.resolveRequest = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">control</span>) </span>{
+        <span class="hljs-keyword">var</span> resolver = {
+            getController: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                <span class="hljs-keyword">return</span> control.controller;
+            }
+        };
+
+        <span class="hljs-keyword">if</span> (control.resolve) {
             <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> funcName <span class="hljs-keyword">in</span> control.resolve) {
                 control.resolve[funcName](resolver);
+            }
+        } <span class="hljs-keyword">else</span> {
+            runQuery(<span class="hljs-literal">null</span>, resolver)
+        }
+    };
+
+    Route.prototype.when = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">route, control</span>) </span>{
+        <span class="hljs-keyword">if</span> (route === <span class="hljs-keyword">this</span>.route) {
+            <span class="hljs-keyword">if</span> (control.templateUrl) {
+                root(control)
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">this</span>.resolveRequest(control);
             }
         }
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
     };
 
-    Route.prototype.otherwise = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+    Route.prototype.otherwise = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
         <span class="hljs-comment">// DO NOTHING FOR NOW</span>
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'otherwise'</span>);
     };
 
     <span class="hljs-keyword">return</span> Route;
