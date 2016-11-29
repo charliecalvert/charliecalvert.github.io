@@ -1,5 +1,6 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>DataMasterFinalPrep</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><script src="/libs/scripts/Control.js"></script><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/charlie/About.html">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/charlie/development/index.html">Strongly Typed</a></li><li><a href="/charlie/development/web/index.html">Web & Scripts</a></li><li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/charlie/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>DataMasterFinalPrep</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#updated-routes">Updated Routes</a></li>
+<li><a href="#the-menu">The menu</a></li>
 <li><a href="#the-templateurl">The templateUrl</a></li>
 <li><a href="#setserver">SetServer</a></li>
 <li><a href="#handle-errors">Handle Errors</a></li>
@@ -90,7 +91,7 @@ cp -v $ELF_TEMPLATES<span class="hljs-regexp">/Routes/</span>* <span class="hljs
 <p>That&#39;s the rhythm:</p>
 <ul>
 <li>Add menu item</li>
-<li>Add a three part object to control js in the long series of <strong>.when</strong> statements.<ul>
+<li>Add a three part object to <strong>control.js</strong> in the long series of <strong>.when</strong> statements.<ul>
 <li>HTML: Add a <strong>templateUrl</strong> pointing toward a pug file that generates HTML</li>
 <li>Controller: Specify control</li>
 <li>And specify any initialization methods in the resolve part.</li>
@@ -102,6 +103,8 @@ cp -v $ELF_TEMPLATES<span class="hljs-regexp">/Routes/</span>* <span class="hljs
 </ul>
 </li>
 </ul>
+<h2 id="the-menu">The menu</h2>
+<p>The menu item requires that you copy in <strong>$ELF_TEMPLATES/JadeMixins/mixin-nav.pug/jade</strong>.</p>
 <h2 id="the-templateurl">The templateUrl</h2>
 <p>The HTML you create in your pug file will be loaded into index.jade in the section called:</p>
 <pre><code class="lang-jade"><span class="hljs-meta">#elfContent</span>
@@ -141,29 +144,32 @@ module.exports.serverUrl = serverUrl<span class="hljs-comment">;</span>
 }
 </code></pre>
 <p>Where the <strong>utility.failed</strong> method is part of an object that looks like this:</p>
-<pre><code class="lang-javascript">define(<span class="hljs-name">function</span>() {
+<pre><code class="lang-javascript">define(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
 
-    var utils = {
+    <span class="hljs-keyword">var</span> utils = {
 
-        clearAll: function() {
-            function clear(<span class="hljs-name">selector</span>) {
-                $(<span class="hljs-name">selector</span>).empty()<span class="hljs-comment">;</span>
+        clearAll: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clear</span>(<span class="hljs-params">selector</span>) </span>{
+                $(selector).empty();
             }
-            clear('#docs')<span class="hljs-comment">;</span>
-            clear('#debug')<span class="hljs-comment">;</span>
-            clear('#myTable')<span class="hljs-comment">;</span>
+
+            clear(<span class="hljs-string">'#docs'</span>);
+            clear(<span class="hljs-string">'#debug'</span>);
+            clear(<span class="hljs-string">'#myTable'</span>);
         },
 
-        failed: function(<span class="hljs-name">requestFailed</span>) {
-            var debug = $('#debug')<span class="hljs-comment">;</span>
-            debug.html(<span class="hljs-name">JSON</span>.stringify(<span class="hljs-name">requestFailed</span>, null, <span class="hljs-number">4</span>))<span class="hljs-comment">;</span>
-            var docs = $('#docs')<span class="hljs-comment">;</span>
-            docs.html(<span class="hljs-name">requestFailed</span>.description)<span class="hljs-comment">;</span>
+        failed: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">requestFailed</span>) </span>{
+            <span class="hljs-keyword">var</span> debug = $(<span class="hljs-string">'#debug'</span>);
+            debug.html(<span class="hljs-built_in">JSON</span>.stringify(requestFailed, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+            <span class="hljs-keyword">var</span> docs = $(<span class="hljs-string">'#docs'</span>);
+            docs.html(requestFailed.description);
         }
-    }<span class="hljs-comment">;</span>
+    };
 
-    return utils<span class="hljs-comment">;</span>
-})<span class="hljs-comment">;</span>
+    <span class="hljs-keyword">return</span> utils;
+});
 </code></pre>
 <p>Save this file as <strong>public/javascripts/utility.js</strong>. Don&#39;t forget to load it in <strong>main.js.</strong></p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/datamaster-error.gif" alt="data-master-error"></p>
@@ -179,6 +185,11 @@ module.exports.serverUrl = serverUrl<span class="hljs-comment">;</span>
 <li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/ElfLogBower.html">http://www.ccalvert.net/books/CloudNotes/Assignments/ElfLogBower.html</a></li>
 </ul>
 <h2 id="display-table">Display Table</h2>
+<p>Here is how to call jsonToHtml:</p>
+<pre><code class="lang-javascript%60">var jsonHtmlTable = jsonToHtml(editedGameDocs, <span class="hljs-string">'jsonTable'</span>, <span class="hljs-string">'table table-bordered table-striped'</span>, <span class="hljs-string">'Download'</span>)<span class="hljs-comment">;</span>
+
+$(<span class="hljs-string">'#myTable'</span>).html(jsonHtmlTable)<span class="hljs-comment">;</span>
+</code></pre>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/data-master-bulk.png" alt="Bulk"></p>
 <p><strong>Figure</strong>: <em>Bulk Document View</em></p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/data-master-one-doc.png" alt="One Doc"></p>
