@@ -7,6 +7,7 @@
 <li><a href="#display-table">Display Table</a></li>
 <li><a href="#other-views">Other Views</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#when-methods">When methods</a></li>
 <li><a href="#extra-credit">Extra Credit</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>The DataMaster Final Prep helps you get ready for the final. Major goals include:</p>
 <ul>
@@ -89,8 +90,17 @@ cp -v $ELF_TEMPLATES<span class="hljs-regexp">/Routes/</span>* <span class="hljs
 <p>That&#39;s the rhythm:</p>
 <ul>
 <li>Add menu item</li>
+<li>Add a three part object to control js in the long series of <strong>.when</strong> statements.<ul>
 <li>HTML: Add a <strong>templateUrl</strong> pointing toward a pug file that generates HTML</li>
-<li>JavaScript: Add a controller</li>
+<li>Controller: Specify control</li>
+<li>And specify any initialization methods in the resolve part.</li>
+</ul>
+</li>
+<li>The read code you need to write:<ul>
+<li>The Jade that defines your templateUrl</li>
+<li>The JavaScript for your controller</li>
+</ul>
+</li>
 </ul>
 <h2 id="the-templateurl">The templateUrl</h2>
 <p>The HTML you create in your pug file will be loaded into index.jade in the section called:</p>
@@ -123,6 +133,39 @@ module.exports.serverUrl = serverUrl<span class="hljs-comment">;</span>
 <p><strong>Figure</strong>: <em>Your error display need not look exactly like this, but we want it should display enough information to help a pre-release user understand what has gone wrong.</em></p>
 <h2 id="handle-errors">Handle Errors</h2>
 <p>We should now be able to display good error information, particularlly if we try to connect to the wrong server.</p>
+<p>A key point to grasp is that <strong>run-query.js</strong>, which will be called automatically, always sends errors to the controller in the query, the first parameter, as <strong>requestFailed</strong>.</p>
+<p>So you can write code that looks like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (query.requestFailed) {
+    utility.failed(query.requestFailed)<span class="hljs-comment">;</span>
+    <span class="hljs-keyword">return</span><span class="hljs-comment">;</span>
+}
+</code></pre>
+<p>Where the <strong>utility.failed</strong> method is part of an object that looks like this:</p>
+<pre><code class="lang-javascript">define(<span class="hljs-name">function</span>() {
+
+    var utils = {
+
+        clearAll: function() {
+            function clear(<span class="hljs-name">selector</span>) {
+                $(<span class="hljs-name">selector</span>).empty()<span class="hljs-comment">;</span>
+            }
+            clear('#docs')<span class="hljs-comment">;</span>
+            clear('#debug')<span class="hljs-comment">;</span>
+            clear('#myTable')<span class="hljs-comment">;</span>
+        },
+
+        failed: function(<span class="hljs-name">requestFailed</span>) {
+            var debug = $('#debug')<span class="hljs-comment">;</span>
+            debug.html(<span class="hljs-name">JSON</span>.stringify(<span class="hljs-name">requestFailed</span>, null, <span class="hljs-number">4</span>))<span class="hljs-comment">;</span>
+            var docs = $('#docs')<span class="hljs-comment">;</span>
+            docs.html(<span class="hljs-name">requestFailed</span>.description)<span class="hljs-comment">;</span>
+        }
+    }<span class="hljs-comment">;</span>
+
+    return utils<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>Save this file as <strong>public/javascripts/utility.js</strong>. Don&#39;t forget to load it in <strong>main.js.</strong></p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/datamaster-error.gif" alt="data-master-error"></p>
 <h2 id="jsontotable">JsonToTable</h2>
 <p>This is my fork of this project:</p>
@@ -151,6 +194,27 @@ module.exports.serverUrl = serverUrl<span class="hljs-comment">;</span>
 <li>Branch: Week11</li>
 <li>Project: DataMaster</li>
 </ul>
+<h2 id="when-methods">When methods</h2>
+<p>We need to be sure that not all anchors end up sending code to the series of <strong>.when</strong> methods in <strong>control.js</strong>. Here is the code that does the sorting out. Please note that I&#39;m ensuring that all the anchors that I want routed to <strong>control.js</strong> have:</p>
+<ul>
+<li>a DIV with the class</li>
+<li>a UL</li>
+<li>an LI</li>
+<li>and an anchor.</li>
+</ul>
+<p>They have to appear in that order.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> handleClicks = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    event.preventDefault();
+    route.setRoute(event.target.pathname);
+    control(route);
+};
+$(<span class="hljs-string">'#navigationbar'</span>).addClass(<span class="hljs-string">'databaseOptions'</span>);
+$(<span class="hljs-string">'#main-content'</span>).load(<span class="hljs-string">'/menu-links'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-string">'.databaseOptions ul li a'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+        handleClicks(event);
+    });
+});
+</code></pre>
 <h2 id="extra-credit">Extra Credit</h2>
 <p>Use pug instead of Jade.</p>
 </div></body></html>
