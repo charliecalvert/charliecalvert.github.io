@@ -1,13 +1,13 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>UpstartAndSystemd</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><script src="/libs/scripts/Control.js"></script><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/charlie/About.html">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/charlie/development/index.html">Strongly Typed</a></li><li><a href="/charlie/development/web/index.html">Web & Scripts</a></li><li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/charlie/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>UpstartAndSystemd</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
-<li><a href="#upstart">Upstart</a></li>
 <li><a href="#systemd">systemd</a></li>
+<li><a href="#upstart">Upstart</a></li>
 <li><a href="#elastic-ip">Elastic IP</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#hints">Hints</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>There are two ways to start projects on Ubuntu based distros:</p>
 <ul>
-<li>upstart</li>
-<li>systemd</li>
+<li>upstart (15.04)</li>
+<li>systemd (15.10 or greater)</li>
 </ul>
 <p>If you are using ubuntu 15.10 or later, use <strong>systemd</strong>. That means, if you are using 16.04, you should use <strong>systemd</strong>. If you are using 15.04 or earlier, then you should use <strong>upstart</strong>.</p>
 <p>Use the following command to get your ubuntu version number</p>
@@ -30,10 +30,77 @@ Distributor <span class="hljs-string">ID:</span>    Ubuntu
 lsb_release -<span class="hljs-literal">a</span>
 </code></pre>
 <p>Probably either command would do the job, but I run them both for completeness.</p>
+<h2 id="systemd">systemd</h2>
+<p>Upstart is being replaced by <strong>systemd</strong>. This caused a huge uproar in the Linux community, but the transition is more or less complete at this stage (Nov, 2016). Fortunately, if you understand Upstart it is not hard to switch to <strong>systemd</strong>. You should switch to <strong>systemd</strong> if running on Ubuntu 15.10 or later, otherwise, stick with <strong>upstart</strong>.</p>
+<p>If you are uncertain, here is how to find out which version of ubuntu you are running:</p>
+<pre><code class="lang-bash">cat /etc/lsb-release
+$ELF_UTILS/SetupLinuxBox/UbuntuReleaseNumber.sh
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=<span class="hljs-number">15.10</span>
+DISTRIB_CODENAME=wily
+DISTRIB_DESCRIPTION=<span class="hljs-string">"Ubuntu 15.10"</span>
+</code></pre>
+<p>A sample <strong>systemd</strong> start up script (aka service file) called <strong>elven-site.service</strong>:</p>
+<pre><code><span class="hljs-section">[Service]</span>
+<span class="hljs-attr">ExecStart</span>=/usr/bin/node /home/bcuser/bin/elven-site/bin/www
+<span class="hljs-attr">Restart</span>=always
+<span class="hljs-attr">StandardOutput</span>=syslog
+<span class="hljs-attr">StandardError</span>=syslog
+<span class="hljs-attr">SyslogIdentifier</span>=elven-site
+<span class="hljs-attr">User</span>=bcuser
+<span class="hljs-attr">Group</span>=bcuser
+<span class="hljs-attr">Environment</span>=NODE_ENV=production
+<span class="hljs-section">
+[Install]</span>
+<span class="hljs-attr">WantedBy</span>=multi-user.target
+</code></pre><p>When examining the above, check carefully, looking for changes that you will need to make:</p>
+<ul>
+<li>ExecStart path to your <strong>bin/www</strong> file</li>
+<li>SyslogIdentifier</li>
+<li>User</li>
+<li>Group</li>
+</ul>
+<p>For instance, the <strong>User</strong> and <strong>Group</strong> would be <strong>ubuntu</strong> on EC2 and <strong>bcuser</strong> on most copies of Pristine Lubuntu.</p>
+<p>Deploy the service file:</p>
+<pre><code>sudo cp elven-site.service <span class="hljs-regexp">/etc/</span>systemd<span class="hljs-regexp">/system/</span>.
+</code></pre><p>Start the service:</p>
+<pre><code>systemctl <span class="hljs-built_in">enable</span> elven-site
+systemctl start elven-site
+</code></pre><p>Get the status:</p>
+<pre><code>systemctl <span class="hljs-keyword">status</span> elven-site
+</code></pre><p>To reload after a change:</p>
+<pre><code><span class="hljs-attribute">systemctl</span> daemon-reload
+</code></pre><p>Sample output from status request when all is good:</p>
+<pre><code class="lang-bash">$ systemctl status elven-site
+● elven-site.service
+   Loaded: loaded (/etc/systemd/system/elven-site.service; enabled; vendor preset: enabled)
+   Active: active (running) since Thu <span class="hljs-number">2015</span>-<span class="hljs-number">12</span>-<span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">01</span> PST; <span class="hljs-number">4s</span> ago
+ Main PID: <span class="hljs-number">4102</span> (<span class="hljs-keyword">node</span><span class="hljs-title">)
+   CGroup</span>: /system.slice/elven-site.service
+           └─<span class="hljs-number">4102</span> /usr/bin/<span class="hljs-keyword">node</span> <span class="hljs-title">/home</span>/charlie/bin/elven-site/bin/www
+
+Dec <span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">01</span> forestpath systemd[<span class="hljs-number">1</span>]: <span class="hljs-literal">Started</span> elven-site.service.
+Dec <span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">02</span> forestpath <span class="hljs-keyword">node</span><span class="hljs-title">-sample</span>[<span class="hljs-number">4102</span>]: <span class="hljs-keyword">In</span> bin/www the environment is production
+</code></pre>
+<p>To see logs and debug information, try this:</p>
+<pre><code><span class="hljs-keyword">journalctl </span>-u elven-site
+</code></pre><p>To completely remove a service from a system, I believe we should first stop it, and then disable it:</p>
+<pre><code>systemctl <span class="hljs-keyword">stop</span> elven-site
+systemctl <span class="hljs-keyword">disable</span> elven-site
+</code></pre><p>I&#39;m not certain about the disable command at this time. I think it tells systemd not to load at boot, but allows us to leave the file in <strong>/etc/systemd/system</strong>. Not sure though.</p>
+<p>The first and second links below will get you up to speed fairly quickly.</p>
+<ul>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-deploy-node-js-applications-using-systemd-and-nginx">Sysdemd for Node Developers</a></li>
+<li><a href="http://patrakov.blogspot.com/2011/01/writing-systemd-service-files.html">Systemd get started</a></li>
+<li><a href="https://wiki.ubuntu.com/SystemdForUpstartUsers">SystemD for Upstart Users</a></li>
+</ul>
+<p>Other:</p>
+<ul>
+<li><a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/System_Administrators_Guide/sect-Managing_Services_with_systemd-Unit_Files.html">systemd on Redhat</a></li>
+</ul>
 <h2 id="upstart">Upstart</h2>
-<p>Upstart can be used to keep your program running after you close
-your shell and to ensure that it restarts automatically when you
-reboot the system. Take a momement to learn about upstart:</p>
+<p><strong>NOTE</strong>: <em>Upstart is no longer used in most circumstances. As a result, you probably want to skip this section. Use <strong>systemd</strong> instjead.</em></p>
+<p>Upstart can be used to keep your program running after you close your shell and to ensure that it restarts automatically when you reboot the system. Take a momement to learn about upstart:</p>
 <ul>
 <li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/NodeCode/ExpressSend">UpStart Example in JsObjects</a></li>
 <li><a href="http://upstart.ubuntu.com/index.html">UpStart home page</a></li>
@@ -90,80 +157,13 @@ sudo cp ~/.config/ElvenConfig<span class="hljs-selector-class">.json</span> /roo
 </code></pre><p>If you were testing all this out on your copy of Lubunutu,
 you would do this:</p>
 <pre><code><span class="hljs-number">127.0.0.1:30025</span>/
-</code></pre><h2 id="systemd">systemd</h2>
-<p>Upstart is being replaced by <strong>systemd</strong>. This caused a huge uproar in the Linux community, but it is happening. Fortunately, if you understand Upstart it is not hard to switch to <strong>systemd</strong>. You should switch to <strong>systemd</strong> if running on Ubuntu 15.10 or later, otherwise, stick with <strong>upstart</strong>.</p>
-<pre><code class="lang-bash">cat /etc/lsb-release
-$ELF_UTILS/SetupLinuxBox/UbuntuReleaseNumber.sh
-DISTRIB_ID=Ubuntu
-DISTRIB_RELEASE=<span class="hljs-number">15.10</span>
-DISTRIB_CODENAME=wily
-DISTRIB_DESCRIPTION=<span class="hljs-string">"Ubuntu 15.10"</span>
-</code></pre>
-<p>A sample <strong>systemd</strong> start up script (aka service file) called <strong>elven-site.service</strong>:</p>
-<pre><code><span class="hljs-section">[Service]</span>
-<span class="hljs-attr">ExecStart</span>=/usr/bin/node /home/charlie/bin/elven-site/bin/www
-<span class="hljs-attr">Restart</span>=always
-<span class="hljs-attr">StandardOutput</span>=syslog
-<span class="hljs-attr">StandardError</span>=syslog
-<span class="hljs-attr">SyslogIdentifier</span>=elven-site
-<span class="hljs-attr">User</span>=charlie
-<span class="hljs-attr">Group</span>=charlie
-<span class="hljs-attr">Environment</span>=NODE_ENV=production
-<span class="hljs-section">
-[Install]</span>
-<span class="hljs-attr">WantedBy</span>=multi-user.target
-</code></pre><p>When examining the above, check carefully, looking for changes that you will need to make:</p>
-<ul>
-<li>ExecStart path to your <strong>bin/www</strong> file</li>
-<li>SyslogIdentifier</li>
-<li>User</li>
-<li>Group</li>
-</ul>
-<p>For instance, the <strong>User</strong> and <strong>Group</strong> would be <strong>ubuntu</strong> on EC2.</p>
-<p>Deploy the service file:</p>
-<pre><code>sudo cp elven-site.service <span class="hljs-regexp">/etc/</span>systemd<span class="hljs-regexp">/system/</span>.
-</code></pre><p>Start the service:</p>
-<pre><code>systemctl <span class="hljs-built_in">enable</span> elven-site
-systemctl start elven-site
-</code></pre><p>Get the status:</p>
-<pre><code>systemctl <span class="hljs-keyword">status</span> elven-site
-</code></pre><p>To reload after a change:</p>
-<pre><code><span class="hljs-attribute">systemctl</span> daemon-reload
-</code></pre><p>Sample output from status request when all is good:</p>
-<pre><code class="lang-bash">$ systemctl status elven-site
-● elven-site.service
-   Loaded: loaded (/etc/systemd/system/elven-site.service; enabled; vendor preset: enabled)
-   Active: active (running) since Thu <span class="hljs-number">2015</span>-<span class="hljs-number">12</span>-<span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">01</span> PST; <span class="hljs-number">4s</span> ago
- Main PID: <span class="hljs-number">4102</span> (<span class="hljs-keyword">node</span><span class="hljs-title">)
-   CGroup</span>: /system.slice/elven-site.service
-           └─<span class="hljs-number">4102</span> /usr/bin/<span class="hljs-keyword">node</span> <span class="hljs-title">/home</span>/charlie/bin/elven-site/bin/www
-
-Dec <span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">01</span> forestpath systemd[<span class="hljs-number">1</span>]: <span class="hljs-literal">Started</span> elven-site.service.
-Dec <span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">02</span> forestpath <span class="hljs-keyword">node</span><span class="hljs-title">-sample</span>[<span class="hljs-number">4102</span>]: <span class="hljs-keyword">In</span> bin/www the environment is production
-</code></pre>
-<p>To see logs and debug information, try this:</p>
-<pre><code><span class="hljs-keyword">journalctl </span>-u elven-site
-</code></pre><p>To completely remove a service from a system, I believe we shoud first stop it, and then disable it:</p>
-<pre><code>systemctl <span class="hljs-keyword">stop</span> elven-site
-systemctl <span class="hljs-keyword">disable</span> elven-site
-</code></pre><p>I&#39;m not certain about the disable command at this time. I think it tells systemd not to load at boot, but allows us to leave the file in <strong>/etc/systemd/system</strong>. Not sure though.</p>
-<p>The first and second links below will get you up to speed fairly quickly.</p>
-<ul>
-<li><a href="https://www.digitalocean.com/community/tutorials/how-to-deploy-node-js-applications-using-systemd-and-nginx">Sysdemd for Node Developers</a></li>
-<li><a href="http://patrakov.blogspot.com/2011/01/writing-systemd-service-files.html">Systemd get started</a></li>
-<li><a href="https://wiki.ubuntu.com/SystemdForUpstartUsers">SystemD for Upstart Users</a></li>
-</ul>
-<p>Other:</p>
-<ul>
-<li><a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/System_Administrators_Guide/sect-Managing_Services_with_systemd-Unit_Files.html">systemd on Redhat</a></li>
-</ul>
-<h2 id="elastic-ip">Elastic IP</h2>
+</code></pre><h2 id="elastic-ip">Elastic IP</h2>
 <p>Be sure that you create, properly associate and submit an <strong>Elastic IP</strong> for your instance running on EC2. In order to confirm that your project is running on EC2, I must be able to reach it, and I can&#39;t do that if you only have a <strong>Public IP</strong>. The <strong>Public IP</strong> addresses automatically associated with your instance on EC2 is not necessarily permanent. To create a permenant IP address, you need an <strong>Elastic IP</strong>, as explained <a href="http://www.elvenware.com/charlie/development/cloud/WebServices.html#elastic">here</a>.</p>
 <p><strong>NOTE</strong>: <em>Once you create an Elastic IP address, your Elastic IP and Public IP address are usually the same. At that point, your Public IP address should be permanent, but only because you have created an Elastic IP address and associated it with your instance.</em></p>
 <h2 id="turn-it-in">Turn it in</h2>
 <p>Submit the <strong>Elastic IP</strong> address of your instance running on EC2. I&#39;m not checking to see if the program is working correctly, only that it is running at all. Also, add your <strong>elven-site.conf</strong> and/or <strong>elven-site.service</strong> file to your <strong>ElvenSite</strong> project.</p>
 <h2 id="hints">Hints</h2>
-<p>The below is aimed at updstart users, but it should be obvious how it applies to those who might be using <strong>systemd</strong>. Here are some additional nodes:</p>
+<p>The below is aimed at upstart users, but it should be obvious how it applies to those who might be using <strong>systemd</strong>. Here are some additional nodes:</p>
 <ul>
 <li>Create a <strong>elven-site.conf</strong> in your final folder.<ul>
 <li>Look at the <strong>JsObjects/JavaScript/NodeCode/ExpressSend</strong> project for hints</li>
