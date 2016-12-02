@@ -323,7 +323,7 @@ route:</p>
 </li>
 </ul>
 <p>Suppose you write the following, where a REST parameter is passed as the second parameter to <strong>getJSON</strong>:</p>
-<pre><code class="lang-javascript">$.getJSON(<span class="hljs-string">'/walker'</span>, {folder: <span class="hljs-string">'Assignments'</span>},  <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+<pre><code class="lang-javascript">$.getJSON(<span class="hljs-string">'/walker'</span>, {folder: <span class="hljs-string">'Assignments'</span>},  <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{ ... })
 </code></pre>
 <p>Then on the server end you could write the following to display the value passed from the client:</p>
 <pre><code class="lang-javascript">console.<span class="hljs-built_in">log</span>('request.<span class="hljs-keyword">query</span>', request.<span class="hljs-keyword">query</span>);
@@ -331,6 +331,16 @@ route:</p>
 <p>This would produce the following output in the console:</p>
 <pre><code class="lang-javascript"><span class="hljs-selector-tag">request</span><span class="hljs-selector-class">.params</span> { <span class="hljs-attribute">folder</span>: <span class="hljs-string">'Assignments'</span> }
 </code></pre>
+<p>Consider this useful example for loading Jade/Pug files:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Requested: '</span>, request.params.id);
+    response.render(request.params.id, {
+        title: request.params.id
+    });
+});
+</code></pre>
+<p>This should be last route in the file. It says, in effect: <em>if none of the other routes in this file have matched the request, then assume this is a request to render a jade/pug file. For instance, if the user asks for <strong>/foo</strong>, then the code will attempt to render as HTML the file in the views directory called <strong>foo.jade</strong> or <strong>foo.pug</strong>, as the case may be.</em></p>
 <h2 id="working-with-post">Working with Post</h2>
 <p>We used to use a tool called bodyParser() when working with post. But
 now we should use connect:</p>
