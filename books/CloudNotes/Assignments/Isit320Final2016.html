@@ -9,7 +9,8 @@
 <li><a href="#hint">Hint</a></li>
 <li><a href="#facebook-client-id">Facebook ID</a></li>
 <li><a href="#setclientid">SetClientId</a></li>
-<li><a href="#examples">Examples</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#session-notes">Session Notes</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
 <p>This document is a description of the final for Isit320, Fall, 2016.</p>
 <h2 id="basics">Basics</h2>
 <ul>
@@ -265,4 +266,98 @@ Weeks10ToFinal
 </ul>
 <p>Be sure to run a git pull before trying to find these files in your copy of JsObjects.
 Search entries or author</p>
+<h2 id="session-notes">Session Notes</h2>
+<p>Geting the session data to work in DataMaster is proving a challenge to many people. So lets simplify as CouchDB can easily bare the load in our case.</p>
+<p>Though it would be best to have two databases, I think it is simpler to view and store Sesssion code in DataMaster if we use only one database. I don&#39;t think we have to do this, but it might be simpler for most of us to implement things this way.</p>
+<p>In my own code, I have extended <strong>set-server.js</strong> to include the dbName:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> servers = [<span class="hljs-symbol">'http</span>:<span class="hljs-comment">//127.0.0.1:5984',</span>
+    <span class="hljs-symbol">'http</span>:<span class="hljs-comment">//192.168.2.19:5984',</span>
+    <span class="hljs-symbol">'http</span>:<span class="hljs-comment">//192.168.2.27:5984',</span>
+    <span class="hljs-symbol">'http</span>:<span class="hljs-comment">//168.156.47.57:5984'</span>
+];
+<span class="hljs-keyword">var</span> serverIndex = <span class="hljs-number">2</span>;
+<span class="hljs-keyword">var</span> serverUrl = servers[serverIndex];
+console.log(<span class="hljs-symbol">'Middleware</span> attaching to database on: ', serverUrl);
+
+module.exports.serverUrl = serverUrl;
+module.exports.dbName = <span class="hljs-symbol">'game_data_LASTNAM</span>E';  &lt;=== <span class="hljs-type">REPLACE</span> <span class="hljs-type">LASTNAME</span>
+</code></pre>
+<p>I have used it in two files. Here it is in <strong>Couch.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// Couch.js</span>
+<span class="hljs-keyword">var</span> setServer = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./set-server'</span>);
+<span class="hljs-keyword">var</span> nano = <span class="hljs-built_in">require</span>(<span class="hljs-string">'nano'</span>)(setServer.serverUrl);
+<span class="hljs-keyword">var</span> dbName = setServer.dbName;   <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">====</span> <span class="hljs-attr">HERE</span></span></span>
+</code></pre>
+<p>And here in <strong>middleware.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// Middleware</span>
+<span class="hljs-built_in">var</span> sessionStore = sessionstore.createSessionStore({
+    <span class="hljs-keyword">type</span>: <span class="hljs-string">'couchdb'</span>,
+    host: setServer.serverUrl,
+    port: <span class="hljs-number">5984</span>,
+    dbName: setServer.dbName,   &lt;=== HERE
+    collectionName: <span class="hljs-string">'sessions'</span>,
+    timeout: <span class="hljs-number">10000</span>
+}, function(<span class="hljs-built_in">data</span>) {
+    <span class="hljs-string">'use strict'</span>;
+    console.<span class="hljs-keyword">log</span>(<span class="hljs-string">'sessionStore callback'</span>, <span class="hljs-built_in">data</span>);
+});
+</code></pre>
+<p>Now I am able to get both my regular database. This meant I had to change my design doc slightly:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfSessions = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
+    <span class="hljs-keyword">if</span> (doc.collectionName === <span class="hljs-string">'sessions'</span>) {
+        emit(doc._id, doc);
+    }
+};
+
+<span class="hljs-comment">// CODE OMMITTED: npcsBulk and npcsOneDoc DEFINED HERE</span>
+
+router.<span class="hljs-keyword">get</span>(<span class="hljs-string">'/designDoc'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response)</span> </span>{
+    console.log(<span class="hljs-string">'Design Doc Called'</span>);
+
+    <span class="hljs-keyword">var</span> designName = <span class="hljs-string">'_design/game'</span>;
+    <span class="hljs-keyword">var</span> designDocument = {
+        <span class="hljs-string">'views'</span>: {
+            <span class="hljs-string">'npcsBulk'</span>: {
+                <span class="hljs-string">'map'</span>: npcsBulk
+            },
+            <span class="hljs-string">'npcsOneDoc'</span>: {
+                <span class="hljs-string">'map'</span>: npcsOneDoc
+            },
+            <span class="hljs-string">'elf-sessions'</span>: {
+                <span class="hljs-string">'map'</span>: elfSessions
+            }
+        }
+    };
+
+    createDesignDocument(designDocument, designName, response);
+});
+</code></pre>
+<p>And then make sure <strong>CouchViews.js</strong> has this:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/viewSessions'</span>, function(request, response) {
+    console.log(<span class="hljs-string">'/viewSessions called'</span>, request.query, dbName)<span class="hljs-comment">;</span>
+    var nanoDb = nano.db.use(dbName)<span class="hljs-comment">;</span>
+    nanoDb.view(request.query.designDoc, request.query.view, function(<span class="hljs-keyword">err</span>, body) {
+        <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">err</span>) {
+            console.log(body)<span class="hljs-comment">;</span>
+            <span class="hljs-comment">//var data = body.rows[0].value.map(function(a) {</span>
+            <span class="hljs-comment">//    return a;</span>
+            <span class="hljs-comment">//});</span>
+            response.send({
+                <span class="hljs-string">'name'</span>: <span class="hljs-string">'viewSessions'</span>,
+                docs: body
+            })<span class="hljs-comment">;</span>
+        } <span class="hljs-keyword">else</span> {
+            console.log(<span class="hljs-keyword">err</span>)<span class="hljs-comment">;</span>
+            response.status(<span class="hljs-keyword">err</span>.statusCode).send(<span class="hljs-keyword">err</span>)<span class="hljs-comment">;</span>
+        }
+    })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>And be sure you call it now not with elf-session but with game:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">return</span> runQuery(<span class="hljs-string">'/viewSessions?designDoc=game&amp;view=elf-sessions'</span>, $q);
+</code></pre>
+<p>Also make sure you are using elf-sessionstore and not sessionstore.</p>
+<pre><code>npm <span class="hljs-keyword">uninstall</span> sessionstore <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> elf-sessionstore <span class="hljs-comment">--save</span>
+</code></pre><p>And then, in middleware, require elf-sessionstore, not sessionstore.</p>
 </div></body></html>
