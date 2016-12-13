@@ -7,6 +7,7 @@
 <li><a href="#require-and-main">Require and Main</a></li>
 <li><a href="#the-jade">The Jade</a></li>
 <li><a href="#control">Control</a></li>
+<li><a href="#handling-code">Handling Code</a></li>
 <li><a href="#new-routeprovider">New RouteProvider</a></li>
 <li><a href="#querycontroller">QueryController</a></li>
 <li><a href="#name-controller">Name Controller</a></li>
@@ -172,8 +173,8 @@ define(['<span class="hljs-type">Route</span>', 'nameController', 'queryControll
 
     <span class="hljs-keyword">var</span> findRoutes = (function ($routeProvider) {
         'use strict';
-        $routeProvider.<span class="hljs-keyword">when</span>('/databaseName', {
-            templateUrl: 'templates/<span class="hljs-type">DatabaseNames</span>.html',
+        $routeProvider.<span class="hljs-keyword">when</span>('/databaseName.html', {
+            templateUrl: 'templates/<span class="hljs-type">DatabaseNames</span>',
             controller: nameController,
             resolve: {
                 databaseName: nameController.databaseName,
@@ -235,6 +236,30 @@ define(['<span class="hljs-type">Route</span>', 'nameController', 'queryControll
     <span class="hljs-keyword">return</span> findRoutes;
 
 });
+</code></pre>
+<p>Note that ultimately we will not want to load HTML files, but Pug templates. However, for now, we can just use raw HTML. In either case, make sure you understand what is being loaded.</p>
+<h2 id="handling-code">Handling Code</h2>
+<p>The key thing to understand is that the controller you pick to handle a particular menu item is the controller that will get called when that menu item is selected.</p>
+<p>For instance, we see in <strong>control.js</strong> that when the user selects readone, this code will handle it:</p>
+<pre><code class="lang-javascript">.<span class="hljs-keyword">when</span>('/readOne', {
+    templateUrl: '/display-default',
+    controller: queryController,
+    resolve: {
+        <span class="hljs-literal">result</span>: queryController.readOne
+    }
+})
+</code></pre>
+<p>As you can see, that code points at <strong>queryController</strong>. This means that the <strong>queryController</strong> will (or at least should) be called when you select that particular menu item.</p>
+<p>So it is simply a matter of looking that the result variable passed to <strong>queryController</strong> and finding a way to display it. Here is queryController:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> queryController = function(query, <span class="hljs-literal">result</span>) {
+       utility.clearAll();
+       <span class="hljs-keyword">if</span> (query.requestFailed) {
+           utility.failed(query.requestFailed);
+           <span class="hljs-keyword">return</span>;
+       }
+
+       // <span class="hljs-type">FIGURE</span> <span class="hljs-type">OUT</span> A <span class="hljs-type">GOOD</span> <span class="hljs-type">WAY</span> <span class="hljs-type">TO</span> <span class="hljs-type">DISPLAY</span> <span class="hljs-type">THE</span> <span class="hljs-literal">result</span> <span class="hljs-type">VARIABLE</span> <span class="hljs-type">ON</span> <span class="hljs-type">YOUR</span> <span class="hljs-type">HTML</span> <span class="hljs-type">PAGE</span>.
+   };
 </code></pre>
 <h2 id="new-routeprovider">New RouteProvider</h2>
 <p>Since we have removed Angular, we need a substitute for the Angular <strong>RouteProvider</strong> object. Place the following object in a file called <strong>Route.js</strong>. Modify <strong>layout.jade</strong> so that this file gets loaded.</p>
