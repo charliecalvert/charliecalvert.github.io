@@ -40,15 +40,20 @@
     <span class="hljs-attribute">AllowOverride</span> None
     <span class="hljs-attribute">Require</span> <span class="hljs-literal">all</span> granted
 <span class="hljs-section">&lt;/Directory&gt;</span>
-</code></pre><p>Change it to this:</p>
+</code></pre><p>Change it to this, where <strong>AllOverride None</strong> becomes <strong>AllowOverride All</strong>:</p>
 <pre><code><span class="hljs-section">&lt;Directory /var/www/&gt;</span>
     <span class="hljs-attribute"><span class="hljs-nomarkup">Options</span></span> Indexes FollowSymLinks
-    <span class="hljs-attribute">AllowOverride</span> <span class="hljs-literal">All</span>
+    <span class="hljs-attribute">AllowOverride</span> <span class="hljs-literal">All</span>    
     <span class="hljs-attribute">Require</span> <span class="hljs-literal">all</span> granted
 <span class="hljs-section">&lt;/Directory&gt;</span>
 </code></pre><p>Now put <strong>.htaccess</strong> files in the directories where you don&#39;t want users to browse. They should contain the following line:</p>
 <p>Options -Indexes</p>
 <p>The other option is to remove <strong>Indexes</strong> from the block quoted above. That will deny directory browsing in all locations on your site.</p>
+<p>In some cases, like when working with WordPress, you may also need to turn on a particular apache module. For instance, here is how to turn on the rewrite module, which is needed when working with some <strong>permalinks</strong> in WordPress. Specifically, in <strong>wp-admin</strong> go to <strong>Settings | Permalinks</strong> and set <strong>Common Settings</strong> to <strong>Post Name</strong>. That feature won&#39;t work unless <strong>.htaccess</strong> is working. Make the <strong>AllowOverride All</strong> change above, and then do this:</p>
+<pre><code class="lang-bash"><span class="hljs-attribute">sudo</span> a2enmod rewrite
+sudo service apache2 restart
+</code></pre>
+<p>You will probably want to create <strong>wordpress/.htaccess</strong> and let <strong>www-data</strong> own it.</p>
 <h2 id="configureApache">Configuring Apache to Serve Files from a User Directory</h2>
 <p>It can be very useful to configure Apache to allow you to serve up pages
 out of your home directory. In particular, it means that you don&#39;t have
