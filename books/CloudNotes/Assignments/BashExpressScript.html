@@ -3,22 +3,26 @@
 <li><a href="#linux-less">The Linux less Command</a></li>
 <li><a href="#available">Step Two: What&#39;s Available</a></li>
 <li><a href="#create-express-project">Step Three: Create Express Project</a></li>
+<li><a href="#generalize">Generalize our Script</a></li>
 <li><a href="#system-check">Step Four: System Check</a></li>
 <li><a href="#aliases">Step Five: Aliases</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
-<p>Bash scripts help you automate tasks. Knowing how to run and create even relatively simple scripts can make you significantly more productive. The goal of this assignment is to help you learn how to run and create simple bash scripts.</p>
+<p>The goal of this assignment is to help you learn how to run and create simple bash scripts. Bash scripts help you automate tasks. Knowing how to with even relatively simple scripts can make you significantly more productive.</p>
+<p>There will also be sections learning how to use aliases and environment variables to customize your environment. Bash scripts frequently make use of environment variables. Understanding how to use them can be a very skill.</p>
 <p>This assignment assumes that you have installed my collection of sample programs called <a href="https://github.com/charliecalvert/JsObjects/blob/master/README.md">JsObjects</a> on your system. When reviewing the [JsObjects README][e]f-js-objects], be sure to read the section on Navigating JsObjects.</p>
 <h2 id="navigate">Step One: Learn to Navigate</h2>
-<p>Let&#39;s take a few moments to be sure you know a little bit about how to navigate through your clone of the JsObjects repository. As you learned in the JsObjects README file, navigation through JsObjects relies upon code found in your <strong>.bash_aliases</strong> file.</p>
+<p>Let&#39;s take a few moments to be sure you know a little bit about environment variables. In particular, you will how to use them to navigate through your clone of the JsObjects repository.</p>
+<p>As you learned in the JsObjects README file, navigation through JsObjects relies upon code found in your <strong>.bash_aliases</strong> file. If your <strong>.bash_aliases</strong> file is set up right, a number of commands should all run without error.</p>
 <p><strong>NOTE</strong>: _Recall that you can find my <a href="https://github.com/charliecalvert/JsObjects/blob/master/Utilities/SetupLinuxBox/.bash_aliases">.bash_aliases</a> file on GitHub._</p>
-<p>If your <strong>.bash_aliases</strong> file is set up right, a number of commands should all run without error. Let&#39;s start by running a lengthy command that does not rely on any of the aliases or environment variables found in my <strong>.bash_aliases</strong> file:</p>
+<p>Let&#39;s start by running a lengthy command that does not rely on any of the aliases or environment variables found in my <strong>.bash_aliases</strong> file:</p>
 <pre><code class="lang-bash">ls ~<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>SetupLinuxBox<span class="hljs-regexp">/.bash_aliases</span>
 </code></pre>
-<p>Here is another, and slightly shorter, way to run the same command:</p>
+<p>Here is another, and slightly shorter, way to run the same command. Note that is uses an environment variable called JSOBJECTS:</p>
 <pre><code class="lang-bash">ls $JSOBJECTS/Utilities/SetupLinuxBox/.bash_aliases
 </code></pre>
-<p>Run both of these commands and create a screenshot that shows the output. Call the screenshot: <strong>BashAliasListing.png</strong></p>
-<p><strong>NOTE</strong>: _If $JSOBJECTS is not defined, this is a problem with your .bashrc or .bash<em>aliases file. See these document for details:</em></p>
+<p><strong>NOTE</strong>: _The Bash shell is case sensitive. Thus JsObjects and JSOBJECTS are entirely different variables. In our case, JsObjects is the name of my repository, while JSOBJECTS is an identifier (variable) found in my <strong>.bash_aliases</strong> file._</p>
+<p>Run both of the commands shown above and create a screenshot that shows the output. Call the screenshot: <strong>BashAliasListing.png</strong></p>
+<p><strong>NOTE</strong>: _If $JSOBJECTS is not defined, there is probably a problem with your <strong>.bashrc</strong> or <strong>.bash_aliases</strong> file. See these document for details:_</p>
 <ul>
 <li><a href="https://github.com/charliecalvert/JsObjects/blob/master/Utilities/SetupLinuxBox/.bash_aliases">.bash_aliases</a></li>
 <li><a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html#set-up-environment">Configure Linux</a></li>
@@ -27,7 +31,9 @@
 <p>Now run this command, which uses a built in Linux utility called <strong>less</strong>:</p>
 <pre><code class="lang-bash">less $JSOBJECTS/Utilities/SetupLinuxBox/.bash_aliases
 </code></pre>
-<p>Use the <strong>j</strong> and <strong>k</strong> keys or the arrow keys to navigate through the document. Press the <strong>q</strong> key to exit. Take a screenshot and call it: <strong>BashAliasJsObjects.png</strong>.</p>
+<p><strong>less</strong> is a file viewer. It allows you to see the contents of text files. I use it very frequently. Use the <strong>j</strong> and <strong>k</strong> keys or the arrow keys to navigate through the document. Press the <strong>q</strong> key to exit.</p>
+<p><strong>NOTE</strong>: <em>There are many useful descriptions of how to use <strong>less</strong> on the internet. You can also type <strong>man less</strong> at the Bash prompt to get a rather technical description of this crucial tool.</em></p>
+<p>Take a screenshot of the <strong>.bash_aliases</strong> file running in <strong>less</strong> and call it: <strong>BashAliasJsObjects.png</strong>.</p>
 <h2 id="available">Step Two: What&#39;s Available</h2>
 <p>I have a number of useful scripts in JsObjects. To get a sense of what is available, run the following commands:</p>
 <pre><code class="lang-bash">ls <span class="hljs-regexp">~/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>SetupLinuxBox/
@@ -48,17 +54,21 @@ cp ~/Git/JsObjects/Data/MongoLab03/favicon<span class="hljs-selector-class">.png
 sed -<span class="hljs-selector-tag">i</span> -- <span class="hljs-string">'s/Express/BootstrapDelicious/g'</span> routes/index<span class="hljs-selector-class">.js</span>
 echo -e <span class="hljs-string">"# $1\nby Charlie Calvert"</span> &gt;&gt; README.md
 </code></pre>
-<p>If given one at a time, these commands will:</p>
+<p>These commands help you create and customize a NodeJs Express project called <strong>Week03-BootstrapDelicious</strong>. If given one at a time, these commands will:</p>
 <ul>
 <li>Create an express project</li>
-<li>Run npm install</li>
-<li>Create and configure bower</li>
+<li>Navigate into the directory containing the new project</li>
+<li>Run npm install to set up the project&#39;s server side libraries</li>
+<li>Create and configure bower to set up the client side libraries</li>
 <li>Set the port and switch our run command from node to nodemon</li>
 <li>Change the title of our project.</li>
 </ul>
+<p>Experienced developers could type out these commands, one at a time, at the Bash command prompt. Having the skill to do that would have obvious value. However, most developers would find it difficult to remember the syntax for so many different commands. They would also find it a laborious and error prone task to type out so much text.</p>
+<p>Fortunately, there is a solution. We can create a single Bash script containing all these commands. By running this single script, we can create our project in a matter of seconds.</p>
+<p><strong>NOTE</strong>: <em>You will see later that it is a relatively simple matter to configure your script to accept a parameter containing the project name. Thus your script could be easily reused to create an arbitrary project of this type.</em></p>
 <p>We can save code like that shown above into a <strong>bash</strong> script, and then run it as needed:</p>
 <ul>
-<li>First create the file with an editor such as <strong>geany</strong> or <strong>nano</strong></li>
+<li>First create the file with an editor such as <strong>geany</strong>, <strong>atom</strong> or <strong>nano</strong></li>
 <li>At the top of the script, tell bash that this is a bash script: <strong>#! /bin/bash</strong></li>
 <li>Paste in the code shown above</li>
 <li>Save the file as <strong>CreateBootstrapDelicous</strong></li>
@@ -79,12 +89,13 @@ cp ~/Git/JsObjects/Data/MongoLab03/favicon<span class="hljs-selector-class">.png
 sed -<span class="hljs-selector-tag">i</span> -- <span class="hljs-string">'s/Express/BootstrapDelicious/g'</span> routes/index<span class="hljs-selector-class">.js</span>
 echo -e <span class="hljs-string">"# $1\nby Charlie Calvert"</span> &gt;&gt; README.md
 </code></pre>
+<h2 id="generalize">Generalize our Script</h2>
 <p>The only problem with this script is that it hard codes in the project name. If we want to make the script more generally useful, then we need to pass in a parameter that specifies the project name. We aren&#39;t ready to run the command yet, but the command we want to use might look like this:</p>
 <pre><code class="lang-bash"><span class="hljs-attribute">CreateExpressProject</span> Week03-MyProject
 </code></pre>
 <p>This would create and configure an express project called <strong>Week03-MyProject</strong>.</p>
 <p>How do we create such a script? The first step will be to capture, or &quot;pick off&quot; the parameters passed to the bash script.</p>
-<p>We can pick off parameters in a bash script with $1, $2, etc. For instance, in the following script I have replaced all reference to the project name with $1. Now I can pass in a project name as a parameter to the script. Each instance of $1 will be replaced at run time with the parameter passed in by the user:</p>
+<p>We can pick off parameters in a bash script with the built-in variables $1, $2, etc. For instance, in the following script I have replaced all reference to the project name with $1. Now I can pass in a project name as a parameter to the script. Each instance of $1 will be replaced at run time with the parameter passed in by the user:</p>
 <pre><code class="lang-bash"><span class="hljs-meta">#! /bin/bash
 </span>
 express <span class="hljs-variable">$1</span>
@@ -99,16 +110,16 @@ cp ~/Git/JsObjects/Data/MongoLab03/favicon.png public/.
 sed -i -- <span class="hljs-string">'s/Express/'</span><span class="hljs-variable">$1</span><span class="hljs-string">'/g'</span> routes/index.js
 <span class="hljs-built_in">echo</span> <span class="hljs-_">-e</span> <span class="hljs-string">"# <span class="hljs-variable">$1</span>\nby Charlie Calvert"</span> &gt;&gt; README.md
 </code></pre>
-<p>Use this script to create a project with a random name. For instance, you could:</p>
+<p>Use this script to create a project with a random name. For instance, you could follow these steps to create a reusable script:</p>
 <ul>
 <li>If a <strong>~/bin</strong> directory does not exist, you should create it: <strong>mkdir ~/bin</strong></li>
-<li>Save the new script as <strong>CreateExpressProject</strong> and put it in your <strong>~/bin</strong> directory</li>
-<li>Make it executable: <strong>chmod +x ~/bin/CreateExpressProject</strong></li>
-<li>Invoke it from any place else in your home folder like this: <strong>CreateExpressProject Week03-Test-LastName</strong></li>
+<li>Save the new script as <strong>MyExpressProjectCreator</strong> and put it in your <strong>~/bin</strong> directory</li>
+<li>Make it executable: <strong>chmod +x ~/bin/MyExpressProjectCreator</strong></li>
+<li>Invoke it from any place else in your home folder like this: <strong>MyExpressProjectCreator Week03-Test-LastName</strong></li>
 <li>Now navigate (cd) into <strong>Week03-Test-LastName</strong> and start the project: <strong>npm start</strong></li>
 </ul>
 <p>This works because the <strong>~/bin</strong> folder is placed on your path by the default <strong>.bashrc</strong> script that ships with Ubuntu. We don&#39;t have to add the <strong>bin</strong> folder to the path, the <strong>.bashrc</strong> file does that for us automatically.</p>
-<p><strong>NOTE</strong>: <em>A nice thing about Linux is that it will perform command completion for you for programs on your path. Thus you should be able to type something like <strong>Cre</strong> and then press to tab to have the system complete the command:</em> *CreateExpressProject__.</p>
+<p><strong>NOTE</strong>: <em>A nice thing about Linux is that it will perform command completion for you for programs on your path. Thus you should be able to type something like <strong>Cre</strong> and then press to tab to have the system complete the command: <em>CreateExpressProject</em></em>.</p>
 <h2 id="system-check">Step Four: System Check</h2>
 <p>I&#39;ve made some progress with creating a <strong>SystemCheck</strong> script for Linux. The script is maintained here:</p>
 <pre><code>$JSOBJECTS/Utilities/SetupLinux
