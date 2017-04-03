@@ -1,0 +1,254 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Apache</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><script src="/libs/scripts/Control.js"></script><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/charlie/About.html">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/charlie/development/index.html">Strongly Typed</a></li><li><a href="/charlie/development/web/index.html">Web & Scripts</a></li><li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/charlie/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>Apache</h1><p>Welcomes to Apache</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#index">Index</a></li>
+<li><a href="#directories">Important Directories</a></li>
+<li><a href="#permissions">Permissions</a></li>
+<li><a href="#configuring-htaccess">Configuring .htaccess</a></li>
+<li><a href="#configureApache">Configuring Apache to Serve Files from a User Directory</a></li>
+<li><a href="#moving-your-website">Moving Your Website</a></li>
+<li><a href="#tips">Tips</a></li>
+<li><a href="#crlf">Convert CRLF to LF (Windows to Unix)</a></li>
+<li><a href="#setup">Copy file to an Apache Web Site</a></li>
+<li><a href="#links">Links</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<p>This file contains basic facts about Apache.</p>
+<h3 id="index">Index</h3>
+<ul>
+<li><a href="#directories">The Key Apache Directories</a></li>
+<li><a href="#configureApache">Configure Apache to Serve files from a Users Directory</a></li>
+<li><a href="#crlf">Convert Windows To Unix Line Endings</a></li>
+<li><a href="#setup">Copy file to an Apache Web Site</a></li>
+</ul>
+<h2 id="directories">Important Directories</h2>
+<ul>
+<li>Root folder: /var/www</li>
+<li>cgi-bin: /usr/lib/cgi-bin</li>
+<li>Config file: /etc/apache2/apache2.conf</li>
+<li>Config file: /etc/apache2/envvars</li>
+<li>user: www-data</li>
+</ul>
+<h2 id="permissions">Permissions</h2>
+<p>Please see this section of PythonScripts document:</p>
+<p><a href="../Python/PythonScripts.html#filePermissions">../Python/PythonScripts.html#filePermissions</a></p>
+<h2 id="configuring-htaccess">Configuring .htaccess</h2>
+<p>Suppose you want to turn off directory browsing. You have two options:</p>
+<ul>
+<li>Use the <strong>/etc/apache2/apache2.conf</strong> file.</li>
+<li>Use .htaccess files</li>
+</ul>
+<p>To turn on <strong>.htaccess</strong> on your server, first open <strong>/etc/apache2/apache2.conf</strong>. Go this section:</p>
+<pre><code><span class="hljs-section">&lt;Directory /var/www/&gt;</span>
+    <span class="hljs-attribute"><span class="hljs-nomarkup">Options</span></span> Indexes FollowSymLinks
+    <span class="hljs-attribute">AllowOverride</span> None
+    <span class="hljs-attribute">Require</span> <span class="hljs-literal">all</span> granted
+<span class="hljs-section">&lt;/Directory&gt;</span>
+</code></pre><p>Change it to this, where <strong>AllOverride None</strong> becomes <strong>AllowOverride All</strong>:</p>
+<pre><code><span class="hljs-section">&lt;Directory /var/www/&gt;</span>
+    <span class="hljs-attribute"><span class="hljs-nomarkup">Options</span></span> Indexes FollowSymLinks
+    <span class="hljs-attribute">AllowOverride</span> <span class="hljs-literal">All</span>    
+    <span class="hljs-attribute">Require</span> <span class="hljs-literal">all</span> granted
+<span class="hljs-section">&lt;/Directory&gt;</span>
+</code></pre><p>Now put <strong>.htaccess</strong> files in the directories where you don&#39;t want users to browse. They should contain the following line:</p>
+<pre><code><span class="hljs-attribute"><span class="hljs-nomarkup">Options</span></span> -Indexes
+</code></pre><p>Another option is to remove <strong>Indexes</strong> from the <strong>apache2.conf</strong> code block quoted above. That will deny directory browsing in all locations on your site.</p>
+<p>When working with WordPress, you may need to turn on a particular apache module. For instance, here is how to turn on the rewrite module, which is needed when working with some <strong>permalinks</strong> in WordPress. Specifically, in <strong>wp-admin</strong> go to <strong>Settings | Permalinks</strong> and set <strong>Common Settings</strong> to <strong>Post Name</strong>. That feature won&#39;t work unless <strong>.htaccess</strong> files are active, as described above. Make the <strong>AllowOverride All</strong> change above, and then do this:</p>
+<pre><code class="lang-bash"><span class="hljs-attribute">sudo</span> a2enmod rewrite
+sudo service apache2 restart
+</code></pre>
+<p>You will probably want to create <strong>wordpress/.htaccess</strong> and let <strong>www-data</strong> own it.</p>
+<h2 id="configureApache">Configuring Apache to Serve Files from a User Directory</h2>
+<p>It can be very useful to configure Apache to allow you to serve up pages
+out of your home directory. In particular, it means that you don&#39;t have
+to worry about whether or not you have the privileges necessary to
+complete most standard operations involved with maintaining a web site.</p>
+<p><strong>NOTE</strong>: <em>These instructions assume that you are signed in to user
+account with minimum privileges. If you want to know how to create an
+account, see this Elvenware discussion of the topic:</em></p>
+<p><a href="/charlie/os/linux/LinuxBasics.html">/charlie/os/linux/LinuxBasics.html</a></p>
+<p>Configuring Apache to serve up pages from your home directory is a two
+step process:</p>
+<ol>
+<li>Turn on an Apache feature called <strong>userdir</strong>. This will allow you to
+serve up pages out of a subdirectory of your home account
+called<strong>public_html</strong>.</li>
+<li>Set up a <strong>cgi-bin</strong> directory in your new home folder. This will
+allow you to serve up Python scripts and other cgi content.</li>
+</ol>
+<p>Once you have done these things you can use Filezilla to copy files over
+to a directory called <strong>public_html</strong> and then run them immdediately.
+You will also be able to give your Python files executable permission
+without leaving Filezilla. You will, of course, place your Python files
+in your <strong>cgi-bin</strong> directory.</p>
+<p>You have a certain amount of freedom in the regard, of course, but I
+suggest you using the following directory structure since it mirrors my
+own. The code I give you is likely to be designed to run unchanged in
+this kind of directory tree:</p>
+<pre><code>/home/$USER/public_html
+/home/$USER/public_html/cgi-bin
+</code></pre><p> To give yourself permission to set up a public_html directory, you
+should become <strong>ubuntu</strong>, and then issue the following command:</p>
+<pre><code><span class="hljs-attribute">sudo</span> a2enmod userdir
+</code></pre><p>To test your work, first restart apache</p>
+<pre><code><span class="hljs-attribute">sudo</span> service apache2 restart
+</code></pre><p>If you haven&#39;t done so already, use Filezilla or your shell to create a
+folder called <strong>public_html </strong>in your new user&#39;s home directory:</p>
+<p> <strong>/home/jsmith/public_html</strong>.</p>
+<p>Then copy your <strong>index.html</strong> into that directory. Now try to access the
+file over the web: </p>
+<ul>
+<li><a href="http://54.243.128.193/~charlie/">http://54.243.128.193/~charlie/</a></li>
+</ul>
+<p>Note the convention: write the IP of your machine, followed by a tilda,
+followed by your new user name.</p>
+<p>The final step in this process is to give yourself permission to serve
+up cgi files from your Linux box. As the user <strong>ubuntu</strong>, edit the
+configuration for your available sites:</p>
+<pre><code>nano <span class="hljs-regexp">/etc/</span>apache2<span class="hljs-regexp">/sites-available/</span><span class="hljs-keyword">default</span>
+</code></pre><p>Insert the following code:</p>
+<pre><code>&lt;Directory <span class="hljs-regexp">/home/</span>public_html<span class="hljs-regexp">/cgi-bin/</span>&gt; <span class="hljs-keyword">Options</span> ExecCGI SetHandler cgi-script&lt;<span class="hljs-regexp">/Directory&gt;</span>
+</code></pre><p>Then restart the web server</p>
+<pre><code><span class="hljs-attribute">sudo</span> service apache2 restart
+</code></pre><p>I know that editing a file like default can be intimidating. To help you
+out, I have placed a valid copy of default in the zip file that
+accompanies this assignment.</p>
+<h2 id="moving-your-website">Moving Your Website</h2>
+<p>This stage is by far the easiest. If you have been doing all your work
+on your home machine, then you have a complete copy of your web site on
+your home machine. Simply set up Filezilla to allow you to copy files
+directly from your home machine to the <strong>public_html</strong> directory in
+your new home folder. Please note that your user name in the Filezilla
+site manager should no longer be set to <strong>ubuntu</strong>. Instead, it should
+be set or your new user name, ie <strong>jsmith</strong>.</p>
+<h2 id="tips">Tips</h2>
+<ul>
+<li><a href="http://httpd.apache.org/docs/2.4/howto/public_html.html">http://httpd.apache.org/docs/2.4/howto/public_html.html</a></li>
+</ul>
+<h2 id="crlf">Convert CRLF to LF (Windows to Unix)</h2>
+<p>There is a well known file called
+<strong><a href="http://www.koders.com/python/fid68815951399939A2E330DB6FDFB172ABE455050E.aspx?s=mdef%3Apython">crlf.py</a></strong>
+that ships with most distributions of Python. You can use it to convert
+Windows CRLF line endings to Linux style line endings (LF) and vice
+versa. It looks something like this:</p>
+<pre><code class="lang-%7B.code%7D"><span class="hljs-comment">#! /usr/bin/env python</span>
+<span class="hljs-string">"Replace CRLF with LF in argument files.  Print names of changed files."</span>
+
+<span class="hljs-keyword">import</span> sys, os
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>:</span>
+    <span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> sys.argv[<span class="hljs-number">1</span>:]:
+        <span class="hljs-keyword">if</span> os.path.isdir(filename):
+            <span class="hljs-keyword">print</span> filename, <span class="hljs-string">"Directory!"</span>
+            <span class="hljs-keyword">continue</span>
+        data = open(filename, <span class="hljs-string">"rb"</span>).read()
+        <span class="hljs-keyword">if</span> <span class="hljs-string">'\0'</span> <span class="hljs-keyword">in</span> data:
+            <span class="hljs-keyword">print</span> filename, <span class="hljs-string">"Binary!"</span>
+            <span class="hljs-keyword">continue</span>
+        newdata = data.replace(<span class="hljs-string">"\r\n"</span>, <span class="hljs-string">"\n"</span>)
+        <span class="hljs-keyword">if</span> newdata != data:
+            <span class="hljs-keyword">print</span> filename
+            f = open(filename, <span class="hljs-string">"wb"</span>)
+            f.write(newdata)
+            f.close()
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">'__main__'</span>:
+    main()
+</code></pre>
+<h2 id="setup">Copy file to an Apache Web Site</h2>
+<p>The following (unnecessarily complex and half completed) script is
+designed to help you copy files from your home directory to the /var/www
+and /usr/lib/cgi-bin directories. It could serve as a starting point for
+someone interested in this kind of thing.</p>
+<pre><code class="lang-%7B.code%7D"><span class="hljs-meta">#!/bin/bash
+</span>
+<span class="hljs-comment"># ---------------------------------------------------</span>
+<span class="hljs-comment"># Copy files from a local directory to your web site.</span>
+<span class="hljs-comment"># for instance this script can help you copy files:</span>
+<span class="hljs-comment">#   * from /home/user/temp/site to these directories</span>
+<span class="hljs-comment">#   *   /var/www/site</span>
+<span class="hljs-comment">#   *   /usr/lib/cgi/bin</span>
+<span class="hljs-comment"># You need to set the variables called DIRECTORY and DESTDIR</span>
+<span class="hljs-comment">#   DIRECTORY: A directory relative to your current directory</span>
+<span class="hljs-comment">#   DESTDIR: A directory relative to your /var/www and /usr/lib/cgi-bin</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># The files in DIRECTORY should be placed in two subdirectories:</span>
+<span class="hljs-comment">#   *  /html</span>
+<span class="hljs-comment">#   *  /cgi-bin</span>
+<span class="hljs-comment"># The first should contain all your HTML files</span>
+<span class="hljs-comment"># The second should contain all your Python scripts</span>
+<span class="hljs-comment"># This script will handle copying subdirectories of html and cgi-bin</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># This script assumes the standard crlf.py script is on your path.</span>
+<span class="hljs-comment"># ---------------------------------------------------</span>
+
+<span class="hljs-comment"># DIRECTORY: Name of the folder that holds the site you want to deploy</span>
+DIRECTORY=<span class="hljs-string">"site"</span>
+
+<span class="hljs-comment"># DESTDIR: The folder where you want to place files relative to</span>
+<span class="hljs-comment">#    * /var/www</span>
+<span class="hljs-comment">#    * /usr/lib/cgi-bin</span>
+DESTDIR=<span class="hljs-string">"chords"</span>
+DIRECTORY_CGI=<span class="hljs-variable">$DIRECTORY</span>/cgi-bin
+DIRECTORY_HTML=<span class="hljs-variable">$DIRECTORY</span>/html
+
+HTMLDIR=<span class="hljs-string">"/var/www"</span>
+CGIDIR=<span class="hljs-string">"/usr/lib/cgi-bin"</span>
+HTMLDEST=<span class="hljs-variable">$HTMLDIR</span>/<span class="hljs-variable">$DESTDIR</span>/
+CGIDEST=<span class="hljs-variable">$CGIDIR</span>/<span class="hljs-variable">$DESTDIR</span>/
+
+<span class="hljs-built_in">echo</span> <span class="hljs-string">"HTML Destination = "</span> <span class="hljs-variable">$HTMLDEST</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-string">"CGI Destination = "</span> <span class="hljs-variable">$CGIDEST</span>
+<span class="hljs-comment"># echo "Zip files = " $1</span>
+
+<span class="hljs-function"><span class="hljs-title">dirCopy</span></span>()
+{
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"DirStuff Called"</span>
+    <span class="hljs-keyword">if</span> [ <span class="hljs-_">-d</span> <span class="hljs-variable">$2</span> ]; <span class="hljs-keyword">then</span>
+        <span class="hljs-built_in">echo</span> <span class="hljs-string">"Copying files to: "</span> <span class="hljs-variable">$2</span>
+        sudo cp -R <span class="hljs-variable">$1</span>/. <span class="hljs-variable">$2</span>/.
+    <span class="hljs-keyword">else</span>
+        <span class="hljs-built_in">echo</span> <span class="hljs-string">"No "</span> <span class="hljs-variable">$2</span>
+    <span class="hljs-keyword">fi</span>
+}
+
+<span class="hljs-function"><span class="hljs-title">dirMake</span></span>()
+{
+    <span class="hljs-keyword">if</span> [ <span class="hljs-_">-d</span> <span class="hljs-variable">$1</span> ]; <span class="hljs-keyword">then</span>
+        <span class="hljs-built_in">echo</span> <span class="hljs-variable">$1</span> <span class="hljs-string">"exists. We will remove it"</span>
+        sudo rm -R <span class="hljs-variable">$1</span>
+    <span class="hljs-keyword">fi</span>
+
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"Creating "</span> <span class="hljs-variable">$1</span>
+    sudo mkdir <span class="hljs-variable">$1</span>   
+}
+
+<span class="hljs-function"><span class="hljs-title">unzipFiles</span></span>()
+{
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"Directory = "</span> <span class="hljs-variable">$1</span>
+
+    <span class="hljs-keyword">if</span> [ <span class="hljs-_">-d</span> <span class="hljs-variable">$1</span> ]; <span class="hljs-keyword">then</span>
+        <span class="hljs-built_in">echo</span> <span class="hljs-string">"removing existing directory: "</span> <span class="hljs-variable">$1</span>
+        rm -R <span class="hljs-variable">$DIRECTORY</span>
+    <span class="hljs-keyword">fi</span>
+
+    unzip <span class="hljs-variable">$2</span>
+}
+
+<span class="hljs-comment"># Unzip our zip file</span>
+<span class="hljs-comment"># unzipFiles $DIRECTORY $1</span>
+
+<span class="hljs-comment"># Now we need to set up our destination directories</span>
+dirMake <span class="hljs-variable">$HTMLDEST</span>
+dirMake <span class="hljs-variable">$CGIDEST</span>
+
+<span class="hljs-comment"># Now we copy files to our destination directories</span>
+dirCopy <span class="hljs-variable">$DIRECTORY_HTML</span> <span class="hljs-variable">$HTMLDEST</span>
+dirCopy <span class="hljs-variable">$DIRECTORY_CGI</span> <span class="hljs-variable">$CGIDEST</span>
+<span class="hljs-comment"># And set up the permissions</span>
+find /usr/lib/cgi-bin/chords/ -type f -name *.py | xargs sudo chmod +x
+find /usr/lib/cgi-bin/chords/ -type f | xargs sudo ~/bin/crlf.py
+find /usr/lib/cgi-bin/chords/ -type f -name *.csv | xargs sudo chmod 666
+find /usr/lib/cgi-bin/chords/ -type f -name *.txt | xargs sudo chmod 666
+</code></pre>
+<h2 id="links">Links</h2>
+<ul>
+<li><a href="http://wiki.apache.org/httpd/FAQ">Apache FAQ</a></li>
+</ul>
+</div></body></html>
