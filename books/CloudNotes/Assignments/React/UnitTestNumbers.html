@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>UnitTestNumbers</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>UnitTestNumbers</h1><p>Welcome to UnitTestNumbers</p><ul><!--TOC_Start--><li><a href="#review">Review</a></li>
+<li><a href="#add-test-first">Add Test First</a></li>
+<li><a href="#add-eight-button-and-test">Add Eight Button and Test</a></li><!--TOC_End--></ul></div><div class="container"><p>The goal of this assignment is to display and test a complete set of numbers from 1 to 9, each of which has state and can be set with a button click.</p>
+<p>This assignment builds on the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/RestTests.html">React Jest Unit Tests</a> assignment. Also some reference materials <a href="http://bit.ly/jest-cra">here</a>.</p>
+<p>Complete that assignment first. You should turn in only one project, which will contain both the <strong>React Jest Unit Tests</strong> and the <strong>Unit Tests Numbers</strong> assignments. You can turn in the <strong>React Jest Unit Tests</strong> assignment first, if you want. In other words, your project need not include both completed assignments before you turn in the first assignment.</p>
+<a class="anchor" id="review"></a>
+<h2>Review</h2>
+<p>We left things, I believe in this state:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-unit-test-view.png" alt="view"></p>
+<p>With the tests like this:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-unit-test-output.png" alt="output"></p>
+<p>The constructor:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">()</span> <span class="hljs-comment">{
+    super();
+    this.state = {
+        file: 'Get Nine Result will be placed here.',
+        foo: 'waiting for express server',
+        nine: '0'
+    }</span>;</span>
+}
+</code></pre>
+<p>Methods called getFoo and getNine:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">getNine</span> = <span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">this</span>.setState({nine: <span class="hljs-string">'9'</span>});
+};
+</code></pre>
+<p>And a <em>mocked</em> mock object like this:</p>
+<pre><code class="lang-javascript">var fetch = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(parentThis)</span> {</span>
+    parentThis.setState({
+        foo: <span class="hljs-string">'bar'</span>,
+        file: <span class="hljs-string">'api.js'</span>
+    });
+
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-keyword">then</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> {
+                <span class="hljs-keyword">then</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                    <span class="hljs-keyword">return</span> {
+                        <span class="hljs-keyword">catch</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+};
+
+module.exports.fetch = fetch;
+</code></pre>
+<a class="anchor" id="add-test-first"></a>
+<h2>Add Test First</h2>
+<p>Start by creating a failing test for a property called eight:</p>
+<pre><code class="lang-javascript">it('renders button click message for nine', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;App</span> /&gt;)<span class="hljs-comment">;</span>
+    const nineSign = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;state.nine: <span class="hljs-number">9</span>&lt;/p&gt;<span class="hljs-comment">;</span>
+    wrapper.find('button.getNine').simulate('click')<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">nineSign</span>)).toEqual(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+it('renders initial value of paragraph with state.eight', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;App</span> /&gt;)<span class="hljs-comment">;</span>
+    const eightSign = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;state.eight: <span class="hljs-number">0</span>&lt;/p&gt;<span class="hljs-comment">;</span>
+    const eightp = wrapper.find('p').last().debug()<span class="hljs-comment">;</span>
+    console.log(<span class="hljs-name">eightp</span>)<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">eightSign</span>)).toEqual(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>Note that I have removed the debug lines from the renders button click for nine test, and added it to the renders initial button state.eight. I also removed it for the <strong>render initial value of paragraph with state.nine</strong>. This is because that paragraph element will no longer be the <strong>last()</strong> paragraph on our form.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-unit-test-eight.png" alt="Jest Test with Eight"></p>
+<p>Note the failing test. Your goal is to get it pass. Start by adding state for the value eight:</p>
+<pre><code class="lang-javascript">this.state = {
+    file: <span class="hljs-symbol">'Get</span> Nine <span class="hljs-built_in">Result</span> will <span class="hljs-keyword">be</span> placed here.',
+    foo: <span class="hljs-symbol">'waiting</span> <span class="hljs-keyword">for</span> express server',
+    nine: <span class="hljs-string">'0'</span>,
+    eight: <span class="hljs-string">'0'</span>
+};
+</code></pre>
+<p>The next step would be to add a paragraph in which to display its value.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-unit-test-eight-view.png" alt="React Unit Test Eight View"></p>
+<a class="anchor" id="add-eight-button-and-test"></a>
+<h2>Add Eight Button and Test</h2>
+<p>Finally, add a button for get eight and test to make sure it works:</p>
+<p>It should be fairly clear that you will also need a <strong>getEight</strong> method of your <strong>App</strong> component:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">getEight</span> = <span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">this</span>.setState({eight: <span class="hljs-string">'8'</span>});
+};
+</code></pre>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-unit-test-button-view.png" alt="React view for button eight"></p>
+</div></body></html>
