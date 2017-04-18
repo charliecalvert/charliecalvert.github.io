@@ -7,6 +7,8 @@
 <li><a href="#bower">Bower</a></li>
 <li><a href="#new-branch">New Branch</a></li>
 <li><a href="#images-and-css">Images and CSS</a></li>
+<li><a href="#modularize">Modularize</a></li>
+<li><a href="#props">Props</a></li>
 <li><a href="#tests">Tests</a></li>
 <li><a href="#proper-mocking">Proper Mocking</a></li>
 <li><a href="#control-console">Control Console</a></li>
@@ -61,7 +63,19 @@ $ git <span class="hljs-keyword">tag</span> <span class="hljs-title">-n1</span>
 node_modules
 <span class="hljs-keyword">jspm_packages
 </span><span class="hljs-keyword">bower-components</span>
-</code></pre><a class="anchor" id="new-branch"></a>
+</code></pre><p>Once again, be sure that you remove <strong>components</strong> from <strong>.gitignore</strong></p>
+<p>Here is <strong>server/views/layout.jade</strong> after this change with <strong>bower-components</strong> instead of <strong>components</strong>:</p>
+<pre><code class="lang-javascript">doctype <span class="hljs-selector-tag">html</span>
+<span class="hljs-selector-tag">html</span>
+  head
+    title= title
+    link(rel=<span class="hljs-string">'stylesheet'</span>, href=<span class="hljs-string">'/stylesheets/style.css'</span>)
+    link(rel=<span class="hljs-string">'stylesheet'</span>, href=<span class="hljs-string">'/bower-components/bootstrap/dist/css/bootstrap.css'</span>)
+    <span class="hljs-comment">// CODE YOU NEED TO MODIFY OMITTED HERE</span>
+  <span class="hljs-selector-tag">body</span>
+    block <span class="hljs-attribute">content</span>
+</code></pre>
+<a class="anchor" id="new-branch"></a>
 <h2>New Branch</h2>
 <p>Create a new branch called <strong>Week03</strong>. You <strong>must</strong> put your homework for week three in this branch! (You can do it!)</p>
 <pre><code class="lang-bash"><span class="hljs-symbol">git</span> <span class="hljs-keyword">branch </span>Week03
@@ -83,7 +97,42 @@ node_modules
 Try also, this search in Chrome/Chromium:</li>
 </ul>
 <pre><code>http<span class="hljs-variable">s:</span>//www.google.<span class="hljs-keyword">com</span>/<span class="hljs-built_in">search</span>?q=svg+free+small
-</code></pre><p>Turn to the images page. Select tools, and select <strong>Labeled for non-commercial reuse</strong> or something similar.</p>
+</code></pre><p>In Google, turn to the images page. Select tools, and select <strong>Labeled for non-commercial reuse</strong> or something similar.</p>
+<p>Also, let&#39;s put our images and CSS in their own folders:</p>
+<ul>
+<li><strong>src/css</strong></li>
+<li><strong>src/images</strong></li>
+</ul>
+<p>You will need to make some changes to your code after doing this. In fact, you may have to play with these paths several times over the course of this assignment.</p>
+<a class="anchor" id="modularize"></a>
+<h2>Modularize</h2>
+<p>The key goal will be to move <strong>App.js</strong> to <strong>components/App.js</strong>. Then break <strong>App.js</strong> into discrete components such as <strong>components/Header.js</strong>, <strong>components/GetFoo.js</strong> and <strong>components/SmallNumbers.js</strong>.</p>
+<p>The simplest way to proceed, I believe, is to copy <strong>App.js</strong> into <strong>SmallNumbers.js</strong>. Now delete everything from <strong>SmallNumbers</strong> that is not related to numbers. Go back to <strong>App.js</strong> and delete everything related to numbers from that file.</p>
+<a class="anchor" id="props"></a>
+<h2>Props</h2>
+<p>In <strong>index.js</strong> pass in some default numbers to <strong>components/smallNumbers.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> numbersInit = {
+    <span class="hljs-attr">nine</span>: <span class="hljs-string">'0'</span>,
+    <span class="hljs-attr">eight</span>: <span class="hljs-string">'0'</span>
+};
+
+ReactDOM.render(
+  <span class="hljs-comment">// CODE OMITTED HERE</span>
+
+     &lt;SmallNumbers numbers={numbersInit} /&gt;
+  <span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>,
+  <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
+);
+</code></pre>
+<p>And then use it in <strong>SmallNumbers.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
+    super(props);
+    this.state = {
+        nine: props.numbers.nine,
+        eight: props.numbers.eight
+    }</span>
+}</span>
+</code></pre>
 <a class="anchor" id="tests"></a>
 <h2>Tests</h2>
 <p>As you refactor your components, your tests might need to change. For instance, if you move the H1 for your app into <strong>components/Header.js</strong>, you might need to change your tests. Consider this code:</p>
