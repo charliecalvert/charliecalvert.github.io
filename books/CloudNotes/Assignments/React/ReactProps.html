@@ -1,13 +1,45 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactProps</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactProps</h1><p>Welcome to ReactProps</p><ul><!--TOC_Start--><li><a href="#react-props">React Props</a></li>
+<li><a href="#git-no-components">No Components in Git Ignore</a></li>
+<li><a href="#enospc">ENOSPC Error</a></li>
+<li><a href="#props-single-node">Props Singe Node Error</a></li>
 <li><a href="#tag">Tag</a></li>
 <li><a href="#bower">Bower</a></li>
 <li><a href="#new-branch">New Branch</a></li>
 <li><a href="#images-and-css">Images and CSS</a></li>
-<li><a href="#tests">Tests</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-props"></a>
+<li><a href="#tests">Tests</a></li>
+<li><a href="#proper-mocking">Proper Mocking</a></li>
+<li><a href="#control-console">Control Console</a></li>
+<li><a href="#refactor-tests">Refactor Tests</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-props"></a>
 <h2>React Props</h2>
 <p>We will learn a bit about React props by continuing to expand the <strong>week02-rest-basics</strong> program. We will try to understand properties, and to see how they can be passed from one component to another.</p>
-<p>Check if site is public or private.</p>
+<a class="anchor" id="git-no-components"></a>
+<h2>No Components in Git Ignore</h2>
+<p>Unless you are sure you mean to do it. make sure that <strong>components</strong> is not listed in your <strong>.gitignore</strong> files.</p>
+<a class="anchor" id="enospc"></a>
+<h2>ENOSPC Error</h2>
+<p>While testing, If you get an <strong>ENOSPC</strong> error, do this:</p>
+<ul>
+<li><strong>sudo nano /etc/sysctl.conf</strong></li>
+<li>Scroll to the bottom of the document.</li>
+<li>Add this line: <strong>fs.inotify.max_user_watches = 524288</strong></li>
+<li>Save with <strong>Ctrl-O</strong>, exit with <strong>Ctrl-X</strong>.</li>
+<li>Then run: <strong>sudo sysctl -p</strong></li>
+</ul>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-props-enospc.png" alt="More watches"></p>
+<a class="anchor" id="props-single-node"></a>
+<h2>Props Singe Node Error</h2>
+<p>Here is the error: <em>Method “props” is only meant to be run on a single node. 0 found instead.</em></p>
+<p>I got this when I had a mismatch between what I thought a button click method was called and what it was really called. For instance, here is my test:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">wrapper</span><span class="hljs-selector-class">.find</span>(<span class="hljs-string">'button#foo'</span>)<span class="hljs-selector-class">.simulate</span>(<span class="hljs-string">'click'</span>);
+</code></pre>
+<p>And here is my JSX:</p>
+<pre><code class="lang-HTML"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"bar"</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.getBar}</span>&gt;</span>Get User<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+</code></pre>
+<p>Note that the <strong>ID</strong> of the button is <strong>bar</strong>, but I&#39;m trying to <strong>find</strong> something with an <strong>ID</strong> of <strong>foo</strong>. To fix the proplem, bring them into sync:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">wrapper</span><span class="hljs-selector-class">.find</span>(<span class="hljs-string">'button#bar'</span>)<span class="hljs-selector-class">.simulate</span>(<span class="hljs-string">'click'</span>);
+</code></pre>
 <a class="anchor" id="tag"></a>
 <h2>Tag</h2>
 <p>Since we are often working on a single project that has multiple phases, I suggest creating a git tag marking your current status:</p>
@@ -76,4 +108,165 @@ it.only(<span class="hljs-string">'renders and reads H1 text'</span>, () =&gt; {
     expect(wrapper.contains(welcome)).toEqual(true);
 });</span>
 </code></pre>
+<a class="anchor" id="proper-mocking"></a>
+<h2>Proper Mocking</h2>
+<p>I made some progress on mocking our <strong>whatwg-fetch</strong>  calls with jest. Recall that our goal is to create a mock implementation of fetch that does not make an HTTP REST call over the network. This allows us to run our tests even if our server is not, or cannot, run.</p>
+<p>This new implementation allows us to use <strong><em>exactly</em></strong> the same code in <strong>App.js</strong> when we are testing and when we are running our app normally. In particular, here are the imports in <strong>App.js</strong>, or wherever we are calling <strong>fetch</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'./App.css'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'whatwg-fetch'</span>;
+</code></pre>
+<p>And here is our call to <strong>fetch</strong>:</p>
+<pre><code class="lang-javascript">fetch(<span class="hljs-string">'/api/foo'</span>)
+    .<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(response)</span> {</span>
+        console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'GETONE-FETCH-ONE'</span>);
+        <span class="hljs-keyword">return</span> response.json();
+    }).<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(json)</span> {</span>
+        console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'GETONE-FETCH-TWO'</span>);
+        console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'parsed json'</span>, json);
+        that.setState(foo =&gt; (json));
+    }).<span class="hljs-keyword">catch</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(ex)</span> {</span>
+        console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'parsing failed'</span>, ex);
+    });
+</code></pre>
+<p>As you can see, this code is back to our initial syntax. In particular, we are no longer passing this as the first parameter:</p>
+<pre><code class="lang-javascript">fetch(<span class="hljs-keyword">this</span>, <span class="hljs-string">'/api/user'</span>) &lt;===== WE NO LONGER NEED <span class="hljs-keyword">this</span>. COMPARE TO CODE ABOVE.
+fetch(<span class="hljs-string">'/api/user'</span>) &lt;===== THIS IS HOW IT SHOULD LOOK NOW.
+</code></pre>
+<p>So how do we perform this miracle? To make a long story short: we use the mock library built into Jest. Here is how to proceed:</p>
+<ul>
+<li>Create a new folder in the root of your project called: <strong><strong>mocks</strong></strong><ul>
+<li>Two underscores, the word mocks, two more underscores</li>
+</ul>
+</li>
+<li>Create a file in that directory called <strong>whatwg-fetch.js</strong></li>
+</ul>
+<p>First lets create a simple module that contains the data we will use in our mock:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> getData = <span class="hljs-function">(<span class="hljs-params">url</span>) =&gt;</span> {
+    <span class="hljs-keyword">switch</span> (url) {
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'/api/foo'</span>:
+            <span class="hljs-keyword">return</span> {
+                <span class="hljs-attr">foo</span>: <span class="hljs-string">'bar'</span>,
+                <span class="hljs-attr">file</span>: <span class="hljs-string">'api.js'</span>
+            };
+
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'/api/user'</span>:
+            <span class="hljs-keyword">return</span> {
+                <span class="hljs-attr">error</span>: {},
+                <span class="hljs-attr">response</span>: {},
+                <span class="hljs-attr">body</span>: <span class="hljs-built_in">JSON</span>.stringify({
+                    <span class="hljs-attr">login</span>: <span class="hljs-string">'Robin Dudette'</span>
+                })
+            };
+
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">return</span> {}
+    }
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> getData;
+</code></pre>
+<p>This code simply creates sets of data that mimic what our server would return given a call to a specific <strong>url</strong>.</p>
+<p>Below is the source code for our new mock for <strong>fetch</strong>. Note in particular the call to <a href="https://facebook.github.io/jest/docs/jest-object.html#jestgenmockfrommodulemodulename">jest.genMockFromModule</a>. That call asks Jest to generate a mock object for the module we want to replace with a mock:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> getData <span class="hljs-keyword">from</span> <span class="hljs-string">'./mock-data'</span>;
+
+<span class="hljs-meta">'use strict'</span>;
+
+<span class="hljs-keyword">const</span> whatwgFetch = jest.genMockFromModule(<span class="hljs-string">'whatwg-fetch'</span>);
+
+<span class="hljs-keyword">var</span> fetch = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">url</span>) </span>{
+
+    <span class="hljs-keyword">var</span> objectState = getData(url);
+
+    <span class="hljs-keyword">var</span> response = {};
+    response.json = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> objectState;
+    };
+
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"FETCH STATER"</span>, objectState);
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">then</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">func</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'FETCH TEST ONE'</span>, func(response));
+            <span class="hljs-keyword">return</span> {
+                <span class="hljs-attr">then</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">func</span>) </span>{
+                    <span class="hljs-comment">//func(JSON.stringify(stater));</span>
+                    func(objectState);
+                    <span class="hljs-keyword">return</span> {
+                        <span class="hljs-attr">catch</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+};
+
+whatwgFetch.fetch = fetch;
+<span class="hljs-built_in">window</span>.fetch = fetch;
+
+<span class="hljs-built_in">module</span>.exports = whatwgFetch;
+</code></pre>
+<p>Over time, you can comment out the calls to <strong>console.log</strong>. But they might be helpful at first when you are trying to understand what is going on. Note in particular that we are now putting calls to the callbacks (func) passed into our labyrinthine series of <strong>return</strong> statements. The most important is the second call to <strong>then</strong> where we pass back the <strong>stater</strong> object. Recall that this is used as follows in our call to <strong>fetch</strong>:</p>
+<pre><code class="lang-javascript">.then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">json</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'GETONE-FETCH-TWO'</span>);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsed json'</span>, json);
+    that.setState(<span class="hljs-function"><span class="hljs-params">foo</span> =&gt;</span> (json));
+})
+</code></pre>
+<a class="anchor" id="control-console"></a>
+<h2>Control Console</h2>
+<p>Here are Three steps to a poor man&#39;s logger:</p>
+<ul>
+<li>Declare a boolean in your constructor on your object called <strong>quiet</strong>.</li>
+<li>Create a method on your object called <strong>debug</strong></li>
+<li>Use <strong>debug</strong> instead of console.log</li>
+</ul>
+<p>Perhaps a bit like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">super</span>();
+    <span class="hljs-keyword">this</span>.state = {
+        <span class="hljs-attr">file</span>: <span class="hljs-string">'File Result will be placed here.'</span>,
+        <span class="hljs-attr">foo</span>: <span class="hljs-string">'waiting for express server'</span>
+    };
+
+    <span class="hljs-comment">// SET quiet TO false TO SEE DEBUG MESSAGES    </span>
+    <span class="hljs-keyword">this</span>.quiet = <span class="hljs-literal">true</span>;
+    <span class="hljs-keyword">this</span>.debug(<span class="hljs-string">'GetFoo constructor called'</span>);
+}
+
+debug = <span class="hljs-function">(<span class="hljs-params">message</span>) =&gt;</span> {
+    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.quiet) {
+        <span class="hljs-built_in">console</span>.log(message);
+    }
+};
+
+getFoo = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+    fetch(<span class="hljs-string">'/api/foo'</span>)
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">response</span>) </span>{
+            that.debug(<span class="hljs-string">'GETONE-FETCH-ONE'</span>);
+            <span class="hljs-keyword">return</span> response.json();
+        }).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">json</span>) </span>{
+            that.debug(<span class="hljs-string">'GETONE-FETCH-TWO'</span>);
+            that.debug(<span class="hljs-string">'parsed json'</span>, json);
+            that.setState(<span class="hljs-function"><span class="hljs-params">foo</span> =&gt;</span> (json));
+        }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ex</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsing failed'</span>, ex);
+        });
+};
+</code></pre>
+<a class="anchor" id="refactor-tests"></a>
+<h2>Refactor Tests</h2>
+<p>Refactor your tests into:</p>
+<ul>
+<li>App.test.js</li>
+<li>GetFoo.test.js</li>
+<li>Header.test.js</li>
+<li>SmallNumbers.test.js</li>
+</ul>
+<p>Move tests into their own folder?</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Commit push, designate directory in your repo where you did your work when you turn in the assignment.</p>
 </div></body></html>
