@@ -1,6 +1,8 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>AddressComponent</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>AddressComponent</h1><p>Welcome to AddressComponent</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#create-address-component">Create Address Component</a></li>
+<li><a href="#enospc">ENOSPC Error</a></li>
+<li><a href="#props-single-node">Props Singe Node Error</a></li>
 <li><a href="#tag">Tag</a></li>
 <li><a href="#define-address">Define Address</a></li>
 <li><a href="#clean-up-app-js">Clean Up App.js</a></li>
@@ -20,6 +22,29 @@
 <li>Create <strong>components</strong> directory.</li>
 <li>Create <strong>components/Address.js</strong></li>
 </ul>
+<a class="anchor" id="enospc"></a>
+<h2>ENOSPC Error</h2>
+<p>While testing, If you get an <strong>ENOSPC</strong> error, do this:</p>
+<ul>
+<li><strong>sudo nano /etc/sysctl.conf</strong></li>
+<li>Scroll to the bottom of the document.</li>
+<li>Add this line: <strong>fs.inotify.max_user_watches = 524288</strong></li>
+<li>Save with <strong>Ctrl-O</strong>, exit with <strong>Ctrl-X</strong>.</li>
+<li>Then run: <strong>sudo sysctl -p</strong></li>
+</ul>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-props-enospc.png" alt="More watches"></p>
+<a class="anchor" id="props-single-node"></a>
+<h2>Props Singe Node Error</h2>
+<p>Here is the error: <em>Method “props” is only meant to be run on a single node. 0 found instead.</em></p>
+<p>I got this when I had a mismatch between what I thought a button click method was called and what it was really called. For instance, here is my test:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">wrapper</span><span class="hljs-selector-class">.find</span>(<span class="hljs-string">'button#foo'</span>)<span class="hljs-selector-class">.simulate</span>(<span class="hljs-string">'click'</span>);
+</code></pre>
+<p>And here is my JSX:</p>
+<pre><code class="lang-HTML"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"bar"</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.getBar}</span>&gt;</span>Get User<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+</code></pre>
+<p>Note that the <strong>ID</strong> of the button is <strong>bar</strong>, but I&#39;m trying to <strong>find</strong> something with an <strong>ID</strong> of <strong>foo</strong>. To fix the proplem, bring them into sync:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">wrapper</span><span class="hljs-selector-class">.find</span>(<span class="hljs-string">'button#bar'</span>)<span class="hljs-selector-class">.simulate</span>(<span class="hljs-string">'click'</span>);
+</code></pre>
 <a class="anchor" id="tag"></a>
 <h2>Tag</h2>
 <p>Since we are often working on a single project that has multiple phases, I suggest creating a git tag marking your current status:</p>
