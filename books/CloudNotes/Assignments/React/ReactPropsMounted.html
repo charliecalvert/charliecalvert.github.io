@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactPropsMounted</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactPropsMounted</h1><p>Welcome to ReactPropsMounted</p><ul><!--TOC_Start--><li><a href="#enzyme-mount-vs-shallow">Enzyme mount vs shallow</a></li>
+<li><a href="#on-change=attrs">Testing Element with OnChange Attributes</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="enzyme-mount-vs-shallow"></a>
+<h2>Enzyme mount vs shallow</h2>
+<p>Suppose one component nests another. For instance, suppose that your custom component <strong>MyComponent</strong> renders a second component called <strong>MyOtherComponent</strong>. Here is <strong>MyComponents</strong> render method :</p>
+<pre><code class="lang-javascript">render() {
+    <span class="hljs-keyword">return</span> (
+        <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">MyOtherComponent</span> /&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+    );
+}
+</code></pre>
+<p>In cases like this, if you Enzyme&#39;s shallow, you will only see the output from <strong>MyComponent</strong>. Indeed, that is often what you want. But sometimes, it is simpler to see the output from both <strong>MyComponent</strong> and <strong>MyOtherComponent</strong>. To do that, you use <strong>mount</strong> rather than <strong>shallow</strong>. We usually do this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { shallow } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+</code></pre>
+<p>If you want to see output from both components, then do this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { mount } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+</code></pre>
+<a class="anchor" id="on-change=attrs"></a>
+<h2>Testing Element with OnChange Attributes</h2>
+<p>Suppose you have a code like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { mount } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+
+it.only(<span class="hljs-string">'renders button click message for state.userLogin'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">const</span> wrapper = mount(&lt;GetUserInfo /&gt;);
+    <span class="hljs-keyword">const</span> inputElement = &lt;input value=<span class="hljs-string">"Robin Dudette"</span> /&gt;;  
+    wrapper.find(<span class="hljs-string">'button.getUser'</span>).simulate(<span class="hljs-string">'click'</span>);
+    getLast(wrapper);
+    expect(wrapper.containsMatchingElement(inputElement)).toEqual(<span class="hljs-literal">true</span>);
+});
+</code></pre>
+<p>Your <strong>getLast</strong> debug method may report that your HTML control is generating something like this:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"Robin Dudette"</span> <span class="hljs-attr">onChange</span>=<span class="hljs-string">{[Function]}</span> /&gt;</span>
+</code></pre>
+<p>Yet testing for that exact string seems to fail no matter what I do, probably because [Function] is being expanded. The solution, I found is to use <strong>containsMatchingElement</strong> instead of <strong>contains</strong>. Don&#39;t do this, where I am omitting some code and my naming convention :</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> inputElement = &lt;input value=<span class="hljs-string">"Robin Dudette"</span> onChange={[<span class="hljs-function"><span class="hljs-keyword">Function</span>]} /&gt;
+<span class="hljs-title">expect</span><span class="hljs-params">(wrapper.contains<span class="hljs-params">(inputElement)</span>)</span>.<span class="hljs-title">toEqual</span><span class="hljs-params">(true)</span></span>;
+</code></pre>
+<p>Instead, do this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> inputElement = &lt;input <span class="hljs-keyword">value</span>=<span class="hljs-string">"Robin Dudette"</span> /&gt;;  
+expect(wrapper.containsMatchingElement(inputElement)).toEqual(<span class="hljs-literal">true</span>);
+</code></pre>
+</div></body></html>
