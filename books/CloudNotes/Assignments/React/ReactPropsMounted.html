@@ -1,44 +1,110 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactPropsMounted</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactPropsMounted</h1><p>Welcome to ReactPropsMounted</p><ul><!--TOC_Start--><li><a href="#enzyme-mount-vs-shallow">Enzyme mount vs shallow</a></li>
-<li><a href="#on-change=attrs">Testing Element with OnChange Attributes</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="enzyme-mount-vs-shallow"></a>
-<h2>Enzyme mount vs shallow</h2>
-<p>Suppose one component nests another. For instance, suppose that your custom component <strong>MyComponent</strong> renders a second component called <strong>MyOtherComponent</strong>. Here is <strong>MyComponents</strong> render method :</p>
-<pre><code class="lang-javascript">render() {
-    <span class="hljs-keyword">return</span> (
-        <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">MyOtherComponent</span> /&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
-    );
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactPropsMounted</h1><p>Welcome to ReactPropsMounted</p><ul><!--TOC_Start--><li><a href="#logger">Logger</a></li>
+<li><a href="#enzyme-mount-vs-shallow">Enzyme mount vs shallow</a></li>
+<li><a href="#on-change=attrs">Testing Element with Complex Attributes</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="logger"></a>
+<h2>Logger</h2>
+<p>There are some very good loggers out there, and we should probably be using those. Still, there is perhaps some value in writing our own loggers. If nothing else, they show us why the best loggers are so good. The key trait we want in a logger is the ability to turn logging on and off. The issue, of course, is that sometimes <strong>console.log</strong> statements are very useful, and sometimes they just get in the way. Being able to turn them on and off is useful.</p>
+<p>This is still a bit tentative, but here is useful, if somewhat naive, simple logger. I&#39;ve saved it in my <strong>src</strong> directory as <strong>elf-logger.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 4/18/17.
+ */</span>
+
+<span class="hljs-keyword">const</span> ElfLogger = <span class="hljs-class"><span class="hljs-keyword">class</span> </span>{
+
+    <span class="hljs-keyword">constructor</span>(initQuiet) {
+        <span class="hljs-keyword">this</span>.display = initQuiet;
+    }
+
+    log = <span class="hljs-function">(<span class="hljs-params">message1, message2, message3</span>) =&gt;</span> {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> message2 === <span class="hljs-string">'undefined'</span>) {
+            message2 = <span class="hljs-string">''</span>;
+        }
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> message3 === <span class="hljs-string">'undefined'</span>) {
+            message3 = <span class="hljs-string">''</span>;
+        }
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.display) {
+            <span class="hljs-built_in">console</span>.log(message1, message2, message3);
+        }
+    };
+
+    setQuiet = <span class="hljs-function">(<span class="hljs-params">newValue</span>) =&gt;</span> {
+        <span class="hljs-keyword">this</span>.display = newValue;
+    }
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> ElfLogger;
+</code></pre>
+<p>Use it like this, where the boolean in the second line turns the logger on or off:</p>
+<pre><code class="lang-javascript">import Logger from <span class="hljs-string">'../elf-logger'</span><span class="hljs-comment">;</span>
+<span class="hljs-keyword">const</span> logger = new Logger(<span class="hljs-literal">false</span>)<span class="hljs-comment">;</span>
+
+// <span class="hljs-keyword">THEN</span>, WHEN YOU WANT <span class="hljs-keyword">TO</span> <span class="hljs-built_in">LOG</span> SOMETIHING, CHANGE <span class="hljs-literal">false</span> <span class="hljs-keyword">TO</span> <span class="hljs-literal">true</span> ABOVE <span class="hljs-literal">AND</span>:
+logger.<span class="hljs-built_in">log</span>(<span class="hljs-string">'Logging now'</span>)<span class="hljs-comment">;</span>
+</code></pre>
+<p>As you can see, the logger can except up to three parameters.</p>
+<p><strong>NOTE</strong>: <em>When I get time, I&#39;d like to have the logger work depending on whether or not an environment variable is set, as that is more flexible than this module by module approach:</em></p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (process.<span class="hljs-keyword">env</span>.SERVERFOO) {
+  console.<span class="hljs-keyword">log</span>(message1, message2, message3);
 }
 </code></pre>
-<p>In cases like this, if you Enzyme&#39;s shallow, you will only see the output from <strong>MyComponent</strong>. Indeed, that is often what you want. But sometimes, it is simpler to see the output from both <strong>MyComponent</strong> and <strong>MyOtherComponent</strong>. To do that, you use <strong>mount</strong> rather than <strong>shallow</strong>. We usually do this:</p>
+<a class="anchor" id="enzyme-mount-vs-shallow"></a>
+<h2>Enzyme mount vs shallow</h2>
+<p>Suppose one component nests another. For instance, suppose that your custom component <strong>MyComponent</strong> renders a second component called <strong>MyOtherComponent</strong>. Here is <strong>MyComponent&#39;s</strong> render method :</p>
+<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+  render() {
+      <span class="hljs-keyword">return</span> (
+          &lt;div&gt;
+              &lt;<span class="hljs-type">MyOtherComponent</span> /&gt;
+          &lt;/div&gt;
+      );
+  }
+}
+</code></pre>
+<p>Here <strong>MyComponent</strong> does nothing by as <strong>MyOtherComponent</strong> to render itself.</p>
+<p>In cases like this, if you use Enzyme&#39;s <a href="https://github.com/airbnb/enzyme/blob/master/docs/api/shallow.md">shallow</a>, you will only see the output from <strong>MyComponent</strong>. Indeed, that is often what you want. But sometimes, it is simpler to see the output from both <strong>MyComponent</strong> and <strong>MyOtherComponent</strong>. To do that, you use <strong>mount</strong> rather than <strong>shallow</strong>. We usually do this:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { shallow } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
 </code></pre>
 <p>If you want to see output from both components, then do this:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { mount } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
 </code></pre>
 <a class="anchor" id="on-change=attrs"></a>
-<h2>Testing Element with OnChange Attributes</h2>
-<p>Suppose you have a code like this:</p>
+<h2>Testing Element with Complex Attributes</h2>
+<p>In our code so far, we have always been attempting to match exactly and completely what is rendered by an HTML element. For instance, we have written code like this:</p>
+<pre><code class="lang-javascript">const fooState = <span class="hljs-variable">&lt;p className="App-intro"&gt;</span><span class="hljs-keyword">state</span>.foo: bar&lt;/p&gt;;
+expect(wrapper.contains(fooState)).<span class="hljs-keyword">to</span>Equal(true);
+</code></pre>
+<p>Here we are expecting our paragraph element to more or less exactly match the string we assign to <strong>fooState</strong>. However, there are times when the controls we create are more complex than this. On some of these of these occasions, it is, at best, difficult to compose a string that exactly matches our controls output.</p>
+<p>In particular, suppose your code produces a control that is reported by Enzyme to render like this:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"Robin Dudette"</span> <span class="hljs-attr">onChange</span>=<span class="hljs-string">{[Function]}</span> /&gt;</span>
+</code></pre>
+<p>Note the <strong>onChange</strong> attribute, and the react expression to which it is equated. It turns out that such code is hard to match.</p>
+<p>In such cases you might consider writing test code like this:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { mount } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLast</span>(<span class="hljs-params">wrapper, element</span>) </span>{        
+    <span class="hljs-keyword">const</span> eightp = wrapper.find(element).last().debug();
+    logger.log(<span class="hljs-string">"GETUSERINFO TEST GET LAST:"</span>, eightp);
+}
 
 it.only(<span class="hljs-string">'renders button click message for state.userLogin'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
     <span class="hljs-keyword">const</span> wrapper = mount(&lt;GetUserInfo /&gt;);
     <span class="hljs-keyword">const</span> inputElement = &lt;input value=<span class="hljs-string">"Robin Dudette"</span> /&gt;;  
     wrapper.find(<span class="hljs-string">'button.getUser'</span>).simulate(<span class="hljs-string">'click'</span>);
-    getLast(wrapper);
+    getLast(wrapper, <span class="hljs-string">'input'</span>);
     expect(wrapper.containsMatchingElement(inputElement)).toEqual(<span class="hljs-literal">true</span>);
 });
 </code></pre>
 <p>Your <strong>getLast</strong> debug method may report that your HTML control is generating something like this:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"Robin Dudette"</span> <span class="hljs-attr">onChange</span>=<span class="hljs-string">{[Function]}</span> /&gt;</span>
 </code></pre>
-<p>Yet testing for that exact string seems to fail no matter what I do, probably because [Function] is being expanded. The solution, I found is to use <strong>containsMatchingElement</strong> instead of <strong>contains</strong>. Don&#39;t do this, where I am omitting some code and my naming convention :</p>
+<p>Yet testing for that exact string seems to fail no matter what I do, probably because [Function] is being expanded to something more than what is shown here. One solution, I found was to use <strong>containsMatchingElement</strong> instead of <strong>contains</strong>.</p>
+<p>Here was my first attempt to match that that output:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> inputElement = &lt;input value=<span class="hljs-string">"Robin Dudette"</span> onChange={[<span class="hljs-function"><span class="hljs-keyword">Function</span>]} /&gt;
 <span class="hljs-title">expect</span><span class="hljs-params">(wrapper.contains<span class="hljs-params">(inputElement)</span>)</span>.<span class="hljs-title">toEqual</span><span class="hljs-params">(true)</span></span>;
 </code></pre>
-<p>Instead, do this:</p>
+<p>As you can see, I&#39;m trying to mirror what I see in the Enzyme debug. It was a good try, I suppose, but it didn&#39;t work. Instead, I ended up doing this:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> inputElement = &lt;input <span class="hljs-keyword">value</span>=<span class="hljs-string">"Robin Dudette"</span> /&gt;;  
 expect(wrapper.containsMatchingElement(inputElement)).toEqual(<span class="hljs-literal">true</span>);
 </code></pre>
+<p>Note that I&#39;m calling <strong>containsMatchingElement</strong> rather than <strong>contains</strong>. This turns out to be a more forgiving method. Even though the <strong>inputElement</strong> variable shown above does not exactly match the output of the control, it is close enough to pass the test, yet strict enough to catch obvious errors, such as <strong>value</strong> being set to something other than <strong>Robin Dudette</strong>.</p>
 </div></body></html>
