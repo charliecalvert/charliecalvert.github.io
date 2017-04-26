@@ -1,22 +1,13 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactAddressEdit</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactAddressEdit</h1><p>Welcome to ReactAddressEdit</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
-<li><a href="#divide">Divide</a></li>
-<li><a href="#create-addressshow">Create AddressShow</a></li>
-<li><a href="#data">Data</a></li>
-<li><a href="#props-address-data">AddressShow Receives the Address Data</a></li>
-<li><a href="#quiet-log">Logging: Blessed Quiet</a></li>
-<li><a href="#rendering-the-data">Rendering the Data</a></li>
-<li><a href="#modify-view">AddressShow Modify View</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#create-tests">Create Tests</a></li>
+<li><a href="#create-addressedit">Create AddressEdit</a></li>
+<li><a href="#load-address-edit">Teach Address to Load AddressEdit</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
-<p>We have two major several steps:</p>
+<p>We have several steps that will allow us to start editing the data we view:</p>
 <ul>
-<li>Divide the Address Component up into:<ul>
-<li>A component that owns the data: <strong>Address</strong></li>
-<li>A component that displays the data: <strong>AddressShow</strong></li>
-<li>Update Tests</li>
-</ul>
-</li>
-<li>Create a new Component<ul>
+<li>Create an AddressEdit Component<ul>
 <li>Create a component can all the user to edit the data: <strong>AddressEdit</strong></li>
 </ul>
 </li>
@@ -26,185 +17,59 @@
 </ul>
 </li>
 </ul>
-<a class="anchor" id="divide"></a>
-<h2>Divide</h2>
-<p>The first step is to split <strong>Address</strong> and <strong>AddressShow</strong> into two distinct components. In particular, we will create a new component called <strong>AddressShow</strong> and put most of <strong>Address</strong> in it. We will then pare down <strong>Address</strong> so that its primary function will be handling data.</p>
-<p>The first step will be set up our (initially) failing tests for <strong>AddressShow</strong>:</p>
-<pre><code class="lang-javascript">// GET THE RIGHT IMPORTS
-
-describe('AddressShow Shallow Suite', function () {
-
-    var quiet = true<span class="hljs-comment">;</span>
-
-    /*
-     * @param {object} wrapper - Container for a bunch of HTML nodes
-     * @param {number} index - Index of HTML element.
-     * @param {boolean} talkToMe - Speak even if quiet is true
-     */
-    const getIndex = function(<span class="hljs-name">wrapper</span>, index, talkToMe) {
-        if (!quiet || talkToMe) {
-            const ninep = wrapper.find('div#addressShowRender').childAt(<span class="hljs-name">index</span>).debug()<span class="hljs-comment">;</span>
-            console.log('NINEP:', ninep)<span class="hljs-comment">;</span>
-        }
-    }<span class="hljs-comment">;</span>
-
-    const defaultFieldTest = (<span class="hljs-name">name</span>, index, talkToMe) =&gt; {
-        const wrapper = shallow(<span class="hljs-name">&lt;AddressShow</span> address={address}  /&gt;)<span class="hljs-comment">;</span>
-        const welcome = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;<span class="hljs-comment">;</span>
-        getIndex(<span class="hljs-name">wrapper</span>, index, talkToMe)<span class="hljs-comment">;</span>
-        expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">welcome</span>)).toEqual(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
-    }<span class="hljs-comment">;</span>
-
-    it('renders and displays the default first name', () =&gt; {
-        defaultFieldTest('firstName: unknown', <span class="hljs-number">0</span>)<span class="hljs-comment">;</span>
-    })<span class="hljs-comment">;</span>
-
-    // AND MANY MORE
-
-})<span class="hljs-comment">;</span>
+<a class="anchor" id="create-tests"></a>
+<h2>Create Tests</h2>
+<a class="anchor" id="create-addressedit"></a>
+<h2>Create AddressEdit</h2>
+<p>Make a copy of <strong>AddressShow</strong>. Strip out everything except the render method.</p>
+<ul>
+<li>Replace the <strong>P</strong> elements with INPUT controls.</li>
+<li>Add an ID to each INPUT</li>
+<li>Add an ONCHANGE attribute to each INPUT</li>
+</ul>
+<p>Here is an example:</p>
+<pre><code class="lang-javascript">&lt;<span class="hljs-selector-tag">input</span> id=<span class="hljs-string">"elfFN"</span> className=<span class="hljs-string">"App-intro"</span> value={this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.address</span><span class="hljs-selector-class">.firstName</span>} onChange={this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.onNameChange</span>}/&gt;
 </code></pre>
-<p>Note that we don&#39;t create any tests for button clicks.</p>
-<a class="anchor" id="create-addressshow"></a>
-<h2>Create AddressShow</h2>
-<p>To get started, make a copy of <strong>Address</strong> and call it <strong>AddressShow</strong>. For instance, you might right click on <strong>Address</strong> in WebStorm, choose <strong>copy</strong>, then right click on the <strong>components</strong> folder and choose <strong>paste</strong>. When prompted, you might call the copy you create <strong>AddressShow</strong>. There are many ways to do the same thing, and it doesn&#39;t really matter which one you prefer.</p>
-<p>In <strong>AddressShow</strong>, rename the class from <strong>Address</strong> to <strong>AddressShow</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Address</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{ ... }      &lt;=== <span class="hljs-type">ORIGINAL</span>
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AddressShow</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{ ... }  &lt;=== <span class="hljs-type">EDITED</span> <span class="hljs-type">VERSION</span>
-</code></pre>
-<p>Then, down at the bottom of the file, make the same change:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> Address;      &lt;=== ORIGINAL
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> AddressShow;  &lt;=== EDITED VERSION
-</code></pre>
-<a class="anchor" id="data"></a>
-<h2>Data</h2>
-<p>We will no longer load <strong>addresses</strong> in <strong>index.js</strong>. Instead, <strong>Address</strong> owns the data. Move the import statement from <strong>index.js</strong> to <strong>Address.js</strong> and straighten out the path:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> addresses <span class="hljs-keyword">from</span> <span class="hljs-string">'../address-list'</span>;
-</code></pre>
-<p><strong>NOTE</strong>: <em>Recall that our goal is to perform a complete mind-meld with the file system of our OS. Some part of your brain must become the file system, and you should take great joy and comfort from this fact. In particular, it should be intuitively obvious that the relative path part of the import statement must change after we move this line of code from a file in the <strong>src</strong> directory to a file in the <strong>src/components</strong> directory. You should also grok immediately the difference between a relative path that contains one dot and one that contains two dots. You shouldn&#39;t have to think about it any more than you have to think how to tie your shoes. The knowledge should just be there, fully formed, in your brain without thought or effort. I should perhaps remind you that this isn&#39;t a Linux thing, as you would have the same issue on Windows.</em></p>
-<p>Lets also stop individual fields in <strong>Address</strong>. Intead, we will work with a single record from the <strong>addresses</strong> array.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> addresses from '../address-list';
-
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Address</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
-    constructor(props) {
-        <span class="hljs-keyword">super</span>(props);
-
-        <span class="hljs-keyword">this</span>.addressIndex=<span class="hljs-number">0</span>;
-        const address = addresses[<span class="hljs-keyword">this</span>.addressIndex];
-        <span class="hljs-keyword">this</span>.state = {
-            address: address  &lt;=== <span class="hljs-type">HERE</span>
-        };
-        <span class="hljs-keyword">this</span>.quiet = <span class="hljs-literal">true</span>;
+<a class="anchor" id="load-address-edit"></a>
+<h2>Teach Address to Load AddressEdit</h2>
+<p>All you need to do is add a new method for handling changes to the input control:</p>
+<pre><code class="lang-javascript">onNameChange = (<span class="hljs-keyword">event</span>) =&gt; {
+    <span class="hljs-keyword">this</span>.log(<span class="hljs-string">"ON NAME CHANGE"</span>);
+    <span class="hljs-keyword">const</span> address = addresses[<span class="hljs-keyword">this</span>.addressIndex];
+    <span class="hljs-keyword">switch</span> (<span class="hljs-keyword">event</span>.target.id) {
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'elfFN'</span>:
+            address.firstName = <span class="hljs-keyword">event</span>.target.<span class="hljs-keyword">value</span>;
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'elfLN'</span>:
+            address.lastName = <span class="hljs-keyword">event</span>.target.<span class="hljs-keyword">value</span>;
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-comment">// ETC</span>
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">'OH NO BAD CASE in Address onNameChange'</span>);
     }
-}
-</code></pre>
-<p>We create an <strong>addressIndex</strong> property and use it to index into our array of addresses. Our state tracks only a single address since that is all that <strong>AddressShow</strong> needs to know.</p>
-<p><strong>NOTE</strong>: <em>I&#39;m having some doubts here as to whether this is the best way to do this. Certainly it works, but there may be a more elegant solution. I&#39;ll think about it.</em></p>
-<p>We now radically strip down the <strong>render</strong> method for <strong>Address</strong>. Rather than render the address fields here, we will pass <strong>this.state.address</strong> to <strong>AddressShow</strong> and let that component render it:</p>
-<pre><code class="lang-javascript">render() {
-    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.quiet) { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"ADDRESS RENDER"</span>); }
-    <span class="hljs-keyword">return</span> (
-        <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">AddressShow</span> <span class="hljs-attr">address</span>=<span class="hljs-string">{this.state.address}</span> /&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-    );
-}</span>
-</code></pre>
-<a class="anchor" id="props-address-data"></a>
-<h2>AddressShow Receives the Address Data</h2>
-<p>The only thing that <strong>AddressShow</strong> really needs to do is display our <strong>Address</strong> record. It turns that at this time, <strong>AddressShow</strong> does not need a constructor, since there is no set up work need to get the object going. However, if it did need one, it might look like this:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
-    super(props);
-    console.log('SHOW ADDRESS CONSTRUCTOR', this.props.address);
-}</span></span>
-</code></pre>
-<p>As you can see, the constructor is passed <strong>props</strong>. As you know, <strong>props</strong> is the state passed to the object by its parent, which in this case is <strong>Address</strong>. This means that <strong>this.props.address</strong> in <strong>AddressShow</strong> is &quot;the same thing&quot; as <strong>this.state.address</strong> in the <strong>Address</strong> component. The data is passed from the <strong>Address</strong> render method to the <strong>AddressShow</strong> constructor.</p>
-<p>You can keep the above constructor, but you should strip everything else from <strong>AddressShow</strong> expcept the <strong>render</strong> method.</p>
-<p><strong>NOTE</strong>: <em>Since the constructor for <strong>AddressShow</strong> doesn&#39;t do anything, the only thing we really need in <strong>AddressShow</strong> is the render method, but we are keeping the constructor for pedagogical purposes.</em></p>
-<a class="anchor" id="quiet-log"></a>
-<h2>Logging: Blessed Quiet</h2>
-<p>Since we don&#39;t really need the <strong>constructor</strong>, and yet we have implemented it anyway to help illustrate a point, we might as well see if we can find a way to complicate the code further.</p>
-<p>As you probably know, <strong>console.log</strong> is both curse and blessing. Let&#39;s try to emphasize the blessing and mitigate the curse by creating a single place where we call the offending method:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
-    super(props);
-    this.quiet = true;
-    this.log('SHOW ADDRESS CONSTRUCTOR', this.props.address);
-}</span>
-
-<span class="hljs-title">log</span><span class="hljs-params">(<span class="hljs-keyword">message</span>, message2 = <span class="hljs-string">''</span>, message3 = <span class="hljs-string">''</span>)</span> <span class="hljs-comment">{
-    if (!this.quiet) {
-        console.log(message, message2, message3);
-    }</span>
-}</span>
-</code></pre>
-<p>Now we can toggle a single variable, <strong>this.quiet</strong>, whenever we want to turn down the volume. For instance, we might want to log to the console in our render method. In the new system we would do it like this:</p>
-<pre><code class="lang-javascript">render() {
-    <span class="hljs-keyword">this</span>.log(<span class="hljs-string">"SHOW ADDRESS RENDER"</span>);
-    <span class="hljs-keyword">return</span> ( ... );
-}
-</code></pre>
-<p>Now we can change the <strong>this.quier</strong> property from <strong>true</strong> to <strong>false</strong> to toggle the use of <strong>console.log</strong> throughout the object. There are other solutions, and better loggers, but this is a bit of a start on understanding the subject.</p>
-<p><strong>NOTE</strong>: <em>I state the name of the object in logging message to help me track down where it is coming from. Fancy loggers can give us more information in simpker ways, but we could do this:</em></p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">constructor</span>(props) {
-    <span class="hljs-keyword">super</span>(props);
-    <span class="hljs-keyword">this</span>.quiet = <span class="hljs-literal">false</span>;
-    <span class="hljs-keyword">this</span>.log(<span class="hljs-string">'CONSTRUCTOR'</span>, <span class="hljs-keyword">this</span>.props.address);
-}
-
-log(message, message2 = <span class="hljs-string">''</span>, message3 = <span class="hljs-string">''</span>) {
-
-    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.quiet) {
-        const label = <span class="hljs-keyword">this</span>.<span class="hljs-keyword">constructor</span>.name + <span class="hljs-string">': '</span>;   &lt; === HERE
-        console.log(label, message, message2, message3);
-    }
-}
-
-render() {
-    <span class="hljs-keyword">this</span>.log(<span class="hljs-string">"RENDER"</span>);
-}
-</code></pre>
-<p><em>We are using <strong>this.constructor.name</strong> to get the name of our component.</em></p>
-<a class="anchor" id="rendering-the-data"></a>
-<h2>Rendering the Data</h2>
-<p>It should come as no surprise that <strong>AddressShow</strong> can, at least for now, render an address with almost the same code that we used in <strong>Address</strong>. The change will be simply to work with <strong>props</strong> rather than <strong>state</strong>:</p>
-<pre><code class="lang-javascript">render() {
-    <span class="hljs-keyword">this</span>.log(<span class="hljs-string">"SHOW ADDRESS RENDER"</span>);
-
-    <span class="hljs-keyword">return</span> (
-        <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-intro"</span>&gt;</span>
-                firstName: {this.props.address.firstName}
-            <span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
-
-            // CODE OMITTED HERE
-
-        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
-    );
-}
-</code></pre>
-<p>Note that we don&#39;t write <strong>this.props.firstName</strong> but <strong>this.props.address.firstName</strong>. This is because we pass in the whole address object, rather than a set of individual properties representing each field. One could argue the merits of each technique, but I like this one because it is relatively simple.</p>
-<a class="anchor" id="modify-view"></a>
-<h2>AddressShow Modify View</h2>
-<p>The next step will be to set up a button click for <strong>AddressShow</strong>. Recall that we deleted all the code except the render method a nominal constructor from <strong>AddressShow</strong>. Thus our button click no longer works, even if the button itself is still there.</p>
-<p>We said earlier that <strong>AddressShow</strong> would display our data, and that <strong>Address</strong> would manipulate, modify and save our data. So our code for handling the button click belongs in Address. It is essentially the same code we had before, but now it is somewhat simpler since we are working on with the piece of data in our state:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">onAddressChange</span> = <span class="hljs-params">(event)</span> =&gt;</span> {
-    <span class="hljs-keyword">this</span>.addressIndex = <span class="hljs-number">1</span>;
-    const address = addresses[<span class="hljs-keyword">this</span>.addressIndex];
-
     <span class="hljs-keyword">this</span>.setState({
         address: address
     })
 };
 </code></pre>
-<p>So now we have the method for changing our state. But that method is in <strong>Address</strong> and in our button is in <strong>AddressShow</strong>. How do we connect them?</p>
-<p>The solution is to pass the <strong>onAddressChange</strong> function object to <strong>AddressShow</strong> in the render method of <strong>Address</strong>:</p>
-<pre><code class="lang-javascript">&lt;AddressShow
+<p>As you can see, key information about the user&#39;s action are passed in the <strong>target</strong> object that lives like a craven parasite on the <strong>event</strong> object. Note that:</p>
+<ul>
+<li><strong>event.target.id</strong> contains the id of the INPUT control the user is editing.</li>
+<li><strong>event.target.value</strong> contains the current value of the string the user is editing</li>
+</ul>
+<p>To display the <strong>AddressEdit</strong> component, modify the <strong>Address</strong> render method to teach it to load <strong>AddressEdit</strong>:</p>
+<pre><code class="lang-javascript">&lt;AddressEdit
     address={<span class="hljs-keyword">this</span>.state.address}
     onAddressChange={<span class="hljs-keyword">this</span>.onAddressChange}
+    onNameChange={<span class="hljs-keyword">this</span>.onNameChange}
 /&gt;
+&lt;AddressShow
+    address={<span class="hljs-keyword">this</span>.state.address}
+    onAddressChange={<span class="hljs-keyword">this</span>.onAddressChange}
+ /&gt;
 </code></pre>
-<p>As you can see, we are now passing not one, but two <strong>props</strong> to <strong>AddressShow</strong>.</p>
-<p>And here is all we need to do in <strong>AddressShow</strong>. At the bottom of the render method, modify the button to look like this:</p>
-<pre><code class="lang-javascript">&lt;<span class="hljs-selector-tag">button</span> id=<span class="hljs-string">"showAddressClick"</span> onClick={this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.onAddressChange</span>}&gt;Show Address&lt;/button&gt;
-</code></pre>
-<p>Note that I am both setting the <strong>onclick</strong> method to the function object passed from the <strong>Address</strong> object, and also being sure to create a unique <strong>id</strong> which is a portmanteau derived from the object&#39;s name and the button&#39;s purpose.</p>
+<p>When you are done, edits to the INPUT should automatically propogate to the paragraph controls.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Add, commit, push. Tag. Push your tag.</p>
 </div></body></html>

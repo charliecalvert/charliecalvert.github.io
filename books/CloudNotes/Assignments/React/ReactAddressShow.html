@@ -6,7 +6,10 @@
 <li><a href="#props-address-data">AddressShow Receives the Address Data</a></li>
 <li><a href="#quiet-log">Logging: Blessed Quiet</a></li>
 <li><a href="#rendering-the-data">Rendering the Data</a></li>
-<li><a href="#modify-view">AddressShow Modify View</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#understanding-testing-child-components">Understanding Testing Child Components</a></li>
+<li><a href="#writing-child-tests">Writing Tests for Child Components</a></li>
+<li><a href="#modify-view">AddressShow Modify View with Button Click</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>We have two major several steps:</p>
 <ul>
@@ -16,13 +19,8 @@
 <li>Update Tests</li>
 </ul>
 </li>
-<li>Create a new Component<ul>
-<li>Create a component can all the user to edit the data: <strong>AddressEdit</strong></li>
-</ul>
-</li>
-<li>Both the <strong>AddressShow</strong> and <strong>AddressEdit</strong> components are children of Address<ul>
-<li>Modify the <strong>Address</strong> <strong>render</strong> method to reflect this</li>
-<li>Update Tests, creating new test suite: <strong>AddressEdit.test.js</strong></li>
+<li>Insure that clicks on the Button work but that <strong>Address</strong> not <strong>AddressShow</strong> does the real work.<ul>
+<li>Update Tests</li>
 </ul>
 </li>
 </ul>
@@ -182,8 +180,91 @@ render() {
 }
 </code></pre>
 <p>Note that we don&#39;t write <strong>this.props.firstName</strong> but <strong>this.props.address.firstName</strong>. This is because we pass in the whole address object, rather than a set of individual properties representing each field. One could argue the merits of each technique, but I like this one because it is relatively simple.</p>
+<a class="anchor" id="understanding-testing-child-components"></a>
+<h2>Understanding Testing Child Components</h2>
+<p>Our next step will be to get the button click working. First, we should create tests that fail until we get our code working.</p>
+<p>These tests will look a lot like the tests you did for the original <strong>Address</strong> component that contained both paragraphs and buttons. That was the way things looked before you moved the paragraphs and buttons into Tag it, then <strong>AddressShow</strong>.</p>
+<p>There is one important change that you need to make. This has to do with Enzyme and the <strong>shallow</strong> vs <strong>mount</strong> methods.</p>
+<p>Suppose one component nests another. For instance, suppose that your custom component <strong>MyComponent</strong> renders a second component called <strong>MyOtherComponent</strong>. Here is <strong>MyComponent&#39;s</strong> render method :</p>
+<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+  render() {
+      <span class="hljs-keyword">return</span> (
+          &lt;div&gt;
+              &lt;<span class="hljs-type">MyOtherComponent</span> /&gt;
+          &lt;/div&gt;
+      );
+  }
+}
+</code></pre>
+<p>Here <strong>MyComponent</strong> does nothing but ask <strong>MyOtherComponent</strong> to render itself.</p>
+<p>In cases like this, if you use Enzyme&#39;s <a href="https://github.com/airbnb/enzyme/blob/master/docs/api/shallow.md">shallow</a>, your tests will only see the output from <strong>MyComponent</strong>. Indeed, that is often what you want. But sometimes, it is best to have the tests the output from both <strong>MyComponent</strong> and <strong>MyOtherComponent</strong>. To do that, you use <strong>mount</strong> rather than <strong>shallow</strong>. We usually do this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { shallow } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+</code></pre>
+<p>If you want to see output from both components, then do this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { mount } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+</code></pre>
+<a class="anchor" id="writing-child-tests"></a>
+<h2>Writing Tests for Child Components</h2>
+<p>The first step will be to load <strong>mount</strong> rather than <strong>shallow</strong> from enzyme.</p>
+<p>After that, the tests look more or less the same.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> Address <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/Address'</span>;
+<span class="hljs-keyword">import</span> { mount } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+
+<span class="hljs-keyword">import</span> addresses <span class="hljs-keyword">from</span> <span class="hljs-string">'../address-list'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'../css/index.css'</span>;
+
+<span class="hljs-keyword">const</span> address = addresses[<span class="hljs-number">0</span>];
+
+describe(<span class="hljs-string">'Address mount Suite'</span>, <span class="hljs-keyword">function</span> () {
+
+    <span class="hljs-keyword">var</span> quiet = <span class="hljs-literal">true</span>;
+
+    <span class="hljs-comment">/*
+     * @param {object} wrapper - Container for a bunch of HTML nodes
+     * @param {number} index - Index of HTML element.
+     * @param {boolean} talkToMe - Speak even if quiet is true
+     */</span>
+    <span class="hljs-keyword">const</span> getIndex = <span class="hljs-keyword">function</span>(wrapper, index, talkToMe) {
+        <span class="hljs-keyword">if</span> (!quiet || talkToMe) {
+            <span class="hljs-keyword">const</span> ninep = wrapper.find(<span class="hljs-string">'div#addressShowRender'</span>).childAt(index).debug();
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'NINEP:'</span>, ninep);
+        }
+    };
+
+    <span class="hljs-keyword">const</span> defaultFieldTest = (name, index, talkToMe) =&gt; {
+        <span class="hljs-keyword">const</span> wrapper = mount(&lt;Address address={address}  /&gt;);
+        <span class="hljs-keyword">const</span> welcome = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
+        getIndex(wrapper, index, talkToMe);
+        expect(wrapper.contains(welcome)).toEqual(<span class="hljs-literal">true</span>);
+    };
+
+    <span class="hljs-keyword">const</span> afterClickFieldTest = (name, index, talkToMe) =&gt; {
+        <span class="hljs-keyword">const</span> wrapper = mount(&lt;Address address={address}/&gt;);
+        <span class="hljs-keyword">const</span> patty = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
+        wrapper.find(<span class="hljs-string">'button#setAddress'</span>).simulate(<span class="hljs-string">'click'</span>);
+        getIndex(wrapper, index, talkToMe);
+        expect(wrapper.contains(patty)).toEqual(<span class="hljs-literal">true</span>);
+    };
+});
+</code></pre>
+<p>Note the <strong>getIndex</strong> method that replaces our <strong>getFirst</strong> method. This will help you pick out individual components from the render method of <strong>AddressShow</strong>.</p>
+<pre><code class="lang-javascript">/*
+ * @param {object} wrapper - Container <span class="hljs-keyword">for</span> a bunch <span class="hljs-keyword">of</span> HTML nodes
+ * @param {number} index - Index <span class="hljs-keyword">of</span> HTML <span class="hljs-literal">element</span>.
+ * @param {boolean} talkToMe - Speak even <span class="hljs-keyword">if</span> quiet is <span class="hljs-literal">true</span>
+ */
+const getIndex = <span class="hljs-keyword">function</span>(wrapper, index, talkToMe) {
+    if (!quiet || talkToMe) {
+        const ninep = wrapper.find(<span class="hljs-string">'div#addressShowRender'</span>).childAt(index).debug();
+        console.log(<span class="hljs-string">'NINEP:'</span>, ninep);
+    }
+};
+</code></pre>
+<p>In this case, I&#39;ve made an exception to my general rule, and added some comments. This means something is probably wrong. I shouldn&#39;t need them, but I think we do here.</p>
+<p>You already know what <strong>wrapper</strong> is: it&#39;s the collection of HTML elements that Enzyme culled from the DOM. In particular, it is a DIV, a bunch of P elements, and a BUTTON. <strong>talkToMe</strong> is added as a way of asking the method to ignore the <strong>quiet</strong> variable. Even if <strong>quiet</strong> is set to <strong>true</strong>, the component will still render output if <strong>talkToMe</strong> is set to <strong>true</strong>. It&#39;s a way of saying: &quot;Ignore all the other calls to <strong>getIndex</strong> except those that have <strong>taslkTome</strong> set to <strong>true</strong>.&quot;</p>
 <a class="anchor" id="modify-view"></a>
-<h2>AddressShow Modify View</h2>
+<h2>AddressShow Modify View with Button Click</h2>
 <p>The next step will be to set up a button click for <strong>AddressShow</strong>. Recall that we deleted all the code except the render method a nominal constructor from <strong>AddressShow</strong>. Thus our button click no longer works, even if the button itself is still there.</p>
 <p>We said earlier that <strong>AddressShow</strong> would display our data, and that <strong>Address</strong> would manipulate, modify and save our data. So our code for handling the button click belongs in Address. It is essentially the same code we had before, but now it is somewhat simpler since we are working on with the piece of data in our state:</p>
 <pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">onAddressChange</span> = <span class="hljs-params">(event)</span> =&gt;</span> {
@@ -207,4 +288,7 @@ render() {
 <pre><code class="lang-javascript">&lt;<span class="hljs-selector-tag">button</span> id=<span class="hljs-string">"showAddressClick"</span> onClick={this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.onAddressChange</span>}&gt;Show Address&lt;/button&gt;
 </code></pre>
 <p>Note that I am both setting the <strong>onclick</strong> method to the function object passed from the <strong>Address</strong> object, and also being sure to create a unique <strong>id</strong> which is a portmanteau derived from the object&#39;s name and the button&#39;s purpose.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Add, commit then push. Then Tag. Push you tag. When you turn in the assignment, give me the tag and folder. I may just look at your most recent code, but being able to go back to where you were when you submitted the assignment can be helpful.</p>
 </div></body></html>
