@@ -1,15 +1,17 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactPropsMounted</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactPropsMounted</h1><p>Welcome to ReactPropsMounted</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#logger">Logger</a></li>
+<li><a href="#enzyme-shallow-and-mount">Enzyme shallow and mount</a></li>
 <li><a href="#on-change=attrs">Testing Elements with Complex Attributes</a></li>
-<li><a href="#testing-showuserinfo">Testing ShowUserInfo</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#testing-showuserinfo">Testing ShowUserInfo</a></li>
+<li><a href="#testing-getuser-info">Testing GetUser Info</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>We have several major goals in this assignment. To learn how to:</p>
 <ul>
-<li>Nest components</li>
-<li>Pass state from the parent to the child component</li>
+<li>Test Nested components with Enzyme <strong>shallow</strong> and <strong>mount</strong></li>
 <li>Test with Enzyme <strong>shallow</strong> and mounted</li>
-<li>To build a set of HTML controls based on a specification</li>
+<li>Look at a logger</li>
 </ul>
 <a class="anchor" id="logger"></a>
 <h2>Logger</h2>
@@ -51,6 +53,12 @@ logger.<span class="hljs-built_in">log</span>(<span class="hljs-string">'Logging
   console.<span class="hljs-keyword">log</span>(message1, message2, message3);
 }
 </code></pre>
+<a class="anchor" id="enzyme-shallow-and-mount"></a>
+<h2>Enzyme shallow and mount</h2>
+<p>Before going further, read this section from Elvenware:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/JavaScriptReact.html#enzyme-mount-vs-shallow">Emzyme Mount vs Shallow</a></li>
+</ul>
 <a class="anchor" id="on-change=attrs"></a>
 <h2>Testing Elements with Complex Attributes</h2>
 <p>In our code so far, we have always been attempting to match exactly and completely what is rendered by an HTML element. For instance, we have written code like this:</p>
@@ -105,5 +113,48 @@ expect(wrapper.containsMatchingElement(inputElement)).toEqual(<span class="hljs-
 <p>Note that I&#39;m calling <strong>containsMatchingElement</strong> rather than <strong>contains</strong>. This turns out to be a more forgiving method. Even though the <strong>inputElement</strong> variable shown above does not exactly match the output of the control, it is close enough to pass the test, yet strict enough to catch obvious errors, such as <strong>value</strong> being set to something other than <strong>Robin Dudette</strong>.</p>
 <a class="anchor" id="testing-showuserinfo"></a>
 <h2>Testing ShowUserInfo</h2>
-<p>When we test <strong>GetUserInfo</strong> we might want, in some cases, to use Enzyme&#39;s <strong>mount</strong> because GetUserInfo has a child called <strong>ShowUserInfo</strong>. But <strong>ShowUserInfo</strong> has no such child, so we can test it with <strong>shallow</strong>. Inf fact, all your tests</p>
+<p>When we test <strong>GetUserInfo</strong> we might want, in some cases, to use Enzyme&#39;s <strong>mount</strong> because GetUserInfo has a child called <strong>ShowUserInfo</strong>. But <strong>ShowUserInfo</strong> appears at first to have no such child, so we can naively think it might be possible to test it with <strong>shallow</strong>. In fact, <strong>ShowUserInfo</strong> relies on <strong>ElfElements</strong>, which is a component. As a result, we should use <strong>mount</strong> if we want to check everything.</p>
+<p>Testing <strong>ShowUserInfo</strong>:</p>
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Show User Info mount Test'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+
+    <span class="hljs-keyword">let</span> bodyData = {};
+
+    beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">const</span> tempBody = {};
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> value <span class="hljs-keyword">of</span> fieldDefinitions) {
+            tempBody[value.id] = value.sample;
+        }
+        bodyData=tempBody;
+    });
+
+
+    it(<span class="hljs-string">'renders without crashing'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+        ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ShowUserInfo</span>
+            <span class="hljs-attr">fields</span>=<span class="hljs-string">{fieldDefinitions}</span>
+            <span class="hljs-attr">body</span>=<span class="hljs-string">{bodyData}</span>
+            <span class="hljs-attr">onChange</span>=<span class="hljs-string">{function()</span> {}}
+        /&gt;</span>, div);
+    });
+});</span>
+</code></pre>
+<a class="anchor" id="testing-getuser-info"></a>
+<h2>Testing GetUser Info</h2>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { mount } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+<span class="hljs-keyword">import</span> ElfTestShow <span class="hljs-keyword">from</span> <span class="hljs-string">'../ElfTestShow'</span>;
+<span class="hljs-keyword">const</span> elfShow = <span class="hljs-keyword">new</span> ElfTestShow(<span class="hljs-literal">false</span>);
+jest.mock(<span class="hljs-string">'whatwg-fetch'</span>);
+
+describe(<span class="hljs-string">'My Get User Info test'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+
+    it(<span class="hljs-string">'renders without crashing'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+        ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">GetUserInfo</span> /&gt;</span>, div);
+    });
+});</span>
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Follow the instructions in <strong>ReactPropsShow</strong>. Call the branch: ReactPropsMounted. Or just tell me that your code is in the <strong>ReactPropsShow</strong>
+branch.</p>
 </div></body></html>
