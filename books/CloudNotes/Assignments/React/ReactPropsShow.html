@@ -1,4 +1,256 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactPropsShow</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactPropsShow</h1><p>Welcome to ReactPropsShow</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactPropsShow</h1><p>Welcome to ReactPropsShow</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#creating-showuserinfo">Creating ShowUserInfo</a></li>
+<li><a href="#component-children">Component Children</a></li>
+<li><a href="#multiple-fields">Multiple Fields</a></li>
+<li><a href="#passing-fields-to-showuserinfo">Passing Fields to ShowUserInfo</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
+<p>Learn to create a component that can automatically generate the HTML elements displayed in its Render method.</p>
+<a class="anchor" id="creating-showuserinfo"></a>
+<h2>Creating ShowUserInfo</h2>
+<p>Make a copy of <strong>GetUserInfo</strong> and call it <strong>ShowUserInfo</strong>. Open your new file in an editor (probably WebStorm) and change instances of the variable <strong>GetUserInfo</strong> to <strong>ShowUserInfo</strong>. There will be at least two such instances.</p>
+<p>For now, you can leave most of <strong>ShowUserInfo</strong> as is, except for removing the method that queries the server with <strong>fetch</strong>. That method stays in <strong>GetUserInfo</strong>.</p>
+<p><strong>NOTE</strong>: <em>fetch stays in GetUserInfo because we are using that component to handle cases in which data changes. We use <strong>GetUserInfo</strong> when we want to manipulate data, and <strong>ShowUserInfo</strong> when we want to display data. This follows the rule &quot;Each component should have only one reason to change.&quot; Or, to say the same thing somewhere differently: &quot;Each class should should do one thing and do it well.&quot; A third rule that applies here is specific to React: &quot;There should be one place, and one place only, where data maintains state and can be mutated.&quot; Other components have <strong>props</strong> and are, at least in theory, immutable.</em></p>
+<p>Open <strong>GetUserInfo</strong> in your editor and change the <strong>render</strong> method to look something like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> fieldDefinitions <span class="hljs-keyword">from</span> <span class="hljs-string">'./field-definitions'</span>;
+
+<span class="hljs-comment">// CODE OMITTED</span>
+
+render() {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">ShowUserInfo</span>
+                    <span class="hljs-attr">fields</span>=<span class="hljs-string">{fieldDefinitions}</span>
+                    <span class="hljs-attr">body</span>=<span class="hljs-string">{this.state.body}</span>
+                /&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        );
+    }</span>
+</code></pre>
+<p>This will not be our final solution, but it is a start. But before we try to get any further, we should set up our tests.</p>
+<a class="anchor" id="component-children"></a>
+<h2>Component Children</h2>
+<p>Once we understood the difference between testing with <strong>shallow</strong> and <strong>mount</strong>, we are free to create a component that has a child Component. We did so when we broke up the <strong>GetUserInfo</strong> component into two pieces:</p>
+<ul>
+<li><strong>GetUserInfo</strong>: This owns and handles the data</li>
+<li><strong>ShowUserInfo</strong>: This component displays the data</li>
+</ul>
+<p>As menmtioned earlier, the words that the React DOCS use are as a bit like following: &quot;There should always be one canonical place where state is maintained.&quot; In our case, that is <strong>GetUserInfo</strong>. It will have state. It was also share that state with other components, in our case, <strong>ShowUserInfo</strong>. Quite often, and in our case, <strong>ShowUserInfo</strong> should have no state. If it does have state, it is not related to the properties that it receives from <strong>GetUserInfo</strong>.</p>
+<p>The state passed by <strong>GetUserInfo</strong> to <strong>ShowUserInfio</strong> enters the constructor in the form of <strong>props:</strong></p>
+<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ShowUserInfo</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    constructor(props) {
+        <span class="hljs-keyword">super</span>(props);
+    }
+}
+</code></pre>
+<a class="anchor" id="multiple-fields"></a>
+<h2>Multiple Fields</h2>
+<p>Code that looks like this is create if you have just a few fields.</p>
+<pre><code class="lang-javascript">render() {
+        return (
+            <span class="hljs-variable">&lt;div className="App"&gt;</span>
+
+                <span class="hljs-variable">&lt;p className="App-intro"&gt;</span>
+                    <span class="hljs-keyword">state</span>.<span class="hljs-keyword">user</span>Login: {this.<span class="hljs-keyword">state</span>.<span class="hljs-keyword">user</span>Login}
+                &lt;/p&gt;
+
+               <span class="hljs-variable">&lt;button className="getUser" onClick={this.getUser}&gt;</span>Get User&lt;/button&gt;
+            &lt;/div&gt;
+        );
+    }
+</code></pre>
+<p>Here I have only one field, called <strong>userLogin</strong>. If you have many fields, as we will when we query Git, we will want to automatically generate the fields to save time. To do this, we need two files:</p>
+<ul>
+<li>One that describes the fields we want to create (field-definitions.js)</li>
+<li>One that knows how to create fields of a certain type. (ElfElements.js)</li>
+</ul>
+<p>Here is the <strong>src/field-definitions.js</strong>:</p>
+<pre><code class="lang-javascript">/**
+ * Created by charlie on <span class="hljs-number">4</span>/<span class="hljs-number">20</span>/<span class="hljs-number">17</span>.
+ */
+
+/*eslint no-unused-vars: <span class="hljs-string">"off"</span> */
+const unknown = <span class="hljs-string">'unknown'</span>;
+const PARAGRAPH=<span class="hljs-number">0</span>;
+const TEXT=<span class="hljs-number">1</span>;
+const DEFAULT=PARAGRAPH;
+const types = [<span class="hljs-string">'paragraph'</span>, <span class="hljs-string">'text'</span>];
+
+export default [
+    {
+        id: <span class="hljs-string">'login'</span>,
+        <span class="hljs-keyword">label</span><span class="bash">: <span class="hljs-string">'loginName'</span>,
+</span>        type: types[DEFAULT],
+        sample: <span class="hljs-string">'login-'</span> + unknown
+    },
+        <span class="hljs-keyword">label</span><span class="bash">: <span class="hljs-string">'Avatar Url'</span>,
+</span>        type: types[DEFAULT],
+        sample: <span class="hljs-string">'ai'</span> + unknown
+    },
+    {
+        id: <span class="hljs-string">'url'</span>,
+        <span class="hljs-keyword">label</span><span class="bash">: <span class="hljs-string">'Url'</span>,
+</span>        type: types[DEFAULT],
+        sample: <span class="hljs-string">'url'</span> + unknown
+    },
+    {
+        id: <span class="hljs-string">'html_url'</span>,
+        <span class="hljs-keyword">label</span><span class="bash">: <span class="hljs-string">'HTML Url'</span>,
+</span>        type: types[DEFAULT],
+        sample: <span class="hljs-string">'htmlUrl'</span> + unknown
+    },
+    {
+        id: <span class="hljs-string">'followers_url'</span>,
+        <span class="hljs-keyword">label</span><span class="bash">: <span class="hljs-string">'Followers URL'</span>,
+</span>        type: types[DEFAULT],
+        sample: <span class="hljs-string">'followersUrl'</span> + unknown
+    }
+]
+</code></pre>
+<p>You probably recognize this data, as it mirrors some of the fields from our initial user query of GitHub:</p>
+<pre><code>curl https:<span class="hljs-regexp">//</span>api.github.com<span class="hljs-regexp">/users/</span>charliecalvert
+</code></pre><ul>
+<li><strong>id</strong> is the HTML id attribute for your control</li>
+<li><strong>label</strong> is the text to put in the label for our control</li>
+<li><strong>type</strong> is the element kind, such as P, TEXT, TEXTAREA, etc.<ul>
+<li>We will make TEXT controls INPUT controls of type <strong>text</strong></li>
+</ul>
+</li>
+<li><strong>sample</strong> is the default text to display in the control</li>
+</ul>
+<p>Here is a simple <strong>Component</strong> that knows how to read this file and return HTML elements of the right type and shape:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> <span class="hljs-type">React</span>, {<span class="hljs-type">Component</span>} from <span class="hljs-symbol">'reac</span>t';
+<span class="hljs-keyword">import</span> '../css/forms.css';
+<span class="hljs-keyword">import</span> <span class="hljs-type">Debug</span> from '../elf-logger';
+const logger = <span class="hljs-keyword">new</span> <span class="hljs-type">Debug</span>(<span class="hljs-literal">false</span>);
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ElfElements</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    constructor(props) {
+        logger.log(<span class="hljs-string">"FORM INPUT"</span>, <span class="hljs-symbol">'constructor</span> called', props);
+        <span class="hljs-keyword">super</span>(props);
+        logger.log(<span class="hljs-string">"FORM PROPS"</span>, <span class="hljs-keyword">this</span>.props);
+    }
+
+
+    render() {
+        const common = {
+            id: <span class="hljs-keyword">this</span>.props.id,
+            value: <span class="hljs-keyword">this</span>.props.defaultValue,
+            onChange: <span class="hljs-keyword">this</span>.props.onChange
+        };
+
+        switch (<span class="hljs-keyword">this</span>.props.<span class="hljs-keyword">type</span>) {
+
+            <span class="hljs-keyword">case</span> <span class="hljs-symbol">'yea</span>r':
+                <span class="hljs-keyword">return</span> (
+                    &lt;input
+                        {...common}
+                        <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"number"</span>
+                        value={<span class="hljs-keyword">this</span>.props.value || <span class="hljs-keyword">new</span> <span class="hljs-type">Date</span>().getFullYear()}
+                    /&gt;
+                );
+
+            <span class="hljs-keyword">case</span> <span class="hljs-symbol">'paragrap</span>h':
+                <span class="hljs-keyword">return</span> &lt;p
+                    className=<span class="hljs-string">"ElfFormParagraph"</span>
+                    id={<span class="hljs-keyword">this</span>.props.id}
+
+                    onChange={<span class="hljs-keyword">this</span>.props.onChange}
+                &gt;{<span class="hljs-keyword">this</span>.props.value}&lt;/p&gt;;
+
+            <span class="hljs-keyword">case</span> <span class="hljs-symbol">'textare</span>a':
+                <span class="hljs-keyword">return</span> &lt;textarea {...common} className=<span class="hljs-string">"ElfFormInput"</span> value={<span class="hljs-keyword">this</span>.props.value} /&gt;;
+
+            <span class="hljs-keyword">case</span> <span class="hljs-symbol">'tex</span>t': {
+                <span class="hljs-keyword">return</span> &lt;input
+                    className=<span class="hljs-string">"ElfFormInput"</span>
+                    id={<span class="hljs-keyword">this</span>.props.id}
+                    value={<span class="hljs-keyword">this</span>.props.value}
+                    <span class="hljs-class"><span class="hljs-keyword">type</span></span>={<span class="hljs-keyword">this</span>.props.<span class="hljs-keyword">type</span>}
+                    onChange={<span class="hljs-keyword">this</span>.props.onChange}
+                /&gt;;
+            }
+
+            <span class="hljs-keyword">default</span>:
+                <span class="hljs-keyword">return</span> &lt;input {...common} <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span>/&gt;;
+        }
+    }
+}
+
+export <span class="hljs-keyword">default</span> <span class="hljs-type">ElfElements</span>
+</code></pre>
+<p>For instance, the first definition in <strong>field-definitions</strong> return something like this JSX/HTML:</p>
+<pre><code class="lang-HTML">&lt;p <span class="hljs-built_in">class</span>=<span class="hljs-string">"ElfFormParagraph"</span> <span class="hljs-built_in">id</span>=<span class="hljs-string">"login"</span>&gt;login-unknown&lt;/p&gt;
+</code></pre>
+<p>We can understand some of what is going on here, but how did the control the write data. We do it like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 4/20/17.
+ */</span>
+
+<span class="hljs-keyword">import</span> React, {Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'../css/forms.css'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'whatwg-fetch'</span>;
+<span class="hljs-keyword">import</span> Debug <span class="hljs-keyword">from</span> <span class="hljs-string">'../elf-logger'</span>;
+<span class="hljs-keyword">import</span> ElfElements <span class="hljs-keyword">from</span> <span class="hljs-string">'./ElfElements'</span>;
+<span class="hljs-keyword">const</span> logger = <span class="hljs-keyword">new</span> Debug(<span class="hljs-literal">false</span>);
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ShowUserInfo</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    <span class="hljs-keyword">constructor</span>(props) {
+        <span class="hljs-keyword">super</span>(props);
+        <span class="hljs-comment">//this.shouldUpdate = true;</span>
+        logger.log(<span class="hljs-string">'ShowUserInfo constructor called.'</span>);
+        logger.log(<span class="hljs-string">'ShowUserInfo props.'</span> + <span class="hljs-built_in">JSON</span>.stringify(<span class="hljs-keyword">this</span>.props.userData, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+    }
+
+    getForm = <span class="hljs-function">(<span class="hljs-params">field, index</span>) =&gt;</span> {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"ElfFormRow"</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{field.id}</span>&gt;</span>
+               <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"ElfFormLabel"</span> <span class="hljs-attr">htmlFor</span>=<span class="hljs-string">{field.id}</span>&gt;</span>{field.label}:<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+               <span class="hljs-tag">&lt;<span class="hljs-name">ElfElements</span> {<span class="hljs-attr">...field</span>}
+                        <span class="hljs-attr">value</span>=<span class="hljs-string">{this.props.body[field.id]}</span>
+                        <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.props.onChange}</span>
+               /&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        )
+    };
+
+    render() {
+
+        return (
+            <span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"Form"</span>&gt;</span>{
+                this.props.fields.map((field, index) =&gt; {
+                    return this.getForm(field, index)
+                })
+            }
+            <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"getUser"</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.props.onChange}</span>&gt;</span>Get User<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
+        )
+    }
+}
+
+export default ShowUserInfo;</span>
+</code></pre>
+<a class="anchor" id="passing-fields-to-showuserinfo"></a>
+<h2>Passing Fields to ShowUserInfo</h2>
+<pre><code class="lang-javascript">The props shown <span class="hljs-keyword">in</span> the **constructor** <span class="hljs-keyword">is</span> the state passed <span class="hljs-keyword">from</span> **GetUserInfo**. Here <span class="hljs-keyword">is</span> the relevant code <span class="hljs-keyword">from</span> **GetUserInfo** even <span class="hljs-keyword">if</span> it <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> entirely comprehensibe quite yet:
+
+```<span class="javascript">HTML
+<span class="hljs-keyword">import</span> fieldDefinitions <span class="hljs-keyword">from</span> <span class="hljs-string">'./field-definitions'</span>;
+
+<span class="hljs-comment">// CODE OMITTED</span>
+
+render() {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">ShowUserInfo</span>
+                    <span class="hljs-attr">fields</span>=<span class="hljs-string">{fieldDefinitions}</span>
+                    <span class="hljs-attr">body</span>=<span class="hljs-string">{this.state.body}</span>
+                    <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.getUser}</span>
+                /&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        );
+    }</span></span>
+</code></pre>
+<p>As you can see, <strong>GetUserInfo</strong> passes in three pieces of state to <strong>ShowUserInfo</strong>. These become the <strong>props</strong> seen in the constructor of <strong>ShowUserInfo</strong>. They are used when <strong>ShowUserInfo</strong> generates its code.</p>
 </div></body></html>
