@@ -2,9 +2,9 @@
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactPropsMounted</h1><p>Welcome to ReactPropsMounted</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#logger">Logger</a></li>
 <li><a href="#enzyme-mount-vs-shallow">Enzyme mount vs shallow</a></li>
-<li><a href="#on-change=attrs">Testing Element with Complex Attributes</a></li>
 <li><a href="#creating-showuserinfo">Creating ShowUserInfo</a></li>
 <li><a href="#component-children">Component Children</a></li>
+<li><a href="#on-change=attrs">Testing Elements with Complex Attributes</a></li>
 <li><a href="#testing-showuserinfo">Testing ShowUserInfo</a></li>
 <li><a href="#multiple-fields">Multiple Fields</a></li>
 <li><a href="#passing-fields-to-showuserinfo">Passing Fields to ShowUserInfo</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
@@ -76,8 +76,45 @@ logger.<span class="hljs-built_in">log</span>(<span class="hljs-string">'Logging
 <p>If you want to see output from both components, then do this:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { mount } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
 </code></pre>
+<a class="anchor" id="creating-showuserinfo"></a>
+<h2>Creating ShowUserInfo</h2>
+<p>Make a copy of <strong>GetUserInfo</strong> and call it <strong>ShowUserInfo</strong>. Open your new file in an editor (probably WebStorm) and change instances of the variable <strong>GetUserInfo</strong> to <strong>ShowUserInfo</strong>. There will be at least two such instances.</p>
+<p>For now, you can leave most of <strong>ShowUserInfo</strong> as is, except for removing the method that queries the server with <strong>fetch</strong>. That method stays in <strong>GetUserInfo</strong>.</p>
+<p><strong>NOTE</strong>: <em>fetch stays in GetUserInfo because we are using that component to handle cases in which data changes. We use <strong>GetUserInfo</strong> when we want to manipulate data, and <strong>ShowUserInfo</strong> when we want to display data. This follows the rule &quot;Each component should have only one reason to change.&quot; Or, to say the same thing somewhere differently: &quot;Each class should should do one thing and do it well.&quot; A third rule that applies here is specific to React: &quot;There should be one place, and one place only, where data maintains state and can be mutated.&quot; Other components have <strong>props</strong> and are, at least in theory, immutable.</em></p>
+<p>Open <strong>GetUserInfo</strong> in your editor and change the <strong>render</strong> method to look something like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> fieldDefinitions <span class="hljs-keyword">from</span> <span class="hljs-string">'./field-definitions'</span>;
+
+<span class="hljs-comment">// CODE OMITTED</span>
+
+render() {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">ShowUserInfo</span>
+                    <span class="hljs-attr">fields</span>=<span class="hljs-string">{fieldDefinitions}</span>
+                    <span class="hljs-attr">body</span>=<span class="hljs-string">{this.state.body}</span>
+                /&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        );
+    }</span>
+</code></pre>
+<p>This will not be our final solution, but it is a start. But before we try to get any further, we should set up our tests.</p>
+<a class="anchor" id="component-children"></a>
+<h2>Component Children</h2>
+<p>Once we understood the difference between testing with <strong>shallow</strong> and <strong>mount</strong>, we are free to create a component that has a child Component. We did so when we broke up the <strong>GetUserInfo</strong> component into two pieces:</p>
+<ul>
+<li><strong>GetUserInfo</strong>: This owns and handles the data</li>
+<li><strong>ShowUserInfo</strong>: This component displays the data</li>
+</ul>
+<p>As menmtioned earlier, the words that the React DOCS use are as a bit like following: &quot;There should always be one canonical place where state is maintained.&quot; In our case, that is <strong>GetUserInfo</strong>. It will have state. It was also share that state with other components, in our case, <strong>ShowUserInfo</strong>. Quite often, and in our case, <strong>ShowUserInfo</strong> should have no state. If it does have state, it is not related to the properties that it receives from <strong>GetUserInfo</strong>.</p>
+<p>The state passed by <strong>GetUserInfo</strong> to <strong>ShowUserInfio</strong> enters the constructor in the form of <strong>props:</strong></p>
+<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ShowUserInfo</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    constructor(props) {
+        <span class="hljs-keyword">super</span>(props);
+    }
+}
+</code></pre>
 <a class="anchor" id="on-change=attrs"></a>
-<h2>Testing Element with Complex Attributes</h2>
+<h2>Testing Elements with Complex Attributes</h2>
 <p>In our code so far, we have always been attempting to match exactly and completely what is rendered by an HTML element. For instance, we have written code like this:</p>
 <pre><code class="lang-javascript">const fooState = <span class="hljs-variable">&lt;p className="App-intro"&gt;</span><span class="hljs-keyword">state</span>.foo: bar&lt;/p&gt;;
 expect(wrapper.contains(fooState)).<span class="hljs-keyword">to</span>Equal(true);
@@ -118,8 +155,8 @@ it.only(<span class="hljs-string">'renders button click message for state.userLo
 <p>Your <strong>getLast</strong> debug method may report that your HTML control is generating something like this:</p>
 <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"Robin Dudette"</span> <span class="hljs-attr">onChange</span>=<span class="hljs-string">{[Function]}</span> /&gt;</span>
 </code></pre>
-<p>Yet testing for that exact string seems to fail no matter what I do, probably because [Function] is being expanded to something more than what is shown here. One solution, I found was to use <strong>containsMatchingElement</strong> instead of <strong>contains</strong>.</p>
-<p>Here was my first attempt to match that that output:</p>
+<p>Yet testing for that exact string seems to fail no matter what I do, probably because <strong>[Function]</strong> is being expanded to something more than what is shown here. After doing some research, I found it was easier to use <strong>containsMatchingElement</strong> instead of <strong>contains</strong>.</p>
+<p>Here was my first attempt to match that output:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> inputElement = &lt;input value=<span class="hljs-string">"Robin Dudette"</span> onChange={[<span class="hljs-function"><span class="hljs-keyword">Function</span>]} /&gt;
 <span class="hljs-title">expect</span><span class="hljs-params">(wrapper.contains<span class="hljs-params">(inputElement)</span>)</span>.<span class="hljs-title">toEqual</span><span class="hljs-params">(true)</span></span>;
 </code></pre>
@@ -128,42 +165,6 @@ it.only(<span class="hljs-string">'renders button click message for state.userLo
 expect(wrapper.containsMatchingElement(inputElement)).toEqual(<span class="hljs-literal">true</span>);
 </code></pre>
 <p>Note that I&#39;m calling <strong>containsMatchingElement</strong> rather than <strong>contains</strong>. This turns out to be a more forgiving method. Even though the <strong>inputElement</strong> variable shown above does not exactly match the output of the control, it is close enough to pass the test, yet strict enough to catch obvious errors, such as <strong>value</strong> being set to something other than <strong>Robin Dudette</strong>.</p>
-<a class="anchor" id="creating-showuserinfo"></a>
-<h2>Creating ShowUserInfo</h2>
-<p>Make a copy of <strong>GetUserInfo</strong> and call it ShowUserInfo. Open your new file in an editor (probably webstorm) and change instances of the variable <strong>GetUserInfo</strong> to <strong>ShowUserInfo</strong>. There will be at least two such instances.</p>
-<p>For now, you can leave most of <strong>ShowUserInfo</strong> as is, except for removing the method that queries the server with <strong>fetch</strong>. That method stays in <strong>GetUserInfo</strong>.</p>
-<p>Open <strong>GetUserInfo</strong> in your editor and change the <strong>render</strong> method to look something like this:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> fieldDefinitions <span class="hljs-keyword">from</span> <span class="hljs-string">'./field-definitions'</span>;
-
-<span class="hljs-comment">// CODE OMITTED</span>
-
-render() {
-        <span class="hljs-keyword">return</span> (
-            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">ShowUserInfo</span>
-                    <span class="hljs-attr">fields</span>=<span class="hljs-string">{fieldDefinitions}</span>
-                    <span class="hljs-attr">body</span>=<span class="hljs-string">{this.state.body}</span>
-                /&gt;</span>
-            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-        );
-    }</span>
-</code></pre>
-<p>This will not be our final solution, but it is a start. But before we try to get any further, we should set up our tests.</p>
-<a class="anchor" id="component-children"></a>
-<h2>Component Children</h2>
-<p>Now that you understand the difference between testing with <strong>shallow</strong> and <strong>mount</strong>, we are free to create a component that has a child Component. We will break up the GetUserInfo component into two pieces:</p>
-<ul>
-<li>GetUserInfo: This owns and handles the data</li>
-<li>ShowUserInfo: This component displays the data</li>
-</ul>
-<p>The words that the React DOCS use are as a bit like following: &quot;There should always be one canonical place where state is maintained.&quot; In our case, that is <strong>GetUserInfo</strong>. It will have state. It was also share that state with other components, in our case, <strong>ShowUserInfo</strong>. Quite often, and in our case, <strong>ShowUserInfo</strong> should have no state. If it does have state, it is not related to the properties that it receives from <strong>GetUserInfo</strong>.</p>
-<p>The state passed by <strong>GetUserInfo</strong> to <strong>ShowUserInfio</strong> enters the constructor in the form of <strong>props:</strong></p>
-<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ShowUserInfo</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
-    constructor(props) {
-        <span class="hljs-keyword">super</span>(props);
-    }
-}
-</code></pre>
 <a class="anchor" id="testing-showuserinfo"></a>
 <h2>Testing ShowUserInfo</h2>
 <p>When we test <strong>GetUserInfo</strong> we might want, in some cases, to use Enzyme&#39;s <strong>mount</strong> because GetUserInfo has a child called <strong>ShowUserInfo</strong>. But <strong>ShowUserInfo</strong> has no such child, so we can test it with <strong>shallow</strong>. Inf fact, all your tests</p>
