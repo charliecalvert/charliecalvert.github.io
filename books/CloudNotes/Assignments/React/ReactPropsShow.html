@@ -2,15 +2,24 @@
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactPropsShow</h1><p>Welcome to ReactPropsShow</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#creating-showuserinfo">Creating ShowUserInfo</a></li>
 <li><a href="#component-children">Component Children</a></li>
-<li><a href="#multiple-fields">Multiple Fields</a></li>
-<li><a href="#passing-fields-to-showuserinfo">Passing Fields to ShowUserInfo</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#too-many-fields">Too Many Fields</a></li>
+<li><a href="#generating-fields">Generating Fields</a></li>
+<li><a href="#field-definitions">Field Definitions</a></li>
+<li><a href="#process-fields">Processing Field Definitions</a></li>
+<li><a href="#using-elfelements">Using ElfElements</a></li>
+<li><a href="#passing-fields-to-showuserinfo">Passing Fields to ShowUserInfo</a></li>
+<li><a href="#passing-events">Passing Events</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>Learn to create a component that can automatically generate the HTML elements displayed in its Render method.</p>
+<p>Before getting started, read this section from Elvenware:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/JavaScriptReact.html#enzyme-mount-vs-shallow">Emzyme Mount vs Shallow</a></li>
+</ul>
 <a class="anchor" id="creating-showuserinfo"></a>
 <h2>Creating ShowUserInfo</h2>
 <p>Make a copy of <strong>GetUserInfo</strong> and call it <strong>ShowUserInfo</strong>. Open your new file in an editor (probably WebStorm) and change instances of the variable <strong>GetUserInfo</strong> to <strong>ShowUserInfo</strong>. There will be at least two such instances.</p>
 <p>For now, you can leave most of <strong>ShowUserInfo</strong> as is, except for removing the method that queries the server with <strong>fetch</strong>. That method stays in <strong>GetUserInfo</strong>.</p>
-<p><strong>NOTE</strong>: <em>fetch stays in GetUserInfo because we are using that component to handle cases in which data changes. We use <strong>GetUserInfo</strong> when we want to manipulate data, and <strong>ShowUserInfo</strong> when we want to display data. This follows the rule &quot;Each component should have only one reason to change.&quot; Or, to say the same thing somewhere differently: &quot;Each class should should do one thing and do it well.&quot; A third rule that applies here is specific to React: &quot;There should be one place, and one place only, where data maintains state and can be mutated.&quot; Other components have <strong>props</strong> and are, at least in theory, immutable.</em></p>
 <p>Open <strong>GetUserInfo</strong> in your editor and change the <strong>render</strong> method to look something like this:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> fieldDefinitions <span class="hljs-keyword">from</span> <span class="hljs-string">'./field-definitions'</span>;
 
@@ -36,6 +45,7 @@ render() {
 <li><strong>ShowUserInfo</strong>: This component displays the data</li>
 </ul>
 <p>As menmtioned earlier, the words that the React DOCS use are as a bit like following: &quot;There should always be one canonical place where state is maintained.&quot; In our case, that is <strong>GetUserInfo</strong>. It will have state. It was also share that state with other components, in our case, <strong>ShowUserInfo</strong>. Quite often, and in our case, <strong>ShowUserInfo</strong> should have no state. If it does have state, it is not related to the properties that it receives from <strong>GetUserInfo</strong>.</p>
+<p><strong>NOTE</strong>: <em>fetch stays in GetUserInfo because we are using that component to handle cases in which data changes. Specifically, <strong>fetch</strong> retrieves data from the server and we use that data to change state. We use <strong>GetUserInfo</strong> when we want to manipulate data, and <strong>ShowUserInfo</strong> when we want to display data. This follows the rule &quot;Each component should have only one reason to change.&quot; Or, to say the same thing somewhere differently: &quot;Each class should do one thing and do it well.&quot; A third rule that applies here is specific to React: &quot;There should be one place, and one place only, where data maintains state and can be mutated.&quot; Other components have <strong>props</strong> and are, at least in theory, immutable.</em></p>
 <p>The state passed by <strong>GetUserInfo</strong> to <strong>ShowUserInfio</strong> enters the constructor in the form of <strong>props:</strong></p>
 <pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ShowUserInfo</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
     constructor(props) {
@@ -43,9 +53,14 @@ render() {
     }
 }
 </code></pre>
-<a class="anchor" id="multiple-fields"></a>
-<h2>Multiple Fields</h2>
-<p>Code that looks like this is create if you have just a few fields.</p>
+<p>As you know, this state contains two objects:</p>
+<ul>
+<li>fields: A definition of the fields to display</li>
+<li>body: The data retrieved from GitHub</li>
+</ul>
+<a class="anchor" id="too-many-fields"></a>
+<h2>Too Many Fields</h2>
+<p>Code that looks like this is easy to use if you have just a few fields.</p>
 <pre><code class="lang-javascript">render() {
         return (
             <span class="hljs-variable">&lt;div className="App"&gt;</span>
@@ -59,11 +74,18 @@ render() {
         );
     }
 </code></pre>
-<p>Here I have only one field, called <strong>userLogin</strong>. If you have many fields, as we will when we query Git, we will want to automatically generate the fields to save time. To do this, we need two files:</p>
+<p>Here I have only one field, called <strong>userLogin</strong>. It is fairly easy to write code that displays this one field.</p>
+<p>If you have many fields, as we will when we query Git, the task becomes more difficult. In such cases, it might be helpful to automatically generate the fields.</p>
+<p><strong>NOTE</strong>: <em>A second reason to automatically generate fields is that it helps us to create regular, well formed code. Our code is easier to read if IDs. CLASSNAMES and attributes always come in a certain order, and if we follow certain coding practices such as using the same techniques for handling labels.</em></p>
+<a class="anchor" id="generating-fields"></a>
+<h2>Generating Fields</h2>
+<p>To automatically generate code for working with our fields requires two files:</p>
 <ul>
 <li>One that describes the fields we want to create (field-definitions.js)</li>
 <li>One that knows how to create fields of a certain type. (ElfElements.js)</li>
 </ul>
+<a class="anchor" id="field-definitions"></a>
+<h2>Field Definitions</h2>
 <p>Here is the <strong>src/field-definitions.js</strong>:</p>
 <pre><code class="lang-javascript">/**
  * Created by charlie on <span class="hljs-number">4</span>/<span class="hljs-number">20</span>/<span class="hljs-number">17</span>.
@@ -107,7 +129,7 @@ export default [
     }
 ]
 </code></pre>
-<p>You probably recognize this data, as it mirrors some of the fields from our initial user query of GitHub:</p>
+<p>You probably recognize this data, as it mirrors some of the fields from our initial user query of GitHub. Recall that you run code like this to view the data:</p>
 <pre><code>curl https:<span class="hljs-regexp">//</span>api.github.com<span class="hljs-regexp">/users/</span>charliecalvert
 </code></pre><ul>
 <li><strong>id</strong> is the HTML id attribute for your control</li>
@@ -118,6 +140,8 @@ export default [
 </li>
 <li><strong>sample</strong> is the default text to display in the control</li>
 </ul>
+<a class="anchor" id="process-fields"></a>
+<h2>Processing Field Definitions</h2>
 <p>Here is a simple <strong>Component</strong> that knows how to read this file and return HTML elements of the right type and shape:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> <span class="hljs-type">React</span>, {<span class="hljs-type">Component</span>} from <span class="hljs-symbol">'reac</span>t';
 <span class="hljs-keyword">import</span> '../css/forms.css';
@@ -183,6 +207,8 @@ export <span class="hljs-keyword">default</span> <span class="hljs-type">ElfElem
 <p>For instance, the first definition in <strong>field-definitions</strong> return something like this JSX/HTML:</p>
 <pre><code class="lang-HTML">&lt;p <span class="hljs-built_in">class</span>=<span class="hljs-string">"ElfFormParagraph"</span> <span class="hljs-built_in">id</span>=<span class="hljs-string">"login"</span>&gt;login-unknown&lt;/p&gt;
 </code></pre>
+<a class="anchor" id="using-elfelements"></a>
+<h2>Using ElfElements</h2>
 <p>We can understand some of what is going on here, but how did the control the write data. We do it like this:</p>
 <pre><code class="lang-javascript"><span class="hljs-comment">/**
  * Created by charlie on 4/20/17.
@@ -233,10 +259,8 @@ export default ShowUserInfo;</span>
 </code></pre>
 <a class="anchor" id="passing-fields-to-showuserinfo"></a>
 <h2>Passing Fields to ShowUserInfo</h2>
-<pre><code class="lang-javascript">The props shown <span class="hljs-keyword">in</span> the **constructor** <span class="hljs-keyword">is</span> the state passed <span class="hljs-keyword">from</span> **GetUserInfo**. Here <span class="hljs-keyword">is</span> the relevant code <span class="hljs-keyword">from</span> **GetUserInfo** even <span class="hljs-keyword">if</span> it <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> entirely comprehensibe quite yet:
-
-```<span class="javascript">HTML
-<span class="hljs-keyword">import</span> fieldDefinitions <span class="hljs-keyword">from</span> <span class="hljs-string">'./field-definitions'</span>;
+<p>The props shown in the <strong>constructor</strong> of <strong>ShowUserInfo</strong> is the state passed from <strong>GetUserInfo</strong>. Here is the relevant code from <strong>GetUserInfo</strong>:</p>
+<pre><code class="lang-HTML"><span class="hljs-keyword">import</span> fieldDefinitions <span class="hljs-keyword">from</span> <span class="hljs-string">'./field-definitions'</span>;
 
 <span class="hljs-comment">// CODE OMITTED</span>
 
@@ -250,7 +274,54 @@ render() {
                 /&gt;</span>
             <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
         );
-    }</span></span>
+    }</span>
 </code></pre>
 <p>As you can see, <strong>GetUserInfo</strong> passes in three pieces of state to <strong>ShowUserInfo</strong>. These become the <strong>props</strong> seen in the constructor of <strong>ShowUserInfo</strong>. They are used when <strong>ShowUserInfo</strong> generates its code.</p>
+<p>We got fields by loading a file that we created. The <strong>body</strong> comes from querying our server. But what is <strong>onChange</strong>? Lets tackle it in the last section of this document.</p>
+<a class="anchor" id="passing-events"></a>
+<h2>Passing Events</h2>
+<p>The parent component, in this case <strong>GetUserInfo</strong> controls the data. In particular, we maintain the data in <strong>GetUserInfo&#39;s</strong> state, and we change it with this method:</p>
+<pre><code>getUser = <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+  fetch(<span class="hljs-string">'/api/user'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+    <span class="hljs-keyword">return</span> response.json();
+  }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{
+    logger.log(<span class="hljs-string">'parsed json'</span>, json);
+    <span class="hljs-keyword">var</span> body = <span class="hljs-built_in">JSON</span>.parse(json.body);
+    that.setState({
+      <span class="hljs-attr">body</span>: body
+    });
+    etc....
+</code></pre><p>As mentioned earlier, we pass this method as a prop from <strong>GetUserInfo</strong> to <strong>ShowUserInfo</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">ShowUserInfo</span>
+    <span class="hljs-attr">fields</span>=<span class="hljs-string">{fieldDefinitions}</span>
+    <span class="hljs-attr">body</span>=<span class="hljs-string">{this.state.body}</span>
+    <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.getUser}</span>
+/&gt;</span>
+</code></pre>
+<p>Then we use it in <strong>ShowUserInfo</strong> like this:</p>
+<pre><code class="lang-javascript">&lt;<span class="hljs-selector-tag">button</span> id=<span class="hljs-string">"getUser"</span> onClick={this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.onChange</span>}&gt;Get User&lt;/button&gt;
+</code></pre>
+<p>Given our knowledge of JavaScript, it is fairly simple to see how <strong>this.props.onChange</strong> becomes a call to the <strong>GetUserInfo.getUser</strong> The key fact, which is hard to grasp at first is how the changes made by that method are propagated back down to <strong>ShowUserInfo</strong>.</p>
+<p>Obviously the task is handled by React. In particular, when we call <strong>setState</strong>, as we do in <strong>getUser</strong>, then two things happen:</p>
+<ul>
+<li><strong>GetUserInfo</strong>&#39;s <strong>render</strong> method is called.</li>
+<li><strong>ShowUserInfo</strong>&#39;s <strong>render</strong> method is called</li>
+</ul>
+<p>It is the latter call that might not be intuitively obvious to us. It happens because <strong>ShowUserInfo</strong> is a child of <strong>GetUserInfo</strong> and hence react knows that properly re-rendering <strong>GetUserInfo</strong> involves also re-rendering <strong>ShowUserInfo</strong>.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Add, commit, push. Tell me what directory your code is in. Then either tag it and give me the tag, or put it in a branch. For instance, after you pushed, issue this command:</p>
+<p>  git branch Week04-ReactPropsShow</p>
+<p>There is not even a need for you to ever switch to that branch. You can just continue working in your current branch, which is probably <strong>master</strong>. When it comes time to grade your work, I can open your branch and take a look. Or perhaps I will simply look at your most recent code instead. For that reason, you might submit two pieces of information:</p>
+<ul>
+<li>The branch you put the assignment in</li>
+<li>The branch you are working in</li>
+</ul>
+<p>For instance:</p>
+<ul>
+<li>Assigment Branch: Week04-ReactPropsShow</li>
+<li>Working Branmch: master </li>
+</ul>
 </div></body></html>
