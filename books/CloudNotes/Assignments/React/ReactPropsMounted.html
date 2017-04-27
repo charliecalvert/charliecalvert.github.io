@@ -1,15 +1,25 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactPropsMounted</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactPropsMounted</h1><p>Welcome to ReactPropsMounted</p><ul><!--TOC_Start--><li><a href="#logger">Logger</a></li>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactPropsMounted</h1><p>Welcome to ReactPropsMounted</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#logger">Logger</a></li>
 <li><a href="#enzyme-mount-vs-shallow">Enzyme mount vs shallow</a></li>
 <li><a href="#on-change=attrs">Testing Element with Complex Attributes</a></li>
 <li><a href="#creating-showuserinfo">Creating ShowUserInfo</a></li>
 <li><a href="#component-children">Component Children</a></li>
 <li><a href="#testing-showuserinfo">Testing ShowUserInfo</a></li>
 <li><a href="#multiple-fields">Multiple Fields</a></li>
-<li><a href="#passing-fields-to-showuserinfo">Passing Fields to ShowUserInfo</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="logger"></a>
+<li><a href="#passing-fields-to-showuserinfo">Passing Fields to ShowUserInfo</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>We have several major goals in this assignment. To learn how to:</p>
+<ul>
+<li>Nest components</li>
+<li>Pass state from the parent to the child component</li>
+<li>Test with Enzyme <strong>shallow</strong> and mounted</li>
+<li>To build a set of HTML controls based on a specification</li>
+</ul>
+<a class="anchor" id="logger"></a>
 <h2>Logger</h2>
 <p>There are some very good loggers out there, and we should probably be using those. Still, there is perhaps some value in writing our own loggers. If nothing else, they show us why the best loggers are so good. The key trait we want in a logger is the ability to turn logging on and off. The issue, of course, is that sometimes <strong>console.log</strong> statements are very useful, and sometimes they just get in the way. Being able to turn them on and off is useful.</p>
-<p>This is still a bit tentative, but here is useful, if somewhat naive, simple logger. I&#39;ve saved it in my <strong>src</strong> directory as <strong>elf-logger.js</strong>:</p>
+<p>This is still a bit tentative, but here is a useful, if somewhat naive, simple logger. I&#39;ve saved it in my <strong>src</strong> directory as <strong>elf-logger.js</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-comment">/**
  * Created by charlie on 4/18/17.
  */</span>
@@ -20,13 +30,7 @@
         <span class="hljs-keyword">this</span>.display = initQuiet;
     }
 
-    log = <span class="hljs-function">(<span class="hljs-params">message1, message2, message3</span>) =&gt;</span> {
-        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> message2 === <span class="hljs-string">'undefined'</span>) {
-            message2 = <span class="hljs-string">''</span>;
-        }
-        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> message3 === <span class="hljs-string">'undefined'</span>) {
-            message3 = <span class="hljs-string">''</span>;
-        }
+    log = <span class="hljs-function">(<span class="hljs-params">message1, message2=<span class="hljs-string">''</span>, message3=<span class="hljs-string">''</span></span>) =&gt;</span> {
         <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.display) {
             <span class="hljs-built_in">console</span>.log(message1, message2, message3);
         }
@@ -46,7 +50,7 @@
 // <span class="hljs-keyword">THEN</span>, WHEN YOU WANT <span class="hljs-keyword">TO</span> <span class="hljs-built_in">LOG</span> SOMETIHING, CHANGE <span class="hljs-literal">false</span> <span class="hljs-keyword">TO</span> <span class="hljs-literal">true</span> ABOVE <span class="hljs-literal">AND</span>:
 logger.<span class="hljs-built_in">log</span>(<span class="hljs-string">'Logging now'</span>)<span class="hljs-comment">;</span>
 </code></pre>
-<p>As you can see, the logger can except up to three parameters.</p>
+<p>As you can see, the logger can accept up to three parameters.</p>
 <p><strong>NOTE</strong>: <em>When I get time, I&#39;d like to have the logger work depending on whether or not an environment variable is set, as that is more flexible than this module by module approach:</em></p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (process.<span class="hljs-keyword">env</span>.SERVERFOO) {
   console.<span class="hljs-keyword">log</span>(message1, message2, message3);
@@ -66,7 +70,7 @@ logger.<span class="hljs-built_in">log</span>(<span class="hljs-string">'Logging
 }
 </code></pre>
 <p>Here <strong>MyComponent</strong> does nothing but ask <strong>MyOtherComponent</strong> to render itself.</p>
-<p>In cases like this, if you use Enzyme&#39;s <a href="https://github.com/airbnb/enzyme/blob/master/docs/api/shallow.md">shallow</a>, you will only see the output from <strong>MyComponent</strong>. Indeed, that is often what you want. But sometimes, it is best to see the output from both <strong>MyComponent</strong> and <strong>MyOtherComponent</strong>. To do that, you use <strong>mount</strong> rather than <strong>shallow</strong>. We usually do this:</p>
+<p>In cases like this, if you use Enzyme&#39;s <a href="https://github.com/airbnb/enzyme/blob/master/docs/api/shallow.md">shallow</a>, you will only see the output from <strong>MyComponent</strong>. During the test, it will seem as though <strong>MyOtherComponent</strong> does not exist, or at least does not render anthing. Indeed, that is often what you want. But sometimes, it is best to see the output from both <strong>MyComponent</strong> and <strong>MyOtherComponent</strong>. To do that, you use <strong>mount</strong> rather than <strong>shallow</strong>. We usually do this:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { shallow } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
 </code></pre>
 <p>If you want to see output from both components, then do this:</p>
@@ -84,19 +88,31 @@ expect(wrapper.contains(fooState)).<span class="hljs-keyword">to</span>Equal(tru
 </code></pre>
 <p>Note the <strong>onChange</strong> attribute, and the react expression to which it is equated. It turns out that such code is hard to match.</p>
 <p>In such cases you might consider writing test code like this:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { mount } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+<pre><code class="lang-javascript">import { mount } from <span class="hljs-string">'enzyme'</span>;
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLast</span>(<span class="hljs-params">wrapper, element</span>) </span>{        
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLast</span><span class="hljs-params">(wrapper, element)</span> </span>{        
     <span class="hljs-keyword">const</span> eightp = wrapper.find(element).last().debug();
     logger.log(<span class="hljs-string">"GETUSERINFO TEST GET LAST:"</span>, eightp);
 }
 
-it.only(<span class="hljs-string">'renders button click message for state.userLogin'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+<span class="hljs-comment">/*
+  * <span class="hljs-doctag">@param</span> {object} wrapper - Container for a bunch of HTML nodes
+  * <span class="hljs-doctag">@param</span> {number} index - Index of HTML element in the wrapper
+  * <span class="hljs-doctag">@param</span> {boolean} talkToMe - Speak even if quiet is true
+  */</span>
+ <span class="hljs-keyword">const</span> getIndex = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(wrapper, index, talkToMe)</span> </span>{
+     <span class="hljs-keyword">if</span> (!quiet || talkToMe) {
+         <span class="hljs-keyword">const</span> ninep = wrapper.find(<span class="hljs-string">'div#addressShowRender'</span>).childAt(index).debug();
+         console.log(<span class="hljs-string">'NINEP:'</span>, ninep);
+     }
+ };
+
+it.only(<span class="hljs-string">'renders button click message for state.userLogin'</span>, () =&gt; {
     <span class="hljs-keyword">const</span> wrapper = mount(&lt;GetUserInfo /&gt;);
     <span class="hljs-keyword">const</span> inputElement = &lt;input value=<span class="hljs-string">"Robin Dudette"</span> /&gt;;  
     wrapper.find(<span class="hljs-string">'button.getUser'</span>).simulate(<span class="hljs-string">'click'</span>);
     getLast(wrapper, <span class="hljs-string">'input'</span>);
-    expect(wrapper.containsMatchingElement(inputElement)).toEqual(<span class="hljs-literal">true</span>);
+    expect(wrapper.containsMatchingElement(inputElement)).toEqual(<span class="hljs-keyword">true</span>);
 });
 </code></pre>
 <p>Your <strong>getLast</strong> debug method may report that your HTML control is generating something like this:</p>
