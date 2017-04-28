@@ -33,7 +33,7 @@ render() {
             <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
                 <span class="hljs-tag">&lt;<span class="hljs-name">ShowUserInfo</span>
                     <span class="hljs-attr">fields</span>=<span class="hljs-string">{fieldDefinitions}</span>
-                    <span class="hljs-attr">body</span>=<span class="hljs-string">{this.state.body}</span>
+                    <span class="hljs-attr">gitUser</span>=<span class="hljs-string">{this.state.gitUser}</span>
                 /&gt;</span>
             <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
         );
@@ -59,7 +59,7 @@ render() {
 <p>As you know, this state contains two objects:</p>
 <ul>
 <li>fields: A definition of the fields to display</li>
-<li>body: The data retrieved from GitHub</li>
+<li>gitUser: The data retrieved from GitHub</li>
 </ul>
 <a class="anchor" id="too-many-fields"></a>
 <h2>Too Many Fields</h2>
@@ -215,23 +215,23 @@ export <span class="hljs-keyword">default</span> <span class="hljs-type">ElfElem
 <p>We should properly initialize <strong>this.state</strong> in <strong>GetUserInfo</strong>. Fortunately, with our new <strong>field-definitions</strong>, we have a relatively painless way to do so. Here is the updated constructor for <strong>GetUserInfo</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">()</span> <span class="hljs-comment">{
     super();
-    const tempBody = {}</span>;</span>
+    const tempGitUser = {}</span>;</span>
     <span class="hljs-keyword">for</span> (let value <span class="hljs-keyword">of</span> fieldDefinitions) <span class="hljs-comment">{
-        tempBody[value.id] = value.sample;
+        tempGitUser[value.id] = value.sample;
     }</span>
     this.state = <span class="hljs-comment">{
-        body: tempBody
+        gitUser: tempGitUser
     }</span>;
 
     logger.log(<span class="hljs-string">'GetUserInfo constructor called.'</span>)
 }
 </code></pre>
-<p>We first create an empty object, then iterator over the <strong>fieldDefinitions</strong> array, and create a new property for <strong>tempBody</strong>. For instance, we can create a property set to the value of the <strong>fieldDefinitions.id</strong> property to the value of the <strong>fieldDefinitions.sample</strong> property.</p>
+<p>We first create an empty object, then iterator over the <strong>fieldDefinitions</strong> array, and create new objects with a single property.  for <strong>tempGitUser</strong>. For instance, we can create a property set to the value of the <strong>fieldDefinitions.id</strong> property to the value of the <strong>fieldDefinitions.sample</strong> property.</p>
 <p><strong>NOTE</strong>: <em>This ability to easily and dynamically add properties to an object based solely on pairs of strings is a powerful feature of JavaScript. We wish we could write code like this, but we can&#39;t since we don&#39;t know the property names until runtime</em>:</p>
-<pre><code class="lang-javascript"> tempBody[<span class="hljs-number">0</span>]<span class="hljs-selector-class">.login</span> = <span class="hljs-string">'login-unknown'</span>
+<pre><code class="lang-javascript"> tempGitUser[<span class="hljs-number">0</span>]<span class="hljs-selector-class">.login</span> = <span class="hljs-string">'login-unknown'</span>
 </code></pre>
 <p> We can, however, achieve the same result by execute this code:</p>
-<pre><code class="lang-javascript">tempBody[<span class="hljs-keyword">value</span>.id] = <span class="hljs-keyword">value</span>.sample;
+<pre><code class="lang-javascript">tempGitUser[<span class="hljs-keyword">value</span>.id] = <span class="hljs-keyword">value</span>.sample;
 </code></pre>
 <p>Suppose we are looking at this member of the <strong>fieldDefinitions</strong> array:</p>
 <pre><code class="lang-javascript">{
@@ -241,10 +241,10 @@ export <span class="hljs-keyword">default</span> <span class="hljs-type">ElfElem
     sample: <span class="hljs-string">'login-'</span> + unknown
 },
 </code></pre>
-<p>Our code would add a property to <strong>tempBody</strong> that look something like this:</p>
+<p>Our code would adds a property to <strong>tempGitUser</strong> that look something like this:</p>
 <pre><code class="lang-javascript">{<span class="hljs-symbol">'login'</span>: <span class="hljs-symbol">'login</span>-unknown'}
 </code></pre>
-<p>The end result is that we have default values for all the paragraph fields in our JSX.</p>
+<p>Each iteration of the loop adds one more property to the <strong>tempGitUser</strong> object. The end result is that we have default values for all the paragraph fields in our JSX.</p>
 <a class="anchor" id="using-elfelements"></a>
 <h2>Using ElfElements</h2>
 <p>We can understand some of what is going on here, but how did the control the write data. We do it like this:</p>
@@ -268,7 +268,7 @@ export <span class="hljs-keyword">default</span> <span class="hljs-type">ElfElem
             <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"ElfFormRow"</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{field.id}</span>&gt;</span>
                <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"ElfFormLabel"</span> <span class="hljs-attr">htmlFor</span>=<span class="hljs-string">{field.id}</span>&gt;</span>{field.label}:<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
                <span class="hljs-tag">&lt;<span class="hljs-name">ElfElements</span> {<span class="hljs-attr">...field</span>}
-                        <span class="hljs-attr">value</span>=<span class="hljs-string">{this.props.body[field.id]}</span>
+                        <span class="hljs-attr">value</span>=<span class="hljs-string">{this.props.gitUser[field.id]}</span>
                         <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.props.onChange}</span>
                /&gt;</span>
             <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
@@ -303,7 +303,7 @@ render() {
             <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
                 <span class="hljs-tag">&lt;<span class="hljs-name">ShowUserInfo</span>
                     <span class="hljs-attr">fields</span>=<span class="hljs-string">{fieldDefinitions}</span>
-                    <span class="hljs-attr">body</span>=<span class="hljs-string">{this.state.body}</span>
+                    <span class="hljs-attr">gitUser</span>=<span class="hljs-string">{this.state.gitUser}</span>
                     <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.getUser}</span>
                 /&gt;</span>
             <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
@@ -311,7 +311,7 @@ render() {
     }</span>
 </code></pre>
 <p>As you can see, <strong>GetUserInfo</strong> passes in three pieces of state to <strong>ShowUserInfo</strong>. These become the <strong>props</strong> seen in the constructor of <strong>ShowUserInfo</strong>. They are used when <strong>ShowUserInfo</strong> generates its code.</p>
-<p>We got fields by loading a file that we created. The <strong>body</strong> comes from querying our server. But what is <strong>onChange</strong>? Lets tackle it in the last section of this document.</p>
+<p>We got fields by loading a file that we created. The <strong>gitUser</strong> comes from querying our server. But what is <strong>onChange</strong>? Lets tackle it in the last section of this document.</p>
 <a class="anchor" id="passing-events"></a>
 <h2>Passing Events</h2>
 <p>The parent component, in this case <strong>GetUserInfo</strong> controls the data. In particular, we maintain the data in <strong>GetUserInfo&#39;s</strong> state, and we change it with this method:</p>
@@ -322,15 +322,15 @@ render() {
     <span class="hljs-keyword">return</span> response.json();
   }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{
     logger.log(<span class="hljs-string">'parsed json'</span>, json);
-    <span class="hljs-keyword">var</span> body = <span class="hljs-built_in">JSON</span>.parse(json.body);
+    <span class="hljs-keyword">var</span> gitUser = <span class="hljs-built_in">JSON</span>.parse(json.gitUser);
     that.setState({
-      <span class="hljs-attr">body</span>: body
+      <span class="hljs-attr">gitUser</span>: gitUser
     });
     etc....
 </code></pre><p>As mentioned earlier, we pass this method as a prop from <strong>GetUserInfo</strong> to <strong>ShowUserInfo</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">ShowUserInfo</span>
     <span class="hljs-attr">fields</span>=<span class="hljs-string">{fieldDefinitions}</span>
-    <span class="hljs-attr">body</span>=<span class="hljs-string">{this.state.body}</span>
+    <span class="hljs-attr">gitUser</span>=<span class="hljs-string">{this.state.gitUser}</span>
     <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.getUser}</span>
 /&gt;</span>
 </code></pre>
