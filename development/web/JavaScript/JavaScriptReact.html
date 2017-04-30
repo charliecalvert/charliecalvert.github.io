@@ -5,7 +5,8 @@
 <li><a href="#props-single-node">Props Singe Node Error</a></li>
 <li><a href="#react-in-webstorm">React in WebStorm</a></li>
 <li><a href="#enzyme-mount-vs-shallow">Enzyme mount vs shallow</a></li>
-<li><a href="#react-links">React Links</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#react-links">React Links</a></li>
+<li><a href="#enzyme-debug-class">Enzym Debug Class</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>Information on React.</p>
 <a class="anchor" id="create-react-app"></a>
@@ -90,4 +91,43 @@
 </ul>
 </li>
 </ul>
+<a class="anchor" id="enzyme-debug-class"></a>
+<h2>Enzym Debug Class</h2>
+<p>We have two or three debug functions that we keep appending to the top of our test files. This violates our DRY principle. As a result, I&#39;ve created the following simple class which we can reuse in multiple tests:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> Logger <span class="hljs-keyword">from</span> <span class="hljs-string">'./elf-logger'</span>;
+<span class="hljs-keyword">const</span> logger = <span class="hljs-keyword">new</span> Logger(<span class="hljs-literal">true</span>);
+
+<span class="hljs-keyword">const</span> ElfTestShow = <span class="hljs-keyword">class</span> {
+
+    <span class="hljs-keyword">constructor</span>(<span class="hljs-params">showLogInit=<span class="hljs-literal">false</span></span>) {
+        <span class="hljs-keyword">this</span>.showLog = showLogInit;
+    }
+
+    getFirst(wrapper, element) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.showLog) {
+            <span class="hljs-keyword">const</span> eightp = wrapper.find(element).first().debug();
+            logger.log(<span class="hljs-string">"GETUSERINFO TEST GET FIRST:"</span>, eightp);
+        }
+    }
+
+
+    getAll(wrapper, element) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.showLog) {
+            <span class="hljs-keyword">const</span> eightp = wrapper.find(element).debug();
+            logger.log(<span class="hljs-string">"ENZYME DEBUG GET ALL:"</span>, eightp);
+        }
+    }
+
+    getLast(wrapper, element) {
+        <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.showLog) {
+            <span class="hljs-keyword">const</span> eightp = wrapper.find(element).last().debug();
+            logger.log(<span class="hljs-string">"GETUSERINFO TEST GET LAST:"</span>, eightp);
+        }
+    }
+
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> ElfTestShow;
+</code></pre>
+<p>We could also, at least in theory, add to this class over time as we discover more useful tests.</p>
 </div></body></html>
