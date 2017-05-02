@@ -1,6 +1,11 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactGitMenu</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactGitMenu</h1><p>Welcome to ReactGitMenu</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#install-react-router">Install React Router</a></li>
+<li><a href="#rename-header-to-elfheader">Rename Header to ElfHeader</a></li>
+<li><a href="#the-main-index">The Main Index</a></li>
+<li><a href="#the-elfheader-shell">The ElfHeader Shell</a></li>
+<li><a href="#add-menu">Add Menu</a></li>
+<li><a href="#defining-routes">Defining Routes</a></li>
 <li><a href="#style-the-menu">Style the Menu</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>The goals of this assignment are:</p>
@@ -8,12 +13,133 @@
 <li>Create a menu, no matter how limited</li>
 <li>Switch views between <strong>Git View</strong>, <strong>BarFoo</strong> and <strong>SmallNumbers</strong></li>
 </ul>
-<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-git-menu-home.png" alt="Git View">
-<img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-git-menu-barfoo.png" alt="Bar Foo">
-<img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-git-menu-numbers.png" alt="Small Numbers"></p>
+<p>In this serious of screen shots you can see the menu, and the various views it provides. In particular, each view features one component, or one component and its child components.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-git-menu-home.png" alt="Git View"></p>
+<p><strong>IMAGE</strong>: <em>Home page with no styling on menu.</em></p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-git-menu-barfoo.png" alt="Bar Foo"></p>
+<p><strong>IMAGE</strong>: <em>Get Foo page with menu styling.</em></p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-git-menu-numbers.png" alt="Small Numbers"></p>
+<p><strong>IMAGE</strong>: <em>Small Numbers page with menu styling.</em></p>
 <a class="anchor" id="install-react-router"></a>
 <h2>Install React Router</h2>
 <p>Read the <a href="http://www.elvenware.com/charlie/development/web/JavaScript/JavaScriptReactMenu.html#router-install">React Router Dom Install</a> section from Elvenware then return to this document.</p>
+<a class="anchor" id="rename-header-to-elfheader"></a>
+<h2>Rename Header to ElfHeader</h2>
+<p>In this assignment we will be working the component that we use to display our header. We initially called this class <strong>Header</strong>. Let&#39;s do a small refactor here and change its name to <strong>ElfHeader</strong>. This will make it less likely that its name will collide with the HTML tag of the same name, or some other JavaScript variable with the same name.</p>
+<p>I prefer to use Git to rename files:</p>
+<p>  git mv src/components/Header.js src/components/ElfHeader.js</p>
+<p>Then open up the file and change the name of the class itself from <strong>Header</strong> to <strong>ElfHeader</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ElfHeader</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{ ... }
+
+export <span class="hljs-keyword">default</span> <span class="hljs-type">ElfHeader</span>;
+</code></pre>
+<a class="anchor" id="the-main-index"></a>
+<h2>The Main Index</h2>
+<p>We are going to fundamentally change the structure of our program. This means, at least for now, that <strong>index.js</strong> should no longer be responsible for showing <strong>GetUserInfo</strong>, <strong>GetFoo</strong> or <strong>SmallNumbers</strong>. Instead, it should show only our <strong>ElfHeader</strong>, which is the class we will use to switch between component views. Here is our modified <strong>index.js</strong> file:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> ElfHeader <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/ElfHeader'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'./css/index.css'</span>;
+
+ReactDOM.render(
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>,
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
+);
+</code></pre>
+<p><strong>NOTE</strong>: <em>A crucial point, in fact, probably the central point, of this class, is how easy it is for us to move classes and views around when we use the <strong>React</strong> architecture. Yes, it is hard to get up to speed on React, and yes, it is a fairly complex tool. But once you have everything set up, making relatively large changes to our program&#39;s architecture are simple. The small, focused loosely coupled components that we have created give us the flexibility to accept changes in specifications with a minimum of disruption.</em></p>
+<a class="anchor" id="the-elfheader-shell"></a>
+<h2>The ElfHeader Shell</h2>
+<p>Open up <strong>ElfHeader</strong> in your editor. The first step will be to change our imports to pull in the components we want. We will also want to access some key classes from <strong>react-router-dom</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 4/15/17.
+ */</span>
+
+<span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> GetUserInfo <span class="hljs-keyword">from</span> <span class="hljs-string">'./GetUserInfo'</span>;
+<span class="hljs-keyword">import</span> GetFoo <span class="hljs-keyword">from</span> <span class="hljs-string">'./GetFoo'</span>;
+<span class="hljs-keyword">import</span> SmallNumbers <span class="hljs-keyword">from</span> <span class="hljs-string">'./SmallNumbers'</span>;
+<span class="hljs-keyword">import</span> numbersInit <span class="hljs-keyword">from</span> <span class="hljs-string">'../numbers-data'</span>;
+<span class="hljs-keyword">import</span> logo <span class="hljs-keyword">from</span> <span class="hljs-string">'../images/gold-fish.svg'</span>;
+<span class="hljs-keyword">import</span> {
+    BrowserRouter <span class="hljs-keyword">as</span> Router,
+    Route,
+    Link
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span>
+<span class="hljs-keyword">import</span> <span class="hljs-string">'../css/App.css'</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ElfHeader</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+
+    render() {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-header"</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">{logo}</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-logo"</span> <span class="hljs-attr">alt</span>=<span class="hljs-string">"logo"</span>/&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>Welcome to React<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>            
+        );
+    }
+}
+
+export default ElfHeader;</span>
+</code></pre>
+<p>Note the code we have pulled in from <strong>react-router-dom</strong>. You don&#39;t have to do this, but if you are interested, you can view their source:</p>
+<pre><code class="lang-bash">geany node_modules/react-router-dom/BrowserRouter<span class="hljs-selector-class">.js</span>
+geany node_modules/react-router-dom/Route<span class="hljs-selector-class">.js</span>
+geany node_modules/react-router-dom/Link.js
+</code></pre>
+<a class="anchor" id="add-menu"></a>
+<h2>Add Menu</h2>
+<p>Let&#39;s focus only on the render method from <strong>ElfHeader</strong>:</p>
+<pre><code class="lang-javascript">render() {
+    <span class="hljs-keyword">return</span> (
+        <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Router</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-header"</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">{logo}</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-logo"</span> <span class="hljs-attr">alt</span>=<span class="hljs-string">"logo"</span>/&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>Welcome to React<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">Router</span>&gt;</span>
+    );
+}</span>
+</code></pre>
+<p>Here we have added the <strong>Router</strong> react class from <strong>react-router-dom</strong>. I believe that it&#39;s goal will be to iterate through its children, find the ones that define the menu, and cause them to render appropriately. In any case, it needs to be there or our code won&#39;t work.</p>
+<a class="anchor" id="add-menu"></a>
+<h2>Add Menu</h2>
+<p>Let&#39;s add in the code that defines the &quot;visible&quot; menu that the user will click on:</p>
+<pre><code class="lang-javascript">render() {
+    <span class="hljs-keyword">return</span> (
+        <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Router</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+
+                <span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">"/"</span>&gt;</span>Home<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">"/get-foo"</span>&gt;</span>BarFoo<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">"/get-numbers"</span>&gt;</span>Numbers<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
+
+                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-header"</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">{logo}</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-logo"</span> <span class="hljs-attr">alt</span>=<span class="hljs-string">"logo"</span>/&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>Welcome to React<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">Router</span>&gt;</span>
+    );
+}</span>
+</code></pre>
+<p>Here we are using the <strong>react-router-dom</strong> class called <strong>Link</strong> to help us create a link that behaves appropriately in this context. It will, for instance, turn the first two items into code that looks like this at run time:</p>
+<pre><code class="lang-HTML">&lt;li&gt;<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"/"</span>&gt;</span>Home<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span></span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></span>
+&lt;li&gt;<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"/get-foo"</span>&gt;</span>BarFoo<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span></span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></span>
+</code></pre>
+<a class="anchor" id="defining-routes"></a>
+<h2>Defining Routes</h2>
+<p>The final step involves defining what the application will do when the user clicks on a particular menu item. We do it like this for the home menu:</p>
+<pre><code class="lang-HTML"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">exact</span> <span class="hljs-attr">path</span>=<span class="hljs-string">"/"</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{GetUserInfo}/</span>&gt;</span>
+</code></pre>
+<p>Note the user of the flag <strong>exact</strong>. This is necessary because </p>
 <a class="anchor" id="style-the-menu"></a>
 <h2>Style the Menu</h2>
 <p>Read about it <a href="http://www.elvenware.com/charlie/development/web/JavaScript/JavaScriptReactMenu.html#style-the-menu">here</a></p>
