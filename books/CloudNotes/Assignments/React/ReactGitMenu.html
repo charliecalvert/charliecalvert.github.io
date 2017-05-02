@@ -6,7 +6,8 @@
 <li><a href="#the-elfheader-shell">The ElfHeader Shell</a></li>
 <li><a href="#add-menu">Add Menu</a></li>
 <li><a href="#defining-routes">Defining Routes</a></li>
-<li><a href="#style-the-menu">Style the Menu</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#style-the-menu">Style the Menu</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>The goals of this assignment are:</p>
 <ul>
@@ -139,8 +140,41 @@ geany node_modules/react-router-dom/Link.js
 <p>The final step involves defining what the application will do when the user clicks on a particular menu item. We do it like this for the home menu:</p>
 <pre><code class="lang-HTML"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">exact</span> <span class="hljs-attr">path</span>=<span class="hljs-string">"/"</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{GetUserInfo}/</span>&gt;</span>
 </code></pre>
-<p>Note the user of the flag <strong>exact</strong>. This is necessary because </p>
+<p>Note the user of the flag <strong>exact</strong>. This is necessary because a simple match on &#39;/&#39; will pass both &#39;/&#39; and &#39;/get-foo&#39;. In fact, it will match any URL beginning &#39;/&#39;. So we tell the router that we want an exact match.</p>
+<p>I want you to have to figure out at least one of these routes on your own, so I will let you discover the solution for creating the Route to GetFoo. It isn&#39;t hard, so try not to over-complicate it.</p>
+<p>It is, however, a bit tricky to use a <strong>Route</strong> to load a React component that expects props. Here is how to proceed:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">"/get-numbers"</span>
+    <span class="hljs-attr">render</span>=<span class="hljs-string">{(props)</span> =&gt;</span> (
+        <span class="hljs-tag">&lt;<span class="hljs-name">SmallNumbers</span> {<span class="hljs-attr">...props</span>}
+            <span class="hljs-attr">numbers</span>=<span class="hljs-string">{numbersInit}</span> /&gt;</span>
+    )}
+/&gt;
+</code></pre>
+<p>The normal pattern is to define the path, and then the component:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">"/my-component"</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{MyComponent}/</span>&gt;</span>
+</code></pre>
+<p>You cannot, however, pass props to <strong>MyComponent</strong> the same way you can elsewhere in a React application. Instead, you use <strong>render</strong> instead of <strong>component</strong>, and the syntax looks like this in our case:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">"/get-numbers"</span>
+    <span class="hljs-attr">render</span>=<span class="hljs-string">{(props)</span> =&gt;</span> (
+        <span class="hljs-tag">&lt;<span class="hljs-name">SmallNumbers</span> {<span class="hljs-attr">...props</span>}
+            <span class="hljs-attr">numbers</span>=<span class="hljs-string">{numbersInit}</span> /&gt;</span>
+    )}
+/&gt;
+</code></pre>
+<p>We use this syntax because <strong>react-router-dom</strong> passes a certain number of props to a component by default, and we don&#39;t want to lose them. Here we use the <a href="http://es6-features.org/#SpreadOperator">spread-operator</a> to pass the Router props and then we pass our own props. Here is what it looks like in the debugger:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/small-number-props.png" alt="Local Scope Props Numbers"></p>
+<p><strong>IMAGES</strong>: <em>You can see the <strong>Sources</strong> tab of Chrome Developer Tools</em></p>
+<p>I&#39;ve run to a breakpoint on line 10 of <strong>SmallNumbers.js</strong>. At the bottom right we can see that <strong>props</strong> for SmallNumbers is in the <strong>Local Scope</strong>. The debugger displays our <strong>Numbers</strong> prop, along with three properties passed by the <strong>react-router-dom</strong>:</p>
+<ul>
+<li>history</li>
+<li>location</li>
+<li>match</li>
+</ul>
+<p>They can come in useful in more advanced scenarios than the one we see here. In particular, they can help preserve history so the user can move back and forth through your site.</p>
 <a class="anchor" id="style-the-menu"></a>
 <h2>Style the Menu</h2>
 <p>Read about it <a href="http://www.elvenware.com/charlie/development/web/JavaScript/JavaScriptReactMenu.html#style-the-menu">here</a></p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Add, commit, push, tag and/or branch. Let me know the tag and/or branch as well as the directory for your work. Make sure all your tests pass.</p>
 </div></body></html>
