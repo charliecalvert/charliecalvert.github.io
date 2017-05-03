@@ -1,0 +1,131 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactGetAddress</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactGetAddress</h1><p>Welcome to ReactGetAddress</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#get-the-addresses">Get the Addresses</a></li>
+<li><a href="#write-utility">Write Utility</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Create a program that generates about 500 addresses that you can use in CongressAddress. Turn in the program, use the addresses in <strong>CongressAddress</strong>.</p>
+<p>Do your work in a folder in the root of your project call <strong>GetAddress</strong>.</p>
+<a class="anchor" id="get-the-addresses"></a>
+<h2>Get the Addresses</h2>
+<pre><code>curl <span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/www.govtrack.us/api</span><span class="hljs-regexp">/v2/role</span>?current=<span class="hljs-literal">true</span> &gt; address.json
+</code></pre><p>Study <strong>address.json</strong> until it makes sense.</p>
+<a class="anchor" id="write-utility"></a>
+<h2>Write Utility</h2>
+<p>Then in get-address.js:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> fs=<span class="hljs-built_in">require</span>(<span class="hljs-string">"fs"</span>);
+<span class="hljs-keyword">var</span> debug = <span class="hljs-built_in">require</span>(<span class="hljs-string">'debug'</span>)(<span class="hljs-string">'get-address'</span>);
+
+debug(<span class="hljs-string">'Testing debug'</span>);
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readFile</span>(<span class="hljs-params">fileName, callback</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">if</span> (!callback) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve, reject</span>) </span>{
+            fs.readFile(fileName, <span class="hljs-string">'utf8'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, fileContents</span>) </span>{
+                <span class="hljs-keyword">if</span> (err) {
+                    reject(err);
+                }
+                resolve({
+                    <span class="hljs-string">'result'</span>: fileContents
+                });
+            });
+        });
+    } <span class="hljs-keyword">else</span> {
+        fs.readFile(fileName, <span class="hljs-string">'utf8'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, fileContents</span>) </span>{
+            <span class="hljs-keyword">if</span> (err) {
+                <span class="hljs-keyword">throw</span> (err);
+            }
+            callback({
+                <span class="hljs-string">'result'</span>: fileContents
+            });
+        });
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getAddress</span>(<span class="hljs-params">value, char</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">return</span> value.substring(<span class="hljs-number">0</span>, value.lastIndexOf(char) <span class="hljs-number">-1</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getZip</span>(<span class="hljs-params">value, char</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-comment">// YOU WRITE IT</span>
+    <span class="hljs-comment">// ITS THE SAME SINGLE CALL AS GET ADDRESS, BUT INDEXES ARE DIFFERENT</span>
+    <span class="hljs-comment">// UNCOMMENT NEXT LINE AND MODIFY IT</span>
+    <span class="hljs-comment">// return value.substring(WHAT GOES HERE?, WHAT GOES HERE?);</span>
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getCity</span>(<span class="hljs-params">value, char, len</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> start = value.lastIndexOf(char);
+    <span class="hljs-keyword">return</span> value.substring(start, start + len);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">writeIt</span>(<span class="hljs-params">label, value, noComma</span>) </span>{
+    <span class="hljs-keyword">var</span> comma = noComma ? <span class="hljs-string">'"'</span> : <span class="hljs-string">'",'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\t'</span> + label, <span class="hljs-string">'"'</span>+ value + comma)
+};
+
+readFile(<span class="hljs-string">'address.json'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">text</span>) </span>{
+    debug(text);
+    <span class="hljs-keyword">var</span> json = <span class="hljs-built_in">JSON</span>.parse(text.result);
+    debug(<span class="hljs-string">'\n\nSTRINGIFY\n\n'</span>, <span class="hljs-built_in">JSON</span>.stringify(json));
+    <span class="hljs-keyword">var</span> gitUser = [];
+    <span class="hljs-keyword">const</span> unknown = <span class="hljs-string">'unknown'</span>;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; json.objects.length; i++) {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'{'</span>);
+        writeIt(<span class="hljs-string">'firstName:'</span>, json.objects[i].person.firstname);
+        <span class="hljs-comment">// GET LAST NAME</span>
+        writeIt(<span class="hljs-string">'street:'</span>, getAddress(json.objects[i].extra.address, <span class="hljs-string">'W'</span>));
+        <span class="hljs-comment">// CITY STATE ZIP PHONE WEBSITE</span>
+        writeIt(<span class="hljs-string">'email:'</span>, <span class="hljs-string">''</span>);
+        writeIt(<span class="hljs-string">'contact:'</span>, json.objects[i].extra.contact_form || <span class="hljs-string">''</span>, <span class="hljs-literal">true</span>);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'},'</span>);
+    }
+    <span class="hljs-comment">//console.log('\n\nSTRINGIFY\n\n', JSON.stringify(gitUser, null, 4));</span>
+    debug(<span class="hljs-string">'all done'</span>);
+});
+</code></pre>
+<p>Some example output:</p>
+<pre><code class="lang-javascript">{
+<span class="hljs-symbol">    firstName:</span> <span class="hljs-string">"Lamar"</span>,
+<span class="hljs-symbol">    lastName:</span> <span class="hljs-string">"Alexander"</span>,
+<span class="hljs-symbol">    street:</span> <span class="hljs-string">"455 Dirksen Senate Office Building"</span>,
+<span class="hljs-symbol">    city:</span> <span class="hljs-string">"Washington DC"</span>,
+<span class="hljs-symbol">    state:</span> <span class="hljs-string">"TN"</span>,
+<span class="hljs-symbol">    zip:</span> <span class="hljs-string">" 20510"</span>,
+<span class="hljs-symbol">    phone:</span> <span class="hljs-string">"202-224-4944"</span>,
+<span class="hljs-symbol">    website:</span> <span class="hljs-string">"https://www.alexander.senate.gov/public"</span>,
+<span class="hljs-symbol">    email:</span> <span class="hljs-string">""</span>,
+<span class="hljs-symbol">    contact:</span> <span class="hljs-string">"http://www.alexander.senate.gov/public/index.cfm?p=Email"</span>
+},
+{
+<span class="hljs-symbol">    firstName:</span> <span class="hljs-string">"Roger"</span>,
+<span class="hljs-symbol">    lastName:</span> <span class="hljs-string">"Wicker"</span>,
+<span class="hljs-symbol">    street:</span> <span class="hljs-string">"555 Dirksen Senate Office Building"</span>,
+<span class="hljs-symbol">    city:</span> <span class="hljs-string">"Washington DC"</span>,
+<span class="hljs-symbol">    state:</span> <span class="hljs-string">"MS"</span>,
+<span class="hljs-symbol">    zip:</span> <span class="hljs-string">" 20510"</span>,
+<span class="hljs-symbol">    phone:</span> <span class="hljs-string">"202-224-6253"</span>,
+<span class="hljs-symbol">    website:</span> <span class="hljs-string">"https://www.wicker.senate.gov"</span>,
+<span class="hljs-symbol">    email:</span> <span class="hljs-string">""</span>,
+<span class="hljs-symbol">    contact:</span> <span class="hljs-string">"https://www.wicker.senate.gov/public/index.cfm/contact"</span>
+},
+{
+<span class="hljs-symbol">    firstName:</span> <span class="hljs-string">"Timothy"</span>,
+<span class="hljs-symbol">    lastName:</span> <span class="hljs-string">"Kaine"</span>,
+<span class="hljs-symbol">    street:</span> <span class="hljs-string">"231 Russell Senate Office Building"</span>,
+<span class="hljs-symbol">    city:</span> <span class="hljs-string">"Washington DC"</span>,
+<span class="hljs-symbol">    state:</span> <span class="hljs-string">"VA"</span>,
+<span class="hljs-symbol">    zip:</span> <span class="hljs-string">" 20510"</span>,
+<span class="hljs-symbol">    phone:</span> <span class="hljs-string">"202-224-4024"</span>,
+<span class="hljs-symbol">    website:</span> <span class="hljs-string">"https://www.kaine.senate.gov"</span>,
+<span class="hljs-symbol">    email:</span> <span class="hljs-string">""</span>,
+<span class="hljs-symbol">    contact:</span> <span class="hljs-string">"https://www.kaine.senate.gov/contact"</span>
+},
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Add, commit, push, tag and/or branch.</p>
+</div></body></html>
