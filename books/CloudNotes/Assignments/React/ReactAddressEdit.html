@@ -2,6 +2,7 @@
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactAddressEdit</h1><p>Welcome to ReactAddressEdit</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#create-tests">Create Tests</a></li>
 <li><a href="#create-addressedit">Create AddressEdit</a></li>
+<li><a href="#hint">Hint</a></li>
 <li><a href="#load-address-edit">Teach Address to Load AddressEdit</a></li>
 <li><a href="#elftestdebug">ElfTestDebug</a></li>
 <li><a href="#contains-matching">Contains Matching</a></li>
@@ -36,6 +37,20 @@
 <p>Here is an example:</p>
 <pre><code class="lang-javascript">&lt;<span class="hljs-selector-tag">input</span> id=<span class="hljs-string">"elfFN"</span> className=<span class="hljs-string">"App-intro"</span> value={this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.address</span><span class="hljs-selector-class">.firstName</span>} onChange={this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.onNameChange</span>}/&gt;
 </code></pre>
+<a class="anchor" id="hint"></a>
+<h2>Hint</h2>
+<p><strong>shallow</strong> can see all the HTML tags in a render method, but it can&#39;t see into the sub-components. Consider this code:</p>
+<pre><code class="lang-javascript">render() {
+    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.quiet) { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"ADDRESS RENDER"</span>); }
+    <span class="hljs-keyword">return</span> (
+        <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">MyAddress</span> /&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+    );
+}
+</code></pre>
+<p><strong>shallow</strong> can see that this render method contains a second React component called <strong>MyAddress</strong>, but it can&#39;t see the render method of <strong>MyAddress</strong>. <strong>mount</strong> can see into <strong>MyAddress</strong>. This means it can find the list items or paragraphs that may be listed as part of the <strong>MyAddress</strong> react <strong>Component</strong>. In cases like that shown above, it can see the <strong>render</strong> method of <strong>MyAddress</strong>, but shallow cannot.</p>
+<p>Just to be clear, it would not matter how many divs, list items, paragraphs or other tags were included in the <strong>render</strong> method shown above. <strong>shallow</strong> could see them all. But it could not see into the contents of the render method of <strong>MyAddress</strong>.</p>
 <a class="anchor" id="load-address-edit"></a>
 <h2>Teach Address to Load AddressEdit</h2>
 <p>All you need to do is add a new method for handling changes to the input control:</p>
