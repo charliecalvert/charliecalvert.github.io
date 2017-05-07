@@ -2,6 +2,7 @@
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>Isit322Midterm2017</h1><p>Welcome to Isit322Midterm2017</p><ul><!--TOC_Start--><li><a href="#isit-322-midterm-2017">ISIT 322 Midterm 2017</a></li>
 <li><a href="#goals">Goals</a></li>
 <li><a href="#jscs">JSCS</a></li>
+<li><a href="#jscs-punctuator">JSCS Punctuator in ES6</a></li>
 <li><a href="#extra-credit-option-one">Extra Credit Option One</a></li>
 <li><a href="#extra-credit-option-two">Extra Credit Option Two</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="isit-322-midterm-2017"></a>
@@ -33,8 +34,15 @@
 <p>Put this <strong>.jscsrc</strong> file in the root of your projects. Probably one for <strong>client</strong> and one for <strong>server</strong>:</p>
 <pre><code class="lang-json">{
     <span class="hljs-attr">"preset"</span>: <span class="hljs-string">"google"</span>,
-    <span class="hljs-attr">"validateIndentation"</span>: <span class="hljs-number">4</span>,
-    <span class="hljs-attr">"excludeFiles"</span>: [<span class="hljs-string">"**/node_modules/**"</span>, <span class="hljs-string">"**/bower_components/**"</span>],
+    <span class="hljs-attr">"validateIndentation"</span>: <span class="hljs-number">4</span>,    
+    <span class="hljs-attr">"excludeFiles"</span>: [
+        <span class="hljs-string">"**/node_modules/**"</span>,
+        <span class="hljs-string">"**/config/**"</span>,
+        <span class="hljs-string">"**/scripts/**"</span>,
+        <span class="hljs-string">"**/bower_components/**"</span>,
+        <span class="hljs-string">"**/field-definitions.js"</span>,
+        <span class="hljs-string">"**/mock-user-info.js"</span>
+    ],
     <span class="hljs-attr">"requireCamelCaseOrUpperCaseIdentifiers"</span>: <span class="hljs-literal">false</span>,
     <span class="hljs-attr">"maximumLineLength"</span>: <span class="hljs-number">120</span>
 }
@@ -42,6 +50,26 @@
 <p>Go to <strong>Setting | Editor | Code Style | JavaScript</strong>. On the Settings tab, in the first section, called <strong>Before Parentheses</strong>, set <strong>In Function Expression</strong> to false (unchecked). This means there should be no space after the word <strong>function.</strong>. Our code should look like this: <strong>function() {}</strong>. Not like this <strong>function () {}</strong>. Note the space after the word function in the second example.</p>
 <p>JSCS should pass for your files. You can probably make this happen by choosing <strong>Code | Reformat</strong> in WebStorm, or by running the NPM package called <strong>js-beautify</strong>, which should be installed on your system in the global ~/npm/bin directory. If it is not installed, install it. But I do most of my formatting with WebStorm not <strong>js-beautify</strong>.</p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/jscs-config.png" alt="Hopefully works for you too"></p>
+<p>Remember that you have a <strong>Gruntfile.js</strong> in <strong>GitExplorer/server</strong> directory. This means you can run <strong>grunt jscs</strong> over the <strong>GitExplorer/server</strong> directory without difficulty. I found it only moderately painful to copy it over to <strong>GitExplorer/client</strong> and run it over the client code as well. There were, however, some <strong>Punctuator</strong> errors that I could not eliminate. I do not, however, get the same errors in WebStorm, perhaps because it is using a more recent copy of JSCS. To be sure you have the latest:</p>
+<p>  npm install -g jscs</p>
+<a class="anchor" id="jscs-punctuator"></a>
+<h2>JSCS Punctuator in ES6</h2>
+<p>I can&#39;t get JSCS to accept our arrow functions which we use for binding this. In <strong>ElfLogger</strong>, for instance, I write this:</p>
+<pre><code class="lang-javascript">setQuiet = (<span class="hljs-keyword">new</span><span class="hljs-type">Value</span>) =&gt; {
+    <span class="hljs-built_in">this</span>.display = <span class="hljs-keyword">new</span><span class="hljs-type">Value</span>;
+};
+</code></pre>
+<p>This is well formed, if experimental, ES6 syntax. If I remove the semi-colon, then I get a missing semicolon complaint from JSCS. If I add the semicolon, then I get this error:</p>
+<p>  JSCS: expected end of node list but punctuator found</p>
+<p>The solution is to go back to the old syntax for binding <strong>this</strong>. In the constructor, I write the following:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">this</span>.setQuiet = <span class="hljs-keyword">this</span>.setQuiet.bind(<span class="hljs-keyword">this</span>);
+</code></pre>
+<p>Now I can switch to the traditional method declaration syntax, and yet still have <strong>this</strong> properly bound. That is, <strong>this</strong> will be valid in the <strong>setQuiet</strong> method. The problem is not unique to this object, and you may need to make similar changes in multiple place to fix the problem.</p>
+<p>For an example, look here:</p>
+<ul>
+<li><a href="https://gist.github.com/charliecalvert/cf20ae73a21bb34d6605a1f533c9d988">ElfLogger Gist</a></li>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/ReactPropsMounted.html#logger">ElfLogger in ReactPropsMounted</a></li>
+</ul>
 <a class="anchor" id="extra-credit-option-one"></a>
 <h2>Extra Credit Option One</h2>
 <p>This appears to be more than one way to achieve the goal I was looking for in the extra section. I&#39;ll give you both options and let you choose one or the other or both or what have you.</p>
