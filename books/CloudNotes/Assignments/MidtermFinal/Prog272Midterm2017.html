@@ -2,6 +2,7 @@
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>Prog272Midterm2017</h1><p>Welcome to Prog272Midterm2017</p><ul><!--TOC_Start--><li><a href="#prog272-midterm-2017">Prog272 Midterm 2017</a></li>
 <li><a href="#goals">Goals</a></li>
 <li><a href="#jscs">JSCS</a></li>
+<li><a href="#jscs-punctuator">JSCS Punctuator</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="prog272-midterm-2017"></a>
 <h1>Prog272 Midterm 2017</h1>
 <p>A description of what I want to see on the midterm.</p>
@@ -58,6 +59,36 @@
 <p>Go to <strong>Setting | Editor | Code Style | JavaScript</strong>. On the Settings tab, in the first section, called <strong>Before Parentheses</strong>, set <strong>In Function Expression</strong> to false (unchecked). This means there should be no space after the word <strong>function.</strong>. Our code should look like this: <strong>function() {}</strong>. Not like this <strong>function () {}</strong>. Note the space after the word function in the second example.</p>
 <p>JSCS should pass for your files. You can probably make this happen by choosing <strong>Code | Reformat</strong> in WebStorm, or by running the NPM package called <strong>js-beautify</strong>, which should be installed on your system in the global ~/npm/bin directory. If it is not installed, install it. But I do most of my formatting with WebStorm not <strong>js-beautify</strong>.</p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/jscs-config.png" alt="Hopefully works for you too"></p>
+<a class="anchor" id="jscs-punctuator"></a>
+<h2>JSCS Punctuator</h2>
+<p>Here is our current AddressChange:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">onAddressChange</span> = <span class="hljs-params">(event)</span> =&gt;</span> {
+    <span class="hljs-keyword">this</span>.addressIndex += <span class="hljs-number">1</span>;
+    const address = addresses[<span class="hljs-keyword">this</span>.addressIndex];
+
+    <span class="hljs-keyword">this</span>.setState({
+        address: address
+    })
+};
+</code></pre>
+<p>Get rid of the arrow function syntax, which is cutting edge experimental code that JSCS is not handling correctly:</p>
+<pre><code class="lang-javascript">onAddressChange(event) {
+    <span class="hljs-keyword">this</span>.addressIndex += <span class="hljs-number">1</span>;
+    const address = addresses[<span class="hljs-keyword">this</span>.addressIndex];
+
+    <span class="hljs-keyword">this</span>.setState({
+        address: address
+    })
+};
+</code></pre>
+<p>All this is good and well, but now the <strong>this</strong> variable in <strong>onAddressChange</strong> is no longer valid. To fix it, add this code to the <strong>constructor</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">this</span>.onAddressChange = <span class="hljs-keyword">this</span>.onAddressChange.bind(<span class="hljs-keyword">this</span>);
+</code></pre>
+<p>The call to bind shown above is the traditional way to solve this problem. I was enamored of the arrow function syntax and thought it a nice better way to solve the &quot;invalid this&quot; problem. But that solution is not certain to make it into the final ES6 spec.</p>
+<p>See the <strong>setQuiet</strong> method in this gist for a complete working example of the fix:</p>
+<ul>
+<li><a href="https://gist.github.com/charliecalvert/cf20ae73a21bb34d6605a1f533c9d988">https://gist.github.com/charliecalvert/cf20ae73a21bb34d6605a1f533c9d988</a></li>
+</ul>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Git <strong>add</strong>, <strong>commit</strong> and <strong>push</strong>. Git <strong>tag</strong> and/or create a <strong>branch</strong>. (If you are doing both, add the tag after you create the branch.) Use the word <strong>Midterm</strong> in your tag and/or branch messages. If there is any doubt as to which folder and branch your midterm is in, be sure to spell it out. For instance:</p>
