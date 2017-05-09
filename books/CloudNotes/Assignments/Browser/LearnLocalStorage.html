@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>LearnLocalStorage</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>LearnLocalStorage</h1><p>Welcome to LearnLocalStorage</p><ul><!--TOC_Start--><li><a href="#learn-local-storage">Learn Local Storage</a></li>
+<li><a href="#simple-object">Simple Object</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="learn-local-storage"></a>
+<h1>Learn Local Storage</h1>
+<p>Learn about local storage in the browser.</p>
+<a class="anchor" id="simple-object"></a>
+<h2>Simple Object</h2>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by Charlie on 5/8/17.
+ */</span>
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">saveToLocalStorageByName</span>(<span class="hljs-params">key, item</span>) </span>{
+    <span class="hljs-keyword">if</span> (!key) {
+        <span class="hljs-keyword">const</span> storageIndex = localStorage.length + <span class="hljs-number">1</span>;
+        key = <span class="hljs-string">'key'</span> + storageIndex;
+    }
+
+    localStorage.setItem(key, item);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">saveToLocalStorage</span>(<span class="hljs-params">item</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> item === <span class="hljs-string">'object'</span>) {
+        item = <span class="hljs-built_in">JSON</span>.stringify(item, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
+    }
+    <span class="hljs-keyword">const</span> storageIndex = localStorage.length + <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">const</span> key = <span class="hljs-string">'key'</span> + storageIndex;
+    localStorage.setItem(key, item);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLocalStorage</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">let</span> storage = <span class="hljs-string">''</span>;
+    <span class="hljs-keyword">let</span> key = <span class="hljs-string">''</span>;
+    <span class="hljs-keyword">let</span> storageItem;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt;= localStorage.length - <span class="hljs-number">1</span>; i++) {
+        key = localStorage.key(i);
+        storageItem = localStorage.getItem(key);
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> storageItem === <span class="hljs-string">'object'</span>) {
+            storageItem = <span class="hljs-built_in">JSON</span>.stringify(storageItem, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
+        }
+        <span class="hljs-keyword">if</span> (i === <span class="hljs-number">0</span>) {
+            storage = storageItem;
+        } <span class="hljs-keyword">else</span> {
+            storage = storage + <span class="hljs-string">'\n'</span> + storageItem;
+        }
+    }
+    <span class="hljs-keyword">return</span> storage;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clearLocalStorage</span>(<span class="hljs-params"></span>) </span>{
+    localStorage.clear();
+}
+
+<span class="hljs-keyword">export</span> {saveToLocalStorage, saveToLocalStorageByName,
+  getLocalStorage, clearLocalStorage};
+</code></pre>
+</div></body></html>
