@@ -1,9 +1,17 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>LearnLocalStorage</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>LearnLocalStorage</h1><p>Welcome to LearnLocalStorage</p><ul><!--TOC_Start--><li><a href="#learn-local-storage">Learn Local Storage</a></li>
+<li><a href="#elf-logger">Elf Logger</a></li>
 <li><a href="#simple-object">Simple Object</a></li>
+<li><a href="#create-json">Create JSON File</a></li>
+<li><a href="#load-json">Load JSON</a></li>
 <li><a href="#links">Links</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="learn-local-storage"></a>
 <h1>Learn Local Storage</h1>
 <p>Learn about local storage in the browser.</p>
+<a class="anchor" id="elf-logger"></a>
+<h2>Elf Logger</h2>
+<p>We need to be able to turn logging on and off as needed. One way to do it is to set it by module. If we set a particular environment variable to the name of a module, then the debug statements for that module will be visible.</p>
+<p>The source for <strong>ElfLogger</strong> is available as a gist: <a href="http://bit.ly/elf-logger">http://bit.ly/elf-logger</a></p>
+<p>The source for <strong>ElfDebugEnzyme</strong> as a gist: <a href="http://bit.ly/elf-debug-enzyme">http://bit.ly/elf-debug-enzyme</a></p>
 <a class="anchor" id="simple-object"></a>
 <h2>Simple Object</h2>
 <pre><code class="lang-javascript"><span class="hljs-comment">/**
@@ -53,6 +61,57 @@
 
 <span class="hljs-keyword">export</span> {saveToLocalStorage, saveToLocalStorageByName,
   getLocalStorage, clearLocalStorage};
+</code></pre>
+<a class="anchor" id="create-json"></a>
+<h2>Create JSON File</h2>
+<p>Copy your array of addresses to <strong>public/addresses.json</strong>. The code you put in the their should pass <a href="https://jsonlint.com/">json-lint</a>. To get this to work, you might need to modify your getAddress code slightly:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> <span class="hljs-built_in">open</span> = (i === <span class="hljs-number">0</span>) ? <span class="hljs-string">'[\n\t{'</span> : <span class="hljs-string">'\t{'</span>;
+console.log(<span class="hljs-built_in">open</span>);
+
+writeIt(<span class="hljs-string">'"firstName":'</span>, json.objects[i].person.firstname);
+
+<span class="hljs-comment">// AND SO ON</span>
+
+<span class="hljs-keyword">const</span> <span class="hljs-built_in">close</span> = i &lt; jsonLength - <span class="hljs-number">1</span> ? <span class="hljs-string">'\t},'</span> : <span class="hljs-string">'\t}\n]'</span>;
+console.log(<span class="hljs-built_in">close</span>);
+</code></pre>
+<p>The open lines start the array and the closing lines close the array. Note that firstName is written to be surrounded in double quotes, which satisfies the JSON spec.</p>
+<pre><code class="lang-javascript">// Valid JSON
+{
+  <span class="hljs-string">"foo"</span>: <span class="hljs-string">"bar"</span>
+}
+
+// Invalid JSON because there are no quotes around key
+{
+  foo: <span class="hljs-string">"bar"</span>
+}
+
+// Invalid JSON because <span class="hljs-keyword">of</span> single quotes around key and <span class="hljs-keyword">value</span>
+{
+  <span class="hljs-string">'foo'</span>: <span class="hljs-string">'bar'</span>
+}
+</code></pre>
+<a class="anchor" id="load-json"></a>
+<h2>Load JSON</h2>
+<p>We can use a method called <strong>fetch</strong> to retrieve data from the server. In particular, we want to load our addresses in JSON format.</p>
+<p><strong>NOTE</strong>: <em>Why are we doing this? What&#39;s wrong with the method we have been using to load the addresses? There is nothing serious wrong with it, but we want to take a half-step toward the time when we load our addresses from a server side databases. The code we will use to load the addresses from a JSON file stored on the server is similar to the code we will use to load JSON from a database. Also, we currently always have the addresses in memory from the moment we launch. We want to have the option of loading the addresses from the server or reading them from local storage. Again, this will only really make sense once we have the option of loading the data from a database.</em></p>
+<p>Someday <strong>fetch</strong> will be probably be part of standard JavaScript. For now, we use an NPM package:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save whatwg-fetch</span>
+</code></pre><p>Then at the top of <strong>Address.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-meta"><span class="hljs-meta-keyword">import</span> 'whatwg-fetch';</span>
+</code></pre>
+<p>Now we are ready to load our JavaScript with fetch and promises:</p>
+<pre><code class="lang-javascript">fetch(<span class="hljs-string">'./addresses.json'</span>).<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(data)</span></span> {
+   const addresses = <span class="hljs-keyword">data</span>.json();
+   console.<span class="hljs-built_in">log</span>(addresses);
+   <span class="hljs-keyword">return</span> addresses;
+}).<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-keyword">function</span></span> (<span class="hljs-keyword">data</span>) {
+   console.<span class="hljs-built_in">log</span>(JSON.stringify(<span class="hljs-keyword">data</span>, null, <span class="hljs-number">4</span>));
+   that.addresses = <span class="hljs-keyword">data</span>;
+   that.setLocalStorage();
+}).catch(<span class="hljs-function"><span class="hljs-keyword">function</span></span> (err) {
+   logger.<span class="hljs-built_in">log</span>(err);
+})
 </code></pre>
 <a class="anchor" id="links"></a>
 <h2>Links</h2>
