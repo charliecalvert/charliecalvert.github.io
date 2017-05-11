@@ -4,6 +4,9 @@
 <li><a href="#github-api">GitHub API</a></li>
 <li><a href="#sign-in">Sign in</a></li>
 <li><a href="#display-gist-data">Display Gist Data</a></li>
+<li><a href="#testing-notes">Testing Notes</a></li>
+<li><a href="#one-test">Running One Test File or Suite</a></li>
+<li><a href="#getgist-component">GetGist Component</a></li>
 <li><a href="#examples">Examples</a></li>
 <li><a href="#time-till-renew">Time till Renew</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="git-hub-api"></a>
 <h1>Git Hub API</h1>
@@ -76,6 +79,41 @@ v7.<span class="hljs-number">9.0</span>
     <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
 );
 </code></pre>
+<a class="anchor" id="testing-notes"></a>
+<h2>Testing Notes</h2>
+<p>The tests in <strong>Header.test.js</strong> break after the refactoring explained above. After the refactoring, I was getting this error:</p>
+<ul>
+<li><em>Failed context type: The context <code>router</code> is marked as required in <code>Link</code>, but its value is <code>undefined</code>.</em></li>
+</ul>
+<p>This is because the <strong>ElfHeader</strong> could not find the <strong>Router</strong> tag is was expected. The fix is as follows:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { BrowserRouter <span class="hljs-keyword">as</span> Router } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span>;
+
+it(<span class="hljs-string">'renders without crashing'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+    ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Router</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span> /&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">Router</span>&gt;</span></span>, div);
+});
+</code></pre>
+<p><strong>Question</strong>: After making this change, we might want to test to see if <strong>ElfHeader</strong> properly renders an <strong>H2</strong> element. For that test to work, should we now use <strong>shallow</strong> or <strong>mount</strong>?</p>
+<a class="anchor" id="one-test"></a>
+<h2>Running One Test File or Suite</h2>
+<p>We have learned how to use <strong>fit</strong> and <strong>.only</strong>. Also, note the menu:</p>
+<pre><code>Watch Usage
+ › Press o <span class="hljs-built_in">to</span> only run tests related <span class="hljs-built_in">to</span> changed <span class="hljs-built_in">files</span>.
+ › Press p <span class="hljs-built_in">to</span> <span class="hljs-built_in">filter</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">a</span> filename regex pattern.
+ › Press q <span class="hljs-built_in">to</span> quit watch mode.
+ › Press Enter <span class="hljs-built_in">to</span> trigger <span class="hljs-keyword">a</span> test run.
+</code></pre><p>Select <strong>p</strong> and enter part of the name of the test file you want to test. For instance, <strong>Header</strong>. Then only <strong>Header.test.js</strong> will run.</p>
+<a class="anchor" id="getgist-component"></a>
+<h2>GetGist Component</h2>
+<p>You&#39;ll need to create a new component called <strong>ShowNewGist</strong> that extends <strong>React.Component</strong>. Its job will be to display the information you get back when you create a gist. This component will take a certain number of props including:</p>
+<ul>
+<li>The method to call to create the Gist: <strong>fetchGist</strong>.</li>
+<li>The data retrieved from GitHub after you create the Gist: <strong>gitGist</strong>.</li>
+</ul>
+<p>You do not need to display all the fields, at least at first. Two or three would be enough while testing. For the midterm, up this to at least five or six. Be sure to include <strong>Description</strong> and <strong>URL</strong> among the fields you display. If possible, making <strong>URL</strong> clickable so we can see the Gist that you create.</p>
+<p>Add a new item to the menu called <strong>Insert New Gist</strong> or something similar. In <strong>DataMaven</strong>, you will also need to a new <strong>Route</strong> in the <strong>render</strong> method. It should display a component called ShowNewGist At some point the new route will need to pass two pieces of information to the component it calls.</p>
+<p>The new component will have one button that will call the <strong>fetchGist</strong> method from <strong>DataMaven</strong>.</p>
+<p><strong>fetchGist</strong> should retrieve the entirity of the JSON data returned from GitHub. On the client side you should add the data to <strong>DataMaven</strong>&#39;s state. This should cause a call to the <strong>DataMaven</strong> and <strong>ShowNewGist</strong> render methods.</p>
 <a class="anchor" id="examples"></a>
 <h2>Examples</h2>
 <p>curl <a href="https://api.github.com/zen">https://api.github.com/zen</a>
