@@ -4,7 +4,6 @@
 <li><a href="#github-api">GitHub API</a></li>
 <li><a href="#sign-in">Sign in</a></li>
 <li><a href="#display-gist-data">Display Gist Data</a></li>
-<li><a href="#testing-notes">Testing Notes</a></li>
 <li><a href="#one-test">Running One Test File or Suite</a></li>
 <li><a href="#getgist-component">GetGist Component</a></li>
 <li><a href="#examples">Examples</a></li>
@@ -20,22 +19,31 @@
 <p>Get your version of node:</p>
 <pre><code>$ <span class="hljs-keyword">node</span> <span class="hljs-title">--version</span>
 v7.<span class="hljs-number">9.0</span>
-</code></pre><a class="anchor" id="github-api"></a>
+</code></pre><ul>
+<li><a href="https://gist.github.com/charliecalvert/51daef341699943b07c9570c3ad2cbab">ElfDebugEnzyme</a></li>
+</ul>
+<a class="anchor" id="github-api"></a>
 <h2>GitHub API</h2>
 <ul>
-<li><a href="http://github-tools.github.io/github/">GitHub API Docs</a></li>
+<li><a href="http://github-tools.github.io/github/">JavaScript GitHub API Docs</a></li>
+<li><a href="https://github.com/github-tools/github">JavaScript GitHub API Repo</a></li>
 <li><a href="https://github.com/settings/tokens">Get a GitHub API oauth token</a></li>
 <li><a href="https://github.com/pksunkara/octonode">OctoNode alternative API</a></li>
+<li><a href="https://developer.github.com/v3/">Generic (not JavaScript Specific, GitHub API Intro</a></li>
+<li><a href="https://developer.github.com/guides/">Generic GitHub API Guides</a></li>
 </ul>
-<p>npm install --save github-api</p>
-<p>var GitHub = require(&#39;github-api&#39;);</p>
+<p>Install the JavaScript GitHub API:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save github-api</span>
+</code></pre><p>Link in the JavaScript GitHub API:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var GitHub</span> = require(<span class="hljs-string">'github-api'</span>);
+</code></pre>
 <a class="anchor" id="sign-in"></a>
 <h2>Sign in</h2>
 <pre><code class="lang-javascript"><span class="hljs-keyword">let</span> getGitHub = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">let</span> gh;
     <span class="hljs-keyword">if</span> (<span class="hljs-literal">true</span>) {
-        gh = <span class="hljs-keyword">new</span> GitHub({
-            <span class="hljs-attr">token</span>: token
+    <span class="hljs-attr">https</span>:<span class="hljs-comment">//gist.github.com/charliecalvert/51daef341699943b07c9570c3ad2cbab    gh = new GitHub({</span>
+            token: token
         });
     } <span class="hljs-keyword">else</span> {
         gh = <span class="hljs-keyword">new</span> GitHub({
@@ -73,27 +81,31 @@ v7.<span class="hljs-number">9.0</span>
 </code></pre>
 <p>In <strong>index.js</strong> just load <strong>DataMaven</strong>:</p>
 <pre><code class="lang-javascript">ReactDOM.render(
-    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">DataMaven</span>/&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>,
-    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
+    &lt;div&gt;
+        &lt;DataMaven/&gt;
+    &lt;/div&gt;,
+    document.getElementById(<span class="hljs-string">'root'</span>)
 );
-</code></pre>
-<a class="anchor" id="testing-notes"></a>
-<h2>Testing Notes</h2>
-<p>The tests in <strong>Header.test.js</strong> break after the refactoring explained above. After the refactoring, I was getting this error:</p>
-<ul>
-<li><em>Failed context type: The context <code>router</code> is marked as required in <code>Link</code>, but its value is <code>undefined</code>.</em></li>
-</ul>
-<p>This is because the <strong>ElfHeader</strong> could not find the <strong>Router</strong> tag is was expected. The fix is as follows:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { BrowserRouter <span class="hljs-keyword">as</span> Router } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span>;
+```https:<span class="hljs-comment">//gist.github.com/charliecalvert/51daef341699943b07c9570c3ad2cbab</span>
+
+## Testing Notes
+
+The tests <span class="hljs-keyword">in</span> **Header.test.js** break after the refactoring explained above. After the refactoring, I was getting this error:
+
+- _Failed context type: The context `router` is marked <span class="hljs-keyword">as</span> required <span class="hljs-keyword">in</span> `Link`, but its value is `undefined`._
+
+This is because the **ElfHeader** could not find the **Router** tag is was expected. The fix is <span class="hljs-keyword">as</span> follows:
+
+```javascript
+<span class="hljs-keyword">import</span> { BrowserRouter <span class="hljs-keyword">as</span> Router } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span>;
 
 it(<span class="hljs-string">'renders without crashing'</span>, () =&gt; {
-    <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
-    ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Router</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span> /&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">Router</span>&gt;</span></span>, div);
+    const div = document.createElement(<span class="hljs-string">'div'</span>);
+    ReactDOM.render(&lt;Router&gt;&lt;ElfHeader /&gt;&lt;/Router&gt;, div);
 });
 </code></pre>
-<p><strong>Question</strong>: After making this change, we might want to test to see if <strong>ElfHeader</strong> properly renders an <strong>H2</strong> element. For that test to work, should we now use <strong>shallow</strong> or <strong>mount</strong>?</p>
+<p><a href="https://gist.github.com/charliecalvert/51daef341699943b07c9570c3ad2cbab">https://gist.github.com/charliecalvert/51daef341699943b07c9570c3ad2cbab</a>
+<strong>Question</strong>: After making this change, we might want to test to see if <strong>ElfHeader</strong> properly renders an <strong>H2</strong> element. For that test to work, should we now use <strong>shallow</strong> or <strong>mount</strong>?</p>
 <a class="anchor" id="one-test"></a>
 <h2>Running One Test File or Suite</h2>
 <p>We have learned how to use <strong>fit</strong> and <strong>.only</strong>. Also, note the menu:</p>
