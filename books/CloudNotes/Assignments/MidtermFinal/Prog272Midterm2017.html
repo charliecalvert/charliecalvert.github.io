@@ -3,7 +3,9 @@
 <li><a href="#goals">Goals</a></li>
 <li><a href="#jscs">JSCS</a></li>
 <li><a href="#jscs-punctuator">JSCS Punctuator</a></li>
-<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="prog272-midterm-2017"></a>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#shallow-button-clicks">Shallow Button Clicks</a></li>
+<li><a href="#contains-matching-element">Contains Matching Element</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="prog272-midterm-2017"></a>
 <h1>Prog272 Midterm 2017</h1>
 <p>A description of what I want to see on the midterm.</p>
 <a class="anchor" id="goals"></a>
@@ -107,4 +109,34 @@
 <li>Folder: <strong>CongressAddress</strong></li>
 </ul>
 <p>I&#39;m happy if your branch is master, but if you feel comfortable creating a <strong>midterm</strong> branch, then do so just before you submit the assignment. You can update the branch at any time until the actual due date for the assignment. Even then, I would probably prefer a late update to a broken program.</p>
+<a class="anchor" id="shallow-button-clicks"></a>
+<h2>Shallow Button Clicks</h2>
+<p>By definition, enzyme <strong>shallow</strong> works with only one component at a time. When we use <strong>shallow</strong>, it is therefore not possible to check if a button click is working correctly since that involves the interaction of two components.</p>
+<p>However, even when we use shallow, an onClick function can be created within a button test to validate that the button responds to clicks. We implement the <strong>onClick</strong> function as a callback, and then confirm that when we click the button the callback is executed.</p>
+<p>Here is an example:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// button test</span>
+it(<span class="hljs-string">'responds to a button click'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-comment">//create variable to track button click status</span>
+    <span class="hljs-keyword">let</span> clicked = <span class="hljs-literal">false</span>;
+    <span class="hljs-comment">//create function to assign as onClick</span>
+    <span class="hljs-keyword">const</span> callback = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        clicked = <span class="hljs-literal">true</span>;
+    };
+
+    <span class="hljs-keyword">const</span> wrapper = shallow(&lt;AddressShow onSetAddress = {callback} address={address}/&gt;);
+    wrapper.find(<span class="hljs-string">'button#setAddress'</span>).simulate(<span class="hljs-string">'click'</span>);
+    expect(clicked).toEqual(<span class="hljs-literal">true</span>);
+
+});
+</code></pre>
+<p>Thanks to Andrew Wilson for inspiring this tip!</p>
+<a class="anchor" id="contains-matching-element"></a>
+<h2>Contains Matching Element</h2>
+<p>Remember that for tests on our input elements we need to use containsMatching element:</p>
+<p><strong>contains</strong> insists that all attributes for a tag match exactly, while <strong>containsMatchingElement</strong> allows you to match just one out of multiple attributes. In other words, it ignores attributes you don&#39;t care about. We have to use <strong>containsMatchingElement</strong> when testing our input controls since they contain <strong>onChange</strong> functions, and it is not easy or perhaps not even possible to match a function:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> inputElement = &lt;input <span class="hljs-keyword">value</span>=<span class="hljs-string">'Robin Dudette'</span>/&gt;;
+<span class="hljs-comment">// Code omitted</span>
+expect(wrapper.containsMatchingElement(inputElement)).toEqual(<span class="hljs-literal">true</span>);
+</code></pre>
+<p>This works even if the <strong>input</strong> control has a number of other attributes other than <strong>value</strong>.</p>
 </div></body></html>
