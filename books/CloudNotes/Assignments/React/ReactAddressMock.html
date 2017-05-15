@@ -6,6 +6,10 @@
 <li><a href="#mock-data">Mock Data</a></li>
 <li><a href="#mock-fetch">Mock fetch</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-address-mock"></a>
 <h1>React Address Mock</h1>
+<ul>
+<li>DevOps and TDD: <a href="http://bit.ly/elf-dev-ops">http://bit.ly/elf-dev-ops</a></li>
+<li>Elven Unit Tests: <a href="http://bit.ly/elven-unit-tests">http://bit.ly/elven-unit-tests</a></li>
+</ul>
 <a class="anchor" id="goals"></a>
 <h2>Goals</h2>
 <ul>
@@ -23,7 +27,8 @@
 <p>We are using <strong>localstorage</strong> in our browser. This is not going to be available in our tests since we are not executing our code inside a browser. Instead, we need to mock <strong>localstorage</strong>. We need to create a fake <strong>localstorage</strong> object that emulates what the browser local storage object.</p>
 <p>In the browser, the global object is called <strong>window</strong>. <strong>localStorage</strong> is a method of this global objects: <strong>window.localStorage</strong>. In NodeJs the global object is called <strong>global</strong>. So we create <strong>global.localStorage</strong>. In both cases, one can access <strong>localStorage</strong> directly by name. We don&#39;t have to write <strong>global.localStorage</strong> or <strong>window.localStorage</strong>. It is not an error to do so, but it is not necessary. Therefore, in both our tests and in a browser, we can just call <strong>localStorage</strong> even though in one case it is called <strong>global.localStorage</strong> and in the other it is called <strong>window.localStorage</strong>.</p>
 <p>At the risk of belaboring the point too long, I&#39;ll just sum up by saying that we are creating a mock <strong>localStorage</strong> object that acts just like the real <strong>localStorage</strong> object but does not require the presence of the browser and the <strong>window</strong> object.</p>
-<p>Here is the code, which implements the parts of <strong>localStorage</strong> that we use in our app. This code will be executed during our tests.</p>
+<p>Below is the code which implements the parts of <strong>localStorage</strong> that we use in our app. This code will be executed during our tests. Place the code near the top of the files that will need access to our data. For instance, if you checking for the value of <strong>firstName</strong> you will probably need the mock. A simple way to determine where it belongs is to simply run the tests in a module and see if they throw an exception saying that <strong>localStorage</strong> is not defined.</p>
+<p><strong>NOTE</strong>: <em>Remember that we can press the letter &#39;p&#39; when running tests, then type in all or part of the name of the file for a test. Then only that file will be run. For instance, typing <strong>Address</strong> will run only <strong>Address.test.js</strong>. This works best if you can uniquely identify each file. For instance, if you have tests suites called <strong>FooBar.test.js</strong> and <strong>Bar.test.js</strong> then trying to filter on <strong>Bar.test.js</strong> will get both test suites because both names contain <strong>Bar.test.js</strong>. Typing <strong>FooBar.test.js</strong> will run only the tests in <strong>FooBar.test.js</strong>.</em></p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// http://stackoverflow.com/a/32911774/253576</span>
 beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">const</span> localStorageMock = (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
