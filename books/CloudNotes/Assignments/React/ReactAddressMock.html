@@ -1,0 +1,170 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactAddressMock</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactAddressMock</h1><p>Welcome to ReactAddressMock</p><ul><!--TOC_Start--><li><a href="#react-address-mock">React Address Mock</a></li>
+<li><a href="#goals">Goals</a></li>
+<li><a href="#mock-local-storage">Mock Local Storage</a></li>
+<li><a href="#create-mocks-folder">Create Mocks Folder</a></li>
+<li><a href="#mock-data">Mock Data</a></li>
+<li><a href="#mock-fetch">Mock fetch</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-address-mock"></a>
+<h1>React Address Mock</h1>
+<ul>
+<li>DevOps and TDD: <a href="http://bit.ly/elf-dev-ops">http://bit.ly/elf-dev-ops</a></li>
+<li>Elven Unit Tests: <a href="http://bit.ly/elven-unit-tests">http://bit.ly/elven-unit-tests</a></li>
+</ul>
+<a class="anchor" id="goals"></a>
+<h2>Goals</h2>
+<ul>
+<li>Mock Local Storage</li>
+<li>Create the mocks folder</li>
+<li>Put two files in it.<ul>
+<li>Mock Data</li>
+<li>Mock fetch object</li>
+</ul>
+</li>
+<li>Adjust our Tests</li>
+</ul>
+<a class="anchor" id="mock-local-storage"></a>
+<h2>Mock Local Storage</h2>
+<p>We are using <strong>localstorage</strong> in our browser. This is not going to be available in our tests since we are not executing our code inside a browser. Instead, we need to mock <strong>localstorage</strong>. We need to create a fake <strong>localstorage</strong> object that emulates what the browser local storage object.</p>
+<p>In the browser, the global object is called <strong>window</strong>. <strong>localStorage</strong> is a method of this global objects: <strong>window.localStorage</strong>. In NodeJs the global object is called <strong>global</strong>. So we create <strong>global.localStorage</strong>. In both cases, one can access <strong>localStorage</strong> directly by name. We don&#39;t have to write <strong>global.localStorage</strong> or <strong>window.localStorage</strong>. It is not an error to do so, but it is not necessary. Therefore, in both our tests and in a browser, we can just call <strong>localStorage</strong> even though in one case it is called <strong>global.localStorage</strong> and in the other it is called <strong>window.localStorage</strong>.</p>
+<p>At the risk of belaboring the point too long, I&#39;ll just sum up by saying that we are creating a mock <strong>localStorage</strong> object that acts just like the real <strong>localStorage</strong> object but does not require the presence of the browser and the <strong>window</strong> object.</p>
+<p>Below is the code which implements the parts of <strong>localStorage</strong> that we use in our app. This code will be executed during our tests. Place the code near the top of the files that will need access to our data. For instance, if you checking for the value of <strong>firstName</strong> you will probably need the mock. A simple way to determine where it belongs is to simply run the tests in a module and see if they throw an exception saying that <strong>localStorage</strong> is not defined.</p>
+<p><strong>NOTE</strong>: <em>Remember that we can press the letter &#39;p&#39; when running tests, then type in all or part of the name of the file for a test. Then only that file will be run. For instance, typing <strong>Address</strong> will run only <strong>Address.test.js</strong>. This works best if you can uniquely identify each file. For instance, if you have tests suites called <strong>FooBar.test.js</strong> and <strong>Bar.test.js</strong> then trying to filter on <strong>Bar.test.js</strong> will get both test suites because both names contain <strong>Bar.test.js</strong>. Typing <strong>FooBar.test.js</strong> will run only the tests in <strong>FooBar.test.js</strong>.</em></p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// http://stackoverflow.com/a/32911774/253576</span>
+beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">const</span> localStorageMock = (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">let</span> storage = {};
+        <span class="hljs-keyword">return</span> {
+            <span class="hljs-attr">getItem</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key</span>) </span>{
+                <span class="hljs-keyword">return</span> storage[key];
+            },
+            <span class="hljs-attr">setItem</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key, value</span>) </span>{
+                storage[key] = value.toString();
+            },
+            <span class="hljs-attr">clear</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                storage = {};
+            }
+        };
+    })();
+    <span class="hljs-built_in">Object</span>.defineProperty(global, <span class="hljs-string">'localStorage'</span>, {<span class="hljs-attr">value</span>: localStorageMock});
+
+});
+</code></pre>
+<a class="anchor" id="create-mocks-folder"></a>
+<h2>Create Mocks Folder</h2>
+<p>So how do we perform this miracle? To make a long story short: we use the mock library built into Jest. Here is how to proceed:</p>
+<ul>
+<li>Create a new folder in the root of your project called: <strong>__mocks__</strong><ul>
+<li>Two underscores, the word mocks, two more underscores</li>
+</ul>
+</li>
+<li>Create a file in that directory called <strong>whatwg-fetch.js</strong></li>
+</ul>
+<a class="anchor" id="mock-data"></a>
+<h2>Mock Data</h2>
+<p>First lets create a simple module that contains the data we will use in our mock:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 4/18/17.
+ */</span>
+
+<span class="hljs-keyword">const</span> getData = <span class="hljs-function">(<span class="hljs-params">url</span>) =&gt;</span> {
+    <span class="hljs-keyword">switch</span> (url) {
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'/getJson'</span>:
+            <span class="hljs-keyword">return</span> [{
+                <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Lamar"</span>,
+                <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"Alexander"</span>,
+                <span class="hljs-string">"street"</span>: <span class="hljs-string">"455 Dirksen Senate Office Building"</span>,
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"Washington DC"</span>,
+                <span class="hljs-string">"state"</span>: <span class="hljs-string">"TN"</span>,
+                <span class="hljs-string">"zip"</span>: <span class="hljs-string">" 20510"</span>,
+                <span class="hljs-string">"phone"</span>: <span class="hljs-string">"202-224-4944"</span>,
+                <span class="hljs-string">"website"</span>: <span class="hljs-string">"https://www.alexander.senate.gov/public"</span>,
+                <span class="hljs-string">"email"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"contact"</span>: <span class="hljs-string">"http://www.alexander.senate.gov/public/index.cfm?p=Email"</span>
+            },
+            {
+                <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Roger"</span>,
+                <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"Wicker"</span>,
+                <span class="hljs-string">"street"</span>: <span class="hljs-string">"555 Dirksen Senate Office Building"</span>,
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"Washington DC"</span>,
+                <span class="hljs-string">"state"</span>: <span class="hljs-string">"MS"</span>,
+                <span class="hljs-string">"zip"</span>: <span class="hljs-string">" 20510"</span>,
+                <span class="hljs-string">"phone"</span>: <span class="hljs-string">"202-224-6253"</span>,
+                <span class="hljs-string">"website"</span>: <span class="hljs-string">"https://www.wicker.senate.gov"</span>,
+                <span class="hljs-string">"email"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"contact"</span>: <span class="hljs-string">"https://www.wicker.senate.gov/public/index.cfm/contact"</span>
+            },
+            {
+                <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Timothy"</span>,
+                <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"Kaine"</span>,
+                <span class="hljs-string">"street"</span>: <span class="hljs-string">"231 Russell Senate Office Building"</span>,
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"Washington DC"</span>,
+                <span class="hljs-string">"state"</span>: <span class="hljs-string">"VA"</span>,
+                <span class="hljs-string">"zip"</span>: <span class="hljs-string">" 20510"</span>,
+                <span class="hljs-string">"phone"</span>: <span class="hljs-string">"202-224-4024"</span>,
+                <span class="hljs-string">"website"</span>: <span class="hljs-string">"https://www.kaine.senate.gov"</span>,
+                <span class="hljs-string">"email"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"contact"</span>: <span class="hljs-string">"https://www.kaine.senate.gov/contact"</span>
+            }];
+
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">return</span> [];
+    }
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> getData;
+</code></pre>
+<p>This code simply creates sets of data that mimic what our server would return given a call to a specific <strong>url</strong>.</p>
+<a class="anchor" id="mock-fetch"></a>
+<h2>Mock fetch</h2>
+<p>Below is the source code for our new mock for <strong>fetch</strong>. Note in particular the call to [jest.genMockFromModule][gmm]. That call asks Jest to generate a mock object for the module we want to replace with a mock:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 4/17/17.
+ */</span>
+
+<span class="hljs-keyword">import</span> getData <span class="hljs-keyword">from</span> <span class="hljs-string">'./mock-data'</span>;
+
+<span class="hljs-meta">'use strict'</span>;
+
+<span class="hljs-keyword">const</span> whatwgFetch = jest.genMockFromModule(<span class="hljs-string">'whatwg-fetch'</span>);
+
+<span class="hljs-keyword">const</span> fetch = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">url</span>) </span>{
+
+    <span class="hljs-keyword">const</span> objectState = getData(url);
+
+    <span class="hljs-keyword">const</span> response = {};
+    response.json = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> objectState;
+    };
+
+    <span class="hljs-comment">//console.log("FETCH STATER", objectState);</span>
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">then</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">func</span>) </span>{
+            <span class="hljs-comment">//console.log('FETCH TEST ONE', func(response));</span>
+            <span class="hljs-keyword">return</span> {
+                <span class="hljs-attr">then</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">func</span>) </span>{
+                    <span class="hljs-comment">//func(JSON.stringify(stater));</span>
+                    func(objectState);
+                    <span class="hljs-keyword">return</span> {
+                        <span class="hljs-attr">catch</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+
+                        }
+                    };
+                }
+            };
+        }
+    };
+};
+
+whatwgFetch.fetch = fetch;
+<span class="hljs-built_in">window</span>.fetch = fetch;
+
+<span class="hljs-built_in">module</span>.exports = whatwgFetch;
+</code></pre>
+<p>Over time, you can comment out the calls to <strong>console.log</strong>. But they might be helpful at first when you are trying to understand what is going on. Note in particular that we are now putting calls to the callbacks (func) passed into our labyrinthine series of <strong>return</strong> statements. The most important is the second call to <strong>then</strong> where we pass back the <strong>stater</strong> object. Recall that this is used as follows in our call to <strong>fetch</strong>:</p>
+<pre><code class="lang-javascript">.then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">json</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'GETONE-FETCH-TWO'</span>);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsed json'</span>, json);
+    that.setState(<span class="hljs-function"><span class="hljs-params">foo</span> =&gt;</span> (json));
+})
+</code></pre>
+</div></body></html>
