@@ -1,0 +1,331 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactAddressDataMaven</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactAddressDataMaven</h1><p>Welcome to ReactAddressDataMaven</p><ul><!--TOC_Start--><li><a href="#react-address-data-maven">React Address Data Maven</a></li>
+<li><a href="#add-datamaven-test">Add DataMaven Test</a></li>
+<li><a href="#create-datamaven">Create DataMaven</a></li>
+<li><a href="#add-the-router-to-datamaven">Add the Router to DataMaven</a></li>
+<li><a href="#enzyme-find">Understanding the Enzyme find</a></li>
+<li><a href="#test-for-routes">Test for Routes</a></li>
+<li><a href="#remove-addresschanger">Remove AddressChanger</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-address-data-maven"></a>
+<h1>React Address Data Maven</h1>
+<p>We are going to add a new component called <strong>DataMaven</strong> so that we can refactor and get rid of <strong>AddressChanger</strong>.</p>
+<p>The <strong>Routes</strong> from the <strong>ElfMenu</strong> will move to this component. The display of the menu will stay in <strong>ElfMenu</strong>:</p>
+<pre><code class="lang-javascript"><span class="xml">
+<span class="hljs-tag">&lt;<span class="hljs-name">Router</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">===</span> <span class="hljs-attr">MOVES</span> ===&lt;
+   &lt;<span class="hljs-attr">div</span>&gt;</span>
+       <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">'App'</span>&gt;</span>
+           <span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span>
+               <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">'/'</span>&gt;</span>AddressShow<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+               <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">'/edit'</span>&gt;</span>AdressEdit<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+               <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">'/small'</span>&gt;</span>SmallNumbers<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+           <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
+       <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+       <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">exact</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{Address}/</span>&gt;</span>      <span class="hljs-tag">&lt;<span class="hljs-name">===</span> <span class="hljs-attr">MOVES</span> ===&lt;
+       &lt;<span class="hljs-attr">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/edit'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{AddressChanger}/</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">===</span> <span class="hljs-attr">MOVES</span> ===&lt;
+       &lt;<span class="hljs-attr">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/small'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{SmallNumbers}/</span>&gt;</span>  <span class="hljs-tag">&lt;<span class="hljs-name">===</span> <span class="hljs-attr">MOVES</span> ===&lt;
+   &lt;/<span class="hljs-attr">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">Router</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">===</span> <span class="hljs-attr">MOVES</span> ===&lt;</span></span>
+</code></pre>
+<p>Or to state the same thing somewhat differently, this is the part that we want to move to <strong>DataMaven</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">exact</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{Address}/</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/edit'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{AddressChanger}/</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/small'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{SmallNumbers}/</span>&gt;</span>
+</code></pre>
+<p>As a result of this refactoring, <strong>DataMaven</strong> will be able to launch all our Components. It will launch <strong>Address, AddressEdit</strong>, and <strong>SmallNumbers</strong>. This means that we can move all the <strong>state</strong> into this one component. The components will only see <strong>props</strong>.</p>
+<a class="anchor" id="add-datamaven-test"></a>
+<h2>Add DataMaven Test</h2>
+<p>We test first. So the first thing we do is create a test to see if we have a viable component called <strong>DataMaven</strong>. Create a file called <strong>DataMaven.test.js</strong> in your <strong>__tests__</strong> folder. Add the following content:</p>
+<pre><code class="lang-javascript">describe('DataMaven Suite', function() {
+
+    it('renders DataMaven component without crashing', () =&gt; {
+        const div = document.createElement('div')<span class="hljs-comment">;</span>
+        ReactDOM.render(<span class="hljs-name">&lt;DataMaven</span> /&gt;, div)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>Run your tests. If necessary, press <strong>p</strong> and type in <strong>DataMaven</strong>. This ensures that only our new test suite runs.</p>
+<pre><code>FAIL  src/__tests__/DataMaven.test.js
+ ● DataMaven Suite › renders DataMaven component <span class="hljs-keyword">without</span> crashing
+
+   ReferenceError: ReactDOM is <span class="hljs-keyword">not</span> defined
+
+     <span class="hljs-keyword">at</span> Object.<span class="hljs-keyword">it</span> (src/__tests__/DataMaven.test.js:<span class="hljs-number">10</span>:<span class="hljs-number">9</span>)
+     <span class="hljs-keyword">at</span> <span class="hljs-built_in">process</span>.<span class="hljs-title">_tick</span>Callback (internal/<span class="hljs-built_in">process</span>/next_tick.js:<span class="hljs-number">109</span>:<span class="hljs-number">7</span>)
+
+ DataMaven Suite
+   ✕ renders DataMaven component <span class="hljs-keyword">without</span> crashing (<span class="hljs-number">1</span>ms)
+
+Test Suites: <span class="hljs-number">1</span> failed, <span class="hljs-number">1</span> total
+Tests:       <span class="hljs-number">1</span> failed, <span class="hljs-number">1</span> total
+Snapshots:   <span class="hljs-number">0</span> total
+Time:        <span class="hljs-number">0.088</span>s, estimated <span class="hljs-number">1</span>s
+Ran all test suites matching <span class="hljs-string">"DataMaven"</span>.
+
+Watch Usage
+› Press <span class="hljs-keyword">a</span> <span class="hljs-built_in">to</span> run all tests.
+› Press o <span class="hljs-built_in">to</span> only run tests related <span class="hljs-built_in">to</span> changed <span class="hljs-built_in">files</span>.
+› Press p <span class="hljs-built_in">to</span> <span class="hljs-built_in">filter</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">a</span> filename regex pattern.
+› Press q <span class="hljs-built_in">to</span> quit watch mode.
+› Press Enter <span class="hljs-built_in">to</span> trigger <span class="hljs-keyword">a</span> test run.
+</code></pre><p>This test tells us that <strong>ReactDOM</strong> is not defined. We don&#39;t think, we don&#39;t plan. This is test driven development. The test is in charge. We just do what the test tells us to do. In particular, we fix that problem with <strong>ReactDOM</strong>.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+
+describe(<span class="hljs-string">'DataMaven Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+
+    it(<span class="hljs-string">'renders DataMaven component without crashing'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+        ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">DataMaven</span> /&gt;</span>, div);
+    });
+
+});</span>
+</code></pre>
+<p>Now we have a new error: <strong>ReferenceError: React is not defined</strong>. Don&#39;t think. Don&#39;t plan. This is Test Driven Development. The test is in charge. Do what it tells you to do! Fix the problem by importing the needed library. (I&#39;ll leave that step up to you.)</p>
+<p>Once that problem is fixed, find the next one, and fix it. And so on, until the test passes. We don&#39;t add any code to the test unless the test &quot;tells&quot; us to add it.</p>
+<a class="anchor" id="create-datamaven"></a>
+<h2>Create DataMaven</h2>
+<p>At some point, during your tests, you will be asked to create <strong>DataMaven</strong>. Here is how to get started:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> <span class="hljs-type">React</span>, {<span class="hljs-type">Component</span>} from <span class="hljs-symbol">'reac</span>t';
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DataMaven</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+
+    render() {
+        <span class="hljs-keyword">return</span> (
+            &lt;div&gt;&lt;/div&gt;
+        );
+    }
+}
+
+export <span class="hljs-keyword">default</span> <span class="hljs-type">DataMaven</span>;
+</code></pre>
+<p>This is, in effect the simplest possible React component.</p>
+<p>Create your file in the <strong>components</strong> directory and make sure your tests are passing.</p>
+<a class="anchor" id="add-the-router-to-datamaven"></a>
+<h2>Add the Router to DataMaven</h2>
+<p>At this stage we are ready to begin moving our routes to <strong>DataMaven</strong>. Let&#39;s begin by seeing if <strong>DataMaven</strong> has the first necessary piece, which is the <strong>Router</strong>:</p>
+<pre><code class="lang-javascript">it('renders and displays a Router', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;DataMaven</span>  /&gt;)<span class="hljs-comment">;</span>
+    elfDebug.getAll(<span class="hljs-name">wrapper</span>)<span class="hljs-comment">;</span>
+    var router = wrapper.find('Router')<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">router</span>.length).toEqual(<span class="hljs-number">1</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>This produces the following results:</p>
+<pre><code>FAIL  src/__tests__/DataMaven.test.js
+ ● DataMaven Suite › renders <span class="hljs-keyword">and</span> displays <span class="hljs-keyword">the</span> default <span class="hljs-keyword">last</span> name
+
+   ReferenceError: shallow is <span class="hljs-keyword">not</span> defined
+
+     <span class="hljs-keyword">at</span> Object.<span class="hljs-keyword">it</span> (src/__tests__/DataMaven.test.js:<span class="hljs-number">22</span>:<span class="hljs-number">25</span>)
+     <span class="hljs-keyword">at</span> <span class="hljs-built_in">process</span>.<span class="hljs-title">_tick</span>Callback (internal/<span class="hljs-built_in">process</span>/next_tick.js:<span class="hljs-number">109</span>:<span class="hljs-number">7</span>)
+
+ DataMaven Suite
+   ✓ renders DataMaven component <span class="hljs-keyword">without</span> crashing (<span class="hljs-number">2</span>ms)
+   ✕ renders <span class="hljs-keyword">and</span> displays <span class="hljs-keyword">the</span> default <span class="hljs-keyword">last</span> name (<span class="hljs-number">1</span>ms)
+
+Test Suites: <span class="hljs-number">1</span> failed, <span class="hljs-number">1</span> total
+Tests:       <span class="hljs-number">1</span> failed, <span class="hljs-number">1</span> passed, <span class="hljs-number">2</span> total
+Snapshots:   <span class="hljs-number">0</span> total
+Time:        <span class="hljs-number">0.105</span>s, estimated <span class="hljs-number">1</span>s
+Ran all test suites matching <span class="hljs-string">"DataMaven"</span>.
+
+Watch Usage
+› Press <span class="hljs-keyword">a</span> <span class="hljs-built_in">to</span> run all tests.
+› Press o <span class="hljs-built_in">to</span> only run tests related <span class="hljs-built_in">to</span> changed <span class="hljs-built_in">files</span>.
+› Press p <span class="hljs-built_in">to</span> <span class="hljs-built_in">filter</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">a</span> filename regex pattern.
+› Press q <span class="hljs-built_in">to</span> quit watch mode.
+› Press Enter <span class="hljs-built_in">to</span> trigger <span class="hljs-keyword">a</span> test run.
+</code></pre><p>You can see that we have a problem on line 22 of <strong>DataMaven.test.js</strong> because <strong>shallow is not defined</strong>. I&#39;ll leave it up to you to cut and paste the code from one of your other tests to fix this problem.</p>
+<p>The next problem is that <strong>elfDebug</strong> is not defined. The comment at the top of the <a href="https://gist.github.com/charliecalvert/51daef341699943b07c9570c3ad2cbab">ElfDebugEnzyme gist</a> explains how to create an instance of this object:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> ElfDebugEnzyme <span class="hljs-keyword">from</span> <span class="hljs-string">'../ElfDebugEnzyme'</span>;
+<span class="hljs-keyword">const</span> elfDebug = <span class="hljs-keyword">new</span> ElfDebugEnzyme(<span class="hljs-literal">true</span>, <span class="hljs-string">'DataMaven.test.js'</span>);
+</code></pre>
+<p><strong>ElfDebugEnzyme</strong> tells us the current state of our component:</p>
+<pre><code>console<span class="hljs-selector-class">.log</span> src/ElfDebugEnzyme<span class="hljs-selector-class">.js</span>:<span class="hljs-number">30</span>
+  DataMaven<span class="hljs-selector-class">.test</span><span class="hljs-selector-class">.js</span>:
+  &lt;<span class="hljs-selector-tag">div</span> /&gt;
+</code></pre><p>As we can see, the component contains a DIV, but not Router. So we change the component so that it contains a router:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> <span class="hljs-type">React</span>, {<span class="hljs-type">Component</span>} from <span class="hljs-symbol">'reac</span>t';
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DataMaven</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+
+    render() {
+        <span class="hljs-keyword">return</span> (
+            &lt;<span class="hljs-type">Router</span> /&gt;
+        );
+    }
+}
+
+export <span class="hljs-keyword">default</span> <span class="hljs-type">DataMaven</span>;
+</code></pre>
+<p>Unfortunately, this doesn&#39;t work out so well. In fact, after this change. Both our tests fail. We seem to be moving backwards. The core error is this one: <strong>ReferenceError: Router is not defined</strong>. Clearly we are missing an import statement.</p>
+<p>Looking in <strong>ElfMenu</strong>, we find the missing piece:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { BrowserRouter <span class="hljs-keyword">as</span> Router } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span>;
+</code></pre>
+<p>Now our test is very close to passing. Its sole complaint is that the component creates a <strong>BrowserRouter</strong> not a <strong>Router</strong>. Since <strong>Router</strong> is just an alias for <strong>BrowserRouter</strong>, we can feel comfortable in updating our test to support it:</p>
+<pre><code class="lang-javascript">it('renders and displays a BrowserRouter', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;DataMaven</span>  /&gt;)<span class="hljs-comment">;</span>
+    elfDebug.getAll(<span class="hljs-name">wrapper</span>)<span class="hljs-comment">;</span>
+    var router = wrapper.find('BrowserRouter')<span class="hljs-comment">; &lt;&lt; == HERE ==&lt;</span>
+    expect(<span class="hljs-name">router</span>.length).toEqual(<span class="hljs-number">1</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<a class="anchor" id="enzyme-find"></a>
+<h2>Understanding the Enzyme find</h2>
+<p>The test we just created has one bit of code we have not used before in this context. We call <strong>find</strong> on the wrapper:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var router</span> = wrapper.find(<span class="hljs-string">'BrowserRouter'</span>);
+</code></pre>
+<p>You may recognize this code from our <strong>ElfDebugEnzyme</strong> file:</p>
+<pre><code class="lang-javascript">getElement(wrapper, element, showMe) {
+    <span class="hljs-built_in">if</span> (<span class="hljs-keyword">this</span>.showData || showMe) {
+        <span class="hljs-keyword">const</span> paragraphData = wrapper.<span class="hljs-built_in">find</span>(element).debug();
+        <span class="hljs-keyword">this</span>.<span class="hljs-built_in">display</span>(paragraphData);
+    }
+}
+</code></pre>
+<p>As you can see, it also calls <strong>find</strong>. Calls <strong>find</strong> return an Ezyme wrapper around all the elments in the component that match name on which your search. For instance, if you had 5 DIVs in the HTML produced by your component, then <strong>find</strong> would return these divs if you searched for them. But our debug tool calls the <strong>debug</strong> method on the element that Enzyme finds. The code in our test just returns the wrapper.</p>
+<p>If you looked at the wrapper returned from this call you would see that it contains a length property. Lets use <strong>console.log</strong> to output that wrapper, so that we can take a look:</p>
+<pre><code class="lang-javascript">it('renders and displays a BrowserRouter', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;DataMaven</span>  /&gt;)<span class="hljs-comment">;</span>
+    elfDebug.getAll(<span class="hljs-name">wrapper</span>)<span class="hljs-comment">;</span>
+    var router = wrapper.find('BrowserRouter')<span class="hljs-comment">;</span>
+    console.log(<span class="hljs-name">router</span>)<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">router</span>.length).toEqual(<span class="hljs-number">1</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>As you can see, our code now outputs the value returned from our call to find. It produces, in part, the following output:</p>
+<pre><code class="lang-javascript"><span class="hljs-attr">nodes:</span>
+  <span class="hljs-string">[</span> <span class="hljs-string">{</span> <span class="hljs-string">'$$typeof'</span><span class="hljs-string">:</span> <span class="hljs-string">Symbol(react.element),</span>
+<span class="hljs-attr">      type:</span> <span class="hljs-string">[Object],</span>
+<span class="hljs-attr">      key:</span> <span class="hljs-literal">null</span><span class="hljs-string">,</span>
+<span class="hljs-attr">      ref:</span> <span class="hljs-literal">null</span><span class="hljs-string">,</span>
+<span class="hljs-attr">      props:</span> <span class="hljs-string">{},</span>
+<span class="hljs-attr">      _owner:</span> <span class="hljs-literal">null</span><span class="hljs-string">,</span>
+<span class="hljs-attr">      _store:</span> <span class="hljs-string">{}</span> <span class="hljs-string">}</span> <span class="hljs-string">],</span>
+<span class="hljs-attr"> length:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span>            <span class="hljs-string">&lt;==</span> <span class="hljs-string">HERE</span> <span class="hljs-string">==&lt;</span>
+<span class="hljs-attr"> options:</span> <span class="hljs-string">{},</span>
+<span class="hljs-attr"> complexSelector:</span>
+  <span class="hljs-string">ComplexSelector</span> <span class="hljs-string">{...}</span>
+</code></pre>
+<p>If Enzyme found no matches for our search string, <strong>length</strong> would be set to 0. If, as in the case described above, it found 5 elements of the type we searched for, then <strong>length</strong> would be set to 5. In our case, we want to find one, and only one, <strong>BrowserRouter</strong> element. So we test to be sure that is true:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> router = wrapper.find(<span class="hljs-string">'BrowserRouter'</span>);
+<span class="hljs-built_in">console</span>.log(router);
+expect(router.length).toEqual(<span class="hljs-number">1</span>);  <span class="xml"><span class="hljs-tag">&lt;&lt; == <span class="hljs-string">HERE</span> ==</span></span>
+</code></pre>
+<p>Now that you understand the test, delete or comment out the call to <strong>console.log</strong>. It creates a lot of output, and we don&#39;t really need to see it anymore now that it has served its purpose.</p>
+<a class="anchor" id="test-for-routes"></a>
+<h2>Test for Routes</h2>
+<p>Our next step is test for the <strong>Route</strong> object:</p>
+<pre><code class="lang-javascript">it('renders and displays at least one Route', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;DataMaven</span>  /&gt;)<span class="hljs-comment">;</span>
+    elfDebug.getAll(<span class="hljs-name">wrapper</span>)<span class="hljs-comment">;</span>
+    var router = wrapper.find('Route')<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">router</span>.length).toBeGreaterThan(<span class="hljs-number">0</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>This test checks to see if you have at least one <strong>Route</strong> element in the <strong>render</strong> method for <strong>DataMaven</strong>. Note that we use the <strong>toBeGreaterThan</strong> method to test that we have at least one instance of this object.</p>
+<p>What we are trying to do here is move this code from <strong>ElfMenu</strong> to <strong>DataMaven</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">exact</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{Address}/</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/edit'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{AddressChanger}/</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/small'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{SmallNumbers}/</span>&gt;</span>
+</code></pre>
+<p>In particular, we need to wrap the code inside the <strong>Router</strong> object:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">Router</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">exact</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{Address}/</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/edit'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{AddressChanger}/</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/small'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{SmallNumbers}/</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">Router</span>&gt;</span>
+</code></pre>
+<p>You can&#39;t use the exact code I show above, and there are a number of other changes you have to make to <strong>DataMaven</strong> before the test will pass, but I&#39;ll leave those relatively mundane tasks up to you to perform. One step you should take in the process, is to not only change the imports in <strong>DataMaven</strong>, but also remove the now unused <strong>imports</strong> from <strong>ElfMenu</strong>.</p>
+<p>When you are done, you might at least temporarily turn off <strong>ElfDebugEnzyme</strong> and admire your work:</p>
+<pre><code class="lang-bash">PASS  src/__tests__/DataMaven.test.js
+ DataMaven Suite
+   ✓ renders DataMaven component without crashing (9ms)
+   ✓ renders and displays a BrowserRouter (2ms)
+   ✓ renders and displays at least one Route (1ms)
+
+<span class="hljs-keyword">Test </span>Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+<span class="hljs-keyword">Time:</span>        0.225s, estimated 1s
+Ran all test suites matching "DataMaven".
+
+Watch Usage
+› Press a to run all tests.
+› Press o to only run tests related to changed files.
+› Press p to filter by a filename regex pattern.
+› Press q to quit watch mode.
+› Press Enter to trigger a test run.
+</code></pre>
+<p>To help prove to ourselves that we have properly updated <strong>ElfMenu</strong>, lets create or update an <strong>ElfMenu.test.js</strong> so that it contains at least the following two tests:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> DataRouter <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/DataMaven'</span>;
+<span class="hljs-keyword">import</span> ElfMenu <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/ElfMenu'</span>;
+<span class="hljs-keyword">import</span> {shallow} <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+
+describe(<span class="hljs-string">'ElfMenu Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+
+    beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">const</span> localStorageMock = (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-keyword">let</span> storage = {};
+            <span class="hljs-keyword">return</span> {
+                <span class="hljs-attr">getItem</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key</span>) </span>{
+                    <span class="hljs-keyword">return</span> storage[key];
+                },
+                <span class="hljs-attr">setItem</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key, value</span>) </span>{
+                    storage[key] = value.toString();
+                },
+                <span class="hljs-attr">clear</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                    storage = {};
+                }
+            };
+        })();
+        <span class="hljs-built_in">Object</span>.defineProperty(global, <span class="hljs-string">'localStorage'</span>, {<span class="hljs-attr">value</span>: localStorageMock});
+    });
+
+    it(<span class="hljs-string">'renders the ElfMenu component without crashing'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+        ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">DataRouter</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">ElfMenu</span> /&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">DataRouter</span>&gt;</span></span>, div);
+    });
+
+    it(<span class="hljs-string">'Shows there is no BrowserRouter in ElfMenu'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> wrapper = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ElfMenu</span> /&gt;</span>);
+        const router = wrapper.find('BrowserRouter');
+        expect(router.length).toEqual(0);
+    });
+
+});</span>
+</code></pre>
+<p>The key point here is that it proves we have removed the <strong>BrowserRourter</strong> (alias Router) object from <strong>ElfMenu.js</strong>. This kind of test is a bit odd, in that it proves a negative. But by asking you to get this test to pass, I&#39;m helping you ensure that you properly refactor your code.</p>
+<p>Be sure the <strong>ElfMenu</strong> test actually runs by typing <strong>p</strong> and then <strong>ElfMenu</strong>, or by typing &#39;a&#39; and running all your tests.</p>
+<a class="anchor" id="remove-addresschanger"></a>
+<h2>Remove AddressChanger</h2>
+<p>At this stage, we are finally ready to excise my ill-conceived <strong>AddressChanger</strong>. In its simplest form, this involves simply replacing our code that loads <strong>AddressChanger</strong> with code that loads <strong>AddressEdit</strong>.</p>
+<p>To get started, make sure you are focused on testing <strong>DataMaven.test.js</strong>. Type <strong>p</strong> followed by <strong>DataMaven</strong>. That should ensure that you test only the <strong>DataMaven.test.js</strong> file.</p>
+<p>In order to excise <strong>AddressChanger</strong>, we need to change this line in <strong>DataMaven</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/edit'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{AddressChanger}/</span>&gt;</span>
+</code></pre>
+<p>The new line, in our naive first try, looks like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/edit'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{AddressEdit}/</span>&gt;</span>
+</code></pre>
+<p>That procduces this error: <strong>ReferenceError: AddressEdit is not defined</strong>. That is easy enough to fix by making a single simple change in our <strong>import</strong> section: instead of importing <strong>AddressChanger</strong>, we should import <strong>AddressEdit</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> AddressEdit <span class="hljs-keyword">from</span> <span class="hljs-string">'./AddressEdit'</span>;
+</code></pre>
+<p>Interestingly, our tests now fail by passing. In other words, all our tests pass, but if we go to the app itself in the browser, we can see that it errors out with the following: <strong>Failed context type: The context <code>router</code> is marked as required in <code>Link</code>, but its value is <code>undefined</code></strong>. We also see this stack dump in the Chrome Developer tools debugger:</p>
+<pre><code class="lang-javascript">    <span class="hljs-keyword">in</span> Link (at ElfMenu<span class="hljs-selector-class">.js</span>:<span class="hljs-number">17</span>)
+    <span class="hljs-keyword">in</span> <span class="hljs-selector-tag">li</span> (at ElfMenu<span class="hljs-selector-class">.js</span>:<span class="hljs-number">17</span>)
+    <span class="hljs-keyword">in</span> <span class="hljs-selector-tag">ul</span> (at ElfMenu<span class="hljs-selector-class">.js</span>:<span class="hljs-number">16</span>)
+    <span class="hljs-keyword">in</span> <span class="hljs-selector-tag">div</span> (at ElfMenu<span class="hljs-selector-class">.js</span>:<span class="hljs-number">15</span>)
+    <span class="hljs-keyword">in</span> <span class="hljs-selector-tag">div</span> (at ElfMenu<span class="hljs-selector-class">.js</span>:<span class="hljs-number">14</span>)
+    <span class="hljs-keyword">in</span> ElfMenu (at index<span class="hljs-selector-class">.js</span>:<span class="hljs-number">9</span>)
+    <span class="hljs-keyword">in</span> <span class="hljs-selector-tag">div</span> (at index<span class="hljs-selector-class">.js</span>:<span class="hljs-number">7</span>)
+</code></pre>
+<p>As we can see, the ultimate source of the problem is <strong>index.js</strong>, line 7.</p>
+<AddressEdit
+                    address={this.state.address}
+                    onAddressChange={this.onAddressChange}
+                    onNameChange={this.onNameChange}
+                />
+
+
+</div></body></html>
