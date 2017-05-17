@@ -5,8 +5,10 @@
 <li><a href="#create-mocks-folder">Create Mocks Folder</a></li>
 <li><a href="#mock-data">Mock Data</a></li>
 <li><a href="#mock-fetch">Mock fetch</a></li>
+<li><a href="#using-mocks-in-tests">Using Mocks in Tests</a></li>
 <li><a href="#dataloader">DataLoader</a></li>
 <li><a href="#elf-local-storage">Elf Local Storage</a></li>
+<li><a href="#load-local-data">Load Local Data</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-address-mock"></a>
 <h1>React Address Mock</h1>
 <ul>
@@ -170,6 +172,12 @@ whatwgFetch.fetch = fetch;
     that.setState(<span class="hljs-function"><span class="hljs-params">foo</span> =&gt;</span> (json));
 })
 </code></pre>
+<a class="anchor" id="using-mocks-in-tests"></a>
+<h2>Using Mocks in Tests</h2>
+<p>At the top of your address.test.js file, do this:</p>
+<ul>
+<li>jest.mock(&#39;whatwg-fetch&#39;);</li>
+</ul>
 <a class="anchor" id="dataloader"></a>
 <h2>DataLoader</h2>
 <p>In the <strong>constructor</strong> for <strong>Address</strong> we have the following code. Its responsibility is to be sure that <strong>localStorage</strong> contains at least 100 records representing the addresses we placed in <strong>address-list.json</strong>.</p>
@@ -201,6 +209,7 @@ dataLoader.loadAddresses(<span class="hljs-function"><span class="hljs-keyword">
 <span class="hljs-keyword">import</span> Logger <span class="hljs-keyword">from</span> <span class="hljs-string">'../assets/elf-logger'</span>;
 <span class="hljs-keyword">const</span> logger = <span class="hljs-keyword">new</span> Logger(<span class="hljs-string">'data-loader'</span>, <span class="hljs-string">'yellow'</span>, <span class="hljs-string">'green'</span>, <span class="hljs-string">'18px'</span>);
 <span class="hljs-keyword">import</span> {saveByIndex} <span class="hljs-keyword">from</span> <span class="hljs-string">'../assets/elf-local-storage'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'whatwg-fetch'</span>;
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DataLoader</span> </span>{
 
@@ -216,7 +225,9 @@ dataLoader.loadAddresses(<span class="hljs-function"><span class="hljs-keyword">
 
     setLocalStorage(addresses) {
         logger.log(<span class="hljs-string">'SET LOCAL'</span>, addresses);
+        <span class="hljs-comment">//localStorage.setItem('elven-store', 'set');</span>
         localStorage.setItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">0</span>], <span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">1</span>]);
+        <span class="hljs-comment">//localStorage.setItem('elven-count', addresses.length);</span>
         localStorage.setItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">2</span>], addresses.length);
         addresses.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">address, index</span>) </span>{
             saveByIndex(address, index);
@@ -292,6 +303,28 @@ dataLoader.loadAddresses(<span class="hljs-function"><span class="hljs-keyword">
 }
 
 <span class="hljs-keyword">export</span> {saveByIndex, getByIndex, removeElfKeys, clearLocalStorage};
+</code></pre>
+<a class="anchor" id="load-local-data"></a>
+<h2>Load Local Data</h2>
+<p>In <strong>onAddressChange</strong> load data from the localStore:</p>
+<pre><code class="lang-javascript">onAddressChange(event) {
+    detailLogger.log(<span class="hljs-string">'onAddressChange called with'</span>, event.target.id);
+    <span class="hljs-keyword">if</span> (event.target.id.startsWith(<span class="hljs-string">'dec'</span>)) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.addressIndex &gt; <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">this</span>.addressIndex -= <span class="hljs-number">1</span>;
+        }
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.addressIndex &lt; <span class="hljs-keyword">this</span>.addressCount) {
+            <span class="hljs-keyword">this</span>.addressIndex += <span class="hljs-number">1</span>;
+        }
+    }
+    detailLogger.log(<span class="hljs-string">'addressIndex'</span>, <span class="hljs-keyword">this</span>.addressIndex);
+    const address = getByIndex(<span class="hljs-keyword">this</span>.addressIndex);
+
+    <span class="hljs-keyword">this</span>.setState({
+        address: address
+    });
+};
 </code></pre>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
