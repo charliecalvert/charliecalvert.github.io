@@ -5,7 +5,9 @@
 <li><a href="#add-the-router-to-datamaven">Add the Router to DataMaven</a></li>
 <li><a href="#enzyme-find">Understanding the Enzyme find</a></li>
 <li><a href="#test-for-routes">Test for Routes</a></li>
-<li><a href="#remove-addresschanger">Remove AddressChanger</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-address-data-maven"></a>
+<li><a href="#remove-addresschanger">Remove AddressChanger</a></li>
+<li><a href="#datamaven-and-andressedit">DataMaven and AndressEdit</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-address-data-maven"></a>
 <h1>React Address Data Maven</h1>
 <p>We are going to add a new component called <strong>DataMaven</strong> so that we can refactor and get rid of <strong>AddressChanger</strong>.</p>
 <p>The <strong>Routes</strong> from the <strong>ElfMenu</strong> will move to this component. The display of the menu will stay in <strong>ElfMenu</strong>:</p>
@@ -321,11 +323,84 @@ describe(<span class="hljs-string">'ElfMenu Suite'</span>, <span class="hljs-fun
     <span class="hljs-keyword">in</span> <span class="hljs-selector-tag">div</span> (at index<span class="hljs-selector-class">.js</span>:<span class="hljs-number">7</span>)
 </code></pre>
 <p>As we can see, the ultimate source of the problem is <strong>index.js</strong>, line 7.</p>
-<AddressEdit
-                    address={this.state.address}
-                    onAddressChange={this.onAddressChange}
-                    onNameChange={this.onNameChange}
-                />
+<p>Here is the <strong>render</strong> method <strong>index.js</strong>:</p>
+<pre><code class="lang-javascript">ReactDOM.render(
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">ElfMenu</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>,
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
+);
+</code></pre>
+<p>Our problem is that <strong>ElfMenu</strong> now contains code that needs to appear inside a <strong>Router</strong> object. We have moved the <strong>Router</strong> object to <strong>DataMaven</strong>. This means that we need to move <strong>ElfMenu</strong> into <strong>DataMaven</strong>. While we are at it, we might as well move <strong>ElfHeader</strong> there as well.</p>
+<p>Here are two tests to place in <strong>DataMaven.test.js</strong>. They help convince us that our DataMaven component includes both the header and the menu:</p>
+<pre><code class="lang-javascript">it('renders and displays the ElfHeader', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;DataMaven</span>  /&gt;)<span class="hljs-comment">;</span>
+    elfDebug.getAll(<span class="hljs-name">wrapper</span>, false)<span class="hljs-comment">;</span>
+    var router = wrapper.find('ElfHeader')<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">router</span>.length).toEqual(<span class="hljs-number">1</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
 
+it('renders and displays the ElfMenu', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;DataMaven</span>  /&gt;)<span class="hljs-comment">;</span>
+    elfDebug.getAll(<span class="hljs-name">wrapper</span>, false)<span class="hljs-comment">;</span>
+    var router = wrapper.find('ElfMenu')<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">router</span>.length).toEqual(<span class="hljs-number">1</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>The objects in the <strong>DataMaven</strong> render method should appear in the following order:</p>
+<ul>
+<li>Router</li>
+<li>DIV</li>
+<li>ElfHeader</li>
+<li>ElfMenu</li>
+<li>And three or more Routes</li>
+</ul>
+<p>Our render method in <strong>index.js</strong> is very simple:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> DataMaven <span class="hljs-keyword">from</span> <span class="hljs-string">"./components/DataMaven"</span>;
 
+ReactDOM.render(
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">DataMaven</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>,
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
+);
+</code></pre>
+<a class="anchor" id="datamaven-and-andressedit"></a>
+<h2>DataMaven and AndressEdit</h2>
+<p>Don&#39;t cut and paste yet. Instead, copy the following from <strong>Address.js</strong>:</p>
+<ul>
+<li>The Constructor</li>
+<li>onAddressChange</li>
+<li>onNameChange</li>
+</ul>
+<p>You can delete <strong>onNameChange</strong> from <strong>Address</strong>.</p>
+<p>We now need to instantiate <strong>AddressEdit</strong> which means we need to pass props to it. This is not easy. The syntax, which I find very cumbersome, looks like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/edit'</span> <span class="hljs-attr">render</span>=<span class="hljs-string">{(props)</span> =&gt;</span> (
+    <span class="hljs-tag">&lt;<span class="hljs-name">AddressEdit</span> {<span class="hljs-attr">...props</span>}
+         <span class="hljs-attr">address</span>=<span class="hljs-string">{this.state.address}</span>
+         <span class="hljs-attr">onAddressChange</span>=<span class="hljs-string">{this.onAddressChange}</span>
+         <span class="hljs-attr">onNameChange</span>=<span class="hljs-string">{this.onNameChange}</span>
+    /&gt;</span>
+)}/&gt;
+</code></pre>
+<p>We are declaring an arrow function for the render method. It is passed props, which are properties from <strong>react-router-dom</strong>. We use the spread operator on these props, and then pass in our own props.</p>
+<p>At this point your program should be working and all your tests should be passing.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>I&#39;ll be grading <strong>React Address Mock</strong> and <strong>React Address DataMaven</strong> assignments at the same time from the same codebase. You will get two grades, but I will be looking at one copy of <strong>CongressAddress</strong> when I grade them. I don&#39;t want to have to get two versions of <strong>CongressAddress</strong> going. Therefore, I will start a single version of the program, run the tests, and expect to be able to grade both assignments based on the code from the same commit. Two assignments, one version of <strong>CongressAddress</strong>:</p>
+<ul>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/ReactAddressMock.html">React Address Mock</a></li>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/ReactAddressDataMaven.html">React Address DataMaven</a></li>
+</ul>
+<p>Once you have a version of <strong>CongressAddress</strong> that contains code fulfilling the requirements for both assignments, then you should push, branch and tag:</p>
+<pre><code>git add .
+git commit -m <span class="hljs-string">"Code for React Address Mock and React Address DataMaven"</span>
+git push
+git branch week07-DataMavenMock
+git tag -<span class="hljs-selector-tag">a</span> v7<span class="hljs-selector-class">.X</span><span class="hljs-selector-class">.X</span> -m <span class="hljs-string">"Code for React Address Mock and React Address DataMaven"</span>
+git push origin v7<span class="hljs-selector-class">.X</span><span class="hljs-selector-class">.X</span>
+</code></pre><p>Of course, the X.X bit would contain your idea of the appropriate numbering scheme. For instance: <strong>v7.0.0</strong>.</p>
 </div></body></html>
