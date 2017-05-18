@@ -4,7 +4,13 @@
 <li><a href="#title">Title</a></li>
 <li><a href="#writing-gist-lister">Writing Gist Lister</a></li>
 <li><a href="#test-for-a-ul">Test for a UL</a></li>
-<li><a href="#query-the-list">Query the List</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="gist-lister"></a>
+<li><a href="#query-the-list">Query the List</a></li>
+<li><a href="#jasmine">Jasmine</a></li>
+<li><a href="#loggers">Loggers</a></li>
+<li><a href="#server-side-tests">Server Side Tests</a></li>
+<li><a href="#client-side-test">Client Side Test</a></li>
+<li><a href="#client-side-implementation">Client Side Implementation</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="gist-lister"></a>
 <h1>Gist Lister</h1>
 <p>Create a Component that can list gists.</p>
 <p>This component might also be used to delete and display the content of gists.</p>
@@ -101,8 +107,7 @@ Watch Usage
 <h2>Query the List</h2>
 <p>Lets swtich to the server side for a second.</p>
 <p>Create a file called <strong>gists.js</strong>. Rename <strong>api.js</strong> to <strong>users.js</strong>.</p>
-<pre><code class="lang-javascript">me.listGists(
-   ).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">{data}</span>) </span>{
+<pre><code class="lang-javascript">me.listGists().then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">{data}</span>) </span>{
        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'USER PROMISE'</span>, data);
        <span class="hljs-keyword">const</span> results = data.map(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> ( {Return <span class="hljs-built_in">Object</span> <span class="hljs-keyword">with</span> <span class="hljs-number">4</span> props} );
        response.status(<span class="hljs-number">200</span>).send({
@@ -112,6 +117,207 @@ Watch Usage
    }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'USER Promise Rejected'</span>, err);
        response.status(<span class="hljs-number">500</span>).send({<span class="hljs-string">'result'</span>: err});
-   });
+   })
+ });
 </code></pre>
+<a class="anchor" id="jasmine"></a>
+<h2>Jasmine</h2>
+<pre><code class="lang-javascript">npm install --<span class="hljs-built_in">save</span>-<span class="hljs-built_in">dev</span> supertest
+npm install --<span class="hljs-built_in">save</span>-<span class="hljs-built_in">dev</span> jasmine
+npm install --<span class="hljs-built_in">save</span>-<span class="hljs-built_in">dev</span> jasmine-spec-reporter
+</code></pre>
+<p>Here it is:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Jasmine = <span class="hljs-keyword">require</span>(<span class="hljs-string">'jasmine'</span>);
+<span class="hljs-keyword">var</span> SpecReporter = <span class="hljs-keyword">require</span>(<span class="hljs-string">'jasmine-spec-reporter'</span>).SpecReporter;
+<span class="hljs-keyword">var</span> noop = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{};
+
+<span class="hljs-keyword">var</span> jrunner = <span class="hljs-keyword">new</span> Jasmine();
+jrunner.configureDefaultReporter({
+    <span class="hljs-keyword">print</span>: noop
+}); <span class="hljs-comment">// remove default reporter logs</span>
+jasmine.getEnv().addReporter(<span class="hljs-keyword">new</span> SpecReporter({  <span class="hljs-comment">// add jasmine-spec-reporter</span>
+    spec: {
+        displayPending: <span class="hljs-keyword">true</span>
+    }
+})); <span class="hljs-comment">// add jasmine-spec-reporter</span>
+jrunner.loadConfigFile(); <span class="hljs-comment">// load jasmine.json configuration</span>
+jrunner.execute();
+</code></pre>
+<p>And put this in <strong>spec/support/jasmine.json</strong>:</p>
+<pre><code class="lang-javascript">{
+  <span class="hljs-attr">"spec_dir"</span>: <span class="hljs-string">"spec"</span>,
+  <span class="hljs-attr">"spec_files"</span>: [
+    <span class="hljs-string">"test-basic.js"</span>,
+    <span class="hljs-string">"test-results.js"</span>
+  ]
+}
+</code></pre>
+<p>The test:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 10/7/15.
+ */</span>
+
+<span class="hljs-keyword">var</span> request = <span class="hljs-built_in">require</span>(<span class="hljs-string">'supertest'</span>);
+<span class="hljs-keyword">var</span> app = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../app'</span>);
+
+describe(<span class="hljs-string">'Elvenware Simple Plain Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">
+    'use strict'</span>;
+
+    it(<span class="hljs-string">'expects true to be true'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">true</span>);
+    });
+
+    it(<span class="hljs-string">'get the foo route'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">done</span>) </span>{
+        request(app)
+            .get(<span class="hljs-string">'/foo'</span>)
+            .expect(<span class="hljs-number">200</span>)
+            .expect(<span class="hljs-string">'Content-Type'</span>, /json/)
+            .end(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, res</span>) </span>{
+                <span class="hljs-keyword">if</span> (err) {
+                    <span class="hljs-keyword">throw</span> err;
+                }
+                done();
+            });
+    });
+
+});
+</code></pre>
+<p>Then run it:</p>
+<pre><code>$ <span class="hljs-keyword">node</span> <span class="hljs-title">jasmine-runner</span>.js
+notoken
+<span class="hljs-keyword">Spec</span> <span class="hljs-literal">started</span>
+
+  Elvenware Simple Plain Suite
+    ✓ expects <span class="hljs-literal">true</span> to be <span class="hljs-literal">true</span>
+GET /foo <span class="hljs-number">200</span> <span class="hljs-number">7.146</span> <span class="hljs-keyword">ms</span> <span class="hljs-title">- 52</span>
+    ✓ get the foo route
+
+Executed <span class="hljs-number">2</span> of <span class="hljs-number">2</span> specs SUCCESS <span class="hljs-keyword">in</span> <span class="hljs-number">0.04</span> sec.
+</code></pre><a class="anchor" id="loggers"></a>
+<h2>Loggers</h2>
+<p>Many of us have been using <strong>console.log</strong> heavily in our routes. Now that we are running tests, we need to get more control over the amount of information we are sending to the console.</p>
+<p>Copy the <strong>elf-logger</strong> over from the client and put it in the <strong>routes</strong> directory. It is set up to handle ES6, switch it to use <strong>require</strong> by changing the way it exports the <strong>ElfLogger</strong>. Instead of <strong>export default</strong>, write this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">module</span>.<span class="hljs-keyword">exports</span>=ElfLogger;
+</code></pre>
+<p>You will probably need to end up inserting the logger in all our test files, and in each of the files in the <strong>routes</strong> directory. When setting up the Environment variable to use, use the name of the file itself as well as path to it:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">const Logger</span> = require(<span class="hljs-string">'../elf-logger'</span>);
+<span class="hljs-attribute">var logger</span> = new Logger(<span class="hljs-string">'gitapi-gists'</span>);
+</code></pre>
+<p>Then, before you run the test, set the environment variable:</p>
+<pre><code><span class="hljs-keyword">export</span> REACT_APP_ELF_LOGGER=<span class="hljs-string">'gitapi-gists'</span>
+nodemon jasmine-runner.js
+</code></pre><p>In fact, we should put the test statement in our <strong>package.json</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"scripts"</span>: {
+  <span class="hljs-string">"test-karma"</span>: <span class="hljs-string">"karma start"</span>,
+  <span class="hljs-string">"test"</span>: <span class="hljs-string">"nodemon jasmine-runner.js"</span>,
+  <span class="hljs-string">"start"</span>: <span class="hljs-string">"nodemon ./bin/www"</span>
+},
+</code></pre>
+<p>I believe this also works on Linux, but not on Windows:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"scripts"</span>: {
+  <span class="hljs-string">"test-karma"</span>: <span class="hljs-string">"karma start"</span>,
+  <span class="hljs-string">"test"</span>: <span class="hljs-type">REACT_APP_ELF_LOGGER</span>=<span class="hljs-symbol">'gitapt</span>-gists' <span class="hljs-string">"nodemon jasmine-runner.js"</span>,
+  <span class="hljs-string">"start"</span>: <span class="hljs-string">"nodemon ./bin/www"</span>
+},
+</code></pre>
+<a class="anchor" id="server-side-tests"></a>
+<h2>Server Side Tests</h2>
+<p>In <strong>test-gists.js</strong>:</p>
+<pre><code class="lang-javascript">
+it('gets the basic gists list', function(<span class="hljs-name">done</span>) {
+    request(<span class="hljs-name">app</span>)
+        .get('/gitapi/gists/get-basic-list')
+        .expect(<span class="hljs-number">200</span>)
+        .expect('Content-Type', /json/)
+        .end(<span class="hljs-name">function</span>(<span class="hljs-name">err</span>, res) {
+            if (<span class="hljs-name">err</span>) {
+                throw err<span class="hljs-comment">;</span>
+            }
+            done()<span class="hljs-comment">;</span>
+        })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+it('checks the gist response', function(<span class="hljs-name">done</span>) {
+    request(<span class="hljs-name">app</span>)
+        .get('/gitapi/gists/get-basic-list')
+        .expect(<span class="hljs-number">200</span>)
+        .expect('Content-Type', /json/)
+        .expect(<span class="hljs-name">function</span>(<span class="hljs-name">response</span>) {
+            logger.log(<span class="hljs-name">response</span>.body)<span class="hljs-comment">;</span>
+            expect(<span class="hljs-name">typeof</span> response.body.count).toBe('number')<span class="hljs-comment">;</span>
+            expect(<span class="hljs-name">typeof</span> response.body.result).toBe('object')<span class="hljs-comment">;</span>
+        })
+        .end(<span class="hljs-name">function</span>(<span class="hljs-name">err</span>, res) {
+            if (<span class="hljs-name">err</span>) {
+                throw err<span class="hljs-comment">;</span>
+            }
+            done()<span class="hljs-comment">;</span>
+        })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+it('checks the gist response', function(<span class="hljs-name">done</span>) {
+    request(<span class="hljs-name">app</span>)
+        .get('/gitapi/gists/get-basic-list')
+        .expect(<span class="hljs-number">200</span>)
+        .expect('Content-Type', /json/)
+        .expect(<span class="hljs-name">function</span>(<span class="hljs-name">response</span>) {
+            logger.log(<span class="hljs-name">response</span>.body.result[<span class="hljs-number">0</span>])<span class="hljs-comment">;</span>
+            const gist = response.body.result[<span class="hljs-number">0</span>]<span class="hljs-comment">;</span>
+            expect(<span class="hljs-name">gist</span>.html_url).toBeDefined()<span class="hljs-comment">;</span>
+            expect(<span class="hljs-name">gist</span>.id).toBeDefined()<span class="hljs-comment">;</span>
+            expect(<span class="hljs-name">gist</span>.description).toBeDefined()<span class="hljs-comment">;</span>
+            expect(<span class="hljs-name">gist</span>.git_pull_url).toBeDefined()<span class="hljs-comment">;</span>
+        })
+        .end(<span class="hljs-name">function</span>(<span class="hljs-name">err</span>, res) {
+            if (<span class="hljs-name">err</span>) {
+                throw err<span class="hljs-comment">;</span>
+            }
+            done()<span class="hljs-comment">;</span>
+        })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<a class="anchor" id="client-side-test"></a>
+<h2>Client Side Test</h2>
+<p>More mock data for the <strong>mock-data.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">case</span> '/gitapi/gists/get-basic-list':
+    <span class="hljs-keyword">return</span> {
+        result: [
+            {
+                html_url: <span class="hljs-symbol">'https</span>:<span class="hljs-comment">//gist.github.com/a023c7db77926ff58d35087821e12020',</span>
+                id: <span class="hljs-symbol">'a023c7db77926ff58d35087821e1202</span>0',
+                git_pull_url: <span class="hljs-symbol">'https</span>:<span class="hljs-comment">//gist.github.com/a023c7db77926ff58d35087821e12020.git',</span>
+                description: <span class="hljs-symbol">'Simple</span> <span class="hljs-type">React</span> <span class="hljs-type">Component</span>'
+            },
+            {
+                html_url: <span class="hljs-symbol">'https</span>:<span class="hljs-comment">//gist.github.com/17f8ec886c1ae22f66501fc3cbe760ac',</span>
+                id: <span class="hljs-symbol">'17f8ec886c1ae22f66501fc3cbe760a</span>c',
+                git_pull_url: <span class="hljs-symbol">'https</span>:<span class="hljs-comment">//gist.github.com/17f8ec886c1ae22f66501fc3cbe760ac.git',</span>
+                description: <span class="hljs-symbol">'React</span> <span class="hljs-type">Npm</span> <span class="hljs-type">Install</span>'
+            }
+        ]
+    };
+</code></pre>
+<p>Write  a test.</p>
+<a class="anchor" id="client-side-implementation"></a>
+<h2>Client Side Implementation</h2>
+<p>Add a menu item:</p>
+<pre><code class="lang-html">&lt;li&gt;<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">'/get-gist-list'</span>&gt;</span>GetGist List<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span></span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></span>
+</code></pre>
+<p>In DataMaven, set up some dummy state:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">this</span>.state = {
+  <span class="hljs-comment">// Stuff here</span>
+  gistLister: <span class="hljs-symbol">'Fill</span> <span class="hljs-keyword">this</span> in <span class="hljs-keyword">with</span> an appropriate <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">and</span> <span class="hljs-title">dummy</span> <span class="hljs-title">data</span>'</span>
+}
+</code></pre>
+<p>In DataMaven, create a method called <strong>fetchGistList</strong>. Don&#39;t forget to bind it to this!</p>
+<p>Write code in render that passes the data on to the <strong>GistLister</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/get-gist-list'</span>
+   <span class="hljs-attr">render</span>=<span class="hljs-string">{(props)</span> =&gt;</span> (...)}
+/&gt;
+</code></pre>
+<p>In GistLister, display the data.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Push, branch, tag.</p>
 </div></body></html>
