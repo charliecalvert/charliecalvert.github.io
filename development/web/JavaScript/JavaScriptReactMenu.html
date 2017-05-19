@@ -1,7 +1,9 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>JavaScriptReactMenu</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>JavaScriptReactMenu</h1><p>Welcome to JavaScriptReactMenu</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#router-install">Install React Router</a></li>
-<li><a href="#style-the-menu">Style the Menu</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#theory">Theory</a></li>
+<li><a href="#style-the-menu">Style the Menu</a></li>
+<li><a href="#testing">Testing</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>Create Menus in a React Program.</p>
 <a class="anchor" id="router-install"></a>
@@ -11,6 +13,21 @@
 <p>The first step is to install the library we will use to help us accomplish our goals:</p>
 <pre><code class="lang-bash">npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save react-router-dom</span>
 </code></pre>
+<a class="anchor" id="theory"></a>
+<h2>Theory</h2>
+<p>If you go to the address bar in the browser and type the following, it <em>will</em> take you to the <strong>AddressEdit</strong> view:</p>
+<ul>
+<li><a href="http://localhost:3000/edit">http://localhost:3000/edit</a></li>
+</ul>
+<p>The idea is this: rather than use explicit calls to navigate through the features of our application, we are using URLs. Thus, the list item you quote near the end of your question does take you to your edit view.</p>
+<p>To make all this happen, react-router-dom has to do a significant amount of hand waving. It does not, however, want you to have to understand exactly how it achieves its goal. Instead, it creates a declarative syntax. Here we declare what we want our menu to say, and what link (URL) should be associated with it:</p>
+<pre><code class="lang-html"> &lt;li&gt;<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">"/edit"</span>&gt;</span>AdressEdit<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span></span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></span>
+</code></pre>
+<p>Here we state exactly which component should be loaded when the link is called:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">"/edit"</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{AddressChanger}/</span>&gt;</span>
+</code></pre>
+<p>This may seem odd at first, but it is common paradigm in the web development world. For instance, Angular has a similar syntax for a similar system.</p>
+<p>One of the advantages can be that that the URL can serve as a means of saving the history of where the user has been in case we want to move backwards in time and revisit pages the user has already visited. But that is a more advanced issue.</p>
 <a class="anchor" id="style-the-menu"></a>
 <h2>Style the Menu</h2>
 <p>It&#39;s nice to style the menu. Here is a naive implementation good for simple menus or testing:</p>
@@ -43,4 +60,144 @@
 </code></pre>
 <p>Since we are linking our code into a very targeted component, it is unlikely that there will be another UL or LI in that file. As a result, we should change only the unordered list that contains our menu.</p>
 <p>W3Schools has a nice <a href="https://www.w3schools.com/css/css_navbar.asp">write up</a> on all this.</p>
-</div></body></html>
+<a class="anchor" id="testing"></a>
+<h2>Testing</h2>
+<p>Here is how to to use mount and test the &quot;real&quot; button click.</p>
+<p>Suppose you have component that looks something like this:</p>
+<pre><code class="lang-javascript">import React, {Component} from 'react';
+import { Route, BrowserRouter } from 'react-router-dom';
+// BUNCH MORE IMPORTS
+
+class DataMaven extends Component {
+  constructor() {
+    super();        
+  }
+
+  render() {
+    return (
+      <span class="hljs-tag">&lt;<span class="hljs-name">BrowserRouter</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span>/&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">exact</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{GetUserInfo}</span> /&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/get-foo'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{GetFoo}/</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/get-gist'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{GetGist}/</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/get-gist-list'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{GistLister}/</span>&gt;</span>
+
+          <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/get-numbers'</span>
+            <span class="hljs-attr">render</span>=<span class="hljs-string">{(props)</span> =&gt;</span> (
+               <span class="hljs-tag">&lt;<span class="hljs-name">SmallNumbers</span> {<span class="hljs-attr">...props</span>} <span class="hljs-attr">numbers</span>=<span class="hljs-string">{numbersInit}/</span>&gt;</span>
+            )}
+          /&gt;
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">BrowserRouter</span>&gt;</span>   
+    );
+  }
+}
+
+export default DataMaven;
+</code></pre>
+<p>Take the BrowserRouter/Router out of DataMaven.</p>
+<pre><code class="lang-javascript">render() {
+  return (
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span>/&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">exact</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{GetUserInfo}</span> /&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/get-foo'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{GetFoo}/</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/get-gist'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{GetGist}/</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/get-gist-list'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{GistLister}/</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/get-numbers'</span>
+        <span class="hljs-attr">render</span>=<span class="hljs-string">{(props)</span> =&gt;</span> (
+           <span class="hljs-tag">&lt;<span class="hljs-name">SmallNumbers</span> {<span class="hljs-attr">...props</span>} <span class="hljs-attr">numbers</span>=<span class="hljs-string">{numbersInit}/</span>&gt;</span>
+        )}
+      /&gt;
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  );
+}
+</code></pre>
+<p>Put it in your main component, which is usually called <strong>index.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> DataMaven <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/DataMaven'</span>;
+<span class="hljs-keyword">import</span> { BrowserRouter <span class="hljs-keyword">as</span> Router } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span>;
+
+ReactDOM.render(
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Router</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">DataMaven</span>/&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">Router</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>,
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
+);
+</code></pre>
+<p>Now write a test that uses the special <strong>MemoryRouter</strong> designed for this specific purpose. Here, for instance, is a test in <strong>SmallNumbers.test.js</strong>:</p>
+<pre><code class="lang-javascript">fit('renders with DataMaven the SmallNumbers state.eight', () =&gt; {
+    const wrapper = mount(
+        <span class="hljs-name">&lt;MemoryRouter</span> initialEntries={['/get-numbers']}&gt;
+            &lt;DataMaven /&gt;
+        &lt;/MemoryRouter&gt;
+    )<span class="hljs-comment">;</span>
+    elfDebug.getAll(<span class="hljs-name">wrapper</span>)<span class="hljs-comment">;</span>
+    const eightSign = &lt;p className='App-intro'&gt;state.eight: <span class="hljs-number">0</span>&lt;/p&gt;<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">eightSign</span>)).toEqual(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>The point here is that <strong>MemoryRouter</strong> has a property called <strong>initialEntries</strong> that can be used to specify the path you want to use in your test. The code above is therefore the equivalent of selecting <strong>SmallNumbers</strong> from the menu.</p>
+<p>And here is the output from <strong>elfDebugEnzyme</strong>. In other words, this is the HTML generated by the <strong>DataMaven</strong> component:</p>
+<pre><code><span class="hljs-type">SmallNumbers</span>.test.js:
+    &lt;<span class="hljs-type">MemoryRouter</span> initialEntries={<span class="hljs-meta">{...}</span>}&gt;
+      &lt;<span class="hljs-type">Router</span> history={<span class="hljs-meta">{...}</span>}&gt;
+        &lt;<span class="hljs-type">DataMaven</span>&gt;
+          &lt;<span class="hljs-keyword">div</span>&gt;
+            &lt;<span class="hljs-type">ElfHeader</span>&gt;
+               // I'M <span class="hljs-type">OMITTING</span> <span class="hljs-type">THE</span> <span class="hljs-type">CONTENTS</span> <span class="hljs-type">OF</span> <span class="hljs-type">ELFHEADER</span>
+            &lt;/<span class="hljs-type">ElfHeader</span>&gt;
+            &lt;<span class="hljs-type">Route</span> exact={<span class="hljs-literal">true</span>} path=<span class="hljs-string">"/"</span> render={[<span class="hljs-type">Function</span>]} /&gt;
+            &lt;<span class="hljs-type">Route</span> path=<span class="hljs-string">"/get-foo"</span> component={[<span class="hljs-type">Function</span>]} /&gt;
+            &lt;<span class="hljs-type">Route</span> path=<span class="hljs-string">"/get-gist"</span> render={[<span class="hljs-type">Function</span>]} /&gt;
+            &lt;<span class="hljs-type">Route</span> path=<span class="hljs-string">"/get-gist-list"</span> render={[<span class="hljs-type">Function</span>]} /&gt;
+            &lt;<span class="hljs-type">Route</span> path=<span class="hljs-string">"/get-numbers"</span> render={[<span class="hljs-type">Function</span>]}&gt;
+              // <span class="hljs-type">THIS</span> <span class="hljs-type">IS</span> <span class="hljs-type">WHERE</span> I <span class="hljs-type">SMALL</span> <span class="hljs-type">NUMBERS</span> <span class="hljs-type">IS</span> <span class="hljs-type">EXPANDED</span>
+              &lt;<span class="hljs-type">SmallNumbers</span> match={<span class="hljs-meta">{...}</span>} location={<span class="hljs-meta">{...}</span>} history={<span class="hljs-meta">{...}</span>} staticContext={[undefined]} numbers={<span class="hljs-meta">{...}</span>}&gt;
+                &lt;<span class="hljs-keyword">div</span> className=<span class="hljs-string">"App"</span>&gt;
+                  &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;
+                    state.nine:
+                    <span class="hljs-number">0</span>
+                  &lt;/p&gt;
+                  &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;
+                    state.eight:
+                    <span class="hljs-number">0</span>
+                  &lt;/p&gt;
+                  &lt;button className=<span class="hljs-string">"getNine"</span> onClick={[<span class="hljs-type">Function</span>]}&gt;
+                    <span class="hljs-type">Get</span> <span class="hljs-type">Nine</span>
+                  &lt;/button&gt;
+                  &lt;button className=<span class="hljs-string">"getEight"</span> onClick={[<span class="hljs-type">Function</span>]}&gt;
+                    <span class="hljs-type">Get</span> <span class="hljs-type">Eight</span>
+                  &lt;/button&gt;
+                &lt;/<span class="hljs-keyword">div</span>&gt;
+              &lt;/<span class="hljs-type">SmallNumbers</span>&gt;
+            &lt;/<span class="hljs-type">Route</span>&gt;
+          &lt;/<span class="hljs-keyword">div</span>&gt;
+        &lt;/<span class="hljs-type">DataMaven</span>&gt;
+      &lt;/<span class="hljs-type">Router</span>&gt;
+    &lt;/<span class="hljs-type">MemoryRouter</span>&gt;
+</code></pre><p>Notice that only the <strong>SmallNumbers</strong> component is expanded, is active. This is why the test shown above passes:</p>
+<pre><code>PASS  src/__tests__/SmallNumbers.test.js
+ My Small Numbers Tests
+   ✓ renders <span class="hljs-keyword">with</span> DataMaven <span class="hljs-keyword">the</span> SmallNumbers state.<span class="hljs-literal">eight</span> (<span class="hljs-number">12</span>ms)
+   ○ renders initial <span class="hljs-built_in">value</span> <span class="hljs-keyword">of</span> <span class="hljs-keyword">paragraph</span> <span class="hljs-keyword">with</span> state.<span class="hljs-literal">eight</span>
+   ○ renders initial <span class="hljs-built_in">value</span> <span class="hljs-keyword">of</span> <span class="hljs-keyword">paragraph</span> <span class="hljs-keyword">with</span> state.<span class="hljs-literal">nine</span>
+
+Test Suites: <span class="hljs-number">1</span> passed, <span class="hljs-number">1</span> total
+Tests:       <span class="hljs-number">2</span> skipped, <span class="hljs-number">1</span> passed, <span class="hljs-number">3</span> total
+Snapshots:   <span class="hljs-number">0</span> total
+Time:        <span class="hljs-number">0.199</span>s, estimated <span class="hljs-number">1</span>s
+Ran all test suites matching <span class="hljs-string">"SmallNumbers"</span>.
+
+Watch Usage
+› Press <span class="hljs-keyword">a</span> <span class="hljs-built_in">to</span> run all tests.
+› Press o <span class="hljs-built_in">to</span> only run tests related <span class="hljs-built_in">to</span> changed <span class="hljs-built_in">files</span>.
+› Press p <span class="hljs-built_in">to</span> <span class="hljs-built_in">filter</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">a</span> filename regex pattern.
+› Press q <span class="hljs-built_in">to</span> quit watch mode.
+› Press Enter <span class="hljs-built_in">to</span> trigger <span class="hljs-keyword">a</span> test run.
+</code></pre></div></body></html>
