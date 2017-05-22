@@ -377,6 +377,30 @@ it('renders and displays the ElfMenu', () =&gt; {
 <li>ElfMenu</li>
 <li>And three or more Routes</li>
 </ul>
+<a class="anchor" id="testing-elfmenu"></a>
+<h2>Testing ElfMenu</h2>
+<p>React Router DOM expects components to be created in a certain order. For instance, you need to put your React Router DOM <strong>Link</strong> components inside a <strong>Router</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">Router</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">'/'</span>&gt;</span>Address Show<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">Router</span>&gt;</span>
+</code></pre>
+<p>Our new code for <strong>ElfMenu</strong>, however, no longer includes a <strong>Router</strong> object. That means that tests like this will fail because there is no <strong>Router</strong> enclosing the <strong>Link</strong> objects:</p>
+<pre><code class="lang-javascript">it('renders the ElfMenu component without crashing', () =&gt; {
+    const div = document.createElement('div')<span class="hljs-comment">;</span>
+    ReactDOM.render(<span class="hljs-name">&lt;ElfMenu</span> /&gt;, div)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>This results in errors like this:</p>
+<pre><code>TypeError: Cannot read property <span class="hljs-string">'history'</span> <span class="hljs-keyword">of</span> <span class="hljs-literal">undefined</span>
+Warning: Failed context type: The context `<span class="javascript">router</span>` <span class="hljs-keyword">is</span> marked <span class="hljs-keyword">as</span> required <span class="hljs-keyword">in</span> `<span class="javascript">Link</span>`, but its value <span class="hljs-keyword">is</span> `<span class="javascript"><span class="hljs-literal">undefined</span></span>`.
+</code></pre><p>The fix is obvious enough once you understand what is wrong. In your test, just wrap your <strong>ElfMenu</strong> in a <strong>Router</strong>:</p>
+<pre><code class="lang-javascript">it(<span class="hljs-string">'renders the ElfMenu component without crashing'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+    ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Router</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">ElfMenu</span> /&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">Router</span>&gt;</span></span>, div);
+});
+</code></pre>
 <a class="anchor" id="datamaven-and-andressedit"></a>
 <h2>DataMaven and AndressEdit</h2>
 <p>Don&#39;t cut and paste yet. Instead, copy the following from <strong>Address.js</strong>:</p>
