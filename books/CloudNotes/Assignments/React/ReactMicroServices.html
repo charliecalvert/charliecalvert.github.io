@@ -1,4 +1,109 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactMicroServices</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactMicroServices</h1><p>Welcome to ReactMicroServices</p><ul><!--TOC_Start--><li><a href="#react-micro-services">React Micro Services</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-micro-services"></a>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactMicroServices</h1><p>Welcome to ReactMicroServices</p><ul><!--TOC_Start--><li><a href="#react-micro-services">React Micro Services</a></li>
+<li><a href="#build-and-deploy">Build and Deploy</a></li>
+<li><a href="#micro-services">Micro Services</a></li>
+<li><a href="#you-rang-">You Rang?</a></li>
+<li><a href="#router-ids">Router IDs</a></li>
+<li><a href="#forwarding-request">Forwarding Request</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-micro-services"></a>
 <h1>React Micro Services</h1>
+<p>We have a principle that we talk about quite a bit:</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Single_responsibility_principle">Single Responsibility Principle</a></li>
+</ul>
+<p>There is another of the <a href="https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)">SOLID principles</a> that we don&#39;t talk about as much:</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Interface_segregation_principle">Interface Segragation Principle</a></li>
+</ul>
+<p>This principle states that we prefer small interfaces over fat interfaces. &quot;Instead of one fat interface, many small interfaces are preferred&quot;.</p>
+<p>To help us abide by the spirit of this principle, we will divide our server code into multiple &quot;microservices&quot;. Instead of one fat server, we will create several small servers. They will talk to one another over HTTP.</p>
+<a class="anchor" id="build-and-deploy"></a>
+<h2>Build and Deploy</h2>
+<p>Before going any further, let&#39;s understand what our application will look like when it is deployed.</p>
+<p>Right now, we are using a trick that allows us to proxy request from the browser to our server. Specifically, we are adding this line to our client side <strong>package.json</strong> file:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"proxy"</span>: <span class="hljs-string">"http://localhost:30026"</span>,
+</code></pre>
+<p>This is meant for us only during development. When we ship, we do two things.</p>
+<ol>
+<li>At the command line we run this command to build our production code:
+a. npm run build
+b. This produces a folder called <strong>build</strong> in the root of our project</li>
+<li>We then copy the contents of this folder into the public directory of our server, or into another express server that we created for this purposes.
+a. Finally, we point our home page route in <strong>routes/index.js</strong> to the <strong>index.html</strong> file created by the npm <strong>build</strong> step.</li>
+</ol>
+<p>Now we can just run our server, browse to the page it creates, and begin playing with our app.</p>
+<a class="anchor" id="micro-services"></a>
+<h2>Micro Services</h2>
+<p>What this means, then, is that the server part of our GitExplorer project is going to be the server for our main programmer. It will be the thing that launches our client side GitExplorer code.</p>
+<p>This means that we want to give it some base functions, and then allow it to delegate responsibility for major tasks to little micro services. In particular, I would like you to have it depend on five micro servers:</p>
+<ul>
+<li>The Qux Server: <strong>/qux</strong><ul>
+<li>Any messages sent to the Qux server are mirrored back to the client</li>
+<li>For instance it would respond to the following:<ul>
+<li>/qux</li>
+<li>/qux/foo</li>
+<li>/qux/bar</li>
+<li>/qux/you-rang</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>The Git User Server: <strong>/git-user</strong></li>
+<li>The Git Gist Server: **/gist/<ul>
+<li>Create Gist</li>
+<li>List Gists</li>
+<li>Delete Gist</li>
+</ul>
+</li>
+<li>The Markdown Server: <strong>/markdown</strong><ul>
+<li>Insert the contents of a gist in a markdown document and return it</li>
+</ul>
+</li>
+<li>The Git Explorer socket server: <strong>/git-socket</strong><ul>
+<li>Send socket IO messages to any registered client whenever your app creates, lists or deletes gists.</li>
+</ul>
+</li>
+</ul>
+<a class="anchor" id="you-rang-"></a>
+<h2>You Rang?</h2>
+<p>All the server should respond to a <strong>/you-rang</strong> query by responding with:</p>
+<ul>
+<li>result: success</li>
+<li>message: i am up and running</li>
+<li>You can include any additional information about the server you think might be of interest</li>
+</ul>
+<p>For instance, you should get responses to these messages from the appropriate server:</p>
+<ul>
+<li>/qux/you-rang</li>
+<li>/git-user/you-rang</li>
+<li>/gist/you-rang</li>
+<li>/markdown/you-rang</li>
+<li>/git-socket/you-rang</li>
+</ul>
+<p>This feature should be available for all five servers when you turn in this assignment.</p>
+<a class="anchor" id="router-ids"></a>
+<h2>Router IDs</h2>
+<p>You&#39;ve seen this before, but as a reminder. Respond to ping of a route by echoing back a portion of the url with request.params.id:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response)</span> </span>{
+    response.send({
+        <span class="hljs-string">'result'</span>: <span class="hljs-string">'success from 30026'</span>,
+        <span class="hljs-string">'path'</span>: request.params.id
+    });
+});
+</code></pre>
+<p>Assuming this is in <strong>index.js</strong> for the <strong>qux</strong> server then it would return <strong>path: foo</strong> if you ran this query: <strong>/qux/foo</strong>.</p>
+<a class="anchor" id="forwarding-request"></a>
+<h2>Forwarding Request</h2>
+<p>Do it like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> requester = <span class="hljs-built_in">require</span>(<span class="hljs-string">'request'</span>);
+
+router.get(<span class="hljs-string">'/bar'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response, next</span>) </span>{
+    requester(<span class="hljs-string">'http://localhost:30026/bar'</span>).pipe(response);
+});
+</code></pre>
+<p>All requests except for <strong>get-foo</strong> should be handled by the micro services.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>All five servers should be build and up and running and callable. Use the npm module <strong>concurrently</strong> to start them all at once.</p>
+<p>I&#39;m expecting the <strong>qux</strong>, <strong>git-user</strong> and <strong>gist</strong> servers to more or less be working. The others are just shells for now.</p>
 </div></body></html>
