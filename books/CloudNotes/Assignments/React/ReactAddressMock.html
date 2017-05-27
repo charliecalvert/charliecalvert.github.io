@@ -182,13 +182,27 @@ whatwgFetch.fetch = fetch;
 <a class="anchor" id="dataloader"></a>
 <h2>DataLoader</h2>
 <p>In the <strong>constructor</strong> for <strong>Address</strong> we have the following code. Its responsibility is to be sure that <strong>localStorage</strong> contains at least 100 records representing the addresses we placed in <strong>address-list.json</strong>.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
-dataLoader.loadAddresses(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">addressCount</span>) </span>{
-    <span class="hljs-keyword">if</span> (!addressCount) {
-        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Cannot get address count in address.js'</span>);
-    }
-    that.addressCount = addressCount;
-});
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> DataLoader <span class="hljs-keyword">from</span> <span class="hljs-string">'./DataLoader'</span>;
+<span class="hljs-keyword">const</span> dataLoader = <span class="hljs-keyword">new</span> DataLoader();
+
+<span class="hljs-comment">// Code ommitted here.</span>
+<span class="hljs-comment">// Then, in the constructor:</span>
+<span class="hljs-keyword">constructor</span>(props) {
+    <span class="hljs-keyword">super</span>(props);
+    logger.log(<span class="hljs-string">'Constructor called'</span>);
+    <span class="hljs-comment">//localStorage.clear();</span>
+
+    <span class="hljs-keyword">this</span>.addressIndex = <span class="hljs-number">0</span>;
+
+    <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+    dataLoader.loadAddresses(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">addressCount</span>) </span>{
+        <span class="hljs-keyword">if</span> (!addressCount) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Cannot get address count in address.js'</span>);
+        }
+        that.addressCount = addressCount;
+    });
+    <span class="hljs-comment">// AND SO ON</span>
+}
 </code></pre>
 <p>This code performs a little trick you have seen before:</p>
 <ul>
