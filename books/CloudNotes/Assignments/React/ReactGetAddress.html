@@ -85,12 +85,16 @@ debug(<span class="hljs-string">'Testing debug'</span>);
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\t'</span> + label, <span class="hljs-string">'"'</span>+ value + comma)
 };
 
-readFile(<span class="hljs-string">'govtrack-address.json'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">text</span>) </span>{
-    debug(text);
-    <span class="hljs-keyword">var</span> json = <span class="hljs-built_in">JSON</span>.parse(text.result);
-    debug(<span class="hljs-string">'\n\nSTRINGIFY\n\n'</span>, <span class="hljs-built_in">JSON</span>.stringify(json));
-    <span class="hljs-keyword">var</span> gitUser = [];
-    <span class="hljs-keyword">const</span> unknown = <span class="hljs-string">'unknown'</span>;
+readFile(<span class="hljs-string">'govtrack-address.json'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">objectReturned</span>) </span>{
+    debug(<span class="hljs-string">'We don\'t get a string back but an: '</span>, <span class="hljs-keyword">typeof</span> objectReturned);
+    debug(<span class="hljs-string">'The object has a property:'</span>, <span class="hljs-built_in">Object</span>.keys(objectReturned));
+    debug(<span class="hljs-string">'The type of the property is:'</span>, <span class="hljs-keyword">typeof</span> objectReturned.result);
+
+    <span class="hljs-keyword">var</span> json = <span class="hljs-built_in">JSON</span>.parse(objectReturned.result);
+    debug(<span class="hljs-string">'We were able to parse the JSON.'</span>);
+    debug(<span class="hljs-string">'Total records returned:'</span>, json.meta.limit);
+    debug(<span class="hljs-string">'First person found'</span>, <span class="hljs-built_in">JSON</span>.stringify(json.objects[<span class="hljs-number">0</span>].person.name));
+
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; json.objects.length; i++) {
         <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'{'</span>);
         writeIt(<span class="hljs-string">'firstName:'</span>, json.objects[i].person.firstname);
@@ -103,8 +107,14 @@ readFile(<span class="hljs-string">'govtrack-address.json'</span>).then(<span cl
     }
     <span class="hljs-comment">//console.log('\n\nSTRINGIFY\n\n', JSON.stringify(gitUser, null, 4));</span>
     debug(<span class="hljs-string">'all done'</span>);
+}).catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(e);
 });
 </code></pre>
+<p>The line that says &quot;We were able to parse the JSON&quot; is valid because <strong>JSON.parse</strong> would blow up if it failed, causing the catch block at the end of code to be triggered. In other words, if we could not parse the JSON, then this line would never be reached:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">debug</span>('We were able to <span class="hljs-built_in">parse</span> the JSON.');
+</code></pre>
+<p>If we did get that far, then the odds are that we could parse the JSON.</p>
 <p>Some example output:</p>
 <pre><code class="lang-javascript">{
 <span class="hljs-symbol">    firstName:</span> <span class="hljs-string">"Lamar"</span>,
