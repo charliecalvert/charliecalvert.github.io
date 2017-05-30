@@ -1,12 +1,19 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>LearnLocalStorage</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>LearnLocalStorage</h1><p>Welcome to LearnLocalStorage</p><ul><!--TOC_Start--><li><a href="#learn-local-storage">Learn Local Storage</a></li>
 <li><a href="#elf-logger">Elf Logger</a></li>
-<li><a href="#simple-object">Simple Object</a></li>
+<li><a href="#simple-object">Elf Local Storage</a></li>
 <li><a href="#create-json">Create JSON File</a></li>
 <li><a href="#load-json">Load JSON</a></li>
+<li><a href="#load-after-mounting">Load After Mounting</a></li>
 <li><a href="#links">Links</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="learn-local-storage"></a>
 <h1>Learn Local Storage</h1>
 <p>Learn about local storage in the browser.</p>
+<ul>
+<li>Insert 100 records with format elfXXXX</li>
+<li>Insert <strong>elven-count</strong></li>
+<li>Insert <strong>elven-store</strong></li>
+<li>Load Data from Local Storage once Component is mounted</li>
+</ul>
 <a class="anchor" id="elf-logger"></a>
 <h2>Elf Logger</h2>
 <p>We need to be able to turn logging on and off as needed. One way to do it is to set it by module. If we set a particular environment variable to the name of a module, then the debug statements for that module will be visible.</p>
@@ -14,55 +21,54 @@
 <p>The source for <strong>ElfLogger</strong> is available as a gist: <a href="http://bit.ly/elf-logger">http://bit.ly/elf-logger</a></p>
 <p>The source for <strong>ElfDebugEnzyme</strong> as a gist: <a href="http://bit.ly/elf-debug-enzyme">http://bit.ly/elf-debug-enzyme</a></p>
 <a class="anchor" id="simple-object"></a>
-<h2>Simple Object</h2>
-<pre><code class="lang-javascript"><span class="hljs-comment">/**
- * Created by Charlie on 5/8/17.
- */</span>
+<h2>Elf Local Storage</h2>
+<p>Save this as <strong>assets/elf-local-storage</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> ELF_TAG = <span class="hljs-string">'elf'</span>;
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">saveToLocalStorageByName</span>(<span class="hljs-params">key, item</span>) </span>{
-    <span class="hljs-keyword">if</span> (!key) {
-        <span class="hljs-keyword">const</span> storageIndex = localStorage.length + <span class="hljs-number">1</span>;
-        key = <span class="hljs-string">'key'</span> + storageIndex;
+<span class="hljs-keyword">const</span> padNumber = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">numberToPad, width, padValue</span>) </span>{
+    padValue = padValue || <span class="hljs-string">'0'</span>;
+    numberToPad += <span class="hljs-string">''</span>;
+    <span class="hljs-keyword">if</span> (numberToPad.length &gt;= width) {
+        <span class="hljs-keyword">return</span> numberToPad;
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(width - numberToPad.length + <span class="hljs-number">1</span>).join(padValue) + numberToPad;
     }
+};
 
-    localStorage.setItem(key, item);
-}
-
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">saveToLocalStorage</span>(<span class="hljs-params">item</span>) </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">saveByIndex</span>(<span class="hljs-params">item, index</span>) </span>{
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> item === <span class="hljs-string">'object'</span>) {
         item = <span class="hljs-built_in">JSON</span>.stringify(item, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
     }
-    <span class="hljs-keyword">const</span> storageIndex = localStorage.length + <span class="hljs-number">1</span>;
-    <span class="hljs-keyword">const</span> key = <span class="hljs-string">'key'</span> + storageIndex;
+    <span class="hljs-keyword">const</span> key = ELF_TAG + padNumber(index, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>);
     localStorage.setItem(key, item);
 }
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLocalStorage</span>(<span class="hljs-params"></span>) </span>{
-    <span class="hljs-keyword">let</span> storage = <span class="hljs-string">''</span>;
-    <span class="hljs-keyword">let</span> key = <span class="hljs-string">''</span>;
-    <span class="hljs-keyword">let</span> storageItem;
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt;= localStorage.length - <span class="hljs-number">1</span>; i++) {
-        key = localStorage.key(i);
-        storageItem = localStorage.getItem(key);
-        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> storageItem === <span class="hljs-string">'object'</span>) {
-            storageItem = <span class="hljs-built_in">JSON</span>.stringify(storageItem, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
-        }
-        <span class="hljs-keyword">if</span> (i === <span class="hljs-number">0</span>) {
-            storage = storageItem;
-        } <span class="hljs-keyword">else</span> {
-            storage = storage + <span class="hljs-string">'\n'</span> + storageItem;
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getByIndex</span>(<span class="hljs-params">index</span>) </span>{
+    <span class="hljs-keyword">const</span> key = ELF_TAG + padNumber(index, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">JSON</span>.parse(localStorage.getItem(key));
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">removeElfKeys</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> localStorage) {
+        <span class="hljs-keyword">if</span> (key.startsWith(ELF_TAG)) {
+            localStorage.removeItem(key);
         }
     }
-    <span class="hljs-keyword">return</span> storage;
 }
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clearLocalStorage</span>(<span class="hljs-params"></span>) </span>{
     localStorage.clear();
 }
 
-<span class="hljs-keyword">export</span> {saveToLocalStorage, saveToLocalStorageByName,
-  getLocalStorage, clearLocalStorage};
+<span class="hljs-keyword">export</span> {saveByIndex, getByIndex, removeElfKeys, clearLocalStorage};
 </code></pre>
+<p>Use it like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { getByIndex } <span class="hljs-keyword">from</span> <span class="hljs-string">'../assets/elf-local-storage'</span>;
+</code></pre>
+<p>Since the above could get out of data. I will try to maintain it here:</p>
+<ul>
+<li><a href="https://gist.github.com/charliecalvert/d8404b826ee22702c501368335624622">Elf Local Storage</a></li>
+</ul>
 <a class="anchor" id="create-json"></a>
 <h2>Create JSON File</h2>
 <p>We want to create a valid JSON file containing an array of address objects that we can use in our program. One approach would to copy your array of addresses from <strong>address-list.js</strong> to <strong>public/address-list.json</strong>. The code you put in the their should pass <a href="https://jsonlint.com/">json-lint</a>.</p>
@@ -124,6 +130,89 @@ console.log(<span class="hljs-built_in">close</span>);
    logger.<span class="hljs-built_in">log</span>(err);
 })
 </code></pre>
+<p>For example:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by Charlie Calvert on 5/10/17.
+ *
+ * Use it like this:
+ *
+ *   import DataLoader from '../assets/DataLoader';
+ *   const dataLoader = new DataLoader();
+ */</span>
+
+<span class="hljs-keyword">import</span> Logger <span class="hljs-keyword">from</span> <span class="hljs-string">'./ElfLogger'</span>;
+<span class="hljs-keyword">const</span> logger = <span class="hljs-keyword">new</span> Logger(<span class="hljs-string">'data-loader'</span>, <span class="hljs-string">'yellow'</span>, <span class="hljs-string">'green'</span>, <span class="hljs-string">'18px'</span>);
+<span class="hljs-keyword">import</span> { saveByIndex } <span class="hljs-keyword">from</span> <span class="hljs-string">'../assets/elf-local-storage'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DataLoader</span> </span>{
+
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.STORE_SET = [<span class="hljs-string">'elven-store'</span>, <span class="hljs-string">'set'</span>, <span class="hljs-string">'elven-count'</span>];
+        <span class="hljs-keyword">this</span>.loadAddresses = <span class="hljs-keyword">this</span>.loadAddresses.bind(<span class="hljs-keyword">this</span>);
+    }
+
+    dataLoaded() {
+        <span class="hljs-keyword">const</span> elfStore = localStorage.getItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">0</span>]);
+        <span class="hljs-keyword">return</span> (elfStore === <span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">1</span>]);
+    }
+
+    setLocalStorage(addresses) {
+        logger.log(<span class="hljs-string">'SET LOCAL'</span>, addresses);
+        localStorage.setItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">0</span>], <span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">1</span>]);
+        localStorage.setItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">2</span>], addresses.length);
+        addresses.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">address, index</span>) </span>{
+            saveByIndex(address, index);
+        });
+        <span class="hljs-keyword">return</span> addresses;
+    }
+
+    loadAddresses(callback) {
+        <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.dataLoaded()) {
+            logger.log(<span class="hljs-string">'Using data from localstore'</span>);
+            callback(localStorage.getItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">2</span>]));
+        } <span class="hljs-keyword">else</span> {
+            logger.log(<span class="hljs-string">'Loading data'</span>);
+            fetch(<span class="hljs-string">'./address-list.json'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+                <span class="hljs-comment">//const addresses = data.json();</span>
+                <span class="hljs-comment">//console.log(addresses);</span>
+                <span class="hljs-keyword">return</span> data.json(); <span class="hljs-comment">//addresses;</span>
+            }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+                logger.log(<span class="hljs-built_in">JSON</span>.stringify(data, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+                <span class="hljs-comment">//console.log(that);</span>
+                that.setLocalStorage(data);
+                callback(data.length);
+            }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+                logger.log(err);
+            });
+        }
+    }
+
+}
+</code></pre>
+<p>Since the above code could get out of data, I will try to maintain it here:</p>
+<ul>
+<li><a href="https://gist.github.com/charliecalvert/d9fc57f29e16de8970b88a3c89b9b410">DataLoader</a></li>
+</ul>
+<a class="anchor" id="load-after-mounting"></a>
+<h2>Load After Mounting</h2>
+<p>We can&#39;t really load properly in the constructor because we have a callback and need to setState after we are done. So do it in <strong>componentDidMount</strong>:</p>
+<pre><code class="lang-javascript">componentDidMount() {
+    logger.log(<span class="hljs-string">'DID MOUNT'</span>);
+    <span class="hljs-keyword">const</span> <span class="hljs-literal">that</span> = <span class="hljs-keyword">this</span>;
+    dataLoader.loadAddresses(<span class="hljs-keyword">function</span>(addressCount) {
+        <span class="hljs-keyword">if</span> (!addressCount) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">'Cannot get address count in address.js'</span>);
+        }
+        <span class="hljs-literal">that</span>.addressCount = addressCount;
+        logger.log(<span class="hljs-string">'LOADED ADDRESS'</span>);
+        <span class="hljs-keyword">const</span> address = getByIndex(<span class="hljs-literal">that</span>.addressIndex);
+        <span class="hljs-literal">that</span>.setState({
+            address: address
+        });
+    });
+}
+</code></pre>
 <a class="anchor" id="links"></a>
 <h2>Links</h2>
 <ul>
@@ -134,8 +223,7 @@ console.log(<span class="hljs-built_in">close</span>);
 <li><a href="https://pouchdb.com/">PouchDB is another IndexedDB front end, like CouchDb</a></li>
 <li><a href="https://gonehybrid.com/how-to-use-pouchdb-sqlite-for-local-storage-in-your-ionic-app/">PouchDb + SqlLite</a></li>
 <li><a href="http://dexie.org/">Dexie is nother front end for IndexedDB</a></li>
-<li><a href="https://github.com/dfahlander/Dexie.js">Dexie on GidHub shows modest popularity</a>
--</li>
+<li><a href="https://github.com/dfahlander/Dexie.js">Dexie on GidHub shows modest popularity</a></li>
 <li><a href="https://github.com/erikolson186/zangodb">ZangoDb is not very popular</a></li>
 </ul>
 </div></body></html>
