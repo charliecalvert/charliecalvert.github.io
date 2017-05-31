@@ -12,7 +12,6 @@
 <li><a href="#step-seven">Step Seven</a></li>
 <li><a href="#all-mongo">All Mongo</a></li>
 <li><a href="#another-query">Another query</a></li>
-<li><a href="#valid-politicians">Valid Politicians</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#additional-notes">Additional Notes</a></li>
 <li><a href="#mongoose-basics-connect">Mongoose Basics Connect</a></li>
@@ -22,8 +21,8 @@
 <h2>Description</h2>
 <p>Mongoose Basics is an ORM for MongoDB.</p>
 <ul>
-<li>Mongoose Slides: <a href="http://bit.ly/elf-mongoose">http://bit.ly/elf-mongoose</a></li>
 <li>MongoDb Slides: <a href="http://bit.ly/elf-mongo">http://bit.ly/elf-mongo</a></li>
+<li>Mongoose Slides: <a href="http://bit.ly/elf-mongoose">http://bit.ly/elf-mongoose</a></li>
 </ul>
 <p><strong>NOTE</strong>: <em>There is an <strong>Angular</strong>, <strong>React</strong> and <strong>jquery</strong> version of this assignment. Make sure you are looking at the right one. This is the <strong>React</strong> assignment, the others are called <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/AngularMongooseBasics.html">AngularMongooseBasics</a> and
 <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/MongooseBasics.html">MongooseBasics</a>.</em></p>
@@ -235,64 +234,14 @@ html
 <p>In <strong>routes/index.js</strong> append all of the following before the module statement:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
 <span class="hljs-keyword">var</span> router = express.Router();
-<span class="hljs-keyword">var</span> politicians = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models/politicians'</span>);
+<span class="hljs-comment">//var politicians = require('../models/politicians');</span>
 <span class="hljs-keyword">var</span> allMongo = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./all-mongo'</span>);
 <span class="hljs-keyword">var</span> connect = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./connect'</span>);
 
 <span class="hljs-comment">/* GET home page. */</span>
 router.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
 <span class="hljs-meta">    'use strict'</span>;
-    res.render(<span class="hljs-string">'index'</span>, {
-        <span class="hljs-attr">title</span>: <span class="hljs-string">'Week09-MongooseBasics'</span>
-    });
-});
-
-<span class="hljs-keyword">var</span> connected = <span class="hljs-literal">false</span>;
-
-router.get(<span class="hljs-string">'/all-data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
-<span class="hljs-meta">    'use strict'</span>;
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'AllData route invoked.'</span>);
-    <span class="hljs-keyword">if</span> (!connect.connected) {
-        connect.doConnection();
-    }
-
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'About to find politicians.'</span>);
-    politicians.find({}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, allData</span>) </span>{
-        <span class="hljs-built_in">console</span>.log(allData.length);
-        <span class="hljs-built_in">console</span>.log(allData[<span class="hljs-number">0</span>]);
-
-        allMongo.writeData(<span class="hljs-string">'politicians.json'</span>, allData);
-
-        response.send({
-            <span class="hljs-attr">result</span>: <span class="hljs-string">'Success'</span>,
-            <span class="hljs-attr">allData</span>: allData
-        });
-    });
-});
-
-router.get(<span class="hljs-string">'/emptyCollection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
-<span class="hljs-meta">    'use strict'</span>;
-    <span class="hljs-keyword">if</span> (!connect.connected) {
-        connect.doConnection();
-    }
-
-    politicians.remove({}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
-        <span class="hljs-keyword">if</span> (err) {
-            response.send({
-                <span class="hljs-attr">result</span>: <span class="hljs-string">'err'</span>,
-                <span class="hljs-attr">err</span>: err
-            });
-        } <span class="hljs-keyword">else</span> {
-            response.send({
-                <span class="hljs-attr">result</span>: <span class="hljs-string">'collection removed'</span>
-            });
-        }
-    });
-});
-
-router.get(<span class="hljs-string">'/insertValidCollection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
-<span class="hljs-meta">    'use strict'</span>;
-    allMongo.readDataAndInsert(response);
+    res.render(<span class="hljs-string">'index'</span>, {<span class="hljs-attr">title</span>: <span class="hljs-string">'CongressServer'</span>});
 });
 
 router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
@@ -309,7 +258,7 @@ router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function">
  * Created by charlie on 6/5/16.
  */</span>
 
-<span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-comment">//var express = require('express');</span>
 <span class="hljs-keyword">var</span> connect = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./connect'</span>);
 <span class="hljs-keyword">var</span> Politicians = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models/politicians'</span>);
 <span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
@@ -321,24 +270,31 @@ router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function">
 
 allMongo.numberOfPoliticians = <span class="hljs-number">0</span>;
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insertScientist</span>(<span class="hljs-params">scientist, response</span>) </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insertPolitician</span>(<span class="hljs-params">politician, response</span>) </span>{
 <span class="hljs-meta">    'use strict'</span>;
     <span class="hljs-keyword">if</span> (!connect.connected) {
         connect.doConnection();
     }
-    <span class="hljs-keyword">var</span> newScientist = <span class="hljs-keyword">new</span> Politicians({
-        <span class="hljs-string">'firstName'</span>: scientist.firstName,
-        <span class="hljs-string">'lastName'</span>: scientist.lastName,
-        <span class="hljs-string">'subject'</span>: scientist.subject,
-        <span class="hljs-string">'subjects'</span>: scientist.subjects,
-        <span class="hljs-string">'comments'</span>: scientist.comments
+    <span class="hljs-keyword">var</span> newPolitician = <span class="hljs-keyword">new</span> Politicians({
+        <span class="hljs-string">'firstName'</span>: politician.firstName,
+        <span class="hljs-string">'lastName'</span>: politician.lastName,
+        <span class="hljs-string">'city'</span>: politician.city,
+        <span class="hljs-string">'state'</span>: politician.state,
+        <span class="hljs-string">'zip'</span>: politician.zip,
+        <span class="hljs-string">'phone'</span>: politician.phone,
+        <span class="hljs-string">'website'</span>: politician.website,
+        <span class="hljs-string">'email'</span>: politician.email,
+        <span class="hljs-string">'contact'</span>: politician.contact
     });
 
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'inserting'</span>, newScientist.lastName);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'inserting'</span>, newPolitician.lastName);
 
-    newScientist.save(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+    newPolitician.save(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(err);
+        }
         totalPoliticiansSaved++;
-        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'saved: '</span>, newScientist.lastName, allMongo.numberOfPoliticians, totalPoliticiansSaved);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'saved: '</span>, newPolitician.lastName, allMongo.numberOfPoliticians, totalPoliticiansSaved);
 
         <span class="hljs-keyword">if</span> (totalPoliticiansSaved === allMongo.numberOfPoliticians) {
             response.send({
@@ -348,6 +304,21 @@ allMongo.numberOfPoliticians = <span class="hljs-number">0</span>;
         }
     });
 }
+
+allMongo.getAllData = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'About to find politicians.'</span>);
+    Politicians.find({}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, allData</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(allData.length);
+        <span class="hljs-built_in">console</span>.log(allData[<span class="hljs-number">0</span>]);
+
+        allMongo.writeData(<span class="hljs-string">'politicians.json'</span>, allData);
+
+        response.send({
+            <span class="hljs-attr">result</span>: <span class="hljs-string">'Success'</span>,
+            <span class="hljs-attr">allData</span>: allData
+        });
+    });
+};
 
 allMongo.writeData = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">fileName, data</span>) </span>{
 <span class="hljs-meta">    'use strict'</span>;
@@ -362,15 +333,57 @@ allMongo.writeData = <span class="hljs-function"><span class="hljs-keyword">func
 
 allMongo.readDataAndInsert = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
 <span class="hljs-meta">    'use strict'</span>;
-    fs.readFile(<span class="hljs-string">'ValidPoliticians.json'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, politiciansText</span>) </span>{
+    fs.readFile(<span class="hljs-string">'public/address-list.json'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, politiciansText</span>) </span>{
         <span class="hljs-keyword">if</span> (err) {
-            <span class="hljs-keyword">throw</span> (err);
+            <span class="hljs-comment">//throw (err);</span>
+            response.status(<span class="hljs-number">404</span>).send({<span class="hljs-string">'result'</span>: err});
+            <span class="hljs-keyword">return</span>;
         }
         politiciansText = <span class="hljs-built_in">JSON</span>.parse(politiciansText);
         totalPoliticiansSaved = <span class="hljs-number">0</span>;
         allMongo.numberOfPoliticians = politiciansText.length;
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; politiciansText.length; i++) {
-            insertScientist(politiciansText[i], response);
+            insertPolitician(politiciansText[i], response);
+        }
+    });
+};
+
+allMongo.empty = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+    Politicians.remove({}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) {
+            response.send({
+                <span class="hljs-attr">result</span>: <span class="hljs-string">'err'</span>,
+                <span class="hljs-attr">err</span>: err
+            });
+        } <span class="hljs-keyword">else</span> {
+            response.send({
+                <span class="hljs-attr">result</span>: <span class="hljs-string">'collection removed'</span>
+            });
+        }
+    });
+};
+
+allMongo.update = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">requestQuery, response</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'All Mongo'</span>, requestQuery._id);
+    Politicians.findOne({
+        <span class="hljs-attr">_id</span>: requestQuery._id
+    }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, doc</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'findone'</span>, err, doc);
+        <span class="hljs-keyword">if</span> (err) {
+            response.status(<span class="hljs-number">404</span>).send({
+                <span class="hljs-attr">result</span>: err
+            });
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">if</span> (doc === <span class="hljs-literal">null</span>) {
+                insertPolitician(requestQuery, response);
+            } <span class="hljs-keyword">else</span> {
+                doc.firstName = requestQuery.firstName;
+                doc.save();
+                response.status(<span class="hljs-number">200</span>).send({
+                    <span class="hljs-attr">result</span>: <span class="hljs-string">'success'</span>,
+                    <span class="hljs-attr">query</span>: requestQuery.body
+                });
+            }
         }
     });
 };
@@ -388,269 +401,7 @@ db.politicians.find()
 db.politicians.find({} , {_id: 0, firstName: 1, lastName: 1})
 </pre>
 
-<a class="anchor" id="valid-politicians"></a>
-<h2>Valid Politicians</h2>
-<p>Save in the root of your project as ValidPoliticians.json</p>
-<pre><code class="lang-javascript">[
-    {
-        <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5577c95032fa23f82013611e"</span>,
-        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Albert"</span>,
-        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Einstein"</span>,
-        <span class="hljs-attr">"subject"</span>: <span class="hljs-string">"Physics"</span>,
-        <span class="hljs-attr">"__v"</span>: <span class="hljs-number">0</span>,
-        <span class="hljs-attr">"comments"</span>: [
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Albert One"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5575a4be8ee728bc0da40c49"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-08T00:00:00.000Z"</span>
-            }
-        ],
-        <span class="hljs-attr">"subjects"</span>: [
-            <span class="hljs-string">"Foobar"</span>,
-            <span class="hljs-string">"Able"</span>,
-            <span class="hljs-string">"Tuna"</span>
-        ]
-    },
-    {
-        <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5577c95032fa23f82013611f"</span>,
-        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Rene"</span>,
-        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Descartes"</span>,
-        <span class="hljs-attr">"subject"</span>: <span class="hljs-string">"Radioactivity"</span>,
-        <span class="hljs-attr">"__v"</span>: <span class="hljs-number">0</span>,
-        <span class="hljs-attr">"comments"</span>: [
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Fred"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5574be8c7c93a1180729f3b5"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            },
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Suzy"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5574bf42d525507c0ca48e21"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            },
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Lunches"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5574bfaed525507c0ca48e22"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            }
-        ],
-        <span class="hljs-attr">"subjects"</span>: [
-            <span class="hljs-string">"Rene"</span>
-        ]
-    },
-    {
-        <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5577c95032fa23f820136121"</span>,
-        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Niels"</span>,
-        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Bohr"</span>,
-        <span class="hljs-attr">"subject"</span>: <span class="hljs-string">"Physics"</span>,
-        <span class="hljs-attr">"__v"</span>: <span class="hljs-number">0</span>,
-        <span class="hljs-attr">"comments"</span>: [
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Niels One"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5575a4af8ee728bc0da40c48"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-08T00:00:00.000Z"</span>
-            }
-        ],
-        <span class="hljs-attr">"subjects"</span>: [
-            <span class="hljs-string">"Math"</span>
-        ]
-    },
-    {
-        <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5577c95032fa23f820136124"</span>,
-        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Thomas"</span>,
-        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Edison"</span>,
-        <span class="hljs-attr">"subject"</span>: <span class="hljs-string">"Radioactivity"</span>,
-        <span class="hljs-attr">"__v"</span>: <span class="hljs-number">0</span>,
-        <span class="hljs-attr">"comments"</span>: [
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Sam"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5574b6dee5c7ed30124b0dca"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            },
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Fred"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5574b6f3e5c7ed30124b0dcb"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            }
-        ],
-        <span class="hljs-attr">"subjects"</span>: [
-            <span class="hljs-string">"asf"</span>
-        ]
-    },
-    {
-        <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5577c95032fa23f820136126"</span>,
-        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Johanes"</span>,
-        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Kepler"</span>,
-        <span class="hljs-attr">"subject"</span>: <span class="hljs-string">"Astronomy"</span>,
-        <span class="hljs-attr">"__v"</span>: <span class="hljs-number">2</span>,
-        <span class="hljs-attr">"comments"</span>: [
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Hello Johannes"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"55746faa82492e4815d893c4"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            },
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Foobar"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"557490926f35aa301a50422a"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            },
-            {
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"55749e924c3a43000acf589d"</span>,
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Fable"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            },
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Qux"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"55749ebd4c3a43000acf589f"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            },
-            {
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"55749f804c3a43000acf58a0"</span>,
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Fingers"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            },
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Sam"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5574b5597d70f4e813d01ec4"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            }
-        ],
-        <span class="hljs-attr">"subjects"</span>: [
-            <span class="hljs-string">"Johan"</span>,
-            <span class="hljs-string">"Able"</span>
-        ]
-    },
-    {
-        <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5577c95032fa23f820136125"</span>,
-        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Isaac"</span>,
-        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Newton"</span>,
-        <span class="hljs-attr">"subject"</span>: <span class="hljs-string">"Astronomy"</span>,
-        <span class="hljs-attr">"__v"</span>: <span class="hljs-number">0</span>,
-        <span class="hljs-attr">"comments"</span>: [
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Fig"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5574bdf631bd81a416bd855f"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            },
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Qux"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5574be373956c08c12f1731c"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            }
-        ],
-        <span class="hljs-attr">"subjects"</span>: [
-            <span class="hljs-string">"Bar"</span>
-        ]
-    },
-    {
-        <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5577c95032fa23f820136122"</span>,
-        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Marie"</span>,
-        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Curie"</span>,
-        <span class="hljs-attr">"subject"</span>: <span class="hljs-string">"Radioactivity"</span>,
-        <span class="hljs-attr">"__v"</span>: <span class="hljs-number">0</span>,
-        <span class="hljs-attr">"comments"</span>: [
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"MarieOne"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5574e4ff748448b40c26a324"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-08T00:00:00.000Z"</span>
-            }
-        ],
-        <span class="hljs-attr">"subjects"</span>: [
-            <span class="hljs-string">"Foo"</span>,
-            <span class="hljs-string">"Bar"</span>,
-            <span class="hljs-string">"Qux"</span>,
-            <span class="hljs-string">"Goober"</span>
-        ]
-    },
-    {
-        <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5577c95032fa23f820136123"</span>,
-        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Maxi"</span>,
-        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Planck"</span>,
-        <span class="hljs-attr">"subject"</span>: <span class="hljs-string">"Radioactivity"</span>,
-        <span class="hljs-attr">"__v"</span>: <span class="hljs-number">0</span>,
-        <span class="hljs-attr">"comments"</span>: [
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Foo"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5574bd333a9db45405200d7b"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            },
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Bar"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5574bd3a3a9db45405200d7c"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            },
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Tom"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5574bd4f3a9db45405200d7d"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            },
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Sue"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5574bd861cc805b81ab0427c"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            }
-        ],
-        <span class="hljs-attr">"subjects"</span>: [
-            <span class="hljs-string">"asdf"</span>,
-            <span class="hljs-string">"Bar"</span>
-        ]
-    },
-    {
-        <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5577c95032fa23f82013611d"</span>,
-        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Carl"</span>,
-        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Sagan"</span>,
-        <span class="hljs-attr">"subject"</span>: <span class="hljs-string">"Radioactivity"</span>,
-        <span class="hljs-attr">"__v"</span>: <span class="hljs-number">1</span>,
-        <span class="hljs-attr">"comments"</span>: [
-            {
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5574a552583c8a0005366cd9"</span>,
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Carlbar"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
-            },
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"Foo"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5577cd7698d1b48420a76be0"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-10T00:00:00.000Z"</span>
-            }
-        ],
-        <span class="hljs-attr">"subjects"</span>: [
-            <span class="hljs-string">"Astronomy"</span>
-        ]
-    },
-    {
-        <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5577c95032fa23f820136120"</span>,
-        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Nikola"</span>,
-        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Tesla"</span>,
-        <span class="hljs-attr">"subject"</span>: <span class="hljs-string">"Radioactivity"</span>,
-        <span class="hljs-attr">"__v"</span>: <span class="hljs-number">0</span>,
-        <span class="hljs-attr">"comments"</span>: [
-            {
-                <span class="hljs-attr">"commentText"</span>: <span class="hljs-string">"One"</span>,
-                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"5574e4eb748448b40c26a323"</span>,
-                <span class="hljs-attr">"date"</span>: <span class="hljs-string">"2015-06-08T00:00:00.000Z"</span>
-            }
-        ],
-        <span class="hljs-attr">"subjects"</span>: [
-            <span class="hljs-string">"Serbia"</span>,
-            <span class="hljs-string">"Electricity"</span>,
-            <span class="hljs-string">"Physics"</span>,
-            <span class="hljs-string">"Blink"</span>
-        ]
-    },
-    {
-        <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"55786da8c446f6fc4a5d423a"</span>,
-        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Gregor"</span>,
-        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Mendel"</span>,
-        <span class="hljs-attr">"subject"</span>: <span class="hljs-string">"Physics"</span>,
-        <span class="hljs-attr">"__v"</span>: <span class="hljs-number">0</span>,
-        <span class="hljs-attr">"comments"</span>: [],
-        <span class="hljs-attr">"subjects"</span>: [
-            <span class="hljs-string">"Genetics"</span>,
-            <span class="hljs-string">"Plants"</span>
-        ]
-    }
-]
-</code></pre>
+
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Push you code to your repository, and when you turn it in tell me the branch and folder where it resides.</p>
