@@ -91,26 +91,26 @@ copy %USERPROFILE%<span class="hljs-tag">\<span class="hljs-name">Git</span></sp
 <li>Create a folder called models at the root of your project</li>
 <li>Put this code in a file called <strong>models/politicians.js</strong>:</li>
 </ul>
-<pre><code class="lang-javascript">
-</code></pre>
-<p>While we are at it, let&#39;s create a more complex schema which we can use once we learn the basics. Put the follow code in a file called <strong>models/politicians.js</strong>.</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
 
-<span class="hljs-keyword">var</span> politiciansSchema = mongoose.Schema({
-    <span class="hljs-string">"firstName"</span>: <span class="hljs-built_in">String</span>,
-    <span class="hljs-string">"lastName"</span>: <span class="hljs-built_in">String</span>,
-    <span class="hljs-string">"subject"</span>: <span class="hljs-built_in">String</span>,
-    <span class="hljs-string">"subjects"</span>: [<span class="hljs-built_in">String</span>],
-    <span class="hljs-string">"comments"</span>: [{ <span class="hljs-attr">commentText</span>: <span class="hljs-built_in">String</span>, <span class="hljs-attr">date</span>: <span class="hljs-built_in">Date</span> }]
+<span class="hljs-keyword">var</span> politicianSchema = mongoose.Schema({
+    <span class="hljs-string">'firstName'</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">'lastName'</span>: <span class="hljs-built_in">String</span>,
 });
 
-<span class="hljs-built_in">module</span>.exports = mongoose.model(<span class="hljs-string">'politicians'</span>, politiciansSchema);
+<span class="hljs-built_in">module</span>.exports = mongoose.model(<span class="hljs-string">'politician'</span>, politicianSchema);
 </code></pre>
-<p>In <strong>routes/index.js</strong> do these two things:</p>
-<pre><code><span class="hljs-attribute">var politicians</span> = require(<span class="hljs-string">'../models/politicians'</span>);
-<span class="hljs-attribute">var presidents</span> = require(<span class="hljs-string">'../models/presidents'</span>);
-<span class="hljs-attribute">var mongoose</span> = require(<span class="hljs-string">'mongoose'</span>);
-</code></pre><p>And then create methods to open your collection:</p>
+<p>Go ahead and fill in the rest of the fields according to the structure for your data. The fields will probably all be of type <strong>String</strong>.</p>
+<p>In <strong>routes/index.js</strong> add these two things to the existing code:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> allMongo = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./all-mongo'</span>);
+<span class="hljs-keyword">var</span> connect = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./connect'</span>);
+
+router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    response.render(request.params.id, {});
+});
+</code></pre>
+<p>Later we will add methods methods to open your collection.</p>
 <p>In <strong>index.js</strong>, make sure that this is the last line in the file:</p>
 <pre><code><span class="hljs-keyword">module</span>.<span class="hljs-keyword">exports</span> = router;
 </code></pre><a class="anchor" id="connecting"></a>
@@ -157,8 +157,11 @@ copy %USERPROFILE%<span class="hljs-tag">\<span class="hljs-name">Git</span></sp
 
     <span class="hljs-attr">doConnection</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">useSimple</span>) </span>{
 <span class="hljs-meta">        'use strict'</span>;
-        <span class="hljs-keyword">var</span> connectType = useSimple || <span class="hljs-literal">true</span>;
-        <span class="hljs-keyword">if</span> (connectType) {
+                <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> useSimple === <span class="hljs-string">'undefined'</span>) {
+                    useSimple = <span class="hljs-literal">true</span>;
+                }            
+
+        <span class="hljs-keyword">if</span> (useSimple) {
             connect.simpleConnect();
         } <span class="hljs-keyword">else</span> {
             connect.mlabConnect();
