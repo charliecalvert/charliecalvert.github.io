@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactReduxBasics</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactReduxBasics</h1><p>Welcome to ReactReduxBasics</p><ul><!--TOC_Start--><li><a href="#react-redux-basics">React Redux Basics</a></li>
+<li><a href="#redux">Redux</a></li>
+<li><a href="#store-state">Store state</a></li>
+<li><a href="#actions">Actions</a></li>
+<li><a href="#the-reducer">The Reducer</a></li>
+<li><a href="#dispatch">Dispatch</a></li>
+<li><a href="#subscribe">Subscribe</a></li>
+<li><a href="#fake-redux">Fake Redux</a></li>
+<li><a href="#local-storage">Local Storage</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-redux-basics"></a>
+<h1>React Redux Basics</h1>
+<p>Install:</p>
+<p>  npm install --save redux react-redux redux-devtools</p>
+<a class="anchor" id="redux"></a>
+<h2>Redux</h2>
+<p>We change state by &quot;dispatching&quot; an action. (You can log, serialize or store actions.)</p>
+<p>A Redux tracks your app&#39;s state. It has the following methods:</p>
+<ul>
+<li>subscribe,</li>
+<li>dispatch,</li>
+<li>getState</li>
+</ul>
+<a class="anchor" id="store-state"></a>
+<h2>Store state</h2>
+<pre><code class="lang-javascript"><span class="hljs-attribute">let store</span> = createStore(spokesman);
+</code></pre>
+<a class="anchor" id="actions"></a>
+<h2>Actions</h2>
+<p>Design some simple actions:</p>
+<pre><code class="lang-javascript"><span class="hljs-built_in">let</span> verify = { <span class="hljs-built_in">type</span>: <span class="hljs-string">'VERIFY'</span> }
+<span class="hljs-built_in">let</span> deny = { <span class="hljs-built_in">type</span>: <span class="hljs-string">'DENY'</span> }
+<span class="hljs-built_in">let</span> noComment = { <span class="hljs-built_in">type</span>: <span class="hljs-string">'NO COMMENT'</span> }
+</code></pre>
+<a class="anchor" id="the-reducer"></a>
+<h2>The Reducer</h2>
+<p>This we will use, so save it as <strong>spokesman.js</strong>:</p>
+<pre><code class="lang-javascript">
+<span class="hljs-keyword">const</span> spokesman = <span class="hljs-function">(<span class="hljs-params">state = { statement: <span class="hljs-string">'No comment'</span> }, action</span>) =&gt;</span> {
+    <span class="hljs-keyword">switch</span> (action.type) {
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'VERIFY'</span>:
+            <span class="hljs-keyword">return</span> { <span class="hljs-attr">statement</span>: <span class="hljs-string">'We stand by it. In fact, we invented it.'</span> };
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'DENY'</span>:
+            <span class="hljs-keyword">return</span> { <span class="hljs-attr">statement</span>: <span class="hljs-string">'We deny everything. We have never heard of it.'</span> };
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'NO COMMENT'</span>:
+            <span class="hljs-keyword">return</span> {<span class="hljs-attr">statement</span>: <span class="hljs-string">'No comment.'</span>};
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">return</span> state;
+    }
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> spokesman;
+</code></pre>
+<a class="anchor" id="dispatch"></a>
+<h2>Dispatch</h2>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">store</span><span class="hljs-selector-class">.dispatch</span>({ <span class="hljs-attribute">type</span>: <span class="hljs-string">'VERIFY'</span> });
+</code></pre>
+<a class="anchor" id="subscribe"></a>
+<h2>Subscribe</h2>
+<p>When the state changes, you can update the UI by monitoring calls to subscribe():</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> {createStore} <span class="hljs-keyword">from</span> <span class="hljs-string">'redux'</span>;
+
+let store = createStore(spokesman);
+
+store.subscribe(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">this</span>.setState(<span class="hljs-function"><span class="hljs-params">(prevState)</span> =&gt;</span> {
+        const storeState = <span class="hljs-keyword">this</span>.props.store.getState();        
+        <span class="hljs-keyword">return</span> {statement: storeState.statement}
+    });
+});
+</code></pre>
+<a class="anchor" id="fake-redux"></a>
+<h2>Fake Redux</h2>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> spokesman <span class="hljs-keyword">from</span> <span class="hljs-string">'./spokesman'</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleRedux</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    <span class="hljs-comment">/*constructor() {
+        super();
+        this.
+    }*/</span>
+    state = spokesman(<span class="hljs-literal">undefined</span>, {});
+
+    dispatch(action) {
+        <span class="hljs-keyword">this</span>.setState( <span class="hljs-function">(<span class="hljs-params">prevState</span>) =&gt;</span> spokesman(prevState, action));
+    }
+
+    verifyStatement = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-keyword">this</span>.dispatch({ <span class="hljs-attr">type</span>: <span class="hljs-string">'VERIFY'</span> });
+    };
+
+    denyEverything = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-keyword">this</span>.dispatch({ <span class="hljs-attr">type</span>: <span class="hljs-string">'DENY'</span> });
+    };
+
+    noComment = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-keyword">this</span>.dispatch({ <span class="hljs-attr">type</span>: <span class="hljs-string">'NO COMMENT'</span> });
+    };
+
+    render() {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Political Science Fake Redux<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>This component does not use redux. It uses something redux-like.<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+                {this.state.statement}
+                <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.verifyStatement}</span>&gt;</span>Verify<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.denyEverything}</span>&gt;</span>Deny<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.noComment}</span>&gt;</span>No Comment<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+        )
+    }
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> SimpleRedux;
+</code></pre>
+<a class="anchor" id="local-storage"></a>
+<h2>Local Storage</h2>
+<p>Redux can write the current state to localStorage.</p>
+</div></body></html>
