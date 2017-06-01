@@ -7,6 +7,8 @@
 <li><a href="#dispatch">Dispatch</a></li>
 <li><a href="#subscribe">Subscribe</a></li>
 <li><a href="#fake-redux">Fake Redux</a></li>
+<li><a href="#set-up-index">Set up Index</a></li>
+<li><a href="#redux-with-props">Redux with props</a></li>
 <li><a href="#local-storage">Local Storage</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-redux-basics"></a>
 <h1>React Redux Basics</h1>
 <p>Install:</p>
@@ -114,6 +116,59 @@ store.subscribe(<span class="hljs-function"><span class="hljs-params">()</span> 
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> SimpleRedux;
 </code></pre>
+<a class="anchor" id="set-up-index"></a>
+<h2>Set up Index</h2>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> spokesman <span class="hljs-keyword">from</span> <span class="hljs-string">'./spokesman'</span>;
+<span class="hljs-keyword">import</span> {Provider} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-redux'</span>;
+<span class="hljs-keyword">import</span> {createStore} <span class="hljs-keyword">from</span> <span class="hljs-string">'redux'</span>;
+
+<span class="hljs-keyword">let</span> store = createStore(spokesman);
+ReactDOM.render(
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">App</span> /&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">FakeRedux</span>/&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+
+    , <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
+</code></pre>
+<a class="anchor" id="redux-with-props"></a>
+<h2>Redux with props</h2>
+<pre><code class="lang-javascript"><span class="hljs-keyword">constructor</span>(props) {
+        <span class="hljs-keyword">super</span>(props);
+        <span class="hljs-keyword">this</span>.state = {
+            <span class="hljs-attr">statement</span>: <span class="hljs-string">'No comment'</span>
+        };
+        <span class="hljs-keyword">this</span>.props.store.subscribe(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+            <span class="hljs-keyword">const</span> storeState = <span class="hljs-keyword">this</span>.props.store.getState();
+            <span class="hljs-keyword">this</span>.setState(<span class="hljs-function">(<span class="hljs-params">prevState</span>) =&gt;</span> {
+                <span class="hljs-keyword">return</span> {<span class="hljs-attr">statement</span>: storeState.statement}
+            });
+        })
+    }
+
+    verifyStatement = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-keyword">this</span>.props.store.dispatch({ <span class="hljs-attr">type</span>: <span class="hljs-string">'VERIFY'</span> });
+    };
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Political Science Props Redux<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>
+    render() {
+            <span class="hljs-keyword">return</span> (
+                <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+
+               <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>This component does not use redux. It uses something redux-like.<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+               {this.state.statement}
+               <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span>
+               <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.verifyStatement}</span>&gt;</span>Verify<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+               <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.denyEverything}</span>&gt;</span>Deny<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+               <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.noComment}</span>&gt;</span>No Comment<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+               <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+        );
+    }
+</code></pre>
+<p>Okay</p>
 <a class="anchor" id="local-storage"></a>
 <h2>Local Storage</h2>
 <p>Redux can write the current state to localStorage.</p>
