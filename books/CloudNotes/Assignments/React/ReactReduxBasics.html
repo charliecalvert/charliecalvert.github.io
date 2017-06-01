@@ -9,6 +9,7 @@
 <li><a href="#fake-redux">Fake Redux</a></li>
 <li><a href="#set-up-index">Set up Index</a></li>
 <li><a href="#redux-with-props">Redux with props</a></li>
+<li><a href="#appnoprops">AppNoProps</a></li>
 <li><a href="#local-storage">Local Storage</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-redux-basics"></a>
 <h1>React Redux Basics</h1>
 <p>Install:</p>
@@ -169,6 +170,34 @@ ReactDOM.render(
     }
 </code></pre>
 <p>Okay</p>
+<a class="anchor" id="appnoprops"></a>
+<h2>AppNoProps</h2>
+<p>We want to create a component that does not get props, but does have access to the Redux data store.</p>
+<p>Import connect:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> {<span class="hljs-built_in">connect</span>} from <span class="hljs-string">'react-redux'</span>;
+</code></pre>
+<p>Remove subscribe from the constructor:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
+    super(props);
+    this.state = {
+        statement: 'No comment'
+    }</span>;</span>
+}
+</code></pre>
+<p>Add this code at the bottom:</p>
+<pre><code class="lang-javascript">const mapStateToProps = (<span class="hljs-keyword">state</span>) =&gt; {
+    return {
+        statement: <span class="hljs-keyword">state</span>.statement
+    }
+};
+
+AppNoProps = connect(mapStateToProps)(AppNoProps);
+</code></pre>
+<p>And now we no longer get dispatch as props passed from <strong>index.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">verifyStatement</span> = <span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">this</span>.props.dispatch({ type: <span class="hljs-string">'VERIFY'</span> });
+};
+</code></pre>
 <a class="anchor" id="local-storage"></a>
 <h2>Local Storage</h2>
 <p>Redux can write the current state to localStorage.</p>
