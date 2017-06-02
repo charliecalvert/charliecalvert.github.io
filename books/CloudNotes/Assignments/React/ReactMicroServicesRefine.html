@@ -1,0 +1,64 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactMicroServicesRefine</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactMicroServicesRefine</h1><p>Welcome to ReactMicroServicesRefine</p><ul><!--TOC_Start--><li><a href="#react-micro-services-refine">React Micro Services Refine</a></li>
+<li><a href="#npm-package">NPM Package</a></li>
+<li><a href="#start-client">Start Client</a></li>
+<li><a href="#micro-services">Micro Services</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-micro-services-refine"></a>
+<h1>React Micro Services Refine</h1>
+<p>The primary goal will be to learn about <a href="https://www.npmjs.com/package/concurrently">concurrently</a></p>
+<a class="anchor" id="npm-package"></a>
+<h2>NPM Package</h2>
+<p>Here is an example package that shows how to launch our existing client and server with concurrently. Place this in the GitExplorer folder. It is expecting both <strong>client</strong> and <strong>server</strong> to be sub-directories.</p>
+<pre><code class="lang-javascript">{
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"lookup-server"</span>,
+  <span class="hljs-attr">"version"</span>: <span class="hljs-string">"0.0.1"</span>,
+  <span class="hljs-attr">"private"</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">"dependencies"</span>: {
+    <span class="hljs-attr">"babel-cli"</span>: <span class="hljs-string">"6.24.0"</span>,
+    <span class="hljs-attr">"babel-core"</span>: <span class="hljs-string">"6.24.0"</span>,
+    <span class="hljs-attr">"express"</span>: <span class="hljs-string">"4.15.3"</span>
+  },
+  <span class="hljs-attr">"scripts"</span>: {
+    <span class="hljs-attr">"start"</span>: <span class="hljs-string">"concurrently 'npm run server' 'npm run client'"</span>,
+    <span class="hljs-attr">"server"</span>: <span class="hljs-string">"babel-node server/bin/www"</span>,
+    <span class="hljs-attr">"client"</span>: <span class="hljs-string">"babel-node start-client.js"</span>,
+    <span class="hljs-attr">"lint"</span>: <span class="hljs-string">"eslint ."</span>
+  },
+  <span class="hljs-attr">"devDependencies"</span>: {
+    <span class="hljs-attr">"babel-eslint"</span>: <span class="hljs-string">"^7.2.1"</span>,
+    <span class="hljs-attr">"concurrently"</span>: <span class="hljs-string">"3.4.0"</span>,
+    <span class="hljs-attr">"eslint"</span>: <span class="hljs-string">"3.19.0"</span>,
+    <span class="hljs-attr">"eslint-config-google"</span>: <span class="hljs-string">"^0.7.1"</span>,
+    <span class="hljs-attr">"eslint-plugin-import"</span>: <span class="hljs-string">"2.3.0"</span>,
+    <span class="hljs-attr">"eslint-plugin-jsx-a11y"</span>: <span class="hljs-string">"5.0.3"</span>,
+    <span class="hljs-attr">"eslint-plugin-react"</span>: <span class="hljs-string">"6.9.0"</span>
+  }
+}
+</code></pre>
+<p>Add a few more items in the scripts section:</p>
+<ul>
+<li>micro-first: start this server just as we start the existing <strong>server</strong> script. That is, look at the scripts, find the one called server, block copy and paste, and convert it to start the first of your micro services. Use the name that seems appropriate. The micro service does not have to be in the <strong>GitExplorer</strong> directory hierarchy. It can be back on the root of your repository.</li>
+<li>micro-second: Start this server just as the one above.</li>
+<li>And etc. For all five servers, or at least enough to get you started.</li>
+<li>micros: Model this one after the <strong>start</strong> script show above. In other words, use it to start all the micro services with a single command.</li>
+<li>Finally, modify the start script to start not only <strong>server</strong> and <strong>client</strong>, but also <strong>micros</strong>.</li>
+</ul>
+<p>Make sure you do not run services on the same port. For instance, my <strong>server</strong> and <strong>micro-second</strong> were both running on port 30026. Therefore I changed server to run on port 30040.</p>
+<a class="anchor" id="start-client"></a>
+<h2>Start Client</h2>
+<p>Save as <strong>start-client.js</strong> in <strong>GitExplorer</strong> root.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> args = [ <span class="hljs-string">'start'</span> ];
+<span class="hljs-keyword">const</span> opts = { <span class="hljs-attr">stdio</span>: <span class="hljs-string">'inherit'</span>, <span class="hljs-attr">cwd</span>: <span class="hljs-string">'client'</span>, <span class="hljs-attr">shell</span>: <span class="hljs-literal">true</span> };
+<span class="hljs-keyword">const</span> cp = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>);
+cp.spawn(<span class="hljs-string">'npm'</span>, args, opts);
+</code></pre>
+<a class="anchor" id="micro-services"></a>
+<h2>Micro Services</h2>
+<ul>
+<li>Make sure that micro-first runs the user service. (Or what have you. I don&#39;t care what you call these things, but be sensible).</li>
+<li>Make sure micro-second runs the gist services.</li>
+<li>Add a delete to the gist services.<ul>
+<li>You will need to pass the ID of the item to delete to it.</li>
+</ul>
+</li>
+</ul>
+</div></body></html>
