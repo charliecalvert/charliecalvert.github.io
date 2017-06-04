@@ -99,8 +99,8 @@ sudo systemctl enable mongodb
 </ul>
 <a class="anchor" id="authenticate"></a>
 <h2>Authenticate</h2>
-<p>When you start Mongo, you might get a warning about security. If you want better security, there are three steps you must take.</p>
-<p>In the database, create two users. Type <strong>mongo</strong> to start the shell. Then do this:</p>
+<p>When you start the <strong>mongo</strong> cli, you might get a warning about security. If you want better security, there are three steps you must take.</p>
+<p>In the database, create two users. Type <strong>mongo</strong> to start the shell. Then do something like this:</p>
 <pre><code class="lang-sql"><span class="hljs-selector-tag">use</span> <span class="hljs-selector-tag">admin</span>
 <span class="hljs-selector-tag">db</span><span class="hljs-selector-class">.createUser</span>(
   {
@@ -127,15 +127,16 @@ sudo <span class="hljs-keyword">vim</span> /etc/mongod.<span class="hljs-keyword
 </code></pre><p>Now restart and check the status:</p>
 <pre><code><span class="hljs-attribute">sudo service mongod restart</span>
 </code></pre><p>  sudo service mongod status</p>
-<p>Example connection strings:</p>
+<p>Example connection strings, where the second involves connecting remotely as explained further down:</p>
 <pre><code>mongo -u <span class="hljs-string">"charlie"</span> -<span class="hljs-selector-tag">p</span> <span class="hljs-string">"foobar"</span> --authenticationDatabase <span class="hljs-string">"admin"</span>
 mongo <span class="hljs-number">192.168</span>.<span class="hljs-number">2.18</span>:<span class="hljs-number">27017</span> -u <span class="hljs-string">"charlie"</span> -<span class="hljs-selector-tag">p</span> <span class="hljs-string">"foobar"</span> --authenticationDatabase <span class="hljs-string">"admin"</span>
-</code></pre><p>The syntax in <strong>/etc/mongod.conf</strong> for letting in one other machine:</p>
+</code></pre><p>You probably need to explicitly allow connections from machines other than local host. The syntax to add to <strong>/etc/mongod.conf</strong> for letting in one other machine:</p>
 <pre><code><span class="hljs-meta"># network interfaces</span>
 <span class="hljs-symbol">net:</span>
 <span class="hljs-symbol">  port:</span> <span class="hljs-number">27017</span>
 <span class="hljs-symbol">  bindIp:</span> [<span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>, <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.5</span>]
-</code></pre><p>For letting in them all use this IP: <strong>0.0.0.0</strong>.</p>
+</code></pre><p>Some preliminary testing shows that wildcards might work: <strong>192.168.2.*</strong></p>
+<p>For letting in them all use this IP: <strong>0.0.0.0</strong>. Don&#39;t ever do that on a public server. It&#39;s a form of <strong>financial suicide</strong>.</p>
 <a class="anchor" id="trouble-shoot"></a>
 <h2>Trouble Shoot</h2>
 <p>If you are working in Pristine Lubuntu, you may get an error starting MongoDb due to a lack of space. One possible solution would be to use the cloud 9 commands with a variation on the --bind_ip in the third line:</p>
