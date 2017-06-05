@@ -16,7 +16,8 @@
 <li><a href="#additional-notes">Additional Notes</a></li>
 <li><a href="#mongoose-basics-connect">Mongoose Basics Connect</a></li>
 <li><a href="#mongoose-basics-empty-collection">Mongoose Basics Empty Collection</a></li>
-<li><a href="#match-get-and-post">Match get and post</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="description"></a>
+<li><a href="#match-get-and-post">Match get and post</a></li>
+<li><a href="#some-more-code">Some More Code</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="description"></a>
 <h2>Description</h2>
 <p>Mongoose Basics is an ORM for MongoDB.</p>
 <ul>
@@ -223,7 +224,7 @@ router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function">
 </code></pre>
 <a class="anchor" id="step-5"></a>
 <h2>Step 5</h2>
-<p>Here is index.jade:</p>
+<p>Here is index.pug:</p>
 <pre><code>extends layout
 
 block <span class="hljs-attribute">content</span>
@@ -235,7 +236,7 @@ block <span class="hljs-attribute">content</span>
     button<span class="hljs-selector-id">#emptyCollection</span> Empty Collection
 
   pre#<span class="hljs-attribute">display</span>
-</code></pre><p>and layout.jade</p>
+</code></pre><p>and layout.pug</p>
 <pre><code>doctype html
 html
   head
@@ -496,4 +497,45 @@ db.politicians.find({} , {_id: 0, firstName: 1, lastName: 1})
 <pre><code class="lang-javascript">router.get(<span class="hljs-string">'/insertValidCollection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response)</span> </span>{ ... })
 </code></pre>
 <p>If you do a <strong>get</strong> on the client, do a <strong>get</strong> on the server. Don&#39;t do a get in one place and post in the other. (I had this mixed up in one version of the assignment. You need to get this cleaned up if you followed my example and made a mistake.)</p>
+<a class="anchor" id="some-more-code"></a>
+<h2>Some More Code</h2>
+<p>In index.js:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> router = express.Router();
+<span class="hljs-keyword">var</span> allMongo = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./all-mongo'</span>);
+<span class="hljs-keyword">var</span> connect = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./connect'</span>);
+
+<span class="hljs-comment">/* GET home page. */</span>
+router.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    res.render(<span class="hljs-string">'index'</span>, {<span class="hljs-attr">title</span>: <span class="hljs-string">'CongressServer'</span>});
+});
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">checkConnection</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">if</span> (!connect.connected) {
+        connect.doConnection(<span class="hljs-string">'mlab'</span>);
+    }
+}
+
+router.get(<span class="hljs-string">'/all-data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'AllData route invoked.'</span>);
+    checkConnection();
+    allMongo.getAllData(response);
+});
+
+router.get(<span class="hljs-string">'/emptyCollection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    checkConnection();
+    allMongo.empty(response);
+});
+
+router.get(<span class="hljs-string">'/insertValidCollection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Insert Valid Collection Called.'</span>);
+    response.status(<span class="hljs-number">200</span>).send({<span class="hljs-attr">result</span>: <span class="hljs-string">'Insert valid Collection'</span>});
+    <span class="hljs-comment">//checkConnection();</span>
+    <span class="hljs-comment">//allMongo.readDataAndInsert(response);</span>
+});
+</code></pre>
 </div></body></html>
