@@ -273,17 +273,22 @@ html
 
     $(<span class="hljs-string">'#insertValidData'</span>).click(insertCollection);
 
-    $(<span class="hljs-string">"#getAll"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-       $.getJSON(<span class="hljs-string">'/all-data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
-  router.get(<span class="hljs-string">'/bar'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
-    response.status(<span class="hljs-number">200</span>).send({<span class="hljs-attr">result</span>: <span class="hljs-string">'bar'</span>});
-});
-         $(<span class="hljs-string">'#display'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
-    router.get(<span class="hljs-string">'/bar'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
-    response.status(<span class="hljs-number">200</span>).send({<span class="hljs-attr">result</span>: <span class="hljs-string">'bar'</span>});
-});
-   })
-    });
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getAll</span>(<span class="hljs-params"></span>) </span>{
+        $.getJSON(<span class="hljs-string">'/all-data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+            collection = result.allData;
+            $(<span class="hljs-string">'#display'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+        })
+            .done(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'second success'</span>);
+            })
+            .fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error</span>) </span>{
+                alert(<span class="hljs-built_in">JSON</span>.stringify(error.responseJSON, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+            })
+            .always(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'finished'</span>);
+            });
+    }
+
 });
 </code></pre>
 <a class="anchor" id="step-seven"></a>
@@ -462,7 +467,9 @@ allMongo.update = <span class="hljs-function"><span class="hljs-keyword">functio
 <h2>Another query</h2>
 <p>This section is optional. Don&#39;t do it unless you are comfortable with it.</p>
 <p>There is a utility called mongo. You can use it to connect to your database, even the database on <strong>mlab</strong>. At least I think you can.</p>
-<p>Don&#39;t forget to open a terminal and type <strong>mongo</strong> to start the mongo shell. Then do something like this:</p>
+<p>Install the mongo client only. Then use the string found near the top of mlab database page to connect:</p>
+<pre><code>mongo ds049848<span class="hljs-selector-class">.mlab</span><span class="hljs-selector-class">.com</span>:<span class="hljs-number">49848</span>/elvenlab01 -u &lt;dbuser&gt; -<span class="hljs-selector-tag">p</span> &lt;dbpassword&gt;
+</code></pre><p>Don&#39;t forget to open a terminal and type <strong>mongo</strong> to start the mongo shell. Then do something like this:</p>
 <pre>
 show dbs
 use test
