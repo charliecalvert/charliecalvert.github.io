@@ -12,6 +12,7 @@
 <li><a href="#redux-with-props">Redux with props</a></li>
 <li><a href="#appnoprops">AppNoProps</a></li>
 <li><a href="#mapdispatchtoprops">MapDispatchToProps</a></li>
+<li><a href="#break-out-connect">Break out Connect</a></li>
 <li><a href="#updated-spokesman">Updated spokesman</a></li>
 <li><a href="#final-index">Final Index</a></li>
 <li><a href="#local-storage">Local Storage</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-redux-basics"></a>
@@ -341,6 +342,70 @@ AppConnect = connect(
 <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=</span></span><span class="hljs-template-variable">{verify}</span><span class="xml"><span class="hljs-tag">&gt;</span>Verify<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=</span></span><span class="hljs-template-variable">{deny}</span><span class="xml"><span class="hljs-tag">&gt;</span>Deny<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=</span></span><span class="hljs-template-variable">{noComment}</span><span class="xml"><span class="hljs-tag">&gt;</span>No Comment<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span>
+</code></pre>
+<a class="anchor" id="break-out-connect"></a>
+<h2>Break out Connect</h2>
+<p>We can now break out our code into two pieces:</p>
+<ul>
+<li>One file contains <strong>JSX</strong> only</li>
+<li>One file contains our <strong>connect</strong> code.</li>
+</ul>
+<p>JSX only. Save it in <strong>AppConnectJsxOnly</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'./App.css'</span>;
+
+<span class="hljs-keyword">let</span> AppConnect = <span class="hljs-function">(<span class="hljs-params">{statement, deny, verify, noComment}</span>) =&gt;</span> {
+
+    <span class="hljs-keyword">return</span> (
+        <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-intro"</span>&gt;</span>
+                This AppConnect component uses Redux and connect.
+                The connect bits are in a separate file called <span class="hljs-tag">&lt;<span class="hljs-name">strong</span>&gt;</span>AppConnectMaps<span class="hljs-tag">&lt;/<span class="hljs-name">strong</span>&gt;</span>.
+            <span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>App Connect JSX Only<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+            {statement}
+            <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{verify}</span>&gt;</span>Verify<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{deny}</span>&gt;</span>Deny<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{noComment}</span>&gt;</span>No Comment<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+    );
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> AppConnect;
+</code></pre>
+<p>And here is the connect only code. Save it in AppConnectMaps.js:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 6/6/17.
+ */</span>
+
+<span class="hljs-keyword">import</span> {connect} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-redux'</span>;
+<span class="hljs-keyword">import</span> AppConnectJsxOnly <span class="hljs-keyword">from</span> <span class="hljs-string">'./AppConnectJsxOnly'</span>;
+
+<span class="hljs-keyword">const</span> mapStateToProps = <span class="hljs-function">(<span class="hljs-params">state</span>) =&gt;</span> {
+    <span class="hljs-keyword">return</span> {
+        statement: state.statement
+    }
+};
+
+<span class="hljs-keyword">const</span> mapDispatchToProps = <span class="hljs-function">(<span class="hljs-params">dispatch</span>) =&gt;</span> {
+    <span class="hljs-keyword">return</span> {
+        deny: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+            dispatch({<span class="hljs-keyword">type</span>: <span class="hljs-string">'DENY'</span>})
+        },
+        verify: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+            dispatch({<span class="hljs-keyword">type</span>: <span class="hljs-string">'VERIFY'</span>})
+        },
+        noComment: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+            dispatch({<span class="hljs-keyword">type</span>: <span class="hljs-string">'NO COMMENT'</span>})
+        }
+    }
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AppConnectJsxOnly);
 </code></pre>
 <a class="anchor" id="updated-spokesman"></a>
 <h2>Updated spokesman</h2>
