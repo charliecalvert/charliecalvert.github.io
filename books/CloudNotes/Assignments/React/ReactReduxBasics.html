@@ -1,10 +1,11 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactReduxBasics</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>ReactReduxBasics</h1><p>Welcome to ReactReduxBasics</p><ul><!--TOC_Start--><li><a href="#react-redux-basics">React Redux Basics</a></li>
 <li><a href="#redux">Redux</a></li>
+<li><a href="#dispatch">Dispatch</a></li>
 <li><a href="#store-state">Store state</a></li>
+<li><a href="#example">Example</a></li>
 <li><a href="#actions">Actions</a></li>
 <li><a href="#the-reducer">The Reducer</a></li>
-<li><a href="#dispatch">Dispatch</a></li>
 <li><a href="#subscribe">Subscribe</a></li>
 <li><a href="#fake-redux">Fake Redux</a></li>
 <li><a href="#set-up-index">Set up Index</a></li>
@@ -15,30 +16,55 @@
 <li><a href="#local-storage">Local Storage</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-redux-basics"></a>
 <h1>React Redux Basics</h1>
 <p>Install:</p>
-<pre><code>  npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save redux react-redux redux-devtools</span>
+<pre><code>npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save redux react-redux redux-devtools</span>
 </code></pre><a class="anchor" id="redux"></a>
 <h2>Redux</h2>
-<p>We change state by &quot;dispatching&quot; an action. (You can log, serialize or store actions.)</p>
+<p>The overall goal is to:</p>
+<ul>
+<li>Put all our state in one place</li>
+<li>Make state immutable. You can completely rebuild it, but you can&#39;t modify it.<ul>
+<li>If you want to update it, you completely rebuild state</li>
+</ul>
+</li>
+</ul>
+<p>There is only one place where you rebuild state: the <strong>reducer</strong>. Hence there is never any question of where something happened in a big application. It could only have happened in the <strong>reducer</strong>. I explain reducers later in this document.</p>
 <p>A Redux tracks your app&#39;s state. It has the following methods:</p>
 <ul>
 <li>subscribe,</li>
 <li>dispatch,</li>
 <li>getState</li>
 </ul>
+<a class="anchor" id="dispatch"></a>
+<h2>Dispatch</h2>
+<p>We change state by &quot;dispatching&quot; an action. (You can log, serialize or store actions.)</p>
+<p>Here is a typical call to <strong>dispatch</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">dispatch</span>({
+  <span class="hljs-attribute">type</span>: <span class="hljs-string">'GIT_USER'</span>,
+  gitUser: gitUser
+});
+</code></pre>
+<p>We name the action by giving it a <strong>type</strong>. And in this case, we have optionally included some data that will be used a <strong>reducer</strong> when it rebuilds state.</p>
 <a class="anchor" id="store-state"></a>
 <h2>Store state</h2>
-<pre><code class="lang-javascript"><span class="hljs-attribute">let store</span> = createStore(spokesman);
+<p>Redux maintains your application&#39;s <strong>state</strong> in something called a <strong>store</strong>.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> {createStore} <span class="hljs-keyword">from</span> <span class="hljs-string">'redux'</span>;
+
+<span class="hljs-keyword">let</span> store = createStore(spokesman);
 </code></pre>
+<a class="anchor" id="example"></a>
+<h2>Example</h2>
+<p>In the next few sections we will put together an example.</p>
 <a class="anchor" id="actions"></a>
 <h2>Actions</h2>
-<p>Design some simple actions:</p>
+<p>Lets begin by designing some simple actions:</p>
 <pre><code class="lang-javascript"><span class="hljs-built_in">let</span> verify = { <span class="hljs-built_in">type</span>: <span class="hljs-string">'VERIFY'</span> }
 <span class="hljs-built_in">let</span> deny = { <span class="hljs-built_in">type</span>: <span class="hljs-string">'DENY'</span> }
 <span class="hljs-built_in">let</span> noComment = { <span class="hljs-built_in">type</span>: <span class="hljs-string">'NO COMMENT'</span> }
 </code></pre>
+<p>Note that there is no data associated with this actions. This means the actions are simple enough that they can re-build state without any additional information other than the action itself.</p>
 <a class="anchor" id="the-reducer"></a>
 <h2>The Reducer</h2>
-<p>This we will use, so save it as <strong>spokesman.js</strong>:</p>
+<p>This we will use in serveral places, so save it as <strong>spokesman.js</strong>:</p>
 <pre><code class="lang-javascript">
 <span class="hljs-keyword">const</span> spokesman = <span class="hljs-function">(<span class="hljs-params">state = { statement: <span class="hljs-string">'No comment'</span> }, action</span>) =&gt;</span> {
     <span class="hljs-keyword">switch</span> (action.type) {
@@ -55,13 +81,27 @@
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> spokesman;
 </code></pre>
+<p>Notice that this application has a very simple <strong>state</strong> object:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">state</span> = { statement: 'No comment' }
+</code></pre>
+<p>That&#39;s it. That is the only moving part in the application. There are no other variables that can change that have any effect outside of the component in which they are declared.</p>
+<p>In a for loop, we often declare a variable called <strong>i</strong>:</p>
+<pre><code class="lang-javascript">  <span class="hljs-keyword">for</span> (let <span class="hljs-built_in">i</span> = <span class="hljs-number">0</span>; <span class="hljs-built_in">i</span> &lt; <span class="hljs-number">3</span>; <span class="hljs-built_in">i</span>++) {}
+</code></pre>
+<p>We don&#39;t need to put <strong>i</strong> in our state since it is not used by any other components. In fact, it is only used this one place in one method.</p>
+<p>But <strong>statement</strong> is different. It is used by multiple modules, or at least we are pretending it is the type of data will be used in various places throughout the app.</p>
+<p>Noe that our <strong>reducer</strong> modifies <strong>statement</strong> by completely rebuilding <strong>state</strong>. And this is the only place in the application where <strong>statement</strong> can be modified.</p>
 <a class="anchor" id="dispatch"></a>
 <h2>Dispatch</h2>
+<p>Here is an example call to <strong>dispatch</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-selector-tag">store</span><span class="hljs-selector-class">.dispatch</span>({ <span class="hljs-attribute">type</span>: <span class="hljs-string">'VERIFY'</span> });
+</code></pre>
+<p>This message is <em>dispatched</em> to our reducer. The reducer responds by modifying the state like this:</p>
+<pre><code class="lang-javascript">{ <span class="hljs-attribute">statement</span>: <span class="hljs-string">'We stand by it. In fact, we invented it.'</span> };
 </code></pre>
 <a class="anchor" id="subscribe"></a>
 <h2>Subscribe</h2>
-<p>When the state changes, you can update the UI by monitoring calls to subscribe():</p>
+<p>When the state changes, several parts of your app might want to be notified. You track changes to state by monitoring calls to subscribe():</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> {createStore} <span class="hljs-keyword">from</span> <span class="hljs-string">'redux'</span>;
 
 let store = createStore(spokesman);
@@ -73,16 +113,15 @@ store.subscribe(<span class="hljs-function"><span class="hljs-params">()</span> 
     });
 });
 </code></pre>
+<p>Now you can modify the UI based on the changes.</p>
 <a class="anchor" id="fake-redux"></a>
 <h2>Fake Redux</h2>
+<p>At heart, Redux is very simple. Consider this Fake Redux implementation:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> spokesman <span class="hljs-keyword">from</span> <span class="hljs-string">'./spokesman'</span>;
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleRedux</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
-    <span class="hljs-comment">/*constructor() {
-        super();
-        this.
-    }*/</span>
+
     state = spokesman(<span class="hljs-literal">undefined</span>, {});
 
     dispatch(action) {
@@ -121,6 +160,11 @@ store.subscribe(<span class="hljs-function"><span class="hljs-params">()</span> 
 </code></pre>
 <a class="anchor" id="set-up-index"></a>
 <h2>Set up Index</h2>
+<p>In <strong>index.js</strong>, we want to do two things:</p>
+<ul>
+<li>Create our <strong>store</strong></li>
+<li>Wrap the entire app in a Provider so that all parts of the app can independently access the <strong>store</strong> and other features of Redux.</li>
+</ul>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> spokesman <span class="hljs-keyword">from</span> <span class="hljs-string">'./spokesman'</span>;
 <span class="hljs-keyword">import</span> {Provider} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-redux'</span>;
 <span class="hljs-keyword">import</span> {createStore} <span class="hljs-keyword">from</span> <span class="hljs-string">'redux'</span>;
@@ -135,11 +179,11 @@ ReactDOM.render(
             <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
         <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span>
     <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
-
     , <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
 </code></pre>
 <a class="anchor" id="redux-with-props"></a>
 <h2>Redux with props</h2>
+<p>This is not the &quot;right&quot; way to do Redux. Yet, on the other hand, there is no wrong way. The point of Redux is that it provides much more flexibility than a monolithic tool like <strong>Angular.</strong> So if you want to pass down state with props, go ahead and do it. But there is a &quot;better&quot; way.</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">constructor</span>(props) {
         <span class="hljs-keyword">super</span>(props);
         <span class="hljs-keyword">this</span>.state = {
@@ -171,7 +215,19 @@ ReactDOM.render(
         );
     }
 </code></pre>
-<p>Okay</p>
+<p>To make the above work, your <strong>index.js</strong> might look like this:</p>
+<pre><code class="lang-javascript">ReactDOM.render(
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">App</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}/</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">FakeRedux</span> /&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>,
+    document.getElementById('root'));
+</code></pre>
 <a class="anchor" id="appnoprops"></a>
 <h2>AppNoProps</h2>
 <p>We want to create a component that does not get props, but does have access to the Redux data store.</p>
