@@ -1,6 +1,7 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>UbuntuServerOva</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>UbuntuServerOva</h1><p>Welcome to UbuntuServerOva</p><ul><!--TOC_Start--><li><a href="#mongodb-ubuntu">Ubuntu Servers with MongoDb Install</a></li>
-<li><a href="#update">Update</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="mongodb-ubuntu"></a>
+<li><a href="#update">Update</a></li>
+<li><a href="#ssh">SSH</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="mongodb-ubuntu"></a>
 <h2>Ubuntu Servers with MongoDb Install</h2>
 <p>These are OVA files that you install into VirtualBox by choosing <strong>File | Import Appliance</strong>. This is the server version of Ubuntu, so there is only the command line. No Interface.</p>
 <ul>
@@ -11,5 +12,46 @@
 <p>If you get an error similar to <strong>Could not start the machine because of eno1</strong>, then just push the <strong>Change Network Settings</strong> button and then select the <strong>Ok</strong> button. You need not select anything as VirtualBox automatically detects what needs to be done. Or, more specifically, VirtualBox will automatically detect the proper <strong>name</strong> for the network adapter. The issue here is that I have one network adapter at home, and there is another one on the school machines. This causes a conflict. There is probably a setting I could pick so that you do not see this error, but I always forget to look for it.</p>
 <a class="anchor" id="update"></a>
 <h2>Update</h2>
-<p>I have turned on automatic security updates for these machines. Nevertheless, you should attempt to <a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html#update-the-machine">update the machine</a> yourself.</p>
+<p>I have turned on automatic security updates for these machines. Nevertheless, you should attempt to <a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html#update-the-machine">update the machine</a> yourself. If you get an error about the machine being busy, then just go on to other steps and come back and try again after a few minutes.</p>
+<a class="anchor" id="ssh"></a>
+<h2>SSH</h2>
+<p>Use <strong>ifconfig</strong> to find the IP address of the server. In the example shown below, the IP address is on the third line: <strong>inet 192.168.2.16</strong>.</p>
+<pre><code>$ ifconfig
+eno1: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet **192.168.2.16**  netmask 255.255.255.0  broadcast 192.168.2.255
+        inet6 fe80::eb4a:4cf8:28e2:54c1  prefixlen<span class="hljs-number"> 64 </span> scopeid 0x20&lt;link&gt;
+        ether f8:32:e4:9d:22:39  txqueuelen<span class="hljs-number"> 1000 </span> (Ethernet)
+        RX packets<span class="hljs-number"> 1734287 </span> bytes<span class="hljs-number"> 753270259 </span>(753.2 MB)
+        RX errors<span class="hljs-number"> 0 </span> dropped<span class="hljs-number"> 0 </span> overruns<span class="hljs-number"> 0 </span> frame 0
+        TX packets<span class="hljs-number"> 2474671 </span> bytes<span class="hljs-number"> 2934814397 </span>(2.9 GB)
+        TX errors<span class="hljs-number"> 0 </span> dropped<span class="hljs-number"> 0 </span>overruns<span class="hljs-number"> 0 </span> carrier<span class="hljs-number"> 0 </span> collisions 0
+        device interrupt<span class="hljs-number"> 20 </span> memory 0xdfd00000-dfd20000  
+
+lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen<span class="hljs-number"> 128 </span> scopeid 0x10&lt;host&gt;
+        loop  txqueuelen<span class="hljs-number"> 1000 </span> (Local Loopback)
+        RX packets<span class="hljs-number"> 13332 </span> bytes<span class="hljs-number"> 16656358 </span>(16.6 MB)
+        RX errors<span class="hljs-number"> 0 </span> dropped<span class="hljs-number"> 0 </span> overruns<span class="hljs-number"> 0 </span> frame 0
+        TX packets<span class="hljs-number"> 13332 </span> bytes<span class="hljs-number"> 16656358 </span>(16.6 MB)
+        TX errors<span class="hljs-number"> 0 </span> dropped<span class="hljs-number"> 0 </span>overruns<span class="hljs-number"> 0 </span> carrier<span class="hljs-number"> 0 </span> collisions 0
+</code></pre><p>At home, the IP address of your server will probably not change very often, if at all. But at school, you cannot count on your server having the same IP address each time you boot it up. It might have the same address, but then again it might not. As a result, at school, it might be simplest to log into your server from Pristine Lubuntu like this, given the IP address above:</p>
+<p>ssh bcuser@192.168.2.16</p>
+<p>For instance:</p>
+<pre><code><span class="hljs-string">$</span> <span class="hljs-string">ssh</span> <span class="hljs-string">bcuser@192.168.2.16</span>
+<span class="hljs-string">bcuser@192.168.2.16's</span> <span class="hljs-attr">password:</span>
+<span class="hljs-string">Welcome</span> <span class="hljs-string">to</span> <span class="hljs-string">Ubuntu</span> <span class="hljs-number">16.04</span><span class="hljs-number">.2</span> <span class="hljs-string">LTS</span> <span class="hljs-string">(GNU/Linux</span> <span class="hljs-number">4.4</span><span class="hljs-number">.0</span><span class="hljs-bullet">-78</span><span class="hljs-bullet">-generic</span> <span class="hljs-string">x86_64)</span>
+
+ <span class="hljs-string">*</span> <span class="hljs-attr">Documentation:</span>  <span class="hljs-attr">https://help.ubuntu.com</span>
+ <span class="hljs-string">*</span> <span class="hljs-attr">Management:</span>     <span class="hljs-attr">https://landscape.canonical.com</span>
+ <span class="hljs-string">*</span> <span class="hljs-attr">Support:</span>        <span class="hljs-attr">https://ubuntu.com/advantage</span>
+
+<span class="hljs-number">0</span> <span class="hljs-string">packages</span> <span class="hljs-string">can</span> <span class="hljs-string">be</span> <span class="hljs-string">updated.</span>
+<span class="hljs-number">0</span> <span class="hljs-string">updates</span> <span class="hljs-string">are</span> <span class="hljs-string">security</span> <span class="hljs-string">updates.</span>
+
+
+<span class="hljs-string">***</span> <span class="hljs-string">System</span> <span class="hljs-string">restart</span> <span class="hljs-string">required</span> <span class="hljs-string">***</span>
+<span class="hljs-string">Last</span> <span class="hljs-attr">login:</span> <span class="hljs-string">Wed</span> <span class="hljs-string">Jun</span>  <span class="hljs-number">7</span> <span class="hljs-number">08</span><span class="hljs-string">:08:31</span> <span class="hljs-number">2017</span>
+<span class="hljs-string">Agent</span> <span class="hljs-string">pid</span> <span class="hljs-number">16416</span>
+</code></pre><p>Go to Pristine Lubuntu and sign in to the server. Details on how to sign are found here: How to use <a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html#install-ssh">ssh-copy-id to copy your public key</a>.</p>
 </div></body></html>
