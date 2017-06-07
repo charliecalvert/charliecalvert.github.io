@@ -12,6 +12,7 @@
 <li><a href="#install-git">Install Git</a></li>
 <li><a href="#install-lamp">Install Lamp</a></li>
 <li><a href="#install-ssh">Install SSH</a></li>
+<li><a href="#ssh-copy-id">SSH Copy Id</a></li>
 <li><a href="#install-openjdk">Install OpenJdk</a></li>
 <li><a href="#install-oracle-sun-java">Install Oracle/Sun Java</a></li>
 <li><a href="#install-webstorm">Install WebStorm</a></li>
@@ -223,9 +224,25 @@ for your copy of Lubuntu is the same as the user name.)</p>
 <pre><code>ssh <span class="hljs-tag">&lt;<span class="hljs-name">userName</span>&gt;</span>@<span class="hljs-tag">&lt;<span class="hljs-name">theServerYouWantToConnectTo</span>&gt;</span>
 </code></pre><p>For instance:</p>
 <pre><code><span class="hljs-selector-tag">ssh</span> <span class="hljs-selector-tag">ubuntu</span>@<span class="hljs-keyword">192</span>.<span class="hljs-keyword">168</span>.<span class="hljs-keyword">1</span>.<span class="hljs-keyword">23</span>
-</code></pre><p>This is an advanced trick, and not one that you necessarily want to use. You can use <strong>ssh-copy-id</strong> to install your public key in the <strong>authorized_keys</strong> file on a remote machine to which you already have access:</p>
+</code></pre><a class="anchor" id="ssh-copy-id"></a>
+<h2>SSH Copy Id</h2>
+<p>This is an advanced trick, and not one that you necessarily want to use. You can use <strong>ssh-copy-id</strong> to install your public key in the <strong>authorized_keys</strong> file on a remote machine to which you already have access:</p>
 <pre><code>ssh-<span class="hljs-keyword">copy</span>-id <span class="hljs-symbol">&lt;userName&gt;</span>@<span class="hljs-symbol">&lt;theServerYouWantToConnectTo&gt;</span>
-</code></pre><p>On the server edit /etc/ssh/sshd_config and set Password Authentication to no.</p>
+</code></pre><p>This will, by default, put <strong>id_rsa.pub</strong> in the <strong>authorized_keys</strong> file of the remote machine.</p>
+<p>To copy a specific public key:</p>
+<pre><code>ssh-<span class="hljs-keyword">copy</span>-id -i ~/.ssh/<span class="hljs-symbol">&lt;public-key&gt;</span> <span class="hljs-symbol">&lt;username&gt;</span>@<span class="hljs-symbol">&lt;hostname&gt;</span>
+</code></pre><p>For instance:</p>
+<pre><code>$ ssh-<span class="hljs-keyword">copy</span>-<span class="hljs-built_in">id</span> -i Prog272-Calvert bcuser@<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.16</span>
+/usr/bin/ssh-<span class="hljs-keyword">copy</span>-<span class="hljs-built_in">id</span>: INFO: Source <span class="hljs-keyword">of</span> key(s) <span class="hljs-keyword">to</span> be installed: <span class="hljs-string">"Prog272-Calvert.pub"</span>
+/usr/bin/ssh-<span class="hljs-keyword">copy</span>-<span class="hljs-built_in">id</span>: INFO: attempting <span class="hljs-keyword">to</span> <span class="hljs-built_in">log</span> <span class="hljs-keyword">in</span> <span class="hljs-keyword">with</span> <span class="hljs-keyword">the</span> new key(s), <span class="hljs-keyword">to</span> filter out any <span class="hljs-keyword">that</span> are already installed
+/usr/bin/ssh-<span class="hljs-keyword">copy</span>-<span class="hljs-built_in">id</span>: INFO: <span class="hljs-number">1</span> key(s) remain <span class="hljs-keyword">to</span> be installed <span class="hljs-comment">-- if you are prompted now it is to install the new keys</span>
+bcuser@<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.16</span>'s password:
+
+Number <span class="hljs-keyword">of</span> key(s) added: <span class="hljs-number">1</span>
+
+Now <span class="hljs-keyword">try</span> logging <span class="hljs-keyword">into</span> <span class="hljs-keyword">the</span> machine, <span class="hljs-keyword">with</span>:   <span class="hljs-string">"ssh 'bcuser@192.168.2.16'"</span>
+<span class="hljs-keyword">and</span> check <span class="hljs-keyword">to</span> make sure <span class="hljs-keyword">that</span> only <span class="hljs-keyword">the</span> key(s) you wanted were added.
+</code></pre><p>Optionally, on the server edit <strong>/etc/ssh/sshd_config</strong> and set Password Authentication to no.</p>
 <a class="anchor" id="install-openjdk"></a>
 <h2>Install OpenJdk</h2>
 <p>The following appears to work fine with Eclipse:</p>
