@@ -304,8 +304,12 @@ html
     }
 
     <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">update</span>(<span class="hljs-params"></span>) </span>{
-        collection[<span class="hljs-number">0</span>].firstName = <span class="hljs-string">'foo'</span>;
-        $.getJSON(<span class="hljs-string">'/update'</span>, collection[<span class="hljs-number">0</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+            collection[<span class="hljs-number">0</span>].firstName = <span class="hljs-string">'foo'</span>;
+            <span class="hljs-keyword">const</span> newData = {
+                    <span class="hljs-attr">id</span>: collection[<span class="hljs-number">0</span>]._id,
+                    <span class="hljs-attr">firstName</span>: collection[<span class="hljs-number">0</span>].firstName
+            };
+            $.getJSON(<span class="hljs-string">'/update'</span>, newData, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
             $(<span class="hljs-string">'#display'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
         })
             .done(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
@@ -369,9 +373,6 @@ router.get(<span class="hljs-string">'/bar/:id'</span>, <span class="hljs-functi
 <span class="hljs-keyword">let</span> totalPoliticiansSaved = <span class="hljs-number">0</span>;
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">allMongo</span>(<span class="hljs-params"></span>) </span>{
-<span class="hljs-meta">    'use strict'</span>;
-}
-
 allMongo.numberOfPoliticians = <span class="hljs-number">0</span>;
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insertPolitician</span>(<span class="hljs-params">politician, response</span>) </span>{
@@ -473,7 +474,7 @@ allMongo.empty = <span class="hljs-function"><span class="hljs-keyword">function
 allMongo.update = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">requestQuery, response</span>) </span>{
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'All Mongo'</span>, requestQuery._id);
     Politicians.findOne({
-        <span class="hljs-attr">_id</span>: requestQuery._id
+        <span class="hljs-attr">_id</span>: requestQuery.id
     }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, doc</span>) </span>{
         <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'findone'</span>, err, doc);
         <span class="hljs-keyword">if</span> (err) {
