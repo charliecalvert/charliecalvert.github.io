@@ -6,7 +6,8 @@
 <li><a href="#platforms">Platforms</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#concurrently">Concurrently</a></li>
-<li><a href="#build">Build</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="prog-272-final-spring-2017"></a>
+<li><a href="#build">Build</a></li>
+<li><a href="#load-from-database">Load from database</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="prog-272-final-spring-2017"></a>
 <h1>Prog 272 Final Spring 2017</h1>
 <p>I will try to fill in more details later, but this should help you get started.</p>
 <p>This is a take home exam. It will be graded fairly liberally. Not everyone is expected to finish everything. Simply complete as much as you can in a reasonable period of time.</p>
@@ -18,6 +19,7 @@
 <li>CongressServer</li>
 <li>CongressNative</li>
 </ul>
+<p>You should have at least 30 unit tests passing. You can pick which ones. But have some working.</p>
 <a class="anchor" id="core-features"></a>
 <h2>Core Features</h2>
 <ul>
@@ -115,4 +117,25 @@
     res.render(<span class="hljs-string">'index'</span>, {<span class="hljs-attr">title</span>: <span class="hljs-string">'CongressServer'</span>});
 });
 </code></pre>
-</div></body></html>
+<a class="anchor" id="load-from-database"></a>
+<h2>Load from database</h2>
+<pre><code>componentDidMount() {
+    logger.log(<span class="hljs-string">'DID MOUNT'</span>);
+    <span class="hljs-keyword">this</span>.loadFromDatabase();
+}
+
+loadFromDatabase() {
+    <span class="hljs-keyword">const</span> <span class="hljs-literal">that</span> = <span class="hljs-keyword">this</span>;
+    dataLoader.loadAddresses(<span class="hljs-keyword">function</span>(addressCount) {
+        <span class="hljs-keyword">if</span> (!addressCount) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">'Cannot get address count in address.js'</span>);
+        }
+        <span class="hljs-literal">that</span>.addressCount = addressCount;
+        logger.log(<span class="hljs-string">'LOADED ADDRESS'</span>);
+        <span class="hljs-keyword">const</span> address = getByIndex(<span class="hljs-literal">that</span>.addressIndex);
+        <span class="hljs-literal">that</span>.setState({
+            address: address
+        });
+    });
+}
+</code></pre></div></body></html>
