@@ -2,6 +2,7 @@
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>UbuntuServerOva</h1><p>Welcome to UbuntuServerOva</p><ul><!--TOC_Start--><li><a href="#mongodb-ubuntu">Ubuntu Servers with MongoDb Install</a></li>
 <li><a href="#two-ova-files">Two OVA Files</a></li>
 <li><a href="#updates">Updates</a></li>
+<li><a href="#who-can-query">Who can Query</a></li>
 <li><a href="#ssh">SSH</a></li>
 <li><a href="#xps-sign-in-admin">XPS Sign in Admin</a></li>
 <li><a href="#xps-sign-in-charlie">XPS Sign in Charlie</a></li>
@@ -34,6 +35,27 @@
 <a class="anchor" id="updates"></a>
 <h2>Updates</h2>
 <p>I have turned on automatic security updates for these machines. Nevertheless, you should attempt to <a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html#update-the-machine">update the machine</a> yourself. If you get an error about the machine being busy, then just go on to other steps and come back and try again after a few minutes.</p>
+<a class="anchor" id="who-can-query"></a>
+<h2>Who can Query</h2>
+<p>We may need to edit <strong>/etc/mongod.conf</strong> in order to let other machines query the database. By default, only request from the local machine are allowed:</p>
+<pre><code><span class="hljs-meta"># network interfaces</span>
+<span class="hljs-symbol">net:</span>
+<span class="hljs-symbol">  port:</span> <span class="hljs-number">27017</span>
+<span class="hljs-symbol">  bindIp:</span> <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>
+</code></pre><p>If you want to let everyone else in, then add the IP 0.0.0.0:</p>
+<pre><code><span class="hljs-meta"># network interfaces</span>
+<span class="hljs-symbol">net:</span>
+<span class="hljs-symbol">  port:</span> <span class="hljs-number">27017</span>
+<span class="hljs-symbol">  bindIp:</span> [<span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>, <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span>]
+</code></pre><p>Or you can you let some subset of machines in:</p>
+<pre><code><span class="hljs-meta"># network interfaces</span>
+<span class="hljs-symbol">net:</span>
+<span class="hljs-symbol">  port:</span> <span class="hljs-number">27017</span>
+<span class="hljs-symbol">  bindIp:</span> [<span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>, <span class="hljs-number">192.186</span><span class="hljs-number">.2</span>.*]
+</code></pre><p>After doing this, restart <strong>mongod</strong>:</p>
+<pre><code>sudo systemctl <span class="hljs-built_in">restart</span> mongod
+sudo systemctl <span class="hljs-built_in">status</span> mongod
+</code></pre><p>Press q to quit the status view.</p>
 <a class="anchor" id="ssh"></a>
 <h2>SSH</h2>
 <p>Use <strong>ifconfig</strong> to find the IP address of the server. In the example shown below, the IP address is on the third line: <strong>inet 192.168.2.16</strong>.</p>
