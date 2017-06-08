@@ -5,7 +5,8 @@
 <li><a href="#database-features">DataBase Features</a></li>
 <li><a href="#platforms">Platforms</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
-<li><a href="#concurrently">Concurrently</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="prog-272-final-spring-2017"></a>
+<li><a href="#concurrently">Concurrently</a></li>
+<li><a href="#build">Build</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="prog-272-final-spring-2017"></a>
 <h1>Prog 272 Final Spring 2017</h1>
 <p>I will try to fill in more details later, but this should help you get started.</p>
 <p>This is a take home exam. It will be graded fairly liberally. Not everyone is expected to finish everything. Simply complete as much as you can in a reasonable period of time.</p>
@@ -80,5 +81,38 @@
 </code></pre><p>And add these lines to the scripts section of <strong>package.json</strong>:</p>
 <pre><code><span class="hljs-string">"go"</span>: <span class="hljs-string">"concurrently '</span>npm run server' <span class="hljs-string">'npm start'</span><span class="hljs-string">",
 "</span>server<span class="hljs-string">": "</span>nodemon ../CongressServer/bin/www<span class="hljs-string">"</span>
+</code></pre><p>And also, still in CongressAddress, in its <strong>package.json</strong>, add this line near the top:</p>
+<pre><code><span class="hljs-string">"proxy"</span>: <span class="hljs-string">"http://localhost:30025"</span>,
+</code></pre><p>So the first few lines look like this:</p>
+<pre><code>{
+  <span class="hljs-string">"name"</span>: <span class="hljs-string">"congress-address"</span>,
+  <span class="hljs-string">"version"</span>: <span class="hljs-string">"0.1.0"</span>,
+  <span class="hljs-string">"private"</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-string">"proxy"</span>: <span class="hljs-string">"http://localhost:30025"</span>,
+  <span class="hljs-string">"dependencies"</span>: {
+    <span class="hljs-string">"bootstrap"</span>: <span class="hljs-string">"^3.3.7"</span>,
+    etc...
+  }
+  etc...
+}
 </code></pre><p>To use the <strong>go</strong> option, type <strong>npm run go</strong>.</p>
+<a class="anchor" id="build"></a>
+<h2>Build</h2>
+<p>In CongressAddress:</p>
+<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> build</span>
+</code></pre><p>This creates a production version of our code in a folder called <strong>build</strong>.</p>
+<p>Copy the contents of the <strong>build</strong> folder to <strong>CongressServer</strong> or the equivalent. You could do that by issuing this command from the root of the CongressServer:</p>
+<pre><code>cp -rv ..<span class="hljs-regexp">/CongressAddress/</span>build<span class="hljs-regexp">/* public/</span>.
+</code></pre><p>Then go into <strong>routes/index.js</strong> and make this change to use <strong>loadFile</strong> to load the <strong>index.html</strong> from your build:</p>
+<pre><code>router.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-comment">//res.render('index', {title: 'CongressServer'});</span>
+    res.loadFile(<span class="hljs-string">'index.html'</span>);
+});
+</code></pre><p>And then if you want to be able to see the old interface, add this method:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/admin'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    res.render(<span class="hljs-string">'index'</span>, {<span class="hljs-attr">title</span>: <span class="hljs-string">'CongressServer'</span>});
+});
+</code></pre>
 </div></body></html>
