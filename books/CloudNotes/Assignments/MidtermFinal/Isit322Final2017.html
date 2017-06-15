@@ -6,7 +6,8 @@
 <li><a href="#extra-credit">Extra Credit</a></li>
 <li><a href="#eslint">EsLint</a></li>
 <li><a href="#possible-features">Possible Features</a></li>
-<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="gist-markdown-manager"></a>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#better-fetch">Better Fetch</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="gist-markdown-manager"></a>
 <h1>Gist Markdown Manager</h1>
 <p>This program is designed to work with GitHub gists. It should allow a user to manage a list of Gists that can be inserted into markdown documents.</p>
 <p>The goal is to have you craft your own program that does something useful.</p>
@@ -19,14 +20,12 @@
 <li>Working from a list of gists the user should be able to<ul>
 <li>Delete a gist</li>
 <li>Read a file from disk and use it to update a gist</li>
-<li>Read a gist and write it to disk as a file</li>
 <li>Read a gist and insert it into a markdown document at a specified location</li>
 </ul>
 </li>
 <li>At least some features should work on a phone<ul>
 <li>List gists</li>
 <li>Delete a gist</li>
-<li>Select a user</li>
 <li>Read a particular gist and display it.</li>
 </ul>
 </li>
@@ -43,6 +42,7 @@
 </li>
 <li>Use DataMaven to launch our various components</li>
 <li>Heroku support</li>
+<li>EsLint support</li>
 </ul>
 <a class="anchor" id="heroku-support"></a>
 <h2>Heroku Support</h2>
@@ -63,7 +63,7 @@
 <li>The goal is to try to make the application useful</li>
 </ul>
 </li>
-<li>Create your own favicon. (You could, for instance, just take my favicon.png and put your own images or data in it.)</li>
+<li>Create your own <strong>favicon</strong>. (You could, for instance, just take my favicon.png and put your own images or data in it.)</li>
 <li>If you are not using them, remove unused items from the menu, such as the DropDown, or the bits on the far right.<ul>
 <li>Or maybe use the dropdown. Your call.</li>
 </ul>
@@ -96,4 +96,62 @@
 </ul>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
+<p>Add, commit, push, tag, push, branch, push.</p>
+<p>Branch: Final</p>
+<a class="anchor" id="better-fetch"></a>
+<h2>Better Fetch</h2>
+<p>I finally understand the first <strong>.then</strong> in our promise. Like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> getServer = <span class="hljs-function">(<span class="hljs-params">url, dispatch</span>) =&gt;</span> {
+    fetch(url)
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+            <span class="hljs-keyword">if</span> (response.ok) {
+                <span class="hljs-keyword">return</span> response.json();
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(response.statusText + <span class="hljs-string">'\n'</span> +
+                    response.url + <span class="hljs-string">'\n'</span> +
+                    <span class="hljs-string">'status: '</span> + response.status);
+            }
+        }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{
+            dispatch({
+                <span class="hljs-attr">type</span>: <span class="hljs-string">'YOU-RANG'</span>,
+                <span class="hljs-attr">youRang</span>: json
+            });
+        }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ex</span>) </span>{
+            alert(ex);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsing failed'</span>, ex);
+        });
+
+};
+</code></pre>
+<p>Or in excruciating detail:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> getServer = <span class="hljs-function">(<span class="hljs-params">url, dispatch</span>) =&gt;</span> {
+    fetch(url)
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch ok:'</span>, response.ok);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch status:'</span>, response.status);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch statusText:'</span>, response.statusText);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch type:'</span>, response.type);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch url:'</span>, response.url);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch body used:'</span>, response.bodyUsed);
+            <span class="hljs-keyword">const</span> json = response.json();
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch json:'</span>, json);
+            <span class="hljs-keyword">if</span> (response.ok) {
+                <span class="hljs-keyword">return</span> json;
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(response.statusText + <span class="hljs-string">'\n'</span> +
+                    response.url + <span class="hljs-string">'\n'</span> +
+                    <span class="hljs-string">'status: '</span> + response.status);
+            }
+        }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{
+            dispatch({
+                <span class="hljs-attr">type</span>: <span class="hljs-string">'YOU-RANG'</span>,
+                <span class="hljs-attr">youRang</span>: json
+            });
+        }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ex</span>) </span>{
+            alert(ex);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsing failed'</span>, ex);
+        });
+
+};
+</code></pre>
 </div></body></html>

@@ -9,7 +9,8 @@
 <li><a href="#build-and-deploy">Build and Deploy</a></li>
 <li><a href="#build">Build</a></li>
 <li><a href="#load-from-database">Load from database</a></li>
-<li><a href="#start-from-scratch">Start from Scratch</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="prog-272-final-spring-2017"></a>
+<li><a href="#start-from-scratch">Start from Scratch</a></li>
+<li><a href="#better-fetch">Better Fetch</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="prog-272-final-spring-2017"></a>
 <h1>Prog 272 Final Spring 2017</h1>
 <p>I will try to fill in more details later, but this should help you get started.</p>
 <p>This is a take home exam. It will be graded fairly liberally. Not everyone is expected to finish everything. Simply complete as much as you can in a reasonable period of time.</p>
@@ -17,18 +18,25 @@
 <h2>Core Programs</h2>
 <p>There should be at least the following three programs.</p>
 <ul>
+<li>Congress<ul>
 <li>CongressAddress</li>
 <li>CongressServer</li>
+</ul>
+</li>
 <li>CongressNative</li>
+<li>Congress Address on Heroku</li>
 </ul>
 <p>You should have at least 30 unit tests passing. You can pick which ones. But have some working.</p>
 <a class="anchor" id="core-features"></a>
 <h2>Core Features</h2>
 <ul>
-<li>CongressServer should be running on port 30025 and be able to access your data on <strong>mlab</strong>.</li>
-<li>CongressAddress should be able to talk to the server.</li>
-<li>CongressNative should be able to talk to CongressServer</li>
+<li>I should be able to run CongressServer on port 30025 and be able to access your data on <strong>mlab</strong>.</li>
+<li>CongressAddress should be able to talk to the server and concurrency should be in your <strong>package.json</strong> file for CongressAddress.</li>
+<li>CongressNative should be able to talk to CongressServer. Provide source and a screenshot of it running on your phone.</li>
+<li>The URL of your CongressServer/CongressAddress app running on Heroku</li>
 </ul>
+<p>I just want the URL of your Heroku project. I want the Heroku HTTP address, not the source. If you do want to give me the source, be sure to remove the .git folder from your Heroku project&#39;s directory. You don&#39;t want to nest git folders. Heroku, by default, has a .git repository. Don&#39;t put that repository in your repository. Instead, first remove the .git folder from the heroku directory.</p>
+<p>Better yet, just send me the URL of your app on Heroku, don&#39;t try to turn in the source form the heroku directory. I do want the source for CongressAddress and CongressServer and CongressNative, but not the source to the heroku project.</p>
 <a class="anchor" id="database-features"></a>
 <h2>DataBase Features</h2>
 <ul>
@@ -164,6 +172,37 @@ cp -r ~<span class="hljs-regexp">/Git/</span>prog272-calvert-<span class="hljs-n
 npm start
 </code></pre><p>Now go to localhost:30025</p>
 <p>Once you see it works. Let&#39;s herokuize it:</p>
-<p>```
-heroku create calvert07</p>
+<pre><code>heroku <span class="hljs-keyword">create</span> calvert07
+</code></pre><a class="anchor" id="better-fetch"></a>
+<h2>Better Fetch</h2>
+<p>It is not necessary to add this, but it might be informative to some to see this alternate handling of the first .then in a fetch promise:</p>
+<pre><code class="lang-javascript">fetch(<span class="hljs-string">'/all-data'</span>)
+    .then(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> {
+        <span class="hljs-keyword">if</span> (response.ok) {
+            <span class="hljs-keyword">return</span> response.json();
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(response.statusText + <span class="hljs-string">'\n'</span> +
+                response.url + <span class="hljs-string">'\n'</span> +
+                <span class="hljs-string">'status: '</span> + response.status);
+        }
+    })
+    .then(<span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> {
+        <span class="hljs-keyword">if</span> (data.error) {
+            alert(<span class="hljs-built_in">JSON</span>.stringify(data.error, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+            callback(<span class="hljs-number">0</span>);
+            <span class="hljs-keyword">return</span>;
+        }
+        logger.log(<span class="hljs-string">'ALL-DATA: '</span> + <span class="hljs-built_in">JSON</span>.stringify(data.allData, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+        that.setLocalStorage(data.allData);
+        callback(data.allData.length);
+    }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+        <span class="hljs-keyword">if</span> (err.message) {
+            alert(err.message);
+        } <span class="hljs-keyword">else</span> {
+            alert(<span class="hljs-string">'error'</span> + err);
+        }
+        logger.log(err);
+    });
+</code></pre>
+<p>Note the check for <strong>response.ok</strong>            </p>
 </div></body></html>
