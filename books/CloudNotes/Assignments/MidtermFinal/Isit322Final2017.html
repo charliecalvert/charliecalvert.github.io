@@ -7,7 +7,8 @@
 <li><a href="#eslint">EsLint</a></li>
 <li><a href="#possible-features">Possible Features</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
-<li><a href="#better-fetch">Better Fetch</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="gist-markdown-manager"></a>
+<li><a href="#better-fetch">Better Fetch</a></li>
+<li><a href="#deleting-gist-server-side">Deleting Gist Server Side</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="gist-markdown-manager"></a>
 <h1>Gist Markdown Manager</h1>
 <p>This program is designed to work with GitHub gists. It should allow a user to manage a list of Gists that can be inserted into markdown documents.</p>
 <p>The goal is to have you craft your own program that does something useful.</p>
@@ -153,5 +154,31 @@
         });
 
 };
+</code></pre>
+<a class="anchor" id="deleting-gist-server-side"></a>
+<h2>Deleting Gist Server Side</h2>
+<p>Do it like this:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/delete'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response, next)</span> {</span>
+    logger.<span class="hljs-built_in">log</span>(<span class="hljs-string">'DELETE GIST CALLED'</span>, request.query);
+    <span class="hljs-keyword">if</span> (!request.query.gistId) {
+        throw new Error(<span class="hljs-string">'You must pass a gistID when calling delete'</span>);
+    }
+    const gistId = request.query.gistId;
+    logger.<span class="hljs-built_in">log</span>(<span class="hljs-string">'GIST ID: '</span>, gistId);
+    let gitHub = getGitHub();
+    gist = gitHub.getGist(gistId);
+    logger.<span class="hljs-built_in">log</span>(<span class="hljs-string">'GOT GIST'</span>, gist.__apiBase);
+    gist.delete().<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">({data})</span> {</span>
+        logger.<span class="hljs-built_in">log</span>(<span class="hljs-string">'DELETE PROMISE'</span>, data);
+        response.status(<span class="hljs-number">200</span>).send({
+            <span class="hljs-string">'result'</span>: <span class="hljs-string">'success'</span>,
+            <span class="hljs-string">'gistId'</span>: gistId,
+            <span class="hljs-string">'data'</span>: data
+        });
+    }).<span class="hljs-keyword">catch</span>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span> {</span>
+        logger.<span class="hljs-built_in">log</span>(<span class="hljs-string">'Promise Rejected'</span>, err);
+        response.status(<span class="hljs-number">500</span>).send({<span class="hljs-string">'result'</span>: err});
+    });
+});
 </code></pre>
 </div></body></html>
