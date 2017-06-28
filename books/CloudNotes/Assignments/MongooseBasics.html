@@ -1,0 +1,655 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>MongooseBasics</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><script src="/libs/scripts/Control.js"></script><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/charlie/About.html">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/charlie/development/index.html">Strongly Typed</a></li><li><a href="/charlie/development/web/index.html">Web & Scripts</a></li><li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/charlie/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>MongooseBasics</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#description">Description</a></li>
+<li><a href="#step-one">Step One</a></li>
+<li><a href="#step-two">Step Two</a></li>
+<li><a href="#ignore-scientists">Ignore Scientists</a></li>
+<li><a href="#step-three">Step Three</a></li>
+<li><a href="#step-four">Step Four</a></li>
+<li><a href="#the-mongoose-schema">The Mongoose Schema</a></li>
+<li><a href="#connecting">Connecting</a></li>
+<li><a href="#step-5">Step 5</a></li>
+<li><a href="#step-six">Step Six</a></li>
+<li><a href="#step-seven">Step Seven</a></li>
+<li><a href="#all-mongo">All Mongo</a></li>
+<li><a href="#another-query">Another query</a></li>
+<li><a href="#valid-scientists">Valid Scientists</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#additional-notes">Additional Notes</a></li>
+<li><a href="#mongoose-basics-connect">Mongoose Basics Connect</a></li>
+<li><a href="#mongoose-basics-empty-collection">Mongoose Basics Empty Collection</a></li>
+<li><a href="#match-get-and-post">Match get and post</a></li>
+<li><a href="#scientists-file">Scientists File</a></li><!--TOC_End--></ul><h2 id="description">Description</h2>
+<p>Mongoose Basics is an ORM for MongoDB.</p>
+<ul>
+<li>Mongoose Slides: <a href="http://bit.ly/elf-mongoose">http://bit.ly/elf-mongoose</a></li>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Prog219/Prog219-Resources.html">Prog219 Resources</a></li>
+</ul>
+<p><strong>NOTE</strong>: <em>There is an <strong>Angular</strong>, <strong>React</strong> and <strong>jquery</strong> version of this assignment. Make sure you are looking at the right one. This is the <strong>jquery</strong> assignment, the others are called <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/AngularMongooseBasics.html">AngularMongooseBasics</a> and
+ReactMongooseBasics.</em></p>
+<h2 id="step-one">Step One</h2>
+<pre><code>CreateAllExpress Week10-MongooseBasics
+<span class="hljs-built_in">cd</span> Week10-MongooseBasics
+npm install
+</code></pre><p>Open the project in Web Storm.</p>
+<h2 id="step-two">Step Two</h2>
+<p>Set up bower</p>
+<ul>
+<li>bower install bootstrap --save</li>
+</ul>
+<p>Now might be a good time to start the project: <strong>npm start</strong></p>
+<h2 id="ignore-scientists">Ignore Scientists</h2>
+<p>Add a file called <strong>nodemon.json</strong> in the root of your project. Place the following content in it:</p>
+<pre><code class="lang-javascript">{
+  "<span class="hljs-attr">verbose</span>": <span class="hljs-literal">true</span>,
+  "<span class="hljs-attr">ignore</span>": [<span class="hljs-string">"scientists.json"</span>, <span class="hljs-string">"**/components/**"</span>]
+}
+</code></pre>
+<p>This project is going to create a file called <strong>scientists.json</strong> each time you insert data into the database. By default, this will cause <strong>nodemon</strong> to restart the project each time we write data to <strong>scientists.json</strong>. This can cause miscellaneous errors on the on the client side, such as a false report for failure for the <strong>insertValidCollection</strong>. The fix is to ask nodemon to ignore <strong>scientists.json</strong>. We should also ask it to ignore our components folder.</p>
+<p>For more on nodemon configuration, see here:</p>
+<ul>
+<li><a href="https://github.com/remy/nodemon">https://github.com/remy/nodemon</a></li>
+<li><a href="https://github.com/remy/nodemon/blob/master/doc/sample-nodemon.md">https://github.com/remy/nodemon/blob/master/doc/sample-nodemon.md</a></li>
+</ul>
+<p>You should also create a <strong>.gitignore</strong> file for this project and put the single line <strong>scientists.json</strong> in it.</p>
+<h2 id="step-three">Step Three</h2>
+<p>Let&#39;s practice setting up the <strong>favicon</strong>. Because you used <strong>CreateAllExpress</strong>, you should already have a <strong>favicon.png</strong> file in <strong>public.</strong> But in case you have some reason to do it manually, here is how to get a default favicon on Linux (first example) or on Windows:</p>
+<pre><code>cp $JSOBJECTS/Data/MongoBootstrap/favicon.png public/.
+<span class="hljs-keyword">copy</span> <span class="hljs-meta">%USERPROFILE</span>%\Git\JsObjects\Data\MongoBootstrap\favicon.png public\.
+</code></pre><p>The next step is not done for you automatically by <strong>CreateAllExpress</strong>, so do this by hand:</p>
+<ul>
+<li>In an editor, open up <strong>app.js</strong> from the root of your project. (Server side)</li>
+<li>On line 18 uncomment: <strong>app.use(favicon(__dirname + &#39;/public/favicon.ico&#39;));</strong></li>
+<li>Change <strong>favicon.ico</strong> to <strong>favicon.png</strong>.</li>
+</ul>
+<h2 id="step-four">Step Four</h2>
+<p>Set up and learn a little about <a href="http://mongoosejs.com/">Mongoose</a>. Mongoose is by far the most popular way to access MongoDb from Node Js applications.</p>
+<p>First install <strong>mongoose</strong>:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> mongoose <span class="hljs-comment">--save</span>
+</code></pre><p>You may see messages about mongoose, C++ and bson. If you are concerned about them, see the Elvenware notes on <a href="http://elvenware.com/charlie/development/database/NoSql/MongoDb.html#mongoose-gyp-bson">this subject</a>.</p>
+<p><strong>NOTE</strong>: <em>On Linux, you may need to install libkrb5-dev before you can install the Mongoose NPM package. This should not be an issue on Cloud 9.</em></p>
+<pre><code>sudo apt-<span class="hljs-built_in">get</span> install libkrb5-<span class="hljs-built_in">dev</span>
+</code></pre><h3 id="the-mongoose-schema">The Mongoose Schema</h3>
+<p>Once Mongoose is installed, you should set up a schema:</p>
+<ul>
+<li>Create a folder called models at the root of your project</li>
+<li>Put this code in a file called <strong>models/presidents.js</strong>:</li>
+</ul>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
+
+<span class="hljs-keyword">var</span> presidentsSchema = mongoose.Schema({
+    <span class="hljs-string">"firstName"</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">"lastName"</span>: <span class="hljs-built_in">String</span>,
+});
+
+<span class="hljs-built_in">module</span>.exports = mongoose.model(<span class="hljs-string">'presidents'</span>, presidentsSchema);
+</code></pre>
+<p>While we are at it, let&#39;s create a more complex schema which we can use once we learn the basics. Put the follow code in a file called <strong>models/scientists.js</strong>.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
+
+<span class="hljs-keyword">var</span> scientistsSchema = mongoose.Schema({
+    <span class="hljs-string">"firstName"</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">"lastName"</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">"subject"</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">"subjects"</span>: [<span class="hljs-built_in">String</span>],
+    <span class="hljs-string">"comments"</span>: [{ commentText: <span class="hljs-built_in">String</span>, date: <span class="hljs-built_in">Date</span> }]
+});
+
+<span class="hljs-built_in">module</span>.exports = mongoose.model(<span class="hljs-string">'scientists'</span>, scientistsSchema);
+</code></pre>
+<p>In <strong>routes/index.js</strong> do these two things:</p>
+<pre><code><span class="hljs-keyword">var</span> scientists = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models/scientists'</span>);
+<span class="hljs-keyword">var</span> presidents = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models/presidents'</span>);
+<span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
+</code></pre><p>And then create methods to open your collection:</p>
+<p>In <strong>index.js</strong>, make sure that this is the last line in the file:</p>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">module</span>.<span class="hljs-title">exports</span> =</span> router;
+</code></pre><h2 id="connecting">Connecting</h2>
+<p>Here is a tool for connecting to the database. It belongs in its own file called <strong>routes/connect.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
+
+<span class="hljs-keyword">var</span> connect = {
+
+    connected: <span class="hljs-literal">false</span>,
+
+    simpleConnect: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-keyword">var</span> url = <span class="hljs-string">'mongodb://127.0.0.1:27017/test'</span>;
+        connect.connected = <span class="hljs-literal">true</span>;
+        mongoose.connect(url);
+        <span class="hljs-keyword">var</span> db = mongoose.connection;
+        db.on(<span class="hljs-string">'error'</span>, <span class="hljs-built_in">console</span>.error.bind(<span class="hljs-built_in">console</span>, <span class="hljs-string">'connection error:'</span>));
+        db.once(<span class="hljs-string">'open'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">callback</span>) </span>{
+            connect.connected = <span class="hljs-literal">true</span>;
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Opened connection to mongo'</span>);
+        });
+    },
+
+    mlabConnect: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        connect.connected = <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">var</span> userName = <span class="hljs-string">'foo'</span>;
+        <span class="hljs-keyword">var</span> password = <span class="hljs-string">'foobar'</span>;
+        <span class="hljs-keyword">var</span> siteAndPort = <span class="hljs-string">'ds049848.mongolab.com:49848'</span>;
+        <span class="hljs-keyword">var</span> databaseName = <span class="hljs-string">'elvenlab01'</span>;
+        <span class="hljs-keyword">var</span> url = <span class="hljs-string">'mongodb://'</span> + userName + <span class="hljs-string">':'</span> + password + <span class="hljs-string">'@'</span> + siteAndPort + <span class="hljs-string">'/'</span> + databaseName;
+        <span class="hljs-built_in">console</span>.log(url);
+        mongoose.connect(url);
+
+        <span class="hljs-comment">// This part is optional</span>
+        <span class="hljs-keyword">var</span> db = mongoose.connection;
+        db.on(<span class="hljs-string">'error'</span>, <span class="hljs-built_in">console</span>.error.bind(<span class="hljs-built_in">console</span>, <span class="hljs-string">'connection error:'</span>));
+        db.once(<span class="hljs-string">'open'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">callback</span>) </span>{
+            connect.connected = <span class="hljs-literal">true</span>;
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Opened connection to mongo'</span>);
+        });
+    },
+
+    doConnection: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">useSimple</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-keyword">var</span> connectType = useSimple || <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">if</span> (connectType) {
+            connect.simpleConnect();
+        } <span class="hljs-keyword">else</span> {
+            connect.mlabConnect();
+        }
+    }
+
+};
+
+<span class="hljs-built_in">module</span>.exports = connect;
+</code></pre>
+<h2 id="step-5">Step 5</h2>
+<p>Here is index.jade:</p>
+<pre><code>extends layout
+
+block content
+  h1= <span class="hljs-keyword">title</span>
+  p Welcome to <span class="hljs-meta">#{title}</span>
+
+    <span class="hljs-keyword">button</span><span class="hljs-meta">#insertValidData Insert Valid Data</span>
+    <span class="hljs-keyword">button</span><span class="hljs-meta">#getAll Get All</span>
+    <span class="hljs-keyword">button</span><span class="hljs-meta">#emptyCollection Empty Collection</span>
+
+  pre<span class="hljs-meta">#display</span>
+</code></pre><p>and layout.jade</p>
+<pre><code>doctype html
+html
+  head
+    title= title
+    link(<span class="hljs-name">rel=</span>'stylesheet', href='/stylesheets/style.css')
+    link(<span class="hljs-name">rel=</span>'stylesheet', href='/components/bootstrap/dist/css/bootstrap.css')
+    script(<span class="hljs-name">src=</span><span class="hljs-string">"components/jquery/dist/jquery.js"</span>)
+    script(<span class="hljs-name">src=</span><span class="hljs-string">"components/bootstrap/dist/js/bootstrap.js"</span>)
+    script(<span class="hljs-name">src=</span><span class="hljs-string">"javascripts/control.js"</span>)
+  body
+    block content
+</code></pre><h2 id="step-six">Step Six</h2>
+<p>Here is <strong>public/javascripts/control.js</strong>:</p>
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-string">'use strict'</span>;
+    <span class="hljs-keyword">var</span> insertUrl = <span class="hljs-string">'/insertValidCollection'</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insertCollection</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> jqxhr = $.get(insertUrl, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+            alert( <span class="hljs-string">"success"</span> );
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+        })
+            .done(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                <span class="hljs-built_in">console</span>.log( <span class="hljs-string">"second success"</span> );
+            })
+            .fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                alert( <span class="hljs-string">"error"</span> );
+            })
+            .always(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                <span class="hljs-built_in">console</span>.log( <span class="hljs-string">"finished"</span> );
+            });
+    }
+
+    $(<span class="hljs-string">'#insertValidData'</span>).click(insertCollection);
+
+    $(<span class="hljs-string">"#getAll"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+       $.getJSON(<span class="hljs-string">'/all-data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+           $(<span class="hljs-string">'#display'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+       })
+    });
+});
+</code></pre>
+<h2 id="step-seven">Step Seven</h2>
+<p>In <strong>routes/index.js</strong> append all of the following before the module statement:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> router = express.Router();
+<span class="hljs-keyword">var</span> scientists = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models/scientists'</span>);
+<span class="hljs-keyword">var</span> allMongo = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./all-mongo'</span>);
+<span class="hljs-keyword">var</span> connect = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./connect'</span>);
+
+<span class="hljs-comment">/* GET home page. */</span>
+router.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    res.render(<span class="hljs-string">'index'</span>, {
+        title: <span class="hljs-string">'Week09-MongooseBasics'</span>
+    });
+});
+
+<span class="hljs-keyword">var</span> connected = <span class="hljs-literal">false</span>;
+
+router.get(<span class="hljs-string">'/all-data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'AllData route invoked.'</span>);
+    <span class="hljs-keyword">if</span> (!connect.connected) {
+        connect.doConnection();
+    }
+
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'About to find scientists.'</span>);
+    scientists.find({}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, allData</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(allData.length);
+        <span class="hljs-built_in">console</span>.log(allData[<span class="hljs-number">0</span>]);
+
+        allMongo.writeData(<span class="hljs-string">'scientists.json'</span>, allData);
+
+        response.send({
+            result: <span class="hljs-string">'Success'</span>,
+            allData: allData
+        });
+    });
+});
+
+router.get(<span class="hljs-string">'/emptyCollection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">if</span> (!connect.connected) {
+        connect.doConnection();
+    }
+
+    scientists.remove({}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) {
+            response.send({
+                result: <span class="hljs-string">'err'</span>,
+                err: err
+            });
+        } <span class="hljs-keyword">else</span> {
+            response.send({
+                result: <span class="hljs-string">'collection removed'</span>
+            });
+        }
+    });
+});
+
+router.get(<span class="hljs-string">'/insertValidCollection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    allMongo.readDataAndInsert(response);
+});
+
+router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    response.render(request.params.id, {});
+});
+
+<span class="hljs-built_in">module</span>.exports = router;
+</code></pre>
+<h2 id="all-mongo">All Mongo</h2>
+<p>In <strong>routes/all-mongo.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 6/5/16.
+ */</span>
+
+<span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> connect = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./connect'</span>);
+<span class="hljs-keyword">var</span> Scientists = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models/scientists'</span>);
+<span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
+<span class="hljs-keyword">var</span> totalScientistsSaved = <span class="hljs-number">0</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">allMongo</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+}
+
+allMongo.numberOfScientists = <span class="hljs-number">0</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insertScientist</span>(<span class="hljs-params">scientist, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">if</span> (!connect.connected) {
+        connect.doConnection();
+    }
+    <span class="hljs-keyword">var</span> newScientist = <span class="hljs-keyword">new</span> Scientists({
+        <span class="hljs-string">'firstName'</span>: scientist.firstName,
+        <span class="hljs-string">'lastName'</span>: scientist.lastName,
+        <span class="hljs-string">'subject'</span>: scientist.subject,
+        <span class="hljs-string">'subjects'</span>: scientist.subjects,
+        <span class="hljs-string">'comments'</span>: scientist.comments
+    });
+
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'inserting'</span>, newScientist.lastName);
+
+    newScientist.save(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+        totalScientistsSaved++;
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'saved: '</span>, newScientist.lastName, allMongo.numberOfScientists, totalScientistsSaved);
+
+        <span class="hljs-keyword">if</span> (totalScientistsSaved === allMongo.numberOfScientists) {
+            response.send({
+                result: <span class="hljs-string">'Success Saving Scientists'</span>,
+                totalSaved: totalScientistsSaved
+            });
+        }
+    });
+}
+
+allMongo.writeData = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">fileName, data</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> dataAsString = <span class="hljs-built_in">JSON</span>.stringify(data, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
+    fs.writeFile(fileName, dataAsString, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, result</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) {
+            <span class="hljs-keyword">throw</span> (err);
+        }
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'success writing file'</span>);
+    });
+};
+
+allMongo.readDataAndInsert = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    fs.readFile(<span class="hljs-string">'ValidScientists.json'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, scientistsText</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) {
+            <span class="hljs-keyword">throw</span> (err);
+        }
+        scientistsText = <span class="hljs-built_in">JSON</span>.parse(scientistsText);
+        totalScientistsSaved = <span class="hljs-number">0</span>;
+        allMongo.numberOfScientists = scientistsText.length;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; scientistsText.length; i++) {
+            insertScientist(scientistsText[i], response);
+        }
+    });
+};
+
+<span class="hljs-built_in">module</span>.exports = allMongo;
+</code></pre>
+<h2 id="another-query">Another query</h2>
+<p>Don&#39;t forget to open a terminal and type <strong>mongo</strong> to start the mongo shell. Then do something like this:</p>
+<pre>
+show dbs
+use test
+show collections
+db.scientists.find()
+db.scientists.find({} , {_id: 0, firstName: 1, lastName: 1})
+</pre>
+
+<h2 id="valid-scientists">Valid Scientists</h2>
+<p>Save in the root of your project as ValidScientists.json</p>
+<pre><code class="lang-javascript">[
+    {
+        "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5577c95032fa23f82013611e"</span>,
+        "<span class="hljs-attr">firstName</span>": <span class="hljs-string">"Albert"</span>,
+        "<span class="hljs-attr">lastName</span>": <span class="hljs-string">"Einstein"</span>,
+        "<span class="hljs-attr">subject</span>": <span class="hljs-string">"Physics"</span>,
+        "<span class="hljs-attr">__v</span>": <span class="hljs-number">0</span>,
+        "<span class="hljs-attr">comments</span>": [
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Albert One"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5575a4be8ee728bc0da40c49"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-08T00:00:00.000Z"</span>
+            }
+        ],
+        "<span class="hljs-attr">subjects</span>": [
+            <span class="hljs-string">"Foobar"</span>,
+            <span class="hljs-string">"Able"</span>,
+            <span class="hljs-string">"Tuna"</span>
+        ]
+    },
+    {
+        "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5577c95032fa23f82013611f"</span>,
+        "<span class="hljs-attr">firstName</span>": <span class="hljs-string">"Rene"</span>,
+        "<span class="hljs-attr">lastName</span>": <span class="hljs-string">"Descartes"</span>,
+        "<span class="hljs-attr">subject</span>": <span class="hljs-string">"Radioactivity"</span>,
+        "<span class="hljs-attr">__v</span>": <span class="hljs-number">0</span>,
+        "<span class="hljs-attr">comments</span>": [
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Fred"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5574be8c7c93a1180729f3b5"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            },
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Suzy"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5574bf42d525507c0ca48e21"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            },
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Lunches"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5574bfaed525507c0ca48e22"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            }
+        ],
+        "<span class="hljs-attr">subjects</span>": [
+            <span class="hljs-string">"Rene"</span>
+        ]
+    },
+    {
+        "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5577c95032fa23f820136121"</span>,
+        "<span class="hljs-attr">firstName</span>": <span class="hljs-string">"Niels"</span>,
+        "<span class="hljs-attr">lastName</span>": <span class="hljs-string">"Bohr"</span>,
+        "<span class="hljs-attr">subject</span>": <span class="hljs-string">"Physics"</span>,
+        "<span class="hljs-attr">__v</span>": <span class="hljs-number">0</span>,
+        "<span class="hljs-attr">comments</span>": [
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Niels One"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5575a4af8ee728bc0da40c48"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-08T00:00:00.000Z"</span>
+            }
+        ],
+        "<span class="hljs-attr">subjects</span>": [
+            <span class="hljs-string">"Math"</span>
+        ]
+    },
+    {
+        "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5577c95032fa23f820136124"</span>,
+        "<span class="hljs-attr">firstName</span>": <span class="hljs-string">"Thomas"</span>,
+        "<span class="hljs-attr">lastName</span>": <span class="hljs-string">"Edison"</span>,
+        "<span class="hljs-attr">subject</span>": <span class="hljs-string">"Radioactivity"</span>,
+        "<span class="hljs-attr">__v</span>": <span class="hljs-number">0</span>,
+        "<span class="hljs-attr">comments</span>": [
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Sam"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5574b6dee5c7ed30124b0dca"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            },
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Fred"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5574b6f3e5c7ed30124b0dcb"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            }
+        ],
+        "<span class="hljs-attr">subjects</span>": [
+            <span class="hljs-string">"asf"</span>
+        ]
+    },
+    {
+        "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5577c95032fa23f820136126"</span>,
+        "<span class="hljs-attr">firstName</span>": <span class="hljs-string">"Johanes"</span>,
+        "<span class="hljs-attr">lastName</span>": <span class="hljs-string">"Kepler"</span>,
+        "<span class="hljs-attr">subject</span>": <span class="hljs-string">"Astronomy"</span>,
+        "<span class="hljs-attr">__v</span>": <span class="hljs-number">2</span>,
+        "<span class="hljs-attr">comments</span>": [
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Hello Johannes"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"55746faa82492e4815d893c4"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            },
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Foobar"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"557490926f35aa301a50422a"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            },
+            {
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"55749e924c3a43000acf589d"</span>,
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Fable"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            },
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Qux"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"55749ebd4c3a43000acf589f"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            },
+            {
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"55749f804c3a43000acf58a0"</span>,
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Fingers"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            },
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Sam"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5574b5597d70f4e813d01ec4"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            }
+        ],
+        "<span class="hljs-attr">subjects</span>": [
+            <span class="hljs-string">"Johan"</span>,
+            <span class="hljs-string">"Able"</span>
+        ]
+    },
+    {
+        "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5577c95032fa23f820136125"</span>,
+        "<span class="hljs-attr">firstName</span>": <span class="hljs-string">"Isaac"</span>,
+        "<span class="hljs-attr">lastName</span>": <span class="hljs-string">"Newton"</span>,
+        "<span class="hljs-attr">subject</span>": <span class="hljs-string">"Astronomy"</span>,
+        "<span class="hljs-attr">__v</span>": <span class="hljs-number">0</span>,
+        "<span class="hljs-attr">comments</span>": [
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Fig"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5574bdf631bd81a416bd855f"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            },
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Qux"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5574be373956c08c12f1731c"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            }
+        ],
+        "<span class="hljs-attr">subjects</span>": [
+            <span class="hljs-string">"Bar"</span>
+        ]
+    },
+    {
+        "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5577c95032fa23f820136122"</span>,
+        "<span class="hljs-attr">firstName</span>": <span class="hljs-string">"Marie"</span>,
+        "<span class="hljs-attr">lastName</span>": <span class="hljs-string">"Curie"</span>,
+        "<span class="hljs-attr">subject</span>": <span class="hljs-string">"Radioactivity"</span>,
+        "<span class="hljs-attr">__v</span>": <span class="hljs-number">0</span>,
+        "<span class="hljs-attr">comments</span>": [
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"MarieOne"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5574e4ff748448b40c26a324"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-08T00:00:00.000Z"</span>
+            }
+        ],
+        "<span class="hljs-attr">subjects</span>": [
+            <span class="hljs-string">"Foo"</span>,
+            <span class="hljs-string">"Bar"</span>,
+            <span class="hljs-string">"Qux"</span>,
+            <span class="hljs-string">"Goober"</span>
+        ]
+    },
+    {
+        "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5577c95032fa23f820136123"</span>,
+        "<span class="hljs-attr">firstName</span>": <span class="hljs-string">"Maxi"</span>,
+        "<span class="hljs-attr">lastName</span>": <span class="hljs-string">"Planck"</span>,
+        "<span class="hljs-attr">subject</span>": <span class="hljs-string">"Radioactivity"</span>,
+        "<span class="hljs-attr">__v</span>": <span class="hljs-number">0</span>,
+        "<span class="hljs-attr">comments</span>": [
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Foo"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5574bd333a9db45405200d7b"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            },
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Bar"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5574bd3a3a9db45405200d7c"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            },
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Tom"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5574bd4f3a9db45405200d7d"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            },
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Sue"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5574bd861cc805b81ab0427c"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            }
+        ],
+        "<span class="hljs-attr">subjects</span>": [
+            <span class="hljs-string">"asdf"</span>,
+            <span class="hljs-string">"Bar"</span>
+        ]
+    },
+    {
+        "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5577c95032fa23f82013611d"</span>,
+        "<span class="hljs-attr">firstName</span>": <span class="hljs-string">"Carl"</span>,
+        "<span class="hljs-attr">lastName</span>": <span class="hljs-string">"Sagan"</span>,
+        "<span class="hljs-attr">subject</span>": <span class="hljs-string">"Radioactivity"</span>,
+        "<span class="hljs-attr">__v</span>": <span class="hljs-number">1</span>,
+        "<span class="hljs-attr">comments</span>": [
+            {
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5574a552583c8a0005366cd9"</span>,
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Carlbar"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-07T00:00:00.000Z"</span>
+            },
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"Foo"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5577cd7698d1b48420a76be0"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-10T00:00:00.000Z"</span>
+            }
+        ],
+        "<span class="hljs-attr">subjects</span>": [
+            <span class="hljs-string">"Astronomy"</span>
+        ]
+    },
+    {
+        "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5577c95032fa23f820136120"</span>,
+        "<span class="hljs-attr">firstName</span>": <span class="hljs-string">"Nikola"</span>,
+        "<span class="hljs-attr">lastName</span>": <span class="hljs-string">"Tesla"</span>,
+        "<span class="hljs-attr">subject</span>": <span class="hljs-string">"Radioactivity"</span>,
+        "<span class="hljs-attr">__v</span>": <span class="hljs-number">0</span>,
+        "<span class="hljs-attr">comments</span>": [
+            {
+                "<span class="hljs-attr">commentText</span>": <span class="hljs-string">"One"</span>,
+                "<span class="hljs-attr">_id</span>": <span class="hljs-string">"5574e4eb748448b40c26a323"</span>,
+                "<span class="hljs-attr">date</span>": <span class="hljs-string">"2015-06-08T00:00:00.000Z"</span>
+            }
+        ],
+        "<span class="hljs-attr">subjects</span>": [
+            <span class="hljs-string">"Serbia"</span>,
+            <span class="hljs-string">"Electricity"</span>,
+            <span class="hljs-string">"Physics"</span>,
+            <span class="hljs-string">"Blink"</span>
+        ]
+    },
+    {
+        "<span class="hljs-attr">_id</span>": <span class="hljs-string">"55786da8c446f6fc4a5d423a"</span>,
+        "<span class="hljs-attr">firstName</span>": <span class="hljs-string">"Gregor"</span>,
+        "<span class="hljs-attr">lastName</span>": <span class="hljs-string">"Mendel"</span>,
+        "<span class="hljs-attr">subject</span>": <span class="hljs-string">"Physics"</span>,
+        "<span class="hljs-attr">__v</span>": <span class="hljs-number">0</span>,
+        "<span class="hljs-attr">comments</span>": [],
+        "<span class="hljs-attr">subjects</span>": [
+            <span class="hljs-string">"Genetics"</span>,
+            <span class="hljs-string">"Plants"</span>
+        ]
+    }
+]
+</code></pre>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Push you code to your repository, and when you turn it in tell me the branch and folder where it resides.</p>
+<h2 id="additional-notes">Additional Notes</h2>
+<p>Things to remember.</p>
+<h3 id="mongoose-basics-connect">Mongoose Basics Connect</h3>
+<p>After you run <em>grunt check</em>, run your tests and your program again to make sure everything still works!</p>
+<p>This was my bug not yours, so you will not lose points for this. Nevertheless, for the final, be sure that you write the following in <strong>routes/connect.js</strong>:</p>
+<pre><code class="lang-javascript">connect.<span class="hljs-attr">connected</span> = <span class="hljs-literal">true</span>;
+</code></pre>
+<p>This is about lines 14 and 35.</p>
+<p>The assignment now has the <a href="#connecting">right code</a>.</p>
+<h3 id="mongoose-basics-empty-collection">Mongoose Basics Empty Collection</h3>
+<p>Notice that emptyCollection has now changed and contains a check to make sure you are connected. The assignment now has the <a href="#step-seven">right code</a>.</p>
+<h3 id="match-get-and-post">Match get and post</h3>
+<p>Here we do a <strong>get</strong> on the client:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> jqxhr = $.get(insertUrl, function(<span class="hljs-literal">result</span>) { ... })
+</code></pre>
+<p>Here is the server side, which is also a <strong>get</strong>:</p>
+<pre><code class="lang-javascript">router.<span class="hljs-keyword">get</span>(<span class="hljs-string">'/insertValidCollection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response)</span> </span>{ ... })
+</code></pre>
+<p>If you do a get on the client, do a get on the server. Don&#39;t do a get in one place and post in the other. (I had this mixed up in one version of the assignment. You need to get this cleaned up if you followed my example and made a mistake.)</p>
+<h3 id="scientists-file">Scientists File</h3>
+<p>Be sure to <a href="#ignore-scientists">add the code to ignore scientists</a>.</p>
+</div></body></html>

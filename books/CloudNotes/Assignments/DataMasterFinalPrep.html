@@ -1,0 +1,254 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>DataMasterFinalPrep</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><script src="/libs/scripts/Control.js"></script><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/charlie/About.html">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/charlie/development/index.html">Strongly Typed</a></li><li><a href="/charlie/development/web/index.html">Web & Scripts</a></li><li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/charlie/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>DataMasterFinalPrep</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#updated-routes">Updated Routes</a></li>
+<li><a href="#the-menu">The menu</a></li>
+<li><a href="#the-templateurl">The templateUrl</a></li>
+<li><a href="#setserver">SetServer</a></li>
+<li><a href="#handle-errors">Handle Errors</a></li>
+<li><a href="#jsontotable">JsonToTable</a></li>
+<li><a href="#display-table">Display Table</a></li>
+<li><a href="#other-views">Other Views</a></li>
+<li><a href="#default-route">Default Route for Jade/Pug Files</a></li>
+<li><a href="#login">Login</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#when-methods">When methods</a></li>
+<li><a href="#extra-credit">Extra Credit</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<p>The DataMaster Final Prep helps you get ready for the final. Major goals include:</p>
+<ul>
+<li>Be sure you can build a SPA: Single Page App</li>
+<li>Display data in grids</li>
+<li>Switch between one grid view and another</li>
+<li>Add a menu and remove many of the links</li>
+<li>Display proper error messages</li>
+<li>Add Login</li>
+<li>Understand routes and the MVC-like architecture that provides us with:<ul>
+<li>Loose Coupling</li>
+<li>Modules</li>
+<li>Single Responsibility Principle</li>
+<li><a href="http://www.oodesign.com/open-close-principle.html">The Open Closed Principle</a> and the <a href="https://en.wikipedia.org/wiki/Open/closed_principle">wiki</a></li>
+<li>etc</li>
+</ul>
+</li>
+</ul>
+<p>Do your work in a branch called <strong>Week11</strong>.</p>
+<h2 id="updated-routes">Updated Routes</h2>
+<p>I&#39;ll put the files in JsObjects:</p>
+<pre><code class="lang-bash">mkdir <span class="hljs-keyword">public</span><span class="hljs-regexp">/javascripts/</span>route-provider/
+cp -v $ELF_TEMPLATES<span class="hljs-regexp">/Routes/</span>* <span class="hljs-keyword">public</span><span class="hljs-regexp">/javascripts/</span>route-provider/.
+</code></pre>
+<p>This copies over updated, but backward compatible, copies of <strong>routes.js</strong> and <strong>run-query.js</strong>.</p>
+<p>It is crucial that you understand how these files work. The pith explanation of how to use them:</p>
+<ul>
+<li>Add an anchor and HREF either to the menu or to some Jade file.</li>
+<li>In control, add a <strong>.when</strong> call that captures the URL in your HREF.<ul>
+<li>Add a templateURL if there is a HTML to be displayed</li>
+<li>Specify which <strong>controller</strong> contains the JavaScript that works with the HTML</li>
+<li>Implement the controller.</li>
+</ul>
+</li>
+</ul>
+<p>Here is a sample <strong>.when</strong> block</p>
+<pre><code class="lang-javascript">.<span class="hljs-keyword">when</span>('/deleteDb', {
+    templateUrl: '/display-default',
+    controller: queryController,
+    resolve: {
+        <span class="hljs-literal">result</span>: queryController.delete
+    }
+}).<span class="hljs-keyword">when</span>('/createDb', { ... })
+</code></pre>
+<p>Here is a sample <strong>controller</strong>:</p>
+<pre><code class="lang-javascript">define([<span class="hljs-string">'runQuery'</span>, <span class="hljs-string">'utility'</span>, <span class="hljs-string">'jsonToHtml'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">runQuery, utility, jsonToHtml</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+
+    <span class="hljs-keyword">var</span> nameController = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">query, data</span>) </span>{
+        utility.clearAll();
+        <span class="hljs-keyword">if</span> (query.requestFailed) {
+            utility.failed(query.requestFailed);
+            <span class="hljs-keyword">return</span>;
+        }
+
+        <span class="hljs-keyword">var</span> debug = $(<span class="hljs-string">'#debug'</span>);
+        <span class="hljs-keyword">var</span> docs = $(<span class="hljs-string">'#docs'</span>);
+        <span class="hljs-keyword">var</span> displayData = <span class="hljs-built_in">JSON</span>.stringify(data, <span class="hljs-literal">null</span>, <span class="hljs-number">5</span>);
+        <span class="hljs-keyword">if</span> (query === <span class="hljs-string">'/databaseName'</span>) {
+            debug.html(displayData);
+        } <span class="hljs-keyword">else</span> {
+            docs.html(<span class="hljs-string">'allDatabases: '</span> + displayData);
+            <span class="hljs-keyword">var</span> jsonHtmlTable = jsonToHtml(<span class="hljs-built_in">JSON</span>.parse(displayData), <span class="hljs-string">'jsonTable'</span>, <span class="hljs-string">'table table-bordered table-striped'</span>, <span class="hljs-string">'Download'</span>);
+            $(<span class="hljs-string">'#myTable'</span>).html(jsonHtmlTable);
+
+        }
+    };
+
+    nameController.databaseName = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$q</span>) </span>{
+        <span class="hljs-keyword">return</span> runQuery(<span class="hljs-string">'/databaseName'</span>, $q);
+    };
+
+    nameController.allDbs = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$q</span>) </span>{
+        <span class="hljs-keyword">return</span> runQuery(<span class="hljs-string">'/listDb'</span>, $q);
+    };
+
+    <span class="hljs-keyword">return</span> nameController;
+});
+</code></pre>
+<p>That&#39;s the rhythm:</p>
+<ul>
+<li>Add menu item</li>
+<li>Add a three part object to <strong>control.js</strong> in the long series of <strong>.when</strong> statements.<ul>
+<li>HTML: Add a <strong>templateUrl</strong> pointing toward a pug file that generates HTML</li>
+<li>Controller: Specify control</li>
+<li>And specify any initialization methods in the resolve part.</li>
+</ul>
+</li>
+<li>The read code you need to write:<ul>
+<li>The Jade that defines your templateUrl</li>
+<li>The JavaScript for your controller</li>
+</ul>
+</li>
+</ul>
+<h2 id="the-menu">The menu</h2>
+<p>The menu item requires that you copy in <strong>$ELF_TEMPLATES/JadeMixins/mixin-nav.pug/jade</strong>.</p>
+<h2 id="the-templateurl">The templateUrl</h2>
+<p>The HTML you create in your pug file will be loaded into index.jade in the section called:</p>
+<pre><code class="lang-jade"><span class="hljs-meta">#elfContent</span>
+</code></pre>
+<p>In other words, you have to be sure that your <strong>index.jade/pug</strong> file contains a DIV with the ID <strong>#elfContent</strong>. If it is there, the routing code will insert your HTML into that DIV. See these lines in <strong>route.js</strong> to understand exactly what is happening:</p>
+<pre><code class="lang-javascript">$(<span class="hljs-string">'#elfContent'</span>).load(control.templateUrl, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+  that.resolveRequest(control)
+});
+</code></pre>
+<h2 id="setserver">SetServer</h2>
+<p>We need to isolate the code for setting up our IP address in its own file. This is a simple refactor.</p>
+<p>First create <strong>routes/set-server.js</strong>. The code in it looks like this:</p>
+<pre><code class="lang-javascript">var servers = [<span class="hljs-string">'http://127.0.0.1:5984'</span>, <span class="hljs-string">'http://192.168.2.19:5984'</span>,
+    <span class="hljs-string">'http://192.168.2.27:5984'</span>,
+    <span class="hljs-string">'http://168.156.41.96:5984'</span>
+]<span class="hljs-comment">;</span>
+var serverIndex = <span class="hljs-number">2</span><span class="hljs-comment">;</span>
+var serverUrl = servers[serverIndex]<span class="hljs-comment">;</span>
+console.log(<span class="hljs-string">'Middleware attaching to database on: '</span>, serverUrl)<span class="hljs-comment">;</span>
+
+module.exports.serverUrl = serverUrl<span class="hljs-comment">;</span>
+</code></pre>
+<p>Use it like this in <strong>Couch.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> setServer = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./set-server'</span>);
+<span class="hljs-keyword">var</span> nano = <span class="hljs-built_in">require</span>(<span class="hljs-string">'nano'</span>)(setServer.serverUrl);
+<span class="hljs-comment">// CODE OMITTED ....</span>
+<span class="hljs-keyword">var</span> couchBulk = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./CouchBulk'</span>)(router, dbName, setServer.serverUrl);
+</code></pre>
+<p><strong>Figure</strong>: <em>Your error display need not look exactly like this, but we want it should display enough information to help a pre-release user understand what has gone wrong.</em></p>
+<p>You will also need to make a change of a similar kind in <strong>middleware.js</strong>.</p>
+<h2 id="handle-errors">Handle Errors</h2>
+<p>We should now be able to display good error information, particularlly if we try to connect to the wrong server.</p>
+<p>A key point to grasp is that <strong>run-query.js</strong>, which will be called automatically, always sends errors to the controller in the query, the first parameter, as <strong>requestFailed</strong>.</p>
+<p>So you can write code that looks like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (query.requestFailed) {
+    utility.failed(query.requestFailed)<span class="hljs-comment">;</span>
+    <span class="hljs-keyword">return</span><span class="hljs-comment">;</span>
+}
+</code></pre>
+<p>Where the <strong>utility.failed</strong> method is part of an object that looks like this:</p>
+<pre><code class="lang-javascript">define(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+
+    <span class="hljs-keyword">var</span> utils = {
+
+        clearAll: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clear</span>(<span class="hljs-params">selector</span>) </span>{
+                $(selector).empty();
+            }
+
+            clear(<span class="hljs-string">'#docs'</span>);
+            clear(<span class="hljs-string">'#debug'</span>);
+            clear(<span class="hljs-string">'#myTable'</span>);
+        },
+
+        failed: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">requestFailed</span>) </span>{
+            <span class="hljs-keyword">var</span> debug = $(<span class="hljs-string">'#debug'</span>);
+            debug.html(<span class="hljs-built_in">JSON</span>.stringify(requestFailed, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+            <span class="hljs-keyword">var</span> docs = $(<span class="hljs-string">'#docs'</span>);
+            docs.html(requestFailed.description);
+        }
+    };
+
+    <span class="hljs-keyword">return</span> utils;
+});
+</code></pre>
+<p>Save this file as <strong>public/javascripts/utility.js</strong>. Don&#39;t forget to load it in <strong>main.js.</strong></p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/datamaster-error.gif" alt="data-master-error"></p>
+<h2 id="jsontotable">JsonToTable</h2>
+<p>This is my fork of this project:</p>
+<pre><code class="lang-bash">bower <span class="hljs-keyword">install</span> elf-<span class="hljs-keyword">json</span>-<span class="hljs-keyword">to</span>-html-<span class="hljs-keyword">table</span> <span class="hljs-comment">--save</span>
+</code></pre>
+<p>In main:</p>
+<pre><code class="lang-javascript"><span class="hljs-symbol">'jsonToHtml</span>': '/components/elf-json-<span class="hljs-keyword">to</span>-table/json-<span class="hljs-keyword">to</span>-table',
+</code></pre>
+<p>Some background:</p>
+<ul>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/ElfLogBower.html">http://www.ccalvert.net/books/CloudNotes/Assignments/ElfLogBower.html</a></li>
+</ul>
+<h2 id="display-table">Display Table</h2>
+<p>Here is how to call jsonToHtml:</p>
+<pre><code class="lang-javascript%60">var jsonHtmlTable = jsonToHtml(editedGameDocs, <span class="hljs-string">'jsonTable'</span>, <span class="hljs-string">'table table-bordered table-striped'</span>, <span class="hljs-string">'Download'</span>)<span class="hljs-comment">;</span>
+
+$(<span class="hljs-string">'#myTable'</span>).html(jsonHtmlTable)<span class="hljs-comment">;</span>
+</code></pre>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/data-master-bulk.png" alt="Bulk"></p>
+<p><strong>Figure</strong>: <em>Bulk Document View</em></p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/data-master-one-doc.png" alt="One Doc"></p>
+<p><strong>Figure</strong>: <em>One Document View</em></p>
+<h2 id="other-views">Other Views</h2>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/data-master-names.png" alt="Names"></p>
+<p><strong>Figure</strong>: <em>Names</em></p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/data-master-project.png" alt="Project"></p>
+<p><strong>Figure</strong>: <em>Project</em></p>
+<h2 id="default-route">Default Route for Jade/Pug Files</h2>
+<p>Near the bottom of <strong>routes/index.js</strong>, create a default route to handle requests for Jade files:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Requested: '</span>, request.params.id);
+    response.render(request.params.id, {
+        title: request.params.id
+    });
+});
+</code></pre>
+<p>This should be last route in the file. It says, in effect: <em>if none of the other routes in this file have matched the request, then assume this is a request to render a jade/pug file. For instance, if the user asks for /foo, then the code will attempt to render as HTML the file in the views directory called <strong>foo.jade</strong>.</em></p>
+<p>Additional details are in the <a href="http://www.elvenware.com/charlie/development/web/JavaScript/NodeJs.html#node-parameters">NodeJs chapter on Elvenware</a>:</p>
+<h2 id="login">Login</h2>
+<p>Google, and I believe also Twitter, won&#39;t accept an IP address for your auth callback Url. You should instead use your EC2 <strong>Public DNS</strong>.</p>
+<p>On the EC2 console, on the <strong>Instances</strong> page, you will see that a Public DNS is automatically assigned to your app. It will be something like:</p>
+<p>  ec2-XX-XXX-XXX-XX.us-west-2.compute.amazonaws.com</p>
+<p>This should resolve to your elastic IP and should work fine for both Google and Twitter callback addresses in their respective consoles. I have tested it only for Google, but it did work fine for me there. You will have to edit your <strong>routes/google-auth.js</strong> file to make this work.</p>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Run <strong>grunt check</strong> one last time, push your work. Tell me the branch and project name that you want me to grade. I&#39;m expecting:</p>
+<ul>
+<li>Branch: Week11</li>
+<li>Project: DataMaster</li>
+</ul>
+<h2 id="when-methods">When methods</h2>
+<p>We need to be sure that not all anchors end up sending code to the series of <strong>.when</strong> methods in <strong>control.js</strong>. Here is the code that does the sorting out. Please note that I&#39;m ensuring that all the anchors that I want routed to <strong>control.js</strong> have:</p>
+<ul>
+<li>a DIV or some other HTML element with the class <strong>.databaseOptions</strong><ul>
+<li>In particular, I add that class to the <strong>navigationBar</strong> in the menu to meet this requirement.</li>
+</ul>
+</li>
+<li>a UL</li>
+<li>an LI</li>
+<li>and an anchor.</li>
+</ul>
+<p>They have to appear in that order.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> handleClicks = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    event.preventDefault();
+    route.setRoute(event.target.pathname);
+    control(route);
+};
+$(<span class="hljs-string">'#navigationbar'</span>).addClass(<span class="hljs-string">'databaseOptions'</span>);
+$(<span class="hljs-string">'#main-content'</span>).load(<span class="hljs-string">'/menu-links'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-string">'.databaseOptions ul li a'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+        handleClicks(event);
+    });
+});
+</code></pre>
+<h2 id="extra-credit">Extra Credit</h2>
+<p>Use pug instead of Jade.</p>
+</div></body></html>

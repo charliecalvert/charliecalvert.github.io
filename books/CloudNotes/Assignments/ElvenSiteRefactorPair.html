@@ -1,0 +1,127 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ElvenSiteRefactorPair</title><link rel="shortcut icon" href="/charlie/images/favicon.png"><!-- Latest compiled and minified CSS--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- Optional theme--><link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap-theme.min.css"><!-- link(href='/libs/css/BootstrapIndex.css', rel='stylesheet', type='text/css')--><link href="/css/style.css" rel="stylesheet" type="text/css"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><script src="/components/jquery/dist/jquery.js"></script><script src="/components/angular/angular.js"></script><script src="/components/angular-route/angular-route.js"></script><script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- script(src='/libs/scripts/elvenware.js', type='text/javascript')--><script src="/libs/scripts/Control.js"></script><!-- script(src='http://localhost:35729/livereload.js')--></head><body><div class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="/index.html">Home</a></li><li><a href="/charlie/About.html">About</a></li><li class="dropdown"><a href="#/" data-toggle="dropdown" class="dropdown-toggle">Dropdown<b class="caret"></b></a><ul class="dropdown-menu"><li class="dropdown-header">Core Code</li><li><a href="/charlie/development/index.html">Strongly Typed</a></li><li><a href="/charlie/development/web/index.html">Web & Scripts</a></li><li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li><li class="divider"></li><li class="dropdown-header">OS and Tools</li><li><a href="/os/index.html">OS</a></li><li><a href="/charlie/development/database/index.html">Database</a></li><li><a href="/books/index.html">My Writing</a></li><li class="divider"></li><li class="dropdown-header">Art</li><li><a href="/charlie/Art/index.html">Poems & Photos</a></li><li><a href="/books/reading/index.html">Book Reviews</a></li><li><a href="/spirit/index.html">Spiritual</a></li><li class="divider"></li><li class="dropdown-header">Links</li><li><a href="/charlie/links.html">My Links</a></li><li><a href="http://www.github.com/charliecalvert">GitHub</a></li><li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li></ul></li></ul></div><!-- /.nav-collapse--></div></div><div class="container"><figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png"/></figure><h1>ElvenSiteRefactorPair</h1><h3>Table of Contents</h3><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#refactoring-overview">Refactoring Overview</a></li>
+<li><a href="#the-elf-class">The elf Class</a></li>
+<li><a href="#create-display-class">Create Display Class</a></li>
+<li><a href="#create-walking-class">Create Walking Class</a></li>
+<li><a href="#set-up-jasmine">Set up Jasmine</a></li>
+<li><a href="#details">Details</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul><h2 id="overview">Overview</h2>
+<p>The ElvenSiteRefactorPair assignment gives you a chance to refactor your code into logical classes. This should be a step toward providing your code with an architecture that is easy to understand, and easy to test.</p>
+<p>Do your work in the midterm branch. Please specify which one you use.</p>
+<p>The following diagram is for use with the command line version of our program, which is called <strong>MakeHtml</strong>. However, the <strong>MakeHtml</strong> program does the same thing as <strong>ElvenSite</strong>. Just substitute the word <strong>ElvenSite</strong> (your midterm) every place you see <strong>MakeHtml</strong></p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/make-html-work-flow.png" alt="MakeHtmlWorkFlow"></p>
+<h2 id="refactoring-overview">Refactoring Overview</h2>
+<p>My code ended up refactored into the following classes:</p>
+<ul>
+<li>elf</li>
+<li>elf.SiteConfig</li>
+<li>elf.ImagePicker // To be added later</li>
+<li>elf.Walking</li>
+<li>elf.utilities</li>
+<li>elf.display</li>
+</ul>
+<p>Set up is done in <strong>SiteConfig</strong>. For instance, I call <strong>loadConfig</strong> in this file, and I set up the button click handlers for the buttons in <strong>views/index.jade</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">SiteConfig</span>(<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-string">'#pageOne'</span>).click(pageOne);
+    $(<span class="hljs-string">'#pageTwo'</span>).click(pageTwo);
+}
+</code></pre>
+<p>Don&#39;t set up button handlers here for buttons on HTML pages that have not been loaded yet.</p>
+<p>The <strong>Walking</strong> class handles calling the server side route that calls the <strong>elven-site-tools</strong> code for iterating through the markdown that is kept in directories like <strong>AllTest</strong>. Th <strong>getJSON</strong> call that calls the <strong>/walking</strong> route is found in this class:</p>
+<pre><code class="lang-javascript">function callServer(requestQuery, requestIndex, callback) {
+    $.getJSON('/walk', requestQuery, function (<span class="hljs-literal">result</span>) {
+    // <span class="hljs-type">Code</span> omitted here
+    });
+}
+</code></pre>
+<p><strong>ImagePicker</strong> is for calling the <strong>elven-site-tools</strong> code for iterating over a batch of images and creating a markdown file. The <strong>elven-site-tools</strong> code also creates a smaller version of the main image. This code will be discussed in another assignment.</p>
+<p>The <strong>display</strong> class contains all the code that displays information on an HTML page.</p>
+<h2 id="the-elf-class">The elf Class</h2>
+<p>This object can create the constructor objects such as <strong>SiteConfig</strong>, <strong>Walking</strong> and <strong>ImagePicker</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elf = {
+    init: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        elf.siteConfig = <span class="hljs-keyword">new</span> elf.SiteConfig();
+        elf.walking = <span class="hljs-keyword">new</span> elf.Walking();
+        elf.imagePicker = <span class="hljs-keyword">new</span> elf.ImagePicker();
+    }
+};
+</code></pre>
+<p>The class is also used for global abatement. That is, it is used to limit the number of variables put in the global name space. Our program, should, in fact, put only the <strong>elf</strong> class in the global name space.</p>
+<h2 id="create-display-class">Create Display Class</h2>
+<p>The display class is created to be sure there is a separation of concerns. All code that has to do with displaying objects and their data goes in this class. We could refactor into multiple display classes, one for each object, if our program became more complicated.</p>
+<pre><code class="lang-javascript">elf.display = {
+
+    clear:<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'#displayArea'</span>).empty();
+        $(<span class="hljs-string">'#displayList'</span>).empty();
+    },
+
+    clearConfig: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'#dirsToWalk'</span>).empty();
+        $(<span class="hljs-string">'#destinationDirs'</span>).empty();
+    },
+
+    fillDisplayArea: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">stringToDisplay</span>) </span>{
+        $(<span class="hljs-string">'#displayArea'</span>).html(stringToDisplay);
+    },
+
+    showApacheFiles: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">files, destinationDir</span>) </span>{
+        files.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">file</span>) </span>{
+            <span class="hljs-keyword">var</span> base = <span class="hljs-string">"/var/www/html/"</span>;
+            <span class="hljs-keyword">var</span> extra = destinationDir.slice(base.length, destinationDir.length);
+            <span class="hljs-keyword">var</span> url = <span class="hljs-string">'http://localhost/'</span> + extra + file.slice(destinationDir.length, file.length);
+            $(<span class="hljs-string">'#displayList'</span>).append(<span class="hljs-string">'&lt;li&gt;&lt;a href=\"'</span> + url + <span class="hljs-string">'\" target=\"_blank\"&gt;'</span> + url + <span class="hljs-string">'&lt;/a&gt;&lt;/li&gt;'</span>);
+        });
+    },
+
+    showHtmlFiles: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">files, destinationDir</span>) </span>{
+        files.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">file</span>) </span>{
+            <span class="hljs-comment">// var index = file.lastIndexOf('/');</span>
+            <span class="hljs-keyword">var</span> url = <span class="hljs-string">'http://localhost/'</span> + file.slice(destinationDir.length, file.length);
+            $(<span class="hljs-string">'#displayList'</span>).append(<span class="hljs-string">'&lt;li&gt;&lt;a href=\"'</span> + url + <span class="hljs-string">'\" target=\"_blank\"&gt;'</span> + url + <span class="hljs-string">'&lt;/a&gt;&lt;/li&gt;'</span>);
+        });
+    },
+
+    showDebug: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value</span>) </span>{
+        $(<span class="hljs-string">'#debug'</span>).append(<span class="hljs-string">'&lt;li&gt;'</span> + value + <span class="hljs-string">'&lt;/li&gt;'</span>);
+    }
+
+};
+</code></pre>
+<h2 id="create-walking-class">Create Walking Class</h2>
+<pre><code class="lang-javascript">elf.Walking = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Walking</span><span class="hljs-params">()</span> </span>{
+
+    }
+
+    <span class="hljs-comment">// CODE OMITTED HERE</span>
+
+    <span class="hljs-keyword">return</span> Walking
+})();
+</code></pre>
+<h2 id="set-up-jasmine">Set up Jasmine</h2>
+<p>To unit test the code on the server side, we want to set up jasmine. The first step is to create a <strong>jasmine.json</strong> file in a folder called <strong>spec/support</strong>. We are meeting a requirement developed by the authors of Jasmine. In particular, Jasmine expects to find this file in this location.</p>
+<p>The <strong>/spec/support/jasmine.json</strong> file looks like this:</p>
+<pre><code class="lang-json">{
+  "<span class="hljs-attr">spec_dir</span>": <span class="hljs-string">"spec"</span>,
+  "<span class="hljs-attr">spec_files</span>": [
+    <span class="hljs-string">"**/test*.js"</span>
+  ]
+}
+</code></pre>
+<p>The file says two things:</p>
+<ul>
+<li>Our tests are in a directory called <strong>spec</strong>.</li>
+<li>Each of our test suites is stored in a file that begins with the word <strong>test</strong>. For instance: <strong>test-basics.js</strong>.</li>
+</ul>
+<h2 id="details">Details</h2>
+<p>You should modify <strong>layout.jade</strong>. Be sure to include:</p>
+<pre><code><span class="hljs-function"><span class="hljs-title">meta</span><span class="hljs-params">(charset=<span class="hljs-string">'UTF-8'</span>)</span></span>
+<span class="hljs-function"><span class="hljs-title">meta</span><span class="hljs-params">(name=<span class="hljs-string">'viewport'</span>, content=<span class="hljs-string">'width=device-width'</span>)</span></span>
+title= title
+</code></pre><p>My <strong>control.js</strong> file now mostly contains <strong>elf.SiteContig</strong> with a constructor and <strong>loadConfig</strong>. Should we refactor into another class?</p>
+<h2 id="turn-it-in">Turn it in</h2>
+<p>Push your branch.</p>
+</div></body></html>
