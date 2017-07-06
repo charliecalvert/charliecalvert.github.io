@@ -36,56 +36,55 @@
 <p>We need one variable in Control with object scope:</p>
 <pre><code>var mapDiv<span class="hljs-comment">;</span>
 </code></pre><p>There are a few more methods we need. Put in this case, things are very simple, all the code goes into Control.js. (For the final, you will arrange things differently, but for now, just put all the code in Control.js.) Here is an updated and simplified call to <strong>getCurrentPosition</strong>:</p>
-<pre><code class="lang-javascript">
-        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">position</span><span class="hljs-params">()</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">position</span><span class="hljs-params">()</span> </span>{
 
-            <span class="hljs-keyword">var</span> options = {
-                enableHighAccuracy : <span class="hljs-literal">true</span>,
-                timeout : <span class="hljs-number">5000</span>,
-                maximumAge : <span class="hljs-number">0</span>
-            };
+    <span class="hljs-keyword">var</span> options = {
+        enableHighAccuracy : <span class="hljs-literal">true</span>,
+        timeout : <span class="hljs-number">5000</span>,
+        maximumAge : <span class="hljs-number">0</span>
+    };
 
-            <span class="hljs-keyword">try</span> {
-                <span class="hljs-keyword">if</span> (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(loadMap, showDebug, options);
-                } <span class="hljs-keyword">else</span> {
-                    showError(<span class="hljs-string">"NOT-SUPPORTED"</span>);
-                }
-            } <span class="hljs-keyword">catch</span> (evt) {
-                alert(evt);
-            }
+    <span class="hljs-keyword">try</span> {
+        <span class="hljs-keyword">if</span> (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(loadMap, showDebug, options);
+        } <span class="hljs-keyword">else</span> {
+            showError(<span class="hljs-string">"NOT-SUPPORTED"</span>);
         }
+    } <span class="hljs-keyword">catch</span> (evt) {
+        alert(evt);
+    }
+}
 </code></pre>
 <p>Instead of just showing the user the position, we display the position on a map:</p>
-<pre><code class="lang-javascript">        function loadMap(<span class="hljs-built_in">position</span>) {
-            <span class="hljs-built_in">var</span> latlng = <span class="hljs-built_in">new</span> google.maps.LatLng(<span class="hljs-built_in">position</span>.coords.latitude,
-                    <span class="hljs-built_in">position</span>.coords.longitude);
-            <span class="hljs-built_in">var</span> mapOptions = {
-                zoom : <span class="hljs-number">8</span>,
-                <span class="hljs-built_in">center</span> : latlng,
-                mapTypeId : google.maps.MapTypeId.ROADMAP
-            };
-            <span class="hljs-built_in">var</span> <span class="hljs-built_in">map</span> = $(<span class="hljs-string">"#map"</span>);
-            mapDiv = <span class="hljs-built_in">new</span> google.maps.Map(<span class="hljs-built_in">map</span>[<span class="hljs-number">0</span>], mapOptions);
+<pre><code class="lang-javascript">function loadMap(<span class="hljs-built_in">position</span>) {
+    <span class="hljs-built_in">var</span> latlng = <span class="hljs-built_in">new</span> google.maps.LatLng(<span class="hljs-built_in">position</span>.coords.latitude,
+            <span class="hljs-built_in">position</span>.coords.longitude);
+    <span class="hljs-built_in">var</span> mapOptions = {
+        zoom : <span class="hljs-number">8</span>,
+        <span class="hljs-built_in">center</span> : latlng,
+        mapTypeId : google.maps.MapTypeId.ROADMAP
+    };
+    <span class="hljs-built_in">var</span> <span class="hljs-built_in">map</span> = $(<span class="hljs-string">"#map"</span>);
+    mapDiv = <span class="hljs-built_in">new</span> google.maps.Map(<span class="hljs-built_in">map</span>[<span class="hljs-number">0</span>], mapOptions);
 
-            makeMarker('here', latlng.lat(), latlng.lng());
-        }
+    makeMarker('here', latlng.lat(), latlng.lng());
+}
 </code></pre>
 <p>This function allows us to put a pin, or marker, on the map:</p>
-<pre><code class="lang-javascript">        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">makeMarker</span><span class="hljs-params">(name, latitude, longitude)</span> </span>{
-            <span class="hljs-keyword">var</span> location = <span class="hljs-keyword">new</span> google.maps.LatLng(latitude, longitude);
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">makeMarker</span><span class="hljs-params">(name, latitude, longitude)</span> </span>{
+    <span class="hljs-keyword">var</span> location = <span class="hljs-keyword">new</span> google.maps.LatLng(latitude, longitude);
 
-            <span class="hljs-keyword">var</span> place = <span class="hljs-keyword">new</span> google.maps.Marker({
-                position : location,
-                map : mapDiv,
-                title : name
-            });
+    <span class="hljs-keyword">var</span> place = <span class="hljs-keyword">new</span> google.maps.Marker({
+        position : location,
+        map : mapDiv,
+        title : name
+    });
 
-            google.maps.event.addListener(place, <span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-                mapDiv.setCenter(location);
-                mapDiv.setZoom(<span class="hljs-number">10</span>);
-            });
-        }
+    google.maps.event.addListener(place, <span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        mapDiv.setCenter(location);
+        mapDiv.setZoom(<span class="hljs-number">10</span>);
+    });
+}
 </code></pre>
 <p>And here is ShowDebug:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> showDebug = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">textToDisplay</span>) </span>{
