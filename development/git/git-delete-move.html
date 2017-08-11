@@ -17,11 +17,11 @@
 want with the following command:</p>
 <pre><code>git mv <span class="hljs-keyword">X</span> <span class="hljs-keyword">Y</span>
 </code></pre><p>Where X and Y could be either the name of a folder or a file. Examples:</p>
-<pre><code>git mv MyFile<span class="hljs-selector-class">.txt</span> MyFolder/.
+<pre><code>    git mv MyFile<span class="hljs-selector-class">.txt</span> MyFolder/.
 
-mkdir MyNewFolder
-git mv \*<span class="hljs-selector-class">.txt</span> MyNewFolder/.
-git mv MyFolder MyNewFolder/.
+    mkdir MyNewFolder
+    git mv \*<span class="hljs-selector-class">.txt</span> MyNewFolder/.
+    git mv MyFolder MyNewFolder/.
 </code></pre><p>Just as on Linux, you can rename a file with the mv command:</p>
 <pre><code><span class="hljs-selector-tag">git</span> <span class="hljs-selector-tag">mv</span> <span class="hljs-selector-tag">MyFile01</span><span class="hljs-selector-class">.txt</span> <span class="hljs-selector-tag">MyFile02</span><span class="hljs-selector-class">.txt</span>
 </code></pre><p>This renames MyFile01.txt to MyFile02.txt.</p>
@@ -43,7 +43,7 @@ rm</em> to delete files. See Figure 1 below.</p>
 <h2>Permanent Delete</h2>
 <p>In the following explanation I focus on permanently removing a folder called node_modules from your repository. However, this explanation applies to removing any folder or repository.</p>
 <p><strong>NOTE</strong>: <em>There are two ways to permanently remove files or folders. Below you can find a discussion of how to do the delete using a tool called BFG.</em></p>
-<p>If you did not include node_modules in your .gitignore file. As a result, your repository has a lot of deeply nested files in the director called Week02-GetNumbers/node_modules. As a result, your repository is many times bigger than it needs to be, and I cannot check it out on Windows, though I can on Linux. I can&#39;t check it out because the path to the files in this deeply nested directory are too long for Windows to handle.</p>
+<p>If you did not include node_modules in your .gitignore file, you will find that you have pushed node_modules to your repository. As a result, your repository has a lot of deeply nested files in the directory called Week02-GetNumbers/node_modules. As a result, your repository is many times bigger than it needs to be, and I cannot check it out on Windows, though I can on Linux. I can&#39;t check it out because the path to the files in this deeply nested directory is too long for Windows to handle.</p>
 <p>You should <strong>immediately</strong> update your .gitignore file in the root of your repository so that it includes node_modules. If you have any questions, on how to do this, please ask in the discussion area.</p>
 <p>The next step is to permanently remove the node_modules folders. This is an odd thing to do, because the whole purpose of Git is to keep track, for all time, of all changes that you make to a project. So even if you delete a file from a repository with git rm file_name or git rm -r node_modules, it should still be in the repository, but not in your working copy of the files. In other words, node keeps track of the files so that you can recall them if you need them.</p>
 <p>It is, however, possible to permanently remove a file or folder from a repository. Doing so is a rather drastic step. Here is the command you should run from the root of your repository:</p>
@@ -58,15 +58,15 @@ rm</em> to delete files. See Figure 1 below.</p>
 </code></pre><p>Use that syntax just the one time. After you have pushed it once, you can resume pushing the repository with a simple git push command. When you are done, let me know about the change by resubmitting the assignment. I will then re-clone your repository.</p>
 <p>This drastic step breaks all other copies of the repository. On your end, you should therefore delete any copies of the repository from all your machines, and then re-clone it. (I think you can keep the one on which you issued this command and the push, but all other copies should be deleted.) Don&#39;t try to run the command on all copies. That won&#39;t work. Instead, delete them, and then re-clone them with this command:</p>
 <pre><code>git <span class="hljs-keyword">clone</span> <span class="hljs-title">git</span>@bitbucket.org:lastname/prog272_lastname.git
-</code></pre><p>It is difficult to emphasize too often how very important it is to put <strong>node_modules</strong> in your <strong>.gitignore</strong> file. Please look on GitHub, Bitbucket, etc when you are through with this process and make sure it is now included.</p>
+</code></pre><p>It is difficult to emphasize too often how very important it is to put <strong>node_modules</strong> in your <strong>.gitignore</strong> file. Please look on GitHub, Bitbucket, etc. when you are through with this process and make sure it is now included.</p>
 <p><strong>NOTES</strong>: <em>I&#39;ve heard it said, but not tested that you can remove multiple copies of nested folders like this:</em></p>
 <pre><code>git <span class="hljs-keyword">filter</span>-branch --tree-<span class="hljs-keyword">filter</span> <span class="hljs-string">'git rm -rf --ignore-unmatch */foo/* '</span> HEAD
 </code></pre><a class="anchor" id="git-mv"></a>
 <h2>Git mv vs Bash mv</h2>
-<p>There is usually not a lot of difference between <strong>git mv</strong> and <strong>mv</strong>. Nevertheless, I suggest you use <strong>git mv</strong> and <strong>git rm</strong> when renaming or deleting folders that are already under git control.</p>
-<p>Though it is not always a problem, there are cases when using <strong>git mv</strong> rather than just <strong>mv</strong> is better able to preserver your history. Every time you commit, git saves the state of your file. So it remembers what a file looked like the first time you committed it, and each subsequent time. If you use mv instead of git mv, then git can think that you simply deleted one file and created a new file. Then you history won&#39;t be attached to the new file, and you can see what it looked like in the past. If you use git mv then your history for a file will be preserved.</p>
-<p>Usually, however, git can be smart about what happens when you use mv instead of git mv. In other words, it seems to me, and I am not certain about this, that it can usually figure out that a deleted file and a new file are so exactly similar that you must have done a rename, and so it preserves the file history. But I don&#39;t think it is good idea to count on this, instead use git mv to be safe.</p>
-<p>At first, you won&#39;t care much about the history of files since you won&#39;t really understand how to go back in time to previous version. But over time, you will learn how to do this. Then you may find occasions when you are glad you preserved the whole history of a file. But frankly, this topic is complicated, and I would take what I say here with a grain of salt. All I can really assert is just that it is safer and easier to use git mv rather than mv.</p>
+<p>There is usually not a lot of difference between <strong>git mv</strong> and <strong>mv</strong>. Nevertheless, I suggest you use <strong>git mv</strong> and <strong>git rm</strong> when renaming or deleting folders that are already under Git control.</p>
+<p>Though it is not always a problem, there are cases when using <strong>git mv</strong> rather than just <strong>mv</strong> is better able to preserve your history. Every time you commit, Git saves the state of your file. So it remembers what a file looked like the first time you committed it, and each subsequent time. If you use <strong>mv</strong> instead of <strong>git mv</strong>, then Git can think that you simply deleted one file and created a new file. Then your history won&#39;t be attached to the new file, and you cannot see what it looked like in the past. If you use <strong>git mv</strong>, then your history for a file will be preserved.</p>
+<p>Usually, however, Git can be smart about what happens when you use mv instead of git mv. In other words, it seems to me, and I am not certain about this, that it can usually figure out that a deleted file and a new file are so exactly similar that you must have done a rename, and so it preserves the file history. But I don&#39;t think it is good idea to count on this, instead use <strong>git mv</strong> to be safe.</p>
+<p>At first, you won&#39;t care much about the history of files since you won&#39;t really understand how to go back in time to a previous version. But over time you will learn how to do this. Then you may find occasions when you are glad you preserved the whole history of a file. But frankly, this topic is complicated, and I would take what I say here with a grain of salt. All I can really assert is just that it is safer and easier to use <strong>git mv</strong> rather than <strong>mv</strong>.</p>
 <p>See this discussion:</p>
 <p><a href="http://stackoverflow.com/a/1094392/253576">http://stackoverflow.com/a/1094392/253576</a> (Links to an external site.)</p>
 <p>Notice that the guy says they are the same, but the top comment on his reply is that &quot;git mv&quot; has a few safeties built in. The discussion goes on from there, but I don&#39;t want to try to recap it. It gets pretty technical pretty quickly.</p>
@@ -113,7 +113,7 @@ a password in it, or some huge files or directories (node_modules,
 <span class="hljs-keyword">cd</span> myclone
 git clone C:\temp\<span class="hljs-keyword">Test</span>.git
 </code></pre><p>Now you will have regular repository and can explore it.</p>
-<p>When you are convinced that all is good then go back to the mirrored
+<p>When you are convinced that all is good, then go back to the mirrored
 repo and push it:</p>
 <pre><code>git <span class="hljs-keyword">push</span>
 </code></pre><p>Your old repositories are now out of date and need to be cloned again.
@@ -122,20 +122,20 @@ Don&#39;t just update your repository, clone it a second time:</p>
 git clone git@github.com:charliecalvert/<span class="hljs-keyword">Test</span>.git
 </code></pre><a class="anchor" id="git-deletions-and-workflow"></a>
 <h2>Git Deletions and Workflow</h2>
-<p>In general, I find one of the gotchas with using Git is that deletion and renaming of files is best done with Git. So most of the time I&#39;m working happily in Eclipse, making lots of edits and creating new files. I do all this work in Eclipse without problem. Life is good. Then I decide I want to rename a file, move it into a new directory, or delete it. At that point, I tend to switch to the command line, and give these commands with git:</p>
+<p>In general, I find one of the gotchas with using Git is that deletion and renaming of files is best done with Git. So most of the time I&#39;m working happily in Eclipse, making lots of edits and creating new files. I do all this work in Eclipse without problem. Life is good. Then I decide I want to rename a file, move it into a new directory, or delete it. At that point, I tend to switch to the command line, and give these commands with Git:</p>
 <pre><code>git rm MyFile<span class="hljs-selector-class">.js</span>
 
 git mv MyFile<span class="hljs-selector-class">.js</span> MyNewName.js
 </code></pre><p>The first command deletes a file, the second renames it. Here is removing (entirely deleting) a directory and its contents (obviously a dangerous command):</p>
 <pre><code><span class="hljs-attribute">git rm -r MyDirectory</span>
 </code></pre><p>Then I choose Alt-Tab to go back to Eclipse, and generally it has found my changes already. If not, I focus the Project Manager and press F5 to refresh the view. As I say, this is perhaps less than ideal, but it is my general workflow when in a Git Repository.</p>
-<p>The point is that Git will track the changes we make that way, so if we need to restore a deleted file, etc, we can do so later on. Just trust Git to keep all your changes.</p>
+<p>The point is that Git will track the changes we make that way, so if we need to restore a deleted file, etc., we can do so later on. Just trust Git to keep all your changes.</p>
 <a class="anchor" id="undo-an-add-in-git"></a>
 <h2>Undo an Add in Git</h2>
 <p>Sometimes you do an add by mistake:</p>
 <pre><code>git <span class="hljs-keyword">add</span><span class="bash"> MyFile.txt
 </span>git <span class="hljs-keyword">add</span><span class="bash"> YourFile.txt</span>
-</code></pre><p>Suppose that you meant to one of the adds, but not the other. You can
+</code></pre><p>Suppose that you meant to do one of the adds, but not the other. You can
 fix it like this:</p>
 <pre><code>git <span class="hljs-keyword">reset</span> <span class="hljs-keyword">HEAD</span> MyFile.txt
 </code></pre><p>And this resets everything to before the add:</p>
@@ -166,17 +166,15 @@ fix it like this:</p>
 <pre><code>    <span class="hljs-attribute">git</span> checkout Week07-TwitterInteractive
 </code></pre><p>This should undelete a directory or file if you have not yet done a commit. If you have done the commit, then run git log so you can get the id of the commit you want to restore. Then try something like this:</p>
 <pre><code>    git checkout <span class="hljs-tag">&lt;<span class="hljs-name">COMMIT_ID</span>&gt;</span> README.md
-</code></pre><p>Here is a few lines of a session that uses the git log command:</p>
-<pre><code>```bash
-$ git log --pretty=oneline
-<span class="hljs-number">747</span>a7b0ab64cf3b9a3fddbcc9cd8343aef3f7219 Finished TwitterInteractive
-<span class="hljs-number">09</span>c0818092c7e4c25852a44ab9ff81efafe31214 finished bitlyRefine
-<span class="hljs-number">9e613644</span>dd3ce268d0f763810d90e8941bd81474 ran grunt clean
-```
-</code></pre><p>And here&#39;s how to get a file back to third commit shown above:</p>
+</code></pre><p>Here are a few lines from a session that uses the git log command:</p>
+<pre><code class="lang-bash">    $ git <span class="hljs-built_in">log</span> <span class="hljs-comment">--pretty=oneline</span>
+    <span class="hljs-number">747</span>a7b0ab64cf3b9a3fddbcc9cd8343aef3f7219 Finished TwitterInteractive
+    <span class="hljs-number">09</span>c0818092c7e4c25852a44ab9ff81efafe31214 finished bitlyRefine
+    <span class="hljs-number">9e613644</span>dd3ce268d0f763810d90e8941bd81474 ran grunt clean
+</code></pre>
+<p>And here&#39;s how to get a file back to the third commit shown above:</p>
 <pre><code>    <span class="hljs-selector-tag">git</span> <span class="hljs-selector-tag">checkout</span> 9<span class="hljs-selector-tag">e613644dd3ce268d0f76</span> <span class="hljs-selector-tag">README</span><span class="hljs-selector-class">.md</span>
 </code></pre><p>References:</p>
-<pre><code>-<span class="ruby"> &lt;<span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/git-scm.com/book</span><span class="hljs-regexp">/en/v</span>2/Git-Basics-Undoing-Things&gt;
-</span>-<span class="ruby"> &lt;<span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/www.atlassian.com/git</span><span class="hljs-regexp">/tutorials/viewing</span>-old-commits/&gt;</span>
+<pre><code>- &lt;https:<span class="hljs-regexp">//gi</span>t-scm.com<span class="hljs-regexp">/book/</span>en<span class="hljs-regexp">/v2/</span>Git-Basics-Undoing-Things<span class="hljs-regexp">/&gt;</span>
 </code></pre><p>Copyright &copy; 2017 by Charles Calvert</p>
 </div></body></html>
