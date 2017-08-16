@@ -8,9 +8,11 @@
 <li><a href="#module-missing">Cannot Find Module</a></li>
 <li><a href="#more-on-node-and-package-json">More on Node and Package.json</a></li>
 <li><a href="#error-couldn-t-read-dependencies">Error: Couldn&#39;t Read Dependencies</a></li>
-<li><a href="#EADDRINUSE">Error: Address in Use EADDRINUSE</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="node-packages"></a>
+<li><a href="#EADDRINUSE">Error: Address in Use EADDRINUSE</a></li>
+<li><a href="#bower">Bower</a></li>
+<li><a href="#more on bower">More on Bower</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="node-packages"></a>
 <h1>Node Packages</h1>
-<p>This document is focused on Node and the <strong>package.json</strong> file.</p>
+<p>This document is focused on Node, NPM, Bower. It also covers the <strong>package.json</strong> and <strong>bower.json</strong> files.</p>
 <a class="anchor" id="npm-shortcuts"></a>
 <h2>NPM ShortCuts</h2>
 <table>
@@ -290,4 +292,77 @@ Ctrl-C to stop the server:</p>
 ^C   &lt;== Here I press Ctrl-C
 C:<span class="hljs-symbol">\G</span>it<span class="hljs-symbol">\P</span>282<span class="hljs-symbol">\C</span>anvasGrid&gt;
 </code></pre><p>An important variation on this error can occur if you are running upstart. Details about that variant of the <a href="#eaddrinuse-and-upstart">EEADDRINUSE error are discussed below</a>.</p>
+<a class="anchor" id="bower"></a>
+<h2>Bower</h2>
+<p>Many developers use NPM to install server side dependencies, bower to install client side dependencies. We don&#39;t have to do things this way, but it helps us neatly partition our app if we follow this policy.</p>
+<p><strong>NOTE</strong>: <em>The introduction of webpack and ES6 has meant that most developers are moving on from Bower when creating new projects. However, there are still many older style projects in existence, and if you want to create an ES5, rather than an ES6, application, then Bower is still a good choice.</em></p>
+<p>To begin, we need to create a bower.json file. You can do this in one of two ways:</p>
+<ul>
+<li>Run <strong>bower init</strong></li>
+<li>Copy a sample bower.json from elsewhere: <strong>cp $ELF_TEMPLATES/bower.json .</strong>.</li>
+</ul>
+<p>If you choose the first option, you can take all the defaults for the prompts that you see, or fill in the obvious fields with sensible values. If you choose for the second option, don&#39;t forget the period at the end of the text for the copy command. It specifies where you should copy bower.json. In particular, it says: copy it here. The environment variable $ELF_TEMPLATES points at:</p>
+<pre><code>~<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>Templates
+</code></pre><p>By default, bower installs your files not into <strong>node_modules</strong> but into a directory called <strong>bower_components</strong>. In express applications, however, we might want to install bower components into a different directory. In particular, we might choose to place them in our project&#39;s <strong>public/bower_components</strong> folder. To ensure that happens, copy a bower configuration file into your project:</p>
+<pre><code>cp <span class="hljs-variable">$ELF_TEMPLATES</span>/<span class="hljs-selector-class">.bowerrc</span> .
+</code></pre><p>This small text file contains the following text, which tells bower to install its components into the <strong>public/components</strong> folder:</p>
+<pre><code>{
+  <span class="hljs-attr">"directory"</span>: <span class="hljs-string">"public/bower_components"</span>
+}
+</code></pre><a class="anchor" id="more on bower"></a>
+<h2>More on Bower</h2>
+<p>Bower is like npm. Use NPM for server side code. Use Bower for client side code. This is not absolutely necessary, but it is common. As a result, we will learn about both NPM and Bower in this class.</p>
+<p>Install Bower:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> -g bower
+</code></pre><p>Create a <strong>bower.json</strong> file in the root of your current project:</p>
+<pre><code><span class="hljs-keyword">bower </span>init
+</code></pre><p>You will be prompted for input. Take all the defaults or use your common sense to fill in the fields as you are prompted for them.</p>
+<p>Remember that Windows does not like to start a file with a period. As a result, we need to create <strong>.bowerrc</strong> like this:</p>
+<pre><code><span class="hljs-selector-tag">echo</span> { } &gt; <span class="hljs-selector-class">.bowerrc</span>
+</code></pre><p>Edit <strong>.bowerrc</strong> in geany and add the following so that we will install bower components into the <strong>public/components</strong> directory:</p>
+<pre><code class="lang-javascript">{
+  <span class="hljs-attr">"directory"</span>: <span class="hljs-string">"public/bower_components"</span>,
+  <span class="hljs-attr">"json"</span>: <span class="hljs-string">"bower.json"</span>
+}
+</code></pre>
+<p>Again, test in <strong>jsonlint.com</strong> to make sure it is valid.</p>
+<p>Install jquery:</p>
+<pre><code><span class="hljs-keyword">bower </span><span class="hljs-keyword">install </span><span class="hljs-keyword">jquery </span>--save
+</code></pre><p>The <strong>--save</strong> parameter saves your request for jquery into the <strong>bower.json file.</strong>  </p>
+<p>My <strong>bower.json</strong> file now looks like this:</p>
+<pre><code class="lang-javascript">{
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Week02-ExpressJQuery"</span>,
+  <span class="hljs-attr">"version"</span>: <span class="hljs-string">"0.0.0"</span>,
+  <span class="hljs-attr">"authors"</span>: [
+    <span class="hljs-string">"Charlie CedarIsle Calvert &lt;charlie@elvenware.com&gt;"</span>
+  ],
+  <span class="hljs-attr">"description"</span>: <span class="hljs-string">"JQuery Demo"</span>,
+  <span class="hljs-attr">"main"</span>: <span class="hljs-string">"bin/www"</span>,
+  <span class="hljs-attr">"keywords"</span>: [
+    <span class="hljs-string">"JQuery"</span>
+  ],
+  <span class="hljs-attr">"license"</span>: <span class="hljs-string">"MIT"</span>,
+  <span class="hljs-attr">"homepage"</span>: <span class="hljs-string">"www.elvenware.com"</span>,
+  <span class="hljs-attr">"ignore"</span>: [
+    <span class="hljs-string">"**/.*"</span>,
+    <span class="hljs-string">"node_modules"</span>,
+    <span class="hljs-string">"bower_components"</span>,
+    <span class="hljs-string">"test"</span>,
+    <span class="hljs-string">"tests"</span>
+  ],
+  <span class="hljs-attr">"dependencies"</span>: {
+    <span class="hljs-attr">"jquery"</span>: <span class="hljs-string">"~2.1.3"</span>
+  }
+}
+</code></pre>
+<p>The most important part is the <strong>dependencies</strong> object at the end of the file.</p>
+<p>Modify <strong>/views/layout.jade</strong> to include jquery and <strong>Control.js</strong></p>
+<pre><code>doctype <span class="hljs-selector-tag">html</span>
+<span class="hljs-selector-tag">html</span>
+    head
+        title= title
+        link(rel=<span class="hljs-string">'stylesheet'</span>, href=<span class="hljs-string">'/stylesheets/style.css'</span>)
+        script(src=<span class="hljs-string">'components/jquery/dist/jquery.js'</span>)
+        etc...
+</code></pre><p><strong>NOTE</strong>: <em>When I type <strong>etc...</strong>, that can sometimes be translated as: &quot;Filling in this part of the file is left as an exercise for the reader.&quot;</em></p>
 </div></body></html>
