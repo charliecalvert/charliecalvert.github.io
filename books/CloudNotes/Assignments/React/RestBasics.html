@@ -1,6 +1,7 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>RestBasics</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>RestBasics</h1><p>Welcome to RestBasics</p><ul><!--TOC_Start--><li><a href="#rest-basics">Rest Basics</a></li>
 <li><a href="#get-started">Get Started</a></li>
+<li><a href="#create-project-directory">Create Project Directory</a></li>
 <li><a href="#create-server">Create Server</a></li>
 <li><a href="#create-client">Create Client</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="rest-basics"></a>
@@ -10,10 +11,16 @@
 <h2>Get Started</h2>
 <p>Create a directory called week02-rest-basics in your Repository.</p>
 <p><strong>NOTE</strong>: <em>Let&#39;s try switching to all small letters for now, since npm is getting fussy about this issue.</em></p>
-<a class="anchor" id="create-server"></a>
+<a class="anchor" id="create-project-directory"></a>
+<h2>Create Project Directory</h2>
+<p>We are going to have two projects in this assignment, so lets set up a directory for them. Navigate to the root of your repository and enter the following commands:</p>
+<pre><code><span class="hljs-built_in">mkdir</span> RestBasics
+<span class="hljs-built_in">cd</span> RestBasics
+</code></pre><a class="anchor" id="create-server"></a>
 <h2>Create Server</h2>
-<p>CreateAllExpress server</p>
-<p>Let&#39;s put our server api in its own file. In <strong>routes</strong> folder create <strong>api.js</strong>:</p>
+<p>In the <strong>RestBasics</strong> directory, run the following command:</p>
+<p>  CreateAllExpress server</p>
+<p>Let&#39;s put our server api in its own file. In the <strong>routes</strong> folder create a file called <strong>api.js</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
 <span class="hljs-keyword">var</span> router = express.Router();
 
@@ -26,20 +33,20 @@ router.get(<span class="hljs-string">'/foo'</span>, <span class="hljs-function">
 
 <span class="hljs-built_in">module</span>.exports = router;
 </code></pre>
-<p>Now we need to link in this new file. You know how to do this, but just to remind in: in app.js around lines 10 and 28:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> api = <span class="hljs-keyword">require</span>(<span class="hljs-string">'./routes/api'</span>);
-app.<span class="hljs-keyword">use</span>(<span class="hljs-string">'/api'</span>, api);
+<p>Now we need to link in this new file. You know how to do this, but just to remind in: in <strong>app.js</strong> around lines 10 and 28:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> api = <span class="hljs-keyword">require</span>(<span class="hljs-string">'./routes/api'</span>);  <span class="hljs-comment">// on line 10</span>
+app.<span class="hljs-keyword">use</span>(<span class="hljs-string">'/api'</span>, api);               <span class="hljs-comment">// on line 20</span>
 </code></pre>
-<p>Set the port, in <strong>bin/www</strong>, to <strong>30026</strong>.
-If you want, go ahead and start it:</p>
+<p>The first line just allows us to gain access to our new file: it links it into our project. The second line states what we want to do: <em>we want to <strong>use</strong> it as middleware.</em></p>
+<p>Now set the port, in <strong>bin/www</strong>, to <strong>30026</strong>. We are going to run the client on port 30025, so we are setting the port for the server to some other number. I&#39;ve chosen 30026 in the hopes that it will be easy to remember.</p>
+<p>If you want, go ahead and start your new server:</p>
 <pre><code><span class="hljs-built_in">npm</span> start
 </code></pre><a class="anchor" id="create-client"></a>
 <h2>Create Client</h2>
 <p>You&#39;ll need to create a new bash tab, since the one we were using is now busy: CTRL-SHIFT-T. While still in <strong>week02-rest-basics</strong>, create your client:</p>
-<pre><code>create-react-app<span class="hljs-built_in"> client
-</span>cd<span class="hljs-built_in"> client
-</span>npm <span class="hljs-builtin-name">run</span> eject
-</code></pre><p>The last command, which we probably won&#39;t use very often, creates a <strong>scripts</strong> directory and modifies <strong>package.json</strong>. Look at <strong>package.json</strong> to see the relationship between the two.</p>
+<pre><code><span class="hljs-built_in">create-react-app</span> <span class="hljs-string">client
+</span><span class="hljs-string">cd </span><span class="hljs-string">client</span>
+</code></pre><p><strong>NOTE</strong>: _Though I don&#39;t recommend it, and in fact recommend that you don&#39;t do it, if you are terminally curious, you can run this command: npm run eject. The command, which you should not use very often, exposes the inner workings of <strong>create_react_app</strong>. In particular, it creates a <strong>scripts</strong> directory and modifies <strong>package.json</strong>. Look at <strong>package.json</strong> to see the relationship between the two. Rather than do this with a project that you might want to keep, I would do create a temporary project, and try this command there. It&#39;s interesting to learn more about <strong>create-react-app</strong>._</p>
 <p><strong>NOTE</strong>: <em>Don&#39;t forget to set the <strong>File | Settings | Languages and Frameworks | JavaScript</strong> to <strong>React JSX</strong></em></p>
 <p><strong>NOTE</strong>: <em>Some students may want to copy in <strong>.jscsrc</strong> from the <strong>server</strong> project.</em></p>
 <p>In <strong>package.json</strong>, just before the dependencies section, add this:</p>
