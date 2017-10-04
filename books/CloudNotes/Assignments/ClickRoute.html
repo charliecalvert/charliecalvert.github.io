@@ -15,8 +15,9 @@
 <li><a href="http://bit.ly/noderoutes">http://bit.ly/noderoutes</a></li>
 </ul>
 <p>I have created a project named <strong>ClickRoute</strong> and made it available from the <strong>elven-assignments</strong> repository:</p>
-<pre><code>https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/charliecalvert/</span>elven-assignments
-</code></pre><p>Clone the repository:</p>
+<pre>https://github.com/charliecalvert/elven-assignments
+</pre>
+<p>Clone the repository:</p>
 <p>   git clone <a href="https://github.com/charliecalvert/elven-assignments.git">https://github.com/charliecalvert/elven-assignments.git</a></p>
 <p><strong>NOTE</strong>: <em>This repository used to be called <strong>Prog272-Assignments</strong>. This particular project was created with <strong>express ClickRoute</strong> rather than <strong>yo express</strong>. As a result, you should start it with <strong>npm start</strong> or <strong>node bin/www</strong> or, better, <strong>nodemon bin/www</strong>.</em></p>
 <a class="anchor" id="requirejs"></a>
@@ -26,38 +27,41 @@
 <li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/Require.html">Requirejs on Elvenware</a></li>
 </ul>
 <p>To use it, first put requirejs in <strong>layout.jade</strong>:</p>
-<pre><code class="lang-text">doctype html
+<pre>doctype html
 html
   head
     title= title
-    link(<span class="hljs-attribute">rel</span>=<span class="hljs-string">'stylesheet'</span>, <span class="hljs-attribute">href</span>=<span class="hljs-string">'/stylesheets/style.css'</span>)
-    script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"components/requirejs/require.js"</span> <span class="hljs-attribute">data-main</span>=<span class="hljs-string">"javascripts/main"</span>)
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src="components/requirejs/require.js" data-main="javascripts/main")
 
   body
     block content
-</code></pre>
+</pre>
 <p>Load the files you want to use in <strong>public/javascripts/main.js</strong>, as described below.</p>
 <a class="anchor" id="step01"></a>
 <h2>Step01 - Copy the project to your repository</h2>
 <p>After you clone or pull the repository. Find the <strong>ClickRoute</strong> project. Copy it to your repository and rename it to reflect our current week. For instance, <strong>Week04-ClickRoute</strong>.</p>
 <p><strong>NOTE</strong>: <em>Remember you can copy files from the bash shell with a command similar to this:</em></p>
-<pre><code>cp -r ClickRoute ~<span class="hljs-regexp">/Git/</span>prog272-lastName-<span class="hljs-number">2016</span><span class="hljs-regexp">/Week04-ClickRoute/</span>
-</code></pre><p>Let&#39;s include <strong>$(document).ready(callback)</strong> or <a href="http://requirejs.org/docs/api.html#pageload">DomReady</a> in <strong>main.js</strong>:</p>
-<pre><code><span class="hljs-built_in">require</span>([<span class="hljs-string">'jquery'</span>, <span class="hljs-string">'ClickEvents'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$, ClickEvents</span>) </span>{
-<span class="hljs-meta">    'use strict'</span>;
+<pre>cp -r ClickRoute ~/Git/prog272-lastName-2016/Week04-ClickRoute/
+</pre>
+<p>Let&#39;s include <strong>$(document).ready(callback)</strong> or <a href="http://requirejs.org/docs/api.html#pageload">DomReady</a> in <strong>main.js</strong>:</p>
+<pre>require(['jquery', 'ClickEvents'], function($, ClickEvents) {
+    'use strict';
 
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Main called'</span>);
-    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-        <span class="hljs-keyword">var</span> clickEvents = <span class="hljs-keyword">new</span> ClickEvents();
+    console.log('Main called');
+    $(document).ready(function() {
+        var clickEvents = new ClickEvents();
     });
 });
-</code></pre><p>And if we want to use jquery in <strong>click-routes.js</strong>, then be sure to include it at the top of that file:</p>
-<pre><code>define([<span class="hljs-string">"jquery"</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($)</span> </span>{<span class="hljs-string">'use strict'</span>;
-</code></pre><p>If you skip this latter step, then the program will still run without error, but jquery events may not be fired until you press refresh.</p>
+</pre>
+<p>And if we want to use jquery in <strong>click-routes.js</strong>, then be sure to include it at the top of that file:</p>
+<pre>define(["jquery"], function($) {'use strict';
+</pre>
+<p>If you skip this latter step, then the program will still run without error, but jquery events may not be fired until you press refresh.</p>
 <p>Be sure to install both <strong>jquery</strong> and <strong>require</strong> with bower. Don&#39;t place these files directly in your <strong>public/javascripts</strong> directory. If you do place them in that directory, make especially sure that you exclude them from JSCS and JsHint. If you don&#39;t have bower.json in your project, you can get it from JsObjects like this:</p>
-<pre><code class="lang-bash">cp <span class="hljs-variable">$ELF_TEMPLATES</span>/bower<span class="hljs-selector-class">.json</span> .
-cp <span class="hljs-variable">$ELF_TEMPLATES</span>/<span class="hljs-selector-class">.bowerrc</span> .
-</code></pre>
+<pre>cp $ELF_TEMPLATES/bower.json .
+cp $ELF_TEMPLATES/.bowerrc .
+</pre>
 <a class="anchor" id="step02"></a>
 <h2>Step02 - Server Side</h2>
 <p>Define three routes in <strong>routes/index.js</strong>. The routes are as follows:</p>
@@ -67,11 +71,12 @@ cp <span class="hljs-variable">$ELF_TEMPLATES</span>/<span class="hljs-selector-
 <li>/Item03</li>
 </ul>
 <p>Here for instance, is a route for Item01 as found in <strong>routes/index.js</strong>:</p>
-<pre><code>router.get(<span class="hljs-string">'/Item01'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response)</span> </span>{
-    <span class="hljs-keyword">var</span> result = { <span class="hljs-string">"result"</span>: <span class="hljs-string">"Success"</span> };
+<pre>router.get('/Item01', function(request, response) {
+    var result = { "result": "Success" };
     response.send(result);
 });
-</code></pre><p>Create similar routes in the same file for <strong>Item02</strong> and <strong>Item03</strong>. For now, that means you should repeat the code shown above, but with slight variations. (There are other ways to handle this sort of thing, but this will do for now.</p>
+</pre>
+<p>Create similar routes in the same file for <strong>Item02</strong> and <strong>Item03</strong>. For now, that means you should repeat the code shown above, but with slight variations. (There are other ways to handle this sort of thing, but this will do for now.</p>
 <p>Change the <strong>result</strong> object literal so that it has three properties:</p>
 <ul>
 <li>result</li>
@@ -85,39 +90,42 @@ cp <span class="hljs-variable">$ELF_TEMPLATES</span>/<span class="hljs-selector-
 <li>Set a new property called <strong>message</strong> to the string <strong>The server sent me.</strong></li>
 </ul>
 <p>Again, this means your declaration for this result object in <strong>routes/index.js</strong> will change. To give a very broad hint, consider the following bit of pseudo-code:</p>
-<pre><code><span class="hljs-attribute">    var result</span> = { <span class="hljs-string">"result"</span>: <span class="hljs-string">"Success"</span> WHAT GOES HERE? };
-</code></pre><p>On the client side, you will need parsing the JSON you receive from the server. The three properties should be displayed to the user exactly as you define in them. In other words the value of the properties you define in <strong>routes/index.js</strong> should appear verbatim on your HTML page at run time. When you click on <strong>Item 1</strong>, we should see all three properties for <strong>Item01</strong>, when you click on <strong>Item02</strong>, we should see all three properties of <strong>Item02</strong>, etc.</p>
+<pre>    var result = { "result": "Success" WHAT GOES HERE? };
+</pre>
+<p>On the client side, you will need parsing the JSON you receive from the server. The three properties should be displayed to the user exactly as you define in them. In other words the value of the properties you define in <strong>routes/index.js</strong> should appear verbatim on your HTML page at run time. When you click on <strong>Item 1</strong>, we should see all three properties for <strong>Item01</strong>, when you click on <strong>Item02</strong>, we should see all three properties of <strong>Item02</strong>, etc.</p>
 <p><strong>Remember</strong>: <em>Put your routes in /routes/index.js</em></p>
 <a class="anchor" id="step03"></a>
 <h2>Step03 - Client Side</h2>
 <p>Open up <strong>click-event.js</strong> and look for the listClick method:</p>
-<pre><code><span class="hljs-keyword">var</span> listClick = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span> </span>{
-    <span class="hljs-keyword">var</span> clickText = event.target.innerHTML; <span class="hljs-comment">// was innerText</span>
+<pre>var listClick = function(event) {
+    var clickText = event.target.innerHTML; // was innerText
 };
-</code></pre><p>This method is called whenever the user clicks on one of the list items in the unordered list found on the site&#39;s web page.</p>
+</pre>
+<p>This method is called whenever the user clicks on one of the list items in the unordered list found on the site&#39;s web page.</p>
 <p>From inside this one method, I want you to call <a href="http://www.elvenware.com/charlie/development/web/JavaScript/JQueryBasic.html#getJSON">getJSON</a>. As you remember, getJSON looks a bit like this:</p>
-<pre><code>$.getJSON('/SOME_ROUTE, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(DATA_FROM_SERVER)</span> {</span>
-    <span class="hljs-comment">// Do something such as: $(SOME_SELECTOR).html(DATA_FROM_SERVER);</span>
+<pre>$.getJSON('/SOME_ROUTE, function(DATA_FROM_SERVER) {
+    // Do something such as: $(SOME_SELECTOR).html(DATA_FROM_SERVER);
 });
-</code></pre><p>I want you to dynamically change <strong>/SOME_ROUTE</strong> depending on what list item the user clicked. If they clicked on <strong>Item01</strong>, then set the route to <strong>/Item01</strong>. This should call the appropriate route that you set up on the server in the previous step. There are multiple ways to solve this problem, but it would be nice if you only had to call <strong>getJSON</strong> once. In other words, set the string to pass as the route, then pass that string in the first parameter to <strong>getJSON</strong>:</p>
-<pre><code class="lang-javascript">    <span class="hljs-keyword">var</span> theRoute = <span class="hljs-comment">// Define the route based on the information you already have</span>
-    $.getJSON(theRoute, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
-         <span class="hljs-comment">// CODE OMITTED HERE</span>
+</pre>
+<p>I want you to dynamically change <strong>/SOME_ROUTE</strong> depending on what list item the user clicked. If they clicked on <strong>Item01</strong>, then set the route to <strong>/Item01</strong>. This should call the appropriate route that you set up on the server in the previous step. There are multiple ways to solve this problem, but it would be nice if you only had to call <strong>getJSON</strong> once. In other words, set the string to pass as the route, then pass that string in the first parameter to <strong>getJSON</strong>:</p>
+<pre>    var theRoute = // Define the route based on the information you already have
+    $.getJSON(theRoute, function(result) {
+         // CODE OMITTED HERE
     });
-</code></pre>
+</pre>
 <p>The route is the name of the method on the server side that you want to call. For instance, to call the method on the server side that I give you above, the route would be the string <strong>/Item01</strong>.</p>
 <a class="anchor" id="step04"></a>
 <h2>Step04 - Parse the data</h2>
 <p>When you called <strong>response.send</strong> back on the server, you sent an object from the client to the server. On the client side, this object is passed to the <strong>getJSON</strong> callback:</p>
-<pre><code class="lang-javascript">    $.getJSON(<span class="hljs-string">'/SOME_ROUTE'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">DATA_FROM_SERVER</span>) </span>{
-      <span class="hljs-comment">// CODE OMITTED HERE</span>
+<pre>    $.getJSON('/SOME_ROUTE', function(DATA_FROM_SERVER) {
+      // CODE OMITTED HERE
     });
-</code></pre>
+</pre>
 <p>Parse the data sent from the server and display it to the user in three paragraph tags that appear on your HTML page. In Jade, that will look like this:</p>
-<pre><code class="lang-text"><span class="hljs-meta">p#</span><span class="bash">result</span>
-<span class="hljs-meta">p#</span><span class="bash">route</span>
-<span class="hljs-meta">p#</span><span class="bash">message</span>
-</code></pre>
+<pre>p#result
+p#route
+p#message
+</pre>
 <p>Inside the call to <strong>getJSON</strong>, use jQuery to set each of these paragraphs to one of the properties from the object sent by your server.</p>
 <p><strong>Hint</strong>: <em>Compare the ID&#39;s shown above to the properties of the object you set up in <a href="#step02">Step02</a></em>.</p>
 <p>When you are done, the app should respond to clicks on the list items as follows:</p>
@@ -137,67 +145,68 @@ cp <span class="hljs-variable">$ELF_TEMPLATES</span>/<span class="hljs-selector-
 <a class="anchor" id="hints"></a>
 <h2>Hints</h2>
 <p>You may see this message or one like it:</p>
-<pre><code>Not Found
+<pre>Not Found
 
-<span class="hljs-number">404</span>
+404
 
-<span class="hljs-symbol">Error:</span> Not Found
-    at app.use.res.render.message (<span class="hljs-regexp">/home/charlie</span><span class="hljs-regexp">/Downloads/</span>ClickRoute/server.<span class="hljs-symbol">js:</span><span class="hljs-number">37</span>:<span class="hljs-number">15</span>)
-    at Layer.handle [<span class="hljs-keyword">as</span> handle_request] (<span class="hljs-regexp">/home/charlie</span><span class="hljs-regexp">/Downloads/</span>ClickRoute/node_modules/express/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">router</span>/<span class="hljs-title">layer</span>.<span class="hljs-title">js</span>:82:5)</span>
-    at trim_prefix (<span class="hljs-regexp">/home/charlie</span><span class="hljs-regexp">/Downloads/</span>ClickRoute/node_modules/express/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">router</span>/<span class="hljs-title">index</span>.<span class="hljs-title">js</span>:302:13)</span>
-    at /home/charlie/Downloads/ClickRoute/node_modules/express/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">router</span>/<span class="hljs-title">index</span>.<span class="hljs-title">js</span>:270:7</span>
-    at Function.proto.process_params (<span class="hljs-regexp">/home/charlie</span><span class="hljs-regexp">/Downloads/</span>ClickRoute/node_modules/express/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">router</span>/<span class="hljs-title">index</span>.<span class="hljs-title">js</span>:321:12)</span>
-    at <span class="hljs-keyword">next</span> (<span class="hljs-regexp">/home/charlie</span><span class="hljs-regexp">/Downloads/</span>ClickRoute/node_modules/express/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">router</span>/<span class="hljs-title">index</span>.<span class="hljs-title">js</span>:261:10)</span>
-    at /home/charlie/Downloads/ClickRoute/node_modules/express/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">router</span>/<span class="hljs-title">index</span>.<span class="hljs-title">js</span>:603:15</span>
-    at <span class="hljs-keyword">next</span> (<span class="hljs-regexp">/home/charlie</span><span class="hljs-regexp">/Downloads/</span>ClickRoute/node_modules/express/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">router</span>/<span class="hljs-title">index</span>.<span class="hljs-title">js</span>:246:14)</span>
-    at Function.proto.handle (<span class="hljs-regexp">/home/charlie</span><span class="hljs-regexp">/Downloads/</span>ClickRoute/node_modules/express/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">router</span>/<span class="hljs-title">index</span>.<span class="hljs-title">js</span>:166:3)</span>
-    at router (<span class="hljs-regexp">/home/charlie</span><span class="hljs-regexp">/Downloads/</span>ClickRoute/node_modules/express/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">router</span>/<span class="hljs-title">index</span>.<span class="hljs-title">js</span>:35:12)</span>
-</code></pre><p>This can mean that you have not properly defined a route for your event handler. Go back and re-read the section on Server Side code in this document.</p>
+Error: Not Found
+    at app.use.res.render.message (/home/charlie/Downloads/ClickRoute/server.js:37:15)
+    at Layer.handle [as handle_request] (/home/charlie/Downloads/ClickRoute/node_modules/express/lib/router/layer.js:82:5)
+    at trim_prefix (/home/charlie/Downloads/ClickRoute/node_modules/express/lib/router/index.js:302:13)
+    at /home/charlie/Downloads/ClickRoute/node_modules/express/lib/router/index.js:270:7
+    at Function.proto.process_params (/home/charlie/Downloads/ClickRoute/node_modules/express/lib/router/index.js:321:12)
+    at next (/home/charlie/Downloads/ClickRoute/node_modules/express/lib/router/index.js:261:10)
+    at /home/charlie/Downloads/ClickRoute/node_modules/express/lib/router/index.js:603:15
+    at next (/home/charlie/Downloads/ClickRoute/node_modules/express/lib/router/index.js:246:14)
+    at Function.proto.handle (/home/charlie/Downloads/ClickRoute/node_modules/express/lib/router/index.js:166:3)
+    at router (/home/charlie/Downloads/ClickRoute/node_modules/express/lib/router/index.js:35:12)
+</pre>
+<p>This can mean that you have not properly defined a route for your event handler. Go back and re-read the section on Server Side code in this document.</p>
 <p>This information is a bit outdated, in that you should use router.get rather than app.get, but nevertheless, there is information here you might find useful:</p>
 <ul>
 <li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/NodeJs.html#using-express">Node on Elvenware</a></li>
 </ul>
 <a class="anchor" id="css"></a>
 <h2>CSS</h2>
-<pre><code class="lang-css"><span class="hljs-selector-tag">body</span> {
-  <span class="hljs-attribute">padding</span>: <span class="hljs-number">50px</span>;
-  <span class="hljs-attribute">font</span>: <span class="hljs-number">14px</span> <span class="hljs-string">"Lucida Grande"</span>, Helvetica, Arial, sans-serif;
+<pre>body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-<span class="hljs-selector-tag">a</span> {
-  <span class="hljs-attribute">color</span>: <span class="hljs-number">#00B7FF</span>;
+a {
+  color: #00B7FF;
 }
 
-<span class="hljs-selector-tag">li</span> {
-  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#00BBFF</span>;
-  <span class="hljs-attribute">border</span>: black solid <span class="hljs-number">1px</span>;
-  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">5px</span>;
-  <span class="hljs-attribute">padding-left</span>: <span class="hljs-number">5px</span>;
-  <span class="hljs-attribute">margin</span>: <span class="hljs-number">3px</span>;
-  <span class="hljs-attribute">width</span>: <span class="hljs-number">250px</span>;  
+li {
+  background-color: #00BBFF;
+  border: black solid 1px;
+  border-radius: 5px;
+  padding-left: 5px;
+  margin: 3px;
+  width: 250px;  
 }
 
-<span class="hljs-selector-id">#results</span>, <span class="hljs-selector-id">#message</span> {
-    <span class="hljs-attribute">width</span>: <span class="hljs-number">300px</span>;
-    <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">5px</span>;    
-    <span class="hljs-attribute">padding-left</span>: <span class="hljs-number">5px</span>;
-    <span class="hljs-attribute">border</span>: solid black <span class="hljs-number">1px</span>;    
+#results, #message {
+    width: 300px;
+    border-radius: 5px;    
+    padding-left: 5px;
+    border: solid black 1px;    
 }
 
-<span class="hljs-selector-tag">li</span><span class="hljs-selector-pseudo">:hover</span> {
-    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#00FFBB</span>;
+li:hover {
+    background-color: #00FFBB;
 }
 
-<span class="hljs-selector-class">.blue</span> {
-    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#00BBFF</span>;
+.blue {
+    background-color: #00BBFF;
 }
 
-<span class="hljs-selector-class">.green</span> {
-    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#00FFBB</span>;
+.green {
+    background-color: #00FFBB;
 }
 
-<span class="hljs-selector-class">.red</span> {
-    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#FFBB00</span>;
+.red {
+    background-color: #FFBB00;
 }
-</code></pre>
+</pre>
 </div></body></html>
