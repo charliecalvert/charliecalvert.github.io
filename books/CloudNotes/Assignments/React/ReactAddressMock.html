@@ -35,26 +35,26 @@
 <p>At the risk of belaboring the point too long, I&#39;ll just sum up by saying that we are creating a mock <strong>localStorage</strong> object that acts just like the real <strong>localStorage</strong> object but does not require the presence of the browser and the <strong>window</strong> object.</p>
 <p>Below is the code which implements the parts of <strong>localStorage</strong> that we use in our app. This code will be executed during our tests. Place the code near the top of the files that will need access to our data. For instance, if you checking for the value of <strong>firstName</strong> you will probably need the mock. A simple way to determine where it belongs is to simply run the tests in a module and see if they throw an exception saying that <strong>localStorage</strong> is not defined.</p>
 <p><strong>NOTE</strong>: <em>Remember that we can press the letter &#39;p&#39; when running tests, then type in all or part of the name of the file for a test. Then only that file will be run. For instance, typing <strong>Address</strong> will run only <strong>Address.test.js</strong>. This works best if you can uniquely identify each file. For instance, if you have tests suites called <strong>FooBar.test.js</strong> and <strong>Bar.test.js</strong> then trying to filter on <strong>Bar.test.js</strong> will get both test suites because both names contain <strong>Bar.test.js</strong>. Typing <strong>FooBar.test.js</strong> will run only the tests in <strong>FooBar.test.js</strong>.</em></p>
-<pre>// http://stackoverflow.com/a/32911774/253576
-beforeEach(function() {
-    const localStorageMock = (function() {
-        let storage = {};
-        return {
-            getItem: function(key) {
-                return storage[key];
+<pre><code class="lang-javascript"><span class="hljs-comment">// http://stackoverflow.com/a/32911774/253576</span>
+beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">const</span> localStorageMock = (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">let</span> storage = {};
+        <span class="hljs-keyword">return</span> {
+            <span class="hljs-attr">getItem</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key</span>) </span>{
+                <span class="hljs-keyword">return</span> storage[key];
             },
-            setItem: function(key, value) {
+            <span class="hljs-attr">setItem</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key, value</span>) </span>{
                 storage[key] = value.toString();
             },
-            clear: function() {
+            <span class="hljs-attr">clear</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
                 storage = {};
             }
         };
     })();
-    Object.defineProperty(global, 'localStorage', {value: localStorageMock});
+    <span class="hljs-built_in">Object</span>.defineProperty(global, <span class="hljs-string">'localStorage'</span>, {<span class="hljs-attr">value</span>: localStorageMock});
 
 });
-</pre>
+</code></pre>
 <a class="anchor" id="create-mocks-folder"></a>
 <h2>Create Mocks Folder</h2>
 <p>So how do we perform this miracle? To make a long story short: we use the mock library built into Jest. Here is how to proceed:</p>
@@ -68,90 +68,90 @@ beforeEach(function() {
 <a class="anchor" id="mock-data"></a>
 <h2>Mock Data</h2>
 <p>First lets create a simple module that contains the data we will use in our mock and call it <strong>__mocks__/mock-data.js</strong>:</p>
-<pre>/**
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
  * Created by charlie on 4/18/17.
- */
+ */</span>
 
-const getData = (url) => {
-    switch (url) {
-        case './address-list.json':
-            return [{
-                "firstName": "Lamar",
-                "lastName": "Alexander",
-                "street": "455 Dirksen Senate Office Building",
-                "city": "Washington DC",
-                "state": "TN",
-                "zip": " 20510",
-                "phone": "202-224-4944",
-                "website": "https://www.alexander.senate.gov/public",
-                "email": "",
-                "contact": "http://www.alexander.senate.gov/public/index.cfm?p=Email"
+<span class="hljs-keyword">const</span> getData = <span class="hljs-function">(<span class="hljs-params">url</span>) =&gt;</span> {
+    <span class="hljs-keyword">switch</span> (url) {
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'./address-list.json'</span>:
+            <span class="hljs-keyword">return</span> [{
+                <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Lamar"</span>,
+                <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"Alexander"</span>,
+                <span class="hljs-string">"street"</span>: <span class="hljs-string">"455 Dirksen Senate Office Building"</span>,
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"Washington DC"</span>,
+                <span class="hljs-string">"state"</span>: <span class="hljs-string">"TN"</span>,
+                <span class="hljs-string">"zip"</span>: <span class="hljs-string">" 20510"</span>,
+                <span class="hljs-string">"phone"</span>: <span class="hljs-string">"202-224-4944"</span>,
+                <span class="hljs-string">"website"</span>: <span class="hljs-string">"https://www.alexander.senate.gov/public"</span>,
+                <span class="hljs-string">"email"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"contact"</span>: <span class="hljs-string">"http://www.alexander.senate.gov/public/index.cfm?p=Email"</span>
             },
             {
-                "firstName": "Roger",
-                "lastName": "Wicker",
-                "street": "555 Dirksen Senate Office Building",
-                "city": "Washington DC",
-                "state": "MS",
-                "zip": " 20510",
-                "phone": "202-224-6253",
-                "website": "https://www.wicker.senate.gov",
-                "email": "",
-                "contact": "https://www.wicker.senate.gov/public/index.cfm/contact"
+                <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Roger"</span>,
+                <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"Wicker"</span>,
+                <span class="hljs-string">"street"</span>: <span class="hljs-string">"555 Dirksen Senate Office Building"</span>,
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"Washington DC"</span>,
+                <span class="hljs-string">"state"</span>: <span class="hljs-string">"MS"</span>,
+                <span class="hljs-string">"zip"</span>: <span class="hljs-string">" 20510"</span>,
+                <span class="hljs-string">"phone"</span>: <span class="hljs-string">"202-224-6253"</span>,
+                <span class="hljs-string">"website"</span>: <span class="hljs-string">"https://www.wicker.senate.gov"</span>,
+                <span class="hljs-string">"email"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"contact"</span>: <span class="hljs-string">"https://www.wicker.senate.gov/public/index.cfm/contact"</span>
             },
             {
-                "firstName": "Timothy",
-                "lastName": "Kaine",
-                "street": "231 Russell Senate Office Building",
-                "city": "Washington DC",
-                "state": "VA",
-                "zip": " 20510",
-                "phone": "202-224-4024",
-                "website": "https://www.kaine.senate.gov",
-                "email": "",
-                "contact": "https://www.kaine.senate.gov/contact"
+                <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Timothy"</span>,
+                <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"Kaine"</span>,
+                <span class="hljs-string">"street"</span>: <span class="hljs-string">"231 Russell Senate Office Building"</span>,
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"Washington DC"</span>,
+                <span class="hljs-string">"state"</span>: <span class="hljs-string">"VA"</span>,
+                <span class="hljs-string">"zip"</span>: <span class="hljs-string">" 20510"</span>,
+                <span class="hljs-string">"phone"</span>: <span class="hljs-string">"202-224-4024"</span>,
+                <span class="hljs-string">"website"</span>: <span class="hljs-string">"https://www.kaine.senate.gov"</span>,
+                <span class="hljs-string">"email"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"contact"</span>: <span class="hljs-string">"https://www.kaine.senate.gov/contact"</span>
             }];
 
-        default:
-            return [];
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">return</span> [];
     }
 };
 
-export default getData;
-</pre>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> getData;
+</code></pre>
 <p>This code simply creates sets of data that mimic what our server would return given a call to a specific <strong>url</strong>.</p>
 <a class="anchor" id="mock-fetch"></a>
 <h2>Mock fetch</h2>
 <p>Below is the source code for our new mock for <strong>fetch</strong> called <strong>whatwg-fetch.js</strong>. Save it and <strong>mock-data.js</strong> in the <strong>__mocks__</strong> folder. Note in particular the call to <strong>jest.genMockFromModule</strong>. That call asks Jest to generate a mock object for the module we want to replace with a mock:</p>
-<pre>/**
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
  * Created by charlie on 4/17/17.
- */
+ */</span>
 
-import getData from './mock-data';
+<span class="hljs-keyword">import</span> getData <span class="hljs-keyword">from</span> <span class="hljs-string">'./mock-data'</span>;
 
-'use strict';
+<span class="hljs-meta">'use strict'</span>;
 
-const whatwgFetch = jest.genMockFromModule('whatwg-fetch');
+<span class="hljs-keyword">const</span> whatwgFetch = jest.genMockFromModule(<span class="hljs-string">'whatwg-fetch'</span>);
 
-const fetch = function(url) {
+<span class="hljs-keyword">const</span> fetch = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">url</span>) </span>{
 
-    const objectState = getData(url);
+    <span class="hljs-keyword">const</span> objectState = getData(url);
 
-    const response = {};
-    response.json = function() {
-        return objectState;
+    <span class="hljs-keyword">const</span> response = {};
+    response.json = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> objectState;
     };
 
-    //console.log("FETCH STATER", objectState);
-    return {
-        then: function(func) {
-            //console.log('FETCH TEST ONE', func(response));
-            return {
-                then: function(func) {
-                    //func(JSON.stringify(stater));
+    <span class="hljs-comment">//console.log("FETCH STATER", objectState);</span>
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">then</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">func</span>) </span>{
+            <span class="hljs-comment">//console.log('FETCH TEST ONE', func(response));</span>
+            <span class="hljs-keyword">return</span> {
+                <span class="hljs-attr">then</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">func</span>) </span>{
+                    <span class="hljs-comment">//func(JSON.stringify(stater));</span>
                     func(objectState);
-                    return {
-                        catch: function() {
+                    <span class="hljs-keyword">return</span> {
+                        <span class="hljs-attr">catch</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 
                         }
                     };
@@ -162,17 +162,17 @@ const fetch = function(url) {
 };
 
 whatwgFetch.fetch = fetch;
-window.fetch = fetch;
+<span class="hljs-built_in">window</span>.fetch = fetch;
 
-module.exports = whatwgFetch;
-</pre>
+<span class="hljs-built_in">module</span>.exports = whatwgFetch;
+</code></pre>
 <p>Over time, you can comment out the calls to <strong>console.log</strong>. But they might be helpful at first when you are trying to understand what is going on. Note in particular that we are now putting calls to the callbacks (func) passed into our labyrinthine series of <strong>return</strong> statements. The most important is the second call to <strong>then</strong> where we pass back the <strong>stater</strong> object. Recall that this is used as follows in our call to <strong>fetch</strong>:</p>
-<pre>.then(function (json) {
-    console.log('GETONE-FETCH-TWO');
-    console.log('parsed json', json);
-    that.setState(foo => (json));
+<pre><code class="lang-javascript">.then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">json</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'GETONE-FETCH-TWO'</span>);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsed json'</span>, json);
+    that.setState(<span class="hljs-function"><span class="hljs-params">foo</span> =&gt;</span> (json));
 })
-</pre>
+</code></pre>
 <a class="anchor" id="using-mocks-in-tests"></a>
 <h2>Using Mocks in Tests</h2>
 <p>At the top of your address.test.js file, do this:</p>
@@ -180,33 +180,33 @@ module.exports = whatwgFetch;
 <li>jest.mock(&#39;whatwg-fetch&#39;);</li>
 </ul>
 <p>Is this still necessary? (Was it ever necessary?) I think you can just do this at the top of your test:</p>
-<pre>import 'whatwg-fetch';
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-meta"><span class="hljs-meta-keyword">import</span> 'whatwg-fetch';</span>
+</code></pre>
 <a class="anchor" id="dataloader"></a>
 <h2>DataLoader</h2>
 <p>In the <strong>constructor</strong> for <strong>Address</strong> we have the following code. Its responsibility is to be sure that <strong>localStorage</strong> contains at least 100 records representing the addresses we placed in <strong>address-list.json</strong>.</p>
-<pre>import DataLoader from './DataLoader';
-const dataLoader = new DataLoader();
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> DataLoader <span class="hljs-keyword">from</span> <span class="hljs-string">'./DataLoader'</span>;
+<span class="hljs-keyword">const</span> dataLoader = <span class="hljs-keyword">new</span> DataLoader();
 
-// Code ommitted here.
-// Then, in the constructor:
-constructor(props) {
-    super(props);
-    logger.log('Constructor called');
-    //localStorage.clear();
+<span class="hljs-comment">// Code ommitted here.</span>
+<span class="hljs-comment">// Then, in the constructor:</span>
+<span class="hljs-keyword">constructor</span>(props) {
+    <span class="hljs-keyword">super</span>(props);
+    logger.log(<span class="hljs-string">'Constructor called'</span>);
+    <span class="hljs-comment">//localStorage.clear();</span>
 
-    this.addressIndex = 0;
+    <span class="hljs-keyword">this</span>.addressIndex = <span class="hljs-number">0</span>;
 
-    const that = this;
-    dataLoader.loadAddresses(function(addressCount) {
-        if (!addressCount) {
-            throw new Error('Cannot get address count in address.js');
+    <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+    dataLoader.loadAddresses(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">addressCount</span>) </span>{
+        <span class="hljs-keyword">if</span> (!addressCount) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Cannot get address count in address.js'</span>);
         }
         that.addressCount = addressCount;
     });
-    // AND SO ON
+    <span class="hljs-comment">// AND SO ON</span>
 }
-</pre>
+</code></pre>
 <p>This code performs a little trick you have seen before:</p>
 <ul>
 <li>We a variable called <strong>that</strong> equal to <strong>this</strong>.</li>
@@ -219,131 +219,131 @@ constructor(props) {
 <li>If <strong>localStorage</strong> does not contain our data, then it uses <strong>fetch</strong> to load the data and stuff our records into <strong>localStorage</strong>. When it is done it uses the callback to send the <strong>addressCount</strong> back to <strong>Address</strong>.</li>
 </ul>
 <p>Here is some of <strong>DataLoader</strong>:</p>
-<pre>
-/**
+<pre><code class="lang-javascript">
+<span class="hljs-comment">/**
  * Created by bcuser on 5/10/17.
- */
+ */</span>
 
-import Logger from '../assets/elf-logger';
-const logger = new Logger('data-loader', 'yellow', 'green', '18px');
-import {saveByIndex} from '../assets/elf-local-storage';
-import 'whatwg-fetch';
+<span class="hljs-keyword">import</span> Logger <span class="hljs-keyword">from</span> <span class="hljs-string">'../assets/elf-logger'</span>;
+<span class="hljs-keyword">const</span> logger = <span class="hljs-keyword">new</span> Logger(<span class="hljs-string">'data-loader'</span>, <span class="hljs-string">'yellow'</span>, <span class="hljs-string">'green'</span>, <span class="hljs-string">'18px'</span>);
+<span class="hljs-keyword">import</span> {saveByIndex} <span class="hljs-keyword">from</span> <span class="hljs-string">'../assets/elf-local-storage'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'whatwg-fetch'</span>;
 
-export default class DataLoader {
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DataLoader</span> </span>{
 
-    constructor() {
-        this.STORE_SET = ['elven-store', 'set', 'elven-count'];
-        this.loadAddresses = this.loadAddresses.bind(this);
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.STORE_SET = [<span class="hljs-string">'elven-store'</span>, <span class="hljs-string">'set'</span>, <span class="hljs-string">'elven-count'</span>];
+        <span class="hljs-keyword">this</span>.loadAddresses = <span class="hljs-keyword">this</span>.loadAddresses.bind(<span class="hljs-keyword">this</span>);
     }
 
     dataLoaded() {
-        const elfStore = localStorage.getItem(this.STORE_SET[0]);
-        return (elfStore === this.STORE_SET[1]);
+        <span class="hljs-keyword">const</span> elfStore = localStorage.getItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">0</span>]);
+        <span class="hljs-keyword">return</span> (elfStore === <span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">1</span>]);
     }
 
     setLocalStorage(addresses) {
-        logger.log('SET LOCAL', addresses);
-        //localStorage.setItem('elven-store', 'set');
-        localStorage.setItem(this.STORE_SET[0], this.STORE_SET[1]);
-        //localStorage.setItem('elven-count', addresses.length);
-        localStorage.setItem(this.STORE_SET[2], addresses.length);
-        addresses.forEach(function(address, index) {
+        logger.log(<span class="hljs-string">'SET LOCAL'</span>, addresses);
+        <span class="hljs-comment">//localStorage.setItem('elven-store', 'set');</span>
+        localStorage.setItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">0</span>], <span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">1</span>]);
+        <span class="hljs-comment">//localStorage.setItem('elven-count', addresses.length);</span>
+        localStorage.setItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">2</span>], addresses.length);
+        addresses.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">address, index</span>) </span>{
             saveByIndex(address, index);
         });
-        return addresses;
+        <span class="hljs-keyword">return</span> addresses;
     }
 
     loadAddresses(callback) {
-        const that = this;
-        if (this.dataLoaded()) {
-            logger.log('Using data from localstore');
-            callback(localStorage.getItem(this.STORE_SET[2]));
-        } else {
-            logger.log('Loading data');
-            fetch('./address-list.json').then(function(data) {
-                const addresses = data.json();
-                console.log(addresses);
-                return addresses;
-            }).then(function(data) {
-                logger.log(JSON.stringify(data, null, 4));
-                //console.log(that);
+        <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.dataLoaded()) {
+            logger.log(<span class="hljs-string">'Using data from localstore'</span>);
+            callback(localStorage.getItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">2</span>]));
+        } <span class="hljs-keyword">else</span> {
+            logger.log(<span class="hljs-string">'Loading data'</span>);
+            fetch(<span class="hljs-string">'./address-list.json'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+                <span class="hljs-keyword">const</span> addresses = data.json();
+                <span class="hljs-built_in">console</span>.log(addresses);
+                <span class="hljs-keyword">return</span> addresses;
+            }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+                logger.log(<span class="hljs-built_in">JSON</span>.stringify(data, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+                <span class="hljs-comment">//console.log(that);</span>
                 that.setLocalStorage(data);
                 callback(data.length);
-            }).catch(function (err) {
+            }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
                 logger.log(err);
             });
         }
     }
 }
-</pre>
+</code></pre>
 <a class="anchor" id="elf-local-storage"></a>
 <h2>Elf Local Storage</h2>
 <p>The <strong>DataLoader</strong> code is specific to our current project. Here is a helper object with <strong>localStorage</strong> calls that could be reused in multiple programs. Save it as <strong>elf-local-storage.js</strong> in your assets directory.</p>
-<pre>/**
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
  * Created by Charlie on 5/8/17.
- */
+ */</span>
 
-const ELF_TAG = 'elf';
+<span class="hljs-keyword">const</span> ELF_TAG = <span class="hljs-string">'elf'</span>;
 
-const padNumber = function(numberToPad, width, padValue) {
-    padValue = padValue || '0';
-    numberToPad += '';
-    if (numberToPad.length >= width) {
-        return numberToPad;
-    } else {
-        return new Array(width - numberToPad.length + 1).join(padValue) + numberToPad;
+<span class="hljs-keyword">const</span> padNumber = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">numberToPad, width, padValue</span>) </span>{
+    padValue = padValue || <span class="hljs-string">'0'</span>;
+    numberToPad += <span class="hljs-string">''</span>;
+    <span class="hljs-keyword">if</span> (numberToPad.length &gt;= width) {
+        <span class="hljs-keyword">return</span> numberToPad;
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(width - numberToPad.length + <span class="hljs-number">1</span>).join(padValue) + numberToPad;
     }
 };
 
-function saveByIndex(item, index) {
-    if (typeof item === 'object') {
-        item = JSON.stringify(item, null, 4);
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">saveByIndex</span>(<span class="hljs-params">item, index</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> item === <span class="hljs-string">'object'</span>) {
+        item = <span class="hljs-built_in">JSON</span>.stringify(item, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
     }
-    const key = ELF_TAG + padNumber(index, 4, 0);
+    <span class="hljs-keyword">const</span> key = ELF_TAG + padNumber(index, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>);
     localStorage.setItem(key, item);
 }
 
-function getByIndex(index) {
-    const key = ELF_TAG + padNumber(index, 4, 0);
-    return JSON.parse(localStorage.getItem(key));
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getByIndex</span>(<span class="hljs-params">index</span>) </span>{
+    <span class="hljs-keyword">const</span> key = ELF_TAG + padNumber(index, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">JSON</span>.parse(localStorage.getItem(key));
 }
 
-function removeElfKeys() {
-    for (var key in localStorage) {
-        if (key.startsWith(ELF_TAG)) {
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">removeElfKeys</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> localStorage) {
+        <span class="hljs-keyword">if</span> (key.startsWith(ELF_TAG)) {
             localStorage.removeItem(key);
         }
     }
 }
 
-function clearLocalStorage() {
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clearLocalStorage</span>(<span class="hljs-params"></span>) </span>{
     localStorage.clear();
 }
 
-export {saveByIndex, getByIndex, removeElfKeys, clearLocalStorage};
-</pre>
+<span class="hljs-keyword">export</span> {saveByIndex, getByIndex, removeElfKeys, clearLocalStorage};
+</code></pre>
 <a class="anchor" id="load-local-data"></a>
 <h2>Load Local Data</h2>
 <p>In <strong>onAddressChange</strong> load data from the localStore:</p>
-<pre>onAddressChange(event) {
-    detailLogger.log('onAddressChange called with', event.target.id);
-    if (event.target.id.startsWith('dec')) {
-        if (this.addressIndex > 0) {
-            this.addressIndex -= 1;
+<pre><code class="lang-javascript">onAddressChange(event) {
+    detailLogger.log(<span class="hljs-string">'onAddressChange called with'</span>, event.target.id);
+    <span class="hljs-keyword">if</span> (event.target.id.startsWith(<span class="hljs-string">'dec'</span>)) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.addressIndex &gt; <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">this</span>.addressIndex -= <span class="hljs-number">1</span>;
         }
-    } else {
-        if (this.addressIndex < this.addressCount) {
-            this.addressIndex += 1;
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.addressIndex &lt; <span class="hljs-keyword">this</span>.addressCount) {
+            <span class="hljs-keyword">this</span>.addressIndex += <span class="hljs-number">1</span>;
         }
     }
-    detailLogger.log('addressIndex', this.addressIndex);
-    const address = getByIndex(this.addressIndex);
+    detailLogger.log(<span class="hljs-string">'addressIndex'</span>, <span class="hljs-keyword">this</span>.addressIndex);
+    const address = getByIndex(<span class="hljs-keyword">this</span>.addressIndex);
 
-    this.setState({
+    <span class="hljs-keyword">this</span>.setState({
         address: address
     });
 };
-</pre>
+</code></pre>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>I&#39;ll be grading <strong>React Address Mock</strong> and <strong>React Address DataMaven</strong> assignments at the same time from the same codebase. You will get two grades, but I will be looking at one copy of <strong>CongressAddress</strong> when I grade them. I don&#39;t want to have to get two versions of <strong>CongressAddress</strong> going. Therefore, I will start a single version of the program, run the tests, and expect to be able to grade both assignments based on the code from the same commit. Two assignments, one version of <strong>CongressAddress</strong>:</p>
@@ -352,14 +352,13 @@ export {saveByIndex, getByIndex, removeElfKeys, clearLocalStorage};
 <li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/ReactAddressDataMaven.html">React Address DataMaven</a></li>
 </ul>
 <p>Once you have a version of <strong>CongressAddress</strong> that contains code fulfilling the requirements for both assignments, then you should push, branch and tag:</p>
-<pre>git add .
-git commit -m "Code for React Address Mock and React Address DataMaven"
+<pre><code>git add .
+git commit -m <span class="hljs-string">"Code for React Address Mock and React Address DataMaven"</span>
 git push
 git branch week07-DataMavenMock
-git tag -a v7.X.X -m "Code for React Address Mock and React Address DataMaven"
-git push origin v7.X.X
-</pre>
-<p>Of course, the X.X bit would contain your idea of the appropriate numbering scheme. For instance: <strong>v7.0.0</strong>.</p>
+git tag -<span class="hljs-selector-tag">a</span> v7<span class="hljs-selector-class">.X</span><span class="hljs-selector-class">.X</span> -m <span class="hljs-string">"Code for React Address Mock and React Address DataMaven"</span>
+git push origin v7<span class="hljs-selector-class">.X</span><span class="hljs-selector-class">.X</span>
+</code></pre><p>Of course, the X.X bit would contain your idea of the appropriate numbering scheme. For instance: <strong>v7.0.0</strong>.</p>
 <a class="anchor" id="hint-tagging"></a>
 <h2>Hint Tagging</h2>
 <ul>
