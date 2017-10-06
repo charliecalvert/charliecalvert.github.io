@@ -3,13 +3,13 @@
 <li><a href="#install">Install</a></li>
 <li><a href="#render">Render</a></li>
 <li><a href="#configure-enzyme">Configure Enzyme</a></li>
-<li><a href="#the-tests">The Tests</a></li>
 <li><a href="#simple-debug-class">Simple Debug Class</a></li>
+<li><a href="#the-tests">The Tests</a></li>
 <li><a href="#call-server">Call Server</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#modern-tools">Modern Tools</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="rest-tests"></a>
 <h1>Rest Tests</h1>
-<p>This assignment is built on top of the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/RestBasics.html">RestBasics</a> assignments. You should be working in a branch called <strong>Week03-RestTest</strong>.</p>
+<p>This assignment is built on top of the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/RestBasics.html">RestBasics</a> assignments. Make your edits in the same directory you used for <strong>RestBasics</strong>, but you should be working in a new branch called <strong>Week03-RestTest</strong>. Create and switch to the branch first, and then begin your work.</p>
 <p>I&#39;m assuming that you are working in a folder called <strong>Week02-RestBasics</strong> and that it has both a <strong>client</strong> and <strong>server</strong> folder in it. If there is any doubt about the primary folder name, be sure to specify it when you turn in the assignment.</p>
 <a class="anchor" id="install"></a>
 <h2>Install</h2>
@@ -87,33 +87,6 @@ configure({ adapter: <span class="hljs-keyword">new</span> Adapter() });
 <p>Enzyme allows us to <strong>wrap</strong> React components in objects that we can transverse as if they were part of a DOM. This means we can test our components without having to load them into a browser.</p>
 <p>The <strong>shallow</strong> object allows us to look only one level deep at the objects in our React code. For instance, if one React component contains another React component which contains yet a third, <strong>shallow</strong> will allow us to look at only the top level component. The fact that it is made of two other components is hidden from us.</p>
 <p>Enzyme needs to be able to <em>adapt</em> to the version of React that you are using. Hence, we have to take the extra step to <strong>configure</strong> an <strong>Adapter</strong>.</p>
-<a class="anchor" id="the-tests"></a>
-<h2>The Tests</h2>
-<p>Beneath this code add a <strong>describe method</strong> and a new test:</p>
-<pre><code class="lang-javascript">describe('rest basic tests', function() {
-
-    const elfDebugEnzyme = new ElfDebugEnzyme()<span class="hljs-comment">;</span>
-
-    it('renders without crashing', () =&gt; {
-        const div = document.createElement('div')<span class="hljs-comment">;</span>
-        ReactDOM.render(<span class="hljs-name">&lt;App/&gt;</span>, div)<span class="hljs-comment">;</span>
-    })<span class="hljs-comment">;</span>
-
-    it('renders initial value of paragraph with state.nine', () =&gt; {
-        const wrapper = shallow(<span class="hljs-name">&lt;App/&gt;</span>)<span class="hljs-comment">;</span>
-        const nineSign = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;file: unknown&lt;/p&gt;<span class="hljs-comment">;</span>
-        elfDebugEnzyme.getLast(<span class="hljs-name">wrapper</span>, 'p', true)<span class="hljs-comment">;</span>
-        expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">nineSign</span>)).toEqual(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
-    })<span class="hljs-comment">;</span>
-
-})<span class="hljs-comment">;</span>
-</code></pre>
-<p>As you can see, this code looks very much like the <a href="https://jasmine.github.io/">Jasmine</a> test framework. The <strong>describe</strong> method is used to declare a suite of tests. Each individual is defined inside an <strong>it</strong> method. </p>
-<ul>
-<li>The first parameter is a description of the test.</li>
-<li>The second is callback, a test function, that defines the test.</li>
-<li>There is an option third timeout parameter that is rarely used.</li>
-</ul>
 <a class="anchor" id="simple-debug-class"></a>
 <h2>Simple Debug Class</h2>
 <p>Enzyme has the ability to locate and display individual HTML elements. It provides various tools for navigating the Enzyme &quot;DOM&quot;. I like to wrap these tools in an object so that I don&#39;t have to remember exactly how they work.</p>
@@ -147,6 +120,31 @@ configure({ adapter: <span class="hljs-keyword">new</span> Adapter() });
 <span class="hljs-keyword">import</span> Adapter <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme-adapter-react-16'</span>;
 <span class="hljs-keyword">import</span> elfDebugEnzyme <span class="hljs-keyword">from</span> <span class="hljs-string">'./ElfDebugEnzyme'</span>;
 </code></pre><p><strong>NOTE</strong>: <em>Make sure you do not end up with two <strong>renders without crashing</strong> tests.</em></p>
+<a class="anchor" id="the-tests"></a>
+<h2>The Tests</h2>
+<p>Beneath this code add a <strong>describe method</strong> and a new test:</p>
+<pre><code class="lang-javascript">describe('rest basic tests', function() {    
+
+    it('renders without crashing', () =&gt; {
+        const div = document.createElement('div')<span class="hljs-comment">;</span>
+        ReactDOM.render(<span class="hljs-name">&lt;App/&gt;</span>, div)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('renders initial value of paragraph with state.nine', () =&gt; {
+        const wrapper = shallow(<span class="hljs-name">&lt;App/&gt;</span>)<span class="hljs-comment">;</span>
+        const nineSign = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;file: unknown&lt;/p&gt;<span class="hljs-comment">;</span>
+        elfDebugEnzyme.getLast(<span class="hljs-name">wrapper</span>, 'p', true)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">nineSign</span>)).toEqual(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>As you can see, this code looks very much like the <a href="https://jasmine.github.io/">Jasmine</a> test framework. The <strong>describe</strong> method is used to declare a suite of tests. Each individual is defined inside an <strong>it</strong> method.</p>
+<ul>
+<li>The first parameter is a description of the test.</li>
+<li>The second is callback, a test function, that defines the test.</li>
+<li>There is an option third timeout parameter that is rarely used.</li>
+</ul>
 <a class="anchor" id="call-server"></a>
 <h2>Call Server</h2>
 <p>Just as a reminder, here is the code for querying our server from our client. You should already have this code in your project.</p>
@@ -167,7 +165,13 @@ configure({ adapter: <span class="hljs-keyword">new</span> Adapter() });
 </code></pre>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
-<p>Put your work in a branch called <strong>Week03-RestTest</strong> and then Git <strong>tag</strong>. Then run Git <strong>add</strong>, <strong>push</strong> and <strong>commit</strong>. </p>
+<p>Put your work in a branch called <strong>Week03-RestTest</strong> and then Git <strong>tag</strong>. Then run Git <strong>add</strong>, <strong>push</strong> and <strong>commit</strong>.</p>
+<p>It&#39;s simplest if you provide a link to the correct folder and branch on GitHub/BitBucket, or else detail what you are doing:</p>
+<ul>
+<li>Branch: <THE BRANCH WHERE YOU DID YOUR WORK></li>
+<li>Directory: <THE DIRECTORY WHERE YOU DID YOUR WORK></li>
+</ul>
+<p>Oddly enough, the second technique where you specify the branch and folder is easiest for me, but they both are simple to use from my end.</p>
 <a class="anchor" id="modern-tools"></a>
 <h2>Modern Tools</h2>
 <p>I stumbled across this project. Look at the tools used in building this application</p>
