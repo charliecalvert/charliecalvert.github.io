@@ -1,0 +1,212 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Ec2GetStarted</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Ec2GetStarted</h1><p>Welcome to Ec2GetStarted</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#step-one">Step 01</a></li>
+<li><a href="#step-two">Step 02</a></li>
+<li><a href="#elastic-ip-address">Step 02-a: Elastic IP Address</a></li>
+<li><a href="#step-three">Step 03: Load your SSH Key</a></li>
+<li><a href="#step-four">Step 04: Access Your Instance</a></li>
+<li><a href="#configure">Step 04.a: Configure Your Instance</a></li>
+<li><a href="#step-five">Step Five</a></li>
+<li><a href="#setup-box">Setup Box</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#billing-after">Billing After Quarter Ends</a></li>
+<li><a href="#keep-system-up-to-date">Keep System Up to Date</a></li>
+<li><a href="#details">Details</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>This assignment is designed to help you get started using the AWS application called EC2.</p>
+<ul>
+<li>AWS: <a href="https://aws.amazon.com/documentation/">Amazon Web Services</a></li>
+<li>EC2: <a href="https://aws.amazon.com/documentation/ec2/">Elastic Compute Cloud</a></li>
+</ul>
+<a class="anchor" id="step-one"></a>
+<h2>Step 01</h2>
+<p>Your first step will be to create a <a href="https://aws.amazon.com/free/">free account</a> on AWS.</p>
+<ul>
+<li>Slides that describe setting up AWS: <a href="http://bit.ly/ec2-aws">http://bit.ly/ec2-aws</a></li>
+<li><a href="https://sites.google.com/view/elfland/web-services">Page with Related Slides</a></li>
+</ul>
+<a class="anchor" id="step-two"></a>
+<h2>Step 02</h2>
+<p>Once you have an account set up, the next step is to create an EC2 Instance.</p>
+<ul>
+<li>Launch Instance</li>
+<li><strong>Step 1, Pick OS</strong>: Ubuntu Server 16.04 LTS (HVM), SSD Volume Type - ami-6e1a0117</li>
+<li><strong>Step 2 Choose Instance</strong>: Free t2-micro</li>
+<li><strong>Step 3, Configure Instance</strong>: take the defaults.</li>
+<li><strong>Step 4, Add Storage</strong>: Take defaults or select up to 30 GB of disk space</li>
+<li><strong>Step 5, Add Tag</strong>: Add a single pair: name: prog270-01</li>
+<li><strong>Step 6, Configure Security Group</strong>: If you have one set up, use it. Otherwise create a new one:<ul>
+<li>HTTP</li>
+<li>HTTPS</li>
+<li>SSH</li>
+<li>Custom TCP Rule: 30025</li>
+</ul>
+</li>
+</ul>
+<p>You will be asked to choose an SSH public private key pair. Use an existing one if you have created one before and can locate it. Otherwise create a new one. If you create a new one:</p>
+<ul>
+<li>Download it and put it in your <strong>.ssh</strong> folder</li>
+<li>Zip it up</li>
+<li>Save it to Google Drive or someplace similar.</li>
+<li>Don&#39;t lose it!</li>
+</ul>
+<p>Your instance will be assigned a non-permanent public IP address for your EC2 instance. You can see this in your AWS console, under EC2 instances.</p>
+<a class="anchor" id="elastic-ip-address"></a>
+<h2>Step 02-a: Elastic IP Address</h2>
+<p>We will need a permanent IP address. On AWS, these permanent IP addresses are called Elastic IPs. Here are instructions on creating elastic IP address.</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/cloud/WebServices.html#elastic">Elastic IP</a></li>
+</ul>
+<a class="anchor" id="step-three"></a>
+<h2>Step 03: Load your SSH Key</h2>
+<p>Once you have created your instance, and downloaded your keys, you need to learn how to use the keys to access your instance.</p>
+<p>The first step is to load your EC2 PEM (private key) file on your local machine. On Pristine Lubuntu:</p>
+<pre><code>ssh-<span class="hljs-keyword">add</span><span class="bash"> ~/.ssh/&lt;YOUR EC2 PRIVATE KEY&gt;</span>
+</code></pre><p>More specifically, it might look like this:</p>
+<pre><code>ssh-<span class="hljs-keyword">add</span><span class="bash"> ~/.ssh/Prog270-Ec2-Calvert-2016.pem</span>
+</code></pre><p>Until very recently, Windows did not have SSH built into the OS. I hear this is changing. But for now, windows users can still use <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html">PuTTY</a>:</p>
+<p>Convert the PEM file to a PPK file.</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#pem">http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#pem</a></li>
+</ul>
+<a class="anchor" id="step-four"></a>
+<h2>Step 04: Access Your Instance</h2>
+<p>Now that you have your key loaded, you can connect to your EC2 instance with SSH. This gives you access to the command line of your instance.</p>
+<pre><code>ssh ubuntu@&lt;YOUR<span class="hljs-built_in"> IP </span>PUBLIC<span class="hljs-built_in"> IP </span><span class="hljs-keyword">or</span> ELASTIC<span class="hljs-built_in"> IP </span>ADDRESS&gt;
+</code></pre><p>For instance:</p>
+<pre><code><span class="hljs-selector-tag">ssh</span> <span class="hljs-selector-tag">ubuntu</span>@<span class="hljs-keyword">192</span>.<span class="hljs-keyword">168</span>.<span class="hljs-keyword">1</span>.<span class="hljs-keyword">25</span>
+</code></pre><p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/ssh-key-for-ec2.png" alt="Connect to EC2 activity diagram"></p>
+<p>Connect to your EC2 instance with Putty:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#connecting-to-an-ssh-server-with-putty">http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#connecting-to-an-ssh-server-with-putty</a></li>
+</ul>
+<a class="anchor" id="configure"></a>
+<h2>Step 04.a: Configure Your Instance</h2>
+<p>You can configure your instance by running a script found in JsObjects.</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html#jsobjects">Install JsObjects on your Instance</a></li>
+<li><a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html#core-setup">Run the Configuration Script</a></li>
+</ul>
+<p>You should also install a Web Server:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html#install-lamp">Install LAMP</a></li>
+</ul>
+<p>See also:</p>
+<ul>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/AwsEc2Expert.html#step-two-ssh-into-your-instance">AwsExpect</a></li>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/Ec2Provision.html#-bashrc">.bashrc and ssh-agent</a></li>
+<li><a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html#install-ssh">SSH and Configuring Linux</a></li>
+</ul>
+<a class="anchor" id="step-five"></a>
+<h2>Step Five</h2>
+<p>Add a the public part of your PROG270 Key to your Ubuntu instance in the <strong>~/.ssh/authorized_keys</strong> file.</p>
+<p>The <strong>ssh-copy-id</strong> command copies the default public key over to the remote machine. The default public key is usually <strong>id_rsa.pub</strong>. I find it safer to specify which key I want to copy over. To do that, use the <strong>-i</strong> flag. Generally, that command looks like this, where <strong>identity-file</strong> is your private key:</p>
+<pre><code><span class="hljs-selector-tag">ssh-copy-id</span> <span class="hljs-selector-tag">-i</span> <span class="hljs-selector-tag">identity_file</span> <span class="hljs-selector-tag">bcuser</span>@<span class="hljs-keyword">192</span>.<span class="hljs-keyword">168</span>.<span class="hljs-keyword">2</span>.<span class="hljs-keyword">21</span>
+</code></pre><p>For instance, if you have private key called <strong>prog270-2016</strong> then you would issue this command:</p>
+<pre><code><span class="hljs-selector-tag">ssh-copy-id</span> <span class="hljs-selector-tag">-i</span> <span class="hljs-selector-tag">prog270-2016</span> <span class="hljs-selector-tag">bcuser</span>@<span class="hljs-keyword">192</span>.<span class="hljs-keyword">168</span>.<span class="hljs-keyword">2</span>.<span class="hljs-keyword">21</span>
+</code></pre><p>Alternatively, if you don&#39;t want to use ssh-copy-id, you can use <strong>scp</strong> instead. From your instance of Pristine Lubuntu use SSH to <em>secure copy</em> (scp) your public key from pristine Lubuntu to your EC2 instance:</p>
+<pre><code>scp &lt;YOUR-PUBLIC-KEY&gt; ubuntu@&lt;YOUR-ELASTIC-IP&gt;<span class="hljs-symbol">:/home/ubuntu/</span>.ssh/.
+</code></pre><p>Then on EC2 append your public key to your <strong>authorized keys file</strong>:</p>
+<pre><code>cat ~<span class="hljs-regexp">/.ssh/</span>&lt;YOUR-PUBLIC-KEY&gt; <span class="hljs-meta">&gt;&gt; </span>~<span class="hljs-regexp">/.ssh/authorized</span>_keys
+</code></pre><p>Whether you use <strong>ssh-copy-id</strong> or <strong>scp</strong> to put your public key in the EC2 <strong>authorized_keys</strong> file is mostly a matter of taste. However, the <strong>ssh-copy-id</strong> program is a bit safer. For instance, it checks to make sure you are not putting duplicate keys in the <strong>authorized_keys</strong> file.</p>
+<p>Don&#39;t forget to put your new private key on Google Drive. Go to the ~/.ssh folder and issue a command similar to this one:</p>
+<pre><code>zip Pro<span class="hljs-name">g270</span>-Ec<span class="hljs-number">2</span>-Calvert<span class="hljs-number">-2016</span> Pro<span class="hljs-name">g270</span>-Ec<span class="hljs-number">2</span>-Calvert<span class="hljs-number">-2016.</span>pem
+</code></pre><p>Now upload the zip file to Google Drive. It doesn&#39;t have to be in our shared folder. Just so you can get it at home.</p>
+<p>Choose <strong>New | File Upload</strong> on Google Drive.</p>
+<p>Copy your private SSH key that you use to connect to GitHub to your new Ubuntu server:</p>
+<pre><code>scp &lt;YOUR KEY&gt; ubuntu<span class="hljs-variable">@35</span>.<span class="hljs-number">163.123</span>.<span class="hljs-number">100</span><span class="hljs-symbol">:/home/ubuntu/</span>.ssh/.
+</code></pre><p>Of course, use your public or elastic IP address.</p>
+<a class="anchor" id="setup-box"></a>
+<h2>Setup Box</h2>
+<p>There are a number of steps required to get the instance set up correctly. I outline them in the first few sections of this document:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html">Configure Linux</a></li>
+</ul>
+<p>See in particular the first three sections.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Take a screen shot of the command prompt and submit that with your assignment.</p>
+<p>A good screen shot would show you first on Pristine Lubuntu, then connecting to EC2, and running this command:</p>
+<pre>
+ls ~/Git
+</pre>
+
+<p>It should show that you have a JsObjects directory. Don&#39;t forget:</p>
+<ul>
+<li>sudo apt-get install python</li>
+</ul>
+<a class="anchor" id="billing-after"></a>
+<h2>Billing After Quarter Ends</h2>
+<p>After I have given you a final grade, consider what you want to do with AWS and your instance.</p>
+<ul>
+<li>One approach is to set a calendar reminder to delete your instance after one year (in Sept)</li>
+<li>Another approach is to buy a relatively inexpensive reserved instance once your year is up.</li>
+<li>Go to Ec2 Instances and select reserved instance and then select the big purchase instance button</li>
+<li>A third option is to push all your code from the EC2 instance, save anything else of importance to Google Drive, and then delete your instance. If you have no running instance, no EBS volumes (hard drives), no elastic IPs then you should have no bill even after the year is up. Check billing to be sure you have deleted everything.</li>
+<li>You could also stop the running instance, but leave the EBS (hard drive). That is much less expensive that running your instance month to month. You would still get a bill after your year is up, but it would not be particularly large.</li>
+</ul>
+<p>Never have more elastic IP addresses than you have running instances. You should not get billed for an elastic IP address so long as it is attached to a running instance. If you stop (shut down) or terminate (delete) an instance, be sure to delete the associated IP address or you will get billed.</p>
+<p>To put it another way: Billing for Elastic IP addresses runs precisely counter to our intuition:</p>
+<ul>
+<li>If you use your Elastic IP it is free</li>
+<li>If you don&#39;t use it, you get billed</li>
+</ul>
+<p>Amazon has a limited number of IP addresses. They don&#39;t mind sharing them, but they don&#39;t want to waste them. So long as you use them, all is good, but if you just reserve it and don&#39;t use it, don&#39;t attach it to a running instance, then they are not happy. If they are not happy, they bill you.</p>
+<a class="anchor" id="keep-system-up-to-date"></a>
+<h2>Keep System Up to Date</h2>
+<p>The update commands:</p>
+<pre><code class="lang-bash">sudo apt-<span class="hljs-builtin-name">get</span> update
+sudo apt-<span class="hljs-builtin-name">get</span> upgrade
+</code></pre>
+<p>You should run <strong>sudo apt-get update</strong> and then <strong>sudo apt-get upgrade</strong> every few days. Afterwards, you may need to reboot your EC2 instance.</p>
+<p>Sometimes you see messages like &quot;7 packages need to updated, 3 security updates&quot; even after you have run the above commands. So long as it does not cause you to actually upgrade to a new version, you can try to fix those message with this command:</p>
+<pre>
+sudo apt-get dist-upgrade
+</pre>
+
+<p>It&#39;s sometimes a good idea to run <strong>sudo apt-get autoremove</strong> after this kind of dist-upgrade.</p>
+<p>Your EC2 system can be rebooted with this command:</p>
+<pre><code class="lang-bash">sudo <span class="hljs-built_in">shutdown</span> -r now.
+</code></pre>
+<p>This will cause your connection to EC2 to close or freeze. You will need to wait about 2 to 5 minutes, and then try to reconnect to your EC2 instance.</p>
+<p>These references are useful:</p>
+<ul>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/Ec2Provision.html">http://www.ccalvert.net/books/CloudNotes/Assignments/Ec2Provision.html</a></li>
+<li><a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html">http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html</a></li>
+</ul>
+<a class="anchor" id="details"></a>
+<h2>Details</h2>
+<pre><code><span class="hljs-symbol">1 </span> exit
+<span class="hljs-symbol">2 </span> sudo apt-<span class="hljs-keyword">get</span> update
+<span class="hljs-symbol">3 </span> sudo apt-<span class="hljs-keyword">get</span> upgrade
+<span class="hljs-symbol">4 </span> exit
+<span class="hljs-symbol">5 </span> cd .ssh/
+<span class="hljs-symbol">6 </span> ls -la
+<span class="hljs-symbol">7 </span> cd
+<span class="hljs-symbol">8 </span> <span class="hljs-keyword">mkdir</span> Git
+<span class="hljs-symbol">9 </span> cd Git/
+<span class="hljs-symbol">10 </span> ls
+<span class="hljs-symbol">11 </span> sudo apt-<span class="hljs-keyword">get</span> install git
+<span class="hljs-symbol">12 </span> git clone http://github.<span class="hljs-keyword">com</span>/charliecalvert/JsObjects.git
+<span class="hljs-symbol">13 </span> cd JsObjects/Utilities/NodeInstall/
+<span class="hljs-symbol">14 </span> ls
+<span class="hljs-symbol">15 </span> ./NodeInstall.sh
+<span class="hljs-symbol">16 </span> ls
+<span class="hljs-symbol">17 </span> cd ..
+<span class="hljs-symbol">18 </span> ls
+<span class="hljs-symbol">19 </span> find . -iname Bash*
+<span class="hljs-symbol">20 </span> cat SetupLinuxBox/BashrcExtras
+<span class="hljs-symbol">21 </span> nano ~/.bashrc
+<span class="hljs-symbol">22 </span> source ~/.bashrc
+<span class="hljs-symbol">23 </span> sudo apt-<span class="hljs-keyword">get</span> install ssh
+<span class="hljs-symbol">24 </span> exit
+<span class="hljs-symbol">25 </span> cd .ssh/
+<span class="hljs-symbol">26 </span> ls
+<span class="hljs-symbol">27 </span> ln -s bc-<span class="hljs-number">2016</span>-<span class="hljs-number">01</span> main-<span class="hljs-keyword">key</span>
+<span class="hljs-symbol">28 </span> ls
+<span class="hljs-symbol">29 </span> cp ~/Git/JsObjects/Utilities/SetupLinuxBox/.bash_aliases ~/.
+<span class="hljs-symbol">30 </span> source ~/.bash_aliases
+<span class="hljs-symbol">31 </span> sshadd
+<span class="hljs-symbol">34 </span> sudo apt-<span class="hljs-keyword">get</span> install tasksel
+<span class="hljs-symbol">35 </span> sudo tasksel install lamp-server
+</code></pre></div></body></html>
