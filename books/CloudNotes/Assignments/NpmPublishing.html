@@ -5,9 +5,15 @@
 <li><a href="#create-your-package">Create Your Package</a></li>
 <li><a href="#publish">Publish</a></li>
 <li><a href="#use-your-package">Use Your Package</a></li>
+<li><a href="#client-side">Client side</a></li>
+<li><a href="#link-in-react">Link in React</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
-<p>Learn how to use NPM Publishing to put a library of your code on NPM.</p>
+<p>The goals of this assignment are to:</p>
+<ul>
+<li>Learn how to publish a library of your code on NPM.</li>
+<li>Integrate React components into an Express based client.</li>
+</ul>
 <a class="anchor" id="account"></a>
 <h2>Account</h2>
 <p>Go to the <a href="https://www.npmjs.com/">NPM</a> website and create an account.</p>
@@ -21,7 +27,7 @@
 <p>That should be all you have to do. Sometimes it takes a long time to log in. If the login process does not go smoothly the first time, you may have to also use this command:</p>
 <pre><code class="lang-bash"><span class="hljs-built_in">npm</span> adduser
 </code></pre>
-<p>Just enter the user name and password that you just set up.</p>
+<p>When run, <strong>adduser</strong> asks you to enter the user name and password that you just set up.</p>
 <p>Verify that all is good by going to this site:</p>
 <ul>
 <li><a href="https://npmjs.com/~">https://npmjs.com/~</a></li>
@@ -33,8 +39,8 @@
 <h2>Create Your Package</h2>
 <p>Create a folder in your repository called <strong>NpmLastName</strong> where LastName is your last name. Put a <strong>package.json</strong> file in your folder:</p>
 <pre><code><span class="hljs-built_in">npm</span> init
-</code></pre><p>The <strong>name</strong> and <strong>version</strong> fields are required. For your name, use only small letters. Add something like <strong>isit322-lastname</strong>, for instance, <strong>isit322-calvert</strong>. (Actually, my package is called <strong>elven-code</strong>, but for now, it would be simplest if you just used your last name so I can more easily grade and track your work.)</p>
-<p>Put some code in your folder in a file called <strong>index.js</strong>:</p>
+</code></pre><p>The <strong>name</strong> and <strong>version</strong> fields are required. For your name, use only small letters. Add something like <strong>isit322-lastname</strong>, for instance, <strong>isit322-calvert</strong>.</p>
+<p>Put the following code in a file called <strong>index.js</strong>:</p>
 <pre><code>exports.getPackageDescription = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-string">"This is Charlie Calvert's package"</span>;
 }
@@ -53,7 +59,7 @@
 <li>minor (The 2 in the example above: X.2.X)</li>
 <li>patch (The 3 in the example above: X.X.3)</li>
 </ul>
-<p>Take together, the the major, minor and patch portions of your version number look like this: <strong>1.2.3</strong>. The first number is the major number, the second the minor number and the third is a patch number:</p>
+<p>Taken together, the major, minor and patch portions of your version number look like this: <strong>1.2.3</strong>. The first number is the major number, the second the minor number and the third is a patch number:</p>
 <ul>
 <li>major.minor.patch</li>
 <li>0.0.0</li>
@@ -62,7 +68,7 @@
 <ul>
 <li>3.2.1</li>
 </ul>
-<p>The versioning system described here is captured in a standard called <a href="http://semver.org/">semver</a>. It is very wildly used and is something that you, as a developer, should understand.</p>
+<p><strong>NOTE</strong>: <em>The versioning system described here is captured in a standard called <a href="http://semver.org/">semver</a>. It is very widely used and is something that you, as a developer, should understand.</em></p>
 <p>As a rule, we only increment a major version number when we publish a breaking change. The minor version number is usually for new features. The patch is when we publish a bug fix.</p>
 <p>So, if we are about to publish a bug fix, we do this:</p>
 <pre><code><span class="hljs-built_in">npm</span> version patch
@@ -72,13 +78,54 @@
 <h2>Use Your Package</h2>
 <p>In your repository create a project:</p>
 <pre><code><span class="hljs-attribute">CreateAllExpress</span> Week03-NpmProject
-</code></pre><p>Use your package:</p>
+</code></pre><p>Working from the root of your new project, take steps to use, to integrate, your package into your new project. The following code will install your package into <strong>node_modules</strong>, thereby making it available to your project:</p>
 <pre><code>npm <span class="hljs-keyword">install</span> &lt;mypackage&gt; <span class="hljs-comment">--save</span>
-</code></pre><p>From <strong>routes/index.js</strong> first <strong>require</strong> your package and then create a <strong>get</strong> method in routes/index.js that sends the output from your <strong>getPackageDescription</strong> method back to your client. Create a method on the client that uses <strong>fetch</strong>. That method should retrieve the value from the server and display it. You can display the string that is returned in an HTML paragraph tag.</p>
-<p>On the server side, here is how to add code to the top of <strong>routes/index.js</strong> to use the function found in your package:</p>
+</code></pre><p>From <strong>routes/index.js</strong> first <strong>require</strong> your package and then create a <strong>get</strong> method that sends the output from your <strong>getPackageDescription</strong> method back to your client. On the server side, place this code near the top of <strong>routes/index.js</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-attribute">const getPackageDescription</span>  = require(<span class="hljs-string">'isit322-calvert'</span>);
 </code></pre>
-<p>Now just create a route that calls this method and returns (sends) the result to the client when it receives the appropriate request.</p>
+<p>This code imports the sole function exported from your package for use in your project. Base the code that that sends the package description to the client on the server side code you created for the <strong>RestBasics</strong> assignment:</p>
+<ul>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/RestBasics.html#routing-middleware">See the foo route from api.js</a></li>
+</ul>
+<p>In this case you can set the route to <strong>packageInfo</strong> and put the method you create in <strong>routes/index.js</strong>:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/package-info'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response)</span> </span>{ ... })
+</code></pre>
+<a class="anchor" id="client-side"></a>
+<h2>Client side</h2>
+<p>Create a method on the client that uses <strong>fetch</strong>. That method should retrieve the value from the server and display it. You can display the string that is returned in an HTML paragraph tag.</p>
+<p>Base your work on the <strong>App.js</strong> component from <strong>RestBasics</strong>.</p>
+<p><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/RestBasics.html#rewrite-the-client">Use <strong>fetch</strong> to call the <strong>/api/foo</strong> route</a></p>
+<a class="anchor" id="link-in-react"></a>
+<h2>Link in React</h2>
+<p>The main issue we are facing here is our combination of the standard &quot;old school&quot; express app and the modern React code. We have, however, faced this kind of problem before. In Week01, we worked through the ReactBasics assignment. In that lesson, we learned how to use <strong>WebPack</strong> and <strong>Babel</strong> to transpile ES6 code into ES5:</p>
+<ul>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/ReactBasics.html#transpiling-with-webpack">Transpile with WebPack</a></li>
+</ul>
+<p>At some point, you are going to have to absorb how WebPack works, but for now I will give you some hints. I&#39;ve placed the React component in <strong>/public/javascripts/GetPackageInfo.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
+<span class="hljs-keyword">var</span> webpack = <span class="hljs-built_in">require</span>(<span class="hljs-string">'webpack'</span>);
+
+<span class="hljs-built_in">module</span>.exports = {
+    entry: <span class="hljs-string">'./public/javascripts/GetPackageInfo.js'</span>,
+    output: {path: __dirname, filename: <span class="hljs-string">'./public/javascripts/bundle.js'</span>},
+    <span class="hljs-keyword">module</span>: {
+        loaders: [
+            {
+                test: <span class="hljs-regexp">/GetPackageInfo.js?$/</span>,
+                loader: <span class="hljs-string">'babel-loader'</span>,
+                exclude: <span class="hljs-regexp">/node_modules/</span>,
+                query: {presets: [<span class="hljs-string">'env'</span>, <span class="hljs-string">'react'</span>]}
+            }
+        ]
+    },
+};
+</code></pre>
+<p>There are other steps you will need to take, but they are all outlined in the <strong>ReactBasics</strong> assignment. In quoting the code above, I just wanted to provide some help with three properties from <strong>webpack.config.js</strong>:</p>
+<ul>
+<li><strong>entry</strong>: This is the first, and in our case only, file that contains ES6 that needs to be transpiled.</li>
+<li><strong>output</strong>: Where to put the transpiled code</li>
+<li><strong>module.loaders.test</strong>: Tell WebPack and Babel which file or files need to be processed to create our package.</li>
+</ul>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Submit your repository. I&#39;ll review the two new folders your created and test your code to be sure it works. I&#39;m expecting to see two folders:</p>
