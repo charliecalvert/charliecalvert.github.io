@@ -4,6 +4,7 @@
 <li><a href="#step-two">Step 02</a></li>
 <li><a href="#elastic-ip-address">Step 02-a: Elastic IP Address</a></li>
 <li><a href="#step-three">Step 03: Load your SSH Key</a></li>
+<li><a href="#ssh-on-windows">SSH on Windows</a></li>
 <li><a href="#step-four">Step 04: Access Your Instance</a></li>
 <li><a href="#configure">Step 04.a: Configure Your Instance</a></li>
 <li><a href="#step-five">Step Five</a></li>
@@ -64,7 +65,9 @@
 <pre><code>ssh-<span class="hljs-keyword">add</span><span class="bash"> ~/.ssh/&lt;YOUR EC2 PRIVATE KEY&gt;</span>
 </code></pre><p>More specifically, it might look like this:</p>
 <pre><code>ssh-<span class="hljs-keyword">add</span><span class="bash"> ~/.ssh/Prog270-Ec2-Calvert-2016.pem</span>
-</code></pre><p>Until very recently, Windows did not have SSH built into the OS. I hear this is changing. But for now, windows users can still use <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html">PuTTY</a>:</p>
+</code></pre><a class="anchor" id="ssh-on-windows"></a>
+<h2>SSH on Windows</h2>
+<p>Until very recently, Windows did not have SSH built into the OS. I hear this is changing. But for now, windows users can still use <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html">PuTTY</a>:</p>
 <p>Convert the PEM file to a PPK file.</p>
 <ul>
 <li><a href="http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#pem">http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#pem</a></li>
@@ -99,7 +102,13 @@
 </ul>
 <a class="anchor" id="step-five"></a>
 <h2>Step Five</h2>
-<p>Add a the public part of your PROG270 Key to your Ubuntu instance in the <strong>~/.ssh/authorized_keys</strong> file.</p>
+<p>AWS gave us a key pair that we can use to access an instance of our server. However, we already have an SSH key pair that we use to access our data on GitHub. If we use the GitHub key for accessing our AWS server, then we would only have to load one key. Otherwise we have to load two keys:</p>
+<ul>
+<li>One for GitHub</li>
+<li>One for AWS</li>
+</ul>
+<p>To sign on to both machines with a single key we have to put the public part of our Prog 270 Key on our Ubuntu instance in the <strong>~/.ssh/authorized_keys</strong> file. We do this by running <strong>ssh-copy-id</strong> command from Pristine Lubuntu.</p>
+<p><strong>NOTE</strong>: _Take a moment to be sure you understand what is happening here. We want to use a single key pair to access both AWS and GitHub. We already have the Prog270 key set up to access GitHub. To also use it with our AWS instance we have to copy the Prog 270 public key into the <strong>authorized_keys</strong> file on our AWS server. Needless to say, we place public keys in our <strong>authorized_keys</strong> file when we want to grant the owner of a particular private public key pair the ability to access a resource such as our AWS server. If you own a private key, and its matching public key is in the <strong>authorized_keys</strong> file for a service we want to access, then we are all set: we can access the service._</p>
 <p>The <strong>ssh-copy-id</strong> command copies the default public key over to the remote machine. The default public key is usually <strong>id_rsa.pub</strong>. I find it safer to specify which key I want to copy over. To do that, use the <strong>-i</strong> flag. Generally, that command looks like this, where <strong>identity-file</strong> is your private key:</p>
 <pre><code><span class="hljs-selector-tag">ssh-copy-id</span> <span class="hljs-selector-tag">-i</span> <span class="hljs-selector-tag">identity_file</span> <span class="hljs-selector-tag">bcuser</span>@<span class="hljs-keyword">192</span>.<span class="hljs-keyword">168</span>.<span class="hljs-keyword">2</span>.<span class="hljs-keyword">21</span>
 </code></pre><p>For instance, if you have private key called <strong>prog270-2016</strong> then you would issue this command:</p>
@@ -131,10 +140,7 @@
 ls ~/Git
 </pre>
 
-<p>It should show that you have a JsObjects directory. Don&#39;t forget:</p>
-<ul>
-<li>sudo apt-get install python</li>
-</ul>
+<p>It should show that you have a JsObjects directory.</p>
 <a class="anchor" id="billing-after"></a>
 <h2>Billing After Quarter Ends</h2>
 <p>After I have given you a final grade, consider what you want to do with AWS and your instance.</p>
