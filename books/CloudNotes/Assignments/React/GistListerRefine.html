@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>GistListerRefine</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>GistListerRefine</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>GistListerRefine</h1><p>Welcome to GistListerRefine</p><ul><!--TOC_Start--><li><a href="#gist-lister-refine">Gist Lister Refine</a></li>
 <li><a href="#normalize-names">Normalize Names</a></li>
 <li><a href="#retrieve-additional-properties">Retrieve Additional Properties</a></li>
@@ -18,19 +18,19 @@
 <a class="anchor" id="normalize-names"></a>
 <h2>Normalize Names</h2>
 <p>When we use <strong>map</strong> to create the array that we want to send back to our app we should normalize the names. Before, we were sending back properties with names like <strong>html_url</strong>. This does not follow the proper JavaScript naming conventions for properties. We should call it <strong>htmlUrl</strong> rather than <strong>html_url</strong>. (This is also an argument for <strong>htmlURL</strong>, but that is not my convention.) Here is the way our code ought to look with the key (property name) in the left and the value from our API call on the right:</p>
-<pre><code class="lang-javascript"><span class="hljs-string">'htmlUrl'</span>: item<span class="hljs-selector-class">.html_url</span>,
-</code></pre>
+<pre>'htmlUrl': item.html_url,
+</pre>
 <p>Go into <strong>routes/gitapi/gists.js</strong> and make the appropriate changes for any applicable property. For instance, another property name that needs to be changed is <strong>git_pull_url</strong>. This will probably break code in both our tests and in program.</p>
 <a class="anchor" id="retrieve-additional-properties"></a>
 <h2>Retrieve Additional Properties</h2>
 <p>While you have <strong>gists.js</strong> open, why don&#39;t add two new properties from the owner object that we get back from GitHub. I was thinking that the <strong>login</strong> name and <strong>avatar_url</strong> might be useful:</p>
-<pre><code class="lang-javascript"><span class="hljs-string">"owner"</span>: {
-     <span class="hljs-string">"login"</span>: <span class="hljs-string">"octocat"</span>,
-     <span class="hljs-string">"id"</span>: <span class="hljs-number">1</span>,
-     <span class="hljs-string">"avatar_url"</span>: <span class="hljs-string">"https://github.com/images/error/octocat_happy.gif"</span>,
+<pre>"owner": {
+     "login": "octocat",
+     "id": 1,
+     "avatar_url": "https://github.com/images/error/octocat_happy.gif",
      ...
  }
-</code></pre>
+</pre>
 <p>I&#39;ll leave it up to you to determine how to retrieve these properties.</p>
 <a class="anchor" id="set-state"></a>
 <h2>Set State</h2>
@@ -42,12 +42,12 @@
 <a class="anchor" id="button-disabled"></a>
 <h2>Button Disabled</h2>
 <p>Consider this button:</p>
-<pre><code class="lang-html">&lt;<span class="hljs-selector-tag">button</span>
-  id=<span class="hljs-string">'gistLister'</span>
-  onClick={this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.fetchGistList</span>}
-  disabled={this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.gistCanIterate</span>}&gt;Get Gists
-&lt;/button&gt;
-</code></pre>
+<pre><button
+  id='gistLister'
+  onClick={this.props.fetchGistList}
+  disabled={this.props.gistCanIterate}>Get Gists
+</button>
+</pre>
 <p>It is enabled or disabled depending on one of the <strong>props</strong> that is passed to it. Suppose you have three buttons:</p>
 <ul>
 <li>Get Gists</li>
@@ -58,55 +58,55 @@
 <a class="anchor" id="conditional-rendering"></a>
 <h2>Conditional Rendering</h2>
 <p>We can decide to render poritions of a component only after certain conditions are met. For instance, we might not want to render the list of gists until the list is larger than zero, or larger than one or until gistCanIterate is true. The following syntax can help us in such cases:</p>
-<pre><code class="lang-javascript">{this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.gistLister</span><span class="hljs-selector-class">.length</span> &gt; <span class="hljs-number">1</span> &amp;&amp;
-    &lt;ul&gt;
-        &lt;<span class="hljs-selector-tag">li</span> className=<span class="hljs-string">'gistLister'</span>&gt;Current Index: {this<span class="hljs-selector-class">.state</span><span class="hljs-selector-class">.index</span> + <span class="hljs-number">1</span>}
-            / {this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.gistLister</span><span class="hljs-selector-class">.length</span>}&lt;/li&gt;
-        &lt;<span class="hljs-selector-tag">li</span> className=<span class="hljs-string">'gistLister'</span>&gt;{this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.gistLister</span>[this<span class="hljs-selector-class">.state</span><span class="hljs-selector-class">.index</span>].description}&lt;/li&gt;
-        &lt;<span class="hljs-selector-tag">li</span> className=<span class="hljs-string">'gistLister'</span>&gt;&lt;<span class="hljs-selector-tag">a</span> href={gl[this<span class="hljs-selector-class">.state</span><span class="hljs-selector-class">.index</span>].htmlUrl}
-                                      target=<span class="hljs-string">'_blank'</span>&gt; {gl[<span class="hljs-number">0</span>].htmlUrl}&lt;/a&gt;&lt;/li&gt;
-        &lt;<span class="hljs-selector-tag">li</span> className=<span class="hljs-string">'gistLister'</span>&gt;{this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.gistLister</span>[this<span class="hljs-selector-class">.state</span><span class="hljs-selector-class">.index</span>].gitPullUrl}&lt;/li&gt;
-        &lt;<span class="hljs-selector-tag">li</span> className=<span class="hljs-string">'gistLister'</span>&gt;{this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.gistLister</span>[this<span class="hljs-selector-class">.state</span><span class="hljs-selector-class">.index</span>].id}&lt;/li&gt;
-        &lt;<span class="hljs-selector-tag">li</span> className=<span class="hljs-string">'gistLister'</span>&gt;{this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.gistLister</span>[this<span class="hljs-selector-class">.state</span><span class="hljs-selector-class">.index</span>].login}&lt;/li&gt;
-    &lt;/ul&gt;
+<pre>{this.props.gistLister.length > 1 &&
+    <ul>
+        <li className='gistLister'>Current Index: {this.state.index + 1}
+            / {this.props.gistLister.length}</li>
+        <li className='gistLister'>{this.props.gistLister[this.state.index].description}</li>
+        <li className='gistLister'><a href={gl[this.state.index].htmlUrl}
+                                      target='_blank'> {gl[0].htmlUrl}</a></li>
+        <li className='gistLister'>{this.props.gistLister[this.state.index].gitPullUrl}</li>
+        <li className='gistLister'>{this.props.gistLister[this.state.index].id}</li>
+        <li className='gistLister'>{this.props.gistLister[this.state.index].login}</li>
+    </ul>
 }
-</code></pre>
+</pre>
 <p>The code shown here will render only if the length of <strong>gistLister</strong> is larger than one.</p>
 <p>Read the official docs on <a href="https://facebook.github.io/react/docs/conditional-rendering.html">Conditional Rendering</a></p>
 <a class="anchor" id="list-styles"></a>
 <h2>List Styles</h2>
 <p>Our current menu is being changed. Nevertheless, there is an issue related to it that we need to attend to.</p>
 <p>Most of you have styled your menu items. Be sure that you limit these styles so that they do not touch all the UL and LI items in your program:</p>
-<pre><code class="lang-css"><span class="hljs-selector-tag">ul</span><span class="hljs-selector-class">.menu</span> {
-    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#8a6d3b</span>;
-    <span class="hljs-attribute">list-style-type</span>: none;
-    <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>;
-    <span class="hljs-attribute">overflow</span>: hidden;
-    <span class="hljs-attribute">padding</span>: <span class="hljs-number">0</span>;
+<pre>ul.menu {
+    background-color: #8a6d3b;
+    list-style-type: none;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
 }
 
-<span class="hljs-selector-tag">li</span><span class="hljs-selector-class">.menu</span> {
-    <span class="hljs-attribute">float</span>: left;
+li.menu {
+    float: left;
 }
 
-<span class="hljs-selector-tag">li</span><span class="hljs-selector-class">.menu</span> <span class="hljs-selector-tag">a</span> {
-    <span class="hljs-attribute">color</span>: white;
-    <span class="hljs-attribute">display</span>: block;
-    <span class="hljs-attribute">padding</span>: <span class="hljs-number">5px</span> <span class="hljs-number">15px</span>;
-    <span class="hljs-attribute">text-align</span>: center;
-    <span class="hljs-attribute">text-decoration</span>: none;
+li.menu a {
+    color: white;
+    display: block;
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
 }
 
-<span class="hljs-selector-tag">li</span><span class="hljs-selector-class">.menu</span>  <span class="hljs-selector-tag">a</span><span class="hljs-selector-pseudo">:hover</span> {
-    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#985f0d</span>;
+li.menu  a:hover {
+    background-color: #985f0d;
 }
-</code></pre>
+</pre>
 <p>And then in <strong>ElfHeader</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">ul</span> <span class="hljs-attr">className</span>=<span class="hljs-string">'menu'</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">className</span>=<span class="hljs-string">'menu'</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">'/'</span>&gt;</span>Home<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+<pre><ul className='menu'>
+    <li className='menu'><Link to='/'>Home</Link></li>
     // ETC....
-<span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
-</code></pre>
+</ul>
+</pre>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Add, commit, push, branch, tag. Use the words <strong>react-bootstrap</strong> in your messages.</p>

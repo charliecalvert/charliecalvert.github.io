@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactAddressShow</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactAddressShow</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ReactAddressShow</h1><p>Welcome to ReactAddressShow</p><ul><!--TOC_Start--><li><a href="#react-address-show">React Address Show</a></li>
 <li><a href="#divide">Divide</a></li>
 <li><a href="#create-addressshow">Create AddressShow</a></li>
@@ -32,93 +32,93 @@
 <h2>Divide</h2>
 <p>The first step is to split <strong>Address</strong> and <strong>AddressShow</strong> into two distinct components. In particular, we will create a new component called <strong>AddressShow</strong> and put most of <strong>Address</strong> in it. We will then pare down <strong>Address</strong> so that its primary function will be handling data.</p>
 <p>The first step will be set up our (initially) failing tests for <strong>AddressShow</strong>:</p>
-<pre><code class="lang-javascript">// GET THE RIGHT IMPORTS
+<pre>// GET THE RIGHT IMPORTS
 
 describe('AddressShow Shallow Suite', function () {
 
-    var quiet = true<span class="hljs-comment">;</span>
+    var quiet = true;
 
     /*
      * @param {object} wrapper - Container for a bunch of HTML nodes
      * @param {number} index - Index of HTML element.
      * @param {boolean} talkToMe - Speak even if quiet is true
      */
-    const getIndex = function(<span class="hljs-name">wrapper</span>, index, talkToMe) {
+    const getIndex = function(wrapper, index, talkToMe) {
         if (!quiet || talkToMe) {
-            const ninep = wrapper.find('div#addressShowRender').childAt(<span class="hljs-name">index</span>).debug()<span class="hljs-comment">;</span>
-            console.log('NINEP:', ninep)<span class="hljs-comment">;</span>
+            const ninep = wrapper.find('div#addressShowRender').childAt(index).debug();
+            console.log('NINEP:', ninep);
         }
-    }<span class="hljs-comment">;</span>
+    };
 
-    const defaultFieldTest = (<span class="hljs-name">name</span>, index, talkToMe) =&gt; {
-        const wrapper = shallow(<span class="hljs-name">&lt;AddressShow</span> address={address}  /&gt;)<span class="hljs-comment">;</span>
-        const welcome = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;<span class="hljs-comment">;</span>
-        getIndex(<span class="hljs-name">wrapper</span>, index, talkToMe)<span class="hljs-comment">;</span>
-        expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">welcome</span>)).toEqual(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
-    }<span class="hljs-comment">;</span>
+    const defaultFieldTest = (name, index, talkToMe) => {
+        const wrapper = shallow(<AddressShow address={address}  />);
+        const welcome = <p className="App-intro">{name}</p>;
+        getIndex(wrapper, index, talkToMe);
+        expect(wrapper.contains(welcome)).toEqual(true);
+    };
 
-    it('renders and displays the default first name', () =&gt; {
-        defaultFieldTest('firstName: unknown', <span class="hljs-number">0</span>)<span class="hljs-comment">;</span>
-    })<span class="hljs-comment">;</span>
+    it('renders and displays the default first name', () => {
+        defaultFieldTest('firstName: unknown', 0);
+    });
 
     // AND MANY MORE
 
-})<span class="hljs-comment">;</span>
-</code></pre>
+});
+</pre>
 <p>Note that we don&#39;t create any tests for button clicks.</p>
 <a class="anchor" id="create-addressshow"></a>
 <h2>Create AddressShow</h2>
 <p>To get started, make a copy of <strong>Address</strong> and call it <strong>AddressShow</strong>. For instance, you might right click on <strong>Address</strong> in WebStorm, choose <strong>copy</strong>, then right click on the <strong>components</strong> folder and choose <strong>paste</strong>. When prompted, you might call the copy you create <strong>AddressShow</strong>. There are many ways to do the same thing, and it doesn&#39;t really matter which one you prefer.</p>
 <p>In <strong>AddressShow</strong>, rename the class from <strong>Address</strong> to <strong>AddressShow</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Address</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{ ... }      &lt;=== <span class="hljs-type">ORIGINAL</span>
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AddressShow</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{ ... }  &lt;=== <span class="hljs-type">EDITED</span> <span class="hljs-type">VERSION</span>
-</code></pre>
+<pre>class Address extends Component { ... }      <=== ORIGINAL
+class AddressShow extends Component { ... }  <=== EDITED VERSION
+</pre>
 <p>Then, down at the bottom of the file, make the same change:</p>
-<pre><code class="lang-javascript"><span class="hljs-builtin-name">export</span><span class="hljs-built_in"> default Address; </span>     &lt;=== ORIGINAL
-<span class="hljs-builtin-name">export</span><span class="hljs-built_in"> default </span>AddressShow;  &lt;=== EDITED VERSION
-</code></pre>
+<pre>export default Address;      <=== ORIGINAL
+export default AddressShow;  <=== EDITED VERSION
+</pre>
 <a class="anchor" id="data"></a>
 <h2>Data</h2>
 <p>We will no longer load <strong>addresses</strong> in <strong>index.js</strong>. Instead, <strong>Address</strong> owns the data. Move the import statement from <strong>index.js</strong> to <strong>Address.js</strong> and straighten out the path:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> addresses <span class="hljs-keyword">from</span> <span class="hljs-string">'../address-list'</span>;
-</code></pre>
+<pre>import addresses from '../address-list';
+</pre>
 <p><strong>NOTE</strong>: <em>Recall that our goal is to perform a complete mind-meld with the file system of our OS. Some part of your brain must become the file system, and you should take great joy and comfort from this fact. In particular, it should be intuitively obvious that the relative path part of the import statement must change after we move this line of code from a file in the <strong>src</strong> directory to a file in the <strong>src/components</strong> directory. You should also grok immediately the difference between a relative path that contains one dot and one that contains two dots. You shouldn&#39;t have to think about it any more than you have to think how to tie your shoes. The knowledge should just be there, fully formed, in your brain without thought or effort. I should perhaps remind you that this isn&#39;t a Linux thing, as you would have the same issue on Windows.</em></p>
 <p>Lets also stop individual fields in <strong>Address</strong>. Intead, we will work with a single record from the <strong>addresses</strong> array.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> addresses from '../address-list';
+<pre>import addresses from '../address-list';
 
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Address</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+class Address extends Component {
     constructor(props) {
-        <span class="hljs-keyword">super</span>(props);
+        super(props);
 
-        <span class="hljs-keyword">this</span>.addressIndex=<span class="hljs-number">0</span>;
-        const address = addresses[<span class="hljs-keyword">this</span>.addressIndex];
-        <span class="hljs-keyword">this</span>.state = {
-            address: address  &lt;=== <span class="hljs-type">HERE</span>
+        this.addressIndex=0;
+        const address = addresses[this.addressIndex];
+        this.state = {
+            address: address  <=== HERE
         };
-        <span class="hljs-keyword">this</span>.quiet = <span class="hljs-literal">true</span>;
+        this.quiet = true;
     }
 }
-</code></pre>
+</pre>
 <p>We create an <strong>addressIndex</strong> property and use it to index into our array of addresses. Our state tracks only a single address since that is all that <strong>AddressShow</strong> needs to know.</p>
 <p><strong>NOTE</strong>: <em>I&#39;m having some doubts here as to whether this is the best way to do this. Certainly it works, but there may be a more elegant solution. I&#39;ll think about it.</em></p>
 <p>We now radically strip down the <strong>render</strong> method for <strong>Address</strong>. Rather than render the address fields here, we will pass <strong>this.state.address</strong> to <strong>AddressShow</strong> and let that component render it:</p>
-<pre><code class="lang-javascript">render() {
-    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.quiet) { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"ADDRESS RENDER"</span>); }
-    <span class="hljs-keyword">return</span> (
-        <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">AddressShow</span> <span class="hljs-attr">address</span>=<span class="hljs-string">{this.state.address}</span> /&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<pre>render() {
+    if (!this.quiet) { console.log("ADDRESS RENDER"); }
+    return (
+        <div className="App">
+            <AddressShow address={this.state.address} />
+        </div>
     );
-}</span>
-</code></pre>
+}
+</pre>
 <a class="anchor" id="props-address-data"></a>
 <h2>AddressShow Receives the Address Data</h2>
 <p>The only thing that <strong>AddressShow</strong> really needs to do is display our <strong>Address</strong> record. It turns that at this time, <strong>AddressShow</strong> does not need a constructor, since there is no set up work need to get the object going. However, if it did need one, it might look like this:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
+<pre>constructor(props) {
     super(props);
     console.log('SHOW ADDRESS CONSTRUCTOR', this.props.address);
-}</span></span>
-</code></pre>
+}
+</pre>
 <p>As you can see, the constructor is passed <strong>props</strong>. As you know, <strong>props</strong> is the state passed to the object by its parent, which in this case is <strong>Address</strong>. This means that <strong>this.props.address</strong> in <strong>AddressShow</strong> is &quot;the same thing&quot; as <strong>this.state.address</strong> in the <strong>Address</strong> component. The data is passed from the <strong>Address</strong> render method to the <strong>AddressShow</strong> constructor.</p>
 <p>You can keep the above constructor, but you should strip everything else from <strong>AddressShow</strong> expcept the <strong>render</strong> method.</p>
 <p><strong>NOTE</strong>: <em>Since the constructor for <strong>AddressShow</strong> doesn&#39;t do anything, the only thing we really need in <strong>AddressShow</strong> is the render method, but we are keeping the constructor for pedagogical purposes.</em></p>
@@ -126,63 +126,63 @@ describe('AddressShow Shallow Suite', function () {
 <h2>Logging: Blessed Quiet</h2>
 <p>Since we don&#39;t really need the <strong>constructor</strong>, and yet we have implemented it anyway to help illustrate a point, we might as well see if we can find a way to complicate the code further.</p>
 <p>As you probably know, <strong>console.log</strong> is both curse and blessing. Let&#39;s try to emphasize the blessing and mitigate the curse by creating a single place where we call the offending method:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
+<pre>constructor(props) {
     super(props);
     this.quiet = true;
     this.log('SHOW ADDRESS CONSTRUCTOR', this.props.address);
-}</span>
+}
 
-<span class="hljs-title">log</span><span class="hljs-params">(<span class="hljs-keyword">message</span>, message2 = <span class="hljs-string">''</span>, message3 = <span class="hljs-string">''</span>)</span> <span class="hljs-comment">{
+log(message, message2 = '', message3 = '') {
     if (!this.quiet) {
         console.log(message, message2, message3);
-    }</span>
-}</span>
-</code></pre>
-<p>Now we can toggle a single variable, <strong>this.quiet</strong>, whenever we want to turn down the volume. For instance, we might want to log to the console in our render method. In the new system we would do it like this:</p>
-<pre><code class="lang-javascript">render() {
-    <span class="hljs-keyword">this</span>.log(<span class="hljs-string">"SHOW ADDRESS RENDER"</span>);
-    <span class="hljs-keyword">return</span> ( ... );
+    }
 }
-</code></pre>
+</pre>
+<p>Now we can toggle a single variable, <strong>this.quiet</strong>, whenever we want to turn down the volume. For instance, we might want to log to the console in our render method. In the new system we would do it like this:</p>
+<pre>render() {
+    this.log("SHOW ADDRESS RENDER");
+    return ( ... );
+}
+</pre>
 <p>Now we can change the <strong>this.quier</strong> property from <strong>true</strong> to <strong>false</strong> to toggle the use of <strong>console.log</strong> throughout the object. There are other solutions, and better loggers, but this is a bit of a start on understanding the subject.</p>
 <p><strong>NOTE</strong>: <em>I state the name of the object in logging message to help me track down where it is coming from. Fancy loggers can give us more information in simpker ways, but we could do this:</em></p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">constructor</span>(props) {
-    <span class="hljs-keyword">super</span>(props);
-    <span class="hljs-keyword">this</span>.quiet = <span class="hljs-literal">false</span>;
-    <span class="hljs-keyword">this</span>.log(<span class="hljs-string">'CONSTRUCTOR'</span>, <span class="hljs-keyword">this</span>.props.address);
+<pre>constructor(props) {
+    super(props);
+    this.quiet = false;
+    this.log('CONSTRUCTOR', this.props.address);
 }
 
-log(message, message2 = <span class="hljs-string">''</span>, message3 = <span class="hljs-string">''</span>) {
+log(message, message2 = '', message3 = '') {
 
-    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.quiet) {
-        const label = <span class="hljs-keyword">this</span>.<span class="hljs-keyword">constructor</span>.name + <span class="hljs-string">': '</span>;   &lt; === HERE
+    if (!this.quiet) {
+        const label = this.constructor.name + ': ';   < === HERE
         console.log(label, message, message2, message3);
     }
 }
 
 render() {
-    <span class="hljs-keyword">this</span>.log(<span class="hljs-string">"RENDER"</span>);
+    this.log("RENDER");
 }
-</code></pre>
+</pre>
 <p><em>We are using <strong>this.constructor.name</strong> to get the name of our component.</em></p>
 <a class="anchor" id="rendering-the-data"></a>
 <h2>Rendering the Data</h2>
 <p>It should come as no surprise that <strong>AddressShow</strong> can, at least for now, render an address with almost the same code that we used in <strong>Address</strong>. The change will be simply to work with <strong>props</strong> rather than <strong>state</strong>:</p>
-<pre><code class="lang-javascript">render() {
-    <span class="hljs-keyword">this</span>.log(<span class="hljs-string">"SHOW ADDRESS RENDER"</span>);
+<pre>render() {
+    this.log("SHOW ADDRESS RENDER");
 
-    <span class="hljs-keyword">return</span> (
-        <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-intro"</span>&gt;</span>
+    return (
+        <div className="App">
+            <p className="App-intro">
                 firstName: {this.props.address.firstName}
-            <span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+            </p>
 
             // CODE OMITTED HERE
 
-        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+        </div>
     );
 }
-</code></pre>
+</pre>
 <p>Note that we don&#39;t write <strong>this.props.firstName</strong> but <strong>this.props.address.firstName</strong>. This is because we pass in the whole address object, rather than a set of individual properties representing each field. One could argue the merits of each technique, but I like this one because it is relatively simple.</p>
 <a class="anchor" id="understanding-testing-child-components"></a>
 <h2>Understanding Testing Child Components</h2>
@@ -190,113 +190,113 @@ render() {
 <p>These tests will look a lot like the tests you did for the original <strong>Address</strong> component that contained both paragraphs and buttons. That was the way things looked before you moved the paragraphs and buttons into Tag it, then <strong>AddressShow</strong>.</p>
 <p>There is one important change that you need to make. This has to do with Enzyme and the <strong>shallow</strong> vs <strong>mount</strong> methods.</p>
 <p>Suppose one component nests another. For instance, suppose that your custom component <strong>MyComponent</strong> renders a second component called <strong>MyOtherComponent</strong>. Here is <strong>MyComponent&#39;s</strong> render method :</p>
-<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+<pre>class MyComponent extends Component {
   render() {
-      <span class="hljs-keyword">return</span> (
-          &lt;div&gt;
-              &lt;<span class="hljs-type">MyOtherComponent</span> /&gt;
-          &lt;/div&gt;
+      return (
+          <div>
+              <MyOtherComponent />
+          </div>
       );
   }
 }
-</code></pre>
+</pre>
 <p>Here <strong>MyComponent</strong> does nothing but ask <strong>MyOtherComponent</strong> to render itself.</p>
 <p>In cases like this, if you use Enzyme&#39;s <a href="https://github.com/airbnb/enzyme/blob/master/docs/api/shallow.md">shallow</a>, your tests will only see the output from <strong>MyComponent</strong>. Indeed, that is often what you want. But sometimes, it is best to have the tests the output from both <strong>MyComponent</strong> and <strong>MyOtherComponent</strong>. To do that, you use <strong>mount</strong> rather than <strong>shallow</strong>. We usually do this:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { shallow } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
-</code></pre>
+<pre>import { shallow } from 'enzyme';
+</pre>
 <p>If you want to see output from both components, then do this:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { mount } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
-</code></pre>
+<pre>import { mount } from 'enzyme';
+</pre>
 <a class="anchor" id="writing-child-tests"></a>
 <h2>Writing Tests for Child Components</h2>
 <p>The first step will be to load <strong>mount</strong> rather than <strong>shallow</strong> from enzyme.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
-<span class="hljs-keyword">import</span> Address <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/Address'</span>;
-<span class="hljs-keyword">import</span> { mount } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
-<span class="hljs-keyword">import</span> addresses <span class="hljs-keyword">from</span> <span class="hljs-string">'../address-list'</span>;
-<span class="hljs-keyword">import</span> ElfDebugEnzyme <span class="hljs-keyword">from</span> <span class="hljs-string">'../ElfDebugEnzyme'</span>;
-<span class="hljs-keyword">const</span> elfDebugEnzyme = <span class="hljs-keyword">new</span> ElfDebugEnzyme(<span class="hljs-literal">false</span>, <span class="hljs-string">'NaiveAddressEdit.test.js'</span>);
-<span class="hljs-keyword">import</span> <span class="hljs-string">'../css/index.css'</span>;
+<pre>import React from 'react';
+import Address from '../components/Address';
+import { mount } from 'enzyme';
+import addresses from '../address-list';
+import ElfDebugEnzyme from '../ElfDebugEnzyme';
+const elfDebugEnzyme = new ElfDebugEnzyme(false, 'NaiveAddressEdit.test.js');
+import '../css/index.css';
 
-<span class="hljs-keyword">const</span> address = addresses[<span class="hljs-number">0</span>];
+const address = addresses[0];
 
-describe(<span class="hljs-string">'Naive Address Edit Mount Jest Suite'</span>, <span class="hljs-keyword">function</span> () {
+describe('Naive Address Edit Mount Jest Suite', function () {
 
-    <span class="hljs-literal">it</span>(<span class="hljs-string">'renders and displays the default last name'</span>, () =&gt; {
-        <span class="hljs-keyword">const</span> wrapper = mount(&lt;Address address={address}  /&gt;);
-        <span class="hljs-keyword">const</span> welcome = &lt;p className=<span class="hljs-string">'App-intro'</span>&gt;lastName: unknown&lt;/p&gt;;
-        elfDebugEnzyme.getIndex(wrapper, <span class="hljs-string">'div#addressShowRender'</span>, <span class="hljs-number">1</span>, <span class="hljs-literal">true</span>);
-        expect(wrapper.contains(welcome)).toEqual(<span class="hljs-literal">true</span>);
+    it('renders and displays the default last name', () => {
+        const wrapper = mount(<Address address={address}  />);
+        const welcome = <p className='App-intro'>lastName: unknown</p>;
+        elfDebugEnzyme.getIndex(wrapper, 'div#addressShowRender', 1, true);
+        expect(wrapper.contains(welcome)).toEqual(true);
     });
 
-    <span class="hljs-literal">it</span>(<span class="hljs-string">'renders button click message for first name'</span>, () =&gt; {
-        <span class="hljs-keyword">const</span> wrapper = mount(&lt;Address address={address}/&gt;);
-        <span class="hljs-keyword">const</span> patty = &lt;p className=<span class="hljs-string">'App-intro'</span>&gt;lastName: Murray&lt;/p&gt;;
-        wrapper.find(<span class="hljs-string">'button#showAddressClick'</span>).simulate(<span class="hljs-string">'click'</span>);
-        elfDebugEnzyme.getIndex(wrapper, <span class="hljs-string">'div#addressShowRender'</span>, <span class="hljs-number">1</span>, <span class="hljs-literal">true</span>);
-        expect(wrapper.contains(patty)).toEqual(<span class="hljs-literal">true</span>);
+    it('renders button click message for first name', () => {
+        const wrapper = mount(<Address address={address}/>);
+        const patty = <p className='App-intro'>lastName: Murray</p>;
+        wrapper.find('button#showAddressClick').simulate('click');
+        elfDebugEnzyme.getIndex(wrapper, 'div#addressShowRender', 1, true);
+        expect(wrapper.contains(patty)).toEqual(true);
     });
 
 });
-</code></pre>
+</pre>
 <p>After that, the tests look more or less the same.</p>
 <a class="anchor" id="generic-tests"></a>
 <h2>Writing Generic, Resuable Tests</h2>
 <p>Some tests are so similar that you can create a test blueprint, and call it:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
-<span class="hljs-keyword">import</span> Address <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/Address'</span>;
-<span class="hljs-keyword">import</span> { mount } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+<pre>import React from 'react';
+import Address from '../components/Address';
+import { mount } from 'enzyme';
 
-<span class="hljs-keyword">import</span> addresses <span class="hljs-keyword">from</span> <span class="hljs-string">'../address-list'</span>;
-<span class="hljs-keyword">import</span> <span class="hljs-string">'../css/index.css'</span>;
+import addresses from '../address-list';
+import '../css/index.css';
 
-<span class="hljs-keyword">const</span> address = addresses[<span class="hljs-number">0</span>];
+const address = addresses[0];
 
-describe(<span class="hljs-string">'Address mount Suite'</span>, <span class="hljs-keyword">function</span> () {
+describe('Address mount Suite', function () {
 
-    <span class="hljs-keyword">var</span> quiet = <span class="hljs-literal">true</span>;
+    var quiet = true;
 
-    <span class="hljs-comment">/*
+    /*
      * @param {object} wrapper - Container for a bunch of HTML nodes
      * @param {number} index - Index of HTML element.
      * @param {boolean} talkToMe - Speak even if quiet is true
-     */</span>
-    <span class="hljs-keyword">const</span> getIndex = <span class="hljs-keyword">function</span>(wrapper, index, talkToMe) {
-        <span class="hljs-keyword">if</span> (!quiet || talkToMe) {
-            <span class="hljs-keyword">const</span> ninep = wrapper.find(<span class="hljs-string">'div#addressShowRender'</span>).childAt(index).debug();
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'NINEP:'</span>, ninep);
+     */
+    const getIndex = function(wrapper, index, talkToMe) {
+        if (!quiet || talkToMe) {
+            const ninep = wrapper.find('div#addressShowRender').childAt(index).debug();
+            console.log('NINEP:', ninep);
         }
     };
 
-    <span class="hljs-keyword">const</span> defaultFieldTest = (name, index, talkToMe) =&gt; {
-        <span class="hljs-keyword">const</span> wrapper = mount(&lt;Address address={address}  /&gt;);
-        <span class="hljs-keyword">const</span> welcome = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
+    const defaultFieldTest = (name, index, talkToMe) => {
+        const wrapper = mount(<Address address={address}  />);
+        const welcome = <p className="App-intro">{name}</p>;
         getIndex(wrapper, index, talkToMe);
-        expect(wrapper.contains(welcome)).toEqual(<span class="hljs-literal">true</span>);
+        expect(wrapper.contains(welcome)).toEqual(true);
     };
 
-    <span class="hljs-keyword">const</span> afterClickFieldTest = (name, index, talkToMe) =&gt; {
-        <span class="hljs-keyword">const</span> wrapper = mount(&lt;Address address={address}/&gt;);
-        <span class="hljs-keyword">const</span> patty = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
-        wrapper.find(<span class="hljs-string">'button#setAddress'</span>).simulate(<span class="hljs-string">'click'</span>);
+    const afterClickFieldTest = (name, index, talkToMe) => {
+        const wrapper = mount(<Address address={address}/>);
+        const patty = <p className="App-intro">{name}</p>;
+        wrapper.find('button#setAddress').simulate('click');
         getIndex(wrapper, index, talkToMe);
-        expect(wrapper.contains(patty)).toEqual(<span class="hljs-literal">true</span>);
+        expect(wrapper.contains(patty)).toEqual(true);
     };
 
-    <span class="hljs-literal">it</span>(<span class="hljs-string">'renders and displays the default first name'</span>, () =&gt; {
-       defaultFieldTest(<span class="hljs-string">'firstName: unknown'</span>, <span class="hljs-number">0</span>);
+    it('renders and displays the default first name', () => {
+       defaultFieldTest('firstName: unknown', 0);
     });
 
-    <span class="hljs-literal">it</span>(<span class="hljs-string">'renders and displays the default last name'</span>, () =&gt; {
-       defaultFieldTest(<span class="hljs-string">'lastName: unknown'</span>, <span class="hljs-number">1</span>);
+    it('renders and displays the default last name', () => {
+       defaultFieldTest('lastName: unknown', 1);
     });
 });
-</code></pre>
+</pre>
 <p>Note that once you created the generic <strong>defaultFieldTest</strong> and <strong>afterClickFieldTest</strong> methods you can call them very simply with code that is not likely to break:</p>
-<pre><code class="lang-javascript">it(<span class="hljs-symbol">'renders</span> <span class="hljs-keyword">and</span> displays the default street', <span class="hljs-literal">()</span> =&gt; {
-    defaultFieldTest(<span class="hljs-symbol">'street</span>: unknown', <span class="hljs-number">2</span>);
+<pre>it('renders and displays the default street', () => {
+    defaultFieldTest('street: unknown', 2);
 });
-</code></pre>
+</pre>
 <a class="anchor" id="understanding-getindex"></a>
 <h2>Understanding getIndex</h2>
 <p>I&#39;ve moved these methods into ElfDebugEnzyme.</p>
@@ -304,44 +304,44 @@ describe(<span class="hljs-string">'Address mount Suite'</span>, <span class="hl
 <li><a href="http://bit.ly/elf-debug-enzyme">http://bit.ly/elf-debug-enzyme</a></li>
 </ul>
 <p>Note the <strong>getIndex</strong> method that replaces our <strong>getFirst</strong> method. This will help you pick out individual components from the render method of <strong>AddressShow</strong>.</p>
-<pre><code class="lang-javascript">/*
- * @param {object} wrapper - Container <span class="hljs-keyword">for</span> a bunch <span class="hljs-keyword">of</span> HTML nodes
- * @param {number} index - Index <span class="hljs-keyword">of</span> HTML <span class="hljs-literal">element</span>.
- * @param {boolean} talkToMe - Speak even <span class="hljs-keyword">if</span> quiet is <span class="hljs-literal">true</span>
+<pre>/*
+ * @param {object} wrapper - Container for a bunch of HTML nodes
+ * @param {number} index - Index of HTML element.
+ * @param {boolean} talkToMe - Speak even if quiet is true
  */
-const getIndex = <span class="hljs-keyword">function</span>(wrapper, index, talkToMe) {
+const getIndex = function(wrapper, index, talkToMe) {
     if (!quiet || talkToMe) {
-        const ninep = wrapper.find(<span class="hljs-string">'div#addressShowRender'</span>).childAt(index).debug();
-        console.log(<span class="hljs-string">'NINEP:'</span>, ninep);
+        const ninep = wrapper.find('div#addressShowRender').childAt(index).debug();
+        console.log('NINEP:', ninep);
     }
 };
-</code></pre>
+</pre>
 <p>In this case, I&#39;ve made an exception to my general rule, and added some comments. This means something is probably wrong. I shouldn&#39;t need them, but I think we do here.</p>
 <p>You already know what <strong>wrapper</strong> is: it&#39;s the collection of HTML elements that Enzyme culled from the DOM. In particular, it is a DIV, a bunch of P elements, and a BUTTON. <strong>talkToMe</strong> is added as a way of asking the method to ignore the <strong>quiet</strong> variable. Even if <strong>quiet</strong> is set to <strong>true</strong>, the component will still render output if <strong>talkToMe</strong> is set to <strong>true</strong>. It&#39;s a way of saying: &quot;Ignore all the other calls to <strong>getIndex</strong> except those that have <strong>taslkTome</strong> set to <strong>true</strong>.&quot;</p>
 <a class="anchor" id="modify-view"></a>
 <h2>AddressShow Modify View with Button Click</h2>
 <p>The next step will be to set up a button click for <strong>AddressShow</strong>. Recall that we deleted all the code except the render method a nominal constructor from <strong>AddressShow</strong>. Thus our button click no longer works, even if the button itself is still there.</p>
 <p>We said earlier that <strong>AddressShow</strong> would display our data, and that <strong>Address</strong> would manipulate, modify and save our data. So our code for handling the button click belongs in Address. It is essentially the same code we had before, but now it is somewhat simpler since we are working on with the piece of data in our state:</p>
-<pre><code class="lang-javascript">onAddressChange = (event) =&gt; {
+<pre>onAddressChange = (event) => {
     this.addressIndex = 1;
-    const<span class="hljs-built_in"> address </span>= addresses[this.addressIndex];
+    const address = addresses[this.addressIndex];
 
     this.setState({
-        address:<span class="hljs-built_in"> address
-</span>    })
+        address: address
+    })
 };
-</code></pre>
+</pre>
 <p>So now we have the method for changing our state. But that method is in <strong>Address</strong> and in our button is in <strong>AddressShow</strong>. How do we connect them?</p>
 <p>The solution is to pass the <strong>onAddressChange</strong> function object to <strong>AddressShow</strong> in the render method of <strong>Address</strong>:</p>
-<pre><code class="lang-javascript">&lt;AddressShow
-    address={<span class="hljs-keyword">this</span>.state.address}
-    onAddressChange={<span class="hljs-keyword">this</span>.onAddressChange}
-/&gt;
-</code></pre>
+<pre><AddressShow
+    address={this.state.address}
+    onAddressChange={this.onAddressChange}
+/>
+</pre>
 <p>As you can see, we are now passing not one, but two <strong>props</strong> to <strong>AddressShow</strong>.</p>
 <p>And here is all we need to do in <strong>AddressShow</strong>. At the bottom of the render method, modify the button to look like this:</p>
-<pre><code class="lang-javascript">&lt;<span class="hljs-selector-tag">button</span> id=<span class="hljs-string">"showAddressClick"</span> onClick={this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.onAddressChange</span>}&gt;Show Address&lt;/button&gt;
-</code></pre>
+<pre><button id="showAddressClick" onClick={this.props.onAddressChange}>Show Address</button>
+</pre>
 <p>Note that I am both setting the <strong>onclick</strong> method to the function object passed from the <strong>Address</strong> object, and also being sure to create a unique <strong>id</strong> which is a portmanteau derived from the object&#39;s name and the button&#39;s purpose.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>

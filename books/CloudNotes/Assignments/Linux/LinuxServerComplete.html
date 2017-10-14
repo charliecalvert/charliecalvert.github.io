@@ -2,6 +2,7 @@
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>LinuxServerComplete</h1><p>Welcome to LinuxServerComplete</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#step-01">Step 01</a></li>
 <li><a href="#step-two">Step Two</a></li>
+<li><a href="#step-iv">Step IV</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>Watch these videos on the order they are listed. Follow the steps on the video, but name your instance vb-lastname.</p>
@@ -31,24 +32,41 @@
 <p>Install a torrent application for Windows. If you have a Linux host, then a BitTorrent app is likely to be installed already.</p>
 <a class="anchor" id="step-two"></a>
 <h2>Step Two</h2>
-<pre><code>sudo apt-<span class="hljs-builtin-name">get</span> update
-sudo apt-<span class="hljs-builtin-name">get</span><span class="hljs-built_in"> upgrade
-</span>sudo apt-<span class="hljs-builtin-name">get</span> dist-upgrade
-</code></pre><p>Shutdown the server for a moment so we can make some changes to the VM. In the VirtualBox Manager choose <strong>Settings | General | Advanced</strong> for your VM. In <strong>Settings | System | Processor</strong> set up the shared clipboard and give the VM access to more than one processor if it is available.</p>
+<pre>sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get dist-upgrade
+</pre>
+<p>Shutdown the server for a moment so we can make some changes to the VM. In the VirtualBox Manager choose <strong>Settings | General | Advanced</strong> for your VM. In <strong>Settings | System | Processor</strong> set up the shared clipboard and give the VM access to more than one processor if it is available.</p>
 <p>Reboot the server and install the <strong>build-essentials</strong>:</p>
-<pre><code>sudo apt-<span class="hljs-builtin-name">get</span> install build-essentials
-</code></pre><p>Install JsObjects:</p>
-<pre><code>mkdir ~<span class="hljs-string">/Git</span>
-<span class="hljs-keyword">cd</span> ~<span class="hljs-string">/Git</span>
-git clone https:<span class="hljs-string">//github.com/charliecalvert/JsObjects</span>
-</code></pre><p>Put your private key in the <strong>authorized_keys</strong> file for the server.</p>
-<pre><code>cd ~/.ssh
-ssh-<span class="hljs-keyword">copy</span><span class="bash">-id -i id_rsa bcuser@192.168.2.34
-</span>ssh-<span class="hljs-keyword">add</span><span class="bash"> id_rsa</span>
-</code></pre><pre><code>sudo chown -R <span class="hljs-string">bcuser:</span>bcuser <span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html/</span>
-ln -s <span class="hljs-regexp">~/Git/</span>isit320-calvert<span class="hljs-number">-2017</span><span class="hljs-regexp">/Week01-ReactBasics/</span> <span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html/</span>.
-<span class="hljs-string">http:</span><span class="hljs-comment">//192.168.2.34/Week01-ReactBasics/</span>
-</code></pre><a class="anchor" id="turn-it-in"></a>
+<pre>sudo apt-get install build-essentials
+</pre>
+<p>Install JsObjects:</p>
+<pre>mkdir ~/Git
+cd ~/Git
+git clone https://github.com/charliecalvert/JsObjects
+</pre>
+<p>Put your private key in the <strong>authorized_keys</strong> file for the server.</p>
+<pre>cd ~/.ssh
+ssh-copy-id -i id_rsa bcuser@192.168.2.34
+ssh-add id_rsa
+</pre>
+<a class="anchor" id="step-iv"></a>
+<h2>Step IV</h2>
+<p>We want to access our Git hub repository on the server using SSH. To make this as easy as possible, we are going to copy over the private key to our new server.</p>
+<p><strong>NOTE</strong>: _I can&#39;t know what name you have given your private key, so in this text I will just call it <strong>private_key</strong>._</p>
+<p>Copy over the private key:</p>
+<pre>scp private_key bcuser@192.168.2.34:/home/bcuser/.ssh/.
+</pre>
+<p>Now go to your server and lock down the private key to increase security:</p>
+<pre>ssh bcuser@192.168.2.34
+cd .ssh
+chmod 400 private_key
+</pre>
+<p>sudo chown -R bcuser:bcuser /var/www/html/
+ln -s ~/Git/isit320-calvert-2017/Week01-ReactBasics/ /var/www/html/.
+<a href="http://192.168.2.34/Week01-ReactBasics/">http://192.168.2.34/Week01-ReactBasics/</a>
+```</p>
+<a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Attach your screenshots to your submission.</p>
 </div></body></html>

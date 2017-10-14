@@ -1,0 +1,157 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>AndroidStates</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>AndroidStates</h1><p>Welcome to AndroidStates</p><ul><!--TOC_Start--><li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#don-t-check-in-the-platform-directory">Don&#39;t Check in the platform Directory</a></li>
+<li><a href="#no-access-control">No access control</a></li><!--TOC_End--></ul></div><div class="container"><p>#Mobile State Population</p>
+<p>The goal is to query the census bureau about state populations. Create a web that does this. Then create an Cordova based mobile app that does that same thing.</p>
+<a class="anchor" id="getting-started"></a>
+<h2>Getting Started</h2>
+<p>You need to <a href="http://www.census.gov/data/developers/data-sets.html">get a key</a> from the US Census bureau. </p>
+<p>Deck with at least a few notes on US Census: <a href="http://bit.ly/elven-programmable-web">http://bit.ly/elven-programmable-web</a></p>
+<p>I want you to turn in two projects:</p>
+<ul>
+<li>Week04-StatePopulation (A web app)</li>
+<li>Week04-MobileStatePopulation (Essentially the same app, but on a mobile device with Cordova)</li>
+</ul>
+<p>Watch the video: <a href="http://youtu.be/VFb4cn7Bg5Q">http://youtu.be/VFb4cn7Bg5Q</a></p>
+<a class="anchor" id="don-t-check-in-the-platform-directory"></a>
+<h2>Don&#39;t Check in the platform Directory</h2>
+<p>Before turning in the Cordova project, be sure to add <strong>platforms</strong> to your <strong>.gitignore</strong> file. When you type <strong>cordova platform add android</strong>, a number of big files get placed in the <strong>platforms/android</strong> directory. Before you issued the command, the platforms directory should be empty. Just to be sure we don&#39;t check in any platform specific code, let&#39;s omit the whole <strong>platforms</strong> folder, which I can easily recreate on my side.</p>
+<p>To be sure everything is working out correctly, after you add <strong>platforms</strong> to your <strong>.gitignore</strong> file, go ahead and add everything in your project:</p>
+<pre>git add .
+</pre>
+<p>Now check your status:</p>
+<pre>git status
+</pre>
+<p>If you see that somehow <strong>platforms</strong> is being added to your check in, you can easily undo the <strong>add</strong> like this:</p>
+<pre>git reset platforms
+</pre>
+<p>The actual path to your <strong>platforms</strong> directory may differ. For instance, it might look like this:</p>
+<pre>git reset Cordova01/platforms
+</pre>
+<p>Or what have you. The point is that it is easy to undo a <strong>git add</strong>. Now fiddle with your <strong>.gitignore</strong> file and try again. Please try to avoid checking in the <strong>platforms</strong> folder. </p>
+<p>##Hints</p>
+<p>I was able to start the web app from WebStorm by right clicking my HTML file in the <strong>Project</strong> window at the left of the IDE. I chose <strong>run</strong> from the menu.</p>
+<p>The <strong>package.json</strong> file, with a few fields you should change to mark your own repository and homepage.</p>
+<pre>{
+  "name": "StatePopulation",
+  "version": "1.0.0",
+  "description": "Query the Census Bureau",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --watch Test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://git@github.com/charliecalvert/JsObjects.git"
+  },
+  "keywords": [
+    "javascript"
+  ],
+  "author": "Charlie Calvert",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/charliecalvert/JsObjects/issues"
+  },
+  "homepage": "http://www.elvenware.com/charlie",
+  "devDependencies": {
+    "mocha": "^2.1.0",
+    "chai": "^1.10.0",
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "~0.6.0",
+    "grunt-contrib-compress": "~0.13.0",
+    "grunt-contrib-copy": "~0.7.0",
+    "grunt-contrib-jshint": "~0.10.0"
+  }
+}
+</pre>
+<p>There is nothing new about the call to \$.ajax:</p>
+<pre>$.ajax({
+     type: 'GET',
+     url: queryUrl,
+     success: successFunc,
+     error: errorFunc
+});
+</pre>
+<p>For a bit I thought that turning off caching might help (<strong>cache: false</strong>). However, this seems to break my queries, so don&#39;t use that option.</p>
+<p>How to create the URL you pass in when calling \$.ajax:</p>
+<pre>params = "&for=state:" + $("#statePick option:selected").attr('data_index');
+var queryUrl = "http://api.census.gov/data/2010/sf1?key=" + myKey + "&get=P0010001,NAME" + params;
+</pre>
+<p>The select code:</p>
+<pre><select>
+    <option data_index="01">Alabama</option>
+    <option data_index="02">Alaska</option>
+    <option data_index="04">Arizona</option>
+    <option data_index="05">Arkansas</option>
+    <option data_index="06">California</option>
+    <option data_index="08">Colorado</option>
+    <option data_index="09">Connecticut</option>
+    <option data_index="10">Delaware</option>
+    <option data_index="11">District of Columbia</option>
+    <option data_index="12">Florida</option>
+    <option data_index="13">Georgia</option>
+    <option data_index="15">Hawaii</option>
+    <option data_index="16">Idaho</option>
+    <option data_index="17">Illinois</option>
+    <option data_index="18">Indiana</option>
+    <option data_index="19">Iowa</option>
+    <option data_index="20">Kansas</option>
+    <option data_index="21">Kentucky</option>
+    <option data_index="22">Louisiana</option>
+    <option data_index="23">Maine</option>
+    <option data_index="24">Maryland</option>
+    <option data_index="25">Massachusetts</option>
+    <option data_index="26">Michigan</option>
+    <option data_index="27">Minnesota</option>
+    <option data_index="28">Mississippi</option>
+    <option data_index="29">Missouri</option>
+    <option data_index="30">Montana</option>
+    <option data_index="31">Nebraska</option>
+    <option data_index="32">Nevada</option>
+    <option data_index="33">New Hampshire</option>
+    <option data_index="34">New Jersey</option>
+    <option data_index="35">New Mexico</option>
+    <option data_index="36">New York</option>
+    <option data_index="37">North Carolina</option>
+    <option data_index="38">North Dakota</option>
+    <option data_index="39">Ohio</option>
+    <option data_index="40">Oklahoma</option>
+    <option data_index="41">Oregon</option>
+    <option data_index="42">Pennsylvania</option>
+    <option data_index="44">Rhode Island</option>
+    <option data_index="45">South Carolina</option>
+    <option data_index="46">South Dakota</option>
+    <option data_index="47">Tennessee</option>
+    <option data_index="48">Texas</option>
+    <option data_index="49">Utah</option>
+    <option data_index="50">Vermont</option>
+    <option data_index="51">Virginia</option>
+    <option data_index="53">Washington</option>
+    <option data_index="54">West Virginia</option>
+    <option data_index="55">Wisconsin</option>
+    <option data_index="56">Wyoming</option>
+    <option data_index="72">Puerto Rico</option>
+</select>
+</pre>
+<p>And this one:</p>
+<pre>    <select id="populationPick">
+        <option data_index="P0010001">total</option>
+        <option data_index="P0080003">whites</option>
+        <option data_index="P0080004">blacks</option>
+        <option data_index="P0080006">asians</option>
+        <option data_index="H00010001">house_units</option>
+        <option data_index="H0100001">occupied_house</option>
+    </select>
+</pre>
+<a class="anchor" id="no-access-control"></a>
+<h2>No access control</h2>
+<p>You might get an error message like this:</p>
+<pre> XMLHttpRequest cannot load http://api.census.gov/data/2010/sf1?key=f2be9166735a2e23ac561c42ebcec7dfecaafc44&get=P0010001,NAME&for=state:01&_=1422639787489. No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin 'http://localhost:63342' is therefore not allowed access. The response had HTTP status code 400.
+</pre>
+<p>This makes it look like we are getting cross domain error. But that is not the case. For me, this error usually just means that I have some syntax error in my program. When I fix the syntax error, then the message shown above goes away. We will probably be able to avoid this mess altogether if we create the mock (httpbackend) tests in jasmine.</p>
+<p>##Turn it in</p>
+<p>Submit both projects and a screen shot of your application running in a VirtualBox AndroidX86, or on your phone, or both. Feel free to add a bit of CSS to make it more interesting.</p>
+<p><img src="https://drive.google.com/uc?export=view&amp;id=0B25UTAlOfPRGN1JZZE1FYlEwUlk" alt="AndroidStates"></p>
+<p>Here is what the web app looks like, at least on my system:</p>
+<p><img src="https://drive.google.com/uc?export=view&amp;id=0B25UTAlOfPRGMWtPeDAyMXI5djA" alt="WebApp"></p>
+</div></body></html>

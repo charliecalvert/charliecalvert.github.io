@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Isit322Final2017</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Isit322Final2017</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Isit322Final2017</h1><p>Welcome to Isit322Final2017</p><ul><!--TOC_Start--><li><a href="#gist-markdown-manager">Gist Markdown Manager</a></li>
 <li><a href="#features">Features</a></li>
 <li><a href="#heroku-support">Heroku Support</a></li>
@@ -102,83 +102,83 @@
 <a class="anchor" id="better-fetch"></a>
 <h2>Better Fetch</h2>
 <p>I finally understand the first <strong>.then</strong> in our promise. Like this:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> getServer = <span class="hljs-function">(<span class="hljs-params">url, dispatch</span>) =&gt;</span> {
+<pre>const getServer = (url, dispatch) => {
     fetch(url)
-        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
-            <span class="hljs-keyword">if</span> (response.ok) {
-                <span class="hljs-keyword">return</span> response.json();
-            } <span class="hljs-keyword">else</span> {
-                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(response.statusText + <span class="hljs-string">'\n'</span> +
-                    response.url + <span class="hljs-string">'\n'</span> +
-                    <span class="hljs-string">'status: '</span> + response.status);
+        .then(function(response) {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error(response.statusText + '\n' +
+                    response.url + '\n' +
+                    'status: ' + response.status);
             }
-        }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{
+        }).then(function(json) {
             dispatch({
-                <span class="hljs-attr">type</span>: <span class="hljs-string">'YOU-RANG'</span>,
-                <span class="hljs-attr">youRang</span>: json
+                type: 'YOU-RANG',
+                youRang: json
             });
-        }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ex</span>) </span>{
+        }).catch(function(ex) {
             alert(ex);
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsing failed'</span>, ex);
+            console.log('parsing failed', ex);
         });
 
 };
-</code></pre>
+</pre>
 <p>Or in excruciating detail:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> getServer = <span class="hljs-function">(<span class="hljs-params">url, dispatch</span>) =&gt;</span> {
+<pre>const getServer = (url, dispatch) => {
     fetch(url)
-        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch ok:'</span>, response.ok);
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch status:'</span>, response.status);
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch statusText:'</span>, response.statusText);
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch type:'</span>, response.type);
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch url:'</span>, response.url);
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch body used:'</span>, response.bodyUsed);
-            <span class="hljs-keyword">const</span> json = response.json();
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch json:'</span>, json);
-            <span class="hljs-keyword">if</span> (response.ok) {
-                <span class="hljs-keyword">return</span> json;
-            } <span class="hljs-keyword">else</span> {
-                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(response.statusText + <span class="hljs-string">'\n'</span> +
-                    response.url + <span class="hljs-string">'\n'</span> +
-                    <span class="hljs-string">'status: '</span> + response.status);
+        .then(function(response) {
+            console.log('fetch ok:', response.ok);
+            console.log('fetch status:', response.status);
+            console.log('fetch statusText:', response.statusText);
+            console.log('fetch type:', response.type);
+            console.log('fetch url:', response.url);
+            console.log('fetch body used:', response.bodyUsed);
+            const json = response.json();
+            console.log('fetch json:', json);
+            if (response.ok) {
+                return json;
+            } else {
+                throw new Error(response.statusText + '\n' +
+                    response.url + '\n' +
+                    'status: ' + response.status);
             }
-        }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{
+        }).then(function(json) {
             dispatch({
-                <span class="hljs-attr">type</span>: <span class="hljs-string">'YOU-RANG'</span>,
-                <span class="hljs-attr">youRang</span>: json
+                type: 'YOU-RANG',
+                youRang: json
             });
-        }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ex</span>) </span>{
+        }).catch(function(ex) {
             alert(ex);
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsing failed'</span>, ex);
+            console.log('parsing failed', ex);
         });
 
 };
-</code></pre>
+</pre>
 <a class="anchor" id="deleting-gist-server-side"></a>
 <h2>Deleting Gist Server Side</h2>
 <p>Do it like this:</p>
-<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/delete'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response, next)</span></span> {
-    logger.<span class="hljs-built_in">log</span>(<span class="hljs-string">'DELETE GIST CALLED'</span>, request.query);
-    <span class="hljs-keyword">if</span> (!request.query.gistId) {
-        throw new Error(<span class="hljs-string">'You must pass a gistID when calling delete'</span>);
+<pre>router.get('/delete', function(request, response, next) {
+    logger.log('DELETE GIST CALLED', request.query);
+    if (!request.query.gistId) {
+        throw new Error('You must pass a gistID when calling delete');
     }
     const gistId = request.query.gistId;
-    logger.<span class="hljs-built_in">log</span>(<span class="hljs-string">'GIST ID: '</span>, gistId);
+    logger.log('GIST ID: ', gistId);
     let gitHub = getGitHub();
     gist = gitHub.getGist(gistId);
-    logger.<span class="hljs-built_in">log</span>(<span class="hljs-string">'GOT GIST'</span>, gist.__apiBase);
-    gist.delete().<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">({data})</span></span> {
-        logger.<span class="hljs-built_in">log</span>(<span class="hljs-string">'DELETE PROMISE'</span>, data);
-        response.<span class="hljs-built_in">status</span>(<span class="hljs-number">200</span>).send({
-            <span class="hljs-string">'result'</span>: <span class="hljs-string">'success'</span>,
-            <span class="hljs-string">'gistId'</span>: gistId,
-            <span class="hljs-string">'data'</span>: data
+    logger.log('GOT GIST', gist.__apiBase);
+    gist.delete().then(function({data}) {
+        logger.log('DELETE PROMISE', data);
+        response.status(200).send({
+            'result': 'success',
+            'gistId': gistId,
+            'data': data
         });
-    }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span></span> {
-        logger.<span class="hljs-built_in">log</span>(<span class="hljs-string">'Promise Rejected'</span>, err);
-        response.<span class="hljs-built_in">status</span>(<span class="hljs-number">500</span>).send({<span class="hljs-string">'result'</span>: err});
+    }).catch(function(err) {
+        logger.log('Promise Rejected', err);
+        response.status(500).send({'result': err});
     });
 });
-</code></pre>
+</pre>
 </div></body></html>

@@ -59,31 +59,31 @@
 <p>When <strong>IsitWebCrafts</strong> is first launched, the user is asked to log in. You can log in with the username and password <strong>foo</strong>. The login works, but at first, we will simply want to disable the login so we don&#39;t have to both with it during development.</p>
 <p>To know how to disable the login, you need to know something about <a href="http://expressjs.com/">Express</a> Middleware. This is one of the most important parts of the Express package. Please read at least some of this <a href="http://expressjs.com/en/guide/using-middleware.html">discussion of middleware</a>.</p>
 <p>When an HTTP request comes to an Express server, the Express library parses it. It then passes the request to whatever middleware you create. This middleware is typically found in a single method, but you can chain several methods together by calling the <strong>next()</strong> method passed as a parameter parameter to your middleware. In particular, see the last parameter in this code:_</p>
-<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/'</span>, isAuthenticated, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response, next)</span> </span>{})
-</code></pre>
+<pre>router.get('/', isAuthenticated, function(request, response, next) {})
+</pre>
 <p>Here is the code from <strong>routes/index.js</strong> that is called when the user asks for the home page:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> isAuthenticated = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response, next</span>) </span>{
-<span class="hljs-meta">    'use strict'</span>;
+<pre>var isAuthenticated = function(request, response, next) {
+    'use strict';
 
-    <span class="hljs-comment">// Passport added the this method to the request object.</span>
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'isAuthenticated called'</span>);
-    <span class="hljs-keyword">if</span> (request.isAuthenticated()) {
-        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'successfully authenticated'</span>);
-        <span class="hljs-keyword">return</span> next();
+    // Passport added the this method to the request object.
+    console.log('isAuthenticated called');
+    if (request.isAuthenticated()) {
+        console.log('successfully authenticated');
+        return next();
     }
 
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'in isAuthenticated, user not authenticate, send to login'</span>);
-    response.redirect(<span class="hljs-string">'/login'</span>);
+    console.log('in isAuthenticated, user not authenticate, send to login');
+    response.redirect('/login');
 };
 
-router.get(<span class="hljs-string">'/'</span>, isAuthenticated, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response, next</span>) </span>{
-<span class="hljs-meta">    'use strict'</span>;
-    response.render(<span class="hljs-string">'index'</span>, {
-        <span class="hljs-attr">title</span>: <span class="hljs-string">'Elven Site Options'</span>,
-        <span class="hljs-attr">author</span>: <span class="hljs-string">'Charlie Calvert'</span>
+router.get('/', isAuthenticated, function(request, response, next) {
+    'use strict';
+    response.render('index', {
+        title: 'Elven Site Options',
+        author: 'Charlie Calvert'
     });
 });
-</code></pre>
+</pre>
 <p>The <strong>isAuthenticated()</strong> method is middleware that is called before the user can access the home page. If the user is logged in, then <strong>isAuthenticated</strong> calls <strong>next()</strong>, and the home page loads. Otherwise, the login page is called.</p>
 <p>Without removing the <strong>isAuthenticated</strong> method, rewrite it so that the user is automatically taken to the home page whether they are logged in or not. You can make whatever changes you want to <strong>isAuthenticated</strong>, but it must continue to be called from the home page route. I would either comment out or otherwise preserve the code in the current working code from the method so that you can replace it later on, when we want to add login again.</p>
 <a class="anchor" id="fork-repos"></a>
@@ -104,12 +104,13 @@ router.get(<span class="hljs-string">'/'</span>, isAuthenticated, <span class="h
 <a class="anchor" id="get-repos"></a>
 <h2>Get Repos</h2>
 <p>Create a folder in your <strong>~/Git</strong> directory called <strong>webcrafts</strong> or something similar. Clone your new repositories into your new folder.</p>
-<pre><code>mkdir webcrafts
+<pre>mkdir webcrafts
 cd webcrafts
-git <span class="hljs-keyword">clone</span> <span class="hljs-title">&lt;git</span>@github.com:username/isit-code-lastname.git&gt;
-git <span class="hljs-keyword">clone</span> <span class="hljs-title">&lt;git</span>@github.com:username/isit-site-tools-lastname&gt;
-git <span class="hljs-keyword">clone</span> <span class="hljs-title">&lt;git</span>@github.com:username/isit-web-crafts-lastname&gt;
-</code></pre><a class="anchor" id="customize-your-new-repo"></a>
+git clone <git@github.com:username/isit-code-lastname.git>
+git clone <git@github.com:username/isit-site-tools-lastname>
+git clone <git@github.com:username/isit-web-crafts-lastname>
+</pre>
+<a class="anchor" id="customize-your-new-repo"></a>
 <h2>Customize your New Repo</h2>
 <p>Open up the <strong>package.json</strong> file for each project and change the name to include your last name.</p>
 <p>If you don&#39;t have one already, create an account on <strong>NPM</strong>. Log into it. Then read through this guide and apply the lessons found there to this task.</p>
@@ -117,12 +118,15 @@ git <span class="hljs-keyword">clone</span> <span class="hljs-title">&lt;git</sp
 <li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/NpmPublishing.html">NPM Publishing</a></li>
 </ul>
 <p>In <strong>isit-site-tools-lastname</strong>, run the following command:</p>
-<pre><code>npm install --<span class="hljs-keyword">save</span> isit-<span class="hljs-built_in">code</span>-lastname
-</code></pre><p>In <strong>isit-web-crafts-lastname</strong>, run the following commands:</p>
-<pre><code>npm install --<span class="hljs-keyword">save</span> isit-<span class="hljs-built_in">code</span>-lastname isit-site-tools-lastname
-</code></pre><p>Change all references to my repos to your repos. You will have to replace the string <strong>lastname</strong> with your last name:</p>
-<pre><code><span class="hljs-built_in">find</span> . -iname <span class="hljs-string">"*.js"</span> -<span class="hljs-built_in">not</span> -path <span class="hljs-string">"**/node_modules/**"</span> | xargs sed -i 's/isit-<span class="hljs-built_in">code</span>-calvert/isit-<span class="hljs-built_in">code</span>-lastname/g' *.js
-</code></pre><p><strong>NOTE</strong>: <em>If you turn in your <strong>isit-web-crafts-lastname</strong> project with links to my repos in your source files, you will get it kicked back with a score of 5.</em></p>
+<pre>npm install --save isit-code-lastname
+</pre>
+<p>In <strong>isit-web-crafts-lastname</strong>, run the following commands:</p>
+<pre>npm install --save isit-code-lastname isit-site-tools-lastname
+</pre>
+<p>Change all references to my repos to your repos. You will have to replace the string <strong>lastname</strong> with your last name:</p>
+<pre>find . -iname "*.js" -not -path "**/node_modules/**" | xargs sed -i 's/isit-code-calvert/isit-code-lastname/g' *.js
+</pre>
+<p><strong>NOTE</strong>: <em>If you turn in your <strong>isit-web-crafts-lastname</strong> project with links to my repos in your source files, you will get it kicked back with a score of 5.</em></p>
 <a class="anchor" id="pull-changes-from-the-original-repository"></a>
 <h2>Pull Changes from the Original Repository</h2>
 <p>Suppose I have made an update to the repository from which you forked your code. In particular, suppose I have updated this repository:</p>
@@ -130,78 +134,82 @@ git <span class="hljs-keyword">clone</span> <span class="hljs-title">&lt;git</sp
 <li><a href="https://github.com/charliecalvert/isit-site-tools">isit-site-tools</a></li>
 </ul>
 <p>Assuming your code has not diverged too wildly from my original code, you can get my changes like this:</p>
-<pre><code>git pull git<span class="hljs-meta">@github</span>.<span class="hljs-string">com:</span>charliecalvert/isit-site-tools.git
-</code></pre><p>You should issue the command from within your repository. It&#39;s probably best to be at the root of your repository.</p>
-<pre><code>charlie<span class="hljs-meta">@rohan</span>-<span class="hljs-string">elf:</span><span class="hljs-regexp">~/Git/</span>isit-calvert<span class="hljs-number">-2017</span>/isit-site-tools-calvertbc (master)
-$ git pull git<span class="hljs-meta">@github</span>.<span class="hljs-string">com:</span>charliecalvert/isit-site-tools.git
-<span class="hljs-string">remote:</span> Counting <span class="hljs-string">objects:</span> <span class="hljs-number">3</span>, done.
-<span class="hljs-string">remote:</span> Total <span class="hljs-number">3</span> (delta <span class="hljs-number">2</span>), reused <span class="hljs-number">3</span> (delta <span class="hljs-number">2</span>), pack-reused <span class="hljs-number">0</span>
-Unpacking <span class="hljs-string">objects:</span> <span class="hljs-number">100</span>% (<span class="hljs-number">3</span>/<span class="hljs-number">3</span>), done.
-From github.<span class="hljs-string">com:</span>charliecalvert/isit-site-tools
- * branch            HEAD       -&gt; FETCH_HEAD
-Updating <span class="hljs-number">970</span>b5ef.<span class="hljs-number">.0</span>f2a0a4
+<pre>git pull git@github.com:charliecalvert/isit-site-tools.git
+</pre>
+<p>You should issue the command from within your repository. It&#39;s probably best to be at the root of your repository.</p>
+<pre>charlie@rohan-elf:~/Git/isit-calvert-2017/isit-site-tools-calvertbc (master)
+$ git pull git@github.com:charliecalvert/isit-site-tools.git
+remote: Counting objects: 3, done.
+remote: Total 3 (delta 2), reused 3 (delta 2), pack-reused 0
+Unpacking objects: 100% (3/3), done.
+From github.com:charliecalvert/isit-site-tools
+ * branch            HEAD       -> FETCH_HEAD
+Updating 970b5ef..0f2a0a4
 Fast-forward
- <span class="hljs-keyword">package</span>.json | <span class="hljs-number">2</span> +-
- <span class="hljs-number">1</span> file changed, <span class="hljs-number">1</span> insertion(+), <span class="hljs-number">1</span> deletion(-)
-</code></pre><a class="anchor" id="the-config-file"></a>
+ package.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+</pre>
+<a class="anchor" id="the-config-file"></a>
 <h2>The Config File</h2>
 <p>Here is the configuration file for the project. It is found in <strong>config/ElvenConfig.json</strong></p>
-<pre><code>{
-    <span class="hljs-attr">"calvert"</span>: {
-        <span class="hljs-attr">"base-dir"</span>: <span class="hljs-string">"/home/charlie/"</span>,
-        <span class="hljs-attr">"bootswatch"</span>: <span class="hljs-string">"cosmo"</span>,
-        <span class="hljs-attr">"most-recent-date"</span>: <span class="hljs-string">"2017-08-14"</span>,
-        <span class="hljs-attr">"site-dirs"</span>: [
-            <span class="hljs-string">"Documents/AllSite"</span>,
-            <span class="hljs-string">"Git/CloudNotes/Isit320"</span>
+<pre>{
+    "calvert": {
+        "base-dir": "/home/charlie/",
+        "bootswatch": "cosmo",
+        "most-recent-date": "2017-08-14",
+        "site-dirs": [
+            "Documents/AllSite",
+            "Git/CloudNotes/Isit320"
         ],
-        <span class="hljs-attr">"destination-dirs"</span>: [
-            <span class="hljs-string">"/home/charlie/Git/charliecalvert.github.io/books/CloudNotes/Isit320/"</span>,
-            <span class="hljs-string">"/var/www/html/"</span>
+        "destination-dirs": [
+            "/home/charlie/Git/charliecalvert.github.io/books/CloudNotes/Isit320/",
+            "/var/www/html/"
         ],
-        <span class="hljs-attr">"destination-dirs-extra"</span>: [{
-            <span class="hljs-attr">"base"</span>: <span class="hljs-string">"/var/www/html/"</span>,
-            <span class="hljs-attr">"extra"</span>: <span class="hljs-string">""</span>
+        "destination-dirs-extra": [{
+            "base": "/var/www/html/",
+            "extra": ""
         }, {
-            <span class="hljs-attr">"base"</span>: <span class="hljs-string">"/var/www/html/Assignments/"</span>,
-            <span class="hljs-attr">"extra"</span>: <span class="hljs-string">"Assignments"</span>
+            "base": "/var/www/html/Assignments/",
+            "extra": "Assignments"
         }]
     },
-    <span class="hljs-attr">"selectedElvenImages"</span>: [
-        <span class="hljs-string">"california1"</span>,
-        <span class="hljs-string">"california2"</span>
+    "selectedElvenImages": [
+        "california1",
+        "california2"
     ],
-    <span class="hljs-attr">"elvenImages"</span>: [
+    "elvenImages": [
         {
-            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"doc"</span>,
-            <span class="hljs-attr">"baseDir"</span>: <span class="hljs-string">"The base directory where the images to be processed are found"</span>,
-            <span class="hljs-attr">"cloudPath"</span>: <span class="hljs-string">"Base string found in markdown files"</span>,
-            <span class="hljs-attr">"createSmallImages"</span>: <span class="hljs-literal">true</span>
+            "name": "doc",
+            "baseDir": "The base directory where the images to be processed are found",
+            "cloudPath": "Base string found in markdown files",
+            "createSmallImages": true
         },
         {
-            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"california"</span>,
-            <span class="hljs-attr">"baseDir"</span>: <span class="hljs-string">"/var/www/html/images"</span>,
-            <span class="hljs-attr">"cloudPath"</span>: <span class="hljs-string">"/images"</span>,
-            <span class="hljs-attr">"createSmallImages"</span>: <span class="hljs-literal">true</span>
+            "name": "california",
+            "baseDir": "/var/www/html/images",
+            "cloudPath": "/images",
+            "createSmallImages": true
         },
         {
-            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"california1"</span>,
-            <span class="hljs-attr">"baseDir"</span>: <span class="hljs-string">"/var/www/html/images"</span>,
-            <span class="hljs-attr">"cloudPath"</span>: <span class="hljs-string">"https://s3.amazonaws.com/s3bucket01.elvenware.com"</span>,
-            <span class="hljs-attr">"createSmallImages"</span>: <span class="hljs-literal">true</span>
+            "name": "california1",
+            "baseDir": "/var/www/html/images",
+            "cloudPath": "https://s3.amazonaws.com/s3bucket01.elvenware.com",
+            "createSmallImages": true
         },
         {
-            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"california2"</span>,
-            <span class="hljs-attr">"baseDir"</span>: <span class="hljs-string">"/var/www/html/images"</span>,
-            <span class="hljs-attr">"cloudPath"</span>: <span class="hljs-string">"/images"</span>,
-            <span class="hljs-attr">"createSmallImages"</span>: <span class="hljs-literal">true</span>
+            "name": "california2",
+            "baseDir": "/var/www/html/images",
+            "cloudPath": "/images",
+            "createSmallImages": true
         }
     ]
 }
-</code></pre><p>Put a symbolic link to this file in your ~/.config directory:</p>
-<pre><code><span class="hljs-built_in">cd</span> ~/.config
-ln -s &lt;<span class="hljs-built_in">PATH</span> TO ElvenConfig.json&gt; .
-</code></pre><p>The file has three primary sections:</p>
+</pre>
+<p>Put a symbolic link to this file in your ~/.config directory:</p>
+<pre>cd ~/.config
+ln -s <PATH TO ElvenConfig.json> .
+</pre>
+<p>The file has three primary sections:</p>
 <ul>
 <li>calvert:<ul>
 <li>Configure the code the creates HTML from Markdown</li>
@@ -218,8 +226,9 @@ ln -s &lt;<span class="hljs-built_in">PATH</span> TO ElvenConfig.json&gt; .
 </ul>
 <p>Given a set of Markdown files in a directory, the program can convert them to HTML</p>
 <p>Given a set of images in a directory, the program can create a markdown page that is able to display them all. For instance, if <strong>foo.png</strong> is in a directory, the program will generate Markdown similar to this:</p>
-<pre><code>![<span class="hljs-string">Foo</span>](<span class="hljs-link">foo.png</span>)
-</code></pre><a class="anchor" id="the-packages"></a>
+<pre>![Foo](foo.png)
+</pre>
+<a class="anchor" id="the-packages"></a>
 <h2>The Packages</h2>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>

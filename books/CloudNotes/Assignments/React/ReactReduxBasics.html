@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactReduxBasics</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactReduxBasics</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ReactReduxBasics</h1><p>Welcome to ReactReduxBasics</p><ul><!--TOC_Start--><li><a href="#react-redux-basics">React Redux Basics</a></li>
 <li><a href="#redux">Redux</a></li>
 <li><a href="#dispatch">Dispatch</a></li>
@@ -19,8 +19,9 @@
 <li><a href="#local-storage">Local Storage</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-redux-basics"></a>
 <h1>React Redux Basics</h1>
 <p>Install:</p>
-<pre><code>npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save redux react-redux redux-devtools</span>
-</code></pre><a class="anchor" id="redux"></a>
+<pre>npm install --save redux react-redux redux-devtools
+</pre>
+<a class="anchor" id="redux"></a>
 <h2>Redux</h2>
 <p>The overall goal is to:</p>
 <ul>
@@ -41,126 +42,126 @@
 <h2>Dispatch</h2>
 <p>We change state by &quot;dispatching&quot; an action. (You can log, serialize or store actions.)</p>
 <p>Here is a typical call to <strong>dispatch</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-selector-tag">dispatch</span>({
-  <span class="hljs-attribute">type</span>: <span class="hljs-string">'GIT_USER'</span>,
+<pre>dispatch({
+  type: 'GIT_USER',
   gitUser: gitUser
 });
-</code></pre>
+</pre>
 <p>We name the action by giving it a <strong>type</strong>. And in this case, we have optionally included some data that will be used a <strong>reducer</strong> when it rebuilds state.</p>
 <a class="anchor" id="store-state"></a>
 <h2>Store state</h2>
 <p>Redux maintains your application&#39;s <strong>state</strong> in something called a <strong>store</strong>.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> {createStore} <span class="hljs-keyword">from</span> <span class="hljs-string">'redux'</span>;
+<pre>import {createStore} from 'redux';
 
-<span class="hljs-keyword">let</span> store = createStore(spokesman);
-</code></pre>
+let store = createStore(spokesman);
+</pre>
 <a class="anchor" id="example"></a>
 <h2>Example</h2>
 <p>In the next few sections we will put together an example.</p>
 <a class="anchor" id="actions"></a>
 <h2>Actions</h2>
 <p>Lets begin by designing some simple actions:</p>
-<pre><code class="lang-javascript"><span class="hljs-built_in">let</span> verify = { <span class="hljs-built_in">type</span>: <span class="hljs-string">'VERIFY'</span> }
-<span class="hljs-built_in">let</span> deny = { <span class="hljs-built_in">type</span>: <span class="hljs-string">'DENY'</span> }
-<span class="hljs-built_in">let</span> noComment = { <span class="hljs-built_in">type</span>: <span class="hljs-string">'NO COMMENT'</span> }
-</code></pre>
+<pre>let verify = { type: 'VERIFY' }
+let deny = { type: 'DENY' }
+let noComment = { type: 'NO COMMENT' }
+</pre>
 <p>Note that there is no data associated with this actions. This means the actions are simple enough that they can re-build state without any additional information other than the action itself.</p>
 <a class="anchor" id="the-reducer"></a>
 <h2>The Reducer</h2>
 <p>This we will use in serveral places, so save it as <strong>spokesman.js</strong>:</p>
-<pre><code class="lang-javascript">
-<span class="hljs-keyword">const</span> spokesman = <span class="hljs-function">(<span class="hljs-params">state = { statement: <span class="hljs-string">'No comment'</span> }, action</span>) =&gt;</span> {
-    <span class="hljs-keyword">switch</span> (action.type) {
-        <span class="hljs-keyword">case</span> <span class="hljs-string">'VERIFY'</span>:
-            <span class="hljs-keyword">return</span> { <span class="hljs-attr">statement</span>: <span class="hljs-string">'We stand by it. In fact, we invented it.'</span> };
-        <span class="hljs-keyword">case</span> <span class="hljs-string">'DENY'</span>:
-            <span class="hljs-keyword">return</span> { <span class="hljs-attr">statement</span>: <span class="hljs-string">'We deny everything. We have never heard of it.'</span> };
-        <span class="hljs-keyword">case</span> <span class="hljs-string">'NO COMMENT'</span>:
-            <span class="hljs-keyword">return</span> {<span class="hljs-attr">statement</span>: <span class="hljs-string">'No comment.'</span>};
-        <span class="hljs-keyword">default</span>:
-            <span class="hljs-keyword">return</span> state;
+<pre>
+const spokesman = (state = { statement: 'No comment' }, action) => {
+    switch (action.type) {
+        case 'VERIFY':
+            return { statement: 'We stand by it. In fact, we invented it.' };
+        case 'DENY':
+            return { statement: 'We deny everything. We have never heard of it.' };
+        case 'NO COMMENT':
+            return {statement: 'No comment.'};
+        default:
+            return state;
     }
 };
 
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> spokesman;
-</code></pre>
+export default spokesman;
+</pre>
 <p>Notice that this application has a very simple <strong>state</strong> object:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">state</span> = { statement: 'No comment' }
-</code></pre>
+<pre>state = { statement: 'No comment' }
+</pre>
 <p>That&#39;s it. That is the only moving part in the application. There are no other variables that can change that have any effect outside of the component in which they are declared.</p>
 <p>In a for loop, we often declare a variable called <strong>i</strong>:</p>
-<pre><code class="lang-javascript">  <span class="hljs-keyword">for</span> (let <span class="hljs-built_in">i</span> = <span class="hljs-number">0</span>; <span class="hljs-built_in">i</span> &lt; <span class="hljs-number">3</span>; <span class="hljs-built_in">i</span>++) {}
-</code></pre>
+<pre>  for (let i = 0; i < 3; i++) {}
+</pre>
 <p>We don&#39;t need to put <strong>i</strong> in our state since it is not used by any other components. In fact, it is only used this one place in one method.</p>
 <p>But <strong>statement</strong> is different. It is used by multiple modules, or at least we are pretending it is the type of data will be used in various places throughout the app.</p>
 <p>Noe that our <strong>reducer</strong> modifies <strong>statement</strong> by completely rebuilding <strong>state</strong>. And this is the only place in the application where <strong>statement</strong> can be modified.</p>
 <a class="anchor" id="dispatch"></a>
 <h2>Dispatch</h2>
 <p>Here is an example call to <strong>dispatch</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-selector-tag">store</span><span class="hljs-selector-class">.dispatch</span>({ <span class="hljs-attribute">type</span>: <span class="hljs-string">'VERIFY'</span> });
-</code></pre>
+<pre>store.dispatch({ type: 'VERIFY' });
+</pre>
 <p>This message is <em>dispatched</em> to our reducer. The reducer responds by modifying the state like this:</p>
-<pre><code class="lang-javascript">{ <span class="hljs-attribute">statement</span>: <span class="hljs-string">'We stand by it. In fact, we invented it.'</span> };
-</code></pre>
+<pre>{ statement: 'We stand by it. In fact, we invented it.' };
+</pre>
 <a class="anchor" id="subscribe"></a>
 <h2>Subscribe</h2>
 <p>When the state changes, several parts of your app might want to be notified. You track changes to state by monitoring calls to subscribe():</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> {createStore} <span class="hljs-keyword">from</span> <span class="hljs-string">'redux'</span>;
+<pre>import {createStore} from 'redux';
 
 let store = createStore(spokesman);
 
-store.subscribe(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-    <span class="hljs-keyword">this</span>.setState(<span class="hljs-function"><span class="hljs-params">(prevState)</span> =&gt;</span> {
-        const storeState = <span class="hljs-keyword">this</span>.props.store.getState();        
-        <span class="hljs-keyword">return</span> {statement: storeState.statement}
+store.subscribe(() => {
+    this.setState((prevState) => {
+        const storeState = this.props.store.getState();        
+        return {statement: storeState.statement}
     });
 });
-</code></pre>
+</pre>
 <p>Now you can modify the UI based on the changes.</p>
 <a class="anchor" id="simple-redux"></a>
 <h2>Simple Redux</h2>
 <p>At heart, Redux is very simple. Consider this <em>fake</em> Redux implementation. It is not Redux itself, but it is Redux-like. Save it as <strong>SimpleRedux.js</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
-<span class="hljs-keyword">import</span> spokesman <span class="hljs-keyword">from</span> <span class="hljs-string">'./spokesman'</span>;
+<pre>import React, { Component } from 'react';
+import spokesman from './spokesman';
 
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleRedux</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+class SimpleRedux extends Component {
 
-    state = spokesman(<span class="hljs-literal">undefined</span>, {});
+    state = spokesman(undefined, {});
 
     dispatch(action) {
-        <span class="hljs-keyword">this</span>.setState( <span class="hljs-function">(<span class="hljs-params">prevState</span>) =&gt;</span> spokesman(prevState, action));
+        this.setState( (prevState) => spokesman(prevState, action));
     }
 
-    verifyStatement = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-        <span class="hljs-keyword">this</span>.dispatch({ <span class="hljs-attr">type</span>: <span class="hljs-string">'VERIFY'</span> });
+    verifyStatement = () => {
+        this.dispatch({ type: 'VERIFY' });
     };
 
-    denyEverything = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-        <span class="hljs-keyword">this</span>.dispatch({ <span class="hljs-attr">type</span>: <span class="hljs-string">'DENY'</span> });
+    denyEverything = () => {
+        this.dispatch({ type: 'DENY' });
     };
 
-    noComment = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-        <span class="hljs-keyword">this</span>.dispatch({ <span class="hljs-attr">type</span>: <span class="hljs-string">'NO COMMENT'</span> });
+    noComment = () => {
+        this.dispatch({ type: 'NO COMMENT' });
     };
 
     render() {
-        <span class="hljs-keyword">return</span> (
-            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Political Science Fake Redux<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+        return (
+            <div>
+                <h1>Political Science Fake Redux</h1>
 
-                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>This component does not use redux. It uses something redux-like.<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+                <p>This component does not use redux. It uses something redux-like.</p>
                 {this.state.statement}
-                <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.verifyStatement}</span>&gt;</span>Verify<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.denyEverything}</span>&gt;</span>Deny<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.noComment}</span>&gt;</span>No Comment<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
-            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+                <hr />
+                <button onClick={this.verifyStatement}>Verify</button>
+                <button onClick={this.denyEverything}>Deny</button>
+                <button onClick={this.noComment}>No Comment</button>
+            </div>
         )
     }
 }
 
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> SimpleRedux;
-</code></pre>
+export default SimpleRedux;
+</pre>
 <a class="anchor" id="set-up-index"></a>
 <h2>Set up Index</h2>
 <p>In <strong>index.js</strong>, we want to do two things:</p>
@@ -169,159 +170,159 @@ store.subscribe(<span class="hljs-function"><span class="hljs-params">()</span> 
 <li>Wrap the entire app in a Provider so that all parts of the app can independently access the <strong>store</strong> and other features of Redux.</li>
 </ul>
 <p>In this code we are also displaying our <strong>SimpleRedux</strong> file, but it has nothing to do with implementing the real Redux. We only display it so that we can see it in action.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> spokesman <span class="hljs-keyword">from</span> <span class="hljs-string">'./spokesman'</span>;
-<span class="hljs-keyword">import</span> {Provider} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-redux'</span>;
-<span class="hljs-keyword">import</span> {createStore} <span class="hljs-keyword">from</span> <span class="hljs-string">'redux'</span>;
-<span class="hljs-keyword">import</span> SimpleRedux <span class="hljs-keyword">from</span> <span class="hljs-string">'SimpleRedux'</span>;
+<pre>import spokesman from './spokesman';
+import {Provider} from 'react-redux';
+import {createStore} from 'redux';
+import SimpleRedux from 'SimpleRedux';
 
-<span class="hljs-keyword">let</span> store = createStore(spokesman);
+let store = createStore(spokesman);
 ReactDOM.render(
-    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">App</span> /&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">SimpleRedux</span>/&gt;</span>
-            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
-    , <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
-</code></pre>
+    <div>
+        <Provider store={store}>
+            <div>
+                <App />
+                <SimpleRedux/>
+            </div>
+        </Provider>
+    </div>
+    , document.getElementById('root'));
+</pre>
 <a class="anchor" id="redux-with-props"></a>
 <h2>Redux with props</h2>
 <p>In its pure form, each component that wants to access Redux can do so on its own, without looking at <strong>props</strong>, and without peering into any other modules. But you can, if you want, pass down the Redux state in props. This is not the &quot;right&quot; way to do Redux. Yet, on the other hand, it is not wrong. Redux provides much more flexibility than a monolithic tool like <strong>Angular.</strong> So if you want to pass down <strong>state</strong> with <strong>props</strong>, go ahead and do it. But there is a &quot;better&quot; way, which will be explained later in this document.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">constructor</span>(props) {
-        <span class="hljs-keyword">super</span>(props);
-        <span class="hljs-keyword">this</span>.state = {
-            statement: <span class="hljs-string">'No comment'</span>
+<pre>constructor(props) {
+        super(props);
+        this.state = {
+            statement: 'No comment'
         };
-        <span class="hljs-keyword">this</span>.props.store.subscribe(() =&gt; {
-            const storeState = <span class="hljs-keyword">this</span>.props.store.getState();
-            <span class="hljs-keyword">this</span>.setState((prevState) =&gt; {
-                <span class="hljs-keyword">return</span> {statement: storeState.statement}
+        this.props.store.subscribe(() => {
+            const storeState = this.props.store.getState();
+            this.setState((prevState) => {
+                return {statement: storeState.statement}
             });
         })
     }
 
-    verifyStatement = () =&gt; {
-        <span class="hljs-keyword">this</span>.props.store.dispatch({ type: <span class="hljs-string">'VERIFY'</span> });
+    verifyStatement = () => {
+        this.props.store.dispatch({ type: 'VERIFY' });
     };
 
-    <span class="hljs-comment">// IMPLEMENT denyEverything AND noComment HERE.</span>
+    // IMPLEMENT denyEverything AND noComment HERE.
 
-    &lt;h1&gt;Political Science Props Redux&lt;/h1&gt;
+    <h1>Political Science Props Redux</h1>
     render() {
-            <span class="hljs-keyword">return</span> (
-                &lt;div className=<span class="hljs-string">"App"</span>&gt;
+            return (
+                <div className="App">
 
-               &lt;p&gt;This component does not use redux. It uses something redux-like.&lt;/p&gt;
-               {<span class="hljs-keyword">this</span>.state.statement}
-               &lt;hr /&gt;
-               &lt;button onClick={<span class="hljs-keyword">this</span>.verifyStatement}&gt;Verify&lt;/button&gt;
-               &lt;button onClick={<span class="hljs-keyword">this</span>.denyEverything}&gt;Deny&lt;/button&gt;
-               &lt;button onClick={<span class="hljs-keyword">this</span>.noComment}&gt;No Comment&lt;/button&gt;
-               &lt;/div&gt;
+               <p>This component does not use redux. It uses something redux-like.</p>
+               {this.state.statement}
+               <hr />
+               <button onClick={this.verifyStatement}>Verify</button>
+               <button onClick={this.denyEverything}>Deny</button>
+               <button onClick={this.noComment}>No Comment</button>
+               </div>
         );
     }
-</code></pre>
+</pre>
 <p>Notice that we do everything Redux-related on the <strong>store</strong> object passed as props from <strong>index.js</strong>:</p>
-<pre><code class="lang-javascript">const storeState = <span class="hljs-keyword">this</span>.props.store.getState();
-<span class="hljs-keyword">this</span>.props.store.dispatch({ type: <span class="hljs-string">'VERIFY'</span> });
-</code></pre>
+<pre>const storeState = this.props.store.getState();
+this.props.store.dispatch({ type: 'VERIFY' });
+</pre>
 <p>To make the above work, your <strong>index.js</strong> might look like this:</p>
-<pre><code class="lang-javascript">ReactDOM.render(
-    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">App</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}/</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">FakeRedux</span> /&gt;</span>
-            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>,
+<pre>ReactDOM.render(
+    <div>
+        <Provider store={store}>
+            <div>
+                <App store={store}/>
+                <hr /> <hr />
+                <FakeRedux />
+            </div>
+        </Provider>
+    </div>,
     document.getElementById('root'));
-</code></pre>
+</pre>
 <a class="anchor" id="appnoprops"></a>
 <h2>AppNoProps</h2>
 <p>So what is the better way? What do we do if we want to create a component that does not get <strong>props</strong>, but does have access to the Redux data store?</p>
 <p>We begin by importing connect at the top of the component that we want to give access to the Redux <strong>store</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> {<span class="hljs-built_in">connect</span>} from <span class="hljs-string">'react-redux'</span>;
-</code></pre>
+<pre>import {connect} from 'react-redux';
+</pre>
 <p>Remove <strong>subscribe</strong> from the <strong>constructor</strong>, or create a <strong>constructor</strong> that does not call <strong>subscribe</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
+<pre>constructor(props) {
     super(props);
     this.state = {
         statement: 'No comment'
-    }</span>;</span>
+    };
 }
-</code></pre>
+</pre>
 <p>Now we use <strong>connect</strong> to <em>connect</em> our component to the Redux data <strong>store</strong>. We do this by adding the following code at the bottom of the component:</p>
-<pre><code class="lang-javascript">const mapStateToProps = (<span class="hljs-keyword">state</span>) =&gt; {
+<pre>const mapStateToProps = (state) => {
     return {
-        statement: <span class="hljs-keyword">state</span>.statement
-    }
-};
-
-AppNoProps = connect(mapStateToProps)(AppNoProps);
-</code></pre>
-<p>And now we no longer get <strong>store</strong> in the <strong>props</strong> passed from <strong>index.js</strong>. Here was the old code:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">verifyStatement</span> = <span class="hljs-params">()</span> =&gt;</span> {
-    <span class="hljs-keyword">this</span>.props.store.dispatch({ type: <span class="hljs-string">'VERIFY'</span> });
-};
-</code></pre>
-<p>And here is the new code that does not rely on a <strong>store</strong>. Instead, dispatch is build in because we use <strong>connect</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">verifyStatement</span> = <span class="hljs-params">()</span> =&gt;</span> {
-    <span class="hljs-keyword">this</span>.props.dispatch({ type: <span class="hljs-string">'VERIFY'</span> });
-};
-</code></pre>
-<a class="anchor" id="mapdispatchtoprops"></a>
-<h2>MapDispatchToProps</h2>
-<p>Here is code that uses a method of <strong>connect</strong> called <strong>mapDispatchToProps</strong>. This allows us to define simple <strong>dispatch</strong> methods that are triggered by button clicks:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
-<span class="hljs-keyword">import</span> logo <span class="hljs-keyword">from</span> <span class="hljs-string">'./logo.svg'</span>;
-<span class="hljs-keyword">import</span> <span class="hljs-string">'./App.css'</span>;
-<span class="hljs-keyword">import</span> {connect} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-redux'</span>;
-<span class="hljs-regexp">//</span> We change state <span class="hljs-keyword">by</span> <span class="hljs-string">"dispatching"</span> an action.
-<span class="hljs-regexp">//</span> You can log, serialize <span class="hljs-keyword">or</span> store actions.
-
-let AppConnect = <span class="hljs-function"><span class="hljs-params">({statement, deny, verify, noComment})</span> =&gt;</span> {
-
-    <span class="hljs-keyword">return</span> (
-        &lt;div className=<span class="hljs-string">"App"</span>&gt;
-            &lt;div className=<span class="hljs-string">"App-header"</span>&gt;
-                &lt;img src={logo} className=<span class="hljs-string">"App-logo"</span> alt=<span class="hljs-string">"logo"</span>/&gt;
-                &lt;h2&gt;Welcome to React <span class="hljs-keyword">and</span> Redux&lt;/h2&gt;
-            &lt;/div&gt;
-            &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;
-                This AppConnect component uses Redux <span class="hljs-keyword">and</span> connect.
-            &lt;/p&gt;
-            &lt;h1&gt;Political Science&lt;/h1&gt;
-            {statement}
-            &lt;hr /&gt;
-            &lt;button onClick={verify}&gt;Verify&lt;/button&gt;
-            &lt;button onClick={deny}&gt;Deny&lt;/button&gt;
-            &lt;button onClick={noComment}&gt;No Comment&lt;/button&gt;
-
-        &lt;/div&gt;
-    );
-    <span class="hljs-regexp">//</span>}
-};
-
-const mapStateToProps = <span class="hljs-function"><span class="hljs-params">(state)</span> =&gt;</span> {
-    <span class="hljs-keyword">return</span> {
         statement: state.statement
     }
 };
 
-const mapDispatchToProps = <span class="hljs-function"><span class="hljs-params">(dispatch)</span> =&gt;</span> {
-    <span class="hljs-keyword">return</span> {
-        deny: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-            dispatch({type: <span class="hljs-string">'DENY'</span>})
+AppNoProps = connect(mapStateToProps)(AppNoProps);
+</pre>
+<p>And now we no longer get <strong>store</strong> in the <strong>props</strong> passed from <strong>index.js</strong>. Here was the old code:</p>
+<pre>verifyStatement = () => {
+    this.props.store.dispatch({ type: 'VERIFY' });
+};
+</pre>
+<p>And here is the new code that does not rely on a <strong>store</strong>. Instead, dispatch is build in because we use <strong>connect</strong>:</p>
+<pre>verifyStatement = () => {
+    this.props.dispatch({ type: 'VERIFY' });
+};
+</pre>
+<a class="anchor" id="mapdispatchtoprops"></a>
+<h2>MapDispatchToProps</h2>
+<p>Here is code that uses a method of <strong>connect</strong> called <strong>mapDispatchToProps</strong>. This allows us to define simple <strong>dispatch</strong> methods that are triggered by button clicks:</p>
+<pre>import React from 'react';
+import logo from './logo.svg';
+import './App.css';
+import {connect} from 'react-redux';
+// We change state by "dispatching" an action.
+// You can log, serialize or store actions.
+
+let AppConnect = ({statement, deny, verify, noComment}) => {
+
+    return (
+        <div className="App">
+            <div className="App-header">
+                <img src={logo} className="App-logo" alt="logo"/>
+                <h2>Welcome to React and Redux</h2>
+            </div>
+            <p className="App-intro">
+                This AppConnect component uses Redux and connect.
+            </p>
+            <h1>Political Science</h1>
+            {statement}
+            <hr />
+            <button onClick={verify}>Verify</button>
+            <button onClick={deny}>Deny</button>
+            <button onClick={noComment}>No Comment</button>
+
+        </div>
+    );
+    //}
+};
+
+const mapStateToProps = (state) => {
+    return {
+        statement: state.statement
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        deny: () => {
+            dispatch({type: 'DENY'})
         },
-        verify: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-            dispatch({type: <span class="hljs-string">'VERIFY'</span>})
+        verify: () => {
+            dispatch({type: 'VERIFY'})
         },
-        noComment: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-            dispatch({type: <span class="hljs-string">'NO COMMENT'</span>})
+        noComment: () => {
+            dispatch({type: 'NO COMMENT'})
         }
     }
 };
@@ -331,19 +332,19 @@ AppConnect = connect(
     mapDispatchToProps
 )(AppConnect);
 
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> AppConnect;
-</code></pre>
+export default AppConnect;
+</pre>
 <p>Notice that we are using an arrow method rather than a component, and notice that it takes parameters, filled in by React, that represent the various methods and properties used by Redux.</p>
 <p>Here is the arrow function:</p>
-<pre><code class="lang-javascript">let AppConnect = <span class="hljs-function"><span class="hljs-params">({statement, deny, verify, noComment})</span> =&gt;</span> { ... }
-</code></pre>
+<pre>let AppConnect = ({statement, deny, verify, noComment}) => { ... }
+</pre>
 <p>And here where we use them in our JSX:</p>
-<pre><code class="lang-html"><span class="xml"></span><span class="hljs-template-variable">{statement}</span><span class="xml">
-<span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=</span></span><span class="hljs-template-variable">{verify}</span><span class="xml"><span class="hljs-tag">&gt;</span>Verify<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=</span></span><span class="hljs-template-variable">{deny}</span><span class="xml"><span class="hljs-tag">&gt;</span>Deny<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=</span></span><span class="hljs-template-variable">{noComment}</span><span class="xml"><span class="hljs-tag">&gt;</span>No Comment<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span>
-</code></pre>
+<pre>{statement}
+<hr />
+<button onClick={verify}>Verify</button>
+<button onClick={deny}>Deny</button>
+<button onClick={noComment}>No Comment</button>
+</pre>
 <a class="anchor" id="break-out-connect"></a>
 <h2>Break out Connect</h2>
 <p>We can now break out our code into two pieces:</p>
@@ -352,162 +353,162 @@ AppConnect = connect(
 <li>One file contains our <strong>connect</strong> code.</li>
 </ul>
 <p>JSX only. Save it in <strong>AppConnectJsxOnly</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
-<span class="hljs-keyword">import</span> <span class="hljs-string">'./App.css'</span>;
+<pre>import React from 'react';
+import './App.css';
 
-<span class="hljs-keyword">let</span> AppConnect = <span class="hljs-function">(<span class="hljs-params">{statement, deny, verify, noComment}</span>) =&gt;</span> {
+let AppConnect = ({statement, deny, verify, noComment}) => {
 
-    <span class="hljs-keyword">return</span> (
-        <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-intro"</span>&gt;</span>
+    return (
+        <div className="App">
+            <p className="App-intro">
                 This AppConnect component uses Redux and connect.
-                The connect bits are in a separate file called <span class="hljs-tag">&lt;<span class="hljs-name">strong</span>&gt;</span>AppConnectMaps<span class="hljs-tag">&lt;/<span class="hljs-name">strong</span>&gt;</span>.
-            <span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>App Connect JSX Only<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+                The connect bits are in a separate file called <strong>AppConnectMaps</strong>.
+            </p>
+            <h1>App Connect JSX Only</h1>
             {statement}
-            <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{verify}</span>&gt;</span>Verify<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{deny}</span>&gt;</span>Deny<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{noComment}</span>&gt;</span>No Comment<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+            <hr />
+            <button onClick={verify}>Verify</button>
+            <button onClick={deny}>Deny</button>
+            <button onClick={noComment}>No Comment</button>
+        </div>
     );
 };
 
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> AppConnect;
-</code></pre>
+export default AppConnect;
+</pre>
 <p>And here is the connect only code. Save it in AppConnectMaps.js:</p>
-<pre><code class="lang-javascript"><span class="hljs-comment">/**
+<pre>/**
  * Created by charlie on 6/6/17.
- */</span>
+ */
 
-<span class="hljs-keyword">import</span> {connect} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-redux'</span>;
-<span class="hljs-keyword">import</span> AppConnectJsxOnly <span class="hljs-keyword">from</span> <span class="hljs-string">'./AppConnectJsxOnly'</span>;
+import {connect} from 'react-redux';
+import AppConnectJsxOnly from './AppConnectJsxOnly';
 
-<span class="hljs-keyword">const</span> mapStateToProps = <span class="hljs-function">(<span class="hljs-params">state</span>) =&gt;</span> {
-    <span class="hljs-keyword">return</span> {
+const mapStateToProps = (state) => {
+    return {
         statement: state.statement
     }
 };
 
-<span class="hljs-keyword">const</span> mapDispatchToProps = <span class="hljs-function">(<span class="hljs-params">dispatch</span>) =&gt;</span> {
-    <span class="hljs-keyword">return</span> {
-        deny: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-            dispatch({<span class="hljs-keyword">type</span>: <span class="hljs-string">'DENY'</span>})
+const mapDispatchToProps = (dispatch) => {
+    return {
+        deny: () => {
+            dispatch({type: 'DENY'})
         },
-        verify: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-            dispatch({<span class="hljs-keyword">type</span>: <span class="hljs-string">'VERIFY'</span>})
+        verify: () => {
+            dispatch({type: 'VERIFY'})
         },
-        noComment: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-            dispatch({<span class="hljs-keyword">type</span>: <span class="hljs-string">'NO COMMENT'</span>})
+        noComment: () => {
+            dispatch({type: 'NO COMMENT'})
         }
     }
 };
 
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> connect(
+export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(AppConnectJsxOnly);
-</code></pre>
+</pre>
 <a class="anchor" id="updated-spokesman"></a>
 <h2>Updated spokesman</h2>
 <p>Suppose we wanted to update our code to use slightly more complex state that has two properties rather than one.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> spokesman = <span class="hljs-function">(<span class="hljs-params">state = { statement: <span class="hljs-string">'No comment'</span> }, action</span>) =&gt;</span> {
-    <span class="hljs-keyword">switch</span> (action.type) {
-        <span class="hljs-keyword">case</span> <span class="hljs-string">'VERIFY'</span>:
-            <span class="hljs-keyword">return</span> {
-                <span class="hljs-attr">statement</span>: <span class="hljs-string">'We stand by it. In fact, we invented it.'</span>,
-                <span class="hljs-attr">kind</span>: <span class="hljs-string">'verify'</span>
+<pre>const spokesman = (state = { statement: 'No comment' }, action) => {
+    switch (action.type) {
+        case 'VERIFY':
+            return {
+                statement: 'We stand by it. In fact, we invented it.',
+                kind: 'verify'
             };
-        <span class="hljs-keyword">case</span> <span class="hljs-string">'DENY'</span>:
-            <span class="hljs-keyword">return</span> {
-                <span class="hljs-attr">statement</span>: <span class="hljs-string">'We deny everything. We have never heard of it.'</span>,
-                <span class="hljs-attr">kind</span>: <span class="hljs-string">'deny'</span>
+        case 'DENY':
+            return {
+                statement: 'We deny everything. We have never heard of it.',
+                kind: 'deny'
             };
-        <span class="hljs-keyword">case</span> <span class="hljs-string">'NO COMMENT'</span>:
-            <span class="hljs-keyword">return</span> {
-                <span class="hljs-attr">statement</span>: <span class="hljs-string">'No comment.'</span>,
-                <span class="hljs-attr">kind</span>: <span class="hljs-string">'no Comment'</span>
+        case 'NO COMMENT':
+            return {
+                statement: 'No comment.',
+                kind: 'no Comment'
             };
-        <span class="hljs-keyword">default</span>:
-            <span class="hljs-keyword">return</span> state;
+        default:
+            return state;
     }
 };
 
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> spokesman;
-</code></pre>
+export default spokesman;
+</pre>
 <p>And then the function rather than class in <strong>DispatchConnect.js</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> DispatchConnect = <span class="hljs-function">(<span class="hljs-params">{dispatch, statement, kind}</span>) =&gt;</span> {
+<pre>let DispatchConnect = ({dispatch, statement, kind}) => {
 
-    <span class="hljs-keyword">const</span> verifyStatement = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-        dispatch({<span class="hljs-attr">type</span>: <span class="hljs-string">'VERIFY'</span>});
+    const verifyStatement = () => {
+        dispatch({type: 'VERIFY'});
     };
-    <span class="hljs-comment">// And so on</span>
-    <span class="hljs-keyword">return</span> (
-    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-intro"</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>Welcome to React<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    // And so on
+    return (
+    <div className="App">
+        <div className="App-intro">
+            <h2>Welcome to React</h2>
+        </div>
 
-        <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Political Science Dispatch Connect Redux<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+        <h1>Political Science Dispatch Connect Redux</h1>
 
-        <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>This component uses Redux.<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{statement}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{kind}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{verifyStatement}</span>&gt;</span>Verify<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{denyEverything}</span>&gt;</span>Deny<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{noComment}</span>&gt;</span>No Comment<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+        <p>This component uses Redux.</p>
+        <p>{statement}</p>
+        <p>{kind}</p>
+        <hr />
+        <button onClick={verifyStatement}>Verify</button>
+        <button onClick={denyEverything}>Deny</button>
+        <button onClick={noComment}>No Comment</button>
 
-    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+    </div>
   );
 }
-</code></pre>
+</pre>
 <p>And modify <strong>mapStateToProps</strong> to see the new property:</p>
-<pre><code class="lang-javascript">const mapStateToProps = (<span class="hljs-keyword">state</span>) =&gt; {
+<pre>const mapStateToProps = (state) => {
     return {
-        statement: <span class="hljs-keyword">state</span>.statement,
-        kind: <span class="hljs-keyword">state</span>.kind
+        statement: state.statement,
+        kind: state.kind
     }
 };
-</code></pre>
+</pre>
 <a class="anchor" id="final-index"></a>
 <h2>Final Index</h2>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
-<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
-<span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./App'</span>;
-<span class="hljs-keyword">import</span> SimpleRedux <span class="hljs-keyword">from</span> <span class="hljs-string">'./SimpleRedux'</span>;
-<span class="hljs-keyword">import</span> AppConnect <span class="hljs-keyword">from</span> <span class="hljs-string">'./AppConnect'</span>;
-<span class="hljs-keyword">import</span> AppConnectMaps <span class="hljs-keyword">from</span> <span class="hljs-string">'./AppConnectMaps'</span>;
-<span class="hljs-keyword">import</span> DispatchConnect <span class="hljs-keyword">from</span> <span class="hljs-string">'./DispatchConnect'</span>;
-<span class="hljs-keyword">import</span> DispactchComponentConnect <span class="hljs-keyword">from</span> <span class="hljs-string">'./DispatchComponentConnect'</span>;
-<span class="hljs-keyword">import</span> registerServiceWorker <span class="hljs-keyword">from</span> <span class="hljs-string">'./registerServiceWorker'</span>;
-<span class="hljs-keyword">import</span> <span class="hljs-string">'./index.css'</span>;
-<span class="hljs-keyword">import</span> spokesman <span class="hljs-keyword">from</span> <span class="hljs-string">'./spokesman'</span>;
-<span class="hljs-keyword">import</span> {Provider} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-redux'</span>;
-<span class="hljs-keyword">import</span> {createStore} <span class="hljs-keyword">from</span> <span class="hljs-string">'redux'</span>;
-<span class="hljs-keyword">let</span> store = createStore(spokesman);
+<pre>import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import SimpleRedux from './SimpleRedux';
+import AppConnect from './AppConnect';
+import AppConnectMaps from './AppConnectMaps';
+import DispatchConnect from './DispatchConnect';
+import DispactchComponentConnect from './DispatchComponentConnect';
+import registerServiceWorker from './registerServiceWorker';
+import './index.css';
+import spokesman from './spokesman';
+import {Provider} from 'react-redux';
+import {createStore} from 'redux';
+let store = createStore(spokesman);
 
 ReactDOM.render(
-    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">AppConnect</span>/&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">AppConnectMaps</span>/&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">DispactchComponentConnect</span>/&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">DispatchConnect</span>/&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">App</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}/</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">SimpleRedux</span> /&gt;</span>
-            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>,
+    <div>
+        <Provider store={store}>
+            <div>
+                <AppConnect/>
+                <hr /> <hr />
+                <AppConnectMaps/>
+                <hr /> <hr />
+                <DispactchComponentConnect/>
+                <hr /> <hr />
+                <DispatchConnect/>
+                <hr /> <hr />
+                <App store={store}/>
+                <hr /> <hr />
+                <SimpleRedux />
+            </div>
+        </Provider>
+    </div>,
     document.getElementById('root'));
-registerServiceWorker();</span>
-</code></pre>
+registerServiceWorker();
+</pre>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Add, commit, push. Create branch and or tag. Push. Tell me branch, tag and folder when turning in assignment.</p>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>LearnLocalStorage</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>LearnLocalStorage</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>LearnLocalStorage</h1><p>Welcome to LearnLocalStorage</p><ul><!--TOC_Start--><li><a href="#learn-local-storage">Learn Local Storage</a></li>
 <li><a href="#elf-logger">Elf Logger</a></li>
 <li><a href="#simple-object">Elf Local Storage</a></li>
@@ -24,48 +24,48 @@
 <a class="anchor" id="simple-object"></a>
 <h2>Elf Local Storage</h2>
 <p>Save this as <strong>assets/elf-local-storage</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> ELF_TAG = <span class="hljs-string">'elf'</span>;
+<pre>const ELF_TAG = 'elf';
 
-<span class="hljs-keyword">const</span> padNumber = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">numberToPad, width, padValue</span>) </span>{
-    padValue = padValue || <span class="hljs-string">'0'</span>;
-    numberToPad += <span class="hljs-string">''</span>;
-    <span class="hljs-keyword">if</span> (numberToPad.length &gt;= width) {
-        <span class="hljs-keyword">return</span> numberToPad;
-    } <span class="hljs-keyword">else</span> {
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(width - numberToPad.length + <span class="hljs-number">1</span>).join(padValue) + numberToPad;
+const padNumber = function(numberToPad, width, padValue) {
+    padValue = padValue || '0';
+    numberToPad += '';
+    if (numberToPad.length >= width) {
+        return numberToPad;
+    } else {
+        return new Array(width - numberToPad.length + 1).join(padValue) + numberToPad;
     }
 };
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">saveByIndex</span>(<span class="hljs-params">item, index</span>) </span>{
-    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> item === <span class="hljs-string">'object'</span>) {
-        item = <span class="hljs-built_in">JSON</span>.stringify(item, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
+function saveByIndex(item, index) {
+    if (typeof item === 'object') {
+        item = JSON.stringify(item, null, 4);
     }
-    <span class="hljs-keyword">const</span> key = ELF_TAG + padNumber(index, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>);
+    const key = ELF_TAG + padNumber(index, 4, 0);
     localStorage.setItem(key, item);
 }
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getByIndex</span>(<span class="hljs-params">index</span>) </span>{
-    <span class="hljs-keyword">const</span> key = ELF_TAG + padNumber(index, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>);
-    <span class="hljs-keyword">return</span> <span class="hljs-built_in">JSON</span>.parse(localStorage.getItem(key));
+function getByIndex(index) {
+    const key = ELF_TAG + padNumber(index, 4, 0);
+    return JSON.parse(localStorage.getItem(key));
 }
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">removeElfKeys</span>(<span class="hljs-params"></span>) </span>{
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> localStorage) {
-        <span class="hljs-keyword">if</span> (key.startsWith(ELF_TAG)) {
+function removeElfKeys() {
+    for (var key in localStorage) {
+        if (key.startsWith(ELF_TAG)) {
             localStorage.removeItem(key);
         }
     }
 }
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clearLocalStorage</span>(<span class="hljs-params"></span>) </span>{
+function clearLocalStorage() {
     localStorage.clear();
 }
 
-<span class="hljs-keyword">export</span> {saveByIndex, getByIndex, removeElfKeys, clearLocalStorage};
-</code></pre>
+export {saveByIndex, getByIndex, removeElfKeys, clearLocalStorage};
+</pre>
 <p>Use it like this:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { getByIndex } <span class="hljs-keyword">from</span> <span class="hljs-string">'../assets/elf-local-storage'</span>;
-</code></pre>
+<pre>import { getByIndex } from '../assets/elf-local-storage';
+</pre>
 <p>Since the above could get out of data. I will try to maintain it here:</p>
 <ul>
 <li><a href="https://gist.github.com/charliecalvert/d8404b826ee22702c501368335624622">Elf Local Storage</a></li>
@@ -80,117 +80,118 @@
 <li>At the end of the file, insert a close curly brace and a close square bracket.</li>
 </ul>
 <p>Some sample code to put in your version of <strong>get-address</strong> is shown here:</p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// console.log('{');  &lt;=== COMMENT IT OUT AND REPLACE IT WITH THESE TWO LINES</span>
-<span class="hljs-keyword">const</span> <span class="hljs-built_in">open</span> = (i === <span class="hljs-number">0</span>) ? <span class="hljs-string">'[\n\t{'</span> : <span class="hljs-string">'\t{'</span>;
-console.log(<span class="hljs-built_in">open</span>);
+<pre>// console.log('{');  <=== COMMENT IT OUT AND REPLACE IT WITH THESE TWO LINES
+const open = (i === 0) ? '[\n\t{' : '\t{';
+console.log(open);
 
-<span class="hljs-comment">// PUT DOUBLE QUOTES AROUND YOUR PROPERTY NAMES</span>
-writeIt(<span class="hljs-string">'"firstName":'</span>, json.objects[i].person.firstname);
+// PUT DOUBLE QUOTES AROUND YOUR PROPERTY NAMES
+writeIt('"firstName":', json.objects[i].person.firstname);
 
-<span class="hljs-comment">// AND SO ON</span>
+// AND SO ON
 
-<span class="hljs-comment">// console.log('},'); &lt;=== COMMENT IT OUT AND REPLACE IT WITH THESE TWO LINES</span>
-<span class="hljs-keyword">const</span> <span class="hljs-built_in">close</span> = i &lt; jsonLength - <span class="hljs-number">1</span> ? <span class="hljs-string">'\t},'</span> : <span class="hljs-string">'\t}\n]'</span>;
-console.log(<span class="hljs-built_in">close</span>);
-</code></pre>
+// console.log('},'); <=== COMMENT IT OUT AND REPLACE IT WITH THESE TWO LINES
+const close = i < jsonLength - 1 ? '\t},' : '\t}\n]';
+console.log(close);
+</pre>
 <p>The open lines start the array and the closing lines close the array. Note that <strong>firstName</strong> is written to be surrounded in double quotes, which satisfies the JSON spec. See the three samples below to better understand the use of double quotes for the property name (key) in a JSON file:</p>
-<pre><code class="lang-javascript">// Valid JSON
+<pre>// Valid JSON
 {
-  <span class="hljs-string">"foo"</span>: <span class="hljs-string">"bar"</span>
+  "foo": "bar"
 }
 
 // Invalid JSON because there are no quotes around key
 {
-  foo: <span class="hljs-string">"bar"</span>
+  foo: "bar"
 }
 
-// Invalid JSON because <span class="hljs-keyword">of</span> single quotes around key and <span class="hljs-keyword">value</span>
+// Invalid JSON because of single quotes around key and value
 {
-  <span class="hljs-string">'foo'</span>: <span class="hljs-string">'bar'</span>
+  'foo': 'bar'
 }
-</code></pre>
+</pre>
 <a class="anchor" id="load-json"></a>
 <h2>Load JSON</h2>
 <p>We can use a method called <strong>fetch</strong> to retrieve data from the server. In particular, we want to load our addresses in JSON format.</p>
 <p><strong>NOTE</strong>: <em>Why are we doing this? What&#39;s wrong with the method we have been using to load the addresses? There is nothing serious wrong with it, but we want to take a half-step toward the time when we load our addresses from a server side databases. The code we will use to load the addresses from a JSON file stored on the server is similar to the code we will use to load JSON from a database. Also, we currently always have the addresses in memory from the moment we launch. We want to have the option of loading the addresses from the server or reading them from local storage. Again, this will only really make sense once we have the option of loading the data from a database.</em></p>
 <p>Someday <strong>fetch</strong> will be probably be part of standard JavaScript. For now, we use an NPM package:</p>
-<pre><code>npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save whatwg-fetch</span>
-</code></pre><p>Then at the top of <strong>Address.js</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-meta"><span class="hljs-meta-keyword">import</span> 'whatwg-fetch';</span>
-</code></pre>
+<pre>npm install --save whatwg-fetch
+</pre>
+<p>Then at the top of <strong>Address.js</strong>:</p>
+<pre>import 'whatwg-fetch';
+</pre>
 <p>Now we are ready to load our JavaScript with fetch and promises:</p>
-<pre><code class="lang-javascript">fetch(<span class="hljs-string">'./addresses.json'</span>).<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(data)</span></span> {
-   const addresses = <span class="hljs-keyword">data</span>.json();
-   console.<span class="hljs-built_in">log</span>(addresses);
-   <span class="hljs-keyword">return</span> addresses;
-}).<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-keyword">function</span></span> (<span class="hljs-keyword">data</span>) {
-   console.<span class="hljs-built_in">log</span>(JSON.stringify(<span class="hljs-keyword">data</span>, null, <span class="hljs-number">4</span>));
-   that.addresses = <span class="hljs-keyword">data</span>;
+<pre>fetch('./addresses.json').then(function(data) {
+   const addresses = data.json();
+   console.log(addresses);
+   return addresses;
+}).then(function (data) {
+   console.log(JSON.stringify(data, null, 4));
+   that.addresses = data;
    that.setLocalStorage();
-}).catch(<span class="hljs-function"><span class="hljs-keyword">function</span></span> (err) {
-   logger.<span class="hljs-built_in">log</span>(err);
+}).catch(function (err) {
+   logger.log(err);
 })
-</code></pre>
+</pre>
 <p>For example:</p>
-<pre><code class="lang-javascript"><span class="hljs-comment">/**
+<pre>/**
  * Created by Charlie Calvert on 5/10/17.
  *
  * Use it like this:
  *
  *   import DataLoader from '../assets/DataLoader';
  *   const dataLoader = new DataLoader();
- */</span>
+ */
 
-<span class="hljs-keyword">import</span> Logger <span class="hljs-keyword">from</span> <span class="hljs-string">'./ElfLogger'</span>;
-<span class="hljs-keyword">const</span> logger = <span class="hljs-keyword">new</span> Logger(<span class="hljs-string">'data-loader'</span>, <span class="hljs-string">'yellow'</span>, <span class="hljs-string">'green'</span>, <span class="hljs-string">'18px'</span>);
-<span class="hljs-keyword">import</span> { saveByIndex } <span class="hljs-keyword">from</span> <span class="hljs-string">'../assets/elf-local-storage'</span>;
+import Logger from './ElfLogger';
+const logger = new Logger('data-loader', 'yellow', 'green', '18px');
+import { saveByIndex } from '../assets/elf-local-storage';
 
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DataLoader</span> </span>{
+export default class DataLoader {
 
-    <span class="hljs-keyword">constructor</span>() {
-        <span class="hljs-keyword">this</span>.STORE_SET = [<span class="hljs-string">'elven-store'</span>, <span class="hljs-string">'set'</span>, <span class="hljs-string">'elven-count'</span>];
-        <span class="hljs-keyword">this</span>.loadAddresses = <span class="hljs-keyword">this</span>.loadAddresses.bind(<span class="hljs-keyword">this</span>);
+    constructor() {
+        this.STORE_SET = ['elven-store', 'set', 'elven-count'];
+        this.loadAddresses = this.loadAddresses.bind(this);
     }
 
     dataLoaded() {
-        <span class="hljs-keyword">const</span> elfStore = localStorage.getItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">0</span>]);
-        <span class="hljs-keyword">return</span> (elfStore === <span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">1</span>]);
+        const elfStore = localStorage.getItem(this.STORE_SET[0]);
+        return (elfStore === this.STORE_SET[1]);
     }
 
     setLocalStorage(addresses) {
-        logger.log(<span class="hljs-string">'SET LOCAL'</span>, addresses);
-        localStorage.setItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">0</span>], <span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">1</span>]);
-        localStorage.setItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">2</span>], addresses.length);
-        addresses.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">address, index</span>) </span>{
+        logger.log('SET LOCAL', addresses);
+        localStorage.setItem(this.STORE_SET[0], this.STORE_SET[1]);
+        localStorage.setItem(this.STORE_SET[2], addresses.length);
+        addresses.forEach(function(address, index) {
             saveByIndex(address, index);
         });
-        <span class="hljs-keyword">return</span> addresses;
+        return addresses;
     }
 
     loadAddresses(callback) {
-        <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
-        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.dataLoaded()) {
-            logger.log(<span class="hljs-string">'Using data from localstore'</span>);
-            callback(localStorage.getItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">2</span>]));
-        } <span class="hljs-keyword">else</span> {
-            logger.log(<span class="hljs-string">'Loading data'</span>);
-            fetch(<span class="hljs-string">'./address-list.json'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
-                <span class="hljs-comment">//const addresses = data.json();</span>
-                <span class="hljs-comment">//console.log(addresses);</span>
-                <span class="hljs-keyword">return</span> data.json(); <span class="hljs-comment">//addresses;</span>
-            }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
-                logger.log(<span class="hljs-built_in">JSON</span>.stringify(data, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
-                <span class="hljs-comment">//console.log(that);</span>
+        const that = this;
+        if (this.dataLoaded()) {
+            logger.log('Using data from localstore');
+            callback(localStorage.getItem(this.STORE_SET[2]));
+        } else {
+            logger.log('Loading data');
+            fetch('./address-list.json').then(function(data) {
+                //const addresses = data.json();
+                //console.log(addresses);
+                return data.json(); //addresses;
+            }).then(function(data) {
+                logger.log(JSON.stringify(data, null, 4));
+                //console.log(that);
                 that.setLocalStorage(data);
                 callback(data.length);
-            }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+            }).catch(function (err) {
                 logger.log(err);
             });
         }
     }
 
 }
-</code></pre>
+</pre>
 <p>Since the above code could get out of data, I will try to maintain it here:</p>
 <ul>
 <li><a href="https://gist.github.com/charliecalvert/d9fc57f29e16de8970b88a3c89b9b410">DataLoader</a></li>
@@ -198,22 +199,22 @@ console.log(<span class="hljs-built_in">close</span>);
 <a class="anchor" id="load-after-mounting"></a>
 <h2>Load After Mounting</h2>
 <p>We can&#39;t really load properly in the constructor because we have a callback and need to setState after we are done. So do it in <strong>componentDidMount</strong>:</p>
-<pre><code class="lang-javascript">componentDidMount() {
-    logger.log(<span class="hljs-string">'DID MOUNT'</span>);
-    <span class="hljs-keyword">const</span> <span class="hljs-literal">that</span> = <span class="hljs-keyword">this</span>;
-    dataLoader.loadAddresses(<span class="hljs-keyword">function</span>(addressCount) {
-        <span class="hljs-keyword">if</span> (!addressCount) {
-            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">'Cannot get address count in address.js'</span>);
+<pre>componentDidMount() {
+    logger.log('DID MOUNT');
+    const that = this;
+    dataLoader.loadAddresses(function(addressCount) {
+        if (!addressCount) {
+            throw new Error('Cannot get address count in address.js');
         }
-        <span class="hljs-literal">that</span>.addressCount = addressCount;
-        logger.log(<span class="hljs-string">'LOADED ADDRESS'</span>);
-        <span class="hljs-keyword">const</span> address = getByIndex(<span class="hljs-literal">that</span>.addressIndex);
-        <span class="hljs-literal">that</span>.setState({
+        that.addressCount = addressCount;
+        logger.log('LOADED ADDRESS');
+        const address = getByIndex(that.addressIndex);
+        that.setState({
             address: address
         });
     });
 }
-</code></pre>
+</pre>
 <a class="anchor" id="double-check"></a>
 <h2>Double Check</h2>
 <p>Do this to ensure your code is working:</p>

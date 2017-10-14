@@ -1,0 +1,176 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>NodeJsMocksWithRewire</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>NodeJsMocksWithRewire</h1><p>Welcome to NodeJsMocksWithRewire</p><ul><!--TOC_Start--><li><a href="#implementation">Implementation</a></li>
+<li><a href="#test">Example Test</a></li>
+<li><a href="#chai">chai</a></li>
+<li><a href="#rewire">rewire</a></li>
+<li><a href="#mock">Mock</a></li>
+<li><a href="#access-private-variables">Access Private Variables</a></li>
+<li><a href="#run-the-test-in-webstorm">Run the test in WebStorm</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><p>#Mock NodeJs Modules with Rewire</p>
+<p>Among its many capabilities, rewire allows you to mock FS and other node modules. It also gives access to private variables in the code you want to test.</p>
+<ul>
+<li><a href="https://www.npmjs.com/package/rewire">Rewire on NPM</a></li>
+<li><a href="https://github.com/jhnns/rewire">Rewire on GitHub</a></li>
+</ul>
+<p>See the video: <a href="http://youtu.be/Vsx1fJ8NiHE">http://youtu.be/Vsx1fJ8NiHE</a></p>
+<p>##Overview</p>
+<p>Our unit tests should not rely on calls to read and write files from disk. </p>
+<a class="anchor" id="implementation"></a>
+<h2>Implementation</h2>
+<pre>'use strict';
+
+var fs = require('fs');
+
+var splitChar = "\n",
+    csvFileData = '',
+    rawCsv,
+    fileName;
+
+function Convert(fileNameInit) {
+    fileName = fileNameInit;
+}
+
+Convert.prototype.getMeetingNames = function () {
+   // Use map to implement this method
+};
+
+function readFile() {
+    rawCsv = fs.readFileSync(fileName, 'utf8');
+    csvFileData = rawCsv.toString().trim().split(splitChar);
+    return csvFileData;
+}
+
+function removeTitles() {
+    csvFileData.splice(0, 1);
+}
+
+Convert.prototype.run = function () {
+    csvFileData = readFile();
+    removeTitles();
+    return csvFileData;
+};
+
+exports.ConvertToJson = Convert;
+</pre>
+<a class="anchor" id="test"></a>
+<h2>Example Test</h2>
+<p>Here is a simple test:</p>
+<pre>var chai = require('chai');
+var expect = chai.expect;
+var rewire = require("rewire");
+var parseCsv = rewire('../source/convert.js');
+
+
+describe("Json Tests", function () {
+    'use strict';
+
+    var convertToJson;
+
+    var fsMock = {
+        readFileSync: function (path, encoding) {
+            return 'meeting_id, day, time, town, meeting_name\n' +
+                '1,Sunday,06:00:00,Bellevue,Function Kings\n' +
+                '2,Sunday,07:00:00,Seattle,Wayward Commas\n' +
+                '3,Monday,07:00:00,Bellevue,Syntax Ships';
+        }
+    };
+
+    parseCsv.__set__("fs", fsMock);
+
+    beforeEach(function() {
+        convertToJson = new parseCsv.ConvertToJson('Data/IsitMeetings.csv');
+    });
+
+    it("proves that true is true", function () {
+        expect(true).to.equal(true);
+    });
+
+    it('proves fileName is Data/IsitMeetings.csv', function() {
+
+        var fileName = parseCsv.__get__("fileName");
+        expect(fileName).to.equal('Data/IsitMeetings.csv');
+    });
+
+    it("can read file data in format we expect", function() {
+        convertToJson.run();
+        var rawCsv = parseCsv.__get__("rawCsv");
+        expect(rawCsv.length).to.equal(164);
+    });
+
+    it("proves we have ten records in the json object", function() {
+        var json = convertToJson.run();
+        expect(json.length).to.equal(3);
+    });
+
+    it("proves we can get meeting names", function() {
+        convertToJson.run();
+        var meetings = convertToJson.getMeetingNames();
+        expect(meetings[0]).to.equal('Function Kings');
+        expect(meetings[1]).to.equal('Wayward Commas');
+        expect(meetings[2]).to.equal('Syntax Ships');
+    });
+
+});
+</pre>
+<p>Below I describe the important parts of the tests.</p>
+<a class="anchor" id="chai"></a>
+<h3>chai</h3>
+<p>Here we load chai and access its <strong>expect</strong> object:</p>
+<pre>var chai = require('chai');
+var expect = chai.expect;
+</pre>
+<a class="anchor" id="rewire"></a>
+<h3>rewire</h3>
+<p>First we load rewire, then we use it to load the code that we want to test.</p>
+<pre>var rewire = require("rewire");
+var parseCsv = rewire('../source/convert.js');
+</pre>
+<p>By loading the code this way, we gain the ability to mock certain features of the code. In particular:</p>
+<ul>
+<li>we can mock the NodeJs <strong>fs</strong> file system</li>
+<li>we can access private variable inside <strong>convert.js</strong> by using getters and setters.</li>
+</ul>
+<a class="anchor" id="mock"></a>
+<h3>Mock</h3>
+<p>This is how to mock the <strong>readFileSync</strong> method from the NodeJs <strong>fs</strong> module:</p>
+<pre>   var fsMock = {
+        readFileSync: function (path, encoding) {
+            return 'meeting_id, day, time, town, meeting_name\n' +
+                '1,Sunday,06:00:00,Bellevue,Function Kings\n' +
+                '2,Sunday,07:00:00,Seattle,Wayward Commas\n' +
+                '3,Monday,07:00:00,Bellevue,Syntax Ships';
+        }
+    };
+
+    parseCsv.__set__("fs", fsMock);
+</pre>
+<a class="anchor" id="access-private-variables"></a>
+<h3>Access Private Variables</h3>
+<p>This is how we access private variables:</p>
+<pre>var fileName = parseCsv.__get__("fileName");
+var rawCsv = parseCsv.__get__("rawCsv");
+</pre>
+<a class="anchor" id="run-the-test-in-webstorm"></a>
+<h2>Run the test in WebStorm</h2>
+<p>Run these tests with Mocha inside Webstorm. </p>
+<ul>
+<li>From the WebStorm menu choose <strong>Run | Run/Debug Configuration</strong></li>
+<li>Click the plus symbol to add a new mocha configuration</li>
+<li><p>Set up the</p>
+<ul>
+<li>Mocha package (~/npm/lib/node_modules/mocha)<ul>
+<li>ie: /home/bcuser/npm/lib/node_modules/mocha</li>
+</ul>
+</li>
+<li>The test directory</li>
+</ul>
+<p>The big advantage here is that it enables you to set breakpoints and to step through your code inside the IDE.</p>
+</li>
+</ul>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>In your repository, save your version of this project in a directory called <strong>Week07_NodeJsMocks</strong>.  When you submit the assignment provide the URL of your repository in the comments field and attach a screen shot of the test running inside WebStorm.</p>
+<blockquote>
+<p>Written by <a href="https://www.elvenware.com/charlie/">Charlie Calvert</a>.</p>
+</blockquote>
+</div></body></html>

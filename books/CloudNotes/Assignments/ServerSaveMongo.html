@@ -1,189 +1,113 @@
-<!DOCTYPE html>
-<html dir="ltr">
-
-<head>
-	<meta charset="utf-8" />
-	<title>ServerSaveMongo</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="shortcut icon" href="/charlie/images/favicon.png">
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
-	<link href="/charlie/libs/css/BootstrapIndex.css" rel="stylesheet" type="text/css" />
-	<!-- Latest compiled and minified JavaScript - Move to bottom of body element -->
-	<script src="//code.jquery.com/jquery.js"></script>
-	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-	<script src="/charlie/libs/scripts/elvenware.js" type="text/javascript"></script>
-	<script type="text/javascript">
-		var _gaq = _gaq || [];
-		_gaq.push(['_setAccount', 'UA-2806409-2']);
-		_gaq.push(['_trackPageview']);
-		(function() {
-			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		})();
-	</script>
-</head>
-
-<body>
-
-
-
-	<!-- removed  navbar-fixed-top -->
-	<div class="navbar navbar-inverse">
-		<div class="container">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-					<span class="icon-bar"> </span>
-					<span class="icon-bar"> </span>
-					<span class="icon-bar"> </span>
-				</button>
-				<a class="navbar-brand" href="/charlie/index.html">Elvenware</a>
-			</div>
-			<div class="collapse navbar-collapse">
-				<ul class="nav navbar-nav">
-					<li class="active"><a href="/charlie/index.html">Home</a></li>
-					<li><a href="/charlie/contents.html">About</a></li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li class="dropdown-header">Core Code</li>
-							<li><a href="/charlie/development/index.html">Strongly Typed</a></li>
-							<li><a href="/charlie/development/web/index.html">Web &amp; Scripts</a></li>
-							<li><a href="/charlie/development/cloud/index.shtml">Cloud</a></li>
-							<li class="divider"></li>
-							<li class="dropdown-header">OS and Tools</li>
-							<li><a href="/charlie/os/index.html">OS</a></li>
-							<li><a href="/charlie/development/database/index.html">Database</a></li>
-							<li><a href="/charlie/books/index.html">My Writing</a></li>
-							<li class="divider"></li>
-							<li class="dropdown-header">Art</li>
-							<li><a href="/charlie/Art/index.html">Poems &amp; Photos</a></li>
-							<li><a href="/charlie/books/reading/index.html">Book Reviews</a></li>
-							<li><a href="/charlie/spirit/index.html">Spiritual</a></li>
-							<li class="divider"></li>
-							<li class="dropdown-header">Links</li>
-							<li><a href="/charlie/links.html">My Links</a></li>
-							<li><a href="http://www.github.com/charliecalvert">GitHub</a></li>
-							<li><a href="http://sourceforge.net/projects/elvenware/">Sourceforge</a></li>
-						</ul>
-					</li>
-				</ul>
-			</div><!--/.nav-collapse -->
-		</div>
-	</div>
-
-	<div class="container">
-
-		<div class="starter-template">
-			<figure><img alt="Elvenware" src="/charlie/images/elvenwarelogo.png" /></figure>
-<h2>Table of Contents</h2>
-<ul class="elfTocHeading">
-	<li><a href='#server-save-mongo'>Server Save Mongo</a></li>
-	<li><a href='#save-markdown'>Save Markdown</a></li>
-	<li><a href='#client'>Client</a></li>
-	<li><a href='#setup-markshow'>Setup Markshow</a></li>
-	<li><a href='#send-from-client'>Send from Client</a></li>
-	<li><a href='#save-on-server'>Save on Server</a></li>
-	<li><a href='#setup-database'>Setup Database</a></li>
-	<li><a href='#turn-it-in'>Turn it in</a></li>
-</ul>
-<h1 id="server-save-mongo">Server Save Mongo</h1>
-<p>We need to make a number of changes and refactorings to our application. Some of our main goals:</p>
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ServerSaveMongo</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ServerSaveMongo</h1><p>Welcome to ServerSaveMongo</p><ul><!--TOC_Start--><li><a href="#client">Client</a></li><!--TOC_End--></ul></div><div class="container"><p>#Server Save Mongo</p>
+<p>We need to make a number of changes and refactorings to our application.
+Some of our main goals:</p>
 <ul>
 <li>Add in support for saving and loading files</li>
 <li>Add in support for accessing the database</li>
 <li>Clean up and refactor our code.</li>
 </ul>
-<p>By this time, there is probably no point in setting up a separate project, so just do your work in your <strong>Week12Final</strong> folder.</p>
-<h2 id="save-markdown">Save Markdown</h2>
-<p>We now have the ability to edit markdown files. Of course, if we are going to edit them, then we will want to be able to save our work. Achieving that goal is first priority in this assignment.</p>
+<p>By this time, there is probably no point in setting up a separate project,
+so just do your work in your <strong>Week12Final</strong> folder.</p>
+<p>##Save Markdown</p>
+<p>We now have the ability to edit markdown files. Of course, if we are going
+to edit them, then we will want to be able to save our work. Achieving that
+goal is first priority in this assignment.</p>
 <p>In <strong>javascripts/MarkShow.js</strong> we need to:</p>
 <ul>
 <li>Create a method that sends a single object that contains both the edited raw markdown and the HTML to the server.</li>
 <li>In <strong>routes/Markdown.js</strong> create a route that receives the object from the client and saves both the HTML and the markdown to disk.</li>
 <li>Send both the Markdown and the HTML to MongoDb</li>
 </ul>
-<h2 id="client">Client</h2>
-<p>We have to make some major refactorings, in part to correct mistakes I'd made earlier.</p>
+<a class="anchor" id="client"></a>
+<h2>Client</h2>
+<p>We have to make some major refactorings, in part to correct mistakes I&#39;d made earlier.</p>
 <p>We should remove:</p>
-<pre><code>/javascripts/Markdown/Converter.js
-/javascripts/Markdown/Editor.js</code></pre>
+<pre>/javascripts/Markdown/Converter.js
+/javascripts/Markdown/Editor.js
+</pre>
 <p>Clone the <strong>pagedown</strong> and/or <strong>pagedown.extra</strong> repository:</p>
-<pre><code>git clone http://github.com/jmcmanus/pagedown-extra.git</code></pre>
+<pre>git clone http://github.com/jmcmanus/pagedown-extra.git
+</pre>
 <p>Replace the <strong>Converter.js</strong> and Editor js with:</p>
-<pre><code>~/Git/pagedown-extra/pagedown/Markdown.Convert.js
+<pre>~/Git/pagedown-extra/pagedown/Markdown.Convert.js
 ~/Git/pagedown-extra/pagedown/Markdown.Editor.js
-~/Git/pagedown-extra/pagedown/Markdown.Sanitizer.js</code></pre>
+~/Git/pagedown-extra/pagedown/Markdown.Sanitizer.js
+</pre>
 <p>And also add:</p>
-<pre><code>~/Git/pagedown-extra/Markdown.Extra.Editor.js
-~/Git/pagedown-extra/demo/Prettify.js</code></pre>
+<pre>~/Git/pagedown-extra/Markdown.Extra.Editor.js
+~/Git/pagedown-extra/demo/Prettify.js
+</pre>
 <p>And in the <strong>public/styles</strong> directory:</p>
-<pre><code>~/Git/pagedown-extra/demo/Prettify.css</code></pre>
+<pre>~/Git/pagedown-extra/demo/Prettify.css
+</pre>
 <p>So now you have</p>
-<pre><code>/javascripts/Markdown/Markdown.Convert.js
-etc...</code></pre>
-<p>Don't forget that you will have to make changes to GruntFile.js to make sure that it does not process these new files.</p>
+<pre>/javascripts/Markdown/Markdown.Convert.js
+etc...
+</pre>
+<p>Don&#39;t forget that you will have to make changes to GruntFile.js to make sure that it does not process these new files.</p>
 <p>Now modify <strong>Main.js</strong>:</p>
-<pre><code>require.config({
-    baseUrl : &quot;/&quot;,
+<pre>require.config({
+    baseUrl : "/",
     paths : {
         // Lots of stuff omitted
-        &quot;Markdown&quot; : &quot;javascripts/Markdown/Markdown.Converter&quot;,
-        &quot;Editor&quot; : &quot;javascripts/Markdown/Markdown.Editor&quot;,
-        &quot;Prettify&quot; : &quot;javascripts/Markdown/Prettify&quot;,
-        &quot;MarkdownExtra&quot; : &quot;javascripts/Markdown/Markdown.Extra&quot;,
+        "Markdown" : "javascripts/Markdown/Markdown.Converter",
+        "Editor" : "javascripts/Markdown/Markdown.Editor",
+        "Prettify" : "javascripts/Markdown/Prettify",
+        "MarkdownExtra" : "javascripts/Markdown/Markdown.Extra",
         // Lots of stuff omitted here
     },
     shim : {
-        &#39;Markdown&#39; : {
-            exports : &#39;Markdown&#39;
+        'Markdown' : {
+            exports : 'Markdown'
         },
-        &#39;Editor&#39; : {
-            deps : [ &#39;Markdown&#39; ],
-            exports : &#39;Editor&#39;
+        'Editor' : {
+            deps : [ 'Markdown' ],
+            exports : 'Editor'
         },
-        &quot;Prettify&quot; : {
-            deps : [ &#39;Markdown&#39;, &#39;Editor&#39; ],
-            exports : &#39;Prettify&#39;
+        "Prettify" : {
+            deps : [ 'Markdown', 'Editor' ],
+            exports : 'Prettify'
         },
-        &#39;MarkdownExtra&#39; : {
-            deps : [ &#39;Markdown&#39;, &#39;Editor&#39;, &#39;Prettify&#39; ],
-            exports : &#39;MarkdownExtra&#39;
+        'MarkdownExtra' : {
+            deps : [ 'Markdown', 'Editor', 'Prettify' ],
+            exports : 'MarkdownExtra'
         }
     }
-});</code></pre>
+});
+</pre>
 <p>And something like this, I think:</p>
-<pre><code>require([ &#39;jquery&#39;, &#39;MarkdownExtra&#39; ], function(jq, MarkdownExtra) {
-    &#39;use strict&#39;;
+<pre>require([ 'jquery', 'MarkdownExtra' ], function(jq, MarkdownExtra) {
+    'use strict';
 
     // Load the specs with second call to require
-    require([ &quot;Control&quot;, &quot;MarkShow&quot; ], function(Control, MarkShow) {
-        console.log(&quot;Main called.&quot;);
+    require([ "Control", "MarkShow" ], function(Control, MarkShow) {
+        console.log("Main called.");
         prettyPrint();
-        // Code omitted here...</code></pre>
+        // Code omitted here...
+</pre>
 <p>This is the same dance we do when loading <strong>jasmine</strong>. There may be a better way, but this works for me. Note the call to prettyPrint. Unfortunately the prettyPrint.js file adds the prettyPrint method to the Global object, which is unforgivable. In general, the whole Markdown editor is not good about global abatement.</p>
-<h2 id="setup-markshow">Setup Markshow</h2>
+<p>##Setup Markshow</p>
 <p>In PagedownSetup.js we need to add a line that links Markdown Extra into the conversion process:</p>
-<pre><code>PagedownSetup.prototype.setupEditor = function(Markdown) {
+<pre>PagedownSetup.prototype.setupEditor = function(Markdown) {
     var converter = new Markdown.Converter();
-    Markdown.Extra.init(converter);</code></pre>
+    Markdown.Extra.init(converter);
+</pre>
 <p>The new line is the last one shown above: <strong>Markdown.Extra.init(converter)</strong>.</p>
-<p>I can't remember whether I gave you this code in <strong>PagedownSetup.js</strong>. If I did, you should now remove it as the <strong>Markdown-Extra</strong> does a much better job of dealing with the three backticks symbol:</p>
-<pre><code>converter.hooks.chain(&quot;preBlockGamut&quot;, function(text, rbg) {
+<p>I can&#39;t remember whether I gave you this code in <strong>PagedownSetup.js</strong>. If I did, you should now remove it as the <strong>Markdown-Extra</strong> does a much better job of dealing with the three backticks symbol:</p>
+<pre>converter.hooks.chain("preBlockGamut", function(text, rbg) {
     return text.replace(
         /^ {0,3}``` *\n((?:.*?\n)+?) {0,3}``` *$/gm, function(whole, inner) {
-        return &quot;&lt;blockquote&gt;&quot; + rbg(inner) + &quot;&lt;/blockquote&gt;\n&quot;;
+        return "<blockquote>" + rbg(inner) + "</blockquote>\n";
     });
-});</code></pre>
+});
+</pre>
 <p>Just delete or comment out the entire <strong>preBlockGamut</strong> method.</p>
-<h2 id="send-from-client">Send from Client</h2>
+<p>##Send from Client</p>
 <p>You will need code to send your data to the server:</p>
-<pre><code>var savePage = function() {
+<pre>var savePage = function() {
     $.ajax({
-        url: &#39;/Markdown/savePage&#39;,
+        url: '/Markdown/savePage',
         data: {
             markdown: saveMarkdown,
             html: converter.makeHtml(saveMarkdown),
@@ -192,22 +116,26 @@ etc...</code></pre>
         }).error = utilities.errorHandler;
     };
 
-};</code></pre>
-<p>The fileNameData control is an HTML paragraph element that contains the name of the file you are currently editing. You can set this data when you load the file:</p>
-<pre><code>// With object scope in MarkShow:
+};
+</pre>
+<p>The fileNameData control is an HTML paragraph element that contains
+the name of the file you are currently editing. You can set this data
+when you load the file:</p>
+<pre>// With object scope in MarkShow:
 
 var fileNameData;
 
 // In the MarkShow Constructor
-fileNameData = $(&quot;#fileName&quot;);
+fileNameData = $("#fileName");
 
 // And finally, in your invocation of the getPick route:
-$.getJSON(&#39;/getPick&#39;, function(result) {
-    fileNameData.html(result.userPick);</code></pre>
-<h2 id="save-on-server">Save on Server</h2>
+$.getJSON('/getPick', function(result) {
+    fileNameData.html(result.userPick);
+</pre>
+<p>##Save on Server</p>
 <p>In <strong>routes/Markdown.js</strong>:</p>
 <ul>
-<li>Don't forget to require fs!</li>
+<li>Don&#39;t forget to require fs!</li>
 </ul>
 <p>Then you will need to call <strong>fs.writeFile</strong> twice:</p>
 <ul>
@@ -215,16 +143,22 @@ $.getJSON(&#39;/getPick&#39;, function(result) {
 <li>Once for the markdown</li>
 </ul>
 <p>Some of it might look something like this:</p>
-<pre><code>fs.writeFile(process.env.HOME + &#39;/&#39; + &quot;Foo.html&quot;, request.query.html,
-    function(error) {</code></pre>
-<p>In the call back for both functions, you should call the <strong>handleSuccess</strong> method, which is defined below. The call is necessary because we have to wait for three callbacks to return before we can send the Success acknowledgement back to the client. <strong>handleSuccess</strong> increments a counter as each callback returns. When it gets to three, it sends back success.</p>
-<h2 id="setup-database">Setup Database</h2>
+<pre>fs.writeFile(process.env.HOME + '/' + "Foo.html", request.query.html,
+    function(error) {
+</pre>
+<p>In the call back for both functions, you should call the <strong>handleSuccess</strong> method,
+which is defined below. The call is necessary because we have to wait for three
+callbacks to return before we can send the Success acknowledgement back to the client.
+<strong>handleSuccess</strong> increments a counter as each callback returns. When it gets to
+three, it sends back success.</p>
+<p>##Setup Database</p>
 <p>Copy in from another project:</p>
-<pre><code>routes/QueryMongo.js
-routes/LoadConfig.js</code></pre>
+<pre>routes/QueryMongo.js
+routes/LoadConfig.js
+</pre>
 <p>Change insertCollection to take a callback rather than response:</p>
-<pre><code>    QueryMongo.prototype.insertIntoCollection = function(callback, objectToInsert) {
-        console.log(&quot;QueryMongo.insertIntoCollection called&quot;);
+<pre>    QueryMongo.prototype.insertIntoCollection = function(callback, objectToInsert) {
+        console.log("QueryMongo.insertIntoCollection called");
         getDatabase(function getCol(database) {
             var collection = database.collection(collectionName);
             collection.insert(objectToInsert, function(err, docs) {
@@ -232,48 +166,36 @@ routes/LoadConfig.js</code></pre>
                     throw err;
                 }
                 if (callClose) { closeDatabase(); }
-                console.log(&quot;QueryMongo insert succeeded&quot;);
-                // response.send({ result: &quot;Success&quot;, mongoDocument: docs });
+                console.log("QueryMongo insert succeeded");
+                // response.send({ result: "Success", mongoDocument: docs });
                 callback(docs);
             });
         });
-    };</code></pre>
+    };
+</pre>
 <p>In <strong>routes/Markdown.js</strong> we need to set up the callback:</p>
-<pre><code>    var success = 0;
-    
+<pre>    var success = 0;
+
     function handleSuccess(docsInit) {
         if (docsInit) {
             docs = docsInit;
         }
         if (success === 2) {
-            console.log(&quot;Sending Success&quot;);
+            console.log("Sending Success");
             response.send({
-                result: &quot;success&quot;,
+                result: "success",
                 docs: docs
             });
         } else {
             success += 1;
         }
-    }</code></pre>
+    }
+</pre>
 <p>At the end of successful calls to write the html, write the markdown, and write to the database, we call <strong>handleSuccess</strong>. The third time it is called it will use the <strong>response</strong> object to send the Success message to the client.</p>
-<p>Don't forget to add <strong>mongodb</strong> to your package.json file: <strong>npm install mongodb --save-dev</strong>.</p>
-<h2 id="turn-it-in">Turn it in</h2>
-<p>All you need to do is commit your work and submit the assignment. As mentioned above, your work should be in the Week12Final folder. If, for some reason, you did not do your work in that folder, when you turn in the assignment, please make it abundantly clear where you did do your work.</p>
-<!-- FOOTER -->
-      <footer>
-        <p class="pull-right"><a href="#">Back to top</a></p>        
-		<p>Copyright &copy; <a href="/charlie/index.html">Charlie Calvert</a> |
-		<a href="/charlie/contents.html">Site Overview</a> |
-		<a href="/charlie/development/index.html">Writing Code</a> |
-		<a href="/charlie/development/web/index.html">Web</a> |
-		<a href="/charlie/development/web/JavaScript/index.html">JavaScript</a> |
-		<a href="/charlie/books/index.html">My Books</a> </p>
-
-      </footer>
-
-    </div><!-- /.container -->
-</body>
-</html>
-
-
-
+<p>Don&#39;t forget to add <strong>mongodb</strong> to your package.json file: <strong>npm install mongodb --save-dev</strong>.</p>
+<p>##Turn it in</p>
+<p>All you need to do is commit your work and submit the assignment. As mentioned
+above, your work should be in the Week12Final folder. If, for some reason,
+you did not do your work in that folder, when you turn in the assignment, 
+please make it abundantly clear where you did do your work. </p>
+</div></body></html>

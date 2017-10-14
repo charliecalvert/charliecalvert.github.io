@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactPropsRefine</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactPropsRefine</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ReactPropsRefine</h1><p>Welcome to ReactPropsRefine</p><ul><!--TOC_Start--><li><a href="#react-props-refine">React Props Refine</a></li>
 <li><a href="#key-features">Key Features</a></li>
 <li><a href="#rename">Rename</a></li>
@@ -55,29 +55,29 @@
 <p>Add request to your server:</p>
 <p>  npm install request --save</p>
 <p>Require it at the top of <strong>routes/api.js</strong></p>
-<pre><code class="lang-javascript"><span class="hljs-attribute">var request</span> = require(<span class="hljs-string">'request'</span>);
-</code></pre>
+<pre>var request = require('request');
+</pre>
 <p>The data I return from the server is shaped, for now, like this:</p>
-<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/user'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req, res, next)</span> {</span>
+<pre>router.get('/user', function(req, res, next) {
     var options = {
-        url: <span class="hljs-string">'https://api.github.com/users/charliecalvert'</span>,
+        url: 'https://api.github.com/users/charliecalvert',
         headers: {
-            <span class="hljs-string">'User-Agent'</span>: <span class="hljs-string">'request'</span>
+            'User-Agent': 'request'
         }
     };
 
-    request(options, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(error, response, body)</span> {</span>
-        <span class="hljs-comment">// Print the error if one occurred</span>
-        console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'error:'</span>, <span class="hljs-built_in">error</span>);
-        <span class="hljs-comment">// Print the response status code if a response was received</span>
-        console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'statusCode:'</span>, response &amp;&amp; response.statusCode);
-        <span class="hljs-comment">// Print the HTML for the Google homepage.</span>
-        console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'body:'</span>, body);
-        res.send({<span class="hljs-built_in">error</span>: <span class="hljs-built_in">error</span>, response: response, body: body});
+    request(options, function(error, response, body) {
+        // Print the error if one occurred
+        console.log('error:', error);
+        // Print the response status code if a response was received
+        console.log('statusCode:', response && response.statusCode);
+        // Print the HTML for the Google homepage.
+        console.log('body:', body);
+        res.send({error: error, response: response, body: body});
     });
 
 });
-</code></pre>
+</pre>
 <p>Note that I&#39;m sending back three properties:</p>
 <ul>
 <li>error</li>
@@ -85,49 +85,49 @@
 <li>body</li>
 </ul>
 <p>The last contains the core data that we want to retrieve from GitHub. The first few lines should look something like this, with your data rather than mine:</p>
-<pre><code class="lang-javascript">{
-    <span class="hljs-string">"login"</span>: <span class="hljs-string">"charliecalvert"</span>,
-    <span class="hljs-string">"id"</span>: <span class="hljs-number">1811478</span>,
-    <span class="hljs-string">"avatar_url"</span>: <span class="hljs-string">"https://avatars3.githubusercontent.com/u/1811478?v=3"</span>,
-    <span class="hljs-string">"gravatar_id"</span>: <span class="hljs-string">""</span>,
-    <span class="hljs-string">"url"</span>: <span class="hljs-string">"https://api.github.com/users/charliecalvert"</span>,
-    <span class="hljs-string">"html_url"</span>: <span class="hljs-string">"https://github.com/charliecalvert"</span>,
-    <span class="hljs-string">"followers_url"</span>: <span class="hljs-string">"https://api.github.com/users/charliecalvert/followers"</span>,
+<pre>{
+    "login": "charliecalvert",
+    "id": 1811478,
+    "avatar_url": "https://avatars3.githubusercontent.com/u/1811478?v=3",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/charliecalvert",
+    "html_url": "https://github.com/charliecalvert",
+    "followers_url": "https://api.github.com/users/charliecalvert/followers",
 
-    <span class="hljs-comment">// MANY LINES OMITTED</span>
+    // MANY LINES OMITTED
 }
-</code></pre>
+</pre>
 <a class="anchor" id="display-user-data"></a>
 <h2>Display User Data</h2>
 <p>The first step would be to rename <strong>components/App.js</strong> to <strong>components/GetUserInfo.js</strong>. That might look something like this on your system, where you may need to change or skip the first line:</p>
-<pre><code class="lang-bash"><span class="hljs-meta">$</span><span class="bash"> <span class="hljs-built_in">cd</span> GitExplorer/client/src/</span>
-<span class="hljs-meta">$</span><span class="bash"> git mv components/App.js components/GetUserInfo.js</span>
-</code></pre>
+<pre>$ cd GitExplorer/client/src/
+$ git mv components/App.js components/GetUserInfo.js
+</pre>
 <p>Open up the source for <strong>GetUserInfo.js</strong>, and rename the component class from <strong>App</strong> to <strong>GetUserInfo</strong>. This will take two changes:</p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// CODE OMITTED HERE</span>
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GetUserInfo</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
-<span class="hljs-comment">// CODE OMITTED HERE  </span>
+<pre>// CODE OMITTED HERE
+class GetUserInfo extends Component {
+// CODE OMITTED HERE  
 }
 
-export <span class="hljs-keyword">default</span> <span class="hljs-type">GetUserInfo</span>;
-</code></pre>
+export default GetUserInfo;
+</pre>
 <p>Create a <strong>getUser method</strong> that looks a little like this:</p>
-<pre><code class="lang-javascript">getUser = () =&gt; {
+<pre>getUser = () => {
 
-    <span class="hljs-keyword">const</span> that = this;
-    fetch(<span class="hljs-string">'/api/user'</span>)
-        .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(response)</span> </span>{
-            <span class="hljs-comment">// YOU WRITE IT</span>
-        }).then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(json)</span> </span>{
-            <span class="hljs-comment">// DISPLAY WITH LOGGER AS NEEDED</span>
-            <span class="hljs-comment">// PARSE THE JSON BODY INTO JS SINCE IT IS PROPABLY A STRING:</span>
-            <span class="hljs-keyword">var</span> body = JSON.parse(json.body);
+    const that = this;
+    fetch('/api/user')
+        .then(function (response) {
+            // YOU WRITE IT
+        }).then(function (json) {
+            // DISPLAY WITH LOGGER AS NEEDED
+            // PARSE THE JSON BODY INTO JS SINCE IT IS PROPABLY A STRING:
+            var body = JSON.parse(json.body);
             that.setState({userLogin: body.login});
-        }).<span class="hljs-keyword">catch</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(ex)</span> </span>{
-            <span class="hljs-comment">// DISPLAY WITH LOGGER</span>
+        }).catch(function (ex) {
+            // DISPLAY WITH LOGGER
         });
 };
-</code></pre>
+</pre>
 <p>Ultmately, your setState method will need to be more complicated than this, as there is more than just a login field to dispay.</p>
 <p>Add a paragraph and button in the render method to display your input.</p>
 <p>Make any necessary changes in App.js.</p>
@@ -135,41 +135,42 @@ export <span class="hljs-keyword">default</span> <span class="hljs-type">GetUser
 <a class="anchor" id="don-t-forget-enzyme-debug-"></a>
 <h2>Don&#39;t forget Enzyme Debug:</h2>
 <p>Here are part of my header tests with the debug info:</p>
-<pre><code class="lang-javascript">describe('My Header tests', function () {
-    var quiet = false<span class="hljs-comment">;            &lt;========== LOOK HERE!</span>
+<pre>describe('My Header tests', function () {
+    var quiet = false;            <========== LOOK HERE!
 
-    function getFirst(<span class="hljs-name">wrapper</span>) {  &lt;========== LOOK HERE!
-        const eightp = wrapper.find('h2').first().debug()<span class="hljs-comment">;</span>
+    function getFirst(wrapper) {  <========== LOOK HERE!
+        const eightp = wrapper.find('h2').first().debug();
         if (!quiet) {
-            console.log(<span class="hljs-string">"HEADER:"</span>, eightp)<span class="hljs-comment">;</span>
+            console.log("HEADER:", eightp);
         }
     }
 
-    it('renders and reads H1 text', () =&gt; {
-        const wrapper = shallow(<span class="hljs-name">&lt;Header</span> /&gt;)<span class="hljs-comment">;</span>
-        const welcome = &lt;h2&gt;Welcome to React&lt;/h2&gt;<span class="hljs-comment">;</span>
-        expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">welcome</span>)).toEqual(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
-        getFirst(<span class="hljs-name">wrapper</span>)         &lt;========== LOOK HERE!
-    })<span class="hljs-comment">;</span>
+    it('renders and reads H1 text', () => {
+        const wrapper = shallow(<Header />);
+        const welcome = <h2>Welcome to React</h2>;
+        expect(wrapper.contains(welcome)).toEqual(true);
+        getFirst(wrapper)         <========== LOOK HERE!
+    });
 
     // MORE CODE HERE AND ELSEWHERE
-})<span class="hljs-comment">;</span>
-</code></pre>
+});
+</pre>
 <a class="anchor" id="each-test-suite-gets-unique-name"></a>
 <h2>Each Test Suite Gets Unique Name</h2>
 <p>Make sure each test suite you create has a unique and easy to understand name:</p>
-<pre><code class="lang-javascript">describe('<span class="hljs-type">My</span> <span class="hljs-type">Get</span> <span class="hljs-type">User</span> <span class="hljs-type">Info</span> <span class="hljs-type">Test</span>', function () <span class="hljs-meta">{...}</span>)
-</code></pre>
+<pre>describe('My Get User Info Test', function () {...})
+</pre>
 <p>We need to be able to easily know where each failing test is located. Give the suite a good name, and it can help us quickly find the failing test so we can fix it:</p>
-<pre><code>My <span class="hljs-builtin-name">Get</span><span class="hljs-built_in"> User </span><span class="hljs-builtin-name">Info</span> Test › renders<span class="hljs-built_in"> default </span>message <span class="hljs-keyword">for</span> state.userLogin
+<pre>My Get User Info Test › renders default message for state.userLogin
 
    expect(received).toEqual(expected)
 
-   Expected value <span class="hljs-keyword">to</span> equal:
-     <span class="hljs-literal">true</span>
+   Expected value to equal:
+     true
    Received:
-     <span class="hljs-literal">false</span>
-</code></pre><a class="anchor" id="turn-it-in"></a>
+     false
+</pre>
+<a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Commit, push. When you turn in the assignment, designate the directory in your repo where you did your work.</p>
 <p>It would be good to tag your work just after you push an assignment. An ideal process:</p>
@@ -180,9 +181,10 @@ export <span class="hljs-keyword">default</span> <span class="hljs-type">GetUser
 </ul>
 <p>You don&#39;t have to use the branch, just create it. Then I can look in that branch for the code you submitted for the assignment. The branch would serve as a record of your project at the time your turned it in.</p>
 <p>A reminder of how to tag:</p>
-<pre><code><span class="hljs-meta">$</span><span class="bash"> git tag -a v3.0.? -m <span class="hljs-string">"Turning in ReactPropsRefine"</span></span>
-<span class="hljs-meta">$</span><span class="bash"> git push origin v3.0.?</span>
-</code></pre><p>The question mark stands for the next tag in your series of tags. For instance, on your system it might v3.0.4.</p>
+<pre>$ git tag -a v3.0.? -m "Turning in ReactPropsRefine"
+$ git push origin v3.0.?
+</pre>
+<p>The question mark stands for the next tag in your series of tags. For instance, on your system it might v3.0.4.</p>
 <a class="anchor" id="notes"></a>
 <h2>Notes</h2>
 <p>Don&#39;t spend a lot of time fretting over whether or not this is the right architecture. I have several refactorings I want us to do as we add new features, but that is for next week. Just get this far.</p>

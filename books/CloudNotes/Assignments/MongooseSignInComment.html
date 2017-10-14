@@ -1,0 +1,642 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>MongooseSignInComment</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>MongooseSignInComment</h1><p>Welcome to MongooseSignInComment</p><ul><!--TOC_Start--><li><a href="#description">Description</a></li>
+<li><a href="#step-one">Step One</a></li>
+<li><a href="#step-two">Step Two</a></li>
+<li><a href="#step-three">Step Three</a></li>
+<li><a href="#step-four">Step Four</a></li>
+<li><a href="#step-five">Step Five</a></li>
+<li><a href="#step-six">Step Six</a></li>
+<li><a href="#step-seven">Step Seven</a></li>
+<li><a href="#hints">Hints</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="description"></a>
+<h2>Description</h2>
+<p>SignIn and Comments in one program with a menu.</p>
+<p>Found a <a href="https://vickev.com/#!/article/authentication-in-single-page-applications-node-js-passportjs-angularjs">good article</a> on passport and angular. The <a href="https://github.com/Anomen/AuthenticationAngularJS">code</a> is available and that is how I knew to replace the method shown above.</p>
+<p>A working example of how to handle the SignIn program is in the following directory: </p>
+<ul>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Design/AngularSignIn" title="Angular Sign In on JsObjects">JsObjects/JavaScript/Design/AngularSignIn</a></li>
+</ul>
+<p>To get the program, go to your JsObjects directory and get the latest with a:</p>
+<pre>git pull
+</pre>
+<p>Or get the whole repository, <strong>being very careful not to issue this command inside your own repository</strong>:</p>
+<pre>git clone http://github.org/charliecalvert/JsObjects.git
+</pre>
+<p>The <strong>AngularSignIn</strong> example program contains the SignIn code, but not the Comments code. </p>
+<a class="anchor" id="step-one"></a>
+<h2>Step One</h2>
+<p>Copy the MongooseComments program into a new folder:</p>
+<pre>robocopy Week11-MongooseComments Week11-SignInComment /mir
+</pre>
+<p>Open the project in WebStorm and rename it the project to <strong>SignInComment</strong>.</p>
+<p>Install the tools we will need:</p>
+<pre>npm install bcrypt-nodejs --save
+npm install passport --save
+npm install passport-local --save
+npm install express-session --save
+bower install angular-route --save
+</pre>
+<a class="anchor" id="step-two"></a>
+<h2>Step Two</h2>
+<p>Add a menu</p>
+<p>In <strong>layout.jade</strong>, copy in meta tags to prepare for use in a mobile device:</p>
+<pre>doctype html
+html(data-ng-app="elvenApp" ng-controller="ThemeController as themeController")
+    head
+        meta(charset='utf-8')
+        meta(name='description', content='Final by Charlie Calvert for Prog 219 Spring 2015')
+        meta(name='viewport', content='width=device-width, initial-scale=1')
+        title= title
+</pre>
+<p>Notice that we are adding an ng-app directive here in the first line
+above. That means we should remove it from the body tag near the bottom
+of the file:</p>
+<pre>        script(src="javascripts/logout.js")
+    body
+        block content
+</pre>
+<p>And then optionally, for theme switching:</p>
+<pre>link(rel="stylesheet", ng-href="components/bootswatch/{{themeController.bootStrapCss}}/bootstrap.css")
+</pre>
+<p>Then also load <strong>angular-route</strong> and <strong>app.js</strong></p>
+<pre>    script(src="components/angular-route/angular-route.js")
+    script(src="javascripts/app.js")
+</pre>
+<p>Then in <strong>index.jade</strong>, paste in the menu we have used in other programs, where I have include a few extra lines to provide context:</p>
+<pre>extends layout
+block content
+    nav.navbar-default.navbar-fixed-top
+        .container-fluid
+            .navbar-header
+                button(type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#myTarget")
+                    span.sr-only Toggle navigation
+                    span.icon-bar
+                    span.icon-bar
+                    span.icon-bar
+                a.navbar-brand(href="#/") Final
+            #myTarget.collapse.navbar-collapse
+                ul.nav.navbar-nav
+                    li(ng-class="{ active: isActive('/')}")
+                        a(ng-href='#/') Home
+                    li(ng-class="{ active: isActive('/comments')}")
+                        a(ng-href='#/comments') Comments
+                    li(ng-class="{ active: isActive('/about')}")
+                        a(ng-href='#/about') About
+                    li(ng-class="{ active: isActive('/signin')}")
+                        a(ng-href='#/{{themeController.signinMenuItem}}') {{themeController.signinMenuText}}
+                    li(ng-switch="themeController.loggedIn" ng-class="{ active: isActive('/login')}")
+                        a(ng-switch-when="true" ng-href='#/logout') Logout
+                        a(ng-switch-default ng-href='#/login') Login
+
+    h1= title
+    p Welcome to #{title}
+    div(data-ng-view="")
+</pre>
+<p>Here is a reference for ng-switch:</p>
+<ul>
+<li><a href="https://docs.angularjs.org/api/ng/directive/ngSwitch">ng-switch angular docs</a></li>
+<li><a href="http://stackoverflow.com/a/14297556">ng-switch stackOverflow</a></li>
+</ul>
+<a class="anchor" id="step-three"></a>
+<h2>Step Three</h2>
+<p>Link in the passport sign in code.</p>
+<ul>
+<li>Copy the passport folder from the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/MongooseSignIn.html">sign in project</a>. It includes three files:<ul>
+<li>init.js</li>
+<li>login.js</li>
+<li>signup.js</li>
+</ul>
+</li>
+</ul>
+<p>Here is init:</p>
+<pre>var login = require('./login');
+var signup = require('./signup');
+var User = require('../models/user');
+
+module.exports = function(passport) {
+
+    // Passport needs to be able to serialize and deserialize
+    // users to support persistent login sessions
+    passport.serializeUser(function(user, done) {
+        console.log('serializing user: ');
+        console.log(user);
+        done(null, user._id);
+    });
+
+    passport.deserializeUser(function(id, done) {
+        User.findById(id, function(err, user) {
+            console.log('deserializing user:', user);
+            done(err, user);
+        });
+    });
+
+    // Setting up Passport Strategies for Login and SignUp/Registration
+    login(passport);
+    signup(passport);
+
+};
+</pre>
+<p>Here is login:</p>
+<pre>var LocalStrategy   = require('passport-local').Strategy;
+var User = require('../models/user');
+var bCrypt = require('bcrypt-nodejs');
+
+module.exports = function(passport) {
+
+    passport.use('login', new LocalStrategy({
+            passReqToCallback : true
+        },
+        function(req, username, password, done) { 
+            // check in mongo if a user with username exists or not
+            User.findOne({ 'username' :  username }, 
+                function(err, user) {
+                    // In case of any error, return using the done method
+                    if (err)
+                        return done(err);
+                    // Username does not exist, log the error and redirect back
+                    if (!user){
+                        console.log('User Not Found with username '+username);
+                        return done(null, false);
+                    }
+                    // User exists but wrong password, log the error 
+                    if (!isValidPassword(user, password)){
+                        console.log('Invalid Password');
+                        return done(null, false); // redirect back to login page
+                    }
+                    // User and password both match, return user from done method
+                    // which will be treated like success
+                    return done(null, user);
+                }
+            );
+
+        })
+    );
+
+
+    var isValidPassword = function(user, password){
+        return bCrypt.compareSync(password, user.password);
+    }
+
+};
+</pre>
+<p>Here is signup:</p>
+<pre>var LocalStrategy   = require('passport-local').Strategy;
+var User = require('../models/user');
+var bCrypt = require('bcrypt-nodejs');
+
+module.exports = function(passport){
+
+    passport.use('signup', new LocalStrategy({
+            passReqToCallback : true // allows us to pass back the entire request to the callback
+        },
+        function(req, username, password, done) {
+
+            findOrCreateUser = function(){
+                // find a user in Mongo with provided username
+                User.findOne({ 'username' :  username }, function(err, user) {
+                    // In case of any error, return using the done method
+                    if (err){
+                        console.log('Error in SignUp: '+err);
+                        return done(err);
+                    }
+                    // already exists
+                    if (user) {
+                        console.log('User already exists with username: '+username);
+                        return done(null, false, req.flash('message','User Already Exists'));
+                    } else {
+                        // if there is no user with that email
+                        // create the user
+                        var newUser = new User();
+
+                        // set the user's local credentials
+                        newUser.username = username;
+                        newUser.password = createHash(password);
+                        newUser.email = req.param('email');
+                        newUser.firstName = req.param('firstName');
+                        newUser.lastName = req.param('lastName');
+
+                        // save the user
+                        newUser.save(function(err) {
+                            if (err){
+                                console.log('Error in Saving user: '+err);  
+                                throw err;  
+                            }
+                            console.log('User Registration succesful');    
+                            return done(null, newUser);
+                        });
+                    }
+                });
+            };
+            // Delay the execution of findOrCreateUser and execute the method
+            // in the next tick of the event loop
+            process.nextTick(findOrCreateUser);
+        })
+    );
+
+    // Generates hash using bCrypt
+    var createHash = function(password){
+        return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
+    }
+
+};
+</pre>
+<p>From the sign in project, copy <strong>models/user.js</strong> and place it in the <strong>models</strong> folder of this project.</p>
+<pre>var mongoose = require('mongoose');
+
+var userSchema = mongoose.Schema({
+    id: String,
+    firstName: String,
+    lastName: String,
+    username: String,
+    password: String,
+    email: String
+});
+
+module.exports = mongoose.model('User', userSchema);
+</pre>
+<p>Copy <strong>SpaceNeedle.png</strong> or some similar file into <strong>public/images</strong>.</p>
+<p>Copy in the CSS from the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/MongooseSignIn.html">SignIn</a> assignment.</p>
+<a class="anchor" id="step-four"></a>
+<h2>Step Four</h2>
+<p>Most things on the backend for passport are the same. Just make sure you get rid of all references to <strong>flash</strong>.</p>
+<p>We are going to create a file called <strong>routes/login.js</strong>. It provides new middleware routes for logging in. This is like the example code from the previous example that was found in <strong>routes/index.js</strong>, but now we don&#39;t invoke it off the main route (&#39;/&#39;), instead we have <strong>login</strong> route (&#39;/login&#39;).</p>
+<p>Here are the changes to make in <strong>app.js</strong>. You can keep the loading of routes middleware the same:</p>
+<pre>var routes = require('./routes/index');
+var users = require('./routes/users');
+var comments = require('./routes/comments');
+</pre>
+<p>And then further down we have code that is quite similar to the original example:</p>
+<pre>// Configuring Passport
+var passport = require('passport');
+var expressSession = require('express-session');
+app.use(expressSession({
+      secret: 'mySecretKey',
+      resave: true,
+      saveUninitialized: true
+    })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Initialize Passport
+var initPassport = require('./passport/init');
+initPassport(passport);
+
+var login = require('./routes/login')(passport);
+app.use('/', routes);
+app.use('/users', users);
+app.use('/comments', comments);
+app.use('/login', login);
+</pre>
+<p>Notice the last line, where we load the new middleware for handling our new <strong>login</strong> route.</p>
+<p>And below you see <strong>routes/login.js</strong>. Notice that this is pretty much the same as in our login example, but the <strong>post(&#39;/login&#39;</strong> method has been replaced (I commented out the old version):</p>
+<pre>var express = require('express');
+var router = express.Router();
+
+module.exports = function(passport) {
+
+    router.post('/login', passport.authenticate('login'),
+        function(req, res) {
+            res.send(req.user);
+        }
+    );
+
+    router.get('/logout', function(request, response){
+        request.logOut();
+        response.sendStatus(200);
+    });
+
+    router.get('/loggedin', function(request, response) {
+        response.send(request.isAuthenticated() ? true : false);
+    });
+
+    router.get('/signup', function(req, res) {
+        console.log('Get signup');
+        res.render('register', {});
+    });
+
+    /* Handle Registration POST */
+    router.post('/signup', passport.authenticate('signup', {
+        successRedirect: '/#/login',
+        failureRedirect: '/signup'
+    }));
+
+
+    return router;
+};
+</pre>
+<p>Notice that we have replaced this method from the routes folder:</p>
+<pre>router.post('/login', passport.authenticate('login', {
+    successRedirect: '/#/home',
+    failureRedirect: '/'
+}));
+</pre>
+<p>With this one:</p>
+<pre>router.post('/login', passport.authenticate('login'),
+    function(req, res) {
+        res.send(req.user);
+        }
+);
+</pre>
+<a class="anchor" id="step-five"></a>
+<h2>Step Five</h2>
+<p>We need a login route in app.js:</p>
+<p>Put this code in <strong>public/javascripts/app.js</strong>:</p>
+<pre>var myModule = angular.module("elvenApp", [ 'ngRoute' ]);
+
+myModule.config(function($routeProvider, $httpProvider, $locationProvider) {
+
+    //================================================
+    // Check if the user is connected
+    //================================================
+    var checkLoggedin = function($q, $timeout, $http, $location, $rootScope){
+        // Initialize a new promise
+        var deferred = $q.defer();
+
+        // Make an AJAX call to check if the user is logged in
+        $http.get('/login/loggedin').success(function(result){
+            // Authenticated
+            if (result !== false)
+            /*$timeout(deferred.resolve, 0);*/
+                deferred.resolve();
+
+            // Not Authenticated
+            else {
+                $rootScope.message = 'You need to log in.';
+                //$timeout(function(){deferred.reject();}, 0);
+                deferred.reject();
+                $location.url('/login');
+            }
+        });
+
+        return deferred.promise;
+    };
+
+    //================================================
+    // Add an interceptor for AJAX errors
+    //================================================
+    $httpProvider.interceptors.push(function($q, $location) {
+        return {
+            response: function(response) {
+                // do something on success
+                return response;
+            },
+            responseError: function(response) {
+                if (response.status === 401) {
+                    console.log('status 401');
+                    $location.url('/login');
+                }
+                return $q.reject(response);
+            }
+        };
+    });    
+
+    //================================================
+    // Define all the routes
+    //================================================
+    $routeProvider.when("/", {
+        templateUrl : "main",
+        controller : "MainController",
+        controllerAs: "mainController"
+    }).when('/comments', {
+        templateUrl : "comments",
+        controller : "CommentsController",
+        controllerAs: 'commentsController',
+        resolve: {
+            loggedin: checkLoggedin
+        }
+    }).when('/about', {
+        templateUrl : "about",
+        controller : "AboutController",
+        controllerAs: 'aboutController'
+    }).when('/login', {
+        templateUrl : "login",
+        controller : "LoginController",
+        controllerAs: 'loginController'
+    }).when('/logout', {
+        templateUrl : "logout",
+        controller : "LogoutController",
+        controllerAs: 'logoutController'
+    }).when('/register', {
+        templateUrl : "register"
+    }).otherwise({
+        redirectTo : '/'
+    });
+});
+</pre>
+<p>Near the top of the file, you will have to inject the <strong>$httpProvider</strong> in the signature for the config provider:</p>
+<pre>myModule.config(function($routeProvider, $httpProvider, $locationProvider) {
+</pre>
+<p>This is your updated login jade, which has been adapted to work with angular:</p>
+<pre>extends layout
+block content
+   div.container
+      #main.row
+         div.col-sm-6.col-md-4.col-md-offset-4
+            h1.text-center.login-title {{loginController.hint}}
+               div.account-wall
+                  img(class='profile-img', src='images/SpaceNeedle.png')
+                  form.form-signin(novalidate='')
+                     input.form-control(type='text', ng-model='loginController.userName' placeholder='UserName',required, autofocus)
+                     input.form-control(type='password', ng-model='loginController.password' placeholder='Password', required)
+                     button.btn.btn-lg.btn-primary.btn-block(type='submit', ng-click='loginController.update()') Sign in
+                     span.clearfix
+               a(href='/login/signup', class='text-center new-account') Create an account
+               #message
+               if message
+                  h1.text-center.error-message #{message}
+</pre>
+<p>This is your login controller:</p>
+<pre>var app = angular.module('elvenApp');
+
+app.controller('LoginController', function($http, $location, themeFactory) {
+    var loginController = this;
+    loginController.hint = "Sign in";
+
+    loginController.update = function() {
+        console.log('update');
+        var user = {
+            "username": loginController.userName,
+            "password": loginController.password
+        };
+
+        $http.post('/login/login/', user).success(function(user) {
+            themeFactory.setLogin(true);
+            console.log(user);
+            $location.path('/');
+        }).error(function(err) {
+            loginController.hint = 'Bad Password/User. Try again';
+        })
+    }
+});
+</pre>
+<p>Notice how it works. We have two paths:</p>
+<ul>
+<li>success</li>
+<li>error</li>
+</ul>
+<p>If the user is logged in successfully the success path is invoked and the user is redirected back to the home page. We are also passed information about the user from our database. That is, we are passed the user name, email, etc. If the error path is invoked, then a hint is displayed telling the user to try again.</p>
+<p>Here is the register (signup) jade file:</p>
+<pre>extends layout
+
+block content
+    div.container
+        div.row
+            div.col-sm-6.col-md-4.col-md-offset-4
+                h1.text-center.login-title Registration Details
+                    div.signup-wall
+                        form(class='form-signin', action='/login/signup', method='POST')
+                            input(type='text', name='username', class='form-control', placeholder='Username',required, autofocus)
+                            input(type='password', name='password', class='form-control nomargin', placeholder='Password', required)
+                            input(type='email', name='email', class='form-control', placeholder='Email',required)
+                            input(type='text', name='firstName', class='form-control', placeholder='First Name',required)
+                            input(type='text', name='lastName', class='form-control', placeholder='Last Name',required)
+                            button(class='btn btn-lg btn-primary btn-block', type='submit') Register
+                            span.clearfix
+                    #message
+                        if message
+                            h1.text-center.error-message #{message}
+</pre>
+<p>We now have signup working. If you need be, however, you can create a user using the signup <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/MongooseSignIn.html">assignment</a> example. Then switch back to this code.</p>
+<a class="anchor" id="step-six"></a>
+<h2>Step Six</h2>
+<p>Logging out.</p>
+<p>Here is the logout controller:</p>
+<pre>var app = angular.module('elvenApp');
+
+app.controller('LogoutController', function($http, $sce, $location, themeFactory) {
+    var logoutController = this;
+    logoutController.hint = "Sign in";
+    logoutController.loggedInStatus = "unknown";
+
+    logoutController.logout = function() {
+        console.log('logout');
+
+        $http.get('/login/logout/').success(function(user) {
+            themeFactory.setLogin(false);
+            console.log(user);
+        }).error(function(err) {
+            logoutController.hint = 'Could not call logout';
+            logoutController.error = $sce.trustAsHtml(err);
+        })
+    };
+
+    logoutController.isLoggedIn = function() {
+
+        $http.get('/login/loggedin/').success(function(user) {
+            logoutController.loggedInStatus = user;
+        }).error(function(err) {
+            logoutController.hint = 'Bad Password/User. Try again';
+        });
+    };
+
+    logoutController.logout();
+});
+</pre>
+<p>Here is <strong>logout.jade</strong>:</p>
+<pre>h1 Logout
+
+p hint: {{logoutController.hint}}
+
+p logged in: {{logoutController.loggedInStatus}}
+
+div.names
+   div.btn-group
+      button.btn.btn-default(ng-click='logoutController.isLoggedIn()') Is user logged in?
+
+#document(ng-bind-html="logoutController.error")
+</pre>
+<p>We have already added the following at the bottom of <strong>routes/login.js</strong>. </p>
+<pre>router.get('/logout', function(request, response){
+    request.logOut();
+    response.sendStatus(200);
+});
+
+router.get('/loggedin', function(request, response) {
+    response.send(request.isAuthenticated() ? true : false);
+});
+</pre>
+<p>Tie together the login and log out code and provide support for switching themes:</p>
+<pre>(function () {
+
+    var app = angular.module('elvenApp');
+
+    app.factory('themeFactory', function() {
+        var themeFactory = {
+            themeController: null,
+            setLogin: function(init) {
+                themeFactory.themeController.loggedIn = init;
+            }
+        }
+
+        return themeFactory;
+    });
+
+    app.controller('ThemeController', function (themeFactory) {
+        var themeController = this;
+        themeController.loggedIn = false;
+        themeFactory.themeController = themeController;
+        themeController.bootStrapCss = "cosmo";
+        themeController.bootStrapThemes = [
+            {name: "Cerulean", url: "cerulean"},
+            {name: "Cosmo", url: "cosmo"},
+            {name: "Cyborg", url: "cyborg"},
+                        etc...
+        ];
+    });
+
+})();
+</pre>
+<p>Notice that the themeFactory is used in the <strong>login</strong> and <strong>logout</strong> controllers.</p>
+<a class="anchor" id="step-seven"></a>
+<h2>Step Seven</h2>
+<p>Here is <strong>public/javascripts/comments.js</strong></p>
+<pre>(function() {
+
+    var app = angular.module('elvenApp');
+
+    app.controller('CommentsController', function(mongoFactory, commentFactory) {
+        var commentsController = this;
+
+        commentsController.updateComment = function() {
+            commentFactory.updateComment(commentsController.scientist);
+        };
+
+        // Code omitted here....
+
+        function getScientist() {
+            mongoFactory.getScientistById(mongoFactory.currentId, commentsController);
+        }
+
+        getScientist();
+    });
+
+})();
+</pre>
+<p>Here is the code from <strong>mongo-factory</strong> that provides you with a <strong>name</strong> property you can display at the top of the <strong>edit</strong>, <strong>comments</strong>, and <strong>subjects</strong> pages of your final:</p>
+<pre>    setControllerName: function(controller) {
+        controller.name = controller.scientist.firstName + ' ' + controller.scientist.lastName;
+    },
+</pre>
+<p>Call it from <strong>getScientistById</strong>:</p>
+<pre>getScientistById: function(id, controller) {
+    mongoFactory.currentId = id;
+    var items = mongoFactory.allData.filter(function(scientist) {
+        return scientist._id === id;
+    });
+    controller.scientist = items[0];
+    mongoFactory.setControllerName(controller);
+    return controller.scientist;
+},
+</pre>
+<p>This means that a file like <strong>views/comments.jade</strong> would begin like this:</p>
+<pre>h1 Comments: {{commentsController.name}}
+div.names
+    ul
+        li(ng-repeat='comment in commentsController.scientist.comments')
+            a(ng-click="commentsController.selectComment(comment)") {{comment.commentText}}
+</pre>
+<p>The fist line shows how to use the new <strong>name</strong> property.</p>
+<a class="anchor" id="hints"></a>
+<h2>Hints</h2>
+<p>You may get a warning &#39;Synchronous XMLHttpRequest on the main thread is deprecated&#39;. I believe this has something to do with the dialog we are loading to login and the related code. I don&#39;t think it has to do with the way we are rerouting events. In other words, it happens when we go directly to the login page, not just when we get there from the comments link. For now we are ignorning this warning.</p>
+</div></body></html>

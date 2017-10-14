@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactMicroServices</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactMicroServices</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ReactMicroServices</h1><p>Welcome to ReactMicroServices</p><ul><!--TOC_Start--><li><a href="#react-micro-services">React Micro Services</a></li>
 <li><a href="#build-and-deploy">Build and Deploy</a></li>
 <li><a href="#micro-services">Micro Services</a></li>
@@ -22,8 +22,8 @@
 <h2>Build and Deploy</h2>
 <p>Before going any further, let&#39;s understand what our application will look like when it is deployed.</p>
 <p>Right now, we are using a trick that allows us to proxy request from the browser to our server. Specifically, we are adding this line to our client side <strong>package.json</strong> file:</p>
-<pre><code class="lang-javascript"><span class="hljs-string">"proxy"</span>: <span class="hljs-string">"http://localhost:30026"</span>,
-</code></pre>
+<pre>"proxy": "http://localhost:30026",
+</pre>
 <p>This is meant for us only during development. When we ship, we do two things.</p>
 <ol>
 <li>At the command line we run this command to build our production code:
@@ -33,8 +33,8 @@ b. This produces a folder called <strong>build</strong> in the root of our proje
 a. Finally, we point our home page route in <strong>routes/index.js</strong> to the <strong>index.html</strong> file created by the npm <strong>build</strong> step.</li>
 </ol>
 <p>Now we can just run our server, browse to the page it creates, and begin playing with our app.</p>
-<pre><code class="lang-javscript"><span class="hljs-selector-tag">res</span><span class="hljs-selector-class">.sendFile</span>(<span class="hljs-string">'index.html'</span>);
-</code></pre>
+<pre>res.sendFile('index.html');
+</pre>
 <a class="anchor" id="micro-services"></a>
 <h2>Micro Services</h2>
 <p>What this means, then, is that the server part of our GitExplorer project is going to be the server for our main programmer. It will be the thing that launches our client side GitExplorer code.</p>
@@ -88,23 +88,23 @@ a. Finally, we point our home page route in <strong>routes/index.js</strong> to 
 <a class="anchor" id="router-ids"></a>
 <h2>Router IDs</h2>
 <p>You&#39;ve seen this before, but as a reminder. Respond to ping of a route by echoing back a portion of the url with request.params.id:</p>
-<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response)</span> </span>{
+<pre>router.get('/:id', function(request, response) {
     response.send({
-        <span class="hljs-string">'result'</span>: <span class="hljs-string">'success from 30026'</span>,
-        <span class="hljs-string">'path'</span>: request.params.id
+        'result': 'success from 30026',
+        'path': request.params.id
     });
 });
-</code></pre>
+</pre>
 <p>Assuming this is in <strong>index.js</strong> for the <strong>qux</strong> server then it would return <strong>path: foo</strong> if you ran this query: <strong>/qux/foo</strong>.</p>
 <a class="anchor" id="forwarding-request"></a>
 <h2>Forwarding Request</h2>
 <p>Do it like this:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> requester = <span class="hljs-built_in">require</span>(<span class="hljs-string">'request'</span>);
+<pre>const requester = require('request');
 
-router.get(<span class="hljs-string">'/bar'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response, next</span>) </span>{
-    requester(<span class="hljs-string">'http://localhost:30026/bar'</span>).pipe(response);
+router.get('/bar', function(request, response, next) {
+    requester('http://localhost:30026/bar').pipe(response);
 });
-</code></pre>
+</pre>
 <p>All requests except for <strong>get-foo</strong> should be handled by the micro services.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>

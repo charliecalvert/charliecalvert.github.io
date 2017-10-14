@@ -29,11 +29,11 @@
 <a class="anchor" id="methods-to-call"></a>
 <h2>Methods to call</h2>
 <p>In <strong>index.js</strong> use <strong>require</strong> to load your NPM package. The call might look something like this:</p>
-<pre><code class="lang-javascript"><span class="hljs-attribute">const isitCode</span> = require(<span class="hljs-string">'isit-code-lastname'</span>);
-</code></pre>
+<pre>const isitCode = require('isit-code-lastname');
+</pre>
 <p>Most of the time, however, you want to load a particule module from the library. Suppose you want the elf-utils project. Then load it like this:</p>
-<pre><code class="lang-javascript"><span class="hljs-attribute">const elfUtils</span> = require(<span class="hljs-string">'isit-code-lastname'</span>).elfUtils;
-</code></pre>
+<pre>const elfUtils = require('isit-code-lastname').elfUtils;
+</pre>
 <p>Now call two methods from your <strong>isit-code</strong> package.</p>
 <ul>
 <li>elfUtils.getHomeDir</li>
@@ -45,8 +45,9 @@
 <li>/first-word</li>
 </ul>
 <p>For instance:</p>
-<pre><code>router.get(<span class="hljs-string">'/home-directory'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req, res, next)</span> </span>{ <span class="hljs-string">'use strict'</span>;
-</code></pre><p>I&#39;ll leave it up to you to implement the method. the call to <strong>elfUtils.homeDir</strong> is very simple. Also, you can see an example of how to call it in <strong>isit-code/spec/test-elf-utils-files.js</strong>.</p>
+<pre>router.get('/home-directory', function(req, res, next) { 'use strict';
+</pre>
+<p>I&#39;ll leave it up to you to implement the method. the call to <strong>elfUtils.homeDir</strong> is very simple. Also, you can see an example of how to call it in <strong>isit-code/spec/test-elf-utils-files.js</strong>.</p>
 <p><strong>NOTE</strong>: <em>This is one of the times when a set of unit tests can be used not just for running tests, but for documenting a library. In particular, the primary documentation for <strong>isit-code</strong> is in the spec directory of the <strong>isit-code</strong> package. Though it would be good to have better document, it is often the case the unit tests included with a package can help you understand a package.</em></p>
 <a class="anchor" id="client"></a>
 <h2>Client</h2>
@@ -66,77 +67,78 @@
 <a class="anchor" id="getting-user-input"></a>
 <h2>Getting User Input</h2>
 <p>Suppose you define an <strong>input</strong> control with JSX:</p>
-<pre><code class="lang-html">&lt;input <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> onChange={<span class="hljs-keyword">this</span>.firstWordChange} placeholder=<span class="hljs-symbol">'Enter</span> multi-word sentence.' /&gt;
-</code></pre>
+<pre><input type="text" onChange={this.firstWordChange} placeholder='Enter multi-word sentence.' />
+</pre>
 <p>How do we get text from the input? Declare state for the input:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">constructor</span>() {
-    <span class="hljs-keyword">super</span>();
-    <span class="hljs-keyword">this</span>.state = {
-        homeDirectory: <span class="hljs-string">'Unknown'</span>,
-        firstWord: <span class="hljs-string">'Unknown'</span>,
-        userInput: <span class="hljs-string">'Unknown'</span>   &lt;&lt; TRACK USER INPUT
+<pre>constructor() {
+    super();
+    this.state = {
+        homeDirectory: 'Unknown',
+        firstWord: 'Unknown',
+        userInput: 'Unknown'   << TRACK USER INPUT
     };
-    <span class="hljs-keyword">this</span>.homeDirectory = <span class="hljs-keyword">this</span>.homeDirectory.bind(<span class="hljs-keyword">this</span>);
-    <span class="hljs-keyword">this</span>.firstWordChange = <span class="hljs-keyword">this</span>.firstWordChange.bind(<span class="hljs-keyword">this</span>);
-    <span class="hljs-keyword">this</span>.firstWord = <span class="hljs-keyword">this</span>.firstWord.bind(<span class="hljs-keyword">this</span>);
+    this.homeDirectory = this.homeDirectory.bind(this);
+    this.firstWordChange = this.firstWordChange.bind(this);
+    this.firstWord = this.firstWord.bind(this);
 }
-</code></pre>
+</pre>
 <p>Define the firstWordChange method. It gets called over and over as the user types in the input. It also continually updates the <strong>this.state.userInput</strong>:</p>
-<pre><code class="lang-javascript">firstWordChange(<span class="hljs-keyword">event</span>) {
-    console.log(<span class="hljs-string">'firstWord:'</span>, <span class="hljs-keyword">event</span>.target.<span class="hljs-keyword">value</span>);
-    <span class="hljs-keyword">this</span>.setState({userInput: <span class="hljs-keyword">event</span>.target.<span class="hljs-keyword">value</span>})
+<pre>firstWordChange(event) {
+    console.log('firstWord:', event.target.value);
+    this.setState({userInput: event.target.value})
 }
-</code></pre>
+</pre>
 <a class="anchor" id="passing-parameters-with-fetch-"></a>
 <h2>Passing Parameters with <strong>fetch</strong></h2>
 <p>Now that we have the user input in <strong>this.state.userInput</strong>, how do we pass it to the server. Like this:</p>
 <p>Our goal is to pass a URL to the server describing the sentence from which we want the first word:</p>
-<pre><code>/<span class="hljs-keyword">first</span>-<span class="hljs-built_in">word</span>?
-</code></pre><p>First we need to define a method to <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent">URL encode</a> the <a href="https://stackoverflow.com/a/34209399/253576">parameters</a>:</p>
-<pre><code class="lang-javascript">getQuery() {
-        <span class="hljs-keyword">const</span> params = {sentence: <span class="hljs-keyword">this</span>.state.userInput};
-        <span class="hljs-keyword">const</span> encodeUri = encodeURIComponent;
-        let query = <span class="hljs-keyword">Object</span>.keys(params)
-            .<span class="hljs-built_in">map</span>(<span class="hljs-built_in">key</span> =&gt; encodeUri(<span class="hljs-built_in">key</span>) + <span class="hljs-string">'='</span> + encodeUri(params[<span class="hljs-built_in">key</span>]))
-            .<span class="hljs-built_in">join</span>(<span class="hljs-string">'&amp;'</span>);
-        <span class="hljs-keyword">return</span> query;
+<pre>/first-word?
+</pre>
+<p>First we need to define a method to <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent">URL encode</a> the <a href="https://stackoverflow.com/a/34209399/253576">parameters</a>:</p>
+<pre>getQuery() {
+        const params = {sentence: this.state.userInput};
+        const encodeUri = encodeURIComponent;
+        let query = Object.keys(params)
+            .map(key => encodeUri(key) + '=' + encodeUri(params[key]))
+            .join('&');
+        return query;
     }
 }
-</code></pre>
+</pre>
 <p>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join">join</a> statement turns the array produced by <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map">map</a> into a string joined on ampersands.</p>
 <p>Then we need to use it when we call fetch:</p>
-<pre><code class="lang-javascript">firstWord() {
-    <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
-    <span class="hljs-keyword">const</span> query = <span class="hljs-string">'/first-word?'</span> + <span class="hljs-keyword">this</span>.getQuery();
-    <span class="hljs-built_in">console</span>.log(query);
+<pre>firstWord() {
+    const that = this;
+    const query = '/first-word?' + this.getQuery();
+    console.log(query);
     fetch(query)
-        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
-            <span class="hljs-keyword">return</span> response.json();
+        .then(function(response) {
+            return response.json();
         })
-        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsed json'</span>, json);
-            that.setState({ <span class="hljs-attr">firstWord</span>: json.firstWord });
+        .then(function(json) {
+            console.log('parsed json', json);
+            that.setState({ firstWord: json.firstWord });
         })
-        .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ex</span>) </span>{
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsing failed'</span>, ex);
+        .catch(function(ex) {
+            console.log('parsing failed', ex);
         });
 }
-</code></pre>
+</pre>
 <a class="anchor" id="handle-code-on-server"></a>
 <h2>Handle code on Server</h2>
 <p>And here is the code for getting the query when it is passed to the server:</p>
-<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/first-word'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response, next</span>) </span>{ <span class="hljs-string">'use strict'</span>;
-    <span class="hljs-built_in">console</span>.log(req.query);
-    <span class="hljs-keyword">try</span> {
-      <span class="hljs-comment">// Now call elfUtils with the sentence passed in the query.</span>
-      <span class="hljs-comment">// Use Response.send to return the result.</span>
-      <span class="hljs-comment">// Here is one way to handle an error if it occurs:</span>
-    } <span class="hljs-keyword">catch</span>(e) {
-        <span class="hljs-built_in">console</span>.log(e);
-        res.status(<span class="hljs-number">500</span>).send(e)
+<pre>router.get('/first-word', function(request, response, next) { 'use strict';
+    console.log(req.query);
+    try {
+      // Now call elfUtils with the sentence passed in the query.
+      // Use Response.send to return the result.
+      // Here is one way to handle an error if it occurs:
+    } catch(e) {
+        console.log(e);
+        res.status(500).send(e)
     }
 });
-</code></pre>
+</pre>
 <a class="anchor" id="testing"></a>
 <h2>Testing</h2>
 <a class="anchor" id="turn-it-in"></a>
@@ -154,8 +156,8 @@
 <li>parsing failed TypeError: <strong>Cannot read property &#39;setState&#39; of undefined</strong></li>
 </ul>
 <p>We know that we are calling <strong>setState</strong> of <strong>this</strong> or <strong>that</strong>. So why is <strong>this</strong> undefined? There could be many reasons, by a likely culprit is that you forgot to bind a method:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">this</span>.someMethod = <span class="hljs-keyword">this</span>.someMethod.bind(<span class="hljs-keyword">this</span>);
-</code></pre>
+<pre>this.someMethod = this.someMethod.bind(this);
+</pre>
 <a class="anchor" id="finding-code"></a>
 <h2>Finding Code</h2>
 <p>Read the <a href="http://www.ccalvert.net/books/CloudNotes/tips/ElvenLinks.html#references">References</a> section in <a href="http://www.ccalvert.net/books/CloudNotes/tips/ElvenLinks.html">ElvenLinks</a></p>
