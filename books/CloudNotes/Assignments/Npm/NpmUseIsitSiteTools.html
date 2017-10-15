@@ -23,10 +23,9 @@
 <a class="anchor" id="create-projects"></a>
 <h2>Create Projects</h2>
 <p>Create a folder called <strong>Week04-UseSiteTools</strong> in your repository. In it, we need two projects called <strong>client</strong> and <strong>server</strong>. You have done this kind of thing before, so the process should be simple:</p>
-<pre>mkdir Week04-UseSiteTools && cd Week04-UseSiteTools
-create-react-app client && CreateAllExpress server
-</pre>
-<a class="anchor" id="set-up"></a>
+<pre><code><span class="hljs-string">mkdir </span><span class="hljs-string">Week04-UseSiteTools </span>&amp;&amp; <span class="hljs-string">cd </span><span class="hljs-string">Week04-UseSiteTools
+</span><span class="hljs-built_in">create-react-app</span> <span class="hljs-string">client </span>&amp;&amp; <span class="hljs-string">CreateAllExpress </span><span class="hljs-string">server</span>
+</code></pre><a class="anchor" id="set-up"></a>
 <h2>Set up</h2>
 <p>Open the root folder for this project (Week04-UseSiteTools) in WebStorm. You should now be able to work on both the <strong>client</strong> and <strong>server</strong> at the same time.</p>
 <p>Add the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/RestBasics.html#link-client-and-server">proxy statement</a> for port 30026 to <strong>client/package.json</strong>.</p>
@@ -50,43 +49,38 @@ create-react-app client && CreateAllExpress server
 </ul>
 <p>If you are still stuck. The answer is <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/Npm/NpmUseIsitCode.html">here</a>, near the top of the assignment.</p>
 <p>Now that you have imported the package, look at the command line where your <strong>server</strong> is running. You should see something like this:</p>
-<pre>module.js:529
+<pre><code><span class="hljs-class"><span class="hljs-keyword">module</span>.<span class="hljs-title">js</span>:529</span>
     throw err;
     ^
 
-Error: Cannot find module 'isit-code-calvert'
-    at Function.Module._resolveFilename (module.js:527:15)
-    at Function.Module._load (module.js:476:23)
-    at Module.require (module.js:568:17)
-    at require (internal/module.js:11:18)
-</pre>
-<p>The system is trying to tell you that it is having trouble loading the package called <strong>isit-code-calvert</strong>. This is one of my packages, not one of your packages. This means you have to find the place where the package is being loaded, and ask it to load your package, not mine. In particular, you want to change <strong>isit-code-calvert</strong> to <strong>isit-code-lastname</strong>, where last name is your last name.</p>
+<span class="hljs-symbol">Error:</span> Cannot find <span class="hljs-class"><span class="hljs-keyword">module</span> '<span class="hljs-title">isit</span>-<span class="hljs-title">code</span>-<span class="hljs-title">calvert</span>'</span>
+    at Function.Module._resolveFilename (<span class="hljs-class"><span class="hljs-keyword">module</span>.<span class="hljs-title">js</span>:527:15)</span>
+    at Function.Module._load (<span class="hljs-class"><span class="hljs-keyword">module</span>.<span class="hljs-title">js</span>:476:23)</span>
+    at Module.<span class="hljs-keyword">require</span> (<span class="hljs-class"><span class="hljs-keyword">module</span>.<span class="hljs-title">js</span>:568:17)</span>
+    at <span class="hljs-keyword">require</span> (internal/<span class="hljs-class"><span class="hljs-keyword">module</span>.<span class="hljs-title">js</span>:11:18)</span>
+</code></pre><p>The system is trying to tell you that it is having trouble loading the package called <strong>isit-code-calvert</strong>. This is one of my packages, not one of your packages. This means you have to find the place where the package is being loaded, and ask it to load your package, not mine. In particular, you want to change <strong>isit-code-calvert</strong> to <strong>isit-code-lastname</strong>, where last name is your last name.</p>
 <p>The Linuix <strong>grep</strong> utitlity provides a simple way to find the places where <strong>isit-code-calvert</strong> is loaded in a project. In particular, run the following command from the base of your <strong>server</strong> project:</p>
-<pre>grep -rwl "isit-code-calvert"
-</pre>
-<p>The output is quite lengthy. The problem, of course, is that <strong>isit-site-tools</strong> uses <strong>isit-code</strong> in many different files. Trying to make the changes in each file is a daunting task and being good techies we are lazy by nature.</p>
+<pre><code><span class="hljs-keyword">grep</span> -rwl <span class="hljs-string">"isit-code-calvert"</span>
+</code></pre><p>The output is quite lengthy. The problem, of course, is that <strong>isit-site-tools</strong> uses <strong>isit-code</strong> in many different files. Trying to make the changes in each file is a daunting task and being good techies we are lazy by nature.</p>
 <p>First, lets come up with a quick fix. We will use the Linux <strong>find</strong> and <strong>sed</strong> utilities to:</p>
 <ul>
 <li>find all the JavaScript files in <strong>isit-site-tools</strong></li>
 <li>In those files, replace all instances of <strong>isit-code-calvert</strong> with <strong>isit-code-lastname</strong></li>
 </ul>
 <p>In particular, try something like this, where you will need to make two obvious changes:</p>
-<pre>cd ~/node_modules/isit-site-tools-lastname
-find . -iname "*.js" | xargs sed -i 's/isit-code-calvert/isit-code-lastname/g' *.js
-</pre>
-<p>After making this change, you should be able to start your <strong>server</strong> without error.</p>
+<pre><code>cd ~/node_modules/isit-site-tools-lastname
+<span class="hljs-built_in">find</span> . -iname <span class="hljs-string">"*.js"</span> | xargs sed -i 's/isit-<span class="hljs-built_in">code</span>-calvert/isit-<span class="hljs-built_in">code</span>-lastname/g' *.js
+</code></pre><p>After making this change, you should be able to start your <strong>server</strong> without error.</p>
 <p>All that is good and well, but it is only a temporary fix. For a more long lasting solution, we need to change the code not to this version of <strong>isit-site-tools</strong>, but to the version in the NPM repository.</p>
 <a class="anchor" id="isit-site-tools-npm-update"></a>
 <h2>Update <strong>isit-site-tools</strong> in the NPM Repository</h2>
 <p>Go to your <strong>isit-site-tools</strong> repository. This is your fork of my project. From the root of your project, run the <strong>find</strong> and <strong>sed</strong> command shown above, but this time, ask it to skip any files in the <strong>node_modules</strong> directory:</p>
-<pre>find . -iname "*.js" -not -path "**/node_modules/**" | xargs sed -i 's/isit-code-calvert/isit-code-lastname/g' *.js
-</pre>
-<p>You will have to make the same change to this line of code that we made when we ran <strong>find</strong> and <strong>sed</strong> in the <strong>node_modules</strong> directory of the <strong>server</strong> project.</p>
+<pre><code><span class="hljs-built_in">find</span> . -iname <span class="hljs-string">"*.js"</span> -<span class="hljs-built_in">not</span> -path <span class="hljs-string">"**/node_modules/**"</span> | xargs sed -i 's/isit-<span class="hljs-built_in">code</span>-calvert/isit-<span class="hljs-built_in">code</span>-lastname/g' *.js
+</code></pre><p>You will have to make the same change to this line of code that we made when we ran <strong>find</strong> and <strong>sed</strong> in the <strong>node_modules</strong> directory of the <strong>server</strong> project.</p>
 <p>I consider this a bug fix, not a new feature or a breaking code. Therefore, we increment the patch number in our semver for this project. After updating the version number, we publish our fix:</p>
-<pre>npm patch
-npm publish
-</pre>
-<p>Now run <strong>npm outdated</strong> in your <strong>server</strong> project. You should see that <strong>isit-site-tools</strong> is outdated. There are several ways to solve this problem, one goes like this:</p>
+<pre><code><span class="hljs-built_in">npm</span> patch
+<span class="hljs-built_in">npm</span> publish
+</code></pre><p>Now run <strong>npm outdated</strong> in your <strong>server</strong> project. You should see that <strong>isit-site-tools</strong> is outdated. There are several ways to solve this problem, one goes like this:</p>
 <ul>
 <li>Open up <strong>package.json</strong> and set the version number of <strong>isit-site-tools</strong> to the current version number for your package.</li>
 <li>Then uninstall and reinstall and the package:</li>
@@ -95,34 +89,34 @@ npm publish
 <h2>Get Information from the Package</h2>
 <p>Now we want to get some information from our package. At this stage, we don&#39;t want to really give the package a workout, we just want want to prove to ourselves that we can load and use it.</p>
 <p>When looking how to use a package, it often makes sense to begin by looking in the <strong>index.js</strong> file in the package route:</p>
-<pre>module.exports.walker = require('./markdown-to-html/private/walker');
-module.exports.walkRunner = require('./markdown-to-html/runners/sample-runner');
-module.exports.imageHelp = require('./image-help/index');
-module.exports.makeMarkdown = require('./image-help/index').makeMarkdown;
-module.exports.getNotUsed = require('./image-help/index').getNotUsed;
-module.exports.imagesTest = require('./image-help/runners/ImagesTest');
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-built_in">module</span>.exports.walker = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./markdown-to-html/private/walker'</span>);
+<span class="hljs-built_in">module</span>.exports.walkRunner = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./markdown-to-html/runners/sample-runner'</span>);
+<span class="hljs-built_in">module</span>.exports.imageHelp = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./image-help/index'</span>);
+<span class="hljs-built_in">module</span>.exports.makeMarkdown = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./image-help/index'</span>).makeMarkdown;
+<span class="hljs-built_in">module</span>.exports.getNotUsed = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./image-help/index'</span>).getNotUsed;
+<span class="hljs-built_in">module</span>.exports.imagesTest = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./image-help/runners/ImagesTest'</span>);
+</code></pre>
 <p>As you can see, this file simply exports various objects implemented in this package. But looking through them, none of htem look particular useful to us right now.</p>
 <p>Looking deeper, we see that many of these objects are imported from <strong>image-help/index.js</strong>. If you scroll through that file, you will see one item that might be helpful to us:</p>
-<pre>module.exports.configSettings = {
-    getSelectedElvenImage: configSettings.getSelectedElvenImage,
-    //loadConfigFile: configSettings.loadConfigFile,
-    getElvenImages: configSettings.getElvenImages,
-    getSelectedElvenImages: configSettings.getSelectedElvenImages,
-    setSelectedElvenImages: configSettings.setSelectedElvenImages
+<pre><code class="lang-javascript">module.exports.configSettings = {
+    <span class="hljs-attribute">getSelectedElvenImage</span>: configSettings<span class="hljs-variable">.getSelectedElvenImage</span>,
+    //loadConfigFile: configSettings<span class="hljs-variable">.loadConfigFile</span>,
+    getElvenImages: configSettings<span class="hljs-variable">.getElvenImages</span>,
+    getSelectedElvenImages: configSettings<span class="hljs-variable">.getSelectedElvenImages</span>,
+    setSelectedElvenImages: configSettings<span class="hljs-variable">.setSelectedElvenImages</span>
 };
-</pre>
+</code></pre>
 <p>Here is how we can get at that simple object. First, create a config file in a folder of your server root called <strong>config</strong>:</p>
 <ul>
 <li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/ElvenWebCraftsStarter.html#the-config-file">CreateConfig</a></li>
 </ul>
 <p>Then create a root like this:</p>
-<pre>router.get('/foo', function(req, res, next) { 'use strict';
-    const foo = isitSiteTools.imageHelp.configSettings;
-    console.log(foo);
-    res.send({config: foo.getElvenImages()});
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/foo'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{ <span class="hljs-string">'use strict'</span>;
+    <span class="hljs-keyword">const</span> foo = isitSiteTools.imageHelp.configSettings;
+    <span class="hljs-built_in">console</span>.log(foo);
+    res.send({<span class="hljs-attr">config</span>: foo.getElvenImages()});
 });
-</pre>
+</code></pre>
 <p>Now call the root from the client using react and display it on the page.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
