@@ -9,7 +9,8 @@
 <li><a href="#customize-your-new-repo">Customize your New Repo</a></li>
 <li><a href="#pull-changes-from-the-original-repository">Pull Changes from the Original Repository</a></li>
 <li><a href="#the-config-file">The Config File</a></li>
-<li><a href="#the-packages">The Packages</a></li>
+<li><a href="#run">Run</a></li>
+<li><a href="#the-packages-hint">The Packages Hint</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>For the next several weeks, we are going to work on a project that already exists. It is a tool for building web sites. Our goal is to take a project students built several years ago and update it. We will:</p>
@@ -86,6 +87,12 @@ router.get('/', isAuthenticated, function(request, response, next) {
 </pre>
 <p>The <strong>isAuthenticated()</strong> method is middleware that is called before the user can access the home page. If the user is logged in, then <strong>isAuthenticated</strong> calls <strong>next()</strong>, and the home page loads. Otherwise, the login page is called.</p>
 <p>Without removing the <strong>isAuthenticated</strong> method, rewrite it so that the user is automatically taken to the home page whether they are logged in or not. You can make whatever changes you want to <strong>isAuthenticated</strong>, but it must continue to be called from the home page route. I would either comment out or otherwise preserve the code in the current working code from the method so that you can replace it later on, when we want to add login again.</p>
+<p>After completing the <strong>isAuthenticated</strong> code correctly, you will still get a series of benign database errors when you start <strong>WebCrafts</strong>. The errors don&#39;t break the app, but they are ugly to look at. To clean up that annoyance, for now you should comment the references to <strong>connect</strong> from the copy of <strong>app.js</strong> that appears in the root of your repository:</p>
+<pre>// Connect to DB
+//var connect = require('./routes/connect');
+//connect.doConnection(false);
+</pre>
+<p>The second and third lines above were the ones that I commented out.</p>
 <a class="anchor" id="fork-repos"></a>
 <h2>Fork Repos</h2>
 <p>Fork the following repositories:</p>
@@ -126,7 +133,8 @@ git clone <git@github.com:username/isit-web-crafts-lastname>
 <p>Change all references to my repos to your repos. You will have to replace the string <strong>lastname</strong> with your last name:</p>
 <pre>find . -iname "*.js" -not -path "**/node_modules/**" | xargs sed -i 's/isit-code-calvert/isit-code-lastname/g' *.js
 </pre>
-<p><strong>NOTE</strong>: <em>If you turn in your <strong>isit-web-crafts-lastname</strong> project with links to my repos in your source files, you will get it kicked back with a score of 5.</em></p>
+<p>In the WebCrafts project, you are going to have to change references to <strong>isit-code-calvert</strong> and <strong>isit-site-tools-calvert</strong>.</p>
+<p><strong>NOTE</strong>: <em>Please don&#39;t turn in your <strong>isit-web-crafts-lastname</strong> project with links to my repos in your source files.</em></p>
 <a class="anchor" id="pull-changes-from-the-original-repository"></a>
 <h2>Pull Changes from the Original Repository</h2>
 <p>Suppose I have made an update to the repository from which you forked your code. In particular, suppose I have updated this repository:</p>
@@ -162,8 +170,8 @@ Fast-forward
             "Git/CloudNotes/Isit320"
         ],
         "destination-dirs": [
-            "/home/charlie/Git/charliecalvert.github.io/books/CloudNotes/Isit320/",
-            "/var/www/html/"
+            "/var/www/html/AllSite/",
+            "/home/charlie/Git/charliecalvert.github.io/books/CloudNotes/Isit320/"            
         ],
         "destination-dirs-extra": [{
             "base": "/var/www/html/",
@@ -209,7 +217,7 @@ Fast-forward
 <pre>cd ~/.config
 ln -s <PATH TO ElvenConfig.json> .
 </pre>
-<p>The file has three primary sections:</p>
+<p>The config file has three primary sections:</p>
 <ul>
 <li>calvert:<ul>
 <li>Configure the code the creates HTML from Markdown</li>
@@ -228,8 +236,30 @@ ln -s <PATH TO ElvenConfig.json> .
 <p>Given a set of images in a directory, the program can create a markdown page that is able to display them all. For instance, if <strong>foo.png</strong> is in a directory, the program will generate Markdown similar to this:</p>
 <pre>![Foo](foo.png)
 </pre>
-<a class="anchor" id="the-packages"></a>
-<h2>The Packages</h2>
+<a class="anchor" id="run"></a>
+<h2>Run</h2>
+<p>Make sure you have some markdown files in a directory called <strong>Documents/AllSite</strong>. These are the markdown files that the program will transform into HTML. Here is a few lines of code that would create the directory and three simple markdown files:</p>
+<pre>mkdir -p /home/bcuser/Documents/AllSite
+echo '# One' > /home/bcuser/Documents/AllSite/One.md
+echo '# Two' > /home/bcuser/Documents/AllSite/Two.md
+echo '# Three' > /home/bcuser/Documents/AllSite/Three.md
+</pre>
+<a class="anchor" id="the-packages-hint"></a>
+<h2>The Packages Hint</h2>
+<p>We will be modifying our <strong>isit-code</strong> and <strong>isit-site-tools</strong> packages as we work. If we are working on main <strong>WebCrafts</strong> web application, and want to make changes to -- for instance -- our <strong>isit-code</strong> package, we have three choices:</p>
+<ul>
+<li>Do the fix in the <strong>isit-code</strong>, publish it, run <strong>npm install</strong> to get the updates in <strong>WebCrafts</strong>.</li>
+<li>Put our fix in our copy of <strong>node_modules/isit-code</strong>.<ul>
+<li>If we do this then we need to meld (merge) it back to the repository that holds our real copy.</li>
+</ul>
+</li>
+<li>Create a symbolic link from our <strong>WebCraft</strong> application&#39;s <strong>node_modules</strong> directory to our <strong>isit_code</strong> directory.<ul>
+<li>If we choose this option, we should temporarily remove our references to <strong>isit-code</strong> from <strong>packages.json</strong>.</li>
+<li>Before you turn in your work, restore the references.</li>
+</ul>
+</li>
+</ul>
+<p>Of these three options, the first is the easiest to understand, but the hardest to do in practice. The second option is pretty good, but can cause problems if we forget to the merge. As a result, the third is probably the most useful option, if you know what you are doing.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 </div></body></html>
