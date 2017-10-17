@@ -5,13 +5,22 @@
 <li><a href="#npm-err-">npm ERR!</a></li>
 <li><a href="#get-sample-components">Get Sample Components</a></li>
 <li><a href="#react-main">Create our Main React file</a></li>
-<li><a href="#link-it-together">Link it Together</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#link-it-together">Link it Together</a></li>
+<li><a href="#load-material">Load Material</a></li>
+<li><a href="#buttons">Buttons</a></li>
+<li><a href="#integrate">Integrate</a></li>
+<li><a href="#the-css-issue">The CSS issue</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#revisit-the-past">Revisit the Past</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>The goal of this assignment is to begin the process of integrating React into our WebCrafts application. Your key reference will be the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/ReactBasics.html">ReactBasics</a> assignment.</p>
 <a class="anchor" id="branch"></a>
 <h2>Branch</h2>
 <p>We will do our work on <strong>Week05-React</strong>. Once we have things in good shape, we can merge that code back into <strong>master</strong>. For the assignment, I will look at <strong>master</strong> unless you specify otherwise, but I expect <strong>Week05-React</strong> to exist.</p>
-<p>Here are the steps to create and switch to our working branch. Enter the following from anywhere in the WebCrafts repository:</p>
+<p>But before we do this, let&#39;s tag our work so we can get back to the way it was before we integrated React:</p>
+<pre><code>git <span class="hljs-keyword">tag</span> <span class="hljs-title">-a</span> <span class="hljs-number">1.0</span>.<span class="hljs-number">1</span> -m <span class="hljs-string">"before React"</span>;
+git <span class="hljs-keyword">tag</span> <span class="hljs-title">push</span> <span class="hljs-number">1.0</span>.<span class="hljs-number">1</span>
+</code></pre><p>Here are the steps to create and switch to our working branch. Enter the following from anywhere in the WebCrafts repository:</p>
 <pre><code><span class="hljs-symbol">git</span> <span class="hljs-keyword">branch </span>Week05-React
 <span class="hljs-symbol">git</span> checkout Week05-React
 </code></pre><a class="anchor" id="webpack"></a>
@@ -48,14 +57,14 @@ sudo ln -s ~/<span class="hljs-built_in">npm</span>/bin/<span class="hljs-built_
 </code></pre><a class="anchor" id="get-sample-components"></a>
 <h2>Get Sample Components</h2>
 <p>Let&#39;s now copy over our sample component and give it the name <strong>ReactHome.js</strong>:</p>
-<pre><code>mkdir src
-cp ~<span class="hljs-regexp">/Git/i</span>sit320-calvert-<span class="hljs-number">2017</span><span class="hljs-regexp">/Week01-ReactBasics/</span>react-simple.js src<span class="hljs-regexp">/ReactHome.js</span>
+<pre><code>mkdir <span class="hljs-keyword">source</span>
+cp ~<span class="hljs-regexp">/Git/i</span>sit320-calvert-<span class="hljs-number">2017</span><span class="hljs-regexp">/Week01-ReactBasics/</span>react-simple.js <span class="hljs-keyword">source</span><span class="hljs-regexp">/ReactHome.js</span>
 </code></pre><p>Change the name of the component to match our new naming scheme:</p>
 <pre><code class="lang-javascript">export <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactHome</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{...}
 </code></pre>
 <a class="anchor" id="react-main"></a>
 <h2>Create our Main React file</h2>
-<p>This code belongs in a file called <strong>src/react-main</strong>:</p>
+<p>This code belongs in a file called <strong>source/react-main</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-keyword">import</span> ReactHome <span class="hljs-keyword">from</span> <span class="hljs-string">'./ReactHome'</span>;
@@ -69,7 +78,7 @@ $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"
 <a class="anchor" id="link-it-together"></a>
 <h2>Link it Together</h2>
 <p>Now we need perform the standard dance we have done several times already. In <strong>webpack.config.js</strong> point our <strong>entry-point</strong> at <strong>react-main.js</strong> file:</p>
-<pre><code class="lang-javascript"><span class="hljs-string">entry:</span> <span class="hljs-string">'./src/react-main.js'</span>,
+<pre><code class="lang-javascript"><span class="hljs-string">entry:</span> <span class="hljs-string">'./source/react-main.js'</span>,
 </code></pre>
 <p>Put a script in <strong>package.json</strong> for building the webpack bundle:</p>
 <pre><code class="lang-javascript"><span class="hljs-string">"scripts"</span>: {
@@ -129,4 +138,156 @@ requirejs([<span class="hljs-string">'jquery'</span>], <span class="hljs-functio
 <pre><code class="lang-javascript">requirejs(['bootstrap', 'control', 'reactBundle'], function(bootstrap, control) <span class="hljs-meta">{...}</span>)
 </code></pre>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/elven-web-crafts-react-01.png" alt="React in our Express"></p>
+<a class="anchor" id="load-material"></a>
+<h2>Load Material</h2>
+<p>In <strong>views/layout.pug</strong>:</p>
+<pre><code>link(<span class="hljs-attribute">rel</span>=<span class="hljs-string">"stylesheet"</span>, <span class="hljs-attribute">href</span>=<span class="hljs-string">"https://fonts.googleapis.com/css?family=Roboto:300,400,500"</span>)
+link(<span class="hljs-attribute">rel</span>=<span class="hljs-string">"stylesheet"</span>, <span class="hljs-attribute">href</span>=<span class="hljs-string">"https://fonts.googleapis.com/icon?family=Material+Icons"</span>)
+</code></pre><p>I don&#39;t really know much about fonts, but if you curious you could learn more about <a href="https://fonts.google.com/?query=Roboto">Google Fonts</a>.</p>
+<p>And install <a href="http://www.material-ui.com">Material-ui</a>.</p>
+<pre><code>npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save material-ui</span>
+</code></pre><a class="anchor" id="buttons"></a>
+<h2>Buttons</h2>
+<p>Here is a components that defines our buttons:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> MuiThemeProvider <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/styles/MuiThemeProvider'</span>;
+<span class="hljs-keyword">import</span> RaisedButton <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/RaisedButton'</span>;
+<span class="hljs-comment">// import {black, red} from 'material-ui/styles/colors';</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HomeButtons</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">super</span>();
+
+        <span class="hljs-keyword">this</span>.state = {
+            <span class="hljs-attr">makeImage</span>: <span class="hljs-string">'Make Image'</span>,
+            <span class="hljs-attr">makeHtml</span>: <span class="hljs-string">'Make HTML'</span>
+        };
+    }
+
+    render() {
+        <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Home Page<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">RaisedButton</span>
+                    <span class="hljs-attr">id</span>=<span class="hljs-string">"makeHtml"</span>
+                    <span class="hljs-attr">style</span>=<span class="hljs-string">{buttonStyle}</span>
+                    <span class="hljs-attr">primary</span>=<span class="hljs-string">{true}</span>
+                    <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.makeHtml}</span>&gt;</span>{this.state.makeHtml}<span class="hljs-tag">&lt;/<span class="hljs-name">RaisedButton</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">RaisedButton</span>
+                    <span class="hljs-attr">style</span>=<span class="hljs-string">{buttonStyle}</span>
+                    <span class="hljs-attr">primary</span>=<span class="hljs-string">{true}</span>
+                    <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.makeImage}</span>&gt;</span>{this.state.makeImage}<span class="hljs-tag">&lt;/<span class="hljs-name">RaisedButton</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Select a button.<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>This is a react component.<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span></span>;
+    };
+}
+
+<span class="hljs-keyword">var</span> buttonStyle = {
+    <span class="hljs-attr">margin</span>: <span class="hljs-string">'15px'</span>
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> HomeButtons;
+</code></pre>
+<p>The MuiThemeProvider is built into <strong>material-ui</strong>.</p>
+<a class="anchor" id="integrate"></a>
+<h2>Integrate</h2>
+<p>Now use the <strong>HomeButtons</strong> component by making it part of the <strong>ReactHome</strong> component.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> HomeButtons <span class="hljs-keyword">from</span> <span class="hljs-string">'./HomeButtons'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactHome</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+ render() {
+     <span class="hljs-keyword">return</span> (
+         <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+             <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>An H1 element in a React Component<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+             <span class="hljs-tag">&lt;<span class="hljs-name">HomeButtons</span>/&gt;</span>
+         <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+     )
+
+ }
+}
+</code></pre>
+<p>This technique of nesting one component inside another is done a lot in React. The idea is that you can modularize even seemingly closely related parts of a UI. By dividing the UI into small modules you can greatly reduce complexity.</p>
+<p><strong>NOTE</strong>: <em>We&#39;ll work on getting the buttons to do something in another assignment. It&#39;s a more difficult problem than it might seem because we are trying to integrate two worlds: React and jQuery.</em></p>
+<a class="anchor" id="the-css-issue"></a>
+<h2>The CSS issue</h2>
+<p>Finally, there is one little gotcha that we need to fix. In <strong>public/stylesheets/styles.css</strong> I define a simple CSS rule that affects all our DIVs:</p>
+<pre><code><span class="hljs-selector-tag">div</span> {
+    <span class="hljs-attribute">border</span>: <span class="hljs-number">#d4e6ff</span> solid thin;
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">3px</span>;
+    <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">3px</span>;
+}
+</code></pre><p>I did this during development of the origial app because it helped me see where the various parts of my UI began and ended. I should have removed it, but never did. This kind of thing could happen in a real-world application, so it is not necessarily bad that I have left it in.</p>
+<p>The fix, of course, would be to delete the rule, or to qualify it like this with CSS class, which would allow us to reuse it later if needed:</p>
+<pre><code><span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.borderMan</span> {
+    <span class="hljs-attribute">border</span>: <span class="hljs-number">#d4e6ff</span> solid thin;
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">3px</span>;
+    <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">3px</span>;
+}
+</code></pre><a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Push your new branch. You may get an error when you try to push since you are in a new branch. However, Git tells you exactly how to fix the problem.</p>
+<p>Then merge your fix into master.</p>
+<pre><code>git checkout <span class="hljs-keyword">master</span>
+<span class="hljs-title">git</span> merge Week05-React
+</code></pre><p>Something like this:</p>
+<pre><code>$ git <span class="hljs-keyword">merge</span> Week05-React
+Updating <span class="hljs-number">2660</span>c6d.<span class="hljs-number">.7</span>a19845
+<span class="hljs-keyword">Fast</span>-forward
+ <span class="hljs-keyword">bin</span>/www                      |     <span class="hljs-number">2</span> +-
+ <span class="hljs-keyword">install</span>-webpack-packages     |    <span class="hljs-number">12</span> +
+ <span class="hljs-keyword">package</span>-lock.json            | <span class="hljs-number">12103</span> +++++++++<span class="hljs-comment">-------</span>
+ package.json                 |    <span class="hljs-number">90</span> +-
+ <span class="hljs-keyword">public</span>/javascripts/bundle.js | <span class="hljs-number">31893</span> +++++++++++++++++++++++++++++++++++++++++
+ <span class="hljs-keyword">public</span>/javascripts/main.js   |     <span class="hljs-number">5</span> +-
+ <span class="hljs-keyword">public</span>/stylesheets/style.css |     <span class="hljs-number">2</span> +-
+ <span class="hljs-keyword">source</span>/HomeButtons.js        |    <span class="hljs-number">45</span> +
+ <span class="hljs-keyword">source</span>/ReactHome.js          |    <span class="hljs-number">14</span> +
+ <span class="hljs-keyword">source</span>/react-main.js         |     <span class="hljs-number">8</span> +
+ views/index.jade             |     <span class="hljs-number">4</span> +-
+ views/layout.jade            |     <span class="hljs-number">2</span> +
+ webpack.config.js            |    <span class="hljs-number">20</span> +
+ <span class="hljs-number">13</span> files <span class="hljs-keyword">changed</span>, <span class="hljs-number">39083</span> insertions(+), <span class="hljs-number">5117</span> deletions(-)
+ <span class="hljs-keyword">create</span> <span class="hljs-keyword">mode</span> <span class="hljs-number">100755</span> <span class="hljs-keyword">install</span>-webpack-packages
+ <span class="hljs-keyword">create</span> <span class="hljs-keyword">mode</span> <span class="hljs-number">100644</span> <span class="hljs-keyword">public</span>/javascripts/bundle.js
+ <span class="hljs-keyword">create</span> <span class="hljs-keyword">mode</span> <span class="hljs-number">100644</span> <span class="hljs-keyword">source</span>/HomeButtons.js
+ <span class="hljs-keyword">create</span> <span class="hljs-keyword">mode</span> <span class="hljs-number">100644</span> <span class="hljs-keyword">source</span>/ReactHome.js
+ <span class="hljs-keyword">create</span> <span class="hljs-keyword">mode</span> <span class="hljs-number">100644</span> <span class="hljs-keyword">source</span>/react-main.js
+ <span class="hljs-keyword">create</span> <span class="hljs-keyword">mode</span> <span class="hljs-number">100644</span> webpack.config.js
+</code></pre><p>Then push your master branch.</p>
+<p>When you turn in the assignment, be sure to tell me the:</p>
+<ul>
+<li>Git URL for all three repositories.</li>
+<li>The branch you want me to look at.</li>
+<li>The folder you want me to look at.</li>
+</ul>
+<a class="anchor" id="revisit-the-past"></a>
+<h2>Revisit the Past</h2>
+<p>This part of the assignment is purely informative. You don&#39;t need to do any of this.</p>
+<p>Suppose you want to get back to the version you had before you added your react code. First run <strong>git log</strong>:</p>
+<pre><code>$ git log
+<span class="hljs-keyword">commit</span> <span class="hljs-number">7</span>a198455e4fbe12650a530edf2dd301a8849cbd2
+Author: Charlie <span class="hljs-keyword">on</span> RohanElf &lt;charlie@elvenware.com&gt;
+<span class="hljs-built_in">Date</span>:   Tue <span class="hljs-keyword">Oct</span> <span class="hljs-number">17</span> <span class="hljs-number">14</span>:<span class="hljs-number">57</span>:<span class="hljs-number">47</span> <span class="hljs-number">2017</span> <span class="hljs-number">-0700</span>
+
+    <span class="hljs-keyword">First</span> react <span class="hljs-keyword">commit</span>
+
+<span class="hljs-keyword">commit</span> <span class="hljs-number">2660</span>c6dd695012b80604e3913a5bea89a88f93c8
+Author: Charlie <span class="hljs-keyword">on</span> RohanElf &lt;charlie@elvenware.com&gt;
+<span class="hljs-built_in">Date</span>:   Sat <span class="hljs-keyword">Oct</span> <span class="hljs-number">14</span> <span class="hljs-number">16</span>:<span class="hljs-number">23</span>:<span class="hljs-number">22</span> <span class="hljs-number">2017</span> <span class="hljs-number">-0700</span>
+
+    All web crafts <span class="hljs-keyword">on</span> <span class="hljs-keyword">new</span> <span class="hljs-keyword">server</span>
+</code></pre><p>As you can see, my latest commit was on Oct 17. The previous commit was on the 14th. To get back to the 14th, I can start a branch based on that commit:</p>
+<pre><code><span class="hljs-symbol">git</span> <span class="hljs-keyword">branch </span><span class="hljs-keyword">BeforeReact </span><span class="hljs-number">2660</span>c6d
+</code></pre><p>Now when we run <strong>git log</strong> we can see that in this branch, there never was an Oct 17 commit that included React code:</p>
+<pre><code>$ git log
+<span class="hljs-keyword">commit</span> <span class="hljs-number">2660</span>c6dd695012b80604e3913a5bea89a88f93c8
+Author: Charlie <span class="hljs-keyword">on</span> RohanElf &lt;charlie@elvenware.com&gt;
+<span class="hljs-built_in">Date</span>:   Sat <span class="hljs-keyword">Oct</span> <span class="hljs-number">14</span> <span class="hljs-number">16</span>:<span class="hljs-number">23</span>:<span class="hljs-number">22</span> <span class="hljs-number">2017</span> <span class="hljs-number">-0700</span>
+
+    All web crafts <span class="hljs-keyword">on</span> <span class="hljs-keyword">new</span> <span class="hljs-keyword">server</span>
+</code></pre><p>We are back at the state we were in before we added react.</p>
 </div></body></html>
