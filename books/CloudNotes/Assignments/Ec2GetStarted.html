@@ -9,8 +9,11 @@
 <li><a href="#step-four">Step 04: Access Your Instance</a></li>
 <li><a href="#configure">Step 04.a: Configure Your Instance</a></li>
 <li><a href="#step-five">Step Five</a></li>
-<li><a href="#zip-key-google-drive">Zip and Copy to Google Drive</a></li>
+<li><a href="#copy-public-key">Copy Public Key</a></li>
 <li><a href="#scp-private-key">Copy Private Key to Ubuntu</a></li>
+<li><a href="#zip-key-google-drive">Zip and Copy to Google Drive</a></li>
+<li><a href="#alternate-copy-method">Alternate Copy Method</a></li>
+<li><a href="#thoughts">Thoughts</a></li>
 <li><a href="#setup-box">Setup Box</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#billing-after">Billing After Quarter Ends</a></li>
@@ -105,33 +108,55 @@ ssh ubuntu@<span class="hljs-number">192.168</span><span class="hljs-number">.1<
 </ul>
 <a class="anchor" id="step-five"></a>
 <h2>Step Five</h2>
-<p>AWS gave us a key pair that we can use to access an instance of our server. However, we already have an SSH key pair that we use to access our data on GitHub. If we use the GitHub key for accessing our AWS server, then we would only have to load one key. Otherwise we have to load two keys:</p>
+<p>AWS gave us a key pair that we can use to access an instance of our EC2 server. However, we already have an SSH key pair that we use to access our data on GitHub. If we use the GitHub key for accessing our AWS server, then we would only have to load one key. Otherwise we have to load two keys:</p>
 <ul>
 <li>One for GitHub</li>
 <li>One for AWS</li>
 </ul>
-<p>To sign on to both machines with a single key we have to put the public part of our Prog 270 Key on our Ubuntu instance in the <strong>~/.ssh/authorized_keys</strong> file. We do this by running <strong>ssh-copy-id</strong> command from Pristine Lubuntu.</p>
-<p><strong>NOTE</strong>: _Take a moment to be sure you understand what is happening here. We want to use a single key pair to access both AWS and GitHub. We already have the Prog270 key set up to access GitHub. To also use it with our AWS instance we have to copy the Prog 270 public key into the <strong>authorized_keys</strong> file on our AWS server. Needless to say, we place public keys in our <strong>authorized_keys</strong> file when we want to grant the owner of a particular private public key pair the ability to access a resource such as our AWS server. If you own a private key, and its matching public key is in the <strong>authorized_keys</strong> file for a service we want to access, then we are all set: we can access the service._</p>
-<p>The <strong>ssh-copy-id</strong> command copies the default public key over to the remote machine. The default public key is usually <strong>id_rsa.pub</strong>. I find it safer to specify which key I want to copy over. To do that, use the <strong>-i</strong> flag. Generally, that command looks like this, where <strong>identity-file</strong> is your private key:</p>
-<pre><code><span class="hljs-selector-tag">ssh-copy-id</span> <span class="hljs-selector-tag">-i</span> <span class="hljs-selector-tag">identity_file</span> <span class="hljs-selector-tag">bcuser</span>@<span class="hljs-keyword">192</span>.<span class="hljs-keyword">168</span>.<span class="hljs-keyword">2</span>.<span class="hljs-keyword">21</span>
+<p>To sign on to both machines with a single key we have to put the public part of our Prog 270 (GitHub) key on our Ubuntu instance in the <strong>~/.ssh/authorized_keys</strong> file. We then load it and clone our GitHub repository.</p>
+<p>Start in Pristine Lubuntu and copy our public key to EC2:</p>
+<pre><code>ssh-<span class="hljs-keyword">add</span><span class="bash"> prog270-2017      &lt;== Load Key on Pristine
+</span>ssh-<span class="hljs-keyword">copy</span><span class="bash">-id -i prog270-2017 ubuntu@155.132.2.21</span>
+</code></pre><p>The second step shown above copies our private key into the EC2 <strong>~/.ssh/authorized_keys</strong> file.</p>
+<p>Now access our EC2 instance and clone our repository:</p>
+<pre><code>ssh ubuntu@35.163.123.100 &lt;== Access EC2<span class="hljs-built_in"> Instance
+</span>cd ~/.ssh                 &lt;== Enter SSH directory on EC2
+ssh-<span class="hljs-builtin-name">add</span> prog270-2017      &lt;== Load key on EC2
+cd ~/Git                  &lt;== Go <span class="hljs-keyword">to</span> Git <span class="hljs-keyword">and</span> clone
+git clone git@github.com/user-name/repo-name.git
+</code></pre><p>Let&#39;s walk through this step by step.</p>
+<a class="anchor" id="copy-public-key"></a>
+<h2>Copy Public Key</h2>
+<p>First load the key you use to access GitHub.</p>
+<pre><code>ssh-<span class="hljs-built_in">add</span> prog270<span class="hljs-number">-2017</span>    &lt;== Load Key <span class="hljs-keyword">on</span> <span class="hljs-title">Pristine</span>
+</code></pre><p>Now copy that key to the <strong>~/.ssh/authorized_keys</strong> file on your EC2 instance. We do this by running <strong>ssh-copy-id</strong> command from Pristine Lubuntu.</p>
+<pre><code><span class="hljs-selector-tag">ssh-copy-id</span> <span class="hljs-selector-tag">-i</span> <span class="hljs-selector-tag">identity_file</span> <span class="hljs-selector-tag">ubuntu</span>@<span class="hljs-keyword">35</span>.<span class="hljs-keyword">163</span>.<span class="hljs-keyword">123</span>.<span class="hljs-keyword">100</span>
 </code></pre><p>For instance, if you have private key called <strong>prog270-2016</strong> then you would issue this command:</p>
-<pre><code><span class="hljs-selector-tag">ssh-copy-id</span> <span class="hljs-selector-tag">-i</span> <span class="hljs-selector-tag">prog270-2016</span> <span class="hljs-selector-tag">bcuser</span>@<span class="hljs-keyword">192</span>.<span class="hljs-keyword">168</span>.<span class="hljs-keyword">2</span>.<span class="hljs-keyword">21</span>
-</code></pre><p>Alternatively, if you don&#39;t want to use ssh-copy-id, you can use <strong>scp</strong> instead. From your instance of Pristine Lubuntu use SSH to <em>secure copy</em> (scp) your public key from pristine Lubuntu to your EC2 instance:</p>
-<pre><code>scp &lt;YOUR-PUBLIC-KEY&gt; ubuntu@&lt;YOUR-ELASTIC-IP&gt;<span class="hljs-symbol">:/home/ubuntu/</span>.ssh/.
-</code></pre><p>Then on EC2 append your public key to your <strong>authorized keys file</strong>:</p>
-<pre><code>cat ~<span class="hljs-regexp">/.ssh/</span>&lt;YOUR-PUBLIC-KEY&gt; <span class="hljs-meta">&gt;&gt; </span>~<span class="hljs-regexp">/.ssh/authorized</span>_keys
-</code></pre><p>Whether you use <strong>ssh-copy-id</strong> or <strong>scp</strong> to put your public key in the EC2 <strong>authorized_keys</strong> file is mostly a matter of taste. However, the <strong>ssh-copy-id</strong> program is a bit safer. For instance, it checks to make sure you are not putting duplicate keys in the <strong>authorized_keys</strong> file.</p>
+<pre><code><span class="hljs-selector-tag">ssh-copy-id</span> <span class="hljs-selector-tag">-i</span> <span class="hljs-selector-tag">prog270-2016</span> <span class="hljs-selector-tag">ubuntu</span>@<span class="hljs-keyword">35</span>.<span class="hljs-keyword">163</span>.<span class="hljs-keyword">123</span>.<span class="hljs-keyword">100</span>
+</code></pre><p>The <strong>ssh-copy-id</strong> command copies the default public key over to the remote machine. The default public key is usually <strong>id_rsa.pub</strong>. I find it safer to specify which key I want to copy over. To do that, use the <strong>-i</strong> flag. Generally, that command looks like this, where <strong>identity-file</strong> is your private key:</p>
+<a class="anchor" id="scp-private-key"></a>
+<h3>Copy Private Key to Ubuntu</h3>
+<p>From Prisitine Lubuntu, copy your private SSH key that you use to connect to GitHub to your new Ubuntu server:</p>
+<pre><code>    scp &lt;YOUR KEY&gt; ubuntu<span class="hljs-variable">@35</span>.<span class="hljs-number">163.123</span>.<span class="hljs-number">100</span><span class="hljs-symbol">:/home/ubuntu/</span>.ssh/.
+</code></pre><p>For instance:</p>
+<pre><code>    scp prog27<span class="hljs-number">0</span>-<span class="hljs-number">2017</span> ubuntu<span class="hljs-variable">@35</span>.<span class="hljs-number">163.123</span>.<span class="hljs-number">100</span><span class="hljs-symbol">:/home/ubuntu/</span>.ssh/.
+</code></pre><p>Of course, use your public or elastic IP address.</p>
 <a class="anchor" id="zip-key-google-drive"></a>
 <h3>Zip and Copy to Google Drive</h3>
 <p>Don&#39;t forget to put your new private key on Google Drive. Go to the ~/.ssh folder and issue a command similar to this one:</p>
 <pre><code>zip Pro<span class="hljs-name">g270</span>-Ec<span class="hljs-number">2</span>-Calvert<span class="hljs-number">-2016</span> Pro<span class="hljs-name">g270</span>-Ec<span class="hljs-number">2</span>-Calvert<span class="hljs-number">-2016.</span>pem
 </code></pre><p>Now upload the zip file to Google Drive. It doesn&#39;t have to be in our shared folder. Just so you can get it at home.</p>
 <p>Choose <strong>New | File Upload</strong> on Google Drive.</p>
-<a class="anchor" id="scp-private-key"></a>
-<h3>Copy Private Key to Ubuntu</h3>
-<p>Copy your private SSH key that you use to connect to GitHub to your new Ubuntu server:</p>
-<pre><code>    scp &lt;YOUR KEY&gt; ubuntu<span class="hljs-variable">@35</span>.<span class="hljs-number">163.123</span>.<span class="hljs-number">100</span><span class="hljs-symbol">:/home/ubuntu/</span>.ssh/.
-</code></pre><p>Of course, use your public or elastic IP address.</p>
+<a class="anchor" id="alternate-copy-method"></a>
+<h2>Alternate Copy Method</h2>
+<p>Alternatively, if you don&#39;t want to use <strong>ssh-copy-id</strong>, you can use <strong>scp</strong> instead. From your instance of Pristine Lubuntu use SSH to <em>secure copy</em> (scp) your public key from pristine Lubuntu to your EC2 instance:</p>
+<pre><code>scp &lt;YOUR-PUBLIC-KEY&gt; ubuntu@&lt;YOUR-ELASTIC-IP&gt;<span class="hljs-symbol">:/home/ubuntu/</span>.ssh/.
+</code></pre><p>Then on EC2 append your public key to your <strong>authorized keys file</strong>:</p>
+<pre><code>cat ~<span class="hljs-regexp">/.ssh/</span>&lt;YOUR-PUBLIC-KEY&gt; <span class="hljs-meta">&gt;&gt; </span>~<span class="hljs-regexp">/.ssh/authorized</span>_keys
+</code></pre><p>Whether you use <strong>ssh-copy-id</strong> or <strong>scp</strong> to put your public key in the EC2 <strong>authorized_keys</strong> file is mostly a matter of taste. However, the <strong>ssh-copy-id</strong> program is a bit safer. For instance, it checks to make sure you are not putting duplicate keys in the <strong>authorized_keys</strong> file.</p>
+<a class="anchor" id="thoughts"></a>
+<h2>Thoughts</h2>
+<p>Take a moment to be sure you understand what is happening here. We want to use a single key pair to access both AWS and GitHub. We already have the Prog270 key set up to access GitHub. To also use it with our AWS instance we have to copy the Prog 270 public key into the <strong>authorized_keys</strong> file on our AWS server. Needless to say, we place public keys in our <strong>authorized_keys</strong> file when we want to grant the owner of a particular private public key pair the ability to access a resource such as our AWS server. If you own a private key, and its matching public key is in the <strong>authorized_keys</strong> file for a service we want to access, then we are all set: we can access the service.</p>
 <a class="anchor" id="setup-box"></a>
 <h2>Setup Box</h2>
 <p>There are a number of steps required to get the instance set up correctly. I outline them in the first few sections of this document:</p>
