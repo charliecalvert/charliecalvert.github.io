@@ -10,6 +10,9 @@
 <li><a href="#customize-your-new-repo">Customize your New Repo</a></li>
 <li><a href="#pull-changes-from-the-original-repository">Pull Changes from the Original Repository</a></li>
 <li><a href="#the-config-file">The Config File</a></li>
+<li><a href="#elvenconfig-symbolic-links-">ElvenConfig Symbolic Links.</a></li>
+<li><a href="#understanding-elvenconfig">Understanding ElvenConfig</a></li>
+<li><a href="#lamp">Lamp</a></li>
 <li><a href="#run">Run</a></li>
 <li><a href="#the-packages-hint">The Packages Hint</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
@@ -213,10 +216,44 @@ Fast-forward
         }
     ]
 }
-</code></pre><p>Put a symbolic link to this file in your ~/.config directory:</p>
+</code></pre><a class="anchor" id="elvenconfig-symbolic-links-"></a>
+<h2>ElvenConfig Symbolic Links.</h2>
+<p>Put a symbolic link to <strong>ElvenConfig.json</strong> file in your <strong>~/.config</strong> directory:</p>
 <pre><code><span class="hljs-built_in">cd</span> ~/.config
 ln -s &lt;<span class="hljs-built_in">PATH</span> TO ElvenConfig.json&gt; .
-</code></pre><p>The config file has three primary sections:</p>
+</code></pre><p>For instance:</p>
+<pre><code>ln -s <span class="hljs-variable">$HOME</span><span class="hljs-regexp">/Git/</span>WebCrafts<span class="hljs-regexp">/isit-web-crafts-calvertbc/</span>config<span class="hljs-regexp">/ElvenConfig.json .</span>
+</code></pre><p>This should also work:</p>
+<pre><code>ln -s <span class="hljs-variable">$GIT_HOME</span><span class="hljs-regexp">/WebCrafts/i</span>sit-web-crafts-calvertbc<span class="hljs-regexp">/config/</span>ElvenConfig.json .
+</code></pre><p>Consider defining the following in <strong>~/.my_bash_aliases</strong>:</p>
+<pre><code><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">WEBCRAFTS</span>=<span class="hljs-variable">$GIT_HOME</span>/WebCrafts
+</code></pre><p>Then you could write:</p>
+<pre><code>ln -s <span class="hljs-variable">$WEBCRAFTS</span>/isit-web-crafts-calvertbc/config/ElvenConfig<span class="hljs-selector-class">.json</span> .
+</code></pre><p>And finally, define this in <strong>~/.my_bash_aliases</strong>:</p>
+<pre><code><span class="hljs-attribute">alias</span> i3w=<span class="hljs-string">'cd <span class="hljs-variable">$WEBCRAFTS</span>'</span>
+alias i3wc=<span class="hljs-string">'cd <span class="hljs-variable">$WEBCRAFTS</span>/isit-code-calvertbc'</span>
+alias i3ws=<span class="hljs-string">'cd <span class="hljs-variable">$WEBCRAFTS</span>/isit-site-tools-calvertbc'</span>
+alias i3ww=<span class="hljs-string">'cd <span class="hljs-variable">$WEBCRAFTS</span>/isit-web-crafts-calvertbc'</span>
+</code></pre><p>Run <strong>source ~/.bashrc</strong>. Now you can navigate to your repos with commands like this:</p>
+<ul>
+<li><strong>i3w</strong></li>
+<li><strong>i3wc</strong></li>
+<li><strong>i3ws</strong></li>
+<li><strong>i3ww</strong></li>
+</ul>
+<p>Like this:</p>
+<pre><code><span class="hljs-variable">$ </span>i3w
+charlie<span class="hljs-variable">@rohan</span>-<span class="hljs-symbol">elf:</span>~<span class="hljs-regexp">/Git/</span>WebCrafts
+<span class="hljs-variable">$ </span>i3wc
+charlie<span class="hljs-variable">@rohan</span>-<span class="hljs-symbol">elf:</span>~<span class="hljs-regexp">/Git/</span>WebCrafts/isit-code-calvertbc (master)
+<span class="hljs-variable">$ </span>i3ws
+charlie<span class="hljs-variable">@rohan</span>-<span class="hljs-symbol">elf:</span>~<span class="hljs-regexp">/Git/</span>WebCrafts/isit-site-tools-calvertbc (master)
+<span class="hljs-variable">$ </span>i3ww
+charlie<span class="hljs-variable">@rohan</span>-<span class="hljs-symbol">elf:</span>~<span class="hljs-regexp">/Git/</span>WebCrafts/isit-web-crafts-calvertbc (Week05-React)
+</code></pre><a class="anchor" id="understanding-elvenconfig"></a>
+<h2>Understanding ElvenConfig</h2>
+<p>Once you have <strong>ElvenConfig.json</strong> installed, the next step is to begin to understand it.</p>
+<p>The config file has three primary sections:</p>
 <ul>
 <li>calvert:<ul>
 <li>Configure the code the creates HTML from Markdown</li>
@@ -234,7 +271,15 @@ ln -s &lt;<span class="hljs-built_in">PATH</span> TO ElvenConfig.json&gt; .
 <p>Given a set of Markdown files in a directory, the program can convert them to HTML</p>
 <p>Given a set of images in a directory, the program can create a markdown page that is able to display them all. For instance, if <strong>foo.png</strong> is in a directory, the program will generate Markdown similar to this:</p>
 <pre><code>![<span class="hljs-string">Foo</span>](<span class="hljs-link">foo.png</span>)
-</code></pre><a class="anchor" id="run"></a>
+</code></pre><a class="anchor" id="lamp"></a>
+<h2>Lamp</h2>
+<p>I assuming that LAMP is installed:</p>
+<pre><code>sudo apt-get <span class="hljs-keyword">install</span> tasksel
+sudo tasksel <span class="hljs-keyword">install</span> lamp-<span class="hljs-keyword">server</span>
+</code></pre><p>And then chown /var/www/html so you can access it:</p>
+<pre><code>sudo chown -R <span class="hljs-string">bcuser:</span>bcuser <span class="hljs-regexp">/var/</span>www/html
+</code></pre><p>Or something close to that.</p>
+<a class="anchor" id="run"></a>
 <h2>Run</h2>
 <p>Make sure you have some markdown files in a directory called <strong>Documents/AllSite</strong>. These are the markdown files that the program will transform into HTML. Here is a few lines of code that would create the directory and three simple markdown files:</p>
 <pre><code>mkdir -p <span class="hljs-regexp">/home/</span>bcuser<span class="hljs-regexp">/Documents/</span>AllSite
