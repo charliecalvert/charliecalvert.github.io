@@ -1,0 +1,302 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>LinuxBasics</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>LinuxBasics</h1><p>Welcome to LinuxBasics</p><ul><!--TOC_Start--><li><a href="#linux-basics">Linux Basics</a></li>
+<li><a href="#distros">Linux Distros</a></li>
+<li><a href="#installing-ubuntu-on-a-machine-with-windows-8">Installing Ubuntu on a Machine with Windows 8</a></li>
+<li><a href="#linuxUser">Creating a Linux User</a></li>
+<li><a href="#ssh">Set Up SSH</a></li>
+<li><a href="#using-sed">Using sed</a></li>
+<li><a href="#userTips">Tips on Setting up Users</a></li>
+<li><a href="#hyperv">Installing Ubuntu Server Under Hyper-V</a></li>
+<li><a href="#the-key-points">The Key Points</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="linux-basics"></a>
+<h2>Linux Basics</h2>
+<p>This page covers some basic information about using Linux.</p>
+<a class="anchor" id="distros"></a>
+<h2>Linux Distros</h2>
+<p>There are many different versions of Linux. At this time, I am primarily
+interested in Ubuntu variants, including Mint and Ubuntu.</p>
+<ol>
+<li>Track the most popular distributions:
+<a href="http://distrowatch.com/">http://distrowatch.com/</a></li>
+<li><a href="http://linuxmint.com/">Mint Linux</a></li>
+<li><a href="http://www.ubuntu.com/">Ubuntu Linux</a></li>
+</ol>
+<a class="anchor" id="installing-ubuntu-on-a-machine-with-windows-8"></a>
+<h2>Installing Ubuntu on a Machine with Windows 8</h2>
+<p>Windows locks down systems with UEFI. Here are instructions from
+Ubuntu on how to play nice with this system and install Linux to dual
+boot on the same machine:</p>
+<ul>
+<li><a href="https://help.ubuntu.com/community/UEFI">UEFI: Dual Boot with Windows 8</a></li>
+</ul>
+<a class="anchor" id="linuxUser"></a>
+<h2>Creating a Linux User</h2>
+<p>In the example shown below, I assume that you are using an EC2 instance
+of Ubuntu on the Amazon Web Services cloud. However, the information is
+equally valid on any Linux box, whether it is in the cloud, or on your
+local machine. The only caveat being that it is slanted toward Ubuntu or
+Ubuntu related distros such as Mint.</p>
+<p>To create a new user on Linux:</p>
+<ul>
+<li>Use Putty to sign in to your EC2 box as <strong>ubuntu.</strong> The user
+<strong>ubuntu</strong> will have the rights to create your new user. (If you are
+not on an EC2 machine, just sign in to your account on the machine.
+The only caveat is that it must have privileges to run the <strong>sudo</strong>
+command.)</li>
+<li>Create a new group for your user called FirstInitialLastName where
+FirstInitialLastName is the first letter of your first name and your
+full last name, all in lower case, like this: <strong>jsmith</strong>. Here is
+the command to create the user: <strong>sudo addgroup jsmith.</strong>In this and
+all subsequent commands, you should, of course substitute your user
+name where ever you see the words <strong>jsmith.</strong></li>
+<li>Issue this command: <strong>sudo adduser --ingroup FirstInitialLastName
+FirstIntialLastName.</strong>For example: <strong>sudo adduser --ingroup jsmith
+jsmith</strong>. During this process you will be prompted for a password.
+Make sure you don&#39;t forget it!</li>
+<li>Now that you have created the new account, you might want to test it
+out. Here is the command to become jsmith: <strong>su -l jsmith.</strong> Here
+you would substitute your new user name for the <strong>jsmith</strong>. If you
+want to go back to being <strong>ubuntu</strong>, just type <strong>exit.</strong></li>
+</ul>
+<p>To review, here are the three commands:</p>
+<pre><code>    sudo <span class="hljs-keyword">addgroup </span><span class="hljs-keyword">jsmith
+</span>    sudo <span class="hljs-keyword">adduser </span>--ingroup <span class="hljs-keyword">jsmith </span><span class="hljs-keyword">jsmith
+</span>    su -l <span class="hljs-keyword">jsmith</span>
+</code></pre><p>Here is what the session for creating a new group might look like:</p>
+<pre><code>    ubuntu@domU<span class="hljs-string">-12</span><span class="hljs-string">-25</span><span class="hljs-string">-27</span><span class="hljs-string">-0</span>B<span class="hljs-string">-60</span>-D0:~$ sudo addgroup jsmith
+    Adding group `jsmith' (GID XXXX) ...
+    Done.
+    ubuntu@domU<span class="hljs-string">-12</span><span class="hljs-string">-25</span><span class="hljs-string">-27</span><span class="hljs-string">-0</span>B<span class="hljs-string">-60</span>-D0:~$
+</code></pre><p>Here is what the session for creating a new user might look like:</p>
+<pre><code>    ubuntu@domU-<span class="hljs-number">12</span>-<span class="hljs-number">25</span>-<span class="hljs-number">27</span>-<span class="hljs-number">0</span>B-<span class="hljs-number">60</span>-D0:~$ sudo adduser --ingroup jsmith jsmith
+    Adding <span class="hljs-keyword">user</span> <span class="hljs-title">`jsmith</span>' ...
+    Adding new <span class="hljs-keyword">user</span> <span class="hljs-title">`jsmith</span>' (<span class="hljs-number">1002</span>) with <span class="hljs-keyword">group</span> <span class="hljs-title">`jsmith</span>' ...
+    Creating home directory `/home/jsmith' ...
+    Copying files from `/etc/skel' ...
+    Enter new UNIX password:
+    Retype new UNIX password:
+    passwd: password updated successfully
+    Changing the <span class="hljs-keyword">user</span> <span class="hljs-title">information</span> for jsmith
+    Enter the new value, <span class="hljs-keyword">or</span> press ENTER for the default
+     Full Name []: Julie Smith
+     Room <span class="hljs-keyword">Number</span> []:
+     Work Phone []:
+     Home Phone []:
+     Other []:
+    Is the <span class="hljs-literal">inf</span>ormation correct? [Y/n] Y
+</code></pre><p>Note that you entered a password and a full name. You can just hit enter
+for the <strong>Room Number</strong> all other prompts, until you get to the question
+about whether the information is correct. For that you must answer <strong>Y</strong>
+for <strong>yes</strong>. This command creates a new user, and adds him to the a new
+group called <strong>jsmith</strong>. Your group name, of course, will your first
+initial and last name, not mine.</p>
+<p>Here is what the session to become a new user might look like:</p>
+<pre><code>    ubuntu@domU<span class="hljs-string">-12</span><span class="hljs-string">-25</span><span class="hljs-string">-27</span><span class="hljs-string">-0</span>B<span class="hljs-string">-60</span>-D0:~$ su -l jsmith
+    Password:
+    jsmith@domU<span class="hljs-string">-12</span><span class="hljs-string">-25</span><span class="hljs-string">-27</span><span class="hljs-string">-0</span>B<span class="hljs-string">-60</span>-D0:~$
+</code></pre><p>Note that after you issue the command, your shell prompt has changed to
+include your new user name:</p>
+<pre><code>jsmith@domU<span class="hljs-string">-12</span><span class="hljs-string">-25</span><span class="hljs-string">-27</span><span class="hljs-string">-0</span>B<span class="hljs-string">-60</span>-D0:~$
+</code></pre><p>You use this hint to help you confirm that you are signed in as a new
+user. Another technique is to issue the command: <strong>whoami</strong>.</p>
+<p>Please note that when you become the new user you will not have as many
+rights on the system as you did when you were <strong>ubuntu.</strong> We could, of
+course, have given <strong>jsmith</strong> those rights, but we did not. The
+<strong>jsmith</strong> account will become our new outward facing interface to the
+site. As a result, we want it to be as secure as possible. The way
+things are set up now, even if the user were entirely compromised, the
+hacker could only do damage to the users account. They would find it
+relatively difficult, however, to use the account to gain control of the
+system.</p>
+<p>Here is how to delete a user account if you want to start over:</p>
+<pre><code><span class="hljs-attribute">sudo userdel jsmith</span>
+</code></pre><a class="anchor" id="ssh"></a>
+<h2>Set Up SSH</h2>
+<p>Now that you have created your new user account, you will probably want
+to set up SSH so that you can use Putty and Filezilla to sign in and
+copy files to this account&#39;s <strong>public_html </strong>directory or some other
+location on the server. Here is an overview of what we are going to do:</p>
+<ol>
+<li>Generate a new SSH key</li>
+<li>Copy the private key (pem file) back to our home machine</li>
+<li>Convert the PEM file to PPK file</li>
+<li>Set up Putty and Filezilla to work with your new user</li>
+</ol>
+<p><strong>NOTE</strong>: <em>Another, and perhaps more secure, approach would be to create
+the new private/public key pair on your home system, and copy only the
+public key to the new users account. Though that technique is a best
+practice, I&#39;m not doing that now because it is a bit more difficult for
+new comers. One step at a time!</em></p>
+<p>Here is how to set up a key <strong><em>from the new users home directory</em></strong>:</p>
+<pre><code>ssh-keygen -t rsa -P <span class="hljs-string">''</span> -f ~<span class="hljs-regexp">/.ssh/id</span>_rsa
+cat ~<span class="hljs-regexp">/.ssh/id</span>_rsa.pub <span class="hljs-meta">&gt;&gt; </span>~<span class="hljs-regexp">/.ssh/authorized</span>_keys
+</code></pre><p><strong>NOTE</strong>:  <em>Commands like those shown above are difficult to get right.
+You can, however, block copy both lines and paste the commands directly
+into the shell window. Here is how to proceed: On your home machine,
+copy the commands with <strong>Ctrl-C</strong>. Now switch to the Putty shell. Right
+click on the command line, and both lines should be fed into the command
+line window and executed, one right after the other. It is probably
+helpful to type in relatively simple commands by hand, as it will help
+you memorize them. But these commands are confusing for new comers, and
+you need not attempt to memorize them.</em></p>
+<p>Because of their arcane complexity, it is probably best for new comers
+to think of the commands shown above as some kind of Harry Potter like
+incantation (ie <strong><em>Expecto Patronum</em></strong>) that creates the new key pair,
+and then copies the public key into a file called <strong>authorized_keys</strong>.
+The newly created public key is called <strong>id_rsa</strong>. At this stage, you
+need not know more -- except for one minor detail! Note the permissions
+for <strong>id_rsa:</strong></p>
+<pre><code>-rw-------<span class="hljs-number"> 1 </span>jsmith jsmith<span class="hljs-number"> 1675 </span>Nov <span class="hljs-number"> 9 </span>21:21 id_rsa
+</code></pre><p>As you can see, only the owner has permissions to read and write to the
+file. In theory, no one else can even see the file or do much useful
+with it. If you don&#39;t have read permissions, you can&#39;t even see that the
+file exists. (You will find, however, that root can manipulate the
+file.)</p>
+<p>You now have to copy the key that you created from your Linux box back
+to your home machine.</p>
+<ul>
+<li>First, issue the <strong>exit</strong> command so that you one again become
+ubuntu.</li>
+<li>Then copy the key (<strong>id_rsa) </strong>into the <strong>ubuntu</strong> home directory.</li>
+<li>Use Filezilla to copy it to your home machine.</li>
+<li>For security purposes, you should now delete the key from your
+<strong>ubuntu</strong> home directory and from <strong>jsmith&#39;s</strong> .ssh directory.</li>
+<li>On your home machine, use PuttyGen to convert the key to a PPK file,
+just as you did when first setting up EC2.</li>
+<li>Set up Putty and and Filezilla</li>
+</ul>
+<p>Once you are ubuntu, here is how the process of copying the file from
+the <strong>jsmith</strong>directory to the <strong>ubuntu </strong>home directory looks:</p>
+<pre><code>sudo cp <span class="hljs-regexp">/home/</span>jsmith<span class="hljs-regexp">/.ssh/i</span>d_rsa .
+</code></pre><p>Now make the file visible to filezilla:</p>
+<pre><code><span class="hljs-selector-tag">sudo</span> <span class="hljs-selector-tag">chown</span> <span class="hljs-selector-tag">ubuntu</span><span class="hljs-selector-pseudo">:ubuntu</span> <span class="hljs-selector-tag">id_rsa</span>
+</code></pre><p>This command sets the owner and group for <strong>id_rsa</strong> to <strong>ubuntu.</strong>
+This means that <strong>ubuntu</strong> now owns the file, and hence has rights to
+it. This is a crucial step since Filezilla is attached to your Linux box
+as the user <strong>ubuntu. </strong>If the file were were still owned by <strong>jsmith</strong>
+or by <strong>root,</strong> then <strong>ubuntu</strong>, and hence Filezilla, would not have the
+rights to copy it to your home machine.</p>
+<p>Now copy it over with filezilla. Once you have it safely on your
+machine, the wisest thing to do might be to delete the file from your
+ubuntu and jsmith folders:</p>
+<pre><code><span class="hljs-attribute">rm</span> id_rsa
+</code></pre><p>Windows feeds on file file extensions, and we have only a limited
+internal memory capacity. As a result, on your home machine I would
+rename <strong>id_rsa</strong> to something more friendly: <strong>ec2_jsmith.pem</strong></p>
+<p>Now use PuttyGen to convert the PEM file to a PPK file, as described
+earlier. Add the file to Pageant. Set up Putty and see if you can
+connect. Everything is as before, but of course this time in the Data
+page of Putty, you should set the user name to your first initial and
+last name:</p>
+<p><img src="images/Putty01.png" alt="Putty01.png" title="Click to embed Putty01.png"></p>
+<p><strong>Figure 01: Fill in your user name in the Auto-login field.</strong></p>
+<p>You have now completed the process of creating a new user on Linux with
+minimum privileges. If you would like to learn how to give the user
+privileges to serve up HTML files from a <strong>public_html</strong> directory,
+then go here:</p>
+<ul>
+<li><a href="/charlie/development/web/Server/Apache.html">/charlie/development/web/Server/Apache.html</a></li>
+</ul>
+<a class="anchor" id="using-sed"></a>
+<h2>Using sed</h2>
+<p>The best thing to do, I think is to break the command in two:</p>
+<pre><code><span class="hljs-built_in">find</span> . -iname <span class="hljs-string">"*.js"</span> -<span class="hljs-built_in">not</span> -path <span class="hljs-string">"**/node_modules/**"</span>
+
+sed -i 's/isit-<span class="hljs-built_in">code</span>-calvert/isit-<span class="hljs-built_in">code</span>-lastname/g' *.js
+</code></pre><p>Learning to use find is not too tricky. But <strong>sed</strong> is hard, at least for me.</p>
+<p>Create a simple text file called learn-sed.txt with three words in it:</p>
+<pre>one two three</pre>
+
+<p>Maybe like this:</p>
+<pre>echo 'one two three' > learn-sed.txt</pre>
+
+<p>Now start running some tests:</p>
+<pre>$ cat learn-sed.txt   
+one two three  
+charlie@rohan-elf:~/temp  
+$ sed 's/one/sed-did-this/g' learn-sed.txt   
+sed-did-this two three  
+charlie@rohan-elf:~/temp  
+$ sed 's/two/sed-did-this/g' learn-sed.txt   
+one sed-did-this three  
+charlie@rohan-elf:~/temp  
+$ sed 's/three/sed-did-this/g' learn-sed.txt   
+one two sed-did-this</pre>
+
+<p>Do you see that <strong>sed</strong> replaced one of the words in the file? In this case, think of sed as a search and replace tool. In the first example, we replace the word <strong>one</strong> with <strong>sed-did-this</strong>. Then we replace the word two with the same string. And finally, we replace the word <strong>three.</strong></p>
+<p>When we give the command s, we are saying, replace the first expression with the second:</p>
+<ul>
+<li>s: this is the command &quot;<strong>s</strong>/---/---/</li>
+</ul>
+<p>The word we want to replace is here:</p>
+<ul>
+<li>-/ReplaceMe/---/</li>
+</ul>
+<p>The word or phrase to replace it with:</p>
+<ul>
+<li>-/---/TheNewWord/</li>
+</ul>
+<p>And finally, we can ask <strong>sed </strong>to do this globally throughout the document:</p>
+<ul>
+<li>-/---/---/<strong>g</strong></li>
+</ul>
+<p>If we add <strong>-i</strong> at the beginning, we are saying &quot;do it in-place&quot;. That is, don&#39;t just echo the result to the screen, instead write the result to disk by replacing the original file:</p>
+<pre>$ cat learn-sed.txt   
+one two three  
+charlie@rohan-elf:~/temp  
+$ sed -i 's/three/sed-did-this/g' learn-sed.txt   
+charlie@rohan-elf:~/temp  
+$ cat learn-sed.txt   
+one two sed-did-this</pre>
+
+<p>You can see that this time the actual contents of <strong>learn-sed.txt</strong> was changed.</p>
+<p>I should add that this is a gross over-simplification, in large part because I&#39;m not bringing in regular expressions. Nevertheless, this is enough information to help you understand the code that I want you to use.</p>
+<a class="anchor" id="userTips"></a>
+<h2>Tips on Setting up Users</h2>
+<p>Notice that we have not given the new user you create permission to run sudo. If you try to run a <strong>sudo</strong> command as the new user, the sudo nazi&#39;s will come get you:</p>
+<pre><code>    ccalvert@domU<span class="hljs-string">-12</span><span class="hljs-string">-25</span><span class="hljs-string">-27</span><span class="hljs-string">-0</span>B<span class="hljs-string">-60</span>-D0:~$ sudo ls /var/www/
+    [sudo] password for jsmith:
+    jsmith is not in the sudoers file. **This incident will be reported.**
+    jsmith@domU<span class="hljs-string">-12</span><span class="hljs-string">-25</span><span class="hljs-string">-27</span><span class="hljs-string">-0</span>B<span class="hljs-string">-60</span>-D0:~$
+</code></pre><p>Of course, you can always become <strong>ubuntu</strong> again if you want to run a
+<strong>sudo</strong> command. In the meantime, it is best run as a normal user that
+does not to even have the rights to be <strong>root</strong>. That makes your system
+much more secure.</p>
+<p><strong>NOTE</strong>: <em>Windows users have the ability to use Putty to sign in to your server either as ubuntu or as your newly created user. Consider opening up two Putty shell windows, one as Ubuntu, the other as your new user.
+That way you can do 99 percent of your work as the normal user, and resort to the power of being ubuntu only on rare occasions.</em></p>
+<p>Some links with additional information that you may or may not find
+useful:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#sshKeys">http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#sshKeys</a></li>
+<li><a href="http://blog.sofasurfer.org/2011/07/16/ubuntu-ec2-add-new-admin-user/">http://blog.sofasurfer.org/2011/07/16/ubuntu-ec2-add-new-admin-user/</a></li>
+</ul>
+<a class="anchor" id="hyperv"></a>
+<h2>Installing Ubuntu Server Under Hyper-V</h2>
+<ul>
+<li>Here is a <a href="http://narendrapatel.com/2011/05/installing-ubuntu-serve-11-04-64bit-on-hyper-v/">helpful
+page</a>
+on Installing Ubuntu Server on Hyper-V</li>
+<li>Here are the hyper-v <a href="http://jimblizzard.wordpress.com/2009/05/22/hyper-v-keyboard-shortcuts-in-the-vm/">keyboard
+shortcuts</a>.</li>
+</ul>
+<a class="anchor" id="the-key-points"></a>
+<h2>The Key Points</h2>
+<p>The install works more or less the way it would under VirtualBox, with a few minor variations. But getting the hyper-v extensions (which actually ship with Ubuntu!) and the networking going can be more complex.</p>
+<p>Start by using the nano (or pico) editor, or some editor of your choice, to modify the modules file:</p>
+<pre><code>sudo nano <span class="hljs-regexp">/etc/i</span>nitramfs-tools<span class="hljs-regexp">/modules</span>
+</code></pre><p>In the file, add these four lines which initializae the hyper-v extensions:</p>
+<pre><code><span class="hljs-attribute">hv_vmbus</span>
+hv_storvsc
+hv_blkvsc
+hv_netvsc
+</code></pre><p>Exit the editor and then type:</p>
+<pre><code>sudo <span class="hljs-keyword">update</span>-initramfs –u
+sudo reboot
+</code></pre><p>Now do this:</p>
+<pre><code>sudo nano <span class="hljs-regexp">/etc/</span>network<span class="hljs-regexp">/interfaces</span>
+</code></pre><p>Yes the pico editor to add these lines to your file:</p>
+<pre><code><span class="hljs-attribute">Auto</span> eth0
+iface eth0 inet dhcp
+</code></pre><p>Now you need to restart networking and reboot:</p>
+<pre><code>sudo <span class="hljs-meta-keyword">/etc/</span>init.d/networking restart
+sudo reboot
+</code></pre></div></body></html>
