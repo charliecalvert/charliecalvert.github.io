@@ -1,4 +1,65 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>WebCraftsJestButtonsPress</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>WebCraftsJestButtonsPress</h1><p>Welcome to WebCraftsJestButtonsPress</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>WebCraftsJestButtonsPress</h1><p>Welcome to WebCraftsJestButtonsPress</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#refactor-tests">Refactor Tests</a></li>
+<li><a href="#using-jquery-in-tests">Using jQuery in Tests</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
+<p>Learning more about testing.</p>
+<p>Let&#39;s think about testing cycle in a professional shop. The following is not a definitive guide, but it is meant to give at least some sense of what happens in a well designed environment.</p>
+<ol>
+<li>A dev writes one or more unit tests</li>
+<li>Devs change code to make unit tests pass<ol>
+<li>Repeat step 2 until tests pass</li>
+</ol>
+</li>
+<li>Commit changes</li>
+<li>The commit automatically triggers a build<ol>
+<li>Usually a VM is spun up, the build is deployed.</li>
+<li>If the build fails, go back to step 2</li>
+<li>If the build is successful, move on</li>
+</ol>
+</li>
+<li>The unit tests are run<ol>
+<li>If the tests fail, go back to step 2</li>
+<li>Else move on</li>
+</ol>
+</li>
+<li>Run functional, integration and acceptance tests<ol>
+<li>This could be done on a new VM with a new build</li>
+<li>If they fail, go back to step 1. (We go to step 1 because we need to write tests that capture the problem uncovered by the functional, integrataion and acceptance tests.)</li>
+<li>Else move on</li>
+</ol>
+</li>
+<li>Release a pre-alpha, alpha or beta and let users and/or testers pound on it.<ol>
+<li>If this works, then release product or go back to step 1 and write tests that capture the problems found by users.</li>
+</ol>
+</li>
+</ol>
+<p>Clearly, this system would not work if there were no tests.</p>
+<p>Obviously, there are other kinds of tests beside unit tests. But in this class, we tend to focus on unit tests. I&#39;ll try to find time to learn more about other kinds of tests. But generally, by the time we Selenium up and running, its time to do something else. No one is really happy because we don&#39;t dig into the subject deeply enough. So we will probably stick with Unit testing.</p>
+<p>The other thing to note here is how often this cycle occurs.
+Some Build Numbers:</p>
+<ul>
+<li>Current WebStorm build: <strong>WS-172.4343.25</strong> built October 19, 2017</li>
+<li>For FireFox, go to <a href="about:buildconfig">about:buildconfig</a> and click link.</li>
+<li>Current Chrome: Version 61.0.3163.79 (Official Build) (64-bit)</li>
+<li>Current Chromium: Version 62.0.3202.62 (Official Build)<ul>
+<li>Built on Ubuntu, running on Ubuntu 17.10 (64-bit)</li>
+</ul>
+</li>
+</ul>
+<a class="anchor" id="refactor-tests"></a>
+<h2>Refactor Tests</h2>
+<p>We want to better organize our tests. For now, were are going to have three files in <strong><strong>tests</strong></strong> directory:</p>
+<ul>
+<li>sanity.js</li>
+<li>home-buttons.js</li>
+<li>react-home.js</li>
+</ul>
+<a class="anchor" id="using-jquery-in-tests"></a>
+<h2>Using jQuery in Tests</h2>
+<p>Right now I&#39;m doing it like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> jQuery <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
+<span class="hljs-built_in">global</span>.jQuery = jQuery;
+<span class="hljs-built_in">global</span>.$ = jQuery;
+</code></pre>
 </div></body></html>
