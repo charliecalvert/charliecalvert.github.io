@@ -50,12 +50,10 @@
 </ul>
 <p>The folder called <strong>Sonnets01</strong> should contains <strong>Sonnet01.html</strong>, <strong>Sonnet02.html</strong> and so on up to <strong>Sonnet07.html</strong>. The next folder, <strong>Sonnets02</strong>, should contains <strong>Sonnet08.html</strong>, <strong>Sonnet09.html</strong> and so on up to <strong>Sonnet14.html</strong>. The next folder should repeat pattern.</p>
 <p>The folders called <strong>Styles</strong>, <strong>Scripts</strong>, and <strong>Images</strong> may contain the same files as in previous assignments, or similar files of your choice. The big difference here is that we need to use slightly different headers in our HTML files in order to find the <strong>Styles</strong>, <strong>Scripts</strong> and <strong>Images</strong> folders in their new location. These files are available in the <strong>JsObjects/Utilities/Templates</strong> directory. To access them, you need only change line 22 in <strong>MarkdownTransform.py</strong>. That line currently reads: </p>
-<pre>markdown.runner(files, ['StartLinux.html', 'NavLinux.html', 'footer.html', 'end.html']);
-</pre>
-<p>Change it to read:</p>
-<pre>markdown.runner(files, ['StartBackOne.html', 'NavBackOne.html', 'footer.html', 'end.html']);
-</pre>
-<p>Notice that <strong>StartLinux.html</strong> has been changed to <strong>StartBackOne.html</strong>. The string <strong>NavLinux.html</strong> has been changed to <strong>NavBackOne.html</strong>.</p>
+<pre><code>markdown.runner(files, [<span class="hljs-symbol">'StartLinux</span>.html', <span class="hljs-symbol">'NavLinux</span>.html', <span class="hljs-symbol">'footer</span>.html', <span class="hljs-symbol">'end</span>.html']);
+</code></pre><p>Change it to read:</p>
+<pre><code>markdown.runner(files, [<span class="hljs-symbol">'StartBackOne</span>.html', <span class="hljs-symbol">'NavBackOne</span>.html', <span class="hljs-symbol">'footer</span>.html', <span class="hljs-symbol">'end</span>.html']);
+</code></pre><p>Notice that <strong>StartLinux.html</strong> has been changed to <strong>StartBackOne.html</strong>. The string <strong>NavLinux.html</strong> has been changed to <strong>NavBackOne.html</strong>.</p>
 <p>This new arrangements of files is not hard to achieve. This is the way your <strong>/var/www/bc</strong> folder probably looks right now:</p>
 <ul>
 <li>/var/www/bc<ul>
@@ -118,35 +116,31 @@ The last step is still assuming scenario 1. Suppose your saving Poems. In StackE
 </ul>
 <a class="anchor" id="convert-to-markdown-from-html"></a>
 <h2>Convert to Markdown from HTML</h2>
-<pre>pandoc -t markdown -o FILENAME.md FileName.html
-</pre>
-<a class="anchor" id="transform-and-copy-not-working"></a>
+<pre><code><span class="hljs-selector-tag">pandoc</span> <span class="hljs-selector-tag">-t</span> <span class="hljs-selector-tag">markdown</span> <span class="hljs-selector-tag">-o</span> <span class="hljs-selector-tag">FILENAME</span><span class="hljs-selector-class">.md</span> <span class="hljs-selector-tag">FileName</span><span class="hljs-selector-class">.html</span>
+</code></pre><a class="anchor" id="transform-and-copy-not-working"></a>
 <h2>Transform and Copy not Working</h2>
 <p>There is a challenge in this code that is a bit harder to solve than I wanted it to be. In AwsBasicS3,
 in <strong>app.js</strong>, there is a <strong>buildAll</strong> route:</p>
-<pre>app.get('/buildAll', function(request, response) { 'use strict';
-    console.log("buildAll called");    
-    var options = JSON.parse(request.query.options);
+<pre><code>app.get(<span class="hljs-string">'/buildAll'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{ <span class="hljs-string">'use strict'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"buildAll called"</span>);    
+    <span class="hljs-keyword">var</span> options = <span class="hljs-built_in">JSON</span>.parse(request.query.options);
     buildAll(response, options, request.query.index);
 });
-</pre>
-<p>This works fine with my current code. The call to buildAll launches my Python code:</p>
-<pre>var command = config[index].pathToPython + " MarkdownTransform.py -i " + index;    
-try {
-    exec(command, function callback(error, stdout, stderr) {
-</pre>
-<p>This is all very nice, but unfortunately <strong>MarkdownTransform.py</strong> directly reads in <strong>MarkdownTransformConfig.json</strong>. The job of your final, and of <strong>CopyToS3Part02</strong>, was to stop working with <strong>MarkdownTransformConfig.json</strong>, and to start working with code that reads and writes from the database. All that is good well, but if you are updating the database, as I asked, then you are probably not also updating <strong>MarkdownTransformConfig.json</strong>. This means that the <strong>Transform and Copy</strong> button on your updated copy of <strong>AwsBasicS3</strong> will no longer work out of the box.</p>
+</code></pre><p>This works fine with my current code. The call to buildAll launches my Python code:</p>
+<pre><code><span class="hljs-keyword">var</span> command = config[index].pathToPython + <span class="hljs-string">" MarkdownTransform.py -i "</span> + index;    
+<span class="hljs-keyword">try</span> {
+    exec(command, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback</span><span class="hljs-params">(error, stdout, stderr)</span> </span>{
+</code></pre><p>This is all very nice, but unfortunately <strong>MarkdownTransform.py</strong> directly reads in <strong>MarkdownTransformConfig.json</strong>. The job of your final, and of <strong>CopyToS3Part02</strong>, was to stop working with <strong>MarkdownTransformConfig.json</strong>, and to start working with code that reads and writes from the database. All that is good well, but if you are updating the database, as I asked, then you are probably not also updating <strong>MarkdownTransformConfig.json</strong>. This means that the <strong>Transform and Copy</strong> button on your updated copy of <strong>AwsBasicS3</strong> will no longer work out of the box.</p>
 <p>I <em>could</em> argue that you need to see what is wrong, and fix the problem yourself. But that&#39;s going a bit too far. So I&#39;ll show you some code that should fix the problem:</p>
-<pre>app.get('/buildAll', function(request, response) { 'use strict';
-    console.log("buildAll called");    
-    var options = request.query.options;
-    fs.writeFile("MarkdownTransformConfig.json", options, function(err, data) {
-        var options = JSON.parse(request.query.options);
+<pre><code>app.get(<span class="hljs-string">'/buildAll'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{ <span class="hljs-string">'use strict'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"buildAll called"</span>);    
+    <span class="hljs-keyword">var</span> options = request.query.options;
+    fs.writeFile(<span class="hljs-string">"MarkdownTransformConfig.json"</span>, options, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, data</span>) </span>{
+        <span class="hljs-keyword">var</span> options = <span class="hljs-built_in">JSON</span>.parse(request.query.options);
         buildAll(response, options, request.query.index);
     });
 });
-</pre>
-<p>Here you can see that the <strong>buildAll</strong> route handler now creates a new <strong>MarkdownTransformConfig.json</strong> based on code sent to it from the client. Some of you will be able to take the code shown here and use it directly. Others, will find they have to think about what code they actually end up writing to <strong>MarkdownTransformConfig.json</strong>. That is, what code is in <strong>request.query.options</strong>. Do the best you can. I will focus more on whether your code updates the config files in the database, and copies the sonnets to folders. But getting this bit right would be very nice, and with the above code it should not be hard. Do not worry too much if your new copy of <strong>MarkdownTransformConfig.json</strong> looks exactly right. Just see if it works.</p>
+</code></pre><p>Here you can see that the <strong>buildAll</strong> route handler now creates a new <strong>MarkdownTransformConfig.json</strong> based on code sent to it from the client. Some of you will be able to take the code shown here and use it directly. Others, will find they have to think about what code they actually end up writing to <strong>MarkdownTransformConfig.json</strong>. That is, what code is in <strong>request.query.options</strong>. Do the best you can. I will focus more on whether your code updates the config files in the database, and copies the sonnets to folders. But getting this bit right would be very nice, and with the above code it should not be hard. Do not worry too much if your new copy of <strong>MarkdownTransformConfig.json</strong> looks exactly right. Just see if it works.</p>
 <blockquote>
 <p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p>
 </blockquote>

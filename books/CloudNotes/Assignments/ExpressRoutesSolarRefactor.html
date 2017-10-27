@@ -41,27 +41,27 @@ charlie@rohan-elf:~/Git/prog272-calvert-2016/SolarVoyager/views/renewables
 
 
 <p>In <strong>routes/index.js</strong> create a new route for handling renewable calls in their own folder:</p>
-<pre>router.get('/renewables/:id', function(request, response) {
-    console.log('renewables page called');
-    response.render('renewables/' + request.params.id, { title: 'ElfComponent' });
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/renewables/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'renewables page called'</span>);
+    response.render(<span class="hljs-string">'renewables/'</span> + request.params.id, { <span class="hljs-attr">title</span>: <span class="hljs-string">'ElfComponent'</span> });
 });
-</pre>
+</code></pre>
 <p>This code says that instead of looking for <strong>renewable-page.jade</strong> or <strong>renewable-by-index.jade</strong> in the <strong>views</strong> folder, we should look for them in the <strong>views/renewables folder</strong>.</p>
 <p>Finally, we have to change our requests on the client side so they look for files in the right place:</p>
-<pre>var renewablesByYear = {
-    color: "red",
-    size: "big",
-    init: function() {
-        console.log(renewablesByYear.color);
-        $('#elf-view').load('/renewables/renewable-by-year', function() {
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> renewablesByYear = {
+    <span class="hljs-attr">color</span>: <span class="hljs-string">"red"</span>,
+    <span class="hljs-attr">size</span>: <span class="hljs-string">"big"</span>,
+    <span class="hljs-attr">init</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-built_in">console</span>.log(renewablesByYear.color);
+        $(<span class="hljs-string">'#elf-view'</span>).load(<span class="hljs-string">'/renewables/renewable-by-year'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+</code></pre>
 <p>This code says that the <strong>init</strong> method should load the jade file called <strong>renewables/renewable-by-year.jade</strong>. Before we make the change the last line looked like this:</p>
-<pre>$('#elf-view').load('renewable-by-year', function() { ... })
-</pre>
+<pre><code class="lang-javascript">$(<span class="hljs-string">'#elf-view'</span>).load(<span class="hljs-string">'renewable-by-year'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ ... })
+</code></pre>
 <p>This old, obsolete, code loaded <strong>renewable-by-year.jade</strong> from the <strong>views folder</strong>. We don&#39;t want to do that anymore. Now we want to load it from the <strong>views/renewables/renewable-by-year.jade</strong> folder.</p>
 <p><strong>NOTE</strong>: <em>Express doesn&#39;t ask us to specify the <strong>views</strong> folder in the above code because of this statement found around line 14 in <strong>app.js</strong>: </em></p>
-<pre>app.set('views', path.join(__dirname, 'views'));
-</pre>
+<pre><code class="lang-javascript">app.<span class="hljs-built_in">set</span>(<span class="hljs-string">'views'</span>, path.<span class="hljs-built_in">join</span>(<span class="hljs-variable">__dirname</span>, <span class="hljs-string">'views'</span>));
+</code></pre>
 <p><em>That code tells express where to look for our jade files. Specifically, it says look in the <strong>views</strong> folder. Hence we can <strong>response.render(&#39;renewables/&#39; + request.params.id, { title: &#39;ElfComponent&#39; });</strong> rather than <strong>response.render(&#39;views/renewables/&#39; + request.params.id, { title: &#39;ElfComponent&#39; });</strong>. The views folder is searched by default, so we don&#39;t need to specify it.</em></p>
 <a class="anchor" id="client-side-renewables"></a>
 <h2>Move Client Side Rewewables</h2>
@@ -105,15 +105,15 @@ grep -r --include=\*.jade work
 <a class="anchor" id="control-init"></a>
 <h2>Control Init</h2>
 <p>The <strong>control.js</strong> init function now looks like this:</p>
-<pre>init: function() {
-    $('.homeMenu').click(home.init);
-    $('.renewablesMenu').click(renewables.init);
-    $('.renewablesByIndexMenu').click(renewablesByIndex.init);
-    $('.renewablesByYearMenu').click(renewablesByYear.init);
-    $('.aboutMenu').click(about.init);
+<pre><code class="lang-javascript">init: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-string">'.homeMenu'</span>).click(home.init);
+    $(<span class="hljs-string">'.renewablesMenu'</span>).click(renewables.init);
+    $(<span class="hljs-string">'.renewablesByIndexMenu'</span>).click(renewablesByIndex.init);
+    $(<span class="hljs-string">'.renewablesByYearMenu'</span>).click(renewablesByYear.init);
+    $(<span class="hljs-string">'.aboutMenu'</span>).click(about.init);
     home.init();
 }
-</pre>
+</code></pre>
 <a class="anchor" id="display-renewables"></a>
 <h2>Display Renewables</h2>
 <p>Display a single record to the user. Provide buttons to allow the user to iterate through the items in the array.</p>
@@ -163,117 +163,117 @@ grep -r --include=\*.jade work
 <li>#hydropowerView</li>
 </ul>
 <p>Create a function called <strong>getSimpleKeys</strong> that can convert a object of this type into a simpler format:</p>
-<pre>{
-    "Year": "2017",
-    "Solar (quadrillion Btu)": "0.8045307",
-    "Geothermal (quadrillion Btu)": "0.2349284",
-    "Other biomass (quadrillion Btu)": "0.50916",
-    "Wind power (quadrillion Btu)": "2.202328",
-    "Liquid biofuels (quadrillion Btu)": "1.2329197",
-    "Wood biomass (quadrillion Btu)": "1.9860924",
-    "Hydropower (quadrillion Btu)": "2.5859957"
+<pre><code class="lang-json">{
+    <span class="hljs-string">"Year"</span>: <span class="hljs-string">"2017"</span>,
+    <span class="hljs-string">"Solar (quadrillion Btu)"</span>: <span class="hljs-string">"0.8045307"</span>,
+    <span class="hljs-string">"Geothermal (quadrillion Btu)"</span>: <span class="hljs-string">"0.2349284"</span>,
+    <span class="hljs-string">"Other biomass (quadrillion Btu)"</span>: <span class="hljs-string">"0.50916"</span>,
+    <span class="hljs-string">"Wind power (quadrillion Btu)"</span>: <span class="hljs-string">"2.202328"</span>,
+    <span class="hljs-string">"Liquid biofuels (quadrillion Btu)"</span>: <span class="hljs-string">"1.2329197"</span>,
+    <span class="hljs-string">"Wood biomass (quadrillion Btu)"</span>: <span class="hljs-string">"1.9860924"</span>,
+    <span class="hljs-string">"Hydropower (quadrillion Btu)"</span>: <span class="hljs-string">"2.5859957"</span>
 },
-</pre>
+</code></pre>
 <p>For instance, the function might start like this:</p>
-<pre>function getSimpleKeys(renewable) {
-    return {
-        year: renewable["Year"],
-        solar: renewable["Solar (quadrillion Btu)"],
+<pre><code class="lang-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title">getSimpleKeys</span>(renewable) {
+    <span class="hljs-keyword">return</span> <span class="hljs-type">{</span>
+        year: renewable[<span class="hljs-string">"Year"</span>],
+        solar: renewable[<span class="hljs-string">"Solar (quadrillion Btu)"</span>],
         etc...
     }
 }
-</pre>
+</code></pre>
 <p>The goal is to convert the long, uneven property names shown above in our JSON object into a Javascript object that looks like this:</p>
-<pre>{
-  geo: "0.2349284",
-  hydropower: "2.5859957",
-  liquidBiofuels: "1.2329197",
-  otherBiomass: "0.50916",
-  solar: "0.8045307",
-  wind: "2.202328",
-  wood: "1.9860924",
-  year: "2017"
+<pre><code class="lang-javascript">{
+<span class="hljs-symbol">  geo:</span> <span class="hljs-string">"0.2349284"</span>,
+<span class="hljs-symbol">  hydropower:</span> <span class="hljs-string">"2.5859957"</span>,
+<span class="hljs-symbol">  liquidBiofuels:</span> <span class="hljs-string">"1.2329197"</span>,
+<span class="hljs-symbol">  otherBiomass:</span> <span class="hljs-string">"0.50916"</span>,
+<span class="hljs-symbol">  solar:</span> <span class="hljs-string">"0.8045307"</span>,
+<span class="hljs-symbol">  wind:</span> <span class="hljs-string">"2.202328"</span>,
+<span class="hljs-symbol">  wood:</span> <span class="hljs-string">"1.9860924"</span>,
+<span class="hljs-symbol">  year:</span> <span class="hljs-string">"2017"</span>
 }
-</pre>
+</code></pre>
 <p>Field order does not matter, and is typically not reliable in JavaScript. Just be sure all the properties are present.</p>
 <p>Now display the object in our control with code that looks like this:</p>
-<pre>function showRenewable(renewable) {
-       renewable = getSimpleKeys(renewable);
-       $('#yearView').val(renewable.year);
-       $('#solarView').val(renewable.solar);
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showRenewable</span></span>(renew<span class="hljs-type">able</span>) {
+       renew<span class="hljs-type">able</span> = getSimpleKeys(renew<span class="hljs-type">able</span>);
+       $(<span class="hljs-string">'#yearView'</span>).val(renew<span class="hljs-type">able</span>.year);
+       $(<span class="hljs-string">'#solarView'</span>).val(renew<span class="hljs-type">able</span>.solar);
        etc...
 }
-</pre>
+</code></pre>
 <p>Call this method from the <strong>getRenewable</strong> method:</p>
-<pre>$.getJSON('/renewables', function(response) {
-     console.log(response);
+<pre><code class="lang-javascript">$.getJSON(<span class="hljs-string">'/renewables'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+     <span class="hljs-built_in">console</span>.log(response);
      renewablesList = response.renewables;
      showRenewable(renewablesList[index]);
-     $('#debug').html(JSON.stringify(response, null, 4));
+     $(<span class="hljs-string">'#debug'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(response, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
  })
-</pre>
+</code></pre>
 <p>For instance, the code, with much omitted, might look like this:</p>
-<pre>function getRenewable() {
-      console.log('getRenewable called');
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getRenewable</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'getRenewable called'</span>);
 
-      $.getJSON('/renewables', function(response) {
-              //console.log(response);
+      $.getJSON(<span class="hljs-string">'/renewables'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+              <span class="hljs-comment">//console.log(response);</span>
               renewables.renewablesList = response.renewables;
-              //console.log('RenewablesList', renewablesList);
+              <span class="hljs-comment">//console.log('RenewablesList', renewablesList);</span>
               showRenewable(renewables.renewablesList[index]);
-              // $('#debug').html(JSON.stringify(response, null, 4));
+              <span class="hljs-comment">// $('#debug').html(JSON.stringify(response, null, 4));</span>
           })
-          .fail(function(a, b, c) {
-              console.log('Error', a, b, c);
-              $('#debug').html('Error occured: ', a.status);
+          .fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a, b, c</span>) </span>{
+              <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Error'</span>, a, b, c);
+              $(<span class="hljs-string">'#debug'</span>).html(<span class="hljs-string">'Error occured: '</span>, a.status);
           })
-          .done(function() {
-              console.log('second success');
+          .done(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+              <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'second success'</span>);
           })
-          .always(function() {
-              console.log('complete');
+          .always(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+              <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'complete'</span>);
           });
   }
 
-  function showRenewable(renewable) {
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showRenewable</span>(<span class="hljs-params">renewable</span>) </span>{
       renewable = getSimpleKeys(renewable);
-      $('#yearView').val(renewable.year);
-      // YOUR CODE HERE
+      $(<span class="hljs-string">'#yearView'</span>).val(renewable.year);
+      <span class="hljs-comment">// YOUR CODE HERE</span>
   }
 
-  function getSimpleKeys(renewable) {
-      // jscs:disable requireDotNotation
-      return {
-          year: renewable.Year,
-          solar: renewable['Solar (quadrillion Btu)'],
-          // YOUR CODE HERE
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getSimpleKeys</span>(<span class="hljs-params">renewable</span>) </span>{
+      <span class="hljs-comment">// jscs:disable requireDotNotation</span>
+      <span class="hljs-keyword">return</span> {
+          <span class="hljs-attr">year</span>: renewable.Year,
+          <span class="hljs-attr">solar</span>: renewable[<span class="hljs-string">'Solar (quadrillion Btu)'</span>],
+          <span class="hljs-comment">// YOUR CODE HERE</span>
       };
-      // jscs:enable requireDotNotation
+      <span class="hljs-comment">// jscs:enable requireDotNotation</span>
   }
-</pre>
+</code></pre>
 <p><strong>NOTE</strong>: <em>The code shown above demonstrates how to get jscs to ignore places where just can&#39;t use dot notation.</em></p>
 <a class="anchor" id="iteration"></a>
 <h2>Button Iteration</h2>
 <p>When the user clicks on the red and green buttons, this code is called:</p>
-<pre>function indexChange(test) {
-    if (test < 12 && test >= 0) {
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">indexChange</span>(<span class="hljs-params">test</span>) </span>{
+    <span class="hljs-keyword">if</span> (test &lt; <span class="hljs-number">12</span> &amp;&amp; test &gt;= <span class="hljs-number">0</span>) {
         index = test;
-        $('#indexInput').val(index);
+        $(<span class="hljs-string">'#indexInput'</span>).val(index);
         showRenewable(renewablesList[index]);
     }
 }
 
-var indexButtonChange = function(event) {
-    var test = event.data.value + index;
+<span class="hljs-keyword">var</span> indexButtonChange = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    <span class="hljs-keyword">var</span> test = event.data.value + index;
 
     indexChange(test);
 };
 
-var buttonChange = function() {
-    var test = $('#indexInput').val();
-    indexChange(parseInt(test));
+<span class="hljs-keyword">var</span> buttonChange = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> test = $(<span class="hljs-string">'#indexInput'</span>).val();
+    indexChange(<span class="hljs-built_in">parseInt</span>(test));
 };
-</pre>
+</code></pre>
 <p>The code won&#39;t be called unless you set up the event handler. Looking above at the menu, you see that the idea of the plus button is <strong>plusButton</strong>:</p>
 <pre>
 button#plusButton.btn.btn-success.btn-number(type="button")
@@ -281,35 +281,35 @@ button#plusButton.btn.btn-success.btn-number(type="button")
 </pre>
 
 <p>Using jQuery, can you connect clicks on the button to the <strong>indexButtonChange</strong>. At the same time, you can pass in a parameter stating that the index has been incremented by one. To understand how to do this, see this elvenware section on <a href="http://www.elvenware.com/charlie/development/web/JavaScript/JQueryBasic.html#clickParam">passing parameters with the click event</a>. In particular, you will need to write code like:</p>
-<pre>$('#plusButton').click(
-  // DO SOMETHING IN HERE LIKE WHAT IS DONE IN THE ELVENWARE EXAMPLE
+<pre><code class="lang-javascript">$('#plusButton').click(
+  <span class="hljs-comment">// DO SOMETHING IN HERE LIKE WHAT IS DONE IN THE ELVENWARE EXAMPLE</span>
 )
-</pre>
+</code></pre>
 <p>Notice the code in <strong>indexButtonChange</strong> where we access the parameter like this:</p>
-<pre>var test = event.data.value + index;
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> test = <span class="hljs-keyword">event</span>.data.<span class="hljs-keyword">value</span> + index;
+</code></pre>
 <a class="anchor" id="simple-iteration"></a>
 <h2>Simple Iteration</h2>
 <p>As an alternative, if the above is too much, you can have simple iteration. Put this in your init method:</p>
-<pre>$('#renewableByIndex').change(function() {
+<pre><code class="lang-javascript">$(<span class="hljs-string">'#renewableByIndex'</span>).change(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     getRenewableByIndex();
 });
-</pre>
+</code></pre>
 <p>Like this:</p>
-<pre>var renewablesByIndex = {
-    color: 'red',
-    size: 'big',
-    init: function() {
-        console.log(renewablesByIndex.color);
-        $('#elf-view').load('/renewables/renewable-by-index', function() {
-            $('#renewableByIndex').change(function() {
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> renewablesByIndex = {
+    <span class="hljs-attr">color</span>: <span class="hljs-string">'red'</span>,
+    <span class="hljs-attr">size</span>: <span class="hljs-string">'big'</span>,
+    <span class="hljs-attr">init</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-built_in">console</span>.log(renewablesByIndex.color);
+        $(<span class="hljs-string">'#elf-view'</span>).load(<span class="hljs-string">'/renewables/renewable-by-index'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            $(<span class="hljs-string">'#renewableByIndex'</span>).change(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
                 getRenewableByIndex();
             });
             etc....
         });
     }
 };
-</pre>
+</code></pre>
 <p>And the input control:</p>
 <pre>
 input#renewableByIndex(type='number', value='2', min='0', max='12')

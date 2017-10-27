@@ -24,9 +24,8 @@
 <a class="anchor" id="step-one"></a>
 <h2>Step One</h2>
 <p>Copy MongooseSubDocs into <strong>Week11-MongooseComments</strong>:</p>
-<pre>robocopy Week10-MongooseSubdocs Week11-MongooseComments /mir
-</pre>
-<p>Open <strong>Week11-MongooseComments</strong> in WebStorm and change the name from MongooseSubDocs to MongooseComments.</p>
+<pre><code>robocopy Week10-MongooseSubdocs Week11-MongooseComments <span class="hljs-string">/mir</span>
+</code></pre><p>Open <strong>Week11-MongooseComments</strong> in WebStorm and change the name from MongooseSubDocs to MongooseComments.</p>
 <a class="anchor" id="step-two"></a>
 <h2>Step Two</h2>
 <p>Create a connection to the MongoDb database.</p>
@@ -44,12 +43,11 @@
 <li>Right click on the <strong>routes</strong> folder and create a new file called <strong>comments.js</strong>.</li>
 </ul>
 <p>At the top of <strong>routes/comments.js</strong> paste in this code:</p>
-<pre>var express = require('express');
-var router = express.Router();
-var connect = require('./connect');
-var scientists = require('../models/scientists');
-</pre>
-<p>First we load express and the router, just as we do at the top of all the <strong>middleware</strong> files in the <strong>routes</strong> folder. Then we link in our new connection code and our existing <strong>scientists</strong> model.</p>
+<pre><code><span class="hljs-attribute">var express</span> = require(<span class="hljs-string">'express'</span>);
+<span class="hljs-attribute">var router</span> = express.Router();
+<span class="hljs-attribute">var connect</span> = require(<span class="hljs-string">'./connect'</span>);
+<span class="hljs-attribute">var scientists</span> = require(<span class="hljs-string">'../models/scientists'</span>);
+</code></pre><p>First we load express and the router, just as we do at the top of all the <strong>middleware</strong> files in the <strong>routes</strong> folder. Then we link in our new connection code and our existing <strong>scientists</strong> model.</p>
 <ul>
 <li>Cut the entirety of the following methods from <strong>index.js</strong> and paste them into <strong>comments.js</strong><ul>
 <li><strong>router.post(&#39;/newComment&#39;, etc...</strong></li>
@@ -65,133 +63,131 @@ var scientists = require('../models/scientists');
 </ul>
 <p>The final step is to modify the way we handle connecting to the database. Take a close look at the beginning of <strong>connect.js</strong> above. Notice that we have declared a <strong>boolean</strong> property of the <strong>connect</strong> object that records whether or not we are already connected.</p>
 <p>Inside <strong>routes/comments.js</strong> we use that <strong>connected</strong> property, and the <strong>doConnection</strong> method itself, like this:</p>
-<pre>if (!connect.connected) {
-    connect.doConnection();
+<pre><code class="lang-javascript"><span class="hljs-built_in">if</span> (!<span class="hljs-built_in">connect</span>.<span class="hljs-built_in">connected</span>) {
+    <span class="hljs-built_in">connect</span>.doConnection();
 }
-</pre>
+</code></pre>
 <p>You should work your way through comments.js and make sure all the calls that check for the connection to the database now look like the code shown above. In other words, you want to transform code like the following into the code shown above:</p>
-<pre>if (!connected) {
+<pre><code class="lang-javascript"><span class="hljs-built_in">if</span> (!<span class="hljs-built_in">connected</span>) {
     doConnection();
 }
-</pre>
+</code></pre>
 <p>Your should have to make three such substitutions, one at the top of each methods in <strong>comments.js</strong>.</p>
-<pre>var express = require('express');
-var router = express.Router();
-var connect = require('./connect');
-var scientists = require('../models/scientists');
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> router = express.Router();
+<span class="hljs-keyword">var</span> connect = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./connect'</span>);
+<span class="hljs-keyword">var</span> scientists = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models/scientists'</span>);
 
-router.post('/newComment', function(request, response) {
-    if (!connect.connected) {
+router.post(<span class="hljs-string">'/newComment'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+    <span class="hljs-keyword">if</span> (!connect.connected) {
         connect.doConnection();
     }
 
-    console.log('newComments called. Body is next: ');
-    console.log(request.body);
-    var scientist = request.body.scientist;
-    var comment = request.body.comment;
-    console.log(comment);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'newComments called. Body is next: '</span>);
+    <span class="hljs-built_in">console</span>.log(request.body);
+    <span class="hljs-keyword">var</span> scientist = request.body.scientist;
+    <span class="hljs-keyword">var</span> comment = request.body.comment;
+    <span class="hljs-built_in">console</span>.log(comment);
 
-    // Code omitted here
+    <span class="hljs-comment">// Code omitted here</span>
 });
 
-function remove(arr, item) {
-    for(var i = arr.length; i--;) {
-        if(arr[i]._id == item._id) {
-            arr.splice(i, 1);
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">remove</span>(<span class="hljs-params">arr, item</span>) </span>{
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i = arr.length; i--;) {
+        <span class="hljs-keyword">if</span>(arr[i]._id == item._id) {
+            arr.splice(i, <span class="hljs-number">1</span>);
         }
     }
 }
 
-router.post('/deleteComment', function(request, response) {
-    if (!connect.connected) {
+router.post(<span class="hljs-string">'/deleteComment'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+    <span class="hljs-keyword">if</span> (!connect.connected) {
         connect.doConnection();
     }
 
-    // Code omitted here
+    <span class="hljs-comment">// Code omitted here</span>
 });
 
-router.post('/updateComments', function(request, response) {
-    if (!connect.connected) {
+router.post(<span class="hljs-string">'/updateComments'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+    <span class="hljs-keyword">if</span> (!connect.connected) {
         connect.doConnection();
     }
 
-    // Code omitted here
+    <span class="hljs-comment">// Code omitted here</span>
 });
 
-module.exports = router;
-</pre>
+<span class="hljs-built_in">module</span>.exports = router;
+</code></pre>
 <p>Your copy of <strong>models/scientists.js</strong> may already look like this, but just to avoid confusion, the version of that file I&#39;m using in this project looks like this:</p>
-<pre>/**
+<pre><code><span class="hljs-comment">/**
  * Created by charlie on 6/6/2015.
- */
+ */</span>
 
-var mongoose = require('mongoose');
+<span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
 
-var commentSchema = mongoose.Schema({
-    commentText: String,
-    date: { type: Date, default: Date.now }
+<span class="hljs-keyword">var</span> commentSchema = mongoose.Schema({
+    commentText: <span class="hljs-built_in">String</span>,
+    date: { <span class="hljs-keyword">type</span>: <span class="hljs-built_in">Date</span>, <span class="hljs-keyword">default</span>: <span class="hljs-built_in">Date</span>.now }
 });
 
-var scientistsSchema = mongoose.Schema({
-    "firstName": String,
-    "lastName": String,
-    "subject": String,
-    "subjects": [String],
+<span class="hljs-keyword">var</span> scientistsSchema = mongoose.Schema({
+    <span class="hljs-string">"firstName"</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">"lastName"</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">"subject"</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">"subjects"</span>: [<span class="hljs-built_in">String</span>],
     comments: [commentSchema]
 });
 
-module.exports = mongoose.model('scientist', scientistsSchema);
-</pre>
-<p>Notice the <strong>exports</strong> statement as it may vary slightly from the version on your system. It is important to get it right as other code in this document depends on it.</p>
+<span class="hljs-built_in">module</span>.exports = mongoose.model(<span class="hljs-string">'scientist'</span>, scientistsSchema);
+</code></pre><p>Notice the <strong>exports</strong> statement as it may vary slightly from the version on your system. It is important to get it right as other code in this document depends on it.</p>
 <a class="anchor" id="step-four"></a>
 <h2>Step Four</h2>
 <p>Link in your new <strong>routes/comments.js</strong> middleware. </p>
 <p>We want this new <strong>comments</strong> module to be included in our program, so we have to tell <strong>express</strong> to call it whenever a request for an operation on our comments comes in. All our comment operations will have have the routes <strong>/coment</strong> prepended to them.</p>
 <p>You can begin by loading the <strong>comments</strong> module. In the following code, the first two lines, and last line, are included only for context. It is the third line that you want to add to the server side <strong>/app.js</strong> file:</p>
-<pre>var routes = require('./routes/index');
-var users = require('./routes/users');
-var comments = require('./routes/comments');
+<pre><code class="lang-javascript"><span class="hljs-attribute">var routes</span> = require(<span class="hljs-string">'./routes/index'</span>);
+<span class="hljs-attribute">var users</span> = require(<span class="hljs-string">'./routes/users'</span>);
+<span class="hljs-attribute">var comments</span> = require(<span class="hljs-string">'./routes/comments'</span>);
 
-var app = express();
-</pre>
+<span class="hljs-attribute">var app</span> = express();
+</code></pre>
 <p>Now tell express to include your <strong>comments</strong> middleware in the chain of code it calls when requests to handle comments are passed to the server from the client. Again, the first two lines are included here only for context, only to help you find the place in <strong>app.js</strong> to add our new line of code:</p>
-<pre>app.use('/', routes);
-app.use('/users', users);
-app.use('/comments', comments);
-</pre>
+<pre><code class="lang-javascript">app.<span class="hljs-keyword">use</span>(<span class="hljs-string">'/'</span>, routes);
+app.<span class="hljs-keyword">use</span>(<span class="hljs-string">'/users'</span>, users);
+app.<span class="hljs-keyword">use</span>(<span class="hljs-string">'/comments'</span>, comments);
+</code></pre>
 <a class="anchor" id="step-five"></a>
 <h2>Step Five</h2>
 <p>Modify <strong>index.js</strong> to work with our new connection model.</p>
 <p>Here is the way the top of <strong>index.js</strong> should now look:</p>
-<pre>var express = require('express');
-var router = express.Router();
-var connect = require('./connect');
-var scientists = require('../models/scientists');
-var fs = require('fs');
-</pre>
-<p>The key point is that we are now linking in the new <strong>routes/connect.js</strong> module.</p>
+<pre><code><span class="hljs-attribute">var express</span> = require(<span class="hljs-string">'express'</span>);
+<span class="hljs-attribute">var router</span> = express.Router();
+<span class="hljs-attribute">var connect</span> = require(<span class="hljs-string">'./connect'</span>);
+<span class="hljs-attribute">var scientists</span> = require(<span class="hljs-string">'../models/scientists'</span>);
+<span class="hljs-attribute">var fs</span> = require(<span class="hljs-string">'fs'</span>);
+</code></pre><p>The key point is that we are now linking in the new <strong>routes/connect.js</strong> module.</p>
 <p>Since the <strong>doConnection</strong> method is now in <strong>connect.js</strong>, you should delete <strong>doConnection</strong> from <strong>routes/index.js</strong>. You should also delete the variable called <strong>connected</strong>. You should also change all the calls to <strong>doConnection</strong> as described in an earlier step.</p>
 <a class="anchor" id="step-six"></a>
 <h2>Step Six</h2>
 <p>Let&#39;s now switch over to the client side and create a <strong>javascripts/comments.js</strong> file that mirrors the <strong>routes/comments.js</strong> file on the server side. </p>
 <p>Create a file called <strong>javascripts/comment-factory.js</strong>. Start it out with boilerplate code:</p>
-<pre>
-(function() {
+<pre><code class="lang-javascript">
+(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
 
-    var app = angular.module('elvenApp');
+    <span class="hljs-keyword">var</span> app = angular.module(<span class="hljs-string">'elvenApp'</span>);
 
-    app.factory('commentFactory', function($http) {
+    app.factory(<span class="hljs-string">'commentFactory'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($http)</span> </span>{
 
-            var commentFactory = {
+            <span class="hljs-keyword">var</span> commentFactory = {
 
-                // Insert comment methods here
+                <span class="hljs-comment">// Insert comment methods here</span>
 
             };
 
-            return commentFactory;    
+            <span class="hljs-keyword">return</span> commentFactory;    
         });
 })();
-</pre>
+</code></pre>
 <p>Cut the following methods from <strong>mongo-factory.js</strong> and paste them into <strong>comment-factory</strong> in the designated location:</p>
 <ul>
 <li><strong>newComment</strong></li>
@@ -200,109 +196,102 @@ var fs = require('fs');
 </ul>
 <p>Make sure that the factory in <strong>mongo-factory</strong> is called <strong>mongoFactory</strong> and the factory in <strong>comment-factory</strong> is called <strong>commentFactory</strong>. Double check to make sure you got it right.</p>
 <p>Now change all the <strong>HTTP</strong> REST calls to make sure they are using the route to our new middleware. In particular, change calls that look like this:</p>
-<pre>$http.post('/newComment'
-</pre>
-<p>Now they should use our new route to the middleware found in <strong>routes/comments.js</strong>:</p>
-<pre>$http.post('/comments/newComment'
-</pre>
-<p>Recall that we set that middleware up in <strong>/app.js</strong> with this line of code:</p>
-<pre>app.use('/comments', comments);
-</pre>
-<p>And we will need a <strong>/views/commentds.jade</strong> file to go with <strong>public/javascripts/comments.js</strong></p>
-<pre>h1 Comments: {{commentsController.name}}
+<pre><code>$<span class="hljs-keyword">http</span>.<span class="hljs-built_in">post</span>(<span class="hljs-string">'/newComment'</span>
+</code></pre><p>Now they should use our new route to the middleware found in <strong>routes/comments.js</strong>:</p>
+<pre><code>$<span class="hljs-keyword">http</span>.<span class="hljs-built_in">post</span>(<span class="hljs-string">'/comments/newComment'</span>
+</code></pre><p>Recall that we set that middleware up in <strong>/app.js</strong> with this line of code:</p>
+<pre><code>app.<span class="hljs-keyword">use</span>(<span class="hljs-string">'/comments'</span>, comments);
+</code></pre><p>And we will need a <strong>/views/commentds.jade</strong> file to go with <strong>public/javascripts/comments.js</strong></p>
+<pre><code class="lang-jade">h1 Comments: {{commentsController.name}}
 div.names
     ul
-        li(ng-repeat='comment in commentsController.scientist.comments')
-            a(ng-click="commentsController.selectComment(comment)") {{comment.commentText}}
-    div.names(ng-form="newCommentForm")
+        li(<span class="hljs-attribute">ng-repeat</span>=<span class="hljs-string">'comment in commentsController.scientist.comments'</span>)
+            a(<span class="hljs-attribute">ng-click</span>=<span class="hljs-string">"commentsController.selectComment(comment)"</span>) {{comment.commentText}}
+    div.names(<span class="hljs-attribute">ng-form</span>=<span class="hljs-string">"newCommentForm"</span>)
         hr
-        button.btn.btn-default(ng-click='commentsController.newComment()') New Comment
+        button.btn.btn-default(<span class="hljs-attribute">ng-click</span>=<span class="hljs-string">'commentsController.newComment()'</span>) New Comment
         br
         br
-        label(class='col-sm-2, control-label') Text
-        input.form-control(type='text', ng-model='commentsController.newCommentText')
-    div.names(ng-form="myform")
+        label(<span class="hljs-attribute">class</span>=<span class="hljs-string">'col-sm-2, control-label'</span>) Text
+        input.form-control(<span class="hljs-attribute">type</span>=<span class="hljs-string">'text'</span>, <span class="hljs-attribute">ng-model</span>=<span class="hljs-string">'commentsController.newCommentText'</span>)
+    div.names(<span class="hljs-attribute">ng-form</span>=<span class="hljs-string">"myform"</span>)
         hr
-        button.btn.btn-default(ng-click='commentsController.updateComment()') Update Comment
-        button.btn.btn-default(ng-click='commentsController.deleteComment()') Delete Comment
+        button.btn.btn-default(<span class="hljs-attribute">ng-click</span>=<span class="hljs-string">'commentsController.updateComment()'</span>) Update Comment
+        button.btn.btn-default(<span class="hljs-attribute">ng-click</span>=<span class="hljs-string">'commentsController.deleteComment()'</span>) Delete Comment
         br
         br
-        label(class='col-sm-2, control-label') Text
-        input.form-control(type='text', ng-model='commentsController.comment.commentText')
+        label(<span class="hljs-attribute">class</span>=<span class="hljs-string">'col-sm-2, control-label'</span>) Text
+        input.form-control(<span class="hljs-attribute">type</span>=<span class="hljs-string">'text'</span>, <span class="hljs-attribute">ng-model</span>=<span class="hljs-string">'commentsController.comment.commentText'</span>)
         br
-        label(class='col-sm-2, control-label') Date
-        input.form-control(type='text', ng-model='commentsController.comment.date')
+        label(<span class="hljs-attribute">class</span>=<span class="hljs-string">'col-sm-2, control-label'</span>) Date
+        input.form-control(<span class="hljs-attribute">type</span>=<span class="hljs-string">'text'</span>, <span class="hljs-attribute">ng-model</span>=<span class="hljs-string">'commentsController.comment.date'</span>)
         br
-        label(class='col-sm-2, control-label') Id
-        input.form-control(type='text', ng-model='commentsController.comment._id')
-</pre>
+        label(<span class="hljs-attribute">class</span>=<span class="hljs-string">'col-sm-2, control-label'</span>) Id
+        input.form-control(<span class="hljs-attribute">type</span>=<span class="hljs-string">'text'</span>, <span class="hljs-attribute">ng-model</span>=<span class="hljs-string">'commentsController.comment._id'</span>)
+</code></pre>
 <p>You should probably add support for an about page as well.</p>
 <a class="anchor" id="step-seven"></a>
 <h2>Step Seven</h2>
 <p>Include a menu in <strong>index.jade</strong></p>
-<pre>extends layout
-block content
-    nav.navbar-default.navbar-fixed-top
-        .container-fluid
-            .navbar-header
-                button(type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#myTarget")
-                    span.sr-only Toggle navigation
-                    span.icon-bar
-                    span.icon-bar
-                    span.icon-bar
-                a.navbar-brand(href="#/") Final
-            #myTarget.collapse.navbar-collapse
-                ul.nav.navbar-nav
-                    li(ng-class="{ active: isActive('/')}")
-                        a(ng-href='#/') Home
-                    li(ng-class="{ active: isActive('/comments')}")
-                        a(ng-href='#/comments') Comments
-                    li(ng-class="{ active: isActive('/about')}")
-                        a(ng-href='#/about') About
+<pre><code class="lang-jade">extends layout
+block <span class="hljs-attribute">content</span>
+    <span class="hljs-selector-tag">nav</span><span class="hljs-selector-class">.navbar-default</span><span class="hljs-selector-class">.navbar-fixed-top</span>
+        <span class="hljs-selector-class">.container-fluid</span>
+            <span class="hljs-selector-class">.navbar-header</span>
+                button(type=<span class="hljs-string">"button"</span> class=<span class="hljs-string">"navbar-toggle collapsed"</span> data-toggle=<span class="hljs-string">"collapse"</span> data-target=<span class="hljs-string">"#myTarget"</span>)
+                    <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.sr-only</span> Toggle navigation
+                    <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.icon-bar</span>
+                    <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.icon-bar</span>
+                    <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.icon-bar</span>
+                <span class="hljs-selector-tag">a</span>.navbar-brand(href=<span class="hljs-string">"#/"</span>) Final
+            <span class="hljs-selector-id">#myTarget</span><span class="hljs-selector-class">.collapse</span><span class="hljs-selector-class">.navbar-collapse</span>
+                <span class="hljs-selector-tag">ul</span><span class="hljs-selector-class">.nav</span><span class="hljs-selector-class">.navbar-nav</span>
+                    li(ng-class=<span class="hljs-string">"{ active: isActive('/')}"</span>)
+                        a(ng-href=<span class="hljs-string">'#/'</span>) Home
+                    li(ng-class=<span class="hljs-string">"{ active: isActive('/comments')}"</span>)
+                        a(ng-href=<span class="hljs-string">'#/comments'</span>) Comments
+                    li(ng-class=<span class="hljs-string">"{ active: isActive('/about')}"</span>)
+                        a(ng-href=<span class="hljs-string">'#/about'</span>) About
     h1= title
-    p Welcome to #{title}
-    div(data-ng-view="")
-</pre>
+    <span class="hljs-selector-tag">p</span> Welcome to #{title}
+    div(data-ng-view=<span class="hljs-string">""</span>)
+</code></pre>
 <p>And add in support for routes:</p>
-<pre>bower install angular-route --save
-</pre>
-<p>Make sure that <strong>bower.json</strong> is using a single version of angular throughout.</p>
+<pre><code><span class="hljs-keyword">bower </span><span class="hljs-keyword">install </span>angular-route --save
+</code></pre><p>Make sure that <strong>bower.json</strong> is using a single version of angular throughout.</p>
 <p>Then provide support for your routes on the client:</p>
-<pre>var myModule = angular.module("elvenApp", [ 'ngRoute' ]);
+<pre><code>var myModule = angular.module(<span class="hljs-string">"elvenApp"</span>, [ <span class="hljs-string">'ngRoute'</span> ]);
 
-myModule.config(function($routeProvider, $httpProvider, $locationProvider) {
+myModule.config(<span class="hljs-keyword">function</span>($routeProvider, $httpProvider, $locationProvider) {
 
-    $routeProvider.when("/", {
-        templateUrl : "main",
-        controller : "MainController",
-        controllerAs: "mainController"
-    }).when('/comments', {
-        templateUrl : "comments",
-        controller : "CommentsController",
-        controllerAs: 'commentsController',
+    $routeProvider.when(<span class="hljs-string">"/"</span>, {
+        templateUrl : <span class="hljs-string">"main"</span>,
+        controller : <span class="hljs-string">"MainController"</span>,
+        controllerAs: <span class="hljs-string">"mainController"</span>
+    }).when(<span class="hljs-string">'/comments'</span>, {
+        templateUrl : <span class="hljs-string">"comments"</span>,
+        controller : <span class="hljs-string">"CommentsController"</span>,
+        controllerAs: <span class="hljs-string">'commentsController'</span>,
         resolve: {
             loggedin: checkLoggedin
         }
-    }).when('/about', {
-        templateUrl : "about",
-        controller : "AboutController",
-        controllerAs: 'aboutController'
+    }).when(<span class="hljs-string">'/about'</span>, {
+        templateUrl : <span class="hljs-string">"about"</span>,
+        controller : <span class="hljs-string">"AboutController"</span>,
+        controllerAs: <span class="hljs-string">'aboutController'</span>
     }).otherwise({
-        redirectTo : '/'
+        redirectTo : <span class="hljs-string">'/'</span>
     });
 });
-</pre>
-<a class="anchor" id="step-eight"></a>
+</code></pre><a class="anchor" id="step-eight"></a>
 <h2>Step Eight</h2>
 <p>Some finishing touches.</p>
 <p>In layout.jade, link in comments:</p>
-<pre>script(src="javascripts/comment-factory.js")
-script(src="javascripts/mongo-factory.js")
-</pre>
-<p>At the top of <strong>control.js</strong>, link in both <strong>mongoFactory</strong> and <strong>commentFactory</strong>:</p>
-<pre>app.controller('MainController', function(mongoFactory, commentFactory) {
-</pre>
-<p>Go through each method in <strong>control.js</strong> and make sure it is calling into the proper factory. Some call into <strong>commentFactory</strong> and others into <strong>mongoFactory</strong>.</p>
+<pre><code><span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/comment-factory.js"</span>)</span></span>
+<span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/mongo-factory.js"</span>)</span></span>
+</code></pre><p>At the top of <strong>control.js</strong>, link in both <strong>mongoFactory</strong> and <strong>commentFactory</strong>:</p>
+<pre><code>app.controller(<span class="hljs-string">'MainController'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(mongoFactory, commentFactory)</span> </span>{
+</code></pre><p>Go through each method in <strong>control.js</strong> and make sure it is calling into the proper factory. Some call into <strong>commentFactory</strong> and others into <strong>mongoFactory</strong>.</p>
 <p>Congrats. You now have everything set up correctly. In addition, it should be relatively trivial for you to move this code into your <strong>Final</strong> project.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
@@ -317,18 +306,16 @@ script(src="javascripts/mongo-factory.js")
 <h3>References</h3>
 <p>As of version 3 of Mongoose, there are two ways to declare sub-documents. Method 1 and method 2 are functionally equivalent.</p>
 <p>Method 1:</p>
-<pre>var commentSchema = new Schema({ commentText: 'string' });
+<pre><code><span class="hljs-keyword">var</span> commentSchema = <span class="hljs-keyword">new</span> Schema({ commentText: <span class="hljs-string">'string'</span> });
 
-var scientistSchema = new Schema({
+<span class="hljs-keyword">var</span> scientistSchema = <span class="hljs-keyword">new</span> Schema({
   comments: [commentSchema]
 })
-</pre>
-<p>Method 2:</p>
-<pre>var scientistSchema = new Schema({
-  comments: [{ commentText: 'string' }]
+</code></pre><p>Method 2:</p>
+<pre><code>var scientistSchema = <span class="hljs-keyword">new</span> Schema({
+  comment<span class="hljs-variable">s:</span> [{ commentTex<span class="hljs-variable">t:</span> <span class="hljs-string">'string'</span> }]
 })
-</pre>
-<p>The reference is here:</p>
+</code></pre><p>The reference is here:</p>
 <ul>
 <li><a href="http://mongoosejs.com/docs/subdocs.html#altsyntax">http://mongoosejs.com/docs/subdocs.html#altsyntax</a></li>
 </ul>

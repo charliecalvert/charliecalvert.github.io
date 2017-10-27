@@ -68,21 +68,21 @@
 <p>  npm install -g jscs</p>
 <p>Make sure JSCS <em><strong>is turned on</strong></em> in WebStorm. Go to <strong>Settings | Languages and Frameworks | JavaScript | Code Quality Tools | JSCS</strong> and make sure it is <strong>enabled</strong>.</p>
 <p>Put this <strong>.jscsrc</strong> file in the root of your projects. Probably one for <strong>client</strong> and one for <strong>server</strong>:</p>
-<pre>{
-    "preset": "google",
-    "validateIndentation": 4,    
-    "excludeFiles": [
-        "**/node_modules/**",
-        "**/config/**",
-        "**/scripts/**",
-        "**/bower_components/**",
-        "**/field-definitions.js",
-        "**/mock-user-info.js"
+<pre><code class="lang-json">{
+    <span class="hljs-attr">"preset"</span>: <span class="hljs-string">"google"</span>,
+    <span class="hljs-attr">"validateIndentation"</span>: <span class="hljs-number">4</span>,    
+    <span class="hljs-attr">"excludeFiles"</span>: [
+        <span class="hljs-string">"**/node_modules/**"</span>,
+        <span class="hljs-string">"**/config/**"</span>,
+        <span class="hljs-string">"**/scripts/**"</span>,
+        <span class="hljs-string">"**/bower_components/**"</span>,
+        <span class="hljs-string">"**/field-definitions.js"</span>,
+        <span class="hljs-string">"**/mock-user-info.js"</span>
     ],
-    "requireCamelCaseOrUpperCaseIdentifiers": false,
-    "maximumLineLength": 120
+    <span class="hljs-attr">"requireCamelCaseOrUpperCaseIdentifiers"</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-attr">"maximumLineLength"</span>: <span class="hljs-number">120</span>
 }
-</pre>
+</code></pre>
 <p>Go to <strong>Setting | Editor | Code Style | JavaScript</strong>. On the Settings tab, in the first section, called <strong>Before Parentheses</strong>, set <strong>In Function Expression</strong> to false (unchecked). This means there should be no space after the word <strong>function.</strong>. Our code should look like this: <strong>function() {}</strong>. Not like this <strong>function () {}</strong>. Note the space after the word function in the second example.</p>
 <p>JSCS should pass for your files. You can probably make this happen by choosing <strong>Code | Reformat</strong> in WebStorm, or by running the NPM package called <strong>js-beautify</strong>, which should be installed on your system in the global ~/npm/bin directory. If it is not installed, install it. But I do most of my formatting with WebStorm not <strong>js-beautify</strong>.</p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/jscs-config.png" alt="Hopefully works for you too"></p>
@@ -91,16 +91,16 @@
 <a class="anchor" id="jscs-punctuator"></a>
 <h2>JSCS Punctuator in ES6</h2>
 <p>I can&#39;t get JSCS to accept our arrow functions which we use for binding <strong>this</strong>. In <strong>ElfLogger</strong>, for instance, I write this:</p>
-<pre>setQuiet = (newValue) => {
-    this.display = newValue;
+<pre><code class="lang-javascript">setQuiet = (<span class="hljs-keyword">new</span><span class="hljs-type">Value</span>) =&gt; {
+    <span class="hljs-built_in">this</span>.display = <span class="hljs-keyword">new</span><span class="hljs-type">Value</span>;
 };
-</pre>
+</code></pre>
 <p>This is well formed, if experimental, ES6 syntax. If I remove the semi-colon, then I get a missing semicolon complaint from JSCS. If I add the semicolon, then I get this error, which I usually see at the very top of my file:</p>
 <p>  JSCS: expected end of node list but punctuator found</p>
 <p><strong>NOTE</strong>: <em>When I got this error, the editor did not usually point right at the source of the problem. Instead, for me, it was often pointing at the first <strong>import</strong> statement at the top of the file. Eventually, I realized the problem was not the <strong>import</strong> statement, but the arrow functions. I found this to be quite confusing, and it took me several tries before I sorted it out. Once I removed the arrow function, however, the other JSCS errors were easier to find, and WebStorm pointed me at the place in the file where the error occurred.</em></p>
 <p>The solution is to go back to the old syntax for binding <strong>this</strong>. In the constructor, I write the following:</p>
-<pre>this.setQuiet = this.setQuiet.bind(this);
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">this</span>.setQuiet = <span class="hljs-keyword">this</span>.setQuiet.bind(<span class="hljs-keyword">this</span>);
+</code></pre>
 <p>Now I can switch to the traditional method declaration syntax, and yet still have <strong>this</strong> properly bound. That is, <strong>this</strong> will be valid in the <strong>setQuiet</strong> method. The problem is not unique to this object, and you may need to make similar changes in multiple place to fix the problem.</p>
 <p>For an example, look here:</p>
 <ul>
@@ -128,8 +128,8 @@
 <a class="anchor" id="extra-credit-option-two"></a>
 <h2>Extra Credit Option Two</h2>
 <p>An alternative solution for the Extra credit might look like this. Right now we import the field definitions:</p>
-<pre>import fieldDefinitions from '../field-definitions';
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> fieldDefinitions <span class="hljs-keyword">from</span> <span class="hljs-string">'../field-definitions'</span>;
+</code></pre>
 <p>I was thinking that instead of importing them, we generate them on the fly. We would use modified version of <strong>git-convert</strong> to generate the definitions. But in this case <strong>git-convert</strong> would be integrated into our code. We would simply run <strong>git-convert</strong> against the code we get back from GitHub when we call <strong>fetch</strong>. I like this solution because it is cool, but is probably not as efficient as the above version, since the code generation would be done at run time.</p>
 <p>This solution would perhaps make it impossible to have a default set of data: we wouldn&#39;t know the structure of the fields until we queried the server for the JSON. On the other hand, the default data we display was perhaps more of a learning exercise than anything we want in a shipping product.</p>
 <p>It&#39;s extra credit, so I leave it up to you how you solve these problems. Consider using a branch when making the changes, so that you can always go back easily to the code you had before you tried any major surgery.</p>
@@ -148,61 +148,59 @@
 <p>By definition, enzyme <strong>shallow</strong> works with only one component at a time. When we use <strong>shallow</strong>, it is therefore not possible to check if a button click is working correctly since that involves the interaction of two components.</p>
 <p>However, even when we use shallow, an onClick function can be created within a button test to validate that the button responds to clicks. We implement the <strong>onClick</strong> function as a callback, and then confirm that when we click the button the callback is executed.</p>
 <p>Here is an example:</p>
-<pre>// button test
-it('responds to a button click', () => {
-    //create variable to track button click status
-    let clicked = false;
-    //create function to assign as onClick
-    const callback = () => {
-        clicked = true;
+<pre><code class="lang-javascript"><span class="hljs-comment">// button test</span>
+it(<span class="hljs-string">'responds to a button click'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-comment">//create variable to track button click status</span>
+    <span class="hljs-keyword">let</span> clicked = <span class="hljs-literal">false</span>;
+    <span class="hljs-comment">//create function to assign as onClick</span>
+    <span class="hljs-keyword">const</span> callback = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        clicked = <span class="hljs-literal">true</span>;
     };
 
-    const wrapper = shallow(<AddressShow onSetAddress = {callback} address={address}/>);
-    wrapper.find('button#setAddress').simulate('click');
-    expect(clicked).toEqual(true);
+    <span class="hljs-keyword">const</span> wrapper = shallow(&lt;AddressShow onSetAddress = {callback} address={address}/&gt;);
+    wrapper.find(<span class="hljs-string">'button#setAddress'</span>).simulate(<span class="hljs-string">'click'</span>);
+    expect(clicked).toEqual(<span class="hljs-literal">true</span>);
 
 });
-</pre>
+</code></pre>
 <p>Thanks to Andrew Wilson for inspiring this tip!</p>
 <a class="anchor" id="contains-matching-element"></a>
 <h2>Contains Matching Element</h2>
 <p>Remember that for tests on some HTML elements we need to use <strong>containsMatchingElement</strong>. <strong>contains</strong> insists that all attributes for a tag match exactly, while <strong>containsMatchingElement</strong> allows you to match just one out of multiple attributes. In other words, it ignores attributes you don&#39;t care about. We have to use <strong>containsMatchingElement</strong> when testing some input controls or when testing for some button controls since they contain <strong>onChange</strong> or <strong>onClick</strong> functions, and it is not easy or perhaps not even possible to match a function:</p>
-<pre>const inputElement = <input value='Robin Dudette'/>;
-// Code omitted
-expect(wrapper.containsMatchingElement(inputElement)).toEqual(true);
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> inputElement = &lt;input <span class="hljs-keyword">value</span>=<span class="hljs-string">'Robin Dudette'</span>/&gt;;
+<span class="hljs-comment">// Code omitted</span>
+expect(wrapper.containsMatchingElement(inputElement)).toEqual(<span class="hljs-literal">true</span>);
+</code></pre>
 <p>This works even if the <strong>input</strong> control has a number of other attributes other than <strong>value</strong>.</p>
 <a class="anchor" id="filter-tests"></a>
 <h2>Filter Tests</h2>
 <p>Also, notice the menu the tests give you. Note the p option for filtering files. Suppose one of your test files is called <strong>Foo.test.js</strong> and one is called <strong>Bar.test.js</strong>. Press <strong>p</strong> and enter <strong>Foo</strong>. Only <strong>Foo.test.js</strong> will run:</p>
-<pre>Watch Usage
- › Press a to run all tests.
- › Press o to only run tests related to changed files.
- › Press p to filter by a filename regex pattern.
- › Press q to quit watch mode.
- › Press Enter to trigger a test run.
+<pre><code>Watch Usage
+ › Press a <span class="hljs-keyword">to</span> <span class="hljs-builtin-name">run</span> all tests.
+ › Press o <span class="hljs-keyword">to</span> only <span class="hljs-builtin-name">run</span> tests related <span class="hljs-keyword">to</span> changed files.
+ › Press p <span class="hljs-keyword">to</span><span class="hljs-built_in"> filter </span>by a filename regex pattern.
+ › Press q <span class="hljs-keyword">to</span> quit watch mode.
+ › Press Enter <span class="hljs-keyword">to</span> trigger a test run.
 
  pattern › Foo
-</pre>
-<p>The result might look like this:</p>
-<pre> PASS src/__tests__/Foo.test.js
+</code></pre><p>The result might look like this:</p>
+<pre><code> PASS src/__tests__/Foo.test.js
  React Foo Suite
- ✓ see if true is true (6ms)
+ ✓ see <span class="hljs-keyword">if</span> <span class="hljs-literal">true</span> is <span class="hljs-literal">true</span> (6ms)
 
 Test Suites: 1 passed, 1 total
 Tests: 1 passed, 1 total
 Snapshots: 0 total
 Time: 0.545s, estimated 1s
-Ran all test suites matching "Foo".
+Ran all test suites matching <span class="hljs-string">"Foo"</span>.
 
 Watch Usage
- › Press a to run all tests.
- › Press o to only run tests related to changed files.
- › Press p to filter by a filename regex pattern.
- › Press q to quit watch mode.
- › Press Enter to trigger a test run.
-</pre>
-<p>Even though I had several tests in my <strong>tests</strong> folder, only the one that had <strong>Foo</strong> in its name was run.</p>
+ › Press a <span class="hljs-keyword">to</span> <span class="hljs-builtin-name">run</span> all tests.
+ › Press o <span class="hljs-keyword">to</span> only <span class="hljs-builtin-name">run</span> tests related <span class="hljs-keyword">to</span> changed files.
+ › Press p <span class="hljs-keyword">to</span><span class="hljs-built_in"> filter </span>by a filename regex pattern.
+ › Press q <span class="hljs-keyword">to</span> quit watch mode.
+ › Press Enter <span class="hljs-keyword">to</span> trigger a test run.
+</code></pre><p>Even though I had several tests in my <strong>tests</strong> folder, only the one that had <strong>Foo</strong> in its name was run.</p>
 <ul>
 <li><a href="https://facebook.github.io/jest/docs/api.html">More information in the docs</a></li>
 </ul>

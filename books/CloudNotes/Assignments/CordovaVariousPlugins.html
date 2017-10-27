@@ -50,84 +50,79 @@ menu called <strong>Plugins</strong>:</p>
 </ul>
 <p>Use the scripts from <strong>JsObjects/Utilities/CordovaTools</strong></p>
 <p>Put <strong>plugins</strong> in your <strong>.gitignore</strong>. Save the code to set up plugins in <strong>SetupPlugins</strong>:</p>
-<pre>#! /bin/bash
-
+<pre><code><span class="hljs-meta">#! /bin/bash
+</span>
 cordova plugin add org.apache.cordova.camera
 cordova plugin add org.apache.cordova.vibration
-</pre>
-<p>Code in non-angular app{</p>
-<pre>elf.Control=(function() {
+</code></pre><p>Code in non-angular app{</p>
+<pre><code>elf.Control=(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 
-    function Control() {
-        elf.utilities.showMessage('Control loaded');
-        $('#buttonHome').load('ButtonHome.html', function() {
-            $('#vibrate').click(vibrate);
-            $('#photo').click(photo);
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Control</span>(<span class="hljs-params"></span>) </span>{
+        elf.utilities.showMessage(<span class="hljs-string">'Control loaded'</span>);
+        $(<span class="hljs-string">'#buttonHome'</span>).load(<span class="hljs-string">'ButtonHome.html'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            $(<span class="hljs-string">'#vibrate'</span>).click(vibrate);
+            $(<span class="hljs-string">'#photo'</span>).click(photo);
         });
     }
 
-    function vibrate() {
-        elf.utilities.showMessage('Vibrate');
-        navigator.vibrate(1000);
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">vibrate</span>(<span class="hljs-params"></span>) </span>{
+        elf.utilities.showMessage(<span class="hljs-string">'Vibrate'</span>);
+        navigator.vibrate(<span class="hljs-number">1000</span>);
     }
 
 
-    function photo() {
-        elf.utilities.showMessage('Photo');
-        navigator.camera.getPicture(onSuccess, onFail, { quality: 50,
-            destinationType: Camera.DestinationType.DATA_URL
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">photo</span>(<span class="hljs-params"></span>) </span>{
+        elf.utilities.showMessage(<span class="hljs-string">'Photo'</span>);
+        navigator.camera.getPicture(onSuccess, onFail, { <span class="hljs-attr">quality</span>: <span class="hljs-number">50</span>,
+            <span class="hljs-attr">destinationType</span>: Camera.DestinationType.DATA_URL
         });
 
-        function onSuccess(imageData) {
-            var image = document.getElementById('elfImage');
-            image.src = "data:image/jpeg;base64," + imageData;
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onSuccess</span>(<span class="hljs-params">imageData</span>) </span>{
+            <span class="hljs-keyword">var</span> image = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'elfImage'</span>);
+            image.src = <span class="hljs-string">"data:image/jpeg;base64,"</span> + imageData;
         }
 
-        function onFail(message) {
-            alert('Failed because: ' + message);
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onFail</span>(<span class="hljs-params">message</span>) </span>{
+            alert(<span class="hljs-string">'Failed because: '</span> + message);
         }
     }
 
-    return Control;
+    <span class="hljs-keyword">return</span> Control;
 
 })();
 
-$(document).ready(function() {
-    new elf.Control();
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">new</span> elf.Control();
 });
-</pre>
-<p>So how do we move it over? Try it first with scope methods, and then
+</code></pre><p>So how do we move it over? Try it first with scope methods, and then
 with controllerAs.</p>
 <p>Buttons in non-angular app:</p>
-<pre><div>
-    <button id="vibrate">Vibrate</button>
-</div>
-<div>
-    <button id="photo">Photo</button>
-</div>
-</pre>
-<p>Buttons in Angular App:</p>
-<pre><div>
-    <button ng-click="vibrate()">Vibrate</button>
-</div>
-<div>
-    <button ng-click="photo()">Photo</button>
-</div>
-</pre>
-<p>No <strong>ng-app</strong> because we using <strong>angular.bootstrap()</strong> to create the app.</p>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"vibrate"</span>&gt;</span>Vibrate<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"photo"</span>&gt;</span>Photo<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre><p>Buttons in Angular App:</p>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">ng-click</span>=<span class="hljs-string">"vibrate()"</span>&gt;</span>Vibrate<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">ng-click</span>=<span class="hljs-string">"photo()"</span>&gt;</span>Photo<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre><p>No <strong>ng-app</strong> because we using <strong>angular.bootstrap()</strong> to create the app.</p>
 <p>Don&#39;t forget near bottom of index.html:</p>
-<pre><script src="scripts/controllers/Plugins/PluginVarious.js"></script>
-<script type="text/javascript" src="cordova.js"></script>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"scripts/controllers/Plugins/PluginVarious.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"cordova.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 
-<!-- endbuild -->
+<span class="hljs-comment">&lt;!-- endbuild --&gt;</span>
 
-    <script type="text/javascript">
-        document.addEventListener('deviceready', function onDeviceReady() {
-            angular.bootstrap(document, ['statesApp']);
-        }, false);
-    </script>
-</pre>
-<a class="anchor" id="turn-it-in"></a>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span>&gt;</span><span class="javascript">
+        <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'deviceready'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onDeviceReady</span>(<span class="hljs-params"></span>) </span>{
+            angular.bootstrap(<span class="hljs-built_in">document</span>, [<span class="hljs-string">'statesApp'</span>]);
+        }, <span class="hljs-literal">false</span>);
+    </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre><a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>To complete this assignment, create three screenshots, one for each application.
 Attach these screen shots to your Final submission. </p>

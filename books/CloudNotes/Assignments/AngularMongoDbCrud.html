@@ -26,18 +26,17 @@
 <a class="anchor" id="preliminaries"></a>
 <h2>Preliminaries</h2>
 <p>Before you begin, please note the following. Here is how records on MongoLab look:</p>
-<pre>{
-    "_id": {
-        "$oid": "5541b5fbe4b01e004ed25b86"
+<pre><code>{
+    <span class="hljs-attr">"_id"</span>: {
+        <span class="hljs-attr">"$oid"</span>: <span class="hljs-string">"5541b5fbe4b01e004ed25b86"</span>
     },
-    "firstName": "Marie",
-    "lastName": "Curie",
-    "city": "Paris",
-    "country": "France",
-    "subject": "Radiations"
+    <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Marie"</span>,
+    <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Curie"</span>,
+    <span class="hljs-attr">"city"</span>: <span class="hljs-string">"Paris"</span>,
+    <span class="hljs-attr">"country"</span>: <span class="hljs-string">"France"</span>,
+    <span class="hljs-attr">"subject"</span>: <span class="hljs-string">"Radiations"</span>
 }
-</pre>
-<p>Note the peculiar structure where <strong>_id</strong> is not just a simple value, but an object with a property called <strong>$0id</strong> that contains the simple <strong>id</strong> value we expect to find. Sad, but true.</p>
+</code></pre><p>Note the peculiar structure where <strong>_id</strong> is not just a simple value, but an object with a property called <strong>$0id</strong> that contains the simple <strong>id</strong> value we expect to find. Sad, but true.</p>
 <p>You are also going to need to make minor updates to <strong>views/index.jade</strong> in order to accommodate my last minute switch from presidents to scientists. I&#39;ll leave that as an &quot;exercise for the reader.&quot;</p>
 <p><strong>NOTE</strong>: <em>Please do ensure the code runs correctly, but do not refactor this code, even if it seems tempting. We will do that next week in class after we add some unit tests.</em></p>
 <a class="anchor" id="step-one"></a>
@@ -47,143 +46,132 @@
 <li>Navigate to the root of your repository.</li>
 <li>Use this <a href="https://technet.microsoft.com/en-us/library/cc733145.aspx">robocopy</a> command, or one of the variations shown in the next section, to make a copy of your project:</li>
 </ul>
-<pre>robocopy Week04-AngularMongoStart Week05-AngularMongoCrud /MIR
-</pre>
-<p>The exact command you issue may differ in small ways depending on the original name of your starter project, but that is the general pattern to follow.</p>
+<pre><code>robocopy Week04-AngularMongoStart Week05-AngularMongoCrud <span class="hljs-string">/MIR</span>
+</code></pre><p>The exact command you issue may differ in small ways depending on the original name of your starter project, but that is the general pattern to follow.</p>
 <p>When you are done you should have a new folder called <strong>Week05-AngularMongoDbCrud</strong> that contains an exact copy (a MIRror) of your <strong>Week04-AngularMongoDbStarter</strong> project.</p>
 <a class="anchor" id="step-two"></a>
 <h2>Step Two</h2>
 <p>Open the project in Webstorm. </p>
 <p>This next part of this step is cosmetic, and not essential, but I mention it for the sake of completeness. You might notice that the title of your project, shown in the upper right of the IDE, is still set to AngularMongoStart. To fix this, right click on the top node in the project window and choose refactor. Opt to change not the folder name, but the project name. Rename the project to AngularMongoCrud or some other name that appeals to you.</p>
 <p><strong>NOTE</strong>: <em>We could avoid having to rename the project by not copying the <strong>idea</strong> folder with robocopy. You can specify to exclude a folder with the /XD switch, which takes an absolute path to the folder you want to exclude. The command on your system would surely differ, but might look like this:</em></p>
-<pre>robocopy Week04-AngularMongoStart Week05-Foo /XD D:\Git\Prog219-calvert\Week04-AngularMongoStart\.idea /MIR 
-</pre>
-<p>If that is too long and unwieldy, you can do this:</p>
-<pre>set SKIP=D:\Git\Prog219-calvert\Week04-AngularMongoStart\.idea
-robocopy Week04-AngularMongoStart Week05-Foo /XD %SKIP% /MIR
-</pre>
-<a class="anchor" id="step-three"></a>
+<pre><code>robocopy Week04-AngularMongoStart Week05-Foo /XD D:<span class="hljs-symbol">\G</span>it<span class="hljs-symbol">\P</span>rog219-calvert<span class="hljs-symbol">\W</span>eek04-AngularMongoStart<span class="hljs-symbol">\.</span>idea /MIR 
+</code></pre><p>If that is too long and unwieldy, you can do this:</p>
+<pre><code>set SKIP=D:<span class="hljs-symbol">\G</span>it<span class="hljs-symbol">\P</span>rog219-calvert<span class="hljs-symbol">\W</span>eek04-AngularMongoStart<span class="hljs-symbol">\.</span>idea
+robocopy Week04-AngularMongoStart Week05-Foo /XD <span class="hljs-variable">%SKIP%</span> /MIR
+</code></pre><a class="anchor" id="step-three"></a>
 <h2>Step Three</h2>
 <p>Add new records:</p>
 <p>Remember that our controller gets passed a <strong>scientists</strong> object which is an instance of the <strong>$resource</strong> object we create in <strong>resources.js</strong>:</p>
-<pre>    angular.module('elvenApp', ['pres'])
-        .controller('MyController', function($scope, $http, scientists) {
-</pre>
-<p>Now we have a <strong>scientists object </strong>. We use it in the method designed to add a new record:</p>
-<pre>$scope.newScientist = function() {
-    var scientistResource = new scientists({
+<pre><code>    angular.module(<span class="hljs-string">'elvenApp'</span>, [<span class="hljs-string">'pres'</span>])
+        .controller(<span class="hljs-string">'MyController'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($scope, $http, scientists)</span> </span>{
+</code></pre><p>Now we have a <strong>scientists object </strong>. We use it in the method designed to add a new record:</p>
+<pre><code class="lang-javascript">$scope.newScientist = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> scientistResource = <span class="hljs-keyword">new</span> scientists({
         firstName: $scope.firstName,
         lastName: $scope.lastName,
         subject: $scope.subject
     });
-    scientistResource.$save(function(scientist) {
+    scientistResource.$save(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(scientist)</span> </span>{
         $scope.scientists.push(scientist);
         $scope.scientistsLength = $scope.scientists.length;
     });
 };
-</pre>
+</code></pre>
 <p>Let&#39;s take a moment to break this down. Notice that we first invoke the constructor object from <strong>scientists</strong> service to create a new Angular scientist resource:</p>
-<pre>    var scientistResource = new scientists({
-        firstName: $scope.firstName,
-        lastName: $scope.lastName,
-        subject: $scope.subject
-    });
-</pre>
+<pre><code class="lang-javascript">    var <span class="hljs-keyword">scientistResource </span>= new <span class="hljs-keyword">scientists({
+</span><span class="hljs-symbol">        firstName:</span> $<span class="hljs-keyword">scope.firstName,
+</span><span class="hljs-symbol">        lastName:</span> $<span class="hljs-keyword">scope.lastName,
+</span><span class="hljs-symbol">        subject:</span> $<span class="hljs-keyword">scope.subject
+</span>    })<span class="hljs-comment">;</span>
+</code></pre>
 <p>The Angular <strong>$resouce</strong> service has a number of utility functions on it. One of them is called <strong>$save</strong>. We use it like this to save our new record back to the database:</p>
-<pre>scientistResource.$save(function(scientist) {
+<pre><code>scientistResource.$save(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(scientist)</span> </span>{
     $scope.scientists.push(scientist);
     $scope.scientistsLength = $scope.scientists.length;
 });
-</pre>
-<p>As you can see, if the insertion is successful, we also add the new record to our local copy of the data. An alternative would be to call refresh on the whole database.</p>
+</code></pre><p>As you can see, if the insertion is successful, we also add the new record to our local copy of the data. An alternative would be to call refresh on the whole database.</p>
 <a class="anchor" id="step-four"></a>
 <h2>Step Four</h2>
 <p>Responds to clicks in the numeric input control by iterating through any records we may have the database. Begin by creating an index that tracks our current record. We do this by adding <strong>$scope.currentItem</strong> into the <strong>loadScientists</strong> method found at the top of <strong>control.js</strong>  </p>
-<pre>          $scope.loadScientists = function() {
-                $scope.scientists = scientists.query({}, function(scientists) {
-                    $scope.scientistsLength = scientists.length;
-                    $scope.firstName = scientists[0].firstName;
-                    $scope.lastName = scientists[0].lastName;
-                    $scope.subject = scientists[0].subject;                    
-                    console.log(scientists[0].firstName);
-                    console.log(scientists[0].lastName);
-                    console.log(scientists[0].getFirstName());
-                    $scope.currentItem = 0;   // HERE IS THE NEW ITEM
-                });
-            };
-</pre>
+<pre><code class="lang-javascript">          $<span class="hljs-keyword">scope.loadScientists </span>= function() {
+                $<span class="hljs-keyword">scope.scientists </span>= <span class="hljs-keyword">scientists.query({}, </span>function(<span class="hljs-keyword">scientists) </span>{
+                    $<span class="hljs-keyword">scope.scientistsLength </span>= <span class="hljs-keyword">scientists.length;
+</span>                    $<span class="hljs-keyword">scope.firstName </span>= <span class="hljs-keyword">scientists[0].firstName;
+</span>                    $<span class="hljs-keyword">scope.lastName </span>= <span class="hljs-keyword">scientists[0].lastName;
+</span>                    $<span class="hljs-keyword">scope.subject </span>= <span class="hljs-keyword">scientists[0].subject; </span>                   
+                    console.log(<span class="hljs-keyword">scientists[0].firstName);
+</span>                    console.log(<span class="hljs-keyword">scientists[0].lastName);
+</span>                    console.log(<span class="hljs-keyword">scientists[0].getFirstName());
+</span>                    $<span class="hljs-keyword">scope.currentItem </span>= <span class="hljs-number">0</span><span class="hljs-comment">;   // HERE IS THE NEW ITEM</span>
+                })<span class="hljs-comment">;</span>
+            }<span class="hljs-comment">;</span>
+</code></pre>
 <p>Now add a method that performs our task:</p>
-<pre>    $scope.indexChange = function() {
+<pre><code class="lang-javascript">    $scope.indexChange = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
         $scope.firstName = $scope.scientists[$scope.currentItem].firstName;
         $scope.lastName = $scope.scientists[$scope.currentItem].lastName;
         $scope.subject = $scope.scientists[$scope.currentItem].subject;
     };
-</pre>
+</code></pre>
 <p>To make this process of iterating over the records you create work, there may be an additional change you will need to make somewhere else in your code.</p>
 <a class="anchor" id="step-five"></a>
 <h2>Step Five</h2>
 <p>We will want to add <strong>update</strong> and <strong>delete</strong> methods  to <strong>resources.js</strong>. We will use a REST protocol  wrapped by Angular in their <a href="https://docs.angularjs.org/api/ngResource/service/$resource">$resource</a> service found in the <strong>ngResouce</strong> module. (See below for more on REST.)</p>
 <p>In the starter assignment, we learned that we can get hold of the Angular <strong>$resource</strong> service with a command like this:</p>
-<pre>var url = 'https://api.mongolab.com/api/1/databases/myDatabase/collections/mycollection/:id';
-var scientists = $resource(url, { apiKey: 41abc3d322332gaserfadswf});
-</pre>
-<p>Our particular version of this method is somewhat different:</p>
-<pre>var url = 'https://api.mongolab.com/api/1/databases/myDatabase/collections/mycollection/:id';
-var scientists = $resource(url, { apiKey: 41abc3d322332gaserfadswf}, {update: {method: 'PUT'});
-</pre>
-<p> We use this syntax to extend the <strong>$resource</strong> service with a method called <strong>update</strong> that uses the HTTP <strong>PUT</strong> command. This is necessary because MongoLab uses HTTP <strong>PUT</strong> commands to update documents while $resource does not. See <a href="#step-seven">Step Seven</a> for more details.</p>
+<pre><code><span class="hljs-attribute">var url</span> = <span class="hljs-string">'https://api.mongolab.com/api/1/databases/myDatabase/collections/mycollection/:id'</span>;
+<span class="hljs-attribute">var scientists</span> = $resource(url, { apiKey: 41abc3d322332gaserfadswf});
+</code></pre><p>Our particular version of this method is somewhat different:</p>
+<pre><code><span class="hljs-attribute">var url</span> = <span class="hljs-string">'https://api.mongolab.com/api/1/databases/myDatabase/collections/mycollection/:id'</span>;
+<span class="hljs-attribute">var scientists</span> = $resource(url, { apiKey: 41abc3d322332gaserfadswf}, {update: {method: <span class="hljs-string">'PUT'</span>});
+</code></pre><p> We use this syntax to extend the <strong>$resource</strong> service with a method called <strong>update</strong> that uses the HTTP <strong>PUT</strong> command. This is necessary because MongoLab uses HTTP <strong>PUT</strong> commands to update documents while $resource does not. See <a href="#step-seven">Step Seven</a> for more details.</p>
 <a class="anchor" id="step-six"></a>
 <h2>Step Six</h2>
 <p>Delete a document from our collection.</p>
 <p>Here is a method to delete an item from the database:</p>
-<pre>    scientists.prototype.remove = function (successCallback, errorCallback) {
-        return scientists.remove({id:this._id.$oid}, successCallback, errorCallback);
+<pre><code>    scientists.prototype.<span class="hljs-built_in">remove</span> = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(successCallback, errorCallback)</span></span> {
+        <span class="hljs-keyword">return</span> scientists.<span class="hljs-built_in">remove</span>({id:this._id.$oid}, successCallback, errorCallback);
     };
-</pre>
-<p>This item ought to be added to our <strong>scientists</strong> factory. The method relies on the <strong>$resource</strong> service created as shown earlier in this section. As you can surmise, this service has a built in <strong>remove</strong> method that takes an ID and two callbacks. </p>
+</code></pre><p>This item ought to be added to our <strong>scientists</strong> factory. The method relies on the <strong>$resource</strong> service created as shown earlier in this section. As you can surmise, this service has a built in <strong>remove</strong> method that takes an ID and two callbacks. </p>
 <p>We invoke this remove method in <strong>control.js</strong>. In particular, here is how to provide the two callbacks in our invocation of this method:</p>
-<pre>    $scope.deleteRow = function() {
-        var currentItem = $scope.currentItem;
+<pre><code>    $scope.deleteRow = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">var</span> currentItem = $scope.currentItem;
         $scope.scientists[currentItem].remove(
-            function(deletedObject, headers) {
-                $scope.scientists.splice(currentItem, 1);
+            <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(deletedObject, headers)</span> </span>{
+                $scope.scientists.splice(currentItem, <span class="hljs-number">1</span>);
                 $scope.scientistsLength = $scope.scientists.length;
-            }, function(err) {
-                console.log("error: " + err.data.message);
+            }, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span> </span>{
+                console.log(<span class="hljs-string">"error: "</span> + err.data.message);
         });
     };
-</pre>
-<p>The basic call looks looks like this:</p>
-<pre>$scope.scientists[currentItem].remove(successCallback, errorCallback);
-</pre>
-<p>In our success callback we use the JavaScript <strong>splice</strong> function to remove the item from our local copy of the data. We also track the current number (length) of documents held on the client side.</p>
+</code></pre><p>The basic call looks looks like this:</p>
+<pre><code><span class="hljs-variable">$scope</span>.scientists[currentItem].<span class="hljs-builtin-name">remove</span>(successCallback, errorCallback);
+</code></pre><p>In our success callback we use the JavaScript <strong>splice</strong> function to remove the item from our local copy of the data. We also track the current number (length) of documents held on the client side.</p>
 <a class="anchor" id="step-seven"></a>
 <h2>Step Seven</h2>
 <p>Here is how to update the document.</p>
 <p>From <strong>control.js</strong>:</p>
-<pre>$scope.updateRow = function() {
-    var indexOfItemToUpdate = $scope.currentItem;
+<pre><code class="lang-javascript">$scope.updateRow = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> indexOfItemToUpdate = $scope.currentItem;
     $scope.scientists[indexOfItemToUpdate].firstName = $scope.firstName;
-    // You write the code to handle lastName and subject.
-    $scope.scientists[indexOfItemToUpdate].updateDocument(function(data) {
-        console.log("success: " + data);
-    }, function(err) {
-        console.log("Error Status: " + err.status + ' ' + err.data.message);
+    <span class="hljs-comment">// You write the code to handle lastName and subject.</span>
+    $scope.scientists[indexOfItemToUpdate].updateDocument(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(data)</span> </span>{
+        console.log(<span class="hljs-string">"success: "</span> + data);
+    }, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span> </span>{
+        console.log(<span class="hljs-string">"Error Status: "</span> + err.status + <span class="hljs-string">' '</span> + err.data.message);
     });
 };
-</pre>
+</code></pre>
 <p>On success, the method shown above writes out something like this to the console:</p>
-<pre>success: [object Object]
-</pre>
-<p>Change the code so that it writes out the first and last names of updated scientist, along with his subject.</p>
+<pre><code><span class="hljs-keyword">success: </span>[object Object]
+</code></pre><p>Change the code so that it writes out the first and last names of updated scientist, along with his subject.</p>
 <p>From <strong>resources.js</strong>:</p>
-<pre>scientists.prototype.updateDocument = function (successCallback, errorCallback) {
-    console.log("update called");
-    var idObject = {id:this._id.$oid};
-    var updateData = angular.extend({}, this, {_id:undefined});
-    scientists.update( <PASS IN THE APPROPRIATE PARAMETERS> );
-};
-</pre>
+<pre><code class="lang-javascript">scientists.prototype.updateDocument = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">successCallback, errorCallback</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"update called"</span>);
+    <span class="hljs-keyword">var</span> idObject = {<span class="hljs-attr">id</span>:<span class="hljs-keyword">this</span>._id.$oid};
+    <span class="hljs-keyword">var</span> updateData = angular.extend({}, <span class="hljs-keyword">this</span>, {<span class="hljs-attr">_id</span>:<span class="hljs-literal">undefined</span>});
+    scientists.update( <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">PASS</span> <span class="hljs-attr">IN</span> <span class="hljs-attr">THE</span> <span class="hljs-attr">APPROPRIATE</span> <span class="hljs-attr">PARAMETERS</span>&gt;</span> );
+};</span>
+</code></pre>
 <p>The call to <strong>scientists.update</strong> takes four parameters:</p>
 <ul>
 <li>An object specifying the ID of the document to update</li>

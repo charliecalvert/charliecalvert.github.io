@@ -36,60 +36,60 @@
 <li>Add an ONCHANGE attribute to each INPUT</li>
 </ul>
 <p>Here is an example:</p>
-<pre><input id="elfFN" className="App-intro" value={this.props.address.firstName} onChange={this.props.onNameChange}/>
-</pre>
+<pre><code class="lang-javascript">&lt;<span class="hljs-selector-tag">input</span> id=<span class="hljs-string">"elfFN"</span> className=<span class="hljs-string">"App-intro"</span> value={this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.address</span><span class="hljs-selector-class">.firstName</span>} onChange={this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.onNameChange</span>}/&gt;
+</code></pre>
 <a class="anchor" id="hint"></a>
 <h2>Hint</h2>
 <p><strong>shallow</strong> can see all the HTML tags in a render method, but it can&#39;t see into the sub-components. Consider this code:</p>
-<pre>render() {
-    if (!this.quiet) { console.log("ADDRESS RENDER"); }
-    return (
-        <div className="App">
-            <MyAddress />
-        </div>
+<pre><code class="lang-javascript">render() {
+    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.quiet) { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"ADDRESS RENDER"</span>); }
+    <span class="hljs-keyword">return</span> (
+        <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">MyAddress</span> /&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
     );
 }
-</pre>
+</code></pre>
 <p><strong>shallow</strong> can see that this render method contains a second React component called <strong>MyAddress</strong>, but it can&#39;t see the render method of <strong>MyAddress</strong>. <strong>mount</strong> can see into <strong>MyAddress</strong>. This means it can find the list items or paragraphs that may be listed as part of the <strong>MyAddress</strong> react <strong>Component</strong>. In cases like that shown above, it can see the <strong>render</strong> method of <strong>MyAddress</strong>, but shallow cannot.</p>
 <p>Just to be clear, it would not matter how many divs, list items, paragraphs or other tags were included in the <strong>render</strong> method shown above. <strong>shallow</strong> could see them all. But it could not see into the contents of the render method of <strong>MyAddress</strong>.</p>
 <a class="anchor" id="load-address-edit"></a>
 <h2>Teach Address to Load AddressEdit</h2>
 <p>All you need to do is add a new method for handling changes to the input control:</p>
-<pre>onNameChange = (event) => {
-    this.log("ON NAME CHANGE");
-    const address = addresses[this.addressIndex];
-    switch (event.target.id) {
-        case 'elfFN':
-            address.firstName = event.target.value;
-            break;
-        case 'elfLN':
-            address.lastName = event.target.value;
-            break;
-        // ETC
-        default:
-            throw new Error('OH NO BAD CASE in Address onNameChange');
+<pre><code class="lang-javascript">onNameChange = (<span class="hljs-keyword">event</span>) =&gt; {
+    <span class="hljs-keyword">this</span>.log(<span class="hljs-string">"ON NAME CHANGE"</span>);
+    <span class="hljs-keyword">const</span> address = addresses[<span class="hljs-keyword">this</span>.addressIndex];
+    <span class="hljs-keyword">switch</span> (<span class="hljs-keyword">event</span>.target.id) {
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'elfFN'</span>:
+            address.firstName = <span class="hljs-keyword">event</span>.target.<span class="hljs-keyword">value</span>;
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'elfLN'</span>:
+            address.lastName = <span class="hljs-keyword">event</span>.target.<span class="hljs-keyword">value</span>;
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-comment">// ETC</span>
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">'OH NO BAD CASE in Address onNameChange'</span>);
     }
-    this.setState({
+    <span class="hljs-keyword">this</span>.setState({
         address: address
     })
 };
-</pre>
+</code></pre>
 <p>As you can see, key information about the user&#39;s action are passed in the <strong>target</strong> object that lives like a craven parasite on the <strong>event</strong> object. Note that:</p>
 <ul>
 <li><strong>event.target.id</strong> contains the id of the INPUT control the user is editing.</li>
 <li><strong>event.target.value</strong> contains the current value of the string the user is editing</li>
 </ul>
 <p>To display the <strong>AddressEdit</strong> component, modify the <strong>Address</strong> render method to teach it to load <strong>AddressEdit</strong>:</p>
-<pre><AddressEdit
-    address={this.state.address}
-    onAddressChange={this.onAddressChange}
-    onNameChange={this.onNameChange}
-/>
-<AddressShow
-    address={this.state.address}
-    onAddressChange={this.onAddressChange}
- />
-</pre>
+<pre><code class="lang-javascript">&lt;AddressEdit
+    address={<span class="hljs-keyword">this</span>.state.address}
+    onAddressChange={<span class="hljs-keyword">this</span>.onAddressChange}
+    onNameChange={<span class="hljs-keyword">this</span>.onNameChange}
+/&gt;
+&lt;AddressShow
+    address={<span class="hljs-keyword">this</span>.state.address}
+    onAddressChange={<span class="hljs-keyword">this</span>.onAddressChange}
+ /&gt;
+</code></pre>
 <p>When you are done, edits to the INPUT should automatically propogate to the paragraph controls.</p>
 <a class="anchor" id="elftestdebug"></a>
 <h2>ElfTestDebug</h2>
@@ -99,21 +99,21 @@
 <li><a href="https://gist.github.com/charliecalvert/51daef341699943b07c9570c3ad2cbab">ElfEnzymeDebug</a></li>
 </ul>
 <p>And use it like this:</p>
-<pre>import ElfTestDebug from '../ElfTestDebug';
-const elfTestDebug = new ElfTestDebug(true);
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> ElfTestDebug <span class="hljs-keyword">from</span> <span class="hljs-string">'../ElfTestDebug'</span>;
+<span class="hljs-keyword">const</span> elfTestDebug = <span class="hljs-keyword">new</span> ElfTestDebug(<span class="hljs-literal">true</span>);
 
 elfTestDebug.getFirst(...);
-</pre>
+</code></pre>
 <a class="anchor" id="contains-matching"></a>
 <h2>Contains Matching</h2>
 <p>Don&#39;t call wrapper.contains. Instead call wrapper.containsMatchingElement. You can still block copy the thing you want to match from your debug output, but don&#39;t include the onChange event.</p>
-<pre>fit('renders and displays the default value for firstName', () => {
-    const wrapper = mount(<AddressChanger />);
-    elfTestDebug.getFirst(wrapper, 'input');
-    const welcome = <input id="elfFirstName" className="App-intro" value="unknown" />;
-    expect(wrapper.containsMatchingElement(welcome)).toEqual(true);
-});
-</pre>
+<pre><code class="lang-javascript">fit('renders and displays the default value for firstName', () =&gt; {
+    const wrapper = mount(<span class="hljs-name">&lt;AddressChanger</span> /&gt;)<span class="hljs-comment">;</span>
+    elfTestDebug.getFirst(<span class="hljs-name">wrapper</span>, 'input')<span class="hljs-comment">;</span>
+    const welcome = &lt;input id=<span class="hljs-string">"elfFirstName"</span> className=<span class="hljs-string">"App-intro"</span> value=<span class="hljs-string">"unknown"</span> /&gt;<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">wrapper</span>.containsMatchingElement(<span class="hljs-name">welcome</span>)).toEqual(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Add, commit, push. Tag. Push your tag.</p>

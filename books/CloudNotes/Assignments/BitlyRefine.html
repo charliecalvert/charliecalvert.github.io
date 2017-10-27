@@ -19,9 +19,8 @@
 <a class="anchor" id="create-project"></a>
 <h2>Create Project</h2>
 <p>Copy Week06-BitlyInteractive into Week07-BitlyRefine</p>
-<pre>cp Week06-BitlyInteractive Week07-BitlyRefine
-</pre>
-<p>Update the project name to <strong>BitlyRefine</strong> in:</p>
+<pre><code><span class="hljs-symbol">cp</span> Week06-<span class="hljs-keyword">BitlyInteractive </span>Week07-<span class="hljs-keyword">BitlyRefine</span>
+</code></pre><p>Update the project name to <strong>BitlyRefine</strong> in:</p>
 <ul>
 <li>bin/www</li>
 <li>routes/index.js</li>
@@ -44,46 +43,45 @@
 <li>display.showTableSelection</li>
 </ul>
 <p>The latter two methods can be empty for now. So your code might look something like this:</p>
-<pre>var elfDisplay={
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfDisplay={
 
-    render: function () {
-        'use strict';
-        // VERY SIMILAR TO CODE FROM BitlyInteractive
+    <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-comment">// VERY SIMILAR TO CODE FROM BitlyInteractive</span>
     },
 
-    renderTable: function(links) {
-        'use strict';
-        // CAN BE EMPTY FOR NOW
+    <span class="hljs-attr">renderTable</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">links</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-comment">// CAN BE EMPTY FOR NOW</span>
     },
 
-    showRecord: function (bitlyLink) {
-        'use strict';
-        // VERY SIMILAR OR IDENTICAL TO CODE FROM BitlyInteractive
+    <span class="hljs-attr">showRecord</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">bitlyLink</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-comment">// VERY SIMILAR OR IDENTICAL TO CODE FROM BitlyInteractive</span>
     },
 
-    showTableSelection: function(event) {
-        'use strict';
-        // CAN BE EMPTY AT FIRST
+    <span class="hljs-attr">showTableSelection</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-comment">// CAN BE EMPTY AT FIRST</span>
     }
 
 };
-</pre>
+</code></pre>
 <p>Don&#39;t forget that you need to load your new JavaScript files in <strong>layout.jade</strong>. In particular you will need to load <strong>control.js</strong>, <strong>downloads.js</strong>, <strong>movement.js</strong> and <strong>display.js</strong>:</p>
-<pre>script(src="javascripts/control.js")
-script(src="javascripts/etc...
-script(src="javascripts/etc...
-script(src="javascripts/etc...
-</pre>
-<p>Don&#39;t forget to include the <strong>downloads</strong> module in the project. It was given to you in <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/BitlyInteractive.html#the-downloads-module">bitly interactive</a>.</p>
+<pre><code>script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"javascripts/control.js"</span>)
+script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"javascripts/etc...
+script(src="</span>javascripts/etc...
+script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"javascripts/etc...</span>
+</code></pre><p>Don&#39;t forget to include the <strong>downloads</strong> module in the project. It was given to you in <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/BitlyInteractive.html#the-downloads-module">bitly interactive</a>.</p>
 <p>More information is available below in the Create Table section.</p>
 <a class="anchor" id="clear-controls"></a>
 <h2>Clear Controls</h2>
 <p>You will also want to clear the table so that the user can see the new data when you switch back and forth between <strong>local</strong> and <strong>cloud</strong> data. The call should be made just before you want to fill in the table with new data.</p>
-<pre>elfDownloads.clearControls = function() {
-    'use strict';
-    $('#tableLinks').empty();
+<pre><code class="lang-javascript">elfDownloads.clearControls = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    $(<span class="hljs-string">'#tableLinks'</span>).empty();
 };
-</pre>
+</code></pre>
 <a class="anchor" id="elf-unity"></a>
 <h2>Elf Unity</h2>
 <p>This is a refactoring issue. We want to take a halfway step to fixing the global namespace problem. Let&#39;s begin by making sure all our objects begin with the letters <strong>elf</strong>.</p>
@@ -99,22 +97,22 @@ script(src="javascripts/etc...
 </ul>
 <p>We are not changing any file names, just the objects in the files.</p>
 <p>Given these changes, we would call the <strong>renderTable</strong> method in <strong>display.js</strong> from a modified <strong>getBlitlyLinks</strong> method:</p>
-<pre>getBitlyLinks: function(accessToken) {
-    'use strict';
-    var url = elfBitly.getUrl(accessToken);
+<pre><code class="lang-javascript">getBitlyLinks: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">accessToken</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> url = elfBitly.getUrl(accessToken);
 
-    $.getJSON(url, function(result) {
+    $.getJSON(url, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
         elfBitly.bitlyLinks = result;
         elfDisplay.render();
         elfDisplay.renderTable(elfBitly.getLinkHistoryArray());
-        $('#displayLinks').html(JSON.stringify(result, null, 4));
-    }).fail(function(jqxhr, textStatus, error) {
-        var err = textStatus + ', ' + error;
-        console.log('Request Failed: ' + err);
-        console.log('url:', url);
+        $(<span class="hljs-string">'#displayLinks'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+    }).fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">jqxhr, textStatus, error</span>) </span>{
+        <span class="hljs-keyword">var</span> err = textStatus + <span class="hljs-string">', '</span> + error;
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Request Failed: '</span> + err);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'url:'</span>, url);
     });
 },
-</pre>
+</code></pre>
 <a class="anchor" id="css-updates"></a>
 <h2>CSS Updates</h2>
 <p>Create the <strong>.elfDiv</strong> class in styles.css</p>
@@ -122,164 +120,156 @@ script(src="javascripts/etc...
 <p>Changes to elfInput, including moving to its own file.</p>
 <p>Describe the elfDivFolder</p>
 <p>Here is my current <strong>public/stylesheets/style.css</strong> file:</p>
-<pre>body {
-  padding: 10px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+<pre><code><span class="hljs-selector-tag">body</span> {
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">10px</span>;
+  <span class="hljs-attribute">font</span>: <span class="hljs-number">14px</span> <span class="hljs-string">"Lucida Grande"</span>, Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
+<span class="hljs-selector-tag">a</span> {
+  <span class="hljs-attribute">color</span>: <span class="hljs-number">#00B7FF</span>;
 }
 
 
-.elfDiv {
-  max-width: 800px;
-  border: ridge 1px black;
-  margin: auto;
+<span class="hljs-selector-class">.elfDiv</span> {
+  <span class="hljs-attribute">max-width</span>: <span class="hljs-number">800px</span>;
+  <span class="hljs-attribute">border</span>: ridge <span class="hljs-number">1px</span> black;
+  <span class="hljs-attribute">margin</span>: auto;
 }
 
-.scroller {
-  height: 220px;
-  overflow: auto;
+<span class="hljs-selector-class">.scroller</span> {
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">220px</span>;
+  <span class="hljs-attribute">overflow</span>: auto;
 }
-</pre>
-<p>Note that I have set the <strong>padding</strong> in the BODY tag to 10px rather than the default <strong>50px</strong> that we get by default in Express projects.</p>
+</code></pre><p>Note that I have set the <strong>padding</strong> in the BODY tag to 10px rather than the default <strong>50px</strong> that we get by default in Express projects.</p>
 <p>The <strong>elfDiv</strong> class ensures that the width of our panels is never larger than 800px, and that the panels are centered in the page. We center them by setting their margins to equivalent values: <strong>margin:auto</strong>.</p>
 <p>The scroller class is used to help us scroll the table that we put inside a panel, as described elsewhere in this document.</p>
 <a class="anchor" id="creating-a-table"></a>
 <h2>Creating a table</h2>
 <p>Our interface has a new section in it called <strong>Bitly Links Table</strong>. (See screen shot above.) Here are some hints on how to create it.</p>
 <p>In <strong>elfDisplay</strong> fill in the <strong>renderTable</strong> method. In the code shown below, you will need to discover which fields of the <strong>link</strong> object you want to include to create results like that shown in the screenshot:</p>
-<pre>    renderTable: function(links) {
-        'use strict';
-        $.each(links, function(index, link) {
-            var title = "<td>" + WHAT GOES HERE? +  "</td>";
-            var keyword = "<td>" + WHAT GOES HERE? + "</td>";
-            var tableRowStart = "<tr class='linkTitle' index=" + index + ">";
-            $("#tableLinks").append(tableRowStart + WHAT GOES HERE? + "<tr>");
+<pre><code class="lang-javascript">    renderTable: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">links</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        $.each(links, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index, link</span>) </span>{
+            <span class="hljs-keyword">var</span> title = <span class="hljs-string">"&lt;td&gt;"</span> + WHAT GOES HERE? +  <span class="hljs-string">"&lt;/td&gt;"</span>;
+            <span class="hljs-keyword">var</span> keyword = <span class="hljs-string">"&lt;td&gt;"</span> + WHAT GOES HERE? + <span class="hljs-string">"&lt;/td&gt;"</span>;
+            <span class="hljs-keyword">var</span> tableRowStart = <span class="hljs-string">"&lt;tr class='linkTitle' index="</span> + index + <span class="hljs-string">"&gt;"</span>;
+            $(<span class="hljs-string">"#tableLinks"</span>).append(tableRowStart + WHAT GOES HERE? + <span class="hljs-string">"&lt;tr&gt;"</span>);
         });
-        $('.linkTitle').click(elfDisplay.showTableSelection);
+        $(<span class="hljs-string">'.linkTitle'</span>).click(elfDisplay.showTableSelection);
     },
-</pre>
+</code></pre>
 <p>Notice that each <TR> has a class and custom attribute called <strong>index</strong> associated with it:</p>
-<pre>var tableRowStart = "<tr class='linkTitle' index=" + index + ">";
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var tableRowStart</span> = <span class="hljs-string">"&lt;tr class='linkTitle' index="</span> + index + <span class="hljs-string">"&gt;"</span>;
+</code></pre>
 <p>The <strong>jQuery</strong> code at the bottom of the method ensures that if the user clicks on one of these rows, then the <strong>elfDisplay.showTableSelection</strong> method will be called:</p>
-<pre>showTableSelection: function(event) {
-    'use strict';
-    var index = $(event.currentTarget).attr('index');
-    var link = elfBitly.getLinkHistory(index, true);
-    // CALL THE showRecord METHOD OF elfDisplay HERE.
+<pre><code class="lang-javascript">showTableSelection: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> index = $(event.currentTarget).attr(<span class="hljs-string">'index'</span>);
+    <span class="hljs-keyword">var</span> link = elfBitly.getLinkHistory(index, <span class="hljs-literal">true</span>);
+    <span class="hljs-comment">// CALL THE showRecord METHOD OF elfDisplay HERE.</span>
 }
-</pre>
+</code></pre>
 <p>This code requires a moment&#39;s study. Each <TR> element has an attribute called <strong>index</strong> that is set to the offset of that particular row in our <strong>bitly-links.json</strong> file. We can use that index to display the appropriate link object in our main form. All we need to do, is get ahold of the value of the <strong>index</strong> attribute for the row the user clicked. To do that, we use the jQuery <strong>attr</strong> property. Make sure you understand this code. It is important to understand how to work with attributes of your HTML elements.</p>
 <p>Here is the updated <strong>getLinkHistory</strong> method:</p>
-<pre>getLinkHistory: function(index, setLinkIndex) {
-    'use strict';
-    if (setLinkIndex) {
-        elfBitly.linkIndex = parseInt(index);
+<pre><code class="lang-javascript">getLinkHistory: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index, setLinkIndex</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">if</span> (setLinkIndex) {
+        elfBitly.linkIndex = <span class="hljs-built_in">parseInt</span>(index);
     }
-    return elfBitly.bitlyLinks.data.link_history[index];
+    <span class="hljs-keyword">return</span> elfBitly.bitlyLinks.data.link_history[index];
 
 },
-</pre>
+</code></pre>
 <p>As you can see, it is has been modified to ensure that we continue to track the currently selected item in the <strong>linkIndex</strong> property of <strong>elfBitly</strong></p>
 <p>Here is the Jade that we use to hold our table.</p>
-<pre>+elfPanel("Bitly Links Table").elfDiv
-    div.scroller
-        table.table#tableLinks
-</pre>
-<p>This jade and CSS <strong>scroller</strong> class found in <strong>styles.css</strong> ensure that our table has scroll bars and can be scrolled.</p>
+<pre><code>+elfPanel(<span class="hljs-string">"Bitly Links Table"</span>)<span class="hljs-selector-class">.elfDiv</span>
+    <span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.scroller</span>
+        <span class="hljs-selector-tag">table</span>.table#tableLinks
+</code></pre><p>This jade and CSS <strong>scroller</strong> class found in <strong>styles.css</strong> ensure that our table has scroll bars and can be scrolled.</p>
 <a class="anchor" id="jade-mixins"></a>
 <h2>Jade Mixins</h2>
 <p>Start dividing mixins into easy to comprehend files. When you are done, the top of <strong>index.jade</strong> might look something like this:</p>
-<pre>extends layout
-include mixin-radios
-include mixin-inputs
-include mixin-buttons
-</pre>
-<p>Here are my <strong>mixin-buttons.jade</strong> file:</p>
-<pre>mixin forwardBack(leftFunction, rightFunction)
-    button.btn.btn-success.btn-large(type='button', onclick= leftFunction)
-       span.glyphicon.glyphicon-arrow-left
-       | &nbsp; Left
-    span &nbsp;
-    button.btn.btn-success.btn-large(type='button', onclick= rightFunction)
-       | Right &nbsp;
-       span.glyphicon.glyphicon-arrow-right
+<pre><code>extends layout
+<span class="hljs-keyword">include</span> <span class="hljs-keyword">mixin</span>-radios
+<span class="hljs-keyword">include</span> <span class="hljs-keyword">mixin</span>-inputs
+<span class="hljs-keyword">include</span> <span class="hljs-keyword">mixin</span>-buttons
+</code></pre><p>Here are my <strong>mixin-buttons.jade</strong> file:</p>
+<pre><code>mixin forwardBack(leftFunction, rightFunction)
+    button.btn.btn-success.btn-<span class="hljs-built_in">large</span>(<span class="hljs-built_in">type</span>='button', onclick= leftFunction)
+       span.glyphicon.glyphicon-arrow-<span class="hljs-built_in">left</span>
+       | &amp;nbsp; <span class="hljs-built_in">Left</span>
+    span &amp;nbsp;
+    button.btn.btn-success.btn-<span class="hljs-built_in">large</span>(<span class="hljs-built_in">type</span>='button', onclick= rightFunction)
+       | <span class="hljs-built_in">Right</span> &amp;nbsp;
+       span.glyphicon.glyphicon-arrow-<span class="hljs-built_in">right</span>
 
 mixin downloadButton(title, downloadFunction)
-    button.btn.btn-primary(type='button', onclick= downloadFunction)
-        | #{title} &nbsp;&nbsp;
+    button.btn.btn-primary(<span class="hljs-built_in">type</span>='button', onclick= downloadFunction)
+        | #{title} &amp;nbsp;&amp;nbsp;
         span.glyphicon.glyphicon-download
-</pre>
-<p>One could use them like this:</p>
-<pre>+forwardBack("elfMovement.left()", "elfMovement.right()")
-+downloadButton("Get Bitly Data", "downloads.getBitlyData()")
-</pre>
-<p>I have also moved the input controls into their own file called <strong>mixin-inputs.jade</strong>:</p>
-<pre>// **************
-// Vertical Input Controls
-// **************
+</code></pre><p>One could use them like this:</p>
+<pre><code>+<span class="hljs-selector-tag">forwardBack</span>(<span class="hljs-string">"elfMovement.left()"</span>, <span class="hljs-string">"elfMovement.right()"</span>)
++<span class="hljs-selector-tag">downloadButton</span>(<span class="hljs-string">"Get Bitly Data"</span>, <span class="hljs-string">"downloads.getBitlyData()"</span>)
+</code></pre><p>I have also moved the input controls into their own file called <strong>mixin-inputs.jade</strong>:</p>
+<pre><code><span class="hljs-comment">// **************</span>
+<span class="hljs-comment">// Vertical Input Controls</span>
+<span class="hljs-comment">// **************</span>
 
-mixin elfInput(labelText, name, placeHolder)
-   div
-      label(for='subject') #{labelText}
-      input(type='text', name=name, placeholder=placeHolder)&attributes(attributes)
+mixin elfInput(labelText, <span class="hljs-keyword">name</span>, placeHolder)
+   <span class="hljs-keyword">div</span>
+      <span class="hljs-keyword">label</span>(<span class="hljs-keyword">for</span>=<span class="hljs-string">'subject'</span>) #<span class="hljs-comment">{labelText}</span>
+      input(<span class="hljs-keyword">type</span>=<span class="hljs-string">'text'</span>, <span class="hljs-keyword">name</span>=<span class="hljs-keyword">name</span>, placeholder=placeHolder)&amp;attributes(attributes)
 
-mixin elfInputVB(labelText, name, placeHolder, labelType)
-   - if (typeof attributes.buttonType === 'undefined') {
+mixin elfInputVB(labelText, <span class="hljs-keyword">name</span>, placeHolder, labelType)
+   - <span class="hljs-keyword">if</span> (typeof attributes.buttonType === <span class="hljs-string">'undefined'</span>) <span class="hljs-comment">{
    -        attributes.buttonType="btn-default";
-   - }
+   - }</span>
 
-   div
-      label.label.label-default(for='subject') #{labelText}
-      input(type='text', name=name, placeholder=placeHolder)&attributes(attributes)
+   <span class="hljs-keyword">div</span>
+      <span class="hljs-keyword">label</span>.<span class="hljs-keyword">label</span>.<span class="hljs-keyword">label</span>-<span class="hljs-keyword">default</span>(<span class="hljs-keyword">for</span>=<span class="hljs-string">'subject'</span>) #<span class="hljs-comment">{labelText}</span>
+      input(<span class="hljs-keyword">type</span>=<span class="hljs-string">'text'</span>, <span class="hljs-keyword">name</span>=<span class="hljs-keyword">name</span>, placeholder=placeHolder)&amp;attributes(attributes)
 
 
-// **************
-// Horizontal Input Controls
-// **************
-mixin elfInputA(labelText, name, placeHolder)
-   div.row
-      label.col-md-2.control-label(for='textinput') #{labelText}
-      .col-md-8
-         input.form-control.input-md(name=name, type='text', placeholder=placeholder)&attributes(attributes)
+<span class="hljs-comment">// **************</span>
+<span class="hljs-comment">// Horizontal Input Controls</span>
+<span class="hljs-comment">// **************</span>
+mixin elfInputA(labelText, <span class="hljs-keyword">name</span>, placeHolder)
+   <span class="hljs-keyword">div</span>.row
+      <span class="hljs-keyword">label</span>.col-md-<span class="hljs-number">2</span>.control-<span class="hljs-keyword">label</span>(<span class="hljs-keyword">for</span>=<span class="hljs-string">'textinput'</span>) #<span class="hljs-comment">{labelText}</span>
+      .col-md-<span class="hljs-number">8</span>
+         input.form-control.input-md(<span class="hljs-keyword">name</span>=<span class="hljs-keyword">name</span>, <span class="hljs-keyword">type</span>=<span class="hljs-string">'text'</span>, placeholder=placeholder)&amp;attributes(attributes)
 
-mixin elfInputB(labelText, name, placeHolder)
-   div.row
+mixin elfInputB(labelText, <span class="hljs-keyword">name</span>, placeHolder)
+   <span class="hljs-keyword">div</span>.row
       h4
-         span.col-md-2.label.label-success #{labelText}
-      .col-md-10
-         input.form-control.input-md(name=name, type='text', placeholder=placeholder)&attributes(attributes)
+         span.col-md-<span class="hljs-number">2</span>.<span class="hljs-keyword">label</span>.<span class="hljs-keyword">label</span>-success #<span class="hljs-comment">{labelText}</span>
+      .col-md-<span class="hljs-number">10</span>
+         input.form-control.input-md(<span class="hljs-keyword">name</span>=<span class="hljs-keyword">name</span>, <span class="hljs-keyword">type</span>=<span class="hljs-string">'text'</span>, placeholder=placeholder)&amp;attributes(attributes)
 
-mixin elfInputHorizontal(labelText, name, placeHolder)
+mixin elfInputHorizontal(labelText, <span class="hljs-keyword">name</span>, placeHolder)
    .form-group
-      span.col-xs-2.label.label-success #{labelText}
-      .col-xs-10
-         input.form-control.input-sm(name=name, type='text', placeholder=placeholder)&attributes(attributes)
-</pre>
-<p>All this is in <strong>$ELF_TEMPLATES</strong>. Therefore the following code should get up to date, so long as you first ran <strong>git pull</strong> in JsObjects:</p>
-<pre>cp $ELF_TEMPLATES/JadeMixins/mixin-inputs.jade views/.
-cp $ELF_TEMPLATES/JadeMixins/mixin-radios.jade views/.
-cp $ELF_TEMPLATES/JadeMixins/mixin-buttons.jade views/.
-</pre>
+      span.col-xs-<span class="hljs-number">2</span>.<span class="hljs-keyword">label</span>.<span class="hljs-keyword">label</span>-success #<span class="hljs-comment">{labelText}</span>
+      .col-xs-<span class="hljs-number">10</span>
+         input.form-control.input-sm(<span class="hljs-keyword">name</span>=<span class="hljs-keyword">name</span>, <span class="hljs-keyword">type</span>=<span class="hljs-string">'text'</span>, placeholder=placeholder)&amp;attributes(attributes)
+</code></pre><p>All this is in <strong>$ELF_TEMPLATES</strong>. Therefore the following code should get up to date, so long as you first ran <strong>git pull</strong> in JsObjects:</p>
+<pre><code class="lang-bash">cp <span class="hljs-variable">$ELF_TEMPLATES</span>/JadeMixins/mixin-inputs<span class="hljs-selector-class">.jade</span> views/.
+cp <span class="hljs-variable">$ELF_TEMPLATES</span>/JadeMixins/mixin-radios<span class="hljs-selector-class">.jade</span> views/.
+cp <span class="hljs-variable">$ELF_TEMPLATES</span>/JadeMixins/mixin-buttons<span class="hljs-selector-class">.jade</span> views/.
+</code></pre>
 <p>Another way to handle this is with the file and directory comparison utility called <strong>meld</strong>. It is available in Pristine Lubuntu:</p>
-<pre>meld views/ $ELF_TEMPLATES/JadeMixins
-</pre>
-<p><strong>NOTE</strong>: <em>I&#39;ve never tried it, but there is some chance that <a href="http://linuxcommand.org/lc3_adv_mc.php">Midnight Commander</a> might work on Cloud9. Perhaps you can use it to do directory comparisons.</em></p>
+<pre><code><span class="hljs-attribute">meld</span> views/ <span class="hljs-variable">$ELF_TEMPLATES</span>/JadeMixins
+</code></pre><p><strong>NOTE</strong>: <em>I&#39;ve never tried it, but there is some chance that <a href="http://linuxcommand.org/lc3_adv_mc.php">Midnight Commander</a> might work on Cloud9. Perhaps you can use it to do directory comparisons.</em></p>
 <p>To install midnight command: <strong>sudo apt-get install mc</strong></p>
 <a class="anchor" id="set-up-the-title"></a>
 <h2>Set up the Title</h2>
 <p>In <strong>routes/index.js</strong> create a new variable for use when Jade is rendered into HTML. You should, of course, use your own name:</p>
-<pre>res.render('index', { title: 'Bitly-Refine', author: 'John von Neumann' });
-</pre>
+<pre><code class="lang-javascript">res.render(<span class="hljs-string">'index'</span>, { <span class="hljs-string">title:</span> <span class="hljs-string">'Bitly-Refine'</span>, <span class="hljs-string">author:</span> <span class="hljs-string">'John von Neumann'</span> });
+</code></pre>
 <p>Change the title to show the author:</p>
-<pre>    .jumbotron.elfDiv
-        h1= title
-        p by WHAT GOES HERE?
-</pre>
-<a class="anchor" id="unit-tests"></a>
+<pre><code>    .<span class="hljs-keyword">jumbotron.elfDiv
+</span>        h1= title
+        p <span class="hljs-keyword">by </span>WHAT GOES HERE?
+</code></pre><a class="anchor" id="unit-tests"></a>
 <h2>Unit Tests</h2>
 <p>There are many unit tests in $ELF_TEMPLATES/UnitTest/BitlyRefine. Copy them all into your <strong>spec</strong> folder and make sure they all pass.</p>
 <p>There are some jasmine-jquery (fixture) tests in some of the specs. For instance, look for these calls to <strong>loadFixtures</strong> or <strong>elfFixtureUtil.loadFixture</strong> in:</p>
@@ -299,31 +289,31 @@ cp $ELF_TEMPLATES/JadeMixins/mixin-buttons.jade views/.
 <a class="anchor" id="all-tests"></a>
 <h2>Copy All Tests</h2>
 <p>Be sure that you have copied in all the tests from JsObjects. First run this command to see if there are any differences between your <strong>specs</strong> directory and the ELF_TEMPLATES BitlyRefine specs:</p>
-<pre>diff spec/ $ELF_TEMPLATES/UnitTest/BitlyRefine/
-</pre>
+<pre><code class="lang-bash">diff spec<span class="hljs-regexp">/ $ELF_TEMPLATES/</span>UnitTest<span class="hljs-regexp">/BitlyRefine/</span>
+</code></pre>
 <p>If something is wrong, you might get results like this:</p>
-<pre>diff spec/test-basic.js /home/charlie/Git/JsObjects/Utilities/Templates/UnitTest/BitlyRefine/test-basic.js
+<pre><code class="lang-bash">diff spec/test-basic.js /home/charlie/Git/JsObjects/Utilities/Templates/UnitTest/BitlyRefine/test-basic.js
 98a99,110
->     it('shows we can call getLinkHistoryArray', function() {
->         elfBitly.getBitlyLinks();
->         var historyArray = elfBitly.getLinkHistoryArray();
->         expect(historyArray.length).toBe(50);
->     });
-> 
->     it('shows getLinkHistoryItem sets elfBitly.linkIndex', function() {
->         elfBitly.getBitlyLinks();
->         var historyArray = elfBitly.getLinkHistoryItem(12, true);
->         expect(elfBitly.linkIndex).toBe(12);
->     });
-> 
+<span class="hljs-meta">&gt;</span><span class="bash">     it(<span class="hljs-string">'shows we can call getLinkHistoryArray'</span>, <span class="hljs-function"><span class="hljs-title">function</span></span>() {</span>
+<span class="hljs-meta">&gt;</span><span class="bash">         elfBitly.getBitlyLinks();</span>
+<span class="hljs-meta">&gt;</span><span class="bash">         var historyArray = elfBitly.getLinkHistoryArray();</span>
+<span class="hljs-meta">&gt;</span><span class="bash">         expect(historyArray.length).toBe(50);</span>
+<span class="hljs-meta">&gt;</span><span class="bash">     });</span>
+<span class="hljs-meta">&gt;</span><span class="bash"> </span>
+<span class="hljs-meta">&gt;</span><span class="bash">     it(<span class="hljs-string">'shows getLinkHistoryItem sets elfBitly.linkIndex'</span>, <span class="hljs-function"><span class="hljs-title">function</span></span>() {</span>
+<span class="hljs-meta">&gt;</span><span class="bash">         elfBitly.getBitlyLinks();</span>
+<span class="hljs-meta">&gt;</span><span class="bash">         var historyArray = elfBitly.getLinkHistoryItem(12, <span class="hljs-literal">true</span>);</span>
+<span class="hljs-meta">&gt;</span><span class="bash">         expect(elfBitly.linkIndex).toBe(12);</span>
+<span class="hljs-meta">&gt;</span><span class="bash">     });</span>
+<span class="hljs-meta">&gt;</span><span class="bash"> </span>
 118a131
-> 
+<span class="hljs-meta">&gt;</span><span class="bash"> </span>
 diff spec/test-files.js /home/charlie/Git/JsObjects/Utilities/Templates/UnitTest/BitlyRefine/test-files.js
 0a1,4
-> /**
->  * Created by charlie on 11/9/15.
->  */
-> 
+<span class="hljs-meta">&gt;</span><span class="bash"> /**</span>
+<span class="hljs-meta">&gt;</span><span class="bash">  * Created by charlie on 11/9/15.</span>
+<span class="hljs-meta">&gt;</span><span class="bash">  */</span>
+<span class="hljs-meta">&gt;</span><span class="bash"> </span>
 Only in /home/charlie/Git/JsObjects/Utilities/Templates/UnitTest/BitlyRefine/: test-fixture-util.js
 Only in /home/charlie/Git/JsObjects/Utilities/Templates/UnitTest/BitlyRefine/: test-interface.js
 Only in /home/charlie/Git/JsObjects/Utilities/Templates/UnitTest/BitlyRefine/: test-jade.js
@@ -332,31 +322,30 @@ diff spec/test-local-cloud.js /home/charlie/Git/JsObjects/Utilities/Templates/Un
 0a1,4
 
 ETC ...
-</pre>
+</code></pre>
 <p>To fix this problem, consider running this command:</p>
-<pre>cp $ELF_TEMPLATES/UnitTest/BitlyRefine/* spec/
-</pre>
+<pre><code class="lang-bash">cp <span class="hljs-variable">$ELF_TEMPLATES</span><span class="hljs-regexp">/UnitTest/</span>BitlyRefine<span class="hljs-regexp">/* spec/</span>
+</code></pre>
 <p>Now the <strong>diff</strong> command should come back clean.</p>
 <a class="anchor" id="delicious-links"></a>
 <h2>Delicious Links</h2>
 <p>elfDelicious.deliciousLInks should be declared like this:</p>
-<pre>var elfDelicious = {
+<pre><code class="lang-javascript"><span class="hljs-string">var</span> <span class="hljs-string">elfDelicious</span> <span class="hljs-string">=</span> <span class="hljs-string">{</span>
 
-    deliciousLinks: null,
-</pre>
+<span class="hljs-attr">    deliciousLinks:</span> <span class="hljs-literal">null</span><span class="hljs-string">,</span>
+</code></pre>
 <p>It should contain the contents of the delicious-javascript-links.js file which is part, I believe, of the Week0X.DeliciousQuery project. It is also in $ELF_TEMPLATES/WebServices. Once you find it, I would put it in Week1X-HyperExplore/spec/data directory. Make sure that Karma loads it by writing something like this in the files object of karma.conf.js:</p>
-<pre>'spec/data/*.js'
-</pre>
-<p>That way both it and bitly-links.js will be loaded by karma. The file&#39;s contents should be loaded automatically and assigned to elfDelicious.deliciousLinks by this code in our tests:</p>
-<pre>beforeEach(function() {
-    spyOn($, 'ajax').and.callFake(function(ajaxObject) {
-        ajaxObject.success(deliciousLinks);
+<pre><code>'spec/<span class="hljs-class"><span class="hljs-keyword">data</span>/*.js'</span>
+</code></pre><p>That way both it and bitly-links.js will be loaded by karma. The file&#39;s contents should be loaded automatically and assigned to elfDelicious.deliciousLinks by this code in our tests:</p>
+<pre><code class="lang-javascript">beforeEach(<span class="hljs-name">function</span>() {
+    spyOn($, 'ajax').and.callFake(<span class="hljs-name">function</span>(<span class="hljs-name">ajaxObject</span>) {
+        ajaxObject.success(<span class="hljs-name">deliciousLinks</span>)<span class="hljs-comment">;</span>
         return {
             fail: function() {}
-        };
-    });
-});
-</pre>
+        }<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
 <a class="anchor" id="test-directories"></a>
 <h2>Test Directories</h2>
 <p>In <strong>$ELF_TEMPLATES/UnitTest/HyperExplorer</strong> there are two directories called <strong>data</strong> and <strong>fixtures</strong>. Your data directory should hold files like:</p>
@@ -375,21 +364,21 @@ ETC ...
 <li>twitter.html</li>
 </ul>
 <p>To create some of the fixture code, expand the code in the files directory for <strong>karma.conf.js</strong>:</p>
-<pre>jade: {
-    compile: {
-        options: {
-            pretty: true,
-            data: {
-                debug: false
+<pre><code class="lang-javascript"><span class="hljs-attribute">jade</span>: {
+    <span class="hljs-attribute">compile</span>: {
+        <span class="hljs-attribute">options</span>: {
+            <span class="hljs-attribute">pretty</span>: true,
+            <span class="hljs-attribute">data</span>: {
+                <span class="hljs-attribute">debug</span>: false
             }
         },
-        files: {
-            'spec/fixtures/delicious.html': ['views/delicious.jade', '$ELF_TEMPLATES/JadeMixins/*.jade'],
-            'spec/fixtures/fixture.html': ['views/fixture.jade', '$ELF_TEMPLATES/JadeMixins/*.jade'],
-            'spec/fixtures/twitter.html': ['views/twitter.jade', '$ELF_TEMPLATES/JadeMixins/*.jade']
+        <span class="hljs-attribute">files</span>: {
+            <span class="hljs-string">'spec/fixtures/delicious.html'</span>: [<span class="hljs-string">'views/delicious.jade'</span>, <span class="hljs-string">'$ELF_TEMPLATES/JadeMixins/*.jade'</span>],
+            <span class="hljs-string">'spec/fixtures/fixture.html'</span>: [<span class="hljs-string">'views/fixture.jade'</span>, <span class="hljs-string">'$ELF_TEMPLATES/JadeMixins/*.jade'</span>],
+            <span class="hljs-string">'spec/fixtures/twitter.html'</span>: [<span class="hljs-string">'views/twitter.jade'</span>, <span class="hljs-string">'$ELF_TEMPLATES/JadeMixins/*.jade'</span>]
 
         }
     }
 },
-</pre>
+</code></pre>
 </div></body></html>

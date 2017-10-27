@@ -30,15 +30,14 @@
 <a class="anchor" id="create"></a>
 <h2>Step One: Create the project</h2>
 <p>Create the project in your repository:</p>
-<pre>express Week03-AngularRoutes
-</pre>
-<p>Navigate into the directory you created and then run <strong>npm install</strong>.</p>
+<pre><code><span class="hljs-built_in">express</span> Week03-AngularRoutes
+</code></pre><p>Navigate into the directory you created and then run <strong>npm install</strong>.</p>
 <p>Open the project in WebStorm or your choice of editor/IDE.</p>
 <p>Set port to 30025 in <strong>bin/www</strong>. Use <strong>nodemon</strong> in <strong>package.json</strong>:</p>
-<pre>"scripts": {
-  "start": "nodemon ./bin/www"
+<pre><code class="lang-javascript"><span class="hljs-string">"scripts"</span>: {
+  <span class="hljs-string">"start"</span>: <span class="hljs-string">"nodemon ./bin/www"</span>
 },
-</pre>
+</code></pre>
 <p>In <strong>routes/index.js</strong> set the title to <strong>Angular Routes LastName</strong>, where LastName is your last name.</p>
 <a class="anchor" id="bower"></a>
 <h2>Step Two: Bower</h2>
@@ -50,100 +49,92 @@
 </ul>
 <p>You should find that bootstrap brings jQuery along with it.</p>
 <p>The <strong>.bowerrc</strong> in <strong>ELF_TEMPLATES</strong> configures bower so that it will install packages in the <strong>public/components</strong> folder. In particular, <strong>.bowerrc</strong> looks like this:</p>
-<pre>{
-  "directory": "public/components"
+<pre><code class="lang-javascript">{
+  <span class="hljs-attr">"directory"</span>: <span class="hljs-string">"public/components"</span>
 }
-</pre>
+</code></pre>
 <a class="anchor" id="menu"></a>
 <h2>Step Three: The Menu</h2>
 <p>Now it is time to build the interface. First we&#39;ll build the menu, then the body of the UI.</p>
 <p>Begin in Layout.jade by loading the code we will need:</p>
-<pre>doctype html
+<pre><code>doctype html
 html
   head
     title= title
-    link(rel='stylesheet', href='components/bootstrap/dist/css/bootstrap.css')
-    link(rel='stylesheet', href='components/bootstrap/dist/css/bootstrap-theme.css')
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src="components/jquery/dist/jquery.js")
-    script(src="components/bootstrap/dist/js/bootstrap.js")
-    script(src="components/angular/angular.js")
-    script(src="components/angular-route/angular-route.js")
-    script(src="javascripts/app.js")
-    script(src="javascripts/main.js")
-    script(src="javascripts/about.js")
-  body(ng-app="elfApp")
+    link(<span class="hljs-attribute">rel</span>=<span class="hljs-string">'stylesheet'</span>, <span class="hljs-attribute">href</span>=<span class="hljs-string">'components/bootstrap/dist/css/bootstrap.css'</span>)
+    link(<span class="hljs-attribute">rel</span>=<span class="hljs-string">'stylesheet'</span>, <span class="hljs-attribute">href</span>=<span class="hljs-string">'components/bootstrap/dist/css/bootstrap-theme.css'</span>)
+    link(<span class="hljs-attribute">rel</span>=<span class="hljs-string">'stylesheet'</span>, <span class="hljs-attribute">href</span>=<span class="hljs-string">'/stylesheets/style.css'</span>)
+    script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"components/jquery/dist/jquery.js"</span>)
+    script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"components/bootstrap/dist/js/bootstrap.js"</span>)
+    script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"components/angular/angular.js"</span>)
+    script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"components/angular-route/angular-route.js"</span>)
+    script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"javascripts/app.js"</span>)
+    script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"javascripts/main.js"</span>)
+    script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"javascripts/about.js"</span>)
+  body(<span class="hljs-attribute">ng-app</span>=<span class="hljs-string">"elfApp"</span>)
     block content
-</pre>
-<p>In <strong>index.jade</strong> we will have a:</p>
+</code></pre><p>In <strong>index.jade</strong> we will have a:</p>
 <ul>
 <li>navbar and menu  </li>
 <li>The main body of the program, including a place for our routing content, our controllers.</li>
 <li>Footer</li>
 </ul>
 <p>To get started, define the navbar:</p>
-<pre>extends layout
+<pre><code>extends layout
 
-block content
-  nav.navbar-inverse.navbar-fixed-top
-</pre>
-<p>Now, inside the navbar, add a container and a menu:</p>
-<pre>.container
-  navbar-header
-    ul.nav.nav-pills
-      li(ng-class="{ active: isActive('/')}")
-        a(ng-href='#/') Home
-      li(ng-class="{ active: isActive('/about')}")
-        a(ng-href='#/about') About
-</pre>
-<p>By &quot;inside the navbar&quot;, I mean indented one tab further to the right than the <strong>navbar</strong>. We know the <strong>navbar</strong> is inside the <strong>block content</strong> because it is indented to the right of it. Likewise, we know our <strong>container</strong> is inside the <strong>navbar</strong> because it is also indented one tab to the right:_</p>
-<pre>block
-- navbar
-- - container
-</pre>
-<p>In Jade, indentation is everything.</p>
+block <span class="hljs-attribute">content</span>
+  <span class="hljs-selector-tag">nav</span><span class="hljs-selector-class">.navbar-inverse</span><span class="hljs-selector-class">.navbar-fixed-top</span>
+</code></pre><p>Now, inside the navbar, add a container and a menu:</p>
+<pre><code><span class="hljs-selector-class">.container</span>
+  navbar-<span class="hljs-selector-tag">header</span>
+    <span class="hljs-selector-tag">ul</span><span class="hljs-selector-class">.nav</span><span class="hljs-selector-class">.nav-pills</span>
+      li(ng-class=<span class="hljs-string">"{ active: isActive('/')}"</span>)
+        a(ng-href=<span class="hljs-string">'#/'</span>) Home
+      li(ng-class=<span class="hljs-string">"{ active: isActive('/about')}"</span>)
+        a(ng-href=<span class="hljs-string">'#/about'</span>) About
+</code></pre><p>By &quot;inside the navbar&quot;, I mean indented one tab further to the right than the <strong>navbar</strong>. We know the <strong>navbar</strong> is inside the <strong>block content</strong> because it is indented to the right of it. Likewise, we know our <strong>container</strong> is inside the <strong>navbar</strong> because it is also indented one tab to the right:_</p>
+<pre><code>block
+-<span class="ruby"> navbar
+</span>-<span class="ruby"> - container</span>
+</code></pre><p>In Jade, indentation is everything.</p>
 <p><strong>HINT</strong>: <em>Try switching between navbar-inverse and navbar-default.</em></p>
 <a class="anchor" id="body"></a>
 <h2>Step Four: The Body</h2>
 <p>At the same level as the navbar, put the body of the page inside a second container:</p>
-<pre>.container
+<pre><code><span class="hljs-selector-class">.container</span>
   h1= title
-  p Welcome to #{title}
+  <span class="hljs-selector-tag">p</span> Welcome to #{title}
 
-  h1 The View
-  div(data-ng-view="")
-</pre>
-<p>When I say &quot;at the same level&quot;, that means indented the same number of tabs:</p>
-<pre>block
+  <span class="hljs-selector-tag">h1</span> The View
+  div(data-ng-view=<span class="hljs-string">""</span>)
+</code></pre><p>When I say &quot;at the same level&quot;, that means indented the same number of tabs:</p>
+<pre><code>block
   navbar
-    container
-      menu
-  container
+    <span class="hljs-keyword">container</span>
+      <span class="hljs-keyword">menu</span>
+  <span class="hljs-keyword">container</span>
     body
-</pre>
-<p>And finally, still inside the second container, add the footer:</p>
-<pre>.footer
+</code></pre><p>And finally, still inside the second container, add the footer:</p>
+<pre><code>.footer
   p
     span.glyphicon.glyphicon-grain
-    |  from Elvenware
-</pre>
-<p>In index.jade, the indentation should appear something like this, where each dash (-) represents a tab or an equal number of spaces:</p>
-<pre>block content
-- navbar
-- - container
-- - - navbar-header
-- - - - ul
-- - - - - li
-- - - - - li
-- container
-- - h1
-- - p
-- - h1
-- - div
-- - footer
-- - - p
-</pre>
-<p>If you are interested, there is more information about menus here:</p>
+    <span class="hljs-string">|  from Elvenware</span>
+</code></pre><p>In index.jade, the indentation should appear something like this, where each dash (-) represents a tab or an equal number of spaces:</p>
+<pre><code>block content
+-<span class="ruby"> navbar
+</span>-<span class="ruby"> - container
+</span>-<span class="ruby"> - - navbar-header
+</span>-<span class="ruby"> - - - ul
+</span>-<span class="ruby"> - - - - li
+</span>-<span class="ruby"> - - - - li
+</span>-<span class="ruby"> container
+</span>-<span class="ruby"> - h1
+</span>-<span class="ruby"> - p
+</span>-<span class="ruby"> - h1
+</span>-<span class="ruby"> - div
+</span>-<span class="ruby"> - footer
+</span>-<span class="ruby"> - - p</span>
+</code></pre><p>If you are interested, there is more information about menus here:</p>
 <ul>
 <li><a href="http://bit.ly/jade-mixins">http://bit.ly/jade-mixins</a></li>
 </ul>
@@ -159,23 +150,22 @@ block content
 <p>Angular allows us to define a single method that specifies which bits of HTML, and which Controllers, are associated with each page. When the user makes a selection from the menu, this bit of code specifies what associated HTML should be loaded, and what Controller should be loaded.</p>
 <p>Consider the case where the user selects the <strong>About</strong> menu. When that happens, the HTML that defines the appearance of the <strong>About</strong> page is loaded. The existing HTML on the main page is swapped out, and the about page is loaded into view. At the same time, the Controller associated with the About page is loaded into memory and linked to the About HTML.</p>
 <p>Below is an example of how to define the method that handles routing for the <strong>elfApp</strong> module. In your <strong>public\javascripts</strong> directory create a file called <strong>app.js</strong>:</p>
-<pre>var myModule = angular.module("elfApp", [ 'ngRoute' ]);
+<pre><code>var myModule = angular.module(<span class="hljs-string">"elfApp"</span>, [ <span class="hljs-string">'ngRoute'</span> ]);
 
-myModule.config(function($routeProvider, $locationProvider) {
-    $routeProvider.when("/", {
-        templateUrl : "main",
-        controller : "MainController",
-        controllerAs: "mainController"
-    }).when('/about', {
-        templateUrl : "about",
-        controller : "AboutController",
-        controllerAs: 'aboutController'
+myModule.config(<span class="hljs-keyword">function</span>($routeProvider, $locationProvider) {
+    $routeProvider.when(<span class="hljs-string">"/"</span>, {
+        templateUrl : <span class="hljs-string">"main"</span>,
+        controller : <span class="hljs-string">"MainController"</span>,
+        controllerAs: <span class="hljs-string">"mainController"</span>
+    }).when(<span class="hljs-string">'/about'</span>, {
+        templateUrl : <span class="hljs-string">"about"</span>,
+        controller : <span class="hljs-string">"AboutController"</span>,
+        controllerAs: <span class="hljs-string">'aboutController'</span>
     }).otherwise({
-        redirectTo : '/'
+        redirectTo : <span class="hljs-string">'/'</span>
     });
 });
-</pre>
-<p>Note that this code specifies that <strong>elfapp</strong> depends on the built in <a href="https://docs.angularjs.org/api/ngRoute">ngRoute</a> module. This module allows us to load various chunks of HTML into our main page. The end result is a single page application.</p>
+</code></pre><p>Note that this code specifies that <strong>elfapp</strong> depends on the built in <a href="https://docs.angularjs.org/api/ngRoute">ngRoute</a> module. This module allows us to load various chunks of HTML into our main page. The end result is a single page application.</p>
 <p>Note that each route found in  <strong>myModule.config</strong> specifies three things:</p>
 <ul>
 <li>templateUrl: This is the HTML (Jade in our case) that needs to be loaded.</li>
@@ -192,41 +182,36 @@ div(data-ng-view="")
 <h2>Step Six: Controllers</h2>
 <p>Now that we know the shape of our application, lets define the controllers for the main page and the about page.</p>
 <p>In your <strong>public\javascripts</strong> directory create <strong>main.js</strong>:</p>
-<pre>var elfApp = angular.module("elfApp");
+<pre><code><span class="hljs-keyword">var</span> elfApp = angular.module(<span class="hljs-string">"elfApp"</span>);
 
-elfApp.controller('MainController', function() {
-    var mainController = this;
-    mainController.mainData = "Main Data";
+elfApp.controller(<span class="hljs-string">'MainController'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> mainController = <span class="hljs-keyword">this</span>;
+    mainController.mainData = <span class="hljs-string">"Main Data"</span>;
 });
-</pre>
-<p>The the same directory, create <strong>about.js</strong>:</p>
-<pre>var elfApp = angular.module("elfApp");
+</code></pre><p>The the same directory, create <strong>about.js</strong>:</p>
+<pre><code><span class="hljs-keyword">var</span> elfApp = angular.module(<span class="hljs-string">"elfApp"</span>);
 
-elfApp.controller('AboutController', function() {
-    var aboutController = this;
-    aboutController.aboutData = "About Data";
+elfApp.controller(<span class="hljs-string">'AboutController'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> aboutController = <span class="hljs-keyword">this</span>;
+    aboutController.aboutData = <span class="hljs-string">"About Data"</span>;
 
 });
-</pre>
-<a class="anchor" id="views"></a>
+</code></pre><a class="anchor" id="views"></a>
 <h2>Step Seven: Views</h2>
 <p>In your <strong>views</strong> directory create the Jade that will be loaded when the user requests a new &quot;page&quot;:</p>
 <p>Here is <strong>main.jade</strong>:</p>
-<pre>p This is main
+<pre><code><span class="hljs-selector-tag">p</span> This is main
 
-p {{mainController.mainData}}
-</pre>
-<p>Here is <strong>about.jade</strong>:</p>
-<pre>p This is about
+<span class="hljs-selector-tag">p</span> {{mainController.mainData}}
+</code></pre><p>Here is <strong>about.jade</strong>:</p>
+<pre><code><span class="hljs-selector-tag">p</span> This is about
 
-p {{aboutController.aboutData}}
-</pre>
-<p>Then add this to <strong>routes/index.js</strong> right before <strong>module.exports</strong>:</p>
-<pre>router.get('/:id', function(req, res, nest) {
-  res.render(req.params.id, { title: ' Angular Routes Calvert' });
+<span class="hljs-selector-tag">p</span> {{aboutController.aboutData}}
+</code></pre><p>Then add this to <strong>routes/index.js</strong> right before <strong>module.exports</strong>:</p>
+<pre><code>router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req, res, nest)</span> </span>{
+  res.render(req.params.id, { title: <span class="hljs-string">' Angular Routes Calvert'</span> });
 });
-</pre>
-<p>This code will process the requests for the <em>chunks</em> of HTML that make up the body of the main page and body of the about page. In particular, it loads either <strong>main.jade</strong> or <strong>about.jade</strong>, converts it into HTML, and sends it via HTTP back to the client.</p>
+</code></pre><p>This code will process the requests for the <em>chunks</em> of HTML that make up the body of the main page and body of the about page. In particular, it loads either <strong>main.jade</strong> or <strong>about.jade</strong>, converts it into HTML, and sends it via HTTP back to the client.</p>
 <p>Be sure you understand the flow:</p>
 <ul>
 <li>The user clicks the about menu</li>

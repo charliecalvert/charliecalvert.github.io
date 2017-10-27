@@ -46,12 +46,11 @@ git version 2.11.0
 <li>Here is <a href="https://github.com/charliecalvert/JsObjects/blob/master/Utilities/InstallScripts/HerokuInstall">a direct link to the script</a>.</li>
 </ul>
 <p>At the time of this writing, the script looks like this:</p>
-<pre>sudo add-apt-repository "deb https://cli-assets.heroku.com/branches/stable/apt ./"
-$ curl -fL https://cli-assets.heroku.com/apt/release.key | sudo apt-key add -
+<pre><code>sudo<span class="hljs-built_in"> add-apt-repository </span><span class="hljs-string">"deb https://cli-assets.heroku.com/branches/stable/apt ./"</span>
+$ curl -fL https://cli-assets.heroku.com/apt/release.key | sudo apt-key<span class="hljs-built_in"> add </span>-
 $ sudo apt-get update
 $ sudo apt-get install heroku
-</pre>
-<p>Type <strong>heroku</strong> to log in. If that doesn&#39;t work, try <strong>heroku auth:login</strong> instead. In either case, it should look something like this:</p>
+</code></pre><p>Type <strong>heroku</strong> to log in. If that doesn&#39;t work, try <strong>heroku auth:login</strong> instead. In either case, it should look something like this:</p>
 <pre>
 heroku auth:login
 Enter your Heroku credentials.
@@ -63,10 +62,9 @@ Logged in as foo@foobar.com
 <a class="anchor" id="deploy"></a>
 <h2>Get Ready to Create</h2>
 <p>Make sure your system is set up correctly. In particular, look in the ~/bin directory and see if there is a file there called <strong>CreateExpressProject</strong>. If it is not there, then do this:</p>
-<pre>slb
-./CreateSymbolicLinks
-</pre>
-<p>The <strong>slb</strong> alias takes you to this directory:</p>
+<pre><code>slb
+<span class="hljs-string">./CreateSymbolicLinks</span>
+</code></pre><p>The <strong>slb</strong> alias takes you to this directory:</p>
 <ul>
 <li><strong>/Git/JsObjects/Utilities/SetupLinuxBox</strong></li>
 </ul>
@@ -126,11 +124,11 @@ git push heroku master
 <h2>Use Node not Nodemon</h2>
 <p>In package.json, we should replace <strong>nodemon</strong> with <strong>node</strong>. We like <strong>nodemon</strong> because it automatically restarts our application when we make changes to our code. But that is not helpful once we are deploying. At that stage, we are no longer changing code, and so we don&#39;t need <strong>nodemon</strong>.</p>
 <p>If you do keep <strong>nodemon</strong>, consider using <strong>nodemon.json</strong> to be sure that writing a JSON file to disk does not restart your project in the middle of a database operation. You probably won&#39;t being using either <strong>nodemon</strong> or a file called <strong>renewables.json</strong>, but just for the record, here is an example <strong>nodemon.json</strong> where we tell <strong>nodemon</strong> to ignore changes to a file called <strong>renewables.json</strong>:</p>
-<pre>{
-  "verbose": true,
-  "ignore": ["renewables.json"]
+<pre><code class="lang-javascript">{
+  <span class="hljs-attr">"verbose"</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">"ignore"</span>: [<span class="hljs-string">"renewables.json"</span>]
 }
-</pre>
+</code></pre>
 <a class="anchor" id="npm-and-bower"></a>
 <h2>NPM and Bower</h2>
 <p>In NPM, we don&#39;t need dev dependencies. We need, however, to add a manual install of bower and a <strong>postinstall</strong> step:</p>
@@ -140,32 +138,31 @@ npm install --save bower
 
 <p><strong>NOTE</strong>: <em>Bower gives a warning. We will fix this later.</em></p>
 <p>Also, open <strong>package.json</strong> and change <strong>nodemon</strong> to <strong>node</strong> in the <strong>start</strong> property. Also add the post install step shown below:</p>
-<pre>{
-  "name": "calvert04",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "start": "node ./bin/www",
-    "postinstall": "node_modules/bower/bin/bower install"
+<pre><code class="lang-javascript">{
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"calvert04"</span>,
+  <span class="hljs-attr">"version"</span>: <span class="hljs-string">"0.0.0"</span>,
+  <span class="hljs-attr">"private"</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">"scripts"</span>: {
+    <span class="hljs-attr">"start"</span>: <span class="hljs-string">"node ./bin/www"</span>,
+    <span class="hljs-attr">"postinstall"</span>: <span class="hljs-string">"node_modules/bower/bin/bower install"</span>
   },
-  "dependencies": {
-    "body-parser": "~1.17.1",
-    "bower": "^1.8.0",
-    "cookie-parser": "~1.4.3",
-    "debug": "~2.6.3",
-    "express": "~4.15.2",
-    "morgan": "~1.8.1",
-    "pug": "~2.0.0-beta11",
-    "serve-favicon": "~2.4.2"
+  <span class="hljs-attr">"dependencies"</span>: {
+    <span class="hljs-attr">"body-parser"</span>: <span class="hljs-string">"~1.17.1"</span>,
+    <span class="hljs-attr">"bower"</span>: <span class="hljs-string">"^1.8.0"</span>,
+    <span class="hljs-attr">"cookie-parser"</span>: <span class="hljs-string">"~1.4.3"</span>,
+    <span class="hljs-attr">"debug"</span>: <span class="hljs-string">"~2.6.3"</span>,
+    <span class="hljs-attr">"express"</span>: <span class="hljs-string">"~4.15.2"</span>,
+    <span class="hljs-attr">"morgan"</span>: <span class="hljs-string">"~1.8.1"</span>,
+    <span class="hljs-attr">"pug"</span>: <span class="hljs-string">"~2.0.0-beta11"</span>,
+    <span class="hljs-attr">"serve-favicon"</span>: <span class="hljs-string">"~2.4.2"</span>
   }
 }
-</pre>
+</code></pre>
 <p>If you want, you can also specify the version of Node that you want to use:</p>
-<pre>"engines": {
-    "node": "7.9.0"
+<pre><code><span class="hljs-string">"engines"</span>: {
+    <span class="hljs-string">"node"</span>: <span class="hljs-string">"7.9.0"</span>
   },
-</pre>
-<p>Recall that you can find the node version by typing <strong>node --version</strong>.</p>
+</code></pre><p>Recall that you can find the node version by typing <strong>node --version</strong>.</p>
 <a class="anchor" id="deploy-checklist"></a>
 <h2>Deploy Checklist</h2>
 <p>Here are all the commands seen at once, as culled from my bash history. It might serve as something like a checklist.</p>
@@ -213,20 +210,18 @@ No dynos on ⬢ heru03
 <a class="anchor" id="heroku-and-react"></a>
 <h2>Heroku and React</h2>
 <p>Its the same drill, but let&#39;s do it with <strong>create-react-app</strong>:</p>
-<pre>cd ~/Source
-create-react-app lastname02
-cd lastname02
-git init
-heroku create -b https://github.com/mars/create-react-app-buildpack.git
-git add .
-git commit -m "Heroku and React"
-git push --set-upstream heroku master
-</pre>
-<p>Then you can do <strong>heroku open</strong> if you want. Or go to heroku dashboard.</p>
+<pre><code><span class="hljs-string">cd </span>~/<span class="hljs-string">Source
+</span><span class="hljs-built_in">create-react-app</span> <span class="hljs-string">lastname02
+</span><span class="hljs-string">cd </span><span class="hljs-string">lastname02
+</span><span class="hljs-string">git </span><span class="hljs-string">init
+</span><span class="hljs-string">heroku </span><span class="hljs-string">create </span>-b <span class="hljs-string">https:</span>//<span class="hljs-string">github.</span><span class="hljs-string">com/</span><span class="hljs-string">mars/</span><span class="hljs-built_in">create-react-app-buildpack.git</span>
+<span class="hljs-string">git </span><span class="hljs-string">add </span>.
+<span class="hljs-string">git </span><span class="hljs-string">commit </span>-m <span class="hljs-string">"Heroku and React"</span>
+<span class="hljs-string">git </span><span class="hljs-string">push </span><span class="hljs-built_in">--set-upstream</span> <span class="hljs-string">heroku </span><span class="hljs-string">master</span>
+</code></pre><p>Then you can do <strong>heroku open</strong> if you want. Or go to heroku dashboard.</p>
 <p>Please note the key step above where we install the Buildpack for <strong>create-react-app</strong>:</p>
-<pre>heroku create -b https://github.com/mars/create-react-app-buildpack.git
-</pre>
-<p>This does some special configuration for you automatically, just as we manually did a bit of configuration for bower.</p>
+<pre><code>heroku <span class="hljs-built_in">create</span> -b <span class="hljs-keyword">https</span>://github.com/mars/<span class="hljs-built_in">create</span>-react-app-buildpack.git
+</code></pre><p>This does some special configuration for you automatically, just as we manually did a bit of configuration for bower.</p>
 <a class="anchor" id="delete"></a>
 <h2>Delete</h2>
 <p>Delete an app from heroku with: heroku apps:destroy --app <APP_NAME></p>
@@ -303,19 +298,15 @@ heroku ps:scale web=0
 </ul>
 <p>When you are done, your express server should be running on Heroku. As a result, you should be able to browse to it with your phone. This will enable you to begin the process of tweaking your code so that it looks right on a phone.</p>
 <p>It should be almost automatic. From the root of your react heroku project do this. For instance, if you are in Prog272, first copy over <strong>CongressAddress</strong> on top of the default create-react-app project:</p>
-<pre>cp -r ~/Git/prog272-lastname-2017/CongressAddress/* .
-</pre>
-<p>If you are in Isit322, then do something like this:</p>
-<pre>cp -r ~/Git/isit322-lastname-2017/GitExplorer/server/* .
-</pre>
-<p>Then add, commit, and finally push to Heroku as described above. Something like:</p>
-<pre>git push heroku master
-</pre>
-<p>Now go to your browser and see if it works.</p>
+<pre><code>cp -r ~<span class="hljs-regexp">/Git/</span>prog272-lastname-<span class="hljs-number">2017</span><span class="hljs-regexp">/CongressAddress/</span>* .
+</code></pre><p>If you are in Isit322, then do something like this:</p>
+<pre><code>cp -r ~<span class="hljs-regexp">/Git/i</span>sit322-lastname-<span class="hljs-number">2017</span><span class="hljs-regexp">/GitExplorer/</span>server<span class="hljs-regexp">/* .</span>
+</code></pre><p>Then add, commit, and finally push to Heroku as described above. Something like:</p>
+<pre><code><span class="hljs-symbol">git</span> <span class="hljs-keyword">push </span>heroku master
+</code></pre><p>Now go to your browser and see if it works.</p>
 <p>If you look at it on the Heroku dashboard, your application may get a funny name when it is pushed to Heroku. This should not matter, but if it bothers you it should also be configurable as the third parameter to heroku create:</p>
-<pre>heroku create myname
-</pre>
-<p><strong>NOTE</strong>: <em>I once hit a very painful bug by putting a <strong>.gitignore</strong> file in the public directory that kept me from pushing the contents of my static directory. This makes sense in normal day to day life, but obviously causes a serious problem if you are trying to push a working project to heroku. It did not help that I kept getting an error message saying that <strong>res.sendFile</strong> did not exist. It meant that the file <strong>res.sendFile</strong> was trying to find did not exist, not that <strong>res.sendFile</strong> did not exist.</em></p>
+<pre><code><span class="hljs-attribute">heroku create myname</span>
+</code></pre><p><strong>NOTE</strong>: <em>I once hit a very painful bug by putting a <strong>.gitignore</strong> file in the public directory that kept me from pushing the contents of my static directory. This makes sense in normal day to day life, but obviously causes a serious problem if you are trying to push a working project to heroku. It did not help that I kept getting an error message saying that <strong>res.sendFile</strong> did not exist. It meant that the file <strong>res.sendFile</strong> was trying to find did not exist, not that <strong>res.sendFile</strong> did not exist.</em></p>
 <a class="anchor" id="clone-on-new-machine"></a>
 <h2>Clone on New Machine</h2>
 <p>If you are now at home, and created your project on the school machine, you can download you project to your current machine like this:</p>
@@ -339,9 +330,8 @@ heroku ps:scale web=0
 <li>Once you have copied the project over one time, use tools to automate the process of updating the version in <strong>~/Source</strong>.</li>
 </ul>
 <p>The primary tool I would use is Meld:</p>
-<pre>meld ~/Git/prog272-lastname-2017/CongressAddress/ ~/Source/lastname06
-</pre>
-<p>If you don&#39;t know how to use meld, I would <a href="http://meldmerge.org/help/index.html">read up on it</a>. Understanding how to use tools that allow you to compare directories is an essential skill whether you want to go into development, QA, or IT.</p>
+<pre><code>meld ~<span class="hljs-regexp">/Git/</span>prog272-lastname-<span class="hljs-number">2017</span><span class="hljs-regexp">/CongressAddress/</span> ~<span class="hljs-regexp">/Source/</span>lastname06
+</code></pre><p>If you don&#39;t know how to use meld, I would <a href="http://meldmerge.org/help/index.html">read up on it</a>. Understanding how to use tools that allow you to compare directories is an essential skill whether you want to go into development, QA, or IT.</p>
 <p>Another option is to automate the process with a simple copy command which you could save in a script. This option would require some testing before you implemented it. It uses the <strong>cp</strong> command with some advanced flags:</p>
 <p>  cp -Truvp ~/Git/prog272-calvert-2017/calvert06 ~/Source/calvert06/</p>
 <p>This copies only files with differences (u) recursively (r) and verbosely (v) and helps you avoid the nested folder issue (T). For more information, access the manual for <strong>cp</strong> by typing <strong>man cp</strong> at the bash prompt. Scan through the document with the <strong>arrow</strong> keys and exit with the <strong>q</strong> key. Press <strong>h</strong> for help.</p>
@@ -350,9 +340,9 @@ heroku ps:scale web=0
 <li><a href="https://stackoverflow.com/a/24486142/253576">No Target Directory</a></li>
 </ul>
 <p>To create the script, do something like this, where you will need to modify the path to use your last name:</p>
-<pre>echo 'cp -Truvp ~/Git/prog272-calvert-2017/calvert06 ~/Source/calvert06/' > copy-to-heroku
-chmod +x copy-to-heroku
-</pre>
+<pre><code class="lang-bash">echo <span class="hljs-string">'cp -Truvp ~/Git/prog272-calvert-2017/calvert06 ~/Source/calvert06/'</span> &gt; <span class="hljs-keyword">copy</span><span class="bash">-to-heroku
+</span>chmod +x <span class="hljs-keyword">copy</span><span class="bash">-to-heroku</span>
+</code></pre>
 <a class="anchor" id="turn-it-in-prog-272"></a>
 <h2>Turn it in Prog 272</h2>
 <p>If you are in <strong>prog272</strong> do this:</p>

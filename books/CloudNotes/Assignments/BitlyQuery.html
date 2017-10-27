@@ -16,168 +16,168 @@
 <a class="anchor" id="get-started"></a>
 <h2>Get Started</h2>
 <p>Create the project</p>
-<pre>CreateExpressProject Week06-BitlyQuery
-cd Week06-BitlyQuery
-TestReady
-</pre>
+<pre><code class="lang-bash"><span class="hljs-symbol">CreateExpressProject</span> Week06-<span class="hljs-keyword">BitlyQuery
+</span><span class="hljs-symbol">cd</span> Week06-<span class="hljs-keyword">BitlyQuery
+</span><span class="hljs-symbol">TestReady</span>
+</code></pre>
 <a class="anchor" id="set-up-unit-tests"></a>
 <h2>Set up Unit Tests</h2>
 <p>For now, we won&#39;t query the actual Bitly servers. Instead, we will use mock data that I store in JsObjects:</p>
-<pre>cp $ELF_TEMPLATES/WebServices/bitly-links.js spec/.
-</pre>
+<pre><code class="lang-base">cp <span class="hljs-variable">$ELF_TEMPLATES</span>/WebServices/bitly-links<span class="hljs-selector-class">.js</span> spec/.
+</code></pre>
 <p>You will have to modify <strong>karma-conf.js</strong> so that it loads the mock data. In particular, modify the <strong>files</strong> property by adding the following to the list of files that will be loaded will be loaded when karma is launched:</p>
-<pre>'spec/bitly-links.js'
-</pre>
+<pre><code class="lang-base"><span class="hljs-symbol">'spec/bitly-links.js</span>'
+</code></pre>
 <p>If you don&#39;t complete the above step properly, you might get an error such as: <strong>ReferenceError: Can&#39;t find variable: bitlyLinks</strong>.</p>
 <p>Here are the tests that you should get to pass. Put them in <strong>spec/test-basic.js</strong>:</p>
-<pre>describe("Elvenware Simple Plain Suite", function() { 'use strict';
+<pre><code class="lang-javascript">describe(<span class="hljs-string">"Elvenware Simple Plain Suite"</span>, function() { 'use strict'<span class="hljs-comment">;</span>
 
-    it("expects true to be true", function() {
-        expect(true).toBe(true);
-    });
+    it(<span class="hljs-string">"expects true to be true"</span>, function() {
+        expect(<span class="hljs-name">true</span>).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
 
-});
+})<span class="hljs-comment">;</span>
 
 
-describe("Test Bitly Suite", function() {
-    'use strict';
+describe(<span class="hljs-string">"Test Bitly Suite"</span>, function() {
+    'use strict'<span class="hljs-comment">;</span>
 
-    var accessToken = '2ac4b4ccf91019cff6a6b3f23bcbe05ec2bf7a8c';
+    var accessToken = '<span class="hljs-number">2</span>ac4b4ccf91019cff6a6b3f23bcbe05ec2bf7a8c'<span class="hljs-comment">;</span>
 
-    it("gets a url", function () {
-        var url = bitlyUrlParser.getUrl(accessToken);
+    it(<span class="hljs-string">"gets a url"</span>, function () {
+        var url = bitlyUrlParser.getUrl(<span class="hljs-name">accessToken</span>)<span class="hljs-comment">;</span>
 
-        expect(url).toBeTruthy();
-        expect(url).toContain(accessToken);
-        expect(url).toContain('https');
+        expect(<span class="hljs-name">url</span>).toBeTruthy()<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">url</span>).toContain(<span class="hljs-name">accessToken</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">url</span>).toContain('https')<span class="hljs-comment">;</span>
 
-    });
+    })<span class="hljs-comment">;</span>
 
-    it("tests the local url we pass to getBitlyLinks", function() {
-        var finalUrl;
+    it(<span class="hljs-string">"tests the local url we pass to getBitlyLinks"</span>, function() {
+        var finalUrl<span class="hljs-comment">;</span>
 
-        spyOn($, 'getJSON').and.callFake(function(url, success) {
-            finalUrl = url;
-            success(bitlyLinks);
+        spyOn($, 'getJSON').and.callFake(<span class="hljs-name">function</span>(<span class="hljs-name">url</span>, success) {
+            finalUrl = url<span class="hljs-comment">;</span>
+            success(<span class="hljs-name">bitlyLinks</span>)<span class="hljs-comment">;</span>
             return {
                 fail: function() {}
-            };
-        });
+            }<span class="hljs-comment">;</span>
+        })<span class="hljs-comment">;</span>
 
-        bitlyUrlParser.getBitlyLinks(-1);
-        expect(finalUrl).toBe('data/bitly-links.json');
-    });
+        bitlyUrlParser.getBitlyLinks(<span class="hljs-name">-1</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">finalUrl</span>).toBe('data/bitly-links.json')<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
 
-    it("tests the accesstoken url we pass to getBitlyLinks", function() {
-        var finalUrl;
+    it(<span class="hljs-string">"tests the accesstoken url we pass to getBitlyLinks"</span>, function() {
+        var finalUrl<span class="hljs-comment">;</span>
 
-        spyOn($, 'getJSON').and.callFake(function(url, success) {
-            finalUrl = url;
-            success(bitlyLinks);
+        spyOn($, 'getJSON').and.callFake(<span class="hljs-name">function</span>(<span class="hljs-name">url</span>, success) {
+            finalUrl = url<span class="hljs-comment">;</span>
+            success(<span class="hljs-name">bitlyLinks</span>)<span class="hljs-comment">;</span>
             return {
                 fail: function() {}
-            };
-        });
+            }<span class="hljs-comment">;</span>
+        })<span class="hljs-comment">;</span>
 
-        bitlyUrlParser.getBitlyLinks(accessToken);
-        expect(finalUrl).toContain(accessToken);
-        expect(finalUrl).toContain('https');
-    });
+        bitlyUrlParser.getBitlyLinks(<span class="hljs-name">accessToken</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">finalUrl</span>).toContain(<span class="hljs-name">accessToken</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">finalUrl</span>).toContain('https')<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
 
-});
+})<span class="hljs-comment">;</span>
 
-describe("Test Bitly Links", function() { 'use strict';
+describe(<span class="hljs-string">"Test Bitly Links"</span>, function() { 'use strict'<span class="hljs-comment">;</span>
 
-    beforeEach(function () {
-        spyOn($, 'getJSON').and.callFake(function (url, success) {
-            success(bitlyLinks);
+    beforeEach(<span class="hljs-name">function</span> () {
+        spyOn($, 'getJSON').and.callFake(<span class="hljs-name">function</span> (<span class="hljs-name">url</span>, success) {
+            success(<span class="hljs-name">bitlyLinks</span>)<span class="hljs-comment">;</span>
             return {
                 fail: function() {}
-            };
-        });
-    });
+            }<span class="hljs-comment">;</span>
+        })<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
 
-    it("shows we can directly get the status code and text", function() {
-        bitlyUrlParser.getBitlyLinks();
-        expect(bitlyUrlParser.bitlyLinks.status_code).toBe(200);
-        expect(bitlyUrlParser.bitlyLinks.status_txt).toBe('OK');
+    it(<span class="hljs-string">"shows we can directly get the status code and text"</span>, function() {
+        bitlyUrlParser.getBitlyLinks()<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">bitlyUrlParser</span>.bitlyLinks.status_code).toBe(<span class="hljs-number">200</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">bitlyUrlParser</span>.bitlyLinks.status_txt).toBe('OK')<span class="hljs-comment">;</span>
 
-    });
+    })<span class="hljs-comment">;</span>
 
-    it("shows we have a status code of 200", function () {
+    it(<span class="hljs-string">"shows we have a status code of 200"</span>, function () {
 
-        bitlyUrlParser.getBitlyLinks();
-        var statusCode = bitlyUrlParser.getStatusCode();
-        expect(statusCode).toBe(200);
-    });
+        bitlyUrlParser.getBitlyLinks()<span class="hljs-comment">;</span>
+        var statusCode = bitlyUrlParser.getStatusCode()<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">statusCode</span>).toBe(<span class="hljs-number">200</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
 
-    it("shows we have a status txt of OK", function () {
+    it(<span class="hljs-string">"shows we have a status txt of OK"</span>, function () {
 
-        bitlyUrlParser.getBitlyLinks();
-        var statusText = bitlyUrlParser.getStatusText();
-        expect(statusText).toBe('OK');
-    });
+        bitlyUrlParser.getBitlyLinks()<span class="hljs-comment">;</span>
+        var statusText = bitlyUrlParser.getStatusText()<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">statusText</span>).toBe('OK')<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
 
-    it("shows we have a count of 165 links", function () {
+    it(<span class="hljs-string">"shows we have a count of 165 links"</span>, function () {
 
-        bitlyUrlParser.getBitlyLinks();
-        expect(bitlyUrlParser.bitlyLinks.data.result_count).toBe(165);
-    });
+        bitlyUrlParser.getBitlyLinks()<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">bitlyUrlParser</span>.bitlyLinks.data.result_count).toBe(<span class="hljs-number">165</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
 
-    it("show we can get the title of the first element", function() {
-        bitlyUrlParser.getBitlyLinks();
-        var firstLink = bitlyUrlParser.bitlyLinks.data.link_history[0];
-        expect(firstLink.title).toBe("BootstrapBasics01Small.png (307×261)");
-        expect(firstLink.title).toContain("BootstrapBasics01Small.png");
-    });
+    it(<span class="hljs-string">"show we can get the title of the first element"</span>, function() {
+        bitlyUrlParser.getBitlyLinks()<span class="hljs-comment">;</span>
+        var firstLink = bitlyUrlParser.bitlyLinks.data.link_history[<span class="hljs-number">0</span>]<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">firstLink</span>.title).toBe(<span class="hljs-string">"BootstrapBasics01Small.png (307×261)"</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">firstLink</span>.title).toContain(<span class="hljs-string">"BootstrapBasics01Small.png"</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
 
-    it("show we can get the first item from the link history", function() {
-        bitlyUrlParser.getBitlyLinks();
-        var firstLink = bitlyUrlParser.getLinkHistory(0);
-        expect(firstLink.title).toBe("BootstrapBasics01Small.png (307×261)");
-        expect(firstLink.title).toContain("BootstrapBasics01Small.png");
-    });
+    it(<span class="hljs-string">"show we can get the first item from the link history"</span>, function() {
+        bitlyUrlParser.getBitlyLinks()<span class="hljs-comment">;</span>
+        var firstLink = bitlyUrlParser.getLinkHistory(<span class="hljs-number">0</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">firstLink</span>.title).toBe(<span class="hljs-string">"BootstrapBasics01Small.png (307×261)"</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">firstLink</span>.title).toContain(<span class="hljs-string">"BootstrapBasics01Small.png"</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
 
-    it("Shows we can transform the data", function() {
-        bitlyUrlParser.getBitlyLinks();
-        var map = bitlyUrlParser.getMap();
-        console.log(JSON.stringify(map[0], null, 4));
-        expect(map.length).toBe(50);
-    });
-});
-</pre>
+    it(<span class="hljs-string">"Shows we can transform the data"</span>, function() {
+        bitlyUrlParser.getBitlyLinks()<span class="hljs-comment">;</span>
+        var map = bitlyUrlParser.getMap()<span class="hljs-comment">;</span>
+        console.log(<span class="hljs-name">JSON</span>.stringify(<span class="hljs-name">map</span>[<span class="hljs-number">0</span>], null, <span class="hljs-number">4</span>))<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">map</span>.length).toBe(<span class="hljs-number">50</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
 <p>For now, it won&#39;t really matter what kind of map you create. Any transformation will do.</p>
 <p><strong>NOTE</strong>: <em>I have 165 bitly links, but by default the API returns only 50 links at a time. That is why I test can check to see the length of the map, and expect it to be set to 50.</em></p>
 <a class="anchor" id="the-code"></a>
 <h2>The Code</h2>
 <p>Here is some of the object in <strong>control.js</strong>. I&#39;m expecting you to fill in the missing pieces so that the tests will pass. You may not modify the tests themselves. All your changes should be to <strong>control.js</strong>. The <strong>spec/test-basic.js</strong> should not change at all.</p>
-<pre>var bitlyUrlParser = {
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> bitlyUrlParser = {
 
-    bitlyLinks: null,
+    <span class="hljs-attribute">bitlyLinks</span>: <span class="hljs-literal">null</span>,
 
-    // https://api-ssl.bitly.com/v3/user/link_history?access_token=<ACCESS_TOKEN_HERE>&query=angular
+    <span class="hljs-comment">// https://api-ssl.bitly.com/v3/user/link_history?access_token=&lt;ACCESS_TOKEN_HERE&gt;&amp;query=angular</span>
 
 
-    getUrl: function(accessToken) { 'use strict';
-        var url = 'https://api-ssl.bitly.com/v3/user/link_history?access_token=';
-        return url += accessToken;
+    <span class="hljs-attribute">getUrl</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">accessToken</span>) </span>{ <span class="hljs-string">'use strict'</span>;
+        <span class="hljs-keyword">var</span> <span class="hljs-built_in">url</span> = <span class="hljs-string">'https://api-ssl.bitly.com/v3/user/link_history?access_token='</span>;
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">url</span> += accessToken;
     },
 
-    getBitlyLinks: function(accessToken) { 'use strict';
+    <span class="hljs-attribute">getBitlyLinks</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">accessToken</span>) </span>{ <span class="hljs-string">'use strict'</span>;
 
-        var url = bitlyUrlParser.getUrl(accessToken);
+        <span class="hljs-keyword">var</span> <span class="hljs-built_in">url</span> = bitlyUrlParser.getUrl(accessToken);
 
-        $.getJSON(url, function (result) {
+        $.getJSON(<span class="hljs-built_in">url</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{
             bitlyUrlParser.bitlyLinks = result;
-            $('#displayLinks').html(result);
+            $(<span class="hljs-string">'#displayLinks'</span>).html(result);
         }).fail(jqxhr, textStatus, error) {
-            var err = textStatus + ', ' + error;
-            console.log('Request Failed: ' + err);
-            console.log('url:', url);
+            <span class="hljs-keyword">var</span> err = textStatus + <span class="hljs-string">', '</span> + error;
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Request Failed: '</span> + err);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'url:'</span>, <span class="hljs-built_in">url</span>);
         });
     },
 };
-</pre>
+</code></pre>
 <p>You do not need to include a real access token at this point, as we will not be querying Bitly itself at this stage.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
@@ -193,10 +193,10 @@ describe("Test Bitly Links", function() { 'use strict';
 <li>created-at</li>
 </ul>
 <p>Like this:</p>
-<pre>{
-    title: "My Title",
-    link: "http://foo.com",
-    created-at: 234324342 }
+<pre><code class="lang-javascript">{
+    <span class="hljs-attribute">title</span>: <span class="hljs-string">"My Title"</span>,
+    link: <span class="hljs-string">"http://foo.com"</span>,
+    created-at: <span class="hljs-number">234324342</span> }
 }
-</pre>
+</code></pre>
 </div></body></html>

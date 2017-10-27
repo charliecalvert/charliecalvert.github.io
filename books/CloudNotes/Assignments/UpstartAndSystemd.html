@@ -14,58 +14,57 @@
 </ul>
 <p>If you are using ubuntu 15.10 or later, use <strong>systemd</strong>. That means, if you are using 16.04, you should use <strong>systemd</strong>. If you are using 15.04 or earlier, then you should use <strong>upstart</strong>.</p>
 <p>Use the following command to get your ubuntu version number</p>
-<pre>$ELF_UTILS/SetupLinuxBox/UbuntuReleaseNumber.sh
-</pre>
+<pre><code class="lang-bash"><span class="hljs-variable">$ELF_UTILS</span><span class="hljs-regexp">/SetupLinuxBox/</span>UbuntuReleaseNumber.sh
+</code></pre>
 <p>A sample run:</p>
-<pre>$ELF_UTILS/SetupLinuxBox/UbuntuReleaseNumber.sh
+<pre><code class="lang-bash">$ELF_UTILS/SetupLinuxBox/UbuntuReleaseNumber.sh
 DISTRIB_ID=Ubuntu
 DISTRIB_RELEASE=15.10
 DISTRIB_CODENAME=wily
-DISTRIB_DESCRIPTION="Ubuntu 15.10"
+DISTRIB_DESCRIPTION=<span class="hljs-string">"Ubuntu 15.10"</span>
 No LSB modules are available.
 Distributor ID:    Ubuntu
-Description:    Ubuntu 15.10
-Release:    15.10
-Codename:    wily
-</pre>
+<span class="hljs-section">Description:    Ubuntu 15.10</span>
+<span class="hljs-section">Release:    15.10</span>
+<span class="hljs-section">Codename:    wily</span>
+</code></pre>
 <p>The contents of the script, at the time of this writing, is as follows:</p>
-<pre>cat /etc/lsb-release
+<pre><code class="lang-bash">cat /etc/lsb-<span class="hljs-built_in">release</span>
 lsb_release -a
-</pre>
+</code></pre>
 <p>Probably either command would do the job, but I run them both for completeness.</p>
 <a class="anchor" id="symbolic-link"></a>
 <h2>Symbolic Link</h2>
 <p>You are also going to need to create a symbolic link to your program in the <strong>~/bin</strong> directory. Something like this. First, be sure you have a bin directory:</p>
-<pre>mkdir ~/bin
-</pre>
-<pre>ln -s ~/Git/isit320-calvert-2016/Week04-ThreeFloor ~/bin/three-floor
-</pre>
+<pre><code class="lang-bash"><span class="hljs-built_in">mkdir</span> ~/bin
+</code></pre>
+<pre><code class="lang-bash">ln -s ~<span class="hljs-regexp">/Git/i</span>sit320-calvert-<span class="hljs-number">2016</span><span class="hljs-regexp">/Week04-ThreeFloor ~/</span>bin<span class="hljs-regexp">/three-floor</span>
+</code></pre>
 <a class="anchor" id="systemd"></a>
 <h2>systemd</h2>
 <p>Upstart is being replaced by <strong>systemd</strong>. This caused a huge uproar in the Linux community, but the transition is more or less complete at this stage (Nov, 2016). Fortunately, if you understand Upstart it is not hard to switch to <strong>systemd</strong>. You should switch to <strong>systemd</strong> if running on Ubuntu 15.10 or later, otherwise, stick with <strong>upstart</strong>.</p>
 <p>If you are uncertain, here is how to find out which version of ubuntu you are running:</p>
-<pre>cat /etc/lsb-release
+<pre><code class="lang-bash">cat /etc/lsb-release
 $ELF_UTILS/SetupLinuxBox/UbuntuReleaseNumber.sh
 DISTRIB_ID=Ubuntu
 DISTRIB_RELEASE=15.10
 DISTRIB_CODENAME=wily
-DISTRIB_DESCRIPTION="Ubuntu 15.10"
-</pre>
+DISTRIB_DESCRIPTION=<span class="hljs-string">"Ubuntu 15.10"</span>
+</code></pre>
 <p>A sample <strong>systemd</strong> start up script (aka service file) called <strong>elven-site.service</strong>:</p>
-<pre>[Service]
-ExecStart=/usr/bin/node /home/bcuser/bin/elven-site/bin/www
-Restart=always
-StandardOutput=syslog
-StandardError=syslog
-SyslogIdentifier=elven-site
-User=bcuser
-Group=bcuser
-Environment=NODE_ENV=production
-
-[Install]
-WantedBy=multi-user.target
-</pre>
-<p>When examining the above, check carefully, looking for changes that you will need to make:</p>
+<pre><code><span class="hljs-section">[Service]</span>
+<span class="hljs-attr">ExecStart</span>=/usr/bin/node /home/bcuser/bin/elven-site/bin/www
+<span class="hljs-attr">Restart</span>=always
+<span class="hljs-attr">StandardOutput</span>=syslog
+<span class="hljs-attr">StandardError</span>=syslog
+<span class="hljs-attr">SyslogIdentifier</span>=elven-site
+<span class="hljs-attr">User</span>=bcuser
+<span class="hljs-attr">Group</span>=bcuser
+<span class="hljs-attr">Environment</span>=NODE_ENV=production
+<span class="hljs-section">
+[Install]</span>
+<span class="hljs-attr">WantedBy</span>=multi-user.target
+</code></pre><p>When examining the above, check carefully, looking for changes that you will need to make:</p>
 <ul>
 <li>ExecStart path to your <strong>bin/www</strong> file</li>
 <li>SyslogIdentifier</li>
@@ -74,38 +73,32 @@ WantedBy=multi-user.target
 </ul>
 <p>For instance, the <strong>User</strong> and <strong>Group</strong> would be <strong>ubuntu</strong> on EC2 and <strong>bcuser</strong> on most copies of Pristine Lubuntu.</p>
 <p>Deploy the service file:</p>
-<pre>sudo cp elven-site.service /etc/systemd/system/.
-</pre>
-<p>Start the service:</p>
-<pre>sudo systemctl enable elven-site
+<pre><code>sudo cp elven-site.service <span class="hljs-regexp">/etc/</span>systemd<span class="hljs-regexp">/system/</span>.
+</code></pre><p>Start the service:</p>
+<pre><code>sudo systemctl <span class="hljs-builtin-name">enable</span> elven-site
 sudo systemctl start elven-site
-</pre>
-<p>Get the status:</p>
-<pre>systemctl status elven-site
-</pre>
-<p>To reload after a change:</p>
-<pre>systemctl daemon-reload
-</pre>
-<p>Sample output from status request when all is good:</p>
-<pre>$ systemctl status elven-site
+</code></pre><p>Get the status:</p>
+<pre><code><span class="hljs-attribute">systemctl status elven-site</span>
+</code></pre><p>To reload after a change:</p>
+<pre><code><span class="hljs-attribute">systemctl daemon-reload</span>
+</code></pre><p>Sample output from status request when all is good:</p>
+<pre><code class="lang-bash">$ systemctl status elven-site
 ● elven-site.service
    Loaded: loaded (/etc/systemd/system/elven-site.service; enabled; vendor preset: enabled)
-   Active: active (running) since Thu 2015-12-03 08:59:01 PST; 4s ago
- Main PID: 4102 (node)
-   CGroup: /system.slice/elven-site.service
-           └─4102 /usr/bin/node /home/charlie/bin/elven-site/bin/www
+   Active: active (running) since Thu <span class="hljs-number">2015</span>-<span class="hljs-number">12</span>-<span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">01</span> PST; <span class="hljs-number">4s</span> ago
+ Main PID: <span class="hljs-number">4102</span> (<span class="hljs-keyword">node</span><span class="hljs-title">)
+   CGroup</span>: /system.slice/elven-site.service
+           └─<span class="hljs-number">4102</span> /usr/bin/<span class="hljs-keyword">node</span> <span class="hljs-title">/home</span>/charlie/bin/elven-site/bin/www
 
-Dec 03 08:59:01 forestpath systemd[1]: Started elven-site.service.
-Dec 03 08:59:02 forestpath node-sample[4102]: In bin/www the environment is production
-</pre>
+Dec <span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">01</span> forestpath systemd[<span class="hljs-number">1</span>]: <span class="hljs-literal">Started</span> elven-site.service.
+Dec <span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">02</span> forestpath <span class="hljs-keyword">node</span><span class="hljs-title">-sample</span>[<span class="hljs-number">4102</span>]: <span class="hljs-keyword">In</span> bin/www the environment is production
+</code></pre>
 <p>To see logs and debug information, try this:</p>
-<pre>journalctl -u elven-site
-</pre>
-<p>To completely remove a service from a system, I believe we should first stop it, and then disable it:</p>
-<pre>systemctl stop elven-site
-systemctl disable elven-site
-</pre>
-<p>I&#39;m not certain about the disable command at this time. I think it tells systemd not to load at boot, but allows us to leave the file in <strong>/etc/systemd/system</strong>. Not sure though.</p>
+<pre><code><span class="hljs-attribute">journalctl -u elven-site</span>
+</code></pre><p>To completely remove a service from a system, I believe we should first stop it, and then disable it:</p>
+<pre><code>systemctl <span class="hljs-keyword">stop</span> elven-site
+systemctl <span class="hljs-keyword">disable</span> elven-site
+</code></pre><p>I&#39;m not certain about the disable command at this time. I think it tells systemd not to load at boot, but allows us to leave the file in <strong>/etc/systemd/system</strong>. Not sure though.</p>
 <p>The first and second links below will get you up to speed fairly quickly.</p>
 <ul>
 <li><a href="https://www.digitalocean.com/community/tutorials/how-to-deploy-node-js-applications-using-systemd-and-nginx">Sysdemd for Node Developers</a></li>
@@ -125,65 +118,58 @@ systemctl disable elven-site
 <li><a href="http://upstart.ubuntu.com/index.html">UpStart home page</a></li>
 </ul>
 <p>A sample script:</p>
-<pre># This is an upstart script: http://upstart.ubuntu.com/index.html
-description "a script to keep node.js server in memory even after rebooting"
-author      "Charle Calvert - http://www.elvenware.com/charlie"i
+<pre><code class="lang-bash"><span class="hljs-comment"># This is an upstart script: http://upstart.ubuntu.com/index.html</span>
+description <span class="hljs-string">"a script to keep node.js server in memory even after rebooting"</span>
+author      <span class="hljs-string">"Charle Calvert - http://www.elvenware.com/charlie"</span>i
 
-# Start after all drives mounted
+<span class="hljs-comment"># Start after all drives mounted</span>
 start on started mountall
 stop on shutdown
 
-# Automatically Respawn:
+<span class="hljs-comment"># Automatically Respawn:</span>
 respawn
 respawn limit 99 5
-
+<span class="hljs-built_in">
 script
-    export HOME="/root"
+</span>    <span class="hljs-builtin-name">export</span> <span class="hljs-attribute">HOME</span>=<span class="hljs-string">"/root"</span>
 
-# The following assumes nodejs is in /usr/bin
-# It also assumes that the server is in /home/charlie/ExpressSend
-    exec /usr/bin/nodejs /home/charlie/bin/elven-site/bin/www >> /var/log/node.log 2>&1
+<span class="hljs-comment"># The following assumes nodejs is in /usr/bin</span>
+<span class="hljs-comment"># It also assumes that the server is in /home/charlie/ExpressSend</span>
+    exec /usr/bin/nodejs /home/charlie/bin/elven-site/bin/www &gt;&gt; /var/log/node.log 2&gt;&amp;1
+end<span class="hljs-built_in"> script
+</span>
+post-start<span class="hljs-built_in"> script
+</span>   # Optionally put a<span class="hljs-built_in"> script </span>here that will notifiy you node has (re)started
+   # /root/bin/hoptoad.sh <span class="hljs-string">"node.js has started!"</span>
 end script
-
-post-start script
-   # Optionally put a script here that will notifiy you node has (re)started
-   # /root/bin/hoptoad.sh "node.js has started!"
-end script
-</pre>
+</code></pre>
 <p>Create a link our project, or whatever project you want to use for your final:</p>
-<pre>$ ln -s ~/Git/isit322-calvert-2016/Week10-ElvenImagePicker/ ~/bin/elven-site
-</pre>
+<pre><code class="lang-bash">$ ln -s ~<span class="hljs-regexp">/Git/i</span>sit322-calvert-<span class="hljs-number">2016</span><span class="hljs-regexp">/Week10-ElvenImagePicker/</span> ~<span class="hljs-regexp">/bin/</span>elven-site
+</code></pre>
 <p>Our upstart script is called <strong>NodeRoutesParams</strong>. If you look inside it, you will see that
 it assumes your copy of NodeRoutesParams is in <strong>~/bin</strong>:</p>
-<pre>exec /usr/bin/nodejs $HOME/bin/NodeRoutesParams/bin/www >> /var/log/node.log 2>&1
-exec /usr/bin/nodejs /home/ubuntu/bin/elven-site/bin/www >> /var/log/node.log 2>&1
-</pre>
-<p>That is why we created a symbolic link in that folder. That way, regardless of where
+<pre><code>exec <span class="hljs-regexp">/usr/</span>bin<span class="hljs-regexp">/nodejs $HOME/</span>bin<span class="hljs-regexp">/NodeRoutesParams/</span>bin<span class="hljs-regexp">/www &gt;&gt; /</span>var<span class="hljs-regexp">/log/</span>node.log <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span>
+exec <span class="hljs-regexp">/usr/</span>bin<span class="hljs-regexp">/nodejs /</span>home<span class="hljs-regexp">/ubuntu/</span>bin<span class="hljs-regexp">/elven-site/</span>bin<span class="hljs-regexp">/www &gt;&gt; /</span>var<span class="hljs-regexp">/log/</span>node.log <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span>
+</code></pre><p>That is why we created a symbolic link in that folder. That way, regardless of where
 you keep <strong>NodeRoutesParams</strong> on your system, our script can find it.    </p>
 <p>Copy the <strong>NodeRoutesParams</strong> file to the <strong>/etc/init</strong> directory:</p>
-<pre>sudo cp elven-site.conf /etc/init/.
-sudo mkdir /root/.config
-sudo cp ~/.config/ElvenConfig.json /root/.config/.
-</pre>
-<p>Start the program</p>
-<pre>sudo start elven-site
-</pre>
-<p>Stop the program</p>
-<pre>sudo stop elven-site
-</pre>
-<p>If you reboot the system, your program will start automatically.</p>
+<pre><code>sudo cp elven-site<span class="hljs-selector-class">.conf</span> /etc/init/.
+sudo mkdir /root/<span class="hljs-selector-class">.config</span>
+sudo cp ~/.config/ElvenConfig<span class="hljs-selector-class">.json</span> /root/.config/.
+</code></pre><p>Start the program</p>
+<pre><code>sudo <span class="hljs-literal">start</span> elven-site
+</code></pre><p>Stop the program</p>
+<pre><code>sudo <span class="hljs-built_in">stop</span> elven-site
+</code></pre><p>If you reboot the system, your program will start automatically.</p>
 <p>Error messages and and other output are in: <strong>/var/log/node.log</strong>. That means you can see the debug output with this command:</p>
-<pre>cat /var/log/node.log
-</pre>
-<p>That is the case because of this bit from our conf file: <strong>&gt;&gt; /var/log/node.log 2&gt;&amp;1</strong></p>
+<pre><code>cat /var/log/<span class="hljs-keyword">node</span>.<span class="hljs-title">log</span>
+</code></pre><p>That is the case because of this bit from our conf file: <strong>&gt;&gt; /var/log/node.log 2&gt;&amp;1</strong></p>
 <p>Browse to your instance:</p>
-<pre><elasticIp>:30025/
-</pre>
-<p>If you were testing all this out on your copy of Lubunutu,
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">elasticIp</span>&gt;</span>:30025/
+</code></pre><p>If you were testing all this out on your copy of Lubunutu,
 you would do this:</p>
-<pre>127.0.0.1:30025/
-</pre>
-<a class="anchor" id="elastic-ip"></a>
+<pre><code><span class="hljs-number">127.0</span><span class="hljs-meta">.0</span><span class="hljs-meta">.1</span>:<span class="hljs-number">30025</span>/
+</code></pre><a class="anchor" id="elastic-ip"></a>
 <h2>Elastic IP</h2>
 <p>Be sure that you create, properly associate and submit an <strong>Elastic IP</strong> for your instance running on EC2. In order to confirm that your project is running on EC2, I must be able to reach it, and I can&#39;t do that if you only have a <strong>Public IP</strong>. The <strong>Public IP</strong> addresses automatically associated with your instance on EC2 is not necessarily permanent. To create a permenant IP address, you need an <strong>Elastic IP</strong>, as explained <a href="http://www.elvenware.com/charlie/development/cloud/WebServices.html#elastic">here</a>.</p>
 <p><strong>NOTE</strong>: <em>Once you create an Elastic IP address, your Elastic IP and Public IP address are usually the same. At that point, your Public IP address should be permanent, but only because you have created an Elastic IP address and associated it with your instance.</em></p>
@@ -217,15 +203,12 @@ you would do this:</p>
 </li>
 <li>Create a link to your final folder from the bin folder:</li>
 </ul>
-<pre>ln -s ~/Git/isit320-lastName-2015/Week10-ElvenImagePicker ~/bin/elven-site;
-</pre>
-<p>When everything is set up, test your work:</p>
-<pre>sudo start elven-site
-</pre>
-<p>Then go to the appropriate URL and see if your application is working correctly. For problems, check the logs:</p>
+<pre><code>ln -s ~<span class="hljs-regexp">/Git/i</span>sit320-lastName-<span class="hljs-number">2015</span><span class="hljs-regexp">/Week10-ElvenImagePicker ~/</span>bin<span class="hljs-regexp">/elven-site;</span>
+</code></pre><p>When everything is set up, test your work:</p>
+<pre><code>sudo <span class="hljs-literal">start</span> elven-site
+</code></pre><p>Then go to the appropriate URL and see if your application is working correctly. For problems, check the logs:</p>
 <p><strong>cat /var/log/node.conf</strong>.</p>
 <p>Or, on systemd:</p>
-<pre>systemctl status elven-site
-</pre>
-<p><strong>NOTE</strong>: <em>It is often simplest to do your work on your home machine. For instance, do your work on the Mac, in Pristince Lubuntu, or in Cloud 9. Then commit and push your work, and pull it on EC2. If you do decide to work on EC2, make sure you first commit all your work on your home machine, and then pull it on EC2. Then make your changes on EC2, commit and push, and then pull on your home machine.</em></p>
+<pre><code><span class="hljs-attribute">systemctl status elven-site</span>
+</code></pre><p><strong>NOTE</strong>: <em>It is often simplest to do your work on your home machine. For instance, do your work on the Mac, in Pristince Lubuntu, or in Cloud 9. Then commit and push your work, and pull it on EC2. If you do decide to work on EC2, make sure you first commit all your work on your home machine, and then pull it on EC2. Then make your changes on EC2, commit and push, and then pull on your home machine.</em></p>
 </div></body></html>

@@ -10,189 +10,189 @@
 <a class="anchor" id="reducer"></a>
 <h2>Reducer</h2>
 <p>Let&#39;s start at the beginning. Create a file called <strong>assets/gist-reducer.js</strong>:</p>
-<pre>const gistState = {
+<pre><code class="lang-javascript">const gistState = {
 
 };
 
-const gistReducer = (state = gistState, action) => {
+const gistReducer = (<span class="hljs-keyword">state</span> = gistState, action) =&gt; {
     switch (action.type) {
-        default:
-            return state;
+        <span class="hljs-keyword">default</span>:
+            return <span class="hljs-keyword">state</span>;
     }
 };
 
-export default gistReducer;
-</pre>
+export <span class="hljs-keyword">default</span> gistReducer;
+</code></pre>
 <p>Now set up <strong>index.js</strong>:</p>
-<pre>import {Provider} from 'react-redux';
-import {createStore} from 'redux';
-import gistReducer from './assets/gist-reducer';
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> {Provider} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-redux'</span>;
+<span class="hljs-keyword">import</span> {createStore} <span class="hljs-keyword">from</span> <span class="hljs-string">'redux'</span>;
+<span class="hljs-keyword">import</span> gistReducer <span class="hljs-keyword">from</span> <span class="hljs-string">'./assets/gist-reducer'</span>;
 
-let store = createStore(gistReducer);
+<span class="hljs-keyword">let</span> store = createStore(gistReducer);
 
 ReactDOM.render(
-    <div>
-        <Provider store={store}>
-            <Router>
-                <DataMaven/>
-            </Router>
-        </Provider>
-    </div>,
-    document.getElementById('root')
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">Router</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">DataMaven</span>/&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Router</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>,
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
 );
-</pre>
+</code></pre>
 <a class="anchor" id="small-numbers"></a>
 <h2>Small Numbers</h2>
 <p>In <strong>SmallNumbers</strong>, strip out the state from the constructor or stop passing in props from <strong>DataMaven</strong>:</p>
 <p>Here is how to call <strong>SmallNumbers</strong>:</p>
-<pre><Route path='/get-numbers' component={SmallNumbers} />
-</pre>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/get-numbers'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{SmallNumbers}</span> /&gt;</span>
+</code></pre>
 <p>Here is the constructor:</p>
-<pre>constructor(props) {
-    super(props);
-    logger.log('SmallNumber props', this.props);
-    this.getNine = this.getNine.bind(this);
-    this.getEight = this.getEight.bind(this);
+<pre><code class="lang-javascript"><span class="hljs-keyword">constructor</span>(props) {
+    <span class="hljs-keyword">super</span>(props);
+    logger.log(<span class="hljs-string">'SmallNumber props'</span>, <span class="hljs-keyword">this</span>.props);
+    <span class="hljs-keyword">this</span>.getNine = <span class="hljs-keyword">this</span>.getNine.bind(<span class="hljs-keyword">this</span>);
+    <span class="hljs-keyword">this</span>.getEight = <span class="hljs-keyword">this</span>.getEight.bind(<span class="hljs-keyword">this</span>);
 }
-</pre>
+</code></pre>
 <p>Now, lets move the state to the reducer:</p>
-<pre>const gistState = {
+<pre><code class="lang-javascript">const gistState = {
   numbers: {
-      nine: '0',
-      eight: '0'
+      nine: '<span class="hljs-number">0</span>',
+      eight: '<span class="hljs-number">0</span>'
   }
 };
 
-const gistReducer = (state = gistState, action) => {
+const gistReducer = (<span class="hljs-keyword">state</span> = gistState, action) =&gt; {
     switch (action.type) {
       case 'NUMBER_NINE':
-        return Object.assign({}, state, {
+        return Object.assign({}, <span class="hljs-keyword">state</span>, {
             numbers: {
-                nine: 9,
-                eight: state.numbers.eight
+                nine: <span class="hljs-number">9</span>,
+                eight: <span class="hljs-keyword">state</span>.numbers.eight
             }
         });
 
       case 'NUMBER_EIGHT':
-        return Object.assign({}, state, {
+        return Object.assign({}, <span class="hljs-keyword">state</span>, {
             numbers: {
-                nine: state.numbers.nine,
-                eight: 8
+                nine: <span class="hljs-keyword">state</span>.numbers.nine,
+                eight: <span class="hljs-number">8</span>
             }
         });
 
-      default:
-        return state;
+      <span class="hljs-keyword">default</span>:
+        return <span class="hljs-keyword">state</span>;
     }
 };
 
-export default gistReducer;
-</pre>
+export <span class="hljs-keyword">default</span> gistReducer;
+</code></pre>
 <p>We use <strong>Object.assign</strong> because we want our objects to be immutable. You may not change your state object, you must completely rebuild it. You must copy the old state into a new state and in the process add new values to the changed properties. That is what <strong>Object.assign</strong> does.</p>
 <p>Alternatively:</p>
-<pre>case 'NUMBER_EIGHT':
-  return {
+<pre><code class="lang-javascript"><span class="hljs-keyword">case</span> <span class="hljs-string">'NUMBER_EIGHT'</span>:
+  <span class="hljs-keyword">return</span> {
     numbers: {
-      eight: '8',
+      eight: <span class="hljs-string">'8'</span>,
       nine: state.numbers.nine
     }
   };
-</pre>
+</code></pre>
 <p>But that can get unwieldy if our <strong>state</strong> becomes complex.</p>
 <a class="anchor" id="small-numbers-implementation"></a>
 <h2>Small Numbers Implementation</h2>
 <p>Then do this to connect <strong>SmallNumbers</strong> to Redux:</p>
-<pre>import {connect} from 'react-redux';
+<pre><code class="lang-javascript">import {connect} <span class="hljs-keyword">from</span> 'react-redux';
 
 // SMALL NUMBERS ITSELF HERE.
 // AND AT THE BOTTOM:
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (<span class="hljs-keyword">state</span>) =&gt; {
     return {
-        numbers: state.numbers
+        numbers: <span class="hljs-keyword">state</span>.numbers
     };
 };
 
 SmallNumbers = connect(mapStateToProps)(SmallNumbers);
-</pre>
+</code></pre>
 <p>There is no real need for <strong>mapDispatchToProps</strong> because our dispatch calls are so simple:</p>
-<pre>getNine() {
-  this.props.dispatch({type: 'NUMBER_NINE'});
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">getNine</span>() {
+  <span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.dispatch</span>({<span class="hljs-attribute">type</span>: <span class="hljs-string">'NUMBER_NINE'</span>});
 };
-</pre>
+</code></pre>
 <a class="anchor" id="getfoo"></a>
 <h2>GetFoo</h2>
 <p>Get Foo is bit more complex, but still a very similar process:</p>
 <p>In the reducer:</p>
-<pre>const gistState = {
-    getFoo: {
-        foo: 'foo',
-        file: 'api.js'
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> gistState = {
+    <span class="hljs-attr">getFoo</span>: {
+        <span class="hljs-attr">foo</span>: <span class="hljs-string">'foo'</span>,
+        <span class="hljs-attr">file</span>: <span class="hljs-string">'api.js'</span>
     },
-    numbers: {
-        nine: '0',
-        eight: '0'
+    <span class="hljs-attr">numbers</span>: {
+        <span class="hljs-attr">nine</span>: <span class="hljs-string">'0'</span>,
+        <span class="hljs-attr">eight</span>: <span class="hljs-string">'0'</span>
     }
 };
 
-const gistReducer = (state = gistState, action) => {
-  switch (action.type) {
-      case 'GETFOO':
-          return Object.assign({}, state, {getFoo: action.getFoo});
+<span class="hljs-keyword">const</span> gistReducer = <span class="hljs-function">(<span class="hljs-params">state = gistState, action</span>) =&gt;</span> {
+  <span class="hljs-keyword">switch</span> (action.type) {
+      <span class="hljs-keyword">case</span> <span class="hljs-string">'GETFOO'</span>:
+          <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.assign({}, state, {<span class="hljs-attr">getFoo</span>: action.getFoo});
       etc
   }      
 }
-</pre>
+</code></pre>
 <p>And here is the connect object in <strong>GetFooConnect</strong>:</p>
-<pre>/**
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
  * Created by charlie on 6/3/17.
- */
+ */</span>
 
-import 'whatwg-fetch';
-import {connect} from 'react-redux';
-import GetFoo from './GetFoo';
-import ElfLogger from '../assets/ElfLogger';
-const logger = new ElfLogger('get-foo-connect');
+<span class="hljs-keyword">import</span> <span class="hljs-string">'whatwg-fetch'</span>;
+<span class="hljs-keyword">import</span> {connect} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-redux'</span>;
+<span class="hljs-keyword">import</span> GetFoo <span class="hljs-keyword">from</span> <span class="hljs-string">'./GetFoo'</span>;
+<span class="hljs-keyword">import</span> ElfLogger <span class="hljs-keyword">from</span> <span class="hljs-string">'../assets/ElfLogger'</span>;
+<span class="hljs-keyword">const</span> logger = <span class="hljs-keyword">new</span> ElfLogger(<span class="hljs-string">'get-foo-connect'</span>);
 
-const mapStateToProps = (state) => {
-    return {
-        foo: state.getFoo.foo,
-        file: state.getFoo.file
+<span class="hljs-keyword">const</span> mapStateToProps = <span class="hljs-function">(<span class="hljs-params">state</span>) =&gt;</span> {
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">foo</span>: state.getFoo.foo,
+        <span class="hljs-attr">file</span>: state.getFoo.file
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        getBar: () => {
+<span class="hljs-keyword">const</span> mapDispatchToProps = <span class="hljs-function">(<span class="hljs-params">dispatch</span>) =&gt;</span> {
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">getBar</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
             dispatch({
-                type: 'GETFOO',
-                getFoo: {
-                    foo: 'url-mock-bar',
-                    file: 'url-mock-api.js'
+                <span class="hljs-attr">type</span>: <span class="hljs-string">'GETFOO'</span>,
+                <span class="hljs-attr">getFoo</span>: {
+                    <span class="hljs-attr">foo</span>: <span class="hljs-string">'url-mock-bar'</span>,
+                    <span class="hljs-attr">file</span>: <span class="hljs-string">'url-mock-api.js'</span>
                 }
             });
         },
-        getFoo: () => {
-            fetch('/foo')
-                .then(function(response) {
-                      return response.json();
-                }).then(function(json) {
+        <span class="hljs-attr">getFoo</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+            fetch(<span class="hljs-string">'/foo'</span>)
+                .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+                      <span class="hljs-keyword">return</span> response.json();
+                }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{
                   dispatch({
-                    type: 'GETFOO',
-                    getFoo: json
+                    <span class="hljs-attr">type</span>: <span class="hljs-string">'GETFOO'</span>,
+                    <span class="hljs-attr">getFoo</span>: json
                 });
-            }).catch(function(ex) {
-                console.log('parsing failed', ex);
+            }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ex</span>) </span>{
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsing failed'</span>, ex);
             });
 
         }
     };
 };
 
-const GetFooConnect = connect(mapStateToProps, mapDispatchToProps)(GetFoo);
+<span class="hljs-keyword">const</span> GetFooConnect = connect(mapStateToProps, mapDispatchToProps)(GetFoo);
 
-export default GetFooConnect;
-</pre>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> GetFooConnect;
+</code></pre>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>add, commit, push, branch and/or tag. Tell me the branch, tag and folder. I&#39;m expecting it to be done in the folder called <strong>GitExplorer</strong>.</p>

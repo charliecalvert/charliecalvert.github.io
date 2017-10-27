@@ -13,19 +13,19 @@
 <p>Go the <strong>Choose Sign in Method</strong> and enable <strong>Google</strong> as a Sign in Provider.</p>
 <p>Go to the main page for your app, and choose &quot;Add Firebase to your Web App&quot;. A dialog will pop up. Copy the code you see and save it to a text file.</p>
 <p>It will look a bit like this:</p>
-<pre><script src="https://www.gstatic.com/firebasejs/3.6.0/firebase.js"></script>
-<script>
-  // Initialize Firebase
-    var config = {
-        apiKey: "YOUR KEY",
-        authDomain: "YOUR DOMAIN",
-        databaseURL: "YOUR URL",
-        storageBucket: "YOUR BUCKET",
-        messagingSenderId: "YOUR ID"
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://www.gstatic.com/firebasejs/3.6.0/firebase.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="actionscript">
+  <span class="hljs-comment">// Initialize Firebase</span>
+    <span class="hljs-keyword">var</span> config = {
+        apiKey: <span class="hljs-string">"YOUR KEY"</span>,
+        authDomain: <span class="hljs-string">"YOUR DOMAIN"</span>,
+        databaseURL: <span class="hljs-string">"YOUR URL"</span>,
+        storageBucket: <span class="hljs-string">"YOUR BUCKET"</span>,
+        messagingSenderId: <span class="hljs-string">"YOUR ID"</span>
     };
   firebase.initializeApp(config);
-</script>
-</pre>
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
 <p>If you get stuck, or want to know more, go to this page:</p>
 <ul>
 <li><a href="https://firebase.google.com/docs/auth/web/google-signin#before_you_begin">https://firebase.google.com/docs/auth/web/google-signin#before_you_begin</a></li>
@@ -34,119 +34,118 @@
 <a class="anchor" id="javascript"></a>
 <h2>JavaScript</h2>
 <p>Add the following to <strong>js/elven-help.js</strong>. Put it above the <strong>document.ready</strong> statement:</p>
-<pre>function elfFireStart() {
-    var config = {
-        apiKey: "YOUR KEY",
-        authDomain: "YOUR DOMAIN",
-        databaseURL: "YOUR URL",
-        storageBucket: "YOUR BUCKET",
-        messagingSenderId: "YOUR ID"
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">elfFireStart</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> config = {
+        <span class="hljs-attr">apiKey</span>: <span class="hljs-string">"YOUR KEY"</span>,
+        <span class="hljs-attr">authDomain</span>: <span class="hljs-string">"YOUR DOMAIN"</span>,
+        <span class="hljs-attr">databaseURL</span>: <span class="hljs-string">"YOUR URL"</span>,
+        <span class="hljs-attr">storageBucket</span>: <span class="hljs-string">"YOUR BUCKET"</span>,
+        <span class="hljs-attr">messagingSenderId</span>: <span class="hljs-string">"YOUR ID"</span>
     };
     firebase.initializeApp(config);
 }
 
-function elfFireConfig() {
-    // FirebaseUI config.
-    var uiConfig = {
-        'signInSuccessUrl': 'http://localhost:5000/start.html',
-        'signInOptions': [
-            // Leave the lines as is for the providers you want to offer your users.
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">elfFireConfig</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">// FirebaseUI config.</span>
+    <span class="hljs-keyword">var</span> uiConfig = {
+        <span class="hljs-string">'signInSuccessUrl'</span>: <span class="hljs-string">'http://localhost:5000/start.html'</span>,
+        <span class="hljs-string">'signInOptions'</span>: [
+            <span class="hljs-comment">// Leave the lines as is for the providers you want to offer your users.</span>
             firebase.auth.GoogleAuthProvider.PROVIDER_ID,
             firebase.auth.FacebookAuthProvider.PROVIDER_ID,
             firebase.auth.TwitterAuthProvider.PROVIDER_ID,
             firebase.auth.GithubAuthProvider.PROVIDER_ID,
             firebase.auth.EmailAuthProvider.PROVIDER_ID
         ],
-        // Terms of service url.
-        'tosUrl': '<your-tos-url>',
+        <span class="hljs-comment">// Terms of service url.</span>
+        <span class="hljs-string">'tosUrl'</span>: <span class="hljs-string">'&lt;your-tos-url&gt;'</span>,
     };
 
-    // Initialize the FirebaseUI Widget using Firebase.
-    var ui = new firebaseui.auth.AuthUI(firebase.auth());
-    // The start method will wait until the DOM is loaded.
-    ui.start('#firebaseui-auth-container', uiConfig);
+    <span class="hljs-comment">// Initialize the FirebaseUI Widget using Firebase.</span>
+    <span class="hljs-keyword">var</span> ui = <span class="hljs-keyword">new</span> firebaseui.auth.AuthUI(firebase.auth());
+    <span class="hljs-comment">// The start method will wait until the DOM is loaded.</span>
+    ui.start(<span class="hljs-string">'#firebaseui-auth-container'</span>, uiConfig);
 
 }
 
-function  elfFireInitPage() {
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-            // User is signed in.
-            var displayName = user.displayName;
-            var email = user.email;
-            var emailVerified = user.emailVerified;
-            var photoURL = user.photoURL ||  user.providerData[0].photoURL;
-            var uid = user.uid;
-            var providerData = user.providerData;
-            user.getToken().then(function(accessToken) {
-                document.getElementById('sign-in-status').textContent = 'Signed in';
-                document.getElementById('sign-in').textContent = 'Sign out';
-                document.getElementById('account-details').textContent = JSON.stringify({
-                    displayName: displayName,
-                    email: email,
-                    emailVerified: emailVerified,
-                    photoURL: photoURL,
-                    uid: uid,
-                    accessToken: accessToken,
-                    providerData: providerData
-                }, null, '  ');
+<span class="hljs-function"><span class="hljs-keyword">function</span>  <span class="hljs-title">elfFireInitPage</span>(<span class="hljs-params"></span>) </span>{
+    firebase.auth().onAuthStateChanged(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">user</span>) </span>{
+        <span class="hljs-keyword">if</span> (user) {
+            <span class="hljs-comment">// User is signed in.</span>
+            <span class="hljs-keyword">var</span> displayName = user.displayName;
+            <span class="hljs-keyword">var</span> email = user.email;
+            <span class="hljs-keyword">var</span> emailVerified = user.emailVerified;
+            <span class="hljs-keyword">var</span> photoURL = user.photoURL ||  user.providerData[<span class="hljs-number">0</span>].photoURL;
+            <span class="hljs-keyword">var</span> uid = user.uid;
+            <span class="hljs-keyword">var</span> providerData = user.providerData;
+            user.getToken().then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">accessToken</span>) </span>{
+                <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'sign-in-status'</span>).textContent = <span class="hljs-string">'Signed in'</span>;
+                <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'sign-in'</span>).textContent = <span class="hljs-string">'Sign out'</span>;
+                <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'account-details'</span>).textContent = <span class="hljs-built_in">JSON</span>.stringify({
+                    <span class="hljs-attr">displayName</span>: displayName,
+                    <span class="hljs-attr">email</span>: email,
+                    <span class="hljs-attr">emailVerified</span>: emailVerified,
+                    <span class="hljs-attr">photoURL</span>: photoURL,
+                    <span class="hljs-attr">uid</span>: uid,
+                    <span class="hljs-attr">accessToken</span>: accessToken,
+                    <span class="hljs-attr">providerData</span>: providerData
+                }, <span class="hljs-literal">null</span>, <span class="hljs-string">'  '</span>);
             });
-        } else {
-            // User is signed out.
-            document.getElementById('sign-in-status').textContent = 'Signed out';
-            document.getElementById('sign-in').textContent = 'Sign in';
-            document.getElementById('account-details').textContent = 'null';
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-comment">// User is signed out.</span>
+            <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'sign-in-status'</span>).textContent = <span class="hljs-string">'Signed out'</span>;
+            <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'sign-in'</span>).textContent = <span class="hljs-string">'Sign in'</span>;
+            <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'account-details'</span>).textContent = <span class="hljs-string">'null'</span>;
         }
-    }, function(error) {
-        console.log(error);
+    }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(error);
     });
 };
-</pre>
+</code></pre>
 <a class="anchor" id="home-page"></a>
 <h2>Home Page</h2>
 <p>Rename your index.md to <strong>start.md</strong>. Create a new <strong>index.md</strong> like this:</p>
-<pre>
+<pre><code class="lang-html">
 ## Overview
 
 Welcome to my Prog270 Website.
 
-<div id="firebaseui-auth-container"></div>
-<link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.css" />
-<script src="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>        
-<script>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"firebaseui-auth-container"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/css"</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"stylesheet"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.css"</span> /&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://www.gstatic.com/firebasejs/3.5.2/firebase.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>        
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="undefined">
     elfFireStart();
     elfFireConfig();
-</script>
-</pre>
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
 <a class="anchor" id="start-page"></a>
 <h2>Start Page</h2>
 <p>At the bottom of start.md,</p>
-<pre><link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.css" />
-<script src="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>        
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/css"</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"stylesheet"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.css"</span> /&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://www.gstatic.com/firebasejs/3.5.2/firebase.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>        
 
-<script>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="undefined">
   elfFireStart();
   elfFireInitPage();
-</script>
-</pre>
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
 <p>And then create a new section near the top:</p>
-<pre>## Login
+<pre><code class="lang-html">## Login
 
-<div class="container">
-    <p id="sign-in-status"></p>
-    <p id="sign-in"></p>
-    <p id="account-details"></p>
-</div>
-</pre>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"container"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"sign-in-status"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"sign-in"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"account-details"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Run <strong>firebase deploy</strong> to push your site to the cloud. Submit a link to your firebase site.</p>
 <p>You will need to edit this line in ElvenHelp.js:</p>
-<pre>    'signInSuccessUrl': 'http://localhost:5000/start.html',
-</pre>
-<p>You should set it the value, the URL, to the page for your published firebase site. Something like:</p>
+<pre><code>    'signInSuccessUrl': 'http://localhost:<span class="hljs-number">5000</span>/start.html',
+</code></pre><p>You should set it the value, the URL, to the page for your published firebase site. Something like:</p>
 <p>  <a href="http://prog270-lastname-firebaseapp.com/start.html">http://prog270-lastname-firebaseapp.com/start.html</a></p>
 <p><strong>NOTE</strong>: <em>If you turn in a screen shot for an assignment like this, it is nice if I can read the URL in the browser address control. But I don&#39;t need a screenshot in this case, unless you want to submit one.</em></p>
 </div></body></html>

@@ -32,33 +32,32 @@
 <a class="anchor" id="step-two"></a>
 <h2>Step Two</h2>
 <p>Put this code in <strong>index.jade</strong>. You can replace your existing code, or edit it. In the end, it should look like this:</p>
-<pre>+elfPanel("Debug", "panel-default").elfDiv
-    +elfInputB("Search Query", "search", "timeline")#searchQuery
-    +elfInputB("Timeline Query", "timeline", "timeline")#timelineQuery
+<pre><code>+elfPanel(<span class="hljs-string">"Debug"</span>, <span class="hljs-string">"panel-default"</span>)<span class="hljs-selector-class">.elfDiv</span>
+    +elfInputB(<span class="hljs-string">"Search Query"</span>, <span class="hljs-string">"search"</span>, <span class="hljs-string">"timeline"</span>)<span class="hljs-selector-id">#searchQuery</span>
+    +elfInputB(<span class="hljs-string">"Timeline Query"</span>, <span class="hljs-string">"timeline"</span>, <span class="hljs-string">"timeline"</span>)<span class="hljs-selector-id">#timelineQuery</span>
     hr
-    button.btn.btn-default#getTimeline(type='button') Timeline
-    button.btn.btn-default#search(type='button') Search
-</pre>
-<a class="anchor" id="step-three"></a>
+    <span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-default</span>#getTimeline(type=<span class="hljs-string">'button'</span>) Timeline
+    <span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-default</span>#search(type=<span class="hljs-string">'button'</span>) Search
+</code></pre><a class="anchor" id="step-three"></a>
 <h2>Step Three</h2>
 <p>Make the search query configurable so the user can search on any subject they choose, rather than just <strong>nodejs</strong>.</p>
 <p>Here is how to send a custom query from the client to the server. Make these changes in <strong>control.js</strong>:</p>
-<pre>function clearControls() {
-    'use strict';
-    $('#tweetList').empty();
-    $('#tableLinks').empty();
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clearControls</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    $(<span class="hljs-string">'#tweetList'</span>).empty();
+    $(<span class="hljs-string">'#tableLinks'</span>).empty();
 }
 
-function search() {
-    'use strict';
-    var searchQuery = $('#searchQuery').val();
-    $.getJSON('/search', {"q": searchQuery}, function(result) {
-        $('#tweetData').html(JSON.stringify(result, null, 4));
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">search</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> searchQuery = $(<span class="hljs-string">'#searchQuery'</span>).val();
+    $.getJSON(<span class="hljs-string">'/search'</span>, {<span class="hljs-string">"q"</span>: searchQuery}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+        $(<span class="hljs-string">'#tweetData'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
         clearControls();
-        // ITERATE OVER RESULTS AND SHOW EACH TWEET
+        <span class="hljs-comment">// ITERATE OVER RESULTS AND SHOW EACH TWEET</span>
     });
 }
-</pre>
+</code></pre>
 <p>The code above:</p>
 <ul>
 <li>Is called when the search button is clicked</li>
@@ -67,99 +66,99 @@ function search() {
 </ul>
 <p>It so happens that this is the format that twitter wants for the query string. </p>
 <p>Now rewrite the <strong>search</strong> route in <strong>routes/index.js</strong> so it can handle a random query:</p>
-<pre>router.get('/search', function(req, res, next) {
-    console.log("Search called");
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/search'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req, res, next)</span></span> {
+    console.<span class="hljs-built_in">log</span>(<span class="hljs-string">"Search called"</span>);
     var client = getClient();
 
-    console.log(req.query);
+    console.<span class="hljs-built_in">log</span>(req.query);
 
-    client.get('search/tweets', req.query, function(error, tweets, response) {
-        if (!error) {
+    client.get(<span class="hljs-string">'search/tweets'</span>, req.query, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(error, tweets, response)</span></span> {
+        <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">error</span>) {
             res.send(tweets);
-        } else {
-            console.log(error);
+        } <span class="hljs-keyword">else</span> {
+            console.<span class="hljs-built_in">log</span>(<span class="hljs-built_in">error</span>);
             res.send({
-                fail: error
+                fail: <span class="hljs-built_in">error</span>
             });
         }
     });
 });
-</pre>
+</code></pre>
 <p>The query sent by the user can be retrieved from <strong>express</strong> with the <strong>query</strong> property of the <strong>request</strong> object:</p>
-<pre>req.query
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">req</span><span class="hljs-selector-class">.query</span>
+</code></pre>
 <p>If the user entered <strong>#nodejs</strong> in the search box, then the query would look like this if echoed to the console:</p>
-<pre>console.log(req.query);
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">console</span><span class="hljs-selector-class">.log</span>(<span class="hljs-selector-tag">req</span><span class="hljs-selector-class">.query</span>);
+</code></pre>
 <p>That code yields this on the command line:</p>
-<pre>{ q: '#nodejs' }
-</pre>
+<pre><code class="lang-javascript">{ <span class="hljs-attribute">q</span>: <span class="hljs-string">'#nodejs'</span> }
+</code></pre>
 <a class="anchor" id="step-four"></a>
 <h2>Step Four</h2>
 <p>We want to create a new route that searches on a user timeline. In effect, you are searching for tweets by a particular user, rather than tweets on a particular subject. The version of the query shown below will need to be modified slightly to complete the assignment. Right now it contains a hardcoded search on my screen name. You will want to make it possible for the user to enter a random search on any screen name, including your own:</p>
-<pre>router.get('/time-line', function(req, res, next) {
-    'use strict';
-    var client = getClient();
-    var params = {
-        screen_name: 'calvertbc'
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/time-line'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> client = getClient();
+    <span class="hljs-keyword">var</span> params = {
+        <span class="hljs-attr">screen_name</span>: <span class="hljs-string">'calvertbc'</span>
     };
-    client.get('statuses/user_timeline', params, function(error, tweets, response) {
-        if (!error) {
-            console.log(tweets);
+    client.get(<span class="hljs-string">'statuses/user_timeline'</span>, params, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error, tweets, response</span>) </span>{
+        <span class="hljs-keyword">if</span> (!error) {
+            <span class="hljs-built_in">console</span>.log(tweets);
             res.send(tweets);
-        } else {
-            console.log(error);
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-built_in">console</span>.log(error);
             res.send({
-                fail: error
+                <span class="hljs-attr">fail</span>: error
             });
         }
     });
 
 });
-</pre>
+</code></pre>
 <p>For the <strong>timeline</strong> you will can create the search query in a manner very similar to the one shown in the previous section. However, the method should include code that looks something like this:</p>
-<pre>var timeline = $("#timelineQuery").val();
-$.getJSON('/time-line', {"screen_name": timeline}, function(result) {
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> timeline = $(<span class="hljs-string">"#timelineQuery"</span>).val();
+$.getJSON(<span class="hljs-string">'/time-line'</span>, {<span class="hljs-string">"screen_name"</span>: timeline}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+</code></pre>
 <a class="anchor" id="startup"></a>
 <h2>Startup</h2>
 <p><strong>NOTE</strong>: <em>No one has to follow the structure defined in this section. But if you need help building the application, this section might help.</em></p>
 <p>Normally, we would create a method like this that would initilize our buttons:</p>
-<pre>$(document).ready(function() {
-    'use strict';
-    $('#getTimeline').click(twitterRefine.getTimeline);
-    $('#search').click(twitterRefine.search);
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    $(<span class="hljs-string">'#getTimeline'</span>).click(twitterRefine.getTimeline);
+    $(<span class="hljs-string">'#search'</span>).click(twitterRefine.search);
 });
-</pre>
+</code></pre>
 <p>Let&#39;s move it into its own method:</p>
-<pre>var init: function() {
-    'use strict';
-    $('#getTimeline').click(twitterRefine.getTimeline);
-    $('#search').click(twitterRefine.search);
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> init: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    $(<span class="hljs-string">'#getTimeline'</span>).click(twitterRefine.getTimeline);
+    $(<span class="hljs-string">'#search'</span>).click(twitterRefine.search);
 }
 
-$(document).ready(function() {
-    'use strict';
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
     init();
 });
-</pre>
+</code></pre>
 <p>Then, as we refine the code further, let&#39;s move it into an object that holds all the main methods for the program:</p>
-<pre>var twitterRefine = {
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> twitterRefine = {
 
-    init: function() {
-        'use strict';
-        $('#search').click(twitterRefine.search);
-        $('#getTimeline').click(twitterRefine.getTimeline);
+    <span class="hljs-attr">init</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        $(<span class="hljs-string">'#search'</span>).click(twitterRefine.search);
+        $(<span class="hljs-string">'#getTimeline'</span>).click(twitterRefine.getTimeline);
     },
 
-    // LOTS OF CODE OMITTED HERE
+    <span class="hljs-comment">// LOTS OF CODE OMITTED HERE</span>
 };
 
-$(document).ready(function() {
-    'use strict';
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
     twitterRefine.init();
 });
-</pre>
+</code></pre>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>As usual. Submit your repository URL and/or the name of the folder designated above.</p>

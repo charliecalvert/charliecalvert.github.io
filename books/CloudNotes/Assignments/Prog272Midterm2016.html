@@ -63,55 +63,55 @@
 <a class="anchor" id="msn-types"></a>
 <h2>MSN Types</h2>
 <p>Here is one way to implement the <strong>public/javascripts/high-tech-energy/msn-types.js</strong> file. Some of you have done it on the server, some of you did it by yourself. But if you need help with it, here is my version, which is on the client:</p>
-<pre>define(function() {
-    'use strict';
+<pre><code class="lang-javascript">define(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
 
-    function getMsnTypes(energyTypes) {
-        console.log('getMsnTypes called');
-        var currentMsn = {
-            msn: null,
-            description: ''
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getMsnTypes</span>(<span class="hljs-params">energyTypes</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'getMsnTypes called'</span>);
+        <span class="hljs-keyword">var</span> currentMsn = {
+            <span class="hljs-attr">msn</span>: <span class="hljs-literal">null</span>,
+            <span class="hljs-attr">description</span>: <span class="hljs-string">''</span>
         };
-        var msnTypes = [];
+        <span class="hljs-keyword">var</span> msnTypes = [];
 
-        function insertNewCurrentMsn(energyType) {
-            currentMsn = Object.create(currentMsn);
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insertNewCurrentMsn</span>(<span class="hljs-params">energyType</span>) </span>{
+            currentMsn = <span class="hljs-built_in">Object</span>.create(currentMsn);
             currentMsn.msn = energyType.MSN;
             currentMsn.description = energyType.Description;
             msnTypes.push(currentMsn);
         }
 
-        insertNewCurrentMsn(energyTypes[0]);
+        insertNewCurrentMsn(energyTypes[<span class="hljs-number">0</span>]);
 
-        function isUnique(msn) {
-            var result = true;
-            for (var i = 0; i < msnTypes.length; i++) {
-                if (msn === msnTypes[i].msn) {
-                    console.log('msn vs c.msn', msn, currentMsn.msn);
-                    result = false;
-                    break;
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isUnique</span>(<span class="hljs-params">msn</span>) </span>{
+            <span class="hljs-keyword">var</span> result = <span class="hljs-literal">true</span>;
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; msnTypes.length; i++) {
+                <span class="hljs-keyword">if</span> (msn === msnTypes[i].msn) {
+                    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'msn vs c.msn'</span>, msn, currentMsn.msn);
+                    result = <span class="hljs-literal">false</span>;
+                    <span class="hljs-keyword">break</span>;
                 }
             }
-            return result;
+            <span class="hljs-keyword">return</span> result;
         }
 
-        energyTypes.forEach(function(energyType, index) {
-            // console.log('energyType index and index length', index, msnTypes.length);
-            energyType.Year = energyType.YYYYMM.substr(0, 4);
-            energyType.Month = energyType.YYYYMM.substr(4);
-            if (energyType.MSN !== currentMsn.msn) {
-                if (isUnique(energyType.MSN)) {
-                    //console.log('isUnique');
+        energyTypes.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">energyType, index</span>) </span>{
+            <span class="hljs-comment">// console.log('energyType index and index length', index, msnTypes.length);</span>
+            energyType.Year = energyType.YYYYMM.substr(<span class="hljs-number">0</span>, <span class="hljs-number">4</span>);
+            energyType.Month = energyType.YYYYMM.substr(<span class="hljs-number">4</span>);
+            <span class="hljs-keyword">if</span> (energyType.MSN !== currentMsn.msn) {
+                <span class="hljs-keyword">if</span> (isUnique(energyType.MSN)) {
+                    <span class="hljs-comment">//console.log('isUnique');</span>
                     insertNewCurrentMsn(energyType);
                 }
             }
         });
-        return msnTypes;
+        <span class="hljs-keyword">return</span> msnTypes;
     }
 
-    return getMsnTypes;
+    <span class="hljs-keyword">return</span> getMsnTypes;
 });
-</pre>
+</code></pre>
 <a class="anchor" id="page-steps"></a>
 <h3>Create New Page Steps</h3>
 <p>Executive Summary</p>
@@ -143,94 +143,94 @@ npm install jasmine-jquery --save-dev
 </pre>
 
 <p>Your <strong>karma.conf.js</strong> file should use the requirejs framework. Explicitly load <strong>main-test.js</strong> and explicitly ignore <strong>public/javascripts/main.js</strong>.</p>
-<pre>frameworks: ['jasmine', 'requirejs'],
-
-files: [
-    'public/components/jquery/dist/jquery.min.js',
-    //'public/components/requirejs/require.js',
-    'node_modules/jasmine-jquery/lib/*.js', {
-        pattern: 'spec/test-*.js',
-        included: false
+<pre><code class="lang-javascript"><span class="hljs-string">frameworks:</span> [<span class="hljs-string">'jasmine'</span>, <span class="hljs-string">'requirejs'</span>],
+<span class="hljs-symbol">
+files:</span> [
+    <span class="hljs-string">'public/components/jquery/dist/jquery.min.js'</span>,
+    <span class="hljs-comment">//'public/components/requirejs/require.js',</span>
+    <span class="hljs-string">'node_modules/jasmine-jquery/lib/*.js'</span>, {
+<span class="hljs-symbol">        pattern:</span> <span class="hljs-string">'spec/test-*.js'</span>,
+<span class="hljs-symbol">        included:</span> <span class="hljs-literal">false</span>
     }, {
-        pattern: 'spec/data/client-renewables.js',
-        included: false
+<span class="hljs-symbol">        pattern:</span> <span class="hljs-string">'spec/data/client-renewables.js'</span>,
+<span class="hljs-symbol">        included:</span> <span class="hljs-literal">false</span>
     }, {
-        pattern: 'public/javascripts/**/*.js',
-        included: false
+<span class="hljs-symbol">        pattern:</span> <span class="hljs-string">'public/javascripts/**/*.js'</span>,
+<span class="hljs-symbol">        included:</span> <span class="hljs-literal">false</span>
     },
-    'spec/main-test.js',
-    '*.html'
+    <span class="hljs-string">'spec/main-test.js'</span>,
+    <span class="hljs-string">'*.html'</span>
 ],
 
-// list of files to exclude
-exclude: ['public/javascripts/main.js'],
-</pre>
+<span class="hljs-comment">// list of files to exclude</span>
+<span class="hljs-string">exclude:</span> [<span class="hljs-string">'public/javascripts/main.js'</span>],
+</code></pre>
 <p>Remove the <strong>plugins</strong> section from the end of <strong>karma.conf.js</strong>:</p>
-<pre>singleRun: false
+<pre><code class="lang-javascript"><span class="hljs-attribute">singleRun</span>: false
 
-/*
-  YOU CAN JUST DELETE IT, BUT I WANT TO SHOW YOU WHAT TO DELETE
-plugins: ['karma-jasmine',
-    'karma-spec-reporter',
-    'karma-phantomjs-launcher',
-    'karma-chrome-launcher'
-] */
-</pre>
+<span class="sml">/*
+  <span class="hljs-type">YOU</span> <span class="hljs-type">CAN</span> <span class="hljs-type">JUST</span> <span class="hljs-type">DELETE</span> <span class="hljs-type">IT</span>, <span class="hljs-type">BUT</span> <span class="hljs-type">I</span> <span class="hljs-type">WANT</span> <span class="hljs-type">TO</span> <span class="hljs-type">SHOW</span> <span class="hljs-type">YOU</span> <span class="hljs-type">WHAT</span> <span class="hljs-type">TO</span> <span class="hljs-type">DELETE</span>
+plugins: [<span class="hljs-symbol">'karma</span>-jasmine',
+    <span class="hljs-symbol">'karma</span>-spec-reporter',
+    <span class="hljs-symbol">'karma</span>-phantomjs-launcher',
+    <span class="hljs-symbol">'karma</span>-chrome-launcher'
+] */</span>
+</code></pre>
 <p>Once again, don&#39;t forget the JasmineRequireJs project linked at the beginning of this section.</p>
 <p>We need to create a requirejs file explicitly for our tests. Call the file <strong>spec/main-test.js</strong>.</p>
-<pre>/**
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
  * @author Charlie Calvert
- */
+ */</span>
 
-function loadTestsIntoArray() {
-    var tests = [];
-    for (var file in window.__karma__.files) {
-        if (/test-/.test(file)) {
-            console.log('Loaded test:', file);
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadTestsIntoArray</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> tests = [];
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> file <span class="hljs-keyword">in</span> <span class="hljs-built_in">window</span>.__karma__.files) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/test-/</span>.test(file)) {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Loaded test:'</span>, file);
             tests.push(file);
         }
     }
-    return tests;
+    <span class="hljs-keyword">return</span> tests;
 }
 
-require.config({
-    baseUrl: '/base',
+<span class="hljs-built_in">require</span>.config({
+    <span class="hljs-attr">baseUrl</span>: <span class="hljs-string">'/base'</span>,
 
-    paths: {
-        control: 'public/javascripts/control',
-        home: 'public/javascripts/home',
-        renewables: 'public/javascripts/renewables/renewables',
-        // THE REST LEFT AS AN EXERCISE
+    <span class="hljs-attr">paths</span>: {
+        <span class="hljs-attr">control</span>: <span class="hljs-string">'public/javascripts/control'</span>,
+        <span class="hljs-attr">home</span>: <span class="hljs-string">'public/javascripts/home'</span>,
+        <span class="hljs-attr">renewables</span>: <span class="hljs-string">'public/javascripts/renewables/renewables'</span>,
+        <span class="hljs-comment">// THE REST LEFT AS AN EXERCISE</span>
     },
-    deps: loadTestsIntoArray(),
-    callback: window.__karma__.start
+    <span class="hljs-attr">deps</span>: loadTestsIntoArray(),
+    <span class="hljs-attr">callback</span>: <span class="hljs-built_in">window</span>.__karma__.start
 });
-</pre>
+</code></pre>
 <p>It is one of the oddities of karma that <strong>/base</strong> points to the root of your project.</p>
 <p>A simple test of the home page would look like this:</p>
-<pre>define(['home'], function(home) {
+<pre><code class="lang-javascript">define([<span class="hljs-string">'home'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">home</span>) </span>{
 
 
-    describe('Home Page Suite', function () {
+    describe(<span class="hljs-string">'Home Page Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">
+        'use strict'</span>;
 
-        'use strict';
-
-        it('expects true to be true', function () {
-            expect(true).toBe(true);
+        it(<span class="hljs-string">'expects true to be true'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">true</span>);
         });
 
-        it('expects home.color to be red', function () {
-            expect(home.color).toBe('red');
+        it(<span class="hljs-string">'expects home.color to be red'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            expect(home.color).toBe(<span class="hljs-string">'red'</span>);
         });
 
-        it('expects home.size to be big', function () {
-            expect(home.size).toBe('big');
+        it(<span class="hljs-string">'expects home.size to be big'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            expect(home.size).toBe(<span class="hljs-string">'big'</span>);
         });
 
     });
 
 });
-</pre>
+</code></pre>
 <p>You will find the tests for the midterm here:</p>
 <ul>
 <li><a href="https://github.com/charliecalvert/JsObjects/tree/master/Utilities/Templates/UnitTest/SolarVoyager">JsObjects/Utilities/Templates/UnitTest/SolarVoyager</a></li>
@@ -299,47 +299,46 @@ block content
 <h2>Turn it in</h2>
 <p>Make sure the tests from JsObjects pass and <strong>grunt check</strong> passes. Put your work in a branch called <strong>week08</strong> or <strong>week08-midterm</strong>. Be sure to tell me the branch it is in when you turn in the assignment.</p>
 <p>Make sure both <strong>karma start</strong> and <strong>node jasmine-runner</strong> pass without error. Use the latest versions of the tests from JsObjects. When preparing your tests for the midterm, please make sure all of the following works:</p>
-<pre>grunt check
-node jasmine-runner.js
+<pre><code>grunt<span class="hljs-built_in"> check
+</span>node jasmine-runner.js
 karma start
-</pre>
-<p>If you have any <strong>fits</strong> or <strong>fdescribes</strong> in your code, please remove them so I can see all your tests running. Make sure you have the latest tests from JsObjects.</p>
+</code></pre><p>If you have any <strong>fits</strong> or <strong>fdescribes</strong> in your code, please remove them so I can see all your tests running. Make sure you have the latest tests from JsObjects.</p>
 <a class="anchor" id="hints"></a>
 <h2>Hints</h2>
 <p>Be sure you renamed work.js to home.js. Rename all associated buttons, menus and files.</p>
 <a class="anchor" id="hard-test"></a>
 <h2>The Hardest Test</h2>
 <p>There are several ways to solve this problem. However, I should mention that to get the test called <em>&#39;expects get renewable to be defined&#39;</em> in <strong>spec/test-renewables.js</strong> to pass, I made some changes to the way my code is structured in <strong>public/javascript/renewables-page.js</strong>:</p>
-<pre>var renewables = {
-        color: 'red',
-        size: 'big',
-        renewablesList: [],         < ==== HERE
-        getRenewable: getRenewable, < ==== HERE
-        init: function() {
-                console.log(renewables.color);
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> renewables = {
+        <span class="hljs-attr">color</span>: <span class="hljs-string">'red'</span>,
+        <span class="hljs-attr">size</span>: <span class="hljs-string">'big'</span>,
+        <span class="hljs-attr">renewablesList</span>: [],         &lt; ==== HERE
+        getRenewable: getRenewable, &lt; ==== HERE
+        init: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                <span class="hljs-built_in">console</span>.log(renewables.color);
+</code></pre>
 <p>Then in <strong>getRenewable</strong>, I wrote code like this:</p>
-<pre>$.getJSON('/renewables', function(response) {                
-                renewables.renewablesList = response.renewables; < ==== HERE                
-                showRenewable(renewables.renewablesList[index]); < ==== HERE
+<pre><code class="lang-javascript">$.getJSON(<span class="hljs-string">'/renewables'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span></span>(response) {                
+                renew<span class="hljs-type">ables</span>.renew<span class="hljs-type">ablesList</span> = response.renew<span class="hljs-type">ables</span>; &lt; ==== HERE                
+                showRenew<span class="hljs-type">able</span>(renew<span class="hljs-type">ables</span>.renew<span class="hljs-type">ablesList</span>[index]); &lt; ==== HERE
 });
-</pre>
+</code></pre>
 <a class="anchor" id="jscs"></a>
 <h2>JSCS</h2>
 <p>It is okay to turn a JSCS test off in specific cases like this:</p>
-<pre>// jscs:disable requireDotNotation
-return {
-    year: renewable.Year,
-    solar: renewable['Solar (quadrillion Btu)'],
-    geo: renewable['Geothermal (quadrillion Btu)'],
-    otherBiomass: renewable['Other biomass (quadrillion Btu)'],
-    wind: renewable['Wind power (quadrillion Btu)'],
-    liquidBiofuels: renewable['Liquid biofuels (quadrillion Btu)'],
-    wood: renewable['Wood biomass (quadrillion Btu)'],
-    hydropower: renewable['Hydropower (quadrillion Btu)']
+<pre><code class="lang-javascript"><span class="hljs-comment">// jscs:disable requireDotNotation</span>
+<span class="hljs-selector-tag">return</span> {
+    <span class="hljs-attribute">year</span>: renewable.Year,
+    <span class="hljs-attribute">solar</span>: renewable[<span class="hljs-string">'Solar (quadrillion Btu)'</span>],
+    <span class="hljs-attribute">geo</span>: renewable[<span class="hljs-string">'Geothermal (quadrillion Btu)'</span>],
+    <span class="hljs-attribute">otherBiomass</span>: renewable[<span class="hljs-string">'Other biomass (quadrillion Btu)'</span>],
+    <span class="hljs-attribute">wind</span>: renewable[<span class="hljs-string">'Wind power (quadrillion Btu)'</span>],
+    <span class="hljs-attribute">liquidBiofuels</span>: renewable[<span class="hljs-string">'Liquid biofuels (quadrillion Btu)'</span>],
+    <span class="hljs-attribute">wood</span>: renewable[<span class="hljs-string">'Wood biomass (quadrillion Btu)'</span>],
+    <span class="hljs-attribute">hydropower</span>: renewable[<span class="hljs-string">'Hydropower (quadrillion Btu)'</span>]
 };
-// jscs:enable requireDotNotation
-</pre>
+<span class="hljs-comment">// jscs:enable requireDotNotation</span>
+</code></pre>
 <p>Note the jscs:enable and jscs:disable directives.</p>
 <ul>
 <li><p><a href="http://jscs.info/overview#error-suppression">http://jscs.info/overview#error-suppression</a></p>
@@ -357,58 +356,58 @@ return {
 <li>always</li>
 </ul>
 <p>Like this:</p>
-<pre>$.getJSON('/renewables', function(response) {
-     // CODE OMITTED HERE
+<pre><code class="lang-javascript">$.getJSON(<span class="hljs-string">'/renewables'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+     <span class="hljs-comment">// CODE OMITTED HERE</span>
      })
-     .fail(function(a, b, c) {
-             console.log('Error', a, b, c);
-             $('#debug').html('Error occured: ', a.status);
+     .fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a, b, c</span>) </span>{
+             <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Error'</span>, a, b, c);
+             $(<span class="hljs-string">'#debug'</span>).html(<span class="hljs-string">'Error occured: '</span>, a.status);
      })
-     .done(function() {
-             console.log('second success');
+     .done(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+             <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'second success'</span>);
      })
-     .always(function() {
-             console.log('complete');
+     .always(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+             <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'complete'</span>);
      });
-</pre>
+</code></pre>
 <p>This matters because my test calls each of them in a specific order. From <strong>test-renewables.js</strong> in <strong>expects getRenewable to be defined</strong>:</p>
-<pre>return {
-     fail: function() {
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">return</span> {
+     <span class="hljs-attribute">fail</span>: <span class="hljs-built_in">function</span>() {
              return {
-                     done: function() {
+                     done: <span class="hljs-built_in">function</span>() {
                              return {
-                                     always: function() {}
+                                     always: <span class="hljs-built_in">function</span>() {}
                              };
                      }
              };
      }
 };
-</pre>
+</code></pre>
 <a class="anchor" id="client-renewables"></a>
 <h2>client-renewables</h2>
 <p>This is the mock data used in the hard test from <strong>test-renewables</strong>. Put it in <strong>spec/data/client-renewables.js</strong>:</p>
-<pre>define(function() {
-    'use strict';
-    return [{
-        "Year": "2017",
-        "Solar (quadrillion Btu)": "0.8045307",
-        "Geothermal (quadrillion Btu)": "0.2349284",
-        "Other biomass (quadrillion Btu)": "0.50916",
-        "Wind power (quadrillion Btu)": "2.202328",
-        "Liquid biofuels (quadrillion Btu)": "1.2329197",
-        "Wood biomass (quadrillion Btu)": "1.9860924",
-        "Hydropower (quadrillion Btu)": "2.5859957"
+<pre><code class="lang-javascript">define(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">return</span> [{
+        <span class="hljs-string">"Year"</span>: <span class="hljs-string">"2017"</span>,
+        <span class="hljs-string">"Solar (quadrillion Btu)"</span>: <span class="hljs-string">"0.8045307"</span>,
+        <span class="hljs-string">"Geothermal (quadrillion Btu)"</span>: <span class="hljs-string">"0.2349284"</span>,
+        <span class="hljs-string">"Other biomass (quadrillion Btu)"</span>: <span class="hljs-string">"0.50916"</span>,
+        <span class="hljs-string">"Wind power (quadrillion Btu)"</span>: <span class="hljs-string">"2.202328"</span>,
+        <span class="hljs-string">"Liquid biofuels (quadrillion Btu)"</span>: <span class="hljs-string">"1.2329197"</span>,
+        <span class="hljs-string">"Wood biomass (quadrillion Btu)"</span>: <span class="hljs-string">"1.9860924"</span>,
+        <span class="hljs-string">"Hydropower (quadrillion Btu)"</span>: <span class="hljs-string">"2.5859957"</span>
     }, {
-        "Year": "2016",
-        "Solar (quadrillion Btu)": "0.6298938",
-        "Geothermal (quadrillion Btu)": "0.232438",
-        "Other biomass (quadrillion Btu)": "0.5113525",
-        "Wind power (quadrillion Btu)": "2.0395132492",
-        "Liquid biofuels (quadrillion Btu)": "1.2406718727",
-        "Wood biomass (quadrillion Btu)": "1.9724914",
-        "Hydropower (quadrillion Btu)": "2.5965158"
+        <span class="hljs-string">"Year"</span>: <span class="hljs-string">"2016"</span>,
+        <span class="hljs-string">"Solar (quadrillion Btu)"</span>: <span class="hljs-string">"0.6298938"</span>,
+        <span class="hljs-string">"Geothermal (quadrillion Btu)"</span>: <span class="hljs-string">"0.232438"</span>,
+        <span class="hljs-string">"Other biomass (quadrillion Btu)"</span>: <span class="hljs-string">"0.5113525"</span>,
+        <span class="hljs-string">"Wind power (quadrillion Btu)"</span>: <span class="hljs-string">"2.0395132492"</span>,
+        <span class="hljs-string">"Liquid biofuels (quadrillion Btu)"</span>: <span class="hljs-string">"1.2406718727"</span>,
+        <span class="hljs-string">"Wood biomass (quadrillion Btu)"</span>: <span class="hljs-string">"1.9724914"</span>,
+        <span class="hljs-string">"Hydropower (quadrillion Btu)"</span>: <span class="hljs-string">"2.5965158"</span>
     }, {
     etc...
 });
-</pre>
+</code></pre>
 </div></body></html>

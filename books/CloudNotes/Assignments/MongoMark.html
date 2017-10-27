@@ -29,10 +29,9 @@ your HTML file. See the DocParse01 and 02 examples from JsObjects.</li>
 <a class="anchor" id="createjson-js"></a>
 <h2>CreateJson.js</h2>
 <p>It can read in a markdown file:</p>
-<pre>var fs = require('fs');
-fs.readFileSync('Sample.md', 'utf8');
-</pre>
-<p>After reading in the file it inserts places it insert a JSON object and stores it in a MongoDb database. The JSON object is able to do at least two things:</p>
+<pre><code><span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
+fs.readFileSync(<span class="hljs-string">'Sample.md'</span>, <span class="hljs-string">'utf8'</span>);
+</code></pre><p>After reading in the file it inserts places it insert a JSON object and stores it in a MongoDb database. The JSON object is able to do at least two things:</p>
 <ul>
 <li>Remember the name of the markdown file</li>
 <li>Store the markdown text.</li>
@@ -42,9 +41,8 @@ fs.readFileSync('Sample.md', 'utf8');
 <li><p><a href="http://johnmacfarlane.net/pandoc/">Pandoc</a></p>
 <p>  var exec = require(&#39;child_process&#39;).exec;</p>
 <p>  exec(&#39;pandoc -t html5 -o output.html output.md&#39;, function callback(error, stdout, stderr) { </p>
-<pre> // Read in the HTML send the HTML to the client
-</pre>
-<p>  });</p>
+<pre><code> <span class="hljs-comment">// Read in the HTML send the HTML to the client</span>
+</code></pre><p>  });</p>
 </li>
 </ul>
 <p>This file can be a stand alone program, but it would be best if you could
@@ -71,18 +69,17 @@ in a hard coded file will be fine.</p>
 <li>index.js</li>
 </ul>
 <p>All three pages are stored in a directory called <strong>Public</strong>. They are loaded with code that looks like this:</p>
-<pre>// Served up as the default page when a request comes from the client.
-app.get('/', function(request, result){
-      var html = fs.readFileSync(__dirname + '/Public/index.html');
-    result.writeHeader(200, {"Content-Type": "text/html"});   
+<pre><code><span class="hljs-comment">// Served up as the default page when a request comes from the client.</span>
+app.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, result)</span></span>{
+      <span class="hljs-keyword">var</span> html = fs.readFileSync(__dirname + <span class="hljs-string">'/Public/index.html'</span>);
+    result.writeHeader(<span class="hljs-number">200</span>, {<span class="hljs-string">"Content-Type"</span>: <span class="hljs-string">"text/html"</span>});   
     result.write(html);
     result.end();
 });
 
-// Give express access to the Public directory
-app.use("/", express.static(__dirname + '/Public'));
-</pre>
-<p>We use code like this often.  If you have place where you store default code, you should paste it in so you can access it again later. The following link provides an overview of the code that follows this pattern:</p>
+<span class="hljs-comment">// Give express access to the Public directory</span>
+app.<span class="hljs-keyword">use</span>(<span class="hljs-string">"/"</span>, express.<span class="hljs-keyword">static</span>(__dirname + <span class="hljs-string">'/Public'</span>));
+</code></pre><p>We use code like this often.  If you have place where you store default code, you should paste it in so you can access it again later. The following link provides an overview of the code that follows this pattern:</p>
 <ul>
 <li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/NodeJs.html#using-express">Elvenware Express</a></li>
 <li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/NodeJs.html#using-a-directory-with-app.use">app.use</a></li>
@@ -90,28 +87,27 @@ app.use("/", express.static(__dirname + '/Public'));
 <a class="anchor" id="the-client"></a>
 <h2>The Client</h2>
 <p>The important code on the client is found <strong>index.js</strong>:</p>
-<pre>var Run = (function() {
+<pre><code><span class="hljs-keyword">var</span> Run = (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 
-    // Constructor for module pattern
-    function Run() {
+    <span class="hljs-comment">// Constructor for module pattern</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Run</span>(<span class="hljs-params"></span>) </span>{
 
-        // Call the server's app.get('/read', function() {}); function
-        $.get('/read', function(data) {
-            // do something with HTML sent from the server
-        }).error(function(err) {
-            console.log(err.responseText);
+        <span class="hljs-comment">// Call the server's app.get('/read', function() {}); function</span>
+        $.get(<span class="hljs-string">'/read'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+            <span class="hljs-comment">// do something with HTML sent from the server</span>
+        }).error(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(err.responseText);
         });
     }
 
-    // return the constructor.
-    return Run;
+    <span class="hljs-comment">// return the constructor.</span>
+    <span class="hljs-keyword">return</span> Run;
 })();
 
-$(document).ready(function() {
-    new Run();    
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">new</span> Run();    
 });
-</pre>
-<p>Here we use the modular pattern.</p>
+</code></pre><p>Here we use the modular pattern.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it In</h2>
 <p>Place your code in your repository in a directory called Week06-MongoMark.

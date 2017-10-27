@@ -24,100 +24,100 @@
 <li>elf.display</li>
 </ul>
 <p>Set up is done in <strong>SiteConfig</strong>. For instance, I call <strong>loadConfig</strong> in this file, and I set up the button click handlers for the buttons in <strong>views/index.jade</strong>:</p>
-<pre>function SiteConfig() {
-    $('#pageOne').click(pageOne);
-    $('#pageTwo').click(pageTwo);
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">SiteConfig</span>(<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-string">'#pageOne'</span>).click(pageOne);
+    $(<span class="hljs-string">'#pageTwo'</span>).click(pageTwo);
 }
-</pre>
+</code></pre>
 <p>Don&#39;t set up button handlers here for buttons on HTML pages that have not been loaded yet.</p>
 <p>The <strong>Walking</strong> class handles calling the server side route that calls the <strong>elven-site-tools</strong> code for iterating through the markdown that is kept in directories like <strong>AllTest</strong>. Th <strong>getJSON</strong> call that calls the <strong>/walking</strong> route is found in this class:</p>
-<pre>function callServer(requestQuery, requestIndex, callback) {
-    $.getJSON('/walk', requestQuery, function (result) {
-    // Code omitted here
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callServer</span>(<span class="hljs-params">requestQuery, requestIndex, callback</span>) </span>{
+    $.getJSON(<span class="hljs-string">'/walk'</span>, requestQuery, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{
+    <span class="hljs-comment">// Code omitted here</span>
     });
 }
-</pre>
+</code></pre>
 <p><strong>ImagePicker</strong> is for calling the <strong>elven-site-tools</strong> code for iterating over a batch of images and creating a markdown file. The <strong>elven-site-tools</strong> code also creates a smaller version of the main image. This code will be discussed in another assignment.</p>
 <p>The <strong>display</strong> class contains all the code that displays information on an HTML page.</p>
 <a class="anchor" id="the-elf-class"></a>
 <h2>The elf Class</h2>
 <p>This object can create the constructor objects such as <strong>SiteConfig</strong>, <strong>Walking</strong> and <strong>ImagePicker</strong>:</p>
-<pre>var elf = {
-    init: function() {
-        'use strict';
-        elf.siteConfig = new elf.SiteConfig();
-        elf.walking = new elf.Walking();
-        elf.imagePicker = new elf.ImagePicker();
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elf = {
+    <span class="hljs-attr">init</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        elf.siteConfig = <span class="hljs-keyword">new</span> elf.SiteConfig();
+        elf.walking = <span class="hljs-keyword">new</span> elf.Walking();
+        elf.imagePicker = <span class="hljs-keyword">new</span> elf.ImagePicker();
     }
 };
-</pre>
+</code></pre>
 <p>The class is also used for global abatement. That is, it is used to limit the number of variables put in the global name space. Our program, should, in fact, put only the <strong>elf</strong> class in the global name space.</p>
 <a class="anchor" id="create-display-class"></a>
 <h2>Create Display Class</h2>
 <p>The display class is created to be sure there is a separation of concerns. All code that has to do with displaying objects and their data goes in this class. We could refactor into multiple display classes, one for each object, if our program became more complicated.</p>
-<pre>elf.display = {
+<pre><code class="lang-javascript">elf.display = {
 
-    clear:function() {
-        $('#displayArea').empty();
-        $('#displayList').empty();
+    <span class="hljs-attr">clear</span>:<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'#displayArea'</span>).empty();
+        $(<span class="hljs-string">'#displayList'</span>).empty();
     },
 
-    clearConfig: function() {
-        $('#dirsToWalk').empty();
-        $('#destinationDirs').empty();
+    <span class="hljs-attr">clearConfig</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'#dirsToWalk'</span>).empty();
+        $(<span class="hljs-string">'#destinationDirs'</span>).empty();
     },
 
-    fillDisplayArea: function(stringToDisplay) {
-        $('#displayArea').html(stringToDisplay);
+    <span class="hljs-attr">fillDisplayArea</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">stringToDisplay</span>) </span>{
+        $(<span class="hljs-string">'#displayArea'</span>).html(stringToDisplay);
     },
 
-    showApacheFiles: function(files, destinationDir) {
-        files.forEach(function(file) {
-            var base = "/var/www/html/";
-            var extra = destinationDir.slice(base.length, destinationDir.length);
-            var url = 'http://localhost/' + extra + file.slice(destinationDir.length, file.length);
-            $('#displayList').append('<li><a href=\"' + url + '\" target=\"_blank\">' + url + '</a></li>');
+    <span class="hljs-attr">showApacheFiles</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">files, destinationDir</span>) </span>{
+        files.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">file</span>) </span>{
+            <span class="hljs-keyword">var</span> base = <span class="hljs-string">"/var/www/html/"</span>;
+            <span class="hljs-keyword">var</span> extra = destinationDir.slice(base.length, destinationDir.length);
+            <span class="hljs-keyword">var</span> url = <span class="hljs-string">'http://localhost/'</span> + extra + file.slice(destinationDir.length, file.length);
+            $(<span class="hljs-string">'#displayList'</span>).append(<span class="hljs-string">'&lt;li&gt;&lt;a href=\"'</span> + url + <span class="hljs-string">'\" target=\"_blank\"&gt;'</span> + url + <span class="hljs-string">'&lt;/a&gt;&lt;/li&gt;'</span>);
         });
     },
 
-    showHtmlFiles: function(files, destinationDir) {
-        files.forEach(function(file) {
-            // var index = file.lastIndexOf('/');
-            var url = 'http://localhost/' + file.slice(destinationDir.length, file.length);
-            $('#displayList').append('<li><a href=\"' + url + '\" target=\"_blank\">' + url + '</a></li>');
+    <span class="hljs-attr">showHtmlFiles</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">files, destinationDir</span>) </span>{
+        files.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">file</span>) </span>{
+            <span class="hljs-comment">// var index = file.lastIndexOf('/');</span>
+            <span class="hljs-keyword">var</span> url = <span class="hljs-string">'http://localhost/'</span> + file.slice(destinationDir.length, file.length);
+            $(<span class="hljs-string">'#displayList'</span>).append(<span class="hljs-string">'&lt;li&gt;&lt;a href=\"'</span> + url + <span class="hljs-string">'\" target=\"_blank\"&gt;'</span> + url + <span class="hljs-string">'&lt;/a&gt;&lt;/li&gt;'</span>);
         });
     },
 
-    showDebug: function(value) {
-        $('#debug').append('<li>' + value + '</li>');
+    <span class="hljs-attr">showDebug</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value</span>) </span>{
+        $(<span class="hljs-string">'#debug'</span>).append(<span class="hljs-string">'&lt;li&gt;'</span> + value + <span class="hljs-string">'&lt;/li&gt;'</span>);
     }
 
 };
-</pre>
+</code></pre>
 <a class="anchor" id="create-walking-class"></a>
 <h2>Create Walking Class</h2>
-<pre>elf.Walking = (function() {
+<pre><code class="lang-javascript">elf.Walking = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
 
-    function Walking() {
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Walking</span><span class="hljs-params">()</span> </span>{
 
     }
 
-    // CODE OMITTED HERE
+    <span class="hljs-comment">// CODE OMITTED HERE</span>
 
-    return Walking
+    <span class="hljs-keyword">return</span> Walking
 })();
-</pre>
+</code></pre>
 <a class="anchor" id="set-up-jasmine"></a>
 <h2>Set up Jasmine</h2>
 <p>To unit test the code on the server side, we want to set up jasmine. The first step is to create a <strong>jasmine.json</strong> file in a folder called <strong>spec/support</strong>. We are meeting a requirement developed by the authors of Jasmine. In particular, Jasmine expects to find this file in this location.</p>
 <p>The <strong>/spec/support/jasmine.json</strong> file looks like this:</p>
-<pre>{
-  "spec_dir": "spec",
-  "spec_files": [
-    "**/test*.js"
+<pre><code class="lang-json">{
+  <span class="hljs-attr">"spec_dir"</span>: <span class="hljs-string">"spec"</span>,
+  <span class="hljs-attr">"spec_files"</span>: [
+    <span class="hljs-string">"**/test*.js"</span>
   ]
 }
-</pre>
+</code></pre>
 <p>The file says two things:</p>
 <ul>
 <li>Our tests are in a directory called <strong>spec</strong>.</li>
@@ -126,11 +126,10 @@
 <a class="anchor" id="details"></a>
 <h2>Details</h2>
 <p>You should modify <strong>layout.jade</strong>. Be sure to include:</p>
-<pre>meta(charset='UTF-8')
-meta(name='viewport', content='width=device-width')
+<pre><code>meta(<span class="hljs-attribute">charset</span>=<span class="hljs-string">'UTF-8'</span>)
+meta(<span class="hljs-attribute">name</span>=<span class="hljs-string">'viewport'</span>, <span class="hljs-attribute">content</span>=<span class="hljs-string">'width=device-width'</span>)
 title= title
-</pre>
-<p>My <strong>control.js</strong> file now mostly contains <strong>elf.SiteContig</strong> with a constructor and <strong>loadConfig</strong>. Should we refactor into another class?</p>
+</code></pre><p>My <strong>control.js</strong> file now mostly contains <strong>elf.SiteContig</strong> with a constructor and <strong>loadConfig</strong>. Should we refactor into another class?</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Push your branch.</p>

@@ -27,80 +27,75 @@
 <a class="anchor" id="step-one"></a>
 <h2>Step One</h2>
 <p>Create an express app</p>
-<pre>CreateAllExpress Week05-MongooseSignIn
-cd Week05-MongooseSignIn
-</pre>
-<ul>
+<pre><code>CreateAllExpress Week05-MongooseSignIn
+<span class="hljs-built_in">cd</span> Week05-MongooseSignIn
+</code></pre><ul>
 <li><a href="https://drive.google.com/file/d/0B25UTAlOfPRGVXR3SHFJa05sNjQ/view?usp=sharing">https://drive.google.com/file/d/0B25UTAlOfPRGVXR3SHFJa05sNjQ/view?usp=sharing</a></li>
 </ul>
 <p>Some npm packages we are using. You need do nothing as <strong>AllInclusive</strong> should handle this. So this is a no-op, it is just an fyi:</p>
-<pre>npm install bcrypt-nodejs --save
-npm install mongoose --save
-npm install passport --save
-npm install passport-local --save
-npm install express-session --save
-</pre>
-<a class="anchor" id="step-two"></a>
+<pre><code>npm <span class="hljs-keyword">install</span> bcrypt-nodejs <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> mongoose <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> passport <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> passport-<span class="hljs-keyword">local</span> <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> express-<span class="hljs-keyword">session</span> <span class="hljs-comment">--save</span>
+</code></pre><a class="anchor" id="step-two"></a>
 <h2>Step Two</h2>
 <p>To connect to the MongoDb database, I&#39;ve been using the <strong>connect.js</strong> file from the <strong>$ELF_TEMPLATES/Database</strong> directory. Copy <strong>connect.js</strong> into the <strong>routes</strong> directory</p>
-<pre>cp $ELF_TEMPLATES/Database/connect.js routes/.
-</pre>
+<pre><code class="lang-bash">cp <span class="hljs-variable">$ELF_TEMPLATES</span>/Database/connect<span class="hljs-selector-class">.js</span> routes/.
+</code></pre>
 <a class="anchor" id="define-schema"></a>
 <h3>Define Schema</h3>
 <p>Define the schema for your database in <strong>models/user.js</strong>. You can do something like the following to copy the file into the models directory:</p>
-<pre>cp -r $ELF_TEMPLATES/SignIn/models .
-</pre>
+<pre><code class="lang-bash">cp -r <span class="hljs-variable">$ELF_TEMPLATES</span><span class="hljs-regexp">/SignIn/m</span>odels .
+</code></pre>
 <p>The above command creates a local project folder called <strong>models</strong> and copies the <strong>user.js</strong> file into it. Issue this command only once, otherwise you will end up with nested folders.</p>
 <p><strong>NOTE</strong>: _If something goes wrong, you can always delete the local <strong>models</strong> directory and try again. (Don&#39;t delete the <strong>$ELF_TEMPLATES/SignIn/models</strong> directory!)_</p>
 <a class="anchor" id="step-two"></a>
 <h2>Step Two</h2>
 <p>Let&#39;s work on the front end. Retrieve the jade for the various dialogs needed to complete the sign in process:</p>
-<pre>cp -v $ELF_TEMPLATES/SignIn/views/*.jade views/.
-</pre>
-<p>We just copied in three files:</p>
-<pre>login.jade
-logout.jade
+<pre><code>cp -v <span class="hljs-variable">$ELF_TEMPLATES</span><span class="hljs-regexp">/SignIn/</span>views<span class="hljs-regexp">/*.jade views/</span>.
+</code></pre><p>We just copied in three files:</p>
+<pre><code>login<span class="hljs-selector-class">.jade</span>
+logout<span class="hljs-selector-class">.jade</span>
 register.jade
-</pre>
-<a class="anchor" id="step-three"></a>
+</code></pre><a class="anchor" id="step-three"></a>
 <h2>Step Three</h2>
 <p>Set up Passport. Also setup the MongoDb database for storing the user name. To accomplish these tasks We will use three libraries
 called <strong>express-session</strong>, <strong>Mongoose</strong> and <strong>Passport</strong>, all of which should already be in <strong>AllInclusive</strong>.</p>
 <p>In <strong>app.js</strong>, about line 8.</p>
 <p>New way:</p>
-<pre>// Connect to DB
-var connect = require('./routes/connect');
-connect.doConnection(true);
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-comment">// Connect to DB</span>
+<span class="hljs-keyword">var</span> connect = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./routes/connect'</span>);
+connect.doConnection(<span class="hljs-literal">true</span>);
+</code></pre>
 <p>And remove the line that reads, as we will include it later:</p>
-<pre>var routes = require('./routes/index')
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> routes = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./routes/index'</span>)
+</code></pre>
 <p>More specifically, on about line 13, comment out the existing routes call:</p>
-<pre>// var routes = require('./routes/index');
-</pre>
-<p>In app.js around line 28:</p>
-<pre>// Configuring Passport
-var passport = require('passport');
-var expressSession = require('express-session');
-app.use(expressSession({
-    secret: 'mySecretKey',
-    resave: true,
-    saveUninitialized: true
+<pre><code><span class="hljs-regexp">//</span> var routes = require(<span class="hljs-string">'./routes/index'</span>);
+</code></pre><p>In app.js around line 28:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// Configuring Passport</span>
+<span class="hljs-keyword">var</span> passport = <span class="hljs-keyword">require</span>(<span class="hljs-string">'passport'</span>);
+<span class="hljs-keyword">var</span> expressSession = <span class="hljs-keyword">require</span>(<span class="hljs-string">'express-session'</span>);
+app.<span class="hljs-keyword">use</span>(expressSession({
+    secret: <span class="hljs-string">'mySecretKey'</span>,
+    resave: <span class="hljs-keyword">true</span>,
+    saveUninitialized: <span class="hljs-keyword">true</span>
 }));
-app.use(passport.initialize());
-app.use(passport.session());
+app.<span class="hljs-keyword">use</span>(passport.initialize());
+app.<span class="hljs-keyword">use</span>(passport.session());
 
-// Initialize Passport
-var initPassport = require('./passport/init');
+<span class="hljs-comment">// Initialize Passport</span>
+<span class="hljs-keyword">var</span> initPassport = <span class="hljs-keyword">require</span>(<span class="hljs-string">'./passport/init'</span>);
 initPassport(passport);
 
-var routes = require('./routes/index')(passport);
-</pre>
+<span class="hljs-keyword">var</span> routes = <span class="hljs-keyword">require</span>(<span class="hljs-string">'./routes/index'</span>)(passport);
+</code></pre>
 <a class="anchor" id="step-four"></a>
 <h2>Step Four</h2>
 <p>Copy in passport specific JavaScript files:</p>
-<pre>cp -r $ELF_TEMPLATES/SignIn/passport/ .
-</pre>
+<pre><code class="lang-bash">cp -r <span class="hljs-variable">$ELF_TEMPLATES</span><span class="hljs-regexp">/SignIn/</span>passport<span class="hljs-regexp">/ .</span>
+</code></pre>
 <p>You just copied the following files into a folder called <strong>passport</strong> :</p>
 <ul>
 <li>init.js</li>
@@ -121,20 +116,19 @@ cp $ELF_TEMPLATES/SignIn/public/SpaceNeedle.png public/images/.
 <li>Failure: Access denied!</li>
 </ul>
 <p>Here is the classic <strong>authenticate</strong> middleware in action:</p>
-<pre>router.post('/login', passport.authenticate('login', {
-    successRedirect: '/',
-    failureRedirect: '/login'
+<pre><code><span class="hljs-selector-tag">router</span><span class="hljs-selector-class">.post</span>(<span class="hljs-string">'/login'</span>, passport.authenticate(<span class="hljs-string">'login'</span>, {
+    <span class="hljs-attribute">successRedirect</span>: <span class="hljs-string">'/'</span>,
+    <span class="hljs-attribute">failureRedirect</span>: <span class="hljs-string">'/login'</span>
   }));
-</pre>
-<p>Be careful with the next command, as it will overwrite your existing <strong>index.js</strong> file. Since this is a new project, the command should not cause any harm. However, if you are working with an existing project, and have already modified <strong>routes/index.js</strong>, then open <strong>$ELF_TEMPLATES/SignIn/routes/index.js</strong> in an editor, and selectively copy in the contents of the file, or use the method described below in the <a href="#alternative-login">alternative login</a>.</p>
+</code></pre><p>Be careful with the next command, as it will overwrite your existing <strong>index.js</strong> file. Since this is a new project, the command should not cause any harm. However, if you are working with an existing project, and have already modified <strong>routes/index.js</strong>, then open <strong>$ELF_TEMPLATES/SignIn/routes/index.js</strong> in an editor, and selectively copy in the contents of the file, or use the method described below in the <a href="#alternative-login">alternative login</a>.</p>
 <p>If you starting fresh, and can safely replace your <strong>routes/index.js</strong> file, then start by copying in the default SignIn <strong>index.js</strong> file, overwriting the existing index.js:</p>
 <pre>
 cp $ELF_TEMPLATES/SignIn/routes/index.js routes/.
 </pre>
 
 <p>The most important line is this one:</p>
-<pre>  router.get('/', isAuthenticated, function (req, res, next) {...})
-</pre>
+<pre><code class="lang-javascript">  router.get('/', isAuthenticated, function (req, res, next) <span class="hljs-meta">{...}</span>)
+</code></pre>
 <p>Here we use the <strong>isauthenticated</strong> middleware to test if we are logged in. If we are logged in, go to the designated page, otherwise go to the login page. Use this same middleware for all the calls you make from the client. That way you can be sure the user is logged in before allowing them to view a page.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
@@ -144,16 +138,15 @@ cp $ELF_TEMPLATES/SignIn/routes/index.js routes/.
 <h2>MongoLab</h2>
 <p>In MongoLab you should be able to see the <strong>Users</strong> table where your users are stored.</p>
 <p>When viewing the data on MongoLab, you can optionally select <strong>edit table view</strong> in the view of your <strong>users</strong> collection and paste in the following code:</p>
-<pre>{
-    "_id": "id",
-    "username": "username",
-    "email": "email",
-    "firstName": "firstName",
-    "lastName": "lastName",
-    "password": "password"
+<pre><code>{
+    <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"id"</span>,
+    <span class="hljs-attr">"username"</span>: <span class="hljs-string">"username"</span>,
+    <span class="hljs-attr">"email"</span>: <span class="hljs-string">"email"</span>,
+    <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"firstName"</span>,
+    <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"lastName"</span>,
+    <span class="hljs-attr">"password"</span>: <span class="hljs-string">"password"</span>
 }
-</pre>
-<p>When you are done, you are view of the data could look something like this:</p>
+</code></pre><p>When you are done, you are view of the data could look something like this:</p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/SignIn04.png" alt="MongoLab"></p>
 <a class="anchor" id="summary"></a>
 <h2>Summary</h2>
@@ -184,45 +177,45 @@ cp $ELF_TEMPLATES/SignIn/routes/index.js routes/.
 <a class="anchor" id="alternative-login"></a>
 <h2>Alternative login</h2>
 <p>Suppose your index.js looked like this:</p>
-<pre>var express = require('express');
-var router = express.Router();
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> router = express.Router();
 
-/* GET home page. */
-router.get('/', function(request, response, next) {
-    'use strict';
-    response.render('index', {
-        title: 'Elven Site Options',
-        author: 'Charlie Calvert'
+<span class="hljs-comment">/* GET home page. */</span>
+router.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response, next</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    response.render(<span class="hljs-string">'index'</span>, {
+        <span class="hljs-attr">title</span>: <span class="hljs-string">'Elven Site Options'</span>,
+        <span class="hljs-attr">author</span>: <span class="hljs-string">'Charlie Calvert'</span>
     });
 });
 
-router.get('/foo', function(req, res, next) {
-    console.log('foo');
+router.get(<span class="hljs-string">'/foo'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'foo'</span>);
     res.send({
-        title: 'Elf Foo',
-        foo: 'foo'
+        <span class="hljs-attr">title</span>: <span class="hljs-string">'Elf Foo'</span>,
+        <span class="hljs-attr">foo</span>: <span class="hljs-string">'foo'</span>
     });
 });
-</pre>
+</code></pre>
 <p>Move foo and any similar methods into in <strong>routes/foo.js</strong></p>
-<pre>var express = require('express');
-var router = express.Router();
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> router = express.Router();
 
-router.get('/foo', function(req, res, next) {
-    console.log('foo');
+router.get(<span class="hljs-string">'/foo'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'foo'</span>);
     res.send({
-        title: 'Elf Foo',
-        foo: 'foo'
+        <span class="hljs-attr">title</span>: <span class="hljs-string">'Elf Foo'</span>,
+        <span class="hljs-attr">foo</span>: <span class="hljs-string">'foo'</span>
     });
 });
-</pre>
+</code></pre>
 <p>Now add the following to app.js about line 8 or 10:</p>
-<pre>var foo = require('./routes/foo');
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var foo</span> = require(<span class="hljs-string">'./routes/foo'</span>);
+</code></pre>
 <p>And further down:</p>
-<pre>app.use('/foo', foo);
-</pre>
+<pre><code class="lang-javascript">app.<span class="hljs-keyword">use</span>(<span class="hljs-string">'/foo'</span>, foo);
+</code></pre>
 <p>Now call the foo route like this:</p>
-<pre>$.getJSON('/foo/foo', function(result) {...});
-</pre>
+<pre><code class="lang-javascript">$.getJSON('/foo/foo', function(<span class="hljs-literal">result</span>) <span class="hljs-meta">{...}</span>);
+</code></pre>
 </div></body></html>

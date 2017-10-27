@@ -82,21 +82,19 @@
 <h2>Binding Event Handlers to Button Clicks</h2>
 <p>When you click a button you frequently want a method to be called. The method typically defines the action associated with the button. </p>
 <p>To bind an event handler to a button click you need to use the <a href="http://api.jquery.com/click/">jQuery click</a> method. For instance, here is how to use jQuery to bind an on-click event handler called <strong>getAddress()</strong> to a button click:</p>
-<pre>function getAddress() {
-    var address = $('#inputAddress').val();
-    $('#address').html(address);
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getAddress</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> address = $(<span class="hljs-string">'#inputAddress'</span>).val();
+    $(<span class="hljs-string">'#address'</span>).html(address);
 }
 
-$('#getAddress').click(getAddress);
-</pre>
-<p>This is how to write the same code with an anonymous function for the callback:</p>
-<pre>
-$('#getAddress').click(function() {
-    var address = $('#inputAddress').val();
-    $('#address').html(address);
+$(<span class="hljs-string">'#getAddress'</span>).click(getAddress);
+</code></pre><p>This is how to write the same code with an anonymous function for the callback:</p>
+<pre><code>
+$(<span class="hljs-string">'#getAddress'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> address = $(<span class="hljs-string">'#inputAddress'</span>).val();
+    $(<span class="hljs-string">'#address'</span>).html(address);
 });
-</pre>
-<p>This latter technique is what you see most often, but both examples get the job done.</p>
+</code></pre><p>This latter technique is what you see most often, but both examples get the job done.</p>
 <a class="anchor" id="init-on-click"></a>
 <h2>No On-Click Initialization in DocumentReady</h2>
 <p>Even though I may have shown it in the video, do not put any jQuery onclick initialization in the <strong>document.ready</strong>. In fact, you need only one call in <strong>document.ready</strong>. Here is how to proceed:</p>
@@ -105,184 +103,174 @@ $('#getAddress').click(function() {
 <li>Call <strong>initialize</strong> from inside <strong>$(document).ready</strong>.</li>
 </ul>
 <p>Here is what it looks like, minus a few details such as the <strong>getAjax</strong> method:</p>
-<pre>function errorHandler(jqxhr, textStatus, error) {
-    var err = textStatus + ", " + error;
-    $('#debug').html("Request Failed: " + err);
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">errorHandler</span>(<span class="hljs-params">jqxhr, textStatus, error</span>) </span>{
+    <span class="hljs-keyword">var</span> err = textStatus + <span class="hljs-string">", "</span> + error;
+    $(<span class="hljs-string">'#debug'</span>).html(<span class="hljs-string">"Request Failed: "</span> + err);
 }
 
-function getJson(callback) {
-    var result = $.getJSON('./Presidents.json', callback);
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getJson</span>(<span class="hljs-params">callback</span>) </span>{
+    <span class="hljs-keyword">var</span> result = $.getJSON(<span class="hljs-string">'./Presidents.json'</span>, callback);
     result.fail(errorHandler);
 }
 
-function initialize() {
-   // place all the code from document ready here.
-   // This is mostly the jquery onClick handlers that begin $("#... 
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">initialize</span>(<span class="hljs-params"></span>) </span>{
+   <span class="hljs-comment">// place all the code from document ready here.</span>
+   <span class="hljs-comment">// This is mostly the jquery onClick handlers that begin $("#... </span>
 }
 
-$(document).ready(function() {
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     initialize();
 });
-</pre>
-<p>We ask jquery to connect you onclick events to the HTML by writing code like this:</p>
-<pre> $('#getJson').click(function() {
+</code></pre><p>We ask jquery to connect you onclick events to the HTML by writing code like this:</p>
+<pre><code> $(<span class="hljs-string">'#getJson'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
         getJson(display);
 });
-</pre>
-<p>Its these types of methods that need to be in <strong>initialize</strong>. You should have a good number of them.</p>
+</code></pre><p>Its these types of methods that need to be in <strong>initialize</strong>. You should have a good number of them.</p>
 <p>For more guidance on this and the next section, see the <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/UnitTests/MochaIntegrationTest">MochaIntegrationTests</a> from JsObjects.</p>
 <a class="anchor" id="jade-to-html"></a>
 <h2>Jade To Html</h2>
 <p>To convert the Jade in your Views folder into HTML, run this command from the root of your project:</p>
-<pre>./node_modules/.bin/jade --pretty views/index.jade
-</pre>
-<p><strong>NOTE</strong>: <em>This command runs the copy of jade in your local node_modules folder. You must have run <strong>node install</strong> for this to work. I save the above command in a bash script file called <strong>JadeToHtml</strong> because it is something I needed to run over and over.</em> </p>
+<pre><code>./node_modules/.bin/jade <span class="hljs-comment">--pretty views/index.jade</span>
+</code></pre><p><strong>NOTE</strong>: <em>This command runs the copy of jade in your local node_modules folder. You must have run <strong>node install</strong> for this to work. I save the above command in a bash script file called <strong>JadeToHtml</strong> because it is something I needed to run over and over.</em> </p>
 <p>You will need to insert the HTML produced above into a file called <strong>MainCode.html</strong>. The test HTML file (<strong>/test/index.html</strong>), minus the part where you insert your HTML, looks like this:</p>
-<pre><!doctype html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Mocha Spec Runner</title>
-    <link rel="stylesheet" href="bower_components/mocha/mocha.css">
-</head>
-<body>
-    <div id="mocha"></div>
-    <script src="bower_components/mocha/mocha.js"></script>
-    <script>mocha.setup('bdd')</script>
-    <script src="bower_components/chai/chai.js"></script>
-    <script>
-        var assert = chai.assert;
-        var expect = chai.expect;
-        var should = chai.should();
-    </script>
+<pre><code><span class="hljs-meta">&lt;!doctype html&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"utf-8"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Mocha Spec Runner<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"stylesheet"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"bower_components/mocha/mocha.css"</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"mocha"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"bower_components/mocha/mocha.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="actionscript">mocha.setup(<span class="hljs-string">'bdd'</span>)</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"bower_components/chai/chai.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="actionscript">
+        <span class="hljs-keyword">var</span> assert = chai.assert;
+        <span class="hljs-keyword">var</span> expect = chai.expect;
+        <span class="hljs-keyword">var</span> should = chai.should();
+    </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 
-    <!-- The HTML to test goes here -->
-    <div id="mainArea"></div>
+    <span class="hljs-comment">&lt;!-- The HTML to test goes here --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"mainArea"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 
-    <!-- include source files here... -->
-    <script src="../public/components/jquery/dist/jquery.js"></script>
-    <script src="../public/js/Control.js"></script>
+    <span class="hljs-comment">&lt;!-- include source files here... --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"../public/components/jquery/dist/jquery.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"../public/js/Control.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 
-    <!-- include spec files here... -->
-    <script src="spec/test.js"></script>
+    <span class="hljs-comment">&lt;!-- include spec files here... --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"spec/test.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 
-    <script>mocha.run()</script>
-</body>
-</html>
-</pre>
-<p>When your test is run, it will programmatically and automagically load your HTML into the section of <strong>test/index.html</strong> that reads: &quot;The HTML to test goes here.&quot; Near the top of <strong>tests.js</strong> the mocha tests I gave you load and inserts your <strong>MainCode.html</strong> file like this:</p>
-<pre>$('#mainArea').load('./MainCode.html', function() {
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="undefined">mocha.run()</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+</code></pre><p>When your test is run, it will programmatically and automagically load your HTML into the section of <strong>test/index.html</strong> that reads: &quot;The HTML to test goes here.&quot; Near the top of <strong>tests.js</strong> the mocha tests I gave you load and inserts your <strong>MainCode.html</strong> file like this:</p>
+<pre><code>$(<span class="hljs-string">'#mainArea'</span>).load(<span class="hljs-string">'./MainCode.html'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     initialize();
-    // code omitted here
+    <span class="hljs-comment">// code omitted here</span>
         done();
 });
-</pre>
-<p>This code first loads <strong>MainCode.html</strong> from the server, and then inserts it into <strong>test/index.html</strong>.</p>
+</code></pre><p>This code first loads <strong>MainCode.html</strong> from the server, and then inserts it into <strong>test/index.html</strong>.</p>
 <p>The point is that we have to initialize the onclick methods after we have loaded the HTML. JQuery does not know how to connect your on click methods to your HTML unless the HTML is already loaded. So first we load MainCode.html, then we call the initialize method found in <em>*Control.js</em>.*</p>
 <p>I give you this code in the test, and you don&#39;t have to change it. All you have to do is create <strong>MainCode.html</strong> by running the Jade command shown above. Run the command, open up <strong>views/index.html</strong>, pull out almost everything between the <strong>body</strong> tags, and paste it into <strong>MainCode.html</strong>.  The screenshot of the IDE shown above reveals the place to put <strong>MainCode.html</strong> in your project. </p>
 <p>My copy of <strong>MainCode.html</strong> begins like this:</p>
-<pre><div class="jsonArea">
-    <h2>HTML fields</h2>
-    <div class="displayArea">
-        <button id="insertMale">Insert Male</button>
-        <button id="insertFemale">Insert Female</button>
-        <button id="clear">Clear</button>
-    </div>
-    <hr>
-    <div class="displayArea">
-</pre>
-<p>Now you can load jquery, <strong>Control.js</strong> and your css in <strong>index.html</strong>:</p>
-<pre>    <div id="mainArea"></div>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"jsonArea"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>HTML fields<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"displayArea"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"insertMale"</span>&gt;</span>Insert Male<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"insertFemale"</span>&gt;</span>Insert Female<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"clear"</span>&gt;</span>Clear<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">hr</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"displayArea"</span>&gt;</span>
+</code></pre><p>Now you can load jquery, <strong>Control.js</strong> and your css in <strong>index.html</strong>:</p>
+<pre><code>    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"mainArea"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 
-    <!-- include source files here... -->
-    <link href="../public/css/style.css" rel="stylesheet" type="text/css">
-    <script src="../public/components/jquery/dist/jquery.js"></script>
-    <script src="../public/js/Control.js"></script>
-</pre>
-<p>Here is what my test looks like when I run it:</p>
+    <span class="hljs-comment">&lt;!-- include source files here... --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"../public/css/style.css"</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"stylesheet"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/css"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"../public/components/jquery/dist/jquery.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"../public/js/Control.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre><p>Here is what my test looks like when I run it:</p>
 <p><img src="https://drive.google.com/uc?export=view&amp;id=0B25UTAlOfPRGRWNvNHFHb1BOM0U" alt="TestRun"></p>
 <p>The point here is that these tests actually interact with the HTML. As such, there are really integration tests, rather than pure unit tests. Nevertheless this is a fairly robust to test your code. </p>
 <p>The key point, of course, is that each time you update your jade, you need to convert it to HTML and paste that HTML into <strong>MainCode.html</strong>.</p>
 <p>##Bower</p>
-<pre>{
-  "name": "seltest",
-  "version": "0.0.1",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "components"
+<pre><code>{
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"seltest"</span>,
+  <span class="hljs-attr">"version"</span>: <span class="hljs-string">"0.0.1"</span>,
+  <span class="hljs-attr">"ignore"</span>: [
+    <span class="hljs-string">"**/.*"</span>,
+    <span class="hljs-string">"node_modules"</span>,
+    <span class="hljs-string">"components"</span>
   ],
-  "dependencies": {
-    "jquery": "~2.1.3"
+  <span class="hljs-attr">"dependencies"</span>: {
+    <span class="hljs-attr">"jquery"</span>: <span class="hljs-string">"~2.1.3"</span>
   }
 }
-</pre>
-<p>##The JSON</p>
+</code></pre><p>##The JSON</p>
 <p>Presidents.json: </p>
-<pre>[
+<pre><code>[
     {
-        "firstName": "George",
-        "lastName": "Washington",
-        "address": "101 June Street",
-        "city": "Bellevue",
-        "state": "WA"
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"George"</span>,
+        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Washington"</span>,
+        <span class="hljs-attr">"address"</span>: <span class="hljs-string">"101 June Street"</span>,
+        <span class="hljs-attr">"city"</span>: <span class="hljs-string">"Bellevue"</span>,
+        <span class="hljs-attr">"state"</span>: <span class="hljs-string">"WA"</span>
     },
     {
-        "firstName": "John",
-        "lastName": "Adams",
-        "address": "101 June Street",
-        "city": "Bellevue",
-        "state": "WA"
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"John"</span>,
+        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Adams"</span>,
+        <span class="hljs-attr">"address"</span>: <span class="hljs-string">"101 June Street"</span>,
+        <span class="hljs-attr">"city"</span>: <span class="hljs-string">"Bellevue"</span>,
+        <span class="hljs-attr">"state"</span>: <span class="hljs-string">"WA"</span>
     },
     {
-        "firstName": "Thomas",
-        "lastName": "Jefferson",
-        "address": "101 June Street",
-        "city": "Bellevue",
-        "state": "WA"
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Thomas"</span>,
+        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Jefferson"</span>,
+        <span class="hljs-attr">"address"</span>: <span class="hljs-string">"101 June Street"</span>,
+        <span class="hljs-attr">"city"</span>: <span class="hljs-string">"Bellevue"</span>,
+        <span class="hljs-attr">"state"</span>: <span class="hljs-string">"WA"</span>
     },
     {
-        "firstName": "James",
-        "lastName": "Madison",
-        "address": "101 June Street",
-        "city": "Bellevue",
-        "state": "WA"
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"James"</span>,
+        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Madison"</span>,
+        <span class="hljs-attr">"address"</span>: <span class="hljs-string">"101 June Street"</span>,
+        <span class="hljs-attr">"city"</span>: <span class="hljs-string">"Bellevue"</span>,
+        <span class="hljs-attr">"state"</span>: <span class="hljs-string">"WA"</span>
     }
 ]
-</pre>
-<p>Scientists.json:</p>
-<pre>[
+</code></pre><p>Scientists.json:</p>
+<pre><code>[
     {
-        "firstName": "Isaac",
-        "lastName": "Newton",
-        "address": "101 June Street",
-        "city": "New York",
-        "state": "NY"
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Isaac"</span>,
+        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Newton"</span>,
+        <span class="hljs-attr">"address"</span>: <span class="hljs-string">"101 June Street"</span>,
+        <span class="hljs-attr">"city"</span>: <span class="hljs-string">"New York"</span>,
+        <span class="hljs-attr">"state"</span>: <span class="hljs-string">"NY"</span>
     },
     {
-        "firstName": "Albert",
-        "lastName": "Einstein",
-        "address": "101 June Street",
-        "city": "Bellevue",
-        "state": "WA"
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Albert"</span>,
+        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Einstein"</span>,
+        <span class="hljs-attr">"address"</span>: <span class="hljs-string">"101 June Street"</span>,
+        <span class="hljs-attr">"city"</span>: <span class="hljs-string">"Bellevue"</span>,
+        <span class="hljs-attr">"state"</span>: <span class="hljs-string">"WA"</span>
     },
     {
-        "firstName": "Neils",
-        "lastName": "Bohr",
-        "address": "101 June Street",
-        "city": "Bellevue",
-        "state": "WA"
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Neils"</span>,
+        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Bohr"</span>,
+        <span class="hljs-attr">"address"</span>: <span class="hljs-string">"101 June Street"</span>,
+        <span class="hljs-attr">"city"</span>: <span class="hljs-string">"Bellevue"</span>,
+        <span class="hljs-attr">"state"</span>: <span class="hljs-string">"WA"</span>
     },
     {
-        "firstName": "Charles",
-        "lastName": "Darwin",
-        "address": "101 June Street",
-        "city": "Bellevue",
-        "state": "WA"
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Charles"</span>,
+        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Darwin"</span>,
+        <span class="hljs-attr">"address"</span>: <span class="hljs-string">"101 June Street"</span>,
+        <span class="hljs-attr">"city"</span>: <span class="hljs-string">"Bellevue"</span>,
+        <span class="hljs-attr">"state"</span>: <span class="hljs-string">"WA"</span>
     }
 ]
-</pre>
-<a class="anchor" id="getjson-and-ajax-calls"></a>
+</code></pre><a class="anchor" id="getjson-and-ajax-calls"></a>
 <h2>getJSON and Ajax calls</h2>
 <p>There is some information here you might find useful:</p>
 <ul>
@@ -292,134 +280,132 @@ $(document).ready(function() {
 <a class="anchor" id="the-css"></a>
 <h2>The CSS</h2>
 <p>Here is the CSS I use. It goes in <strong>public/css/style.css</strong>, replacing the auto-generated content:</p>
-<pre>body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-    background-color: #c2ccd1;
+<pre><code><span class="hljs-selector-tag">body</span> {
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">50px</span>;
+  <span class="hljs-attribute">font</span>: <span class="hljs-number">14px</span> <span class="hljs-string">"Lucida Grande"</span>, Helvetica, Arial, sans-serif;
+    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#c2ccd1</span>;
 }
 
-a {
-  color: #00B7FF;
+<span class="hljs-selector-tag">a</span> {
+  <span class="hljs-attribute">color</span>: <span class="hljs-number">#00B7FF</span>;
 }
 
-hr {
-    width: 15%;
-    min-width: 250px;
-    height: 12px;
-    box-shadow: inset 0 12px 12px -12px rgba(0,0,0,0.5);
-    margin-left: 0;
-    background-color:#00A000;
-    color:#00d6b2;
-    border: 0 none;
+<span class="hljs-selector-tag">hr</span> {
+    <span class="hljs-attribute">width</span>: <span class="hljs-number">15%</span>;
+    <span class="hljs-attribute">min-width</span>: <span class="hljs-number">250px</span>;
+    <span class="hljs-attribute">height</span>: <span class="hljs-number">12px</span>;
+    <span class="hljs-attribute">box-shadow</span>: inset <span class="hljs-number">0</span> <span class="hljs-number">12px</span> <span class="hljs-number">12px</span> -<span class="hljs-number">12px</span> <span class="hljs-built_in">rgba</span>(0,0,0,0.5);
+    <span class="hljs-attribute">margin-left</span>: <span class="hljs-number">0</span>;
+    <span class="hljs-attribute">background-color</span>:<span class="hljs-number">#00A000</span>;
+    <span class="hljs-attribute">color</span>:<span class="hljs-number">#00d6b2</span>;
+    <span class="hljs-attribute">border</span>: <span class="hljs-number">0</span> none;
 }
 
-hr.clear {
-    clear: both;
+<span class="hljs-selector-tag">hr</span><span class="hljs-selector-class">.clear</span> {
+    <span class="hljs-attribute">clear</span>: both;
 }
 
-.displayArea {
-    background-color: #00d6b2;
-    border: solid thin #00A000;
-    border-radius: 6px;
-    width: 15%;
-    min-width: 250px;
+<span class="hljs-selector-class">.displayArea</span> {
+    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#00d6b2</span>;
+    <span class="hljs-attribute">border</span>: solid thin <span class="hljs-number">#00A000</span>;
+    <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">6px</span>;
+    <span class="hljs-attribute">width</span>: <span class="hljs-number">15%</span>;
+    <span class="hljs-attribute">min-width</span>: <span class="hljs-number">250px</span>;
 }
 
-button {
-    margin: 5px;
-    border-radius: 6px;
+<span class="hljs-selector-tag">button</span> {
+    <span class="hljs-attribute">margin</span>: <span class="hljs-number">5px</span>;
+    <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">6px</span>;
 }
 
-input {
-    margin: 5px;
+<span class="hljs-selector-tag">input</span> {
+    <span class="hljs-attribute">margin</span>: <span class="hljs-number">5px</span>;
 }
 
-div.jsonArea {
-    float: left;
-    padding: 20px;
+<span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.jsonArea</span> {
+    <span class="hljs-attribute">float</span>: left;
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">20px</span>;
 }
 
-div.radio {
-    clear: both;
-    margin-bottom: 2px;
-    margin-left: 5px;
-    padding-bottom: 10px;
-    width: 250px;
+<span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.radio</span> {
+    <span class="hljs-attribute">clear</span>: both;
+    <span class="hljs-attribute">margin-bottom</span>: <span class="hljs-number">2px</span>;
+    <span class="hljs-attribute">margin-left</span>: <span class="hljs-number">5px</span>;
+    <span class="hljs-attribute">padding-bottom</span>: <span class="hljs-number">10px</span>;
+    <span class="hljs-attribute">width</span>: <span class="hljs-number">250px</span>;
 }
 
-label {
-    width: 200px;
-    border-radius: 3px;
-    border: 1px solid #D1D3D4
+<span class="hljs-selector-tag">label</span> {
+    <span class="hljs-attribute">width</span>: <span class="hljs-number">200px</span>;
+    <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">3px</span>;
+    <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid <span class="hljs-number">#D1D3D4</span>
 }
 
 
-/* hide input */
-input.radio:empty {
-    margin-left: -999px;
+<span class="hljs-comment">/* hide input */</span>
+<span class="hljs-selector-tag">input</span><span class="hljs-selector-class">.radio</span><span class="hljs-selector-pseudo">:empty</span> {
+    <span class="hljs-attribute">margin-left</span>: -<span class="hljs-number">999px</span>;
 }
 
-/* style label */
-input.radio:empty ~ label {
-    position: relative;
-    float: left;
-    line-height: 1.5em;
-    text-indent: 3.25em;
-    margin-top: 0.5em;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+<span class="hljs-comment">/* style label */</span>
+<span class="hljs-selector-tag">input</span><span class="hljs-selector-class">.radio</span><span class="hljs-selector-pseudo">:empty</span> ~ <span class="hljs-selector-tag">label</span> {
+    <span class="hljs-attribute">position</span>: relative;
+    <span class="hljs-attribute">float</span>: left;
+    <span class="hljs-attribute">line-height</span>: <span class="hljs-number">1.5em</span>;
+    <span class="hljs-attribute">text-indent</span>: <span class="hljs-number">3.25em</span>;
+    <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">0.5em</span>;
+    <span class="hljs-attribute">cursor</span>: pointer;
+    <span class="hljs-attribute">-webkit-user-select</span>: none;
+    <span class="hljs-attribute">-moz-user-select</span>: none;
+    <span class="hljs-attribute">-ms-user-select</span>: none;
+    <span class="hljs-attribute">user-select</span>: none;
 }
 
-input.radio:empty ~ label:before {
-    position: absolute;
-    display: block;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    content: '';
-    width: 2.5em;
-    background: #D1D3D4;
-    border-radius: 3px 0 0 3px;
+<span class="hljs-selector-tag">input</span><span class="hljs-selector-class">.radio</span><span class="hljs-selector-pseudo">:empty</span> ~ <span class="hljs-selector-tag">label</span><span class="hljs-selector-pseudo">:before</span> {
+    <span class="hljs-attribute">position</span>: absolute;
+    <span class="hljs-attribute">display</span>: block;
+    <span class="hljs-attribute">top</span>: <span class="hljs-number">0</span>;
+    <span class="hljs-attribute">bottom</span>: <span class="hljs-number">0</span>;
+    <span class="hljs-attribute">left</span>: <span class="hljs-number">0</span>;
+    <span class="hljs-attribute">content</span>: <span class="hljs-string">''</span>;
+    <span class="hljs-attribute">width</span>: <span class="hljs-number">2.5em</span>;
+    <span class="hljs-attribute">background</span>: <span class="hljs-number">#D1D3D4</span>;
+    <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">3px</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">3px</span>;
 }
 
-/* toggle hover */
-input.radio:hover:not(:checked) ~ label:before {
-    content:'\2714';
-    text-indent: .9em;
-    color: #C2C2C2;
+<span class="hljs-comment">/* toggle hover */</span>
+<span class="hljs-selector-tag">input</span><span class="hljs-selector-class">.radio</span><span class="hljs-selector-pseudo">:hover</span><span class="hljs-selector-pseudo">:not(</span><span class="hljs-selector-pseudo">:checked)</span> ~ <span class="hljs-selector-tag">label</span><span class="hljs-selector-pseudo">:before</span> {
+    <span class="hljs-attribute">content</span>:<span class="hljs-string">'\2714'</span>;
+    <span class="hljs-attribute">text-indent</span>: .<span class="hljs-number">9em</span>;
+    <span class="hljs-attribute">color</span>: <span class="hljs-number">#C2C2C2</span>;
 }
 
-input.radio:hover:not(:checked) ~ label {
-    color: #888;
+<span class="hljs-selector-tag">input</span><span class="hljs-selector-class">.radio</span><span class="hljs-selector-pseudo">:hover</span><span class="hljs-selector-pseudo">:not(</span><span class="hljs-selector-pseudo">:checked)</span> ~ <span class="hljs-selector-tag">label</span> {
+    <span class="hljs-attribute">color</span>: <span class="hljs-number">#888</span>;
 }
 
-/* toggle on */
-input.radio:checked ~ label:before {
-    content:'\2714';
-    text-indent: .9em;
-    color: #9CE2AE;
-    background-color: green;
+<span class="hljs-comment">/* toggle on */</span>
+<span class="hljs-selector-tag">input</span><span class="hljs-selector-class">.radio</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-tag">label</span><span class="hljs-selector-pseudo">:before</span> {
+    <span class="hljs-attribute">content</span>:<span class="hljs-string">'\2714'</span>;
+    <span class="hljs-attribute">text-indent</span>: .<span class="hljs-number">9em</span>;
+    <span class="hljs-attribute">color</span>: <span class="hljs-number">#9CE2AE</span>;
+    <span class="hljs-attribute">background-color</span>: green;
 }
 
-input.radio:checked ~ label {
-    color: #777;
+<span class="hljs-selector-tag">input</span><span class="hljs-selector-class">.radio</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-tag">label</span> {
+    <span class="hljs-attribute">color</span>: <span class="hljs-number">#777</span>;
 }
 
-/* radio focus */
-input.radio:focus ~ label:before {
-    box-shadow: 0 0 0 3px #999;
+<span class="hljs-comment">/* radio focus */</span>
+<span class="hljs-selector-tag">input</span><span class="hljs-selector-class">.radio</span><span class="hljs-selector-pseudo">:focus</span> ~ <span class="hljs-selector-tag">label</span><span class="hljs-selector-pseudo">:before</span> {
+    <span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">3px</span> <span class="hljs-number">#999</span>;
 }
-</pre>
-<a class="anchor" id="turn-it-in"></a>
+</code></pre><a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Make sure you put <strong>bower_components</strong> and <strong>components</strong> in your <strong>.gitignore</strong> file.</p>
 <p>Place your project in your repository and submit your repository URL, which should look something like this:</p>
-<pre>git@bitbucket.org:lastname/lastname.git
-</pre>
-<blockquote>
+<pre><code>git<span class="hljs-meta">@bitbucket</span>.<span class="hljs-string">org:</span>lastname/lastname.git
+</code></pre><blockquote>
 <p>by <a href="http://elvenware.com/charlie">Charlie Calvert</a>.</p>
 </blockquote>
 </div></body></html>

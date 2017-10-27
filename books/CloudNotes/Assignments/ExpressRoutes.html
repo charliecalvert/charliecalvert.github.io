@@ -64,62 +64,62 @@ pre#display
 <a class="anchor" id="server"></a>
 <h2>Server</h2>
 <p>In <strong>routes/index.js:</strong></p>
-<pre>router.get('/read', function(request, response) {
-  response.send([
-    {name: 'SarahLee'},
-    {name: 'Bob'}
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">router</span><span class="hljs-selector-class">.get</span>(<span class="hljs-string">'/read'</span>, function(request, response) {
+  <span class="hljs-selector-tag">response</span><span class="hljs-selector-class">.send</span>([
+    {<span class="hljs-attribute">name</span>: <span class="hljs-string">'SarahLee'</span>},
+    {<span class="hljs-attribute">name</span>: <span class="hljs-string">'Bob'</span>}
   ]);
 });
-</pre>
+</code></pre>
 <p>In <strong>public/names.json</strong>:</p>
-<pre>[{
-  "name": "FileLee"
+<pre><code class="lang-json">[{
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"FileLee"</span>
 }, {
-  "name": "FileBob"
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"FileBob"</span>
 }]
-</pre>
+</code></pre>
 <a class="anchor" id="client"></a>
 <h2>Client</h2>
 <p>Make a call to the server in methods named <strong>read</strong> and <strong>readJson</strong>. Let&#39;s start with some code that shows how to set up an <strong>onclick</strong> handler that calls a method named <strong>read</strong>. When the user clicks on an HTML button with the ID identified by the text <strong>#read</strong>, then out JavaScript <strong>read</strong> method is called:</p>
-<pre>$(document).ready(function() {
-   console.log('Document loaded in prog272');
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Document loaded in prog272'</span>);
 
-   $('#read').click(read);
+   $(<span class="hljs-string">'#read'</span>).click(read);
 
-   function read() {
-      console.log('callRead called');
+   <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">read</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'callRead called'</span>);
    }
 });
-</pre>
+</code></pre>
 <p>Now lets evolved the method further with code that shows how to:</p>
 <ul>
 <li>Call a route on the server.</li>
 <li>Load a JavaScript file stored on the server.</li>
 </ul>
-<pre>$(document).ready(function() {
-   console.log('Document loaded in prog272');
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Document loaded in prog272'</span>);
 
-   $('#read').click(read);
-   $('#readJson').click(readJson);
+   $(<span class="hljs-string">'#read'</span>).click(read);
+   $(<span class="hljs-string">'#readJson'</span>).click(readJson);
 
-   function read() {
-      console.log('callRead called');
+   <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">read</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'callRead called'</span>);
       foo();
-      $.getJSON('/read', function(result) {
-         console.log(result);
-         $('#display').html(JSON.stringify(result));
+      $.getJSON(<span class="hljs-string">'/read'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+         <span class="hljs-built_in">console</span>.log(result);
+         $(<span class="hljs-string">'#display'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result));
       })
    }
 
-   function readJson() {
-      console.log('readJson called');
-      $.getJSON('names.json', function(result) {
-         console.log(result);
-         $('#display').html(JSON.stringify(result));
+   <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readJson</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'readJson called'</span>);
+      $.getJSON(<span class="hljs-string">'names.json'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+         <span class="hljs-built_in">console</span>.log(result);
+         $(<span class="hljs-string">'#display'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result));
       })
    }
 });
-</pre>
+</code></pre>
 <p>In particular, our JavaScript <strong>read</strong> method makes a REST call to the <strong>/read</strong> route on the server. Our <strong>read</strong> method invokes the <strong>getJSON</strong> method which initiates an HTTP call to the server. The anonymous function in the call is invoked when the response from the server is sent back to our browser hosted application. In short, the message is sent from our JavaScript code in the browser, to an Express method on the server, and then back to our anonymous function. On the Express server, <a href="#server">a <strong>router.get</strong> call you added</a> to <strong>routes/index.js</strong> receives the call from the browser and sends a result back to the browser.</p>
 <p>The method called <strong>readJson</strong> sends an HTTP request to the server for the file called <strong>names.json</strong>. The result of the request is handle by the anonymous function passed to <strong>getJSON</strong>. This method never calls a JavaScript method on the server. Instead, it simply retrieves a file from the server.</p>
 <a class="anchor" id="add-method"></a>
@@ -131,25 +131,25 @@ pre#display
 <li>The server performs an addition operation on that data and sends back a result.</li>
 </ul>
 <p>The implementation is relatively straight forward. First on the server:</p>
-<pre>router.get('/add' etc....)
-</pre>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/add'</span> etc....)
+</code></pre>
 <p>And a button with an id of <strong>add</strong> to your jade. And set up a button response method in <strong>control.js</strong>.</p>
-<pre>var operatorA = $('#operatorA').val();
-      var operatorB = $('#operatorB').val();
-      console.log('operators:', operatorA, operatorB);
-      var requestQuery = { operatorA: operatorA, operatorB: operatorB };
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> operatorA = $(<span class="hljs-string">'#operatorA'</span>).val();
+      <span class="hljs-keyword">var</span> operatorB = $(<span class="hljs-string">'#operatorB'</span>).val();
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'operators:'</span>, operatorA, operatorB);
+      <span class="hljs-keyword">var</span> requestQuery = { <span class="hljs-attr">operatorA</span>: operatorA, <span class="hljs-attr">operatorB</span>: operatorB };
+</code></pre>
 <p>Add two numeric <strong>INPUT</strong> controls and an <strong>add</strong> BUTTON to your page. When the user enters two numbers, then selects the button, a request should be sent to the server to add the two numbers. To do this, pass <strong>requestQuery</strong> as the second parameter to <a href="http://api.jquery.com/jquery.getjson/"><strong>getJSON</strong></a>:</p>
-<pre>getJSON('/add', requestQuery, etc...);
-</pre>
+<pre><code class="lang-javascript">getJSON(<span class="hljs-string">'/add'</span>, requestQuery, etc...);
+</code></pre>
 <p>In the server side, use <strong>request.query</strong> to retrieve the parameters:</p>
-<pre>router.get('/add', function(request, response) {
-  console.log('add method called');
-  console.log('The parameters are:', request.query);
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/add'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'add method called'</span>);
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'The parameters are:'</span>, request.query);
 
   ETC... YOUR CODE HERE....
 });
-</pre>
+</code></pre>
 <p>Using <strong>parseInt</strong> as an aid, add the two numbers and then use the <strong>response</strong> object to send back the result. Display the output to the user. For instance, if the user enters 2 and 3, the server should add these numbers together and send back an object containing the value 5.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>

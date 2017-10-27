@@ -36,51 +36,45 @@
 </ul>
 <p>##Drawing the Tiny Map</p>
 <p>You need to add a Canvas element to <strong>index.jade</strong>:</p>
-<pre>div
-    canvas#myCanvas(width='192', height='192', style='border:1px solid #000000;')
-</pre>
-<p>Then you can draw rectangles in the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">Canvas</a> like this:</p>
-<pre>var canvas = document.getElementById("myCanvas");
-var context = canvas.getContext("2d");
-var blockSize = utility.tinyMapBlockSize;
-context.fillStyle = "#555555";
-context.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
-</pre>
-<p>See the MDN <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">Canvas</a> entry for more details. You can do a lot with a canvas, but we are just getting a few basics.</p>
+<pre><code>div
+    canvas<span class="hljs-function"><span class="hljs-keyword">#</span><span class="hljs-title">myCanvas</span><span class="hljs-params">(<span class="hljs-variable">width</span>='192', <span class="hljs-variable">height</span>='192', <span class="hljs-variable">style</span>='<span class="hljs-variable">border</span>:1<span class="hljs-variable">px</span> <span class="hljs-variable">solid</span> #000000;')</span></span>
+</code></pre><p>Then you can draw rectangles in the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">Canvas</a> like this:</p>
+<pre><code>var canvas = document.getElementById(<span class="hljs-string">"myCanvas"</span>)<span class="hljs-comment">;</span>
+var <span class="hljs-built_in">context</span> = canvas.getContext(<span class="hljs-string">"2d"</span>)<span class="hljs-comment">;</span>
+var <span class="hljs-keyword">blockSize </span>= utility.tinyMapBlockSize<span class="hljs-comment">;</span>
+<span class="hljs-built_in">context</span>.fillStyle = <span class="hljs-string">"#555555"</span><span class="hljs-comment">;</span>
+<span class="hljs-built_in">context</span>.fillRect(x * <span class="hljs-keyword">blockSize, </span>y * <span class="hljs-keyword">blockSize, </span><span class="hljs-keyword">blockSize, </span><span class="hljs-keyword">blockSize);</span>
+</code></pre><p>See the MDN <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">Canvas</a> entry for more details. You can do a lot with a canvas, but we are just getting a few basics.</p>
 <a class="anchor" id="game-to-grid-coordinates"></a>
 <h2>Game to Grid Coordinates</h2>
 <p>One of the key steps you must take in order to draw the tiny map is to translate game coordinates to grid coordinates. You get game coordinates like this:</p>
-<pre>$('#cameraX').html(position.x);
-$('#cameraY').html(position.y);
-$('#cameraZ').html(position.z);
-</pre>
-<p>To convert game coordinates to grid coordinates, do something like this:</p>
-<pre>npcX = Math.round(position.x / boxSize);
-npcZ = Math.round(position.z / boxSize);
-</pre>
-<p>Show the coordinates to the user in the message area:</p>
-<pre>$('#npcX').html(npcX);
-$('#npcZ').html(npcZ);
-</pre>
-<p>Now you know where the camera is in the grid. That will help you draw the current position of the main character in the tiny map.</p>
+<pre><code><span class="hljs-meta">$</span><span class="bash">(<span class="hljs-string">'#cameraX'</span>).html(position.x);</span>
+<span class="hljs-meta">$</span><span class="bash">(<span class="hljs-string">'#cameraY'</span>).html(position.y);</span>
+<span class="hljs-meta">$</span><span class="bash">(<span class="hljs-string">'#cameraZ'</span>).html(position.z);</span>
+</code></pre><p>To convert game coordinates to grid coordinates, do something like this:</p>
+<pre><code><span class="hljs-attribute">npcX</span> = Math.round(position.x / boxSize)<span class="hljs-comment">;</span>
+<span class="hljs-attribute">npcZ</span> = Math.round(position.z / boxSize)<span class="hljs-comment">;</span>
+</code></pre><p>Show the coordinates to the user in the message area:</p>
+<pre><code><span class="hljs-meta">$</span><span class="bash">(<span class="hljs-string">'#npcX'</span>).html(npcX);</span>
+<span class="hljs-meta">$</span><span class="bash">(<span class="hljs-string">'#npcZ'</span>).html(npcZ);</span>
+</code></pre><p>Now you know where the camera is in the grid. That will help you draw the current position of the main character in the tiny map.</p>
 <a class="anchor" id="message-div-setup"></a>
 <h2>Message Div Setup</h2>
 <p>The indentation for your Jade code in <strong>index.js</strong> is very important. Some folks are finding that the debug area where they are going to draw the map disappears when they start playing the game. That is an indentation issue. Look at this Jade code:</p>
-<pre>extends layout
+<pre><code>extends layout
 
-block content
+block <span class="hljs-attribute">content</span>
 
-  div#blocker(style='display: -webkit-box;')
-    div#instructions(style='')
-      span(style='font-size:40px') Click to play
-      p (W, A, S, D = Move, SPACE = Jump, MOUSE = Look around)
+  div#blocker(style=<span class="hljs-string">'display: -webkit-box;'</span>)
+    div#instructions(style=<span class="hljs-string">''</span>)
+      span(style=<span class="hljs-string">'font-size:40px'</span>) Click to play
+      <span class="hljs-selector-tag">p</span> (W, A, S, D = Move, SPACE = Jump, MOUSE = Look around)
 
-  div#message
-      p
-        strong Camera X: 
-          span#cameraX Foo
-</pre>
-<p>The <strong>#blocker div</strong> disappears altogether when the game starts. That is the section with the instructions in it, and that bit of code is hidden when the game starts, when you click in the map. If you message section is indented in such a ways to be &quot;inside&quot; your blocker section, then it will also disappear when the game starts. The fix is shown above:  put the <strong>#message div</strong> on the same indentation level as the blocker, and then it is not hidden when the game starts.</p>
+  div<span class="hljs-selector-id">#message</span>
+      <span class="hljs-selector-tag">p</span>
+        <span class="hljs-selector-tag">strong</span> Camera X: 
+          span<span class="hljs-selector-id">#cameraX</span> Foo
+</code></pre><p>The <strong>#blocker div</strong> disappears altogether when the game starts. That is the section with the instructions in it, and that bit of code is hidden when the game starts, when you click in the map. If you message section is indented in such a ways to be &quot;inside&quot; your blocker section, then it will also disappear when the game starts. The fix is shown above:  put the <strong>#message div</strong> on the same indentation level as the blocker, and then it is not hidden when the game starts.</p>
 <p>##Turn it in</p>
 <p>When you are finished, check your work into BitBucket in a folder called Week05_TinyMapRefactor</p>
 <p>Update your GenMyModel UML model and submit the bitmap showing your work</p>
@@ -95,10 +89,9 @@ block content
 <li>Renderer (Is this really needed?)</li>
 </ul>
 <p>You could just have a simple object with only those properties in it. You might consider using Object.defineProperty or this.propertyName to make the properties public. Then you can use the core class to access items you need when you need them:</p>
-<pre>shapes.addNumber(core.Scene, core.Camera, false, x, z);
-$.publish('drawMap', { type: 'maze', grid: core.GridMaze});
-</pre>
-<a class="anchor" id="properties"></a>
+<pre><code>shapes.addNumber(core.Scene, core.Camera, <span class="hljs-literal">false</span>, x, z);
+$.publish(<span class="hljs-string">'drawMap'</span>, { <span class="hljs-string">type:</span> <span class="hljs-string">'maze'</span>, <span class="hljs-string">grid:</span> core.GridMaze});
+</code></pre><a class="anchor" id="properties"></a>
 <h2>Properties</h2>
 <ul>
 <li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/JavaScriptObjects.html#defineproperty">Define Property</a></li>
@@ -106,21 +99,19 @@ $.publish('drawMap', { type: 'maze', grid: core.GridMaze});
 <a class="anchor" id="removing-objects"></a>
 <h2>Removing Objects</h2>
 <p>Give each particle cloud and start object a unique name using a method like this:</p>
-<pre>var particleBaseName = 'particle';
-var starBaseName = 'star';
+<pre><code><span class="hljs-keyword">var</span> particleBaseName = <span class="hljs-string">'particle'</span>;
+<span class="hljs-keyword">var</span> starBaseName = <span class="hljs-string">'star'</span>;
 
-function getName(baseName, x, z) {
-    return baseName + x + z;
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getName</span><span class="hljs-params">(baseName, x, z)</span> </span>{
+    <span class="hljs-keyword">return</span> baseName + x + z;
 }
 
-var starName = getName(starBaseName, x, z);
-</pre>
-<p>Then when the user passes over a particular location, find the name of the object at that location, ask the scene to retrieve it, call <strong>scene.remove</strong> to remove it from the scene:</p>
-<pre> var objectName = getName(particleBaseName, x, z);
- var selectedObject = scene.getObjectByName(objectName);
- scene.remove(selectedObject);
-</pre>
-<p>Don&#39;t forget that the location on the screen is not the same as the location in the grid, because we use different coordinate systems. But you can translate a screen location to a grid location just by dividing by <strong>size</strong>.</p>
+<span class="hljs-keyword">var</span> starName = getName(starBaseName, x, z);
+</code></pre><p>Then when the user passes over a particular location, find the name of the object at that location, ask the scene to retrieve it, call <strong>scene.remove</strong> to remove it from the scene:</p>
+<pre><code> <span class="hljs-built_in">var</span> objectName = getName(particleBaseName, x, z);
+ <span class="hljs-built_in">var</span> selectedObject = <span class="hljs-built_in">scene</span>.getObjectByName(objectName);
+ <span class="hljs-built_in">scene</span>.<span class="hljs-built_in">remove</span>(selectedObject);
+</code></pre><p>Don&#39;t forget that the location on the screen is not the same as the location in the grid, because we use different coordinate systems. But you can translate a screen location to a grid location just by dividing by <strong>size</strong>.</p>
 <p>Useful methods:</p>
 <ul>
 <li>Is there an NPC at position X, Y? <ul>
@@ -133,12 +124,11 @@ var starName = getName(starBaseName, x, z);
 </li>
 </ul>
 <p>Vaporize might look something like this: </p>
-<pre>grid[z][x] = value;
+<pre><code>grid[<span class="hljs-string">z</span>][<span class="hljs-symbol">x</span>] = value;
 var objectName = getName(particleBaseName, x, z);
 var selectedObject = scene.getObjectByName(objectName);
 scene.remove(selectedObject);
-</pre>
-<a class="anchor" id="using-patterns"></a>
+</code></pre><a class="anchor" id="using-patterns"></a>
 <h2>Using Patterns</h2>
 <ul>
 <li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/JavaScriptPatterns.html#overview">Patterns on Elvenware</a></li>

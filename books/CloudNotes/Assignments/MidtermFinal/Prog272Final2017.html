@@ -100,29 +100,25 @@
 </ul>
 <a class="anchor" id="concurrently"></a>
 <h2>Concurrently</h2>
-<pre>npm install --save concurrently
-</pre>
-<p>And add these lines to the scripts section of <strong>package.json</strong>:</p>
-<pre>"go": "concurrently 'npm run server' 'npm start'",
-"server": "nodemon ../CongressServer/bin/www"
-</pre>
-<p>And also, still in CongressAddress, in its <strong>package.json</strong>, add this line near the top:</p>
-<pre>"proxy": "http://localhost:30025",
-</pre>
-<p>So the first few lines look like this:</p>
-<pre>{
-  "name": "congress-address",
-  "version": "0.1.0",
-  "private": true,
-  "proxy": "http://localhost:30025",
-  "dependencies": {
-    "bootstrap": "^3.3.7",
+<pre><code>npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save concurrently</span>
+</code></pre><p>And add these lines to the scripts section of <strong>package.json</strong>:</p>
+<pre><code><span class="hljs-string">"go"</span>: <span class="hljs-string">"concurrently '</span>npm run server' <span class="hljs-string">'npm start'</span><span class="hljs-string">",
+"</span>server<span class="hljs-string">": "</span>nodemon ../CongressServer/bin/www<span class="hljs-string">"</span>
+</code></pre><p>And also, still in CongressAddress, in its <strong>package.json</strong>, add this line near the top:</p>
+<pre><code><span class="hljs-string">"proxy"</span>: <span class="hljs-string">"http://localhost:30025"</span>,
+</code></pre><p>So the first few lines look like this:</p>
+<pre><code>{
+  <span class="hljs-string">"name"</span>: <span class="hljs-string">"congress-address"</span>,
+  <span class="hljs-string">"version"</span>: <span class="hljs-string">"0.1.0"</span>,
+  <span class="hljs-string">"private"</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-string">"proxy"</span>: <span class="hljs-string">"http://localhost:30025"</span>,
+  <span class="hljs-string">"dependencies"</span>: {
+    <span class="hljs-string">"bootstrap"</span>: <span class="hljs-string">"^3.3.7"</span>,
     etc...
   }
   etc...
 }
-</pre>
-<p>To use the <strong>go</strong> option, type <strong>npm run go</strong>.</p>
+</code></pre><p>To use the <strong>go</strong> option, type <strong>npm run go</strong>.</p>
 <a class="anchor" id="build-and-deploy"></a>
 <h2>Build and Deploy</h2>
 <p>When you feel you are ready to take your app to Heroku, go to the root of your CongressAddress project and type <strong>npm run build</strong>. This will create a folder called <strong>build</strong>, and in it will be a complete copy of your CongressAddress program.</p>
@@ -130,89 +126,83 @@
 <a class="anchor" id="build"></a>
 <h2>Build</h2>
 <p>In CongressAddress:</p>
-<pre>npm run build
-</pre>
-<p>This creates a production version of our code in a folder called <strong>build</strong>.</p>
+<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> build</span>
+</code></pre><p>This creates a production version of our code in a folder called <strong>build</strong>.</p>
 <p>Copy the contents of the <strong>build</strong> folder to <strong>CongressServer</strong> or the equivalent. You could do that by issuing this command from the root of the CongressServer:</p>
-<pre>cp -rv ../CongressAddress/build/* public/.
-</pre>
-<p>Then go into <strong>routes/index.js</strong> and make this change to use <strong>loadFile</strong> to load the <strong>index.html</strong> from your build:</p>
-<pre>router.get('/', function(req, res) {
-    'use strict';
-    //res.render('index', {title: 'CongressServer'});
-    res.loadFile('index.html');
+<pre><code>cp -rv ..<span class="hljs-regexp">/CongressAddress/</span>build<span class="hljs-regexp">/* public/</span>.
+</code></pre><p>Then go into <strong>routes/index.js</strong> and make this change to use <strong>loadFile</strong> to load the <strong>index.html</strong> from your build:</p>
+<pre><code>router.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-comment">//res.render('index', {title: 'CongressServer'});</span>
+    res.loadFile(<span class="hljs-string">'index.html'</span>);
 });
-</pre>
-<p>And then if you want to be able to see the old interface, add this method:</p>
-<pre>router.get('/admin', function(req, res) {
-    'use strict';
-    res.render('index', {title: 'CongressServer'});
+</code></pre><p>And then if you want to be able to see the old interface, add this method:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/admin'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    res.render(<span class="hljs-string">'index'</span>, {<span class="hljs-attr">title</span>: <span class="hljs-string">'CongressServer'</span>});
 });
-</pre>
+</code></pre>
 <a class="anchor" id="load-from-database"></a>
 <h2>Load from database</h2>
-<pre>componentDidMount() {
-    logger.log('DID MOUNT');
-    this.loadFromDatabase();
+<pre><code>componentDidMount() {
+    logger.log(<span class="hljs-string">'DID MOUNT'</span>);
+    <span class="hljs-keyword">this</span>.loadFromDatabase();
 }
 
 loadFromDatabase() {
-    const that = this;
-    dataLoader.loadAddresses(function(addressCount) {
-        if (!addressCount) {
-            throw new Error('Cannot get address count in address.js');
+    <span class="hljs-keyword">const</span> <span class="hljs-literal">that</span> = <span class="hljs-keyword">this</span>;
+    dataLoader.loadAddresses(<span class="hljs-keyword">function</span>(addressCount) {
+        <span class="hljs-keyword">if</span> (!addressCount) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">'Cannot get address count in address.js'</span>);
         }
-        that.addressCount = addressCount;
-        logger.log('LOADED ADDRESS');
-        const address = getByIndex(that.addressIndex);
-        that.setState({
+        <span class="hljs-literal">that</span>.addressCount = addressCount;
+        logger.log(<span class="hljs-string">'LOADED ADDRESS'</span>);
+        <span class="hljs-keyword">const</span> address = getByIndex(<span class="hljs-literal">that</span>.addressIndex);
+        <span class="hljs-literal">that</span>.setState({
             address: address
         });
     });
 }
-</pre>
-<a class="anchor" id="start-from-scratch"></a>
+</code></pre><a class="anchor" id="start-from-scratch"></a>
 <h2>Start from Scratch</h2>
 <p>Go to the ~/Source folder:</p>
-<pre>CreateExpressProject lastname07
+<pre><code>CreateExpressProject lastname07
 cd lastname07
-cp -r ~/Git/prog272-calvert-2017/CongressServer/* .
+cp -r ~<span class="hljs-regexp">/Git/</span>prog272-calvert-<span class="hljs-number">2017</span><span class="hljs-regexp">/CongressServer/</span>* .
 npm start
-</pre>
-<p>Now go to localhost:30025</p>
+</code></pre><p>Now go to localhost:30025</p>
 <p>Once you see it works. Let&#39;s herokuize it:</p>
-<pre>heroku create calvert07
-</pre>
-<a class="anchor" id="better-fetch"></a>
+<pre><code>heroku <span class="hljs-keyword">create</span> calvert07
+</code></pre><a class="anchor" id="better-fetch"></a>
 <h2>Better Fetch</h2>
 <p>It is not necessary to add this, but it might be informative to some to see this alternate handling of the first .then in a fetch promise:</p>
-<pre>fetch('/all-data')
-    .then((response) => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error(response.statusText + '\n' +
-                response.url + '\n' +
-                'status: ' + response.status);
+<pre><code class="lang-javascript">fetch(<span class="hljs-string">'/all-data'</span>)
+    .then(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> {
+        <span class="hljs-keyword">if</span> (response.ok) {
+            <span class="hljs-keyword">return</span> response.json();
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(response.statusText + <span class="hljs-string">'\n'</span> +
+                response.url + <span class="hljs-string">'\n'</span> +
+                <span class="hljs-string">'status: '</span> + response.status);
         }
     })
-    .then((data) => {
-        if (data.error) {
-            alert(JSON.stringify(data.error, null, 4));
-            callback(0);
-            return;
+    .then(<span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> {
+        <span class="hljs-keyword">if</span> (data.error) {
+            alert(<span class="hljs-built_in">JSON</span>.stringify(data.error, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+            callback(<span class="hljs-number">0</span>);
+            <span class="hljs-keyword">return</span>;
         }
-        logger.log('ALL-DATA: ' + JSON.stringify(data.allData, null, 4));
+        logger.log(<span class="hljs-string">'ALL-DATA: '</span> + <span class="hljs-built_in">JSON</span>.stringify(data.allData, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
         that.setLocalStorage(data.allData);
         callback(data.allData.length);
-    }).catch(function(err) {
-        if (err.message) {
+    }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+        <span class="hljs-keyword">if</span> (err.message) {
             alert(err.message);
-        } else {
-            alert('error' + err);
+        } <span class="hljs-keyword">else</span> {
+            alert(<span class="hljs-string">'error'</span> + err);
         }
         logger.log(err);
     });
-</pre>
+</code></pre>
 <p>Note the check for <strong>response.ok</strong>            </p>
 </div></body></html>

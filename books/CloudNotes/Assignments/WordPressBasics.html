@@ -15,62 +15,60 @@
 <a class="anchor" id="get-started"></a>
 <h2>Get Started</h2>
 <p>Get WordPress as a gzipped tar file and decompress it.</p>
-<pre>cd ~/temp
-wget https://wordpress.org/latest.tar.gz
-tar -xzvf latest.tar.gz
-</pre>
+<pre><code class="lang-bash">cd ~/temp
+wget https:<span class="hljs-comment">//wordpress.org/latest.tar.gz</span>
+tar -xzvf latest<span class="hljs-selector-class">.tar</span><span class="hljs-selector-class">.gz</span>
+</code></pre>
 <p>If you need to install PHP:</p>
-<pre>sudo apt-get install php libapache2-mod-php php-mcrypt php-mysql
-sudo systemctl restart apache2
-</pre>
+<pre><code class="lang-bash">sudo apt-<span class="hljs-built_in">get</span> install php libapache2-<span class="hljs-built_in">mod</span>-php php-mcrypt php-mysql
+sudo systemctl <span class="hljs-built_in">restart</span> apache2
+</code></pre>
 <p>Some special PHP extensions can optionally be installed this way:</p>
-<pre>sudo apt-get install php-curl php-gd php-mbstring php-mcrypt php-xml php-xmlrpc
+<pre><code class="lang-bash">sudo apt-get install php-curl php-gd php-mbstring php-mcrypt php-<span class="hljs-keyword">xml</span> <span class="hljs-title">php-xmlrpc</span>
 sudo systemctl restart apache2
-</pre>
+</code></pre>
 <a class="anchor" id="set-up-wordpress-directory"></a>
 <h2>Set up WordPress Directory</h2>
 <p>Make your own copy of the WordPress config file and set the permissions for the WordPress content directory. Later you may want to tighten these permissions, but it is simplest to make it possible to write to these directories during development.</p>
-<pre>cd wordpress
-cp wp-config-sample.php wp-config.php
-sudo chown -R www-data:www-data wp-content/
-cd ..
-</pre>
+<pre><code class="lang-bash"><span class="hljs-keyword">cd</span> wordpress
+<span class="hljs-keyword">cp</span> <span class="hljs-keyword">wp</span>-config-sample.php <span class="hljs-keyword">wp</span>-config.php
+sudo chown -R www-dat<span class="hljs-variable">a:www</span>-data <span class="hljs-keyword">wp</span>-content/
+<span class="hljs-keyword">cd</span> ..
+</code></pre>
 <a class="anchor" id="set-up-wordpress-database"></a>
 <h2>Set Up WordPress Database</h2>
 <p>There are a number of ways to create the <strong>wordpress</strong> datbase in MySQL. The simplest might be to run a few lines that lines that let you manipulate the database without ever having to launch the <strong>mysql</strong> front end. Note however, that you might need to specify a particular user other than <strong>root</strong> and a particular password orther than <strong>foobar</strong>:</p>
-<pre>mysql -u root -p -e 'create database wordpress;'
-mysql -u root -p -e 'GRANT ALL PRIVILEGES ON wordpress.* TO "root"@"localhost" IDENTIFIED BY "foobar";'
-mysql -u root -p -e 'FLUSH PRIVILEGES;'
-mysql -u root -p -e 'use wordpress; show grants for 'root'@'localhost';'
-</pre>
+<pre><code class="lang-bash">mysql -u root -p -e '<span class="hljs-keyword">create</span> <span class="hljs-keyword">database</span> wordpress;'
+mysql -u root -p -e '<span class="hljs-keyword">GRANT</span> ALL <span class="hljs-keyword">PRIVILEGES</span> <span class="hljs-keyword">ON</span> wordpress.* <span class="hljs-keyword">TO</span> <span class="hljs-string">"root"</span>@<span class="hljs-string">"localhost"</span> <span class="hljs-keyword">IDENTIFIED</span> <span class="hljs-keyword">BY</span> <span class="hljs-string">"foobar"</span>;'
+mysql -u root -p -e '<span class="hljs-keyword">FLUSH</span> <span class="hljs-keyword">PRIVILEGES</span>;'
+mysql -u root -p -e '<span class="hljs-keyword">use</span> wordpress; <span class="hljs-keyword">show</span> <span class="hljs-keyword">grants</span> <span class="hljs-keyword">for</span> <span class="hljs-string">'root'</span>@<span class="hljs-string">'localhost'</span>;'
+</code></pre>
 <a class="anchor" id="wp-configuration"></a>
 <h2>WP Configuration</h2>
 <p>You will need to edit this section of <strong>wp-config.php</strong>:</p>
-<pre>/** The name of the database for WordPress */
-define('DB_NAME', 'database_name_here');
+<pre><code><span class="hljs-comment">/** The name of the database for WordPress */</span>
+<span class="hljs-class"><span class="hljs-keyword">define</span></span>(<span class="hljs-string">'DB_NAME'</span>, <span class="hljs-string">'database_name_here'</span>);
 
-/** MySQL database username */
-define('DB_USER', 'username_here');
+<span class="hljs-comment">/** MySQL database username */</span>
+<span class="hljs-class"><span class="hljs-keyword">define</span></span>(<span class="hljs-string">'DB_USER'</span>, <span class="hljs-string">'username_here'</span>);
 
-/** MySQL database password */
-define('DB_PASSWORD', 'password_here');
+<span class="hljs-comment">/** MySQL database password */</span>
+<span class="hljs-class"><span class="hljs-keyword">define</span></span>(<span class="hljs-string">'DB_PASSWORD'</span>, <span class="hljs-string">'password_here'</span>);
 
-/** MySQL hostname */
-define('DB_HOST', 'localhost');
-</pre>
-<p>You will need to fill in the first three fields. We can leave DB_HOST at <strong>localhost</strong>, at least for now.</p>
+<span class="hljs-comment">/** MySQL hostname */</span>
+<span class="hljs-class"><span class="hljs-keyword">define</span></span>(<span class="hljs-string">'DB_HOST'</span>, <span class="hljs-string">'localhost'</span>);
+</code></pre><p>You will need to fill in the first three fields. We can leave DB_HOST at <strong>localhost</strong>, at least for now.</p>
 <p>The following simple script can help you automate the process, though you may need to change the DATA_OWNER and DATA_PASSWORD. Run the script from the WordPress directory. That is, run it from the same directory where <strong>wp-config.php</strong> is located.</p>
-<pre>#! /bin/bash
-
+<pre><code><span class="hljs-meta">#! /bin/bash
+</span>
 WORDPRESS_DIR=wordpress
 WORDPRESS_DATA_OWNER=root
 WORDPRESS_DATA_PASSWORD=foobar
 
-sed -i -- 's/database_name_here/'$WORDPRESS_DIR'/' wp-config.php
-sed -i -- 's/username_here/'$WORDPRESS_DATA_OWNER'/' wp-config.php
-sed -i -- 's/password_here/'$WORDPRESS_DATA_PASSWORD'/' wp-config.php
-</pre>
-<p>Also change the secure key by going here: <a href="https://api.wordpress.org/secret-key/1.1/salt/">https://api.wordpress.org/secret-key/1.1/salt/</a></p>
+sed -i -- <span class="hljs-string">'s/database_name_here/'</span><span class="hljs-variable">$WORDPRESS_DIR</span><span class="hljs-string">'/'</span> wp-config.php
+sed -i -- <span class="hljs-string">'s/username_here/'</span><span class="hljs-variable">$WORDPRESS_DATA_OWNER</span><span class="hljs-string">'/'</span> wp-config.php
+sed -i -- <span class="hljs-string">'s/password_here/'</span><span class="hljs-variable">$WORDPRESS_DATA_PASSWORD</span><span class="hljs-string">'/'</span> wp-config.php
+</code></pre><p>Also change the secure key by going here: <a href="https://api.wordpress.org/secret-key/1.1/salt/">https://api.wordpress.org/secret-key/1.1/salt/</a></p>
 <a class="anchor" id="run-wordpress"></a>
 <h2>Run WordPress</h2>
 <p>Move the WordPress folder to <strong>/var/www/html</strong>:</p>

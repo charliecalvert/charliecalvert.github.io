@@ -25,91 +25,88 @@ cp -r Week04-ThreeJsBasics Week04-ThreeFloor
 <a class="anchor" id="add-a-floor"></a>
 <h2>Add a Floor</h2>
 <p>The following module will add a floor to our scene in our <strong>ThreeJsBasics</strong> program. Note the call to the <strong>require</strong> method called <a href="http://requirejs.org/docs/api.html#deffunc">define</a>.</p>
-<pre>define([require], function() {
-    'use strict';
+<pre><code>define([<span class="hljs-built_in">require</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
 
-    var THREE = null;
+    <span class="hljs-keyword">var</span> THREE = <span class="hljs-literal">null</span>;
 
-    function Floors(threeInit) {
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Floors</span>(<span class="hljs-params">threeInit</span>) </span>{
         THREE = threeInit;
     }
 
 
-    function makeFloor() {
-        // floor
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">makeFloor</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// floor</span>
 
-        var geometry = new THREE.PlaneGeometry(2000, 2000, 100, 100);
-        geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
+        <span class="hljs-keyword">var</span> geometry = <span class="hljs-keyword">new</span> THREE.PlaneGeometry(<span class="hljs-number">2000</span>, <span class="hljs-number">2000</span>, <span class="hljs-number">100</span>, <span class="hljs-number">100</span>);
+        geometry.applyMatrix(<span class="hljs-keyword">new</span> THREE.Matrix4().makeRotationX(-<span class="hljs-built_in">Math</span>.PI / <span class="hljs-number">2</span>));
 
-        for (var i = 0, l = geometry.vertices.length; i < l; i++) {
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>, l = geometry.vertices.length; i &lt; l; i++) {
 
-            var vertex = geometry.vertices[i];
-            vertex.x += Math.random() * 20 - 10;
-            vertex.y += Math.random() * 2;
-            vertex.z += Math.random() * 20 - 10;
-
-        }
-
-        for (i = 0, l = geometry.faces.length; i < l; i++) {
-
-            var face = geometry.faces[i];
-            face.vertexColors[0] = new THREE.Color().setHSL(Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75);
-            face.vertexColors[1] = new THREE.Color().setHSL(Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75);
-            face.vertexColors[2] = new THREE.Color().setHSL(Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75);
+            <span class="hljs-keyword">var</span> vertex = geometry.vertices[i];
+            vertex.x += <span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">20</span> - <span class="hljs-number">10</span>;
+            vertex.y += <span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">2</span>;
+            vertex.z += <span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">20</span> - <span class="hljs-number">10</span>;
 
         }
 
-        var material = new THREE.MeshBasicMaterial({
-            vertexColors: THREE.VertexColors
+        <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>, l = geometry.faces.length; i &lt; l; i++) {
+
+            <span class="hljs-keyword">var</span> face = geometry.faces[i];
+            face.vertexColors[<span class="hljs-number">0</span>] = <span class="hljs-keyword">new</span> THREE.Color().setHSL(<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">0.2</span> + <span class="hljs-number">0.5</span>, <span class="hljs-number">0.75</span>, <span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">0.25</span> + <span class="hljs-number">0.75</span>);
+            face.vertexColors[<span class="hljs-number">1</span>] = <span class="hljs-keyword">new</span> THREE.Color().setHSL(<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">0.2</span> + <span class="hljs-number">0.5</span>, <span class="hljs-number">0.75</span>, <span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">0.25</span> + <span class="hljs-number">0.75</span>);
+            face.vertexColors[<span class="hljs-number">2</span>] = <span class="hljs-keyword">new</span> THREE.Color().setHSL(<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">0.2</span> + <span class="hljs-number">0.5</span>, <span class="hljs-number">0.75</span>, <span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">0.25</span> + <span class="hljs-number">0.75</span>);
+
+        }
+
+        <span class="hljs-keyword">var</span> material = <span class="hljs-keyword">new</span> THREE.MeshBasicMaterial({
+            <span class="hljs-attr">vertexColors</span>: THREE.VertexColors
         });
 
-        var mesh = new THREE.Mesh(geometry, material);
+        <span class="hljs-keyword">var</span> mesh = <span class="hljs-keyword">new</span> THREE.Mesh(geometry, material);
         scene.add(mesh);
     }
 
-    Floors.prototype.drawFloor = function(scene) {
-            // FLOOR
-            var names = ['images/checkerboard.jpg', 'images/FloorBorder256.png', 'images/WoodenPlanks.png', 'images/grass02.jpg', 'images/Grass03.png'];
-            var repeats = [250, 100, 100, 175];
-            var index = 0;
-            var loader = new THREE.TextureLoader();
-            var floorTexture = loader.load(names[index]);
+    Floors.prototype.drawFloor = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">scene</span>) </span>{
+            <span class="hljs-comment">// FLOOR</span>
+            <span class="hljs-keyword">var</span> names = [<span class="hljs-string">'images/checkerboard.jpg'</span>, <span class="hljs-string">'images/FloorBorder256.png'</span>, <span class="hljs-string">'images/WoodenPlanks.png'</span>, <span class="hljs-string">'images/grass02.jpg'</span>, <span class="hljs-string">'images/Grass03.png'</span>];
+            <span class="hljs-keyword">var</span> repeats = [<span class="hljs-number">250</span>, <span class="hljs-number">100</span>, <span class="hljs-number">100</span>, <span class="hljs-number">175</span>];
+            <span class="hljs-keyword">var</span> index = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">var</span> loader = <span class="hljs-keyword">new</span> THREE.TextureLoader();
+            <span class="hljs-keyword">var</span> floorTexture = loader.load(names[index]);
             floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
             floorTexture.repeat.set(repeats[index], repeats[index]);
-            var floorMaterial = new THREE.MeshBasicMaterial({
-                    map: floorTexture,
-                    side: THREE.DoubleSide
+            <span class="hljs-keyword">var</span> floorMaterial = <span class="hljs-keyword">new</span> THREE.MeshBasicMaterial({
+                    <span class="hljs-attr">map</span>: floorTexture,
+                    <span class="hljs-attr">side</span>: THREE.DoubleSide
             });
-            var floorGeometry = new THREE.PlaneGeometry(2000, 2000, 10, 10);
-            var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-            floor.position.y = -0.5;
-            floor.rotation.x = Math.PI / 2;
+            <span class="hljs-keyword">var</span> floorGeometry = <span class="hljs-keyword">new</span> THREE.PlaneGeometry(<span class="hljs-number">2000</span>, <span class="hljs-number">2000</span>, <span class="hljs-number">10</span>, <span class="hljs-number">10</span>);
+            <span class="hljs-keyword">var</span> floor = <span class="hljs-keyword">new</span> THREE.Mesh(floorGeometry, floorMaterial);
+            floor.position.y = <span class="hljs-number">-0.5</span>;
+            floor.rotation.x = <span class="hljs-built_in">Math</span>.PI / <span class="hljs-number">2</span>;
             scene.add(floor);
     };
 
-  return Floors;
+  <span class="hljs-keyword">return</span> Floors;
 });
-</pre>
-<p>You should save the file into your <strong>public/javascripts</strong> directory as <strong>floor.js</strong>. Then add it to <strong>main.js</strong> in the <strong>config</strong> section. More specifically, you would add it near here:</p>
-<pre>require.config({
-    baseUrl : '.',
-    paths : {
-        "jquery" : 'components/jquery/dist/jquery-2.1.1',
-        "three" : 'javascripts/three',
-        "control" : 'javascripts/control',
-        // YOUR CODE FOR LOADING floor.js GOES HERE
-</pre>
-<p>You will need to modify the define call at the top of <strong>control.js</strong>:</p>
-<pre>define(["floor"], function(Floor) {
-    // LOTS OF CODE OMITTED HERE
+</code></pre><p>You should save the file into your <strong>public/javascripts</strong> directory as <strong>floor.js</strong>. Then add it to <strong>main.js</strong> in the <strong>config</strong> section. More specifically, you would add it near here:</p>
+<pre><code>require.config({
+    <span class="hljs-string">baseUrl :</span> <span class="hljs-string">'.'</span>,
+    <span class="hljs-string">paths :</span> {
+        <span class="hljs-string">"jquery"</span> : <span class="hljs-string">'components/jquery/dist/jquery-2.1.1'</span>,
+        <span class="hljs-string">"three"</span> : <span class="hljs-string">'javascripts/three'</span>,
+        <span class="hljs-string">"control"</span> : <span class="hljs-string">'javascripts/control'</span>,
+        <span class="hljs-comment">// YOUR CODE FOR LOADING floor.js GOES HERE</span>
+</code></pre><p>You will need to modify the define call at the top of <strong>control.js</strong>:</p>
+<pre><code class="lang-javascript">define([<span class="hljs-string">"floor"</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(Floor)</span> </span>{
+    <span class="hljs-comment">// LOTS OF CODE OMITTED HERE</span>
 });
-</pre>
+</code></pre>
 <p>The code passed to the define method will cause <strong>require</strong> to automatically load your <strong>floor.js</strong> file.</p>
 <p>Below is the code to create and use the key method in the <strong>floor</strong> module:</p>
-<pre>var floor = new Floor();
-floor.drawFloor(scene);
-</pre>
-<p>It belongs in the constructor found in <strong>control.js</strong>. Insert it into your source just after you add the cube.</p>
+<pre><code><span class="hljs-built_in">var</span> <span class="hljs-built_in">floor</span> = <span class="hljs-built_in">new</span> Floor();
+<span class="hljs-built_in">floor</span>.drawFloor(<span class="hljs-built_in">scene</span>);
+</code></pre><p>It belongs in the constructor found in <strong>control.js</strong>. Insert it into your source just after you add the cube.</p>
 <p>Create a bitmap called <strong>checkerboard.jpg</strong> that is 256 X 256 pixels in size or download the one found here. We don&#39;t have rights to use this publicly at this time, but we can use it in our assignments. Put it in an <strong>images</strong> directory in the <strong>public</strong> folder:</p>
 <pre>
 public/images/checkerboard.jpg
@@ -122,62 +119,62 @@ public/images/checkerboard.jpg
 <h2>Naive Walk</h2>
 <p>Let&#39;s add primitive support for walking through the scene. Our camera is the eye on the scene. To change what we see, we move the camera. In particular, if we want to simulate walking through the scene, then we just move the camera along a path. We will be able to move the camera to the left and right, and backward and forward. This is like moving through a room, but always having to face in the same direction, as if you were a courtier coming to visit the king. (We will see how to rotate the camera and change the direction we are facing in a later assignment.)</p>
 <p>First let&#39;s declare some variables in <strong>control.js</strong> above the constructor for tracking movement and the camera position:</p>
-<pre>    var keyMove = {
-        moveForward : false,
-        moveBackward : false,
-        moveLeft : false,
-        moveRight : false
+<pre><code class="lang-javascript">    var keyMove = {
+        <span class="hljs-string">moveForward :</span> <span class="hljs-literal">false</span>,
+        <span class="hljs-string">moveBackward :</span> <span class="hljs-literal">false</span>,
+        <span class="hljs-string">moveLeft :</span> <span class="hljs-literal">false</span>,
+        <span class="hljs-string">moveRight :</span> <span class="hljs-literal">false</span>
     };
 
     var cameraPosition = {
-        x : 2,
-        y : 0,
-        z : 2
+        <span class="hljs-string">x :</span> <span class="hljs-number">2</span>,
+        <span class="hljs-string">y :</span> <span class="hljs-number">0</span>,
+        <span class="hljs-string">z :</span> <span class="hljs-number">2</span>
     }
-</pre>
+</code></pre>
 <p>Now we want to capture mouse events in the constructor for <strong>control.js</strong>. The following code tells the browser to call certain methods when the user presses or releases a key:</p>
-<pre>document.addEventListener('keydown', onKeyDown, false);
-document.addEventListener('keyup', onKeyUp, false);
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'keydown'</span>, onKeyDown, <span class="hljs-literal">false</span>);
+<span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'keyup'</span>, onKeyUp, <span class="hljs-literal">false</span>);
+</code></pre>
 <p>You can place the above lines in a number of locations, but just below the calls to create the floor is a reasonable spot.</p>
 <p>Note that the <strong>addEventListener</strong> method specifies that the <strong>onKeyDown</strong> method will be called when a key is pressed and a method called <strong>onKeyUp</strong> will be called when a key is released. In short, the event code causes the methods called <strong>onKeyUp</strong> and <strong>onKeyDown</strong> to be called when the keys are pressed or released. Here is the <strong>onKeyDown</strong> method:</p>
-<pre>var onKeyDown = function(event) {
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> onKeyDown = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span> </span>{
 
-  switch (event.keyCode) {
+  <span class="hljs-keyword">switch</span> (event.keyCode) {
 
-        case 38: // up
-        case 87: // w
-            keyMove.moveForward = true;
-            break;
+        <span class="hljs-keyword">case</span> <span class="hljs-number">38</span>: <span class="hljs-comment">// up</span>
+        <span class="hljs-keyword">case</span> <span class="hljs-number">87</span>: <span class="hljs-comment">// w</span>
+            keyMove.moveForward = <span class="hljs-literal">true</span>;
+            <span class="hljs-keyword">break</span>;
 
-        case 37: // left
-        case 65: // a
-            keyMove.moveLeft = true;
-            break;
+        <span class="hljs-keyword">case</span> <span class="hljs-number">37</span>: <span class="hljs-comment">// left</span>
+        <span class="hljs-keyword">case</span> <span class="hljs-number">65</span>: <span class="hljs-comment">// a</span>
+            keyMove.moveLeft = <span class="hljs-literal">true</span>;
+            <span class="hljs-keyword">break</span>;
 
-        case 40: // down
-        case 83: // s
-            keyMove.moveBackward = true;
-            break;
+        <span class="hljs-keyword">case</span> <span class="hljs-number">40</span>: <span class="hljs-comment">// down</span>
+        <span class="hljs-keyword">case</span> <span class="hljs-number">83</span>: <span class="hljs-comment">// s</span>
+            keyMove.moveBackward = <span class="hljs-literal">true</span>;
+            <span class="hljs-keyword">break</span>;
 
-        case 39: // right
-        case 68: // d
-            keyMove.moveRight = true;
-            break;
+        <span class="hljs-keyword">case</span> <span class="hljs-number">39</span>: <span class="hljs-comment">// right</span>
+        <span class="hljs-keyword">case</span> <span class="hljs-number">68</span>: <span class="hljs-comment">// d</span>
+            keyMove.moveRight = <span class="hljs-literal">true</span>;
+            <span class="hljs-keyword">break</span>;
   }
 };
-</pre>
+</code></pre>
 <p>You also need to compose an <strong>onKeyUp</strong> method that looks the one shown above, but has the opposite effect. In other words, the <strong>boolean</strong> values are set to tell the app that movement to the right, left, back or forward has stopped. The method looks very, very much like the one above, with one important difference which I&#39;m sure you can guess.</p>
 <p>Finally we want to change the <strong>render</strong> method to animate the camera when the key presses are detected by the code above. At the top of the render method, add a four part <strong>if block</strong> that moves the <strong>cameraPosition</strong>. I give you the first of the four parts, and you can fill in the rest:</p>
-<pre>    if (keyMove.moveLeft) {
-        cameraPosition.x -= 1;
-    } else etc...
-</pre>
+<pre><code class="lang-javascript">    <span class="hljs-meta">if</span> (keyMove.<span class="hljs-keyword">moveLeft) </span>{
+        cameraPosition.x -= <span class="hljs-number">1</span><span class="hljs-comment">;</span>
+    } <span class="hljs-meta">else</span> etc...
+</code></pre>
 <p>We will move in the x direction to mvoe left and right. Which direction, y or z, should we move to be able to move deeper into the scene? Just experiement a bit, and you will soon see which property to choose. Remember, we want to move left, right, forward and back. We don&#39;t move up and down. For now, try moving by plus or minus one unit.</p>
 <p><strong>Note</strong>: <em>Recalled that we declared both <strong>keyMOve</strong> and <strong>cameraPosition</strong>, so you know what those objects look like.</em></p>
 <p>Finally, just after our four part <strong>if</strong> statement, we move the camera to the new position:</p>
-<pre>    camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-</pre>
+<pre><code class="lang-javascript">    <span class="hljs-selector-tag">camera</span><span class="hljs-selector-class">.position</span><span class="hljs-selector-class">.set</span>(<span class="hljs-selector-tag">cameraPosition</span><span class="hljs-selector-class">.x</span>, <span class="hljs-selector-tag">cameraPosition</span><span class="hljs-selector-class">.y</span>, <span class="hljs-selector-tag">cameraPosition</span><span class="hljs-selector-class">.z</span>);
+</code></pre>
 <p>When you are finished you should be able to &quot;jump&quot; right, left, forward and backward. You might experiment with moving smaller increments each time to make the jumps less jarring to the viewer.</p>
 <p><strong>NOTE</strong>: <em>When the scene is first rendered, the camera may be right in the middle of a cube. This means you will have to &quot;backup&quot; (down arrow) to move away from the cube and see it. If you are standing in the middle of cube, it might be invisible. We will fix all this later, but for now, we have to live with the scene in its half-finished state.</em></p>
 <p>Later you will see more complex code that allows us to move more smoothly through the screen, but this at least helps us get started moving around.</p>
@@ -187,15 +184,15 @@ document.addEventListener('keyup', onKeyUp, false);
 <p><img src="https://drive.google.com/uc?export=view&amp;id=0B25UTAlOfPRGTnFWZmhSN2tuWFk" alt="Bar"></p>
 <p>When you first see the boxes in the scene, they will not have a brown wooden texture on them. Have patience, we will add them in this assignment, just not right away.</p>
 <p>To get started, you could create a method called <strong>addCubes</strong>, based on the addCube method. It would begin something like this:</p>
-<pre>function addCubes(scene, camera, wireFrame) {
-    for (var i = 0; i < 6; i++) {
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addCubes</span><span class="hljs-params">(scene, camera, wireFrame)</span> {</span>
+    <span class="hljs-keyword">for</span> (var <span class="hljs-built_in">i</span> = <span class="hljs-number">0</span>; <span class="hljs-built_in">i</span> &lt; <span class="hljs-number">6</span>; <span class="hljs-built_in">i</span>++) {
        etc...
     }
 }
-</pre>
+</code></pre>
 <p>We would call this method from the constructor, rather than calling <strong>addCube</strong>. As you recall the invocation of <strong>addCube</strong> looks like this:</p>
-<pre>    addCube(scene, camera, wireFrame, 1, 1);
-</pre>
+<pre><code class="lang-javascript">    addCube(<span class="hljs-name">scene</span>, camera, wireFrame, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)<span class="hljs-comment">;</span>
+</code></pre>
 <p>Now from inside <strong>addCubes</strong>,  you want to call <strong>addCube</strong>, but you will need to do something with the last parameters in order to make the cubes appear in different locations. In fact, you might want to call <strong>addCube</strong> more than once in your <strong>for loop</strong>. Perhaps you could hard code one of the last two parameters, and do sometihng with the other one that involved the <strong>loop variable i</strong>.</p>
 <p>After you &quot;walk&quot; down the aisle between the boxes for a bit, you might see something like this:</p>
 <p><img src="https://drive.google.com/uc?export=view&amp;id=0B25UTAlOfPRGN1pyc3JiMWVjUWs" alt="Bar"></p>
@@ -203,84 +200,78 @@ document.addEventListener('keyup', onKeyUp, false);
 <a class="anchor" id="add-textures"></a>
 <h2>Add Textures</h2>
 <p>The scene in your program right now probably looks a bit like the one in the screen shots, but the boxes have bright colors on them rather than a nice wooden texture. To add the texture, swap out this call to <a href="http://threejs.org/docs/#Reference/Materials/MeshNormalMaterial">MeshNormalMaterial</a>:</p>
-<pre>var material = new THREE.MeshNormalMaterial({
-    wireframe : wireFrame
+<pre><code><span class="hljs-keyword">var</span> material = <span class="hljs-keyword">new</span> <span class="hljs-type">THREE</span>.MeshNormalMaterial({
+    wireframe : <span class="hljs-type">wireFrame</span>
 });
-</pre>
-<p>Put this call to <a href="http://threejs.org/docs/#Reference/Materials/MeshLambertMaterial">MeshLabertMaterial</a> in its place:</p>
-<pre>var loader = new THREE.TextureLoader();
-var material = new THREE.MeshLambertMaterial({
-    map : loader.load('images/crate.jpg')
+</code></pre><p>Put this call to <a href="http://threejs.org/docs/#Reference/Materials/MeshLambertMaterial">MeshLabertMaterial</a> in its place:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> loader = <span class="hljs-keyword">new</span> <span class="hljs-type">THREE</span>.TextureLoader();
+<span class="hljs-keyword">var</span> material = <span class="hljs-keyword">new</span> <span class="hljs-type">THREE</span>.MeshLambertMaterial({
+    map : <span class="hljs-type">loader</span>.load(<span class="hljs-string">'images/crate.jpg'</span>)
 });
-</pre>
+</code></pre>
 <p>Here is a create texture which we can use in class, but not in our final games. Or at least not until we get permission to use it. Just right click and download to your images folder.</p>
 <p><img src="https://drive.google.com/uc?export=view&amp;id=0B25UTAlOfPRGdmUtMHpCSlQ4bmc" alt="Bar"></p>
 <p>The results in your program are probably less than satisfying, as the boxes are hard to see. To fix that, we need to add lights to the scene.</p>
 <a class="anchor" id="add-lights"></a>
 <h2>Add Lights</h2>
 <p>Call it from your constructor:</p>
-<pre>function addLights() {
-    var light = new THREE.DirectionalLight(0xffffff, 1.5);
-    light.position.set(1, 1, 1);
-    scene.add(light);
-    light = new THREE.DirectionalLight(0xffffff, 0.75);
-    light.position.set(-1, -0.5, -1);
-    scene.add(light);
-}
-</pre>
-<a class="anchor" id="sphere"></a>
+<pre><code>function <span class="hljs-keyword">addLights() </span>{
+    var light = new THREE.<span class="hljs-keyword">DirectionalLight(0xffffff, </span><span class="hljs-number">1</span>.<span class="hljs-number">5</span>)<span class="hljs-comment">;</span>
+    light.position<span class="hljs-meta">.set</span>(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)<span class="hljs-comment">;</span>
+    <span class="hljs-keyword">scene.add(light);
+</span>    light = new THREE.<span class="hljs-keyword">DirectionalLight(0xffffff, </span><span class="hljs-number">0</span>.<span class="hljs-number">75</span>)<span class="hljs-comment">;</span>
+    light.position<span class="hljs-meta">.set</span>(-<span class="hljs-number">1</span>, -<span class="hljs-number">0</span>.<span class="hljs-number">5</span>, -<span class="hljs-number">1</span>)<span class="hljs-comment">;</span>
+    <span class="hljs-keyword">scene.add(light);
+</span>}
+</code></pre><a class="anchor" id="sphere"></a>
 <h2>Sphere</h2>
 <p>Let&#39;s add a <a href="http://threejs.org/docs/#Reference/Extras.Geometries/SphereGeometry">sphere</a>.</p>
-<pre>function addSphere(sne, camera, wireFrame, x, y) {
-    var geometry = new THREE.SphereGeometry(.5, 25, 25);
-    var material = new THREE.MeshNormalMaterial({
-    color: 0x00ffff,
-        wireframe: wireFrame
+<pre><code>function addSphere(sne, camera, wireFrame, x, y) {
+    <span class="hljs-built_in">var</span> geometry = <span class="hljs-built_in">new</span> THREE.SphereGeometry(.<span class="hljs-number">5</span>, <span class="hljs-number">25</span>, <span class="hljs-number">25</span>);
+    <span class="hljs-built_in">var</span> material = <span class="hljs-built_in">new</span> THREE.MeshNormalMaterial({
+    <span class="hljs-built_in">color</span>: <span class="hljs-number">0x00ffff</span>,
+        <span class="hljs-built_in">wireframe</span>: wireFrame
     });
 
-    var sphere = new THREE.Mesh(geometry, material);
-    sphere.overdraw = true;
-    sphere.position.set(x, 0, y);
-    scene.add(sphere);
+    <span class="hljs-built_in">var</span> <span class="hljs-built_in">sphere</span> = <span class="hljs-built_in">new</span> THREE.Mesh(geometry, material);
+    <span class="hljs-built_in">sphere</span>.overdraw = <span class="hljs-literal">true</span>;
+    <span class="hljs-built_in">sphere</span>.<span class="hljs-built_in">position</span>.set(x, <span class="hljs-number">0</span>, y);
+    <span class="hljs-built_in">scene</span>.add(<span class="hljs-built_in">sphere</span>);
 
-        return sphere;
+        <span class="hljs-built_in">return</span> <span class="hljs-built_in">sphere</span>;
 }
-</pre>
-<p>Call the <strong>addSphere</strong> method just after your <strong>for loop</strong> in the <strong>addCubes</strong> method. Be sure to pass in the correct x and y parameters so the sphere appears at the end of our aisle, as shown in the screen shots above. (Hint, start with something like 2 and -7.)</p>
+</code></pre><p>Call the <strong>addSphere</strong> method just after your <strong>for loop</strong> in the <strong>addCubes</strong> method. Be sure to pass in the correct x and y parameters so the sphere appears at the end of our aisle, as shown in the screen shots above. (Hint, start with something like 2 and -7.)</p>
 <a class="anchor" id="window-resize"></a>
 <h2>Window Resize</h2>
 <p>One event handler that I should mention is window resize. This event is triggered when the window is resized and it causes the scene to be recalculated so that it fits properly inside the window.</p>
 <p>Here is how we hook the event:</p>
-<pre>window.addEventListener('resize', onWindowResize, false);
-</pre>
-<p>And here is how we handle the event:</p>
-<pre>function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
+<pre><code><span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">'resize'</span>, onWindowResize, <span class="hljs-literal">false</span>);
+</code></pre><p>And here is how we handle the event:</p>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onWindowResize</span>(<span class="hljs-params"></span>) </span>{
+    camera.aspect = <span class="hljs-built_in">window</span>.innerWidth / <span class="hljs-built_in">window</span>.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(<span class="hljs-built_in">window</span>.innerWidth, <span class="hljs-built_in">window</span>.innerHeight);
 }
-</pre>
-<p>On the same general subject, you might find it useful to just remove all the HTML (for now) from you index.jade. My code, at any rate, now looks like this:</p>
-<pre>extends layout
+</code></pre><p>On the same general subject, you might find it useful to just remove all the HTML (for now) from you index.jade. My code, at any rate, now looks like this:</p>
+<pre><code>extends layout
 
-block content
-</pre>
-<p>As you can see, there is essentially nothing at all happening in <strong>index.jade</strong>. Our HTML body is occupied entirely by Three.Js. Later on we will see how to use CSS to lay HTML over the 3D scene.</p>
+<span class="hljs-built_in">block</span> <span class="hljs-built_in">content</span>
+</code></pre><p>As you can see, there is essentially nothing at all happening in <strong>index.jade</strong>. Our HTML body is occupied entirely by Three.Js. Later on we will see how to use CSS to lay HTML over the 3D scene.</p>
 <a class="anchor" id="css-border"></a>
 <h2>A Little CSS</h2>
 <p>To get rid of the borders around the scene:</p>
-<pre>html, body {
-    width: 100%;
-    height: 100%;
+<pre><code class="lang-css"><span class="hljs-selector-tag">html</span>, <span class="hljs-selector-tag">body</span> {
+    <span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>;
+    <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;
 }
 
-body {
-    background-color: #ffffff;
-    margin: 0;
-    overflow: hidden;
-    font-family: arial;
+<span class="hljs-selector-tag">body</span> {
+    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#ffffff</span>;
+    <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>;
+    <span class="hljs-attribute">overflow</span>: hidden;
+    <span class="hljs-attribute">font-family</span>: arial;
 }
-</pre>
+</code></pre>
 <a class="anchor" id="jscs-ignore"></a>
 <h2>JSCS Ignore</h2>
 <p>We should ignore certain files in <strong>.jscsrc</strong>:</p>

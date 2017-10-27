@@ -43,115 +43,108 @@
 <h2>Step Two</h2>
 <p>Routing</p>
 <p>When we send a request from the client back to the server, it is routed to the appropriate method using the <strong>express Router</strong>. See, for instance, <strong>routes/index.js</strong>. Place the following in <strong>index.js</strong>:</p>
-<pre>router.get('/:id', function(req, res, next) {
-  console.log(req.params.id);
-  res.render('ScienceInfo/' + req.params.id, { title: req.params.id });
+<pre><code>router.<span class="hljs-keyword">get</span>('/:<span class="hljs-built_in">id</span>', function(req, res, next) {
+  console.<span class="hljs-built_in">log</span>(req.params.<span class="hljs-built_in">id</span>);
+  res.render('ScienceInfo/' + req.params.<span class="hljs-built_in">id</span>, { title: req.params.<span class="hljs-built_in">id</span> });
 });
-</pre>
-<p>Create a new folder called: <strong>views/ScienceInfo</strong>. Place three files in it:</p>
+</code></pre><p>Create a new folder called: <strong>views/ScienceInfo</strong>. Place three files in it:</p>
 <p>astronomy.jade:</p>
-<pre>h1 Astronomy
+<pre><code><span class="hljs-selector-tag">h1</span> Astronomy
 
-p Astronomy is a subject
-</pre>
-<p>physics.jade:</p>
-<pre>h1 Physics
+<span class="hljs-selector-tag">p</span> Astronomy is <span class="hljs-selector-tag">a</span> subject
+</code></pre><p>physics.jade:</p>
+<pre><code><span class="hljs-selector-tag">h1</span> Physics
 
-p Physics is a subject
-</pre>
-<p>radioactivity.jade:</p>
-<pre>h1 Radioactivity
+<span class="hljs-selector-tag">p</span> Physics is <span class="hljs-selector-tag">a</span> subject
+</code></pre><p>radioactivity.jade:</p>
+<pre><code><span class="hljs-selector-tag">h1</span> Radioactivity
 
-p Radioactivity is a subject
-</pre>
-<p>We can see the result of our new route by entering the following URL in our browser:</p>
-<pre>localhost:30025/astronomy
-localhost:30025/physics
-localhost:30025/radioactivity 
-</pre>
-<p>In order to invoke those routes from our program, we place the following method in our controller:</p>
-<pre>        myController.loadDocument = function() {
-            $http.get('/' + myController.subject.toLowerCase())
-                .success(function(document, status, headers, config) {
+<span class="hljs-selector-tag">p</span> Radioactivity is <span class="hljs-selector-tag">a</span> subject
+</code></pre><p>We can see the result of our new route by entering the following URL in our browser:</p>
+<pre><code><span class="hljs-symbol">localhost:</span><span class="hljs-number">30025</span>/astronomy
+<span class="hljs-symbol">localhost:</span><span class="hljs-number">30025</span>/physics
+<span class="hljs-symbol">localhost:</span><span class="hljs-number">30025</span>/radioactivity 
+</code></pre><p>In order to invoke those routes from our program, we place the following method in our controller:</p>
+<pre><code>        myController.loadDocument = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+            $http.get(<span class="hljs-string">'/'</span> + myController.subject.toLowerCase())
+                .success(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(document, status, headers, config)</span> </span>{
                     myController.document = $sce.trustAsHtml(document);
                 })
-                .error(function(data, status, headers, config) {
-                    alert("Somethings wrong")
+                .error(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(data, status, headers, config)</span> </span>{
+                    alert(<span class="hljs-string">"Somethings wrong"</span>)
                 });
         }
-</pre>
-<p>The above code uses the angular <strong>$http.get</strong> method to send the request to the server. This is known as <strong>ajax</strong>. The method has parallel in <strong>jquery</strong> called <strong>$.ajax</strong>.</p>
+</code></pre><p>The above code uses the angular <strong>$http.get</strong> method to send the request to the server. This is known as <strong>ajax</strong>. The method has parallel in <strong>jquery</strong> called <strong>$.ajax</strong>.</p>
 <p>In our controller, you should call <strong>loadDocument</strong> at the end of the callback found in <strong>loadScientists</strong> and at the end of <strong>indexChange</strong>. In other words, when those two functions are called, they should ensure that loadDocument is called. This way we can see the document associate with each of our scientists.</p>
 <a class="anchor" id="step-three"></a>
 <h2>Step Three</h2>
 <p>The <strong>directive</strong>.</p>
 <p>Appended at the bottom of <strong>Control.js</strong>: </p>
-<pre>    app.directive('elfMarie', function(scientists) {
-        return {
-            controller: 'MyController',
-            controllerAs: 'myController',
-            template:
-            'First: {{myController.marie.firstName}} ' +
-            '<br>Last: {{myController.marie.lastName}}' +
-            '<br>City: {{myController.marie.subject}}'
+<pre><code>    <span class="hljs-selector-tag">app</span><span class="hljs-selector-class">.directive</span>(<span class="hljs-string">'elfMarie'</span>, function(scientists) {
+        <span class="hljs-selector-tag">return</span> {
+            <span class="hljs-attribute">controller</span>: <span class="hljs-string">'MyController'</span>,
+            <span class="hljs-attribute">controllerAs</span>: <span class="hljs-string">'myController'</span>,
+            <span class="hljs-attribute">template</span>:
+            <span class="hljs-string">'First: {{myController.marie.firstName}} '</span> +
+            <span class="hljs-string">'&lt;br&gt;Last: {{myController.marie.lastName}}'</span> +
+            <span class="hljs-string">'&lt;br&gt;City: {{myController.marie.subject}}'</span>
         };
     });
-</pre>
-<a class="anchor" id="step-four"></a>
+</code></pre><a class="anchor" id="step-four"></a>
 <h2>Step Four</h2>
 <p>The latest version of MongoDb Angular Resource. Put it in the <strong>public/javascripts</strong> folder and name it <strong>ScienceResource.js</strong>. (In MongoCrud, we called it <strong>resource.js</strong>. We have refactored the name, and modified it slightly. In particular we added the <strong>getTopic</strong> method.)</p>
-<pre>angular.module('Science', ['ngResource'])
+<pre><code>angular.module(<span class="hljs-string">'Science'</span>, [<span class="hljs-string">'ngResource'</span>])
 
-    .constant('CONFIG', {
-        DB_NAME: 'elvenlab01',
-        COLLECTION: 'scientists',
-        API_KEY: 'qfSxFoUGHBA1EuUlqhux_op2fy6oF_wy'
+    .constant(<span class="hljs-string">'CONFIG'</span>, {
+        <span class="hljs-attr">DB_NAME</span>: <span class="hljs-string">'elvenlab01'</span>,
+        <span class="hljs-attr">COLLECTION</span>: <span class="hljs-string">'scientists'</span>,
+        <span class="hljs-attr">API_KEY</span>: <span class="hljs-string">'qfSxFoUGHBA1EuUlqhux_op2fy6oF_wy'</span>
     })
 
-    .factory('scientists', function ($resource, CONFIG) {
-        console.log('Scientists factory called');
+    .factory(<span class="hljs-string">'scientists'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">$resource, CONFIG</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Scientists factory called'</span>);
 
-        var scientists = $resource(
-            'https://api.mongolab.com/api/1/databases/' + CONFIG.DB_NAME +
-            '/collections/' + CONFIG.COLLECTION + '/:id', {
-                apiKey: CONFIG.API_KEY
+        <span class="hljs-keyword">var</span> scientists = $resource(
+            <span class="hljs-string">'https://api.mongolab.com/api/1/databases/'</span> + CONFIG.DB_NAME +
+            <span class="hljs-string">'/collections/'</span> + CONFIG.COLLECTION + <span class="hljs-string">'/:id'</span>, {
+                <span class="hljs-attr">apiKey</span>: CONFIG.API_KEY
             },
             {
-                update: {method: 'PUT'}
+                <span class="hljs-attr">update</span>: {<span class="hljs-attr">method</span>: <span class="hljs-string">'PUT'</span>}
             });
 
-        scientists.prototype.getTopic = function(firstNameToFind, callback) {
+        scientists.prototype.getTopic = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">firstNameToFind, callback</span>) </span>{
             bar = $resource(
-                'https://api.mongolab.com/api/1/databases/' + CONFIG.DB_NAME +
-                '/collections/' + CONFIG.COLLECTION, {
-                    apiKey: CONFIG.API_KEY,
-                    q: {"firstName": firstNameToFind }
+                <span class="hljs-string">'https://api.mongolab.com/api/1/databases/'</span> + CONFIG.DB_NAME +
+                <span class="hljs-string">'/collections/'</span> + CONFIG.COLLECTION, {
+                    <span class="hljs-attr">apiKey</span>: CONFIG.API_KEY,
+                    <span class="hljs-attr">q</span>: {<span class="hljs-string">"firstName"</span>: firstNameToFind }
                 });
-            return bar.query({}, callback);
+            <span class="hljs-keyword">return</span> bar.query({}, callback);
         };
 
-        scientists.prototype.getFirstName = function () {
-            return this.firstName;
+        scientists.prototype.getFirstName = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.firstName;
         };
 
-        scientists.prototype.getLastName = function () {
-            return this.lastName;
+        scientists.prototype.getLastName = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.lastName;
         };
 
-        scientists.prototype.getSubject = function () {
-            return this.subject;
+        scientists.prototype.getSubject = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.subject;
         };
 
 
-        scientists.prototype.add = function(newData, callback) {
-            var scientistResource = new scientists(newData);
+        scientists.prototype.add = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">newData, callback</span>) </span>{
+            <span class="hljs-keyword">var</span> scientistResource = <span class="hljs-keyword">new</span> scientists(newData);
             scientistResource.$save(callback);
         };
 
-        scientists.prototype.updateDocument = function (successCallback, errorCallback) {
-            console.log("update called");
-            var idObject = {id: this._id.$oid};
-            var updateData = angular.extend({}, this, {_id:undefined});
+        scientists.prototype.updateDocument = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">successCallback, errorCallback</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"update called"</span>);
+            <span class="hljs-keyword">var</span> idObject = {<span class="hljs-attr">id</span>: <span class="hljs-keyword">this</span>._id.$oid};
+            <span class="hljs-keyword">var</span> updateData = angular.extend({}, <span class="hljs-keyword">this</span>, {<span class="hljs-attr">_id</span>:<span class="hljs-literal">undefined</span>});
             scientists.update(
                 idObject,
                 updateData,
@@ -159,14 +152,13 @@ localhost:30025/radioactivity
                 errorCallback);
         };
 
-        scientists.prototype.remove = function (successCallback, errorCallback) {
-            scientists.remove({id:this._id.$oid}, successCallback, errorCallback);
+        scientists.prototype.remove = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">successCallback, errorCallback</span>) </span>{
+            scientists.remove({<span class="hljs-attr">id</span>:<span class="hljs-keyword">this</span>._id.$oid}, successCallback, errorCallback);
         };
 
-        return scientists;
+        <span class="hljs-keyword">return</span> scientists;
     });
-</pre>
-<a class="anchor" id="step-five"></a>
+</code></pre><a class="anchor" id="step-five"></a>
 <h2>Step Five</h2>
 <p>Now lets test dependency injection. In <strong>layout.js</strong>, swap out</p>
 <a class="anchor" id="turn-it-in"></a>
@@ -178,15 +170,14 @@ localhost:30025/radioactivity
 <a class="anchor" id="discussion"></a>
 <h2>Discussion</h2>
 <p>Notice the call to getTopic:</p>
-<pre>   scientists.prototype.getTopic = function(firstNameToFind, callback) {
-       bar = $resource(
-            'https://api.mongolab.com/api/1/databases/' + CONFIG.DB_NAME +
-            '/collections/' + CONFIG.COLLECTION, {
-                 apiKey: CONFIG.API_KEY,
-                 q: {"firstName": firstNameToFind }
+<pre><code>   <span class="hljs-keyword">scientists.prototype.getTopic </span>= function(firstNameToFind, callback) {
+       <span class="hljs-keyword">bar </span>= $resource(
+            <span class="hljs-string">'https://api.mongolab.com/api/1/databases/'</span> + <span class="hljs-built_in">CONFIG</span>.DB_NAME +
+            <span class="hljs-string">'/collections/'</span> + <span class="hljs-built_in">CONFIG</span>.COLLECTION, {
+<span class="hljs-symbol">                 apiKey:</span> <span class="hljs-built_in">CONFIG</span>.API_KEY,
+                 q: {<span class="hljs-string">"firstName"</span>: firstNameToFind }
              }
-     );
-     return bar.query({}, callback);
-</pre>
-<p>Go to the Network page in the Chrome Developer tools and see the URL this creates. Run the URL in the address bar of your browser.  </p>
+     )<span class="hljs-comment">;</span>
+     return <span class="hljs-keyword">bar.query({}, </span>callback)<span class="hljs-comment">;</span>
+</code></pre><p>Go to the Network page in the Chrome Developer tools and see the URL this creates. Run the URL in the address bar of your browser.  </p>
 </div></body></html>

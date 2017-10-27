@@ -15,40 +15,39 @@
 <h2>Create Project</h2>
 <p>Use <strong>CreateExpressProject</strong> to create <strong>Week05-JadeMixinBasics</strong>.</p>
 <p>Copy in the mixins:</p>
-<pre>cp $ELF_TEMPLATES/JadeMixins/jade/mixin-radios.jade views/.
-cp $ELF_TEMPLATES/JadeMixins/jade/mixins.jade views/.
-cp $ELF_TEMPLATES/JadeMixins/jade/mixin-inputs.jade views/.
-</pre>
+<pre><code class="lang-bash">cp <span class="hljs-variable">$ELF_TEMPLATES</span><span class="hljs-regexp">/JadeMixins/</span>jade<span class="hljs-regexp">/mixin-radios.jade views/</span>.
+cp <span class="hljs-variable">$ELF_TEMPLATES</span><span class="hljs-regexp">/JadeMixins/</span>jade<span class="hljs-regexp">/mixins.jade views/</span>.
+cp <span class="hljs-variable">$ELF_TEMPLATES</span><span class="hljs-regexp">/JadeMixins/</span>jade<span class="hljs-regexp">/mixin-inputs.jade views/</span>.
+</code></pre>
 <p>Or:</p>
-<pre>cp $ELF_TEMPLATES/JadeMixins/pug/mixin-radios.pug views/.
-cp $ELF_TEMPLATES/JadeMixins/pug/mixins.pug views/.
-cp $ELF_TEMPLATES/JadeMixins/pug/mixin-inputs.pug views/.
-</pre>
+<pre><code class="lang-bash">cp <span class="hljs-variable">$ELF_TEMPLATES</span><span class="hljs-regexp">/JadeMixins/</span>pug<span class="hljs-regexp">/mixin-radios.pug views/</span>.
+cp <span class="hljs-variable">$ELF_TEMPLATES</span><span class="hljs-regexp">/JadeMixins/</span>pug<span class="hljs-regexp">/mixins.pug views/</span>.
+cp <span class="hljs-variable">$ELF_TEMPLATES</span><span class="hljs-regexp">/JadeMixins/</span>pug<span class="hljs-regexp">/mixin-inputs.pug views/</span>.
+</code></pre>
 <p><strong>NOTE</strong>: <em>We might not use the second file, <strong>mixins.jade</strong>, but I will include if for now in case we need it later.</em></p>
 <p><strong>TIP</strong>: <em>I&#39;ve saved the above commands to <strong>$JSOBJECTS/Utilities/NodeInstall/GetMixins</strong>. You could copy that file to your <strong>~/bin</strong> directory.</em></p>
 <a class="anchor" id="the-code"></a>
 <h2>The Code</h2>
 <p>Below we set up an event that will be called when the user clicks on the <strong>submit</strong> button:</p>
-<pre>
-$(document).ready(function() { 'use strict';
-    $("#target").submit(function(event) {
+<pre><code class="lang-javascript">
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-string">'use strict'</span>;
+    $(<span class="hljs-string">"#target"</span>).submit(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
         event.preventDefault();
-        var userFormData = $(this).serialize();
-        $('#formResults').html(userFormData);
+        <span class="hljs-keyword">var</span> userFormData = $(<span class="hljs-keyword">this</span>).serialize();
+        $(<span class="hljs-string">'#formResults'</span>).html(userFormData);
     });
 });
-</pre>
+</code></pre>
 <p>The id <strong>target</strong> is associated with the form itself:</p>
-<pre><form id="target">
-</pre>
+<pre><code class="lang-html">&lt;form <span class="hljs-attribute">id</span>=<span class="hljs-string">"target"</span>&gt;
+</code></pre>
 <p>The submit button is declared like this:</p>
-<pre>Jade:
-    input.btn.btn-primary(type="submit", value="Go")
+<pre><code>Jade:
+    input.btn.btn-primary(<span class="hljs-attribute">type</span>=<span class="hljs-string">"submit"</span>, <span class="hljs-attribute">value</span>=<span class="hljs-string">"Go"</span>)
 
 HTML:
-    <input value="Go" class="btn btn-primary" type="submit">
-</pre>
-<p>When the button is clicked the jQuery <a href="">submit</a> method is triggered. We use the jQuery <strong>serialize</strong> method to retrieve the user&#39;s selections from the form.</p>
+    &lt;input <span class="hljs-attribute">value</span>=<span class="hljs-string">"Go"</span> <span class="hljs-attribute">class</span>=<span class="hljs-string">"btn btn-primary"</span> <span class="hljs-attribute">type</span>=<span class="hljs-string">"submit"</span>&gt;
+</code></pre><p>When the button is clicked the jQuery <a href="">submit</a> method is triggered. We use the jQuery <strong>serialize</strong> method to retrieve the user&#39;s selections from the form.</p>
 <a class="anchor" id="the-main-page"></a>
 <h2>The Main Page</h2>
 <p>The Jade for our main page is quite simple because of our mixins. There are three mixins that we focus on in this assignments:</p>
@@ -64,43 +63,42 @@ HTML:
 <li><strong>$ELF_TEMPLATES/JadeMixins/</strong></li>
 </ul>
 <p>The following is the complete code listing for <strong>views/index.jade</strong>:</p>
-<pre>extends layout
+<pre><code class="lang-jade">extends layout
 include mixin-radios
 include mixin-inputs
 
-block append content
+block append <span class="hljs-attribute">content</span>
 
-    .container
-        h1 #{pageTitle}
+    <span class="hljs-selector-class">.container</span>
+        <span class="hljs-selector-tag">h1</span> #{pageTitle}
 
-        p You are in the <strong>#{programTitle}</strong> program. Select some controls and press the Go button.
+        <span class="hljs-selector-tag">p</span> You are <span class="hljs-keyword">in</span> the &lt;strong&gt;#{programTitle}&lt;/strong&gt; program. Select some controls and press the Go <span class="hljs-selector-tag">button</span>.
 
-        +elfFormPanel("Main Form")#target
+        +elfFormPanel(<span class="hljs-string">"Main Form"</span>)<span class="hljs-selector-id">#target</span>
 
-            +elfRadioPanel("Radio Buttons")
-                +elfRadio("Radio1", "option1")
-                +elfRadio("Radio2", "option2")
+            +elfRadioPanel(<span class="hljs-string">"Radio Buttons"</span>)
+                +elfRadio(<span class="hljs-string">"Radio1"</span>, <span class="hljs-string">"option1"</span>)
+                +elfRadio(<span class="hljs-string">"Radio2"</span>, <span class="hljs-string">"option2"</span>)
 
-            +elfPanel("CheckBoxes")
-                +elfCheckBox("CheckBox 01", "checkBox01", "checkBox01")#checkBox01
-                +elfCheckBox("CheckBox 02", "checkBox02", "checkBox02")#checkBox02
+            +elfPanel(<span class="hljs-string">"CheckBoxes"</span>)
+                +elfCheckBox(<span class="hljs-string">"CheckBox 01"</span>, <span class="hljs-string">"checkBox01"</span>, <span class="hljs-string">"checkBox01"</span>)<span class="hljs-selector-id">#checkBox01</span>
+                +elfCheckBox(<span class="hljs-string">"CheckBox 02"</span>, <span class="hljs-string">"checkBox02"</span>, <span class="hljs-string">"checkBox02"</span>)<span class="hljs-selector-id">#checkBox02</span>
 
-            +elfPanel("Input")
-                +elfInput("Enter a name", "subject", "Enter a subject")#subject.form-control
+            +elfPanel(<span class="hljs-string">"Input"</span>)
+                +elfInput(<span class="hljs-string">"Enter a name"</span>, <span class="hljs-string">"subject"</span>, <span class="hljs-string">"Enter a subject"</span>)<span class="hljs-selector-id">#subject</span><span class="hljs-selector-class">.form-control</span>
 
-            +elfPanel("Actions")
-                input.btn.btn-primary(type="submit", value="Go")
+            +elfPanel(<span class="hljs-string">"Actions"</span>)
+                <span class="hljs-selector-tag">input</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-primary</span>(type=<span class="hljs-string">"submit"</span>, value=<span class="hljs-string">"Go"</span>)
 
-        div
+        <span class="hljs-selector-tag">div</span>
             pre#formResults
-</pre>
+</code></pre>
 <p>Also put this code in <strong>routes/index.js</strong>, updating the already existing method:</p>
-<pre>router.get('/', function(req, res, next) { 'use strict';
-  res.render('index', { pageTitle: 'Main Page',
-        programTitle: 'Week05-JadeMixinBasics'});
+<pre><code>router.get(<span class="hljs-string">'/'</span>, <span class="hljs-keyword">function</span>(req, res, <span class="hljs-keyword">next</span>) { <span class="hljs-string">'use strict'</span>;
+  res.render(<span class="hljs-string">'index'</span>, { pageTitle: <span class="hljs-string">'Main Page'</span>,
+        programTitle: <span class="hljs-string">'Week05-JadeMixinBasics'</span>});
 });
-</pre>
-<a class="anchor" id="a-second-program"></a>
+</code></pre><a class="anchor" id="a-second-program"></a>
 <h2>A Second Program</h2>
 <p>Now that you have the rhythm, create a second program called <strong>Week05-SecondMixin</strong> with:</p>
 <ul>

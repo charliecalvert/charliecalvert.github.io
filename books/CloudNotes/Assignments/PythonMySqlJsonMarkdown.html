@@ -32,146 +32,134 @@
 <h2>Step One</h2>
 <p>Check to ensure Lamp and MySQL are installed. You know how to do this already. If they are not installed, then <a href="http://www.elvenware.com/charlie/development/database/mysql/MySql.html#installOnLinux">install them</a>.</p>
 <p>Check the status of Apache CGI. Specifically, you will probably need to turn on CGI in order to access python server side scripts from your HTML code:</p>
-<pre>sudo a2enmod cgi
-</pre>
-<p>This command will return one of two values:</p>
+<pre><code><span class="hljs-attribute">sudo</span> a2enmod cgi
+</code></pre><p>This command will return one of two values:</p>
 <ol>
 <li>Enabling module cgi</li>
 <li>Module cgi already enabled</li>
 </ol>
 <p>If you get the first response, then do this:</p>
-<pre>service apache2 restart
-</pre>
-<p>On EC2, I needed to use sudo:</p>
-<pre>sudo service apache2 restart
-</pre>
-<p>Once CGI is enabled, then it should stay enabled. You normally don&#39;t need to repeat this operation.</p>
+<pre><code>service apache2 <span class="hljs-built_in">restart</span>
+</code></pre><p>On EC2, I needed to use sudo:</p>
+<pre><code>sudo<span class="hljs-built_in"> service </span>apache2 restart
+</code></pre><p>Once CGI is enabled, then it should stay enabled. You normally don&#39;t need to repeat this operation.</p>
 <p>Install pip3 and pymysql. We will want these to access MySQL from a Python script:</p>
-<pre>sudo apt-get install python3-pip
-sudo pip3 install pymysql
-</pre>
-<p>If you get a long error message about ownership try this instead:</p>
-<pre>sudo -H pip3 install pymysql
-</pre>
-<p>And this might be useful later:</p>
-<pre>sudo python3 -m pip install pymongo
-</pre>
-<p>Again, you need only install <strong>pip</strong> and <strong>pymsql</strong> once. Once they are installed, they should stay installed.</p>
+<pre><code>sudo apt-get <span class="hljs-keyword">install</span> python3-pip
+sudo pip3 <span class="hljs-keyword">install</span> pymysql
+</code></pre><p>If you get a long error message about ownership try this instead:</p>
+<pre><code>sudo -H pip3 <span class="hljs-keyword">install</span> pymysql
+</code></pre><p>And this might be useful later:</p>
+<pre><code>sudo python3 -m pip <span class="hljs-keyword">install</span> pymongo
+</code></pre><p>Again, you need only install <strong>pip</strong> and <strong>pymsql</strong> once. Once they are installed, they should stay installed.</p>
 <a class="anchor" id="step-two"></a>
 <h2>Step Two</h2>
 <p>Create a simple test script to make sure Python CGI is working.</p>
 <p>Create a simple python test script in <strong>/usr/lig/cgi-bin</strong>. Open a blank file called <strong>simple.py</strong> in the <strong>cgi</strong> directory with the <strong>nano</strong> editor.</p>
-<pre>sudo nano /usr/lib/cgi-bin/simple.py
-</pre>
-<p>Files with a <strong>.py</strong> are python scripts.</p>
+<pre><code>sudo nano /usr/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">cgi</span>-<span class="hljs-title">bin</span>/<span class="hljs-title">simple</span>.<span class="hljs-title">py</span></span>
+</code></pre><p>Files with a <strong>.py</strong> are python scripts.</p>
 <p>Paste this python script into the editor:</p>
-<pre>#!/usr/bin/env python3
+<pre><code class="lang-python"><span class="hljs-comment">#!/usr/bin/env python3</span>
 
-import cgi
-import cgitb
-cgitb.enable()  # debug
+<span class="hljs-keyword">import</span> cgi
+<span class="hljs-keyword">import</span> cgitb
+cgitb.enable()  <span class="hljs-comment"># debug</span>
 
-print("Content-type: text/html;charset=utf-8")
+print(<span class="hljs-string">"Content-type: text/html;charset=utf-8"</span>)
 print()
 
-print("""
-<html>
+print(<span class="hljs-string">"""
+&lt;html&gt;
 
-<head><title>Prog270 CGI Script</title></head>
+&lt;head&gt;&lt;title&gt;Prog270 CGI Script&lt;/title&gt;&lt;/head&gt;
 
-<body>
+&lt;body&gt;
 
-  <h1> This is the Header </h1>
+  &lt;h1&gt; This is the Header &lt;/h1&gt;
 
-</body>
+&lt;/body&gt;
 
-</html>
-""")
-</pre>
+&lt;/html&gt;
+"""</span>)
+</code></pre>
 <p>Set executable permissions on the script:</p>
-<pre>sudo chmod 755 /usr/lib/cgi-bin/simple.py
-</pre>
-<p>Test the script by going to this url:</p>
+<pre><code>sudo chmod <span class="hljs-number">755</span> /usr/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">cgi</span>-<span class="hljs-title">bin</span>/<span class="hljs-title">simple</span>.<span class="hljs-title">py</span></span>
+</code></pre><p>Test the script by going to this url:</p>
 <ul>
 <li><a href="http://localhost/cgi-bin/simple.py">http://localhost/cgi-bin/simple.py</a></li>
 </ul>
 <a class="anchor" id="mysql"></a>
 <h2>MySQL</h2>
 <p>Start my SQL. You will prompted for the password you entered when you installed lamp:</p>
-<pre>mysql -u root -p
-</pre>
-<p>If you lost your password see the first link below. The second is an FYI:</p>
+<pre><code><span class="hljs-attribute">mysql -u root -p</span>
+</code></pre><p>If you lost your password see the first link below. The second is an FYI:</p>
 <ul>
 <li><a href="https://help.ubuntu.com/community/MysqlPasswordReset">https://help.ubuntu.com/community/MysqlPasswordReset</a></li>
 <li><a href="https://help.ubuntu.com/lts/serverguide/mysql.html">Server Guide</a></li>
 <li><a href="http://www.elvenware.com/charlie/development/database/mysql/linux-user-password.html">Elvenware Passwords</a></li>
 </ul>
 <p>Once you have loaded the mysql client, create a database called <strong>prog270</strong>:</p>
-<pre>create database prog270;
-use prog270;
-</pre>
+<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">database</span> prog270;
+<span class="hljs-keyword">use</span> prog270;
+</code></pre>
 <p>More info is found here:</p>
 <ul>
 <li><a href="http://www.elvenware.com/charlie/development/database/mysql/MySql.html#createdatabase">Elvenware, Create Database</a></li>
 </ul>
 <p>Create a simple table:</p>
-<pre>create table presidents (id int NOT NULL AUTO_INCREMENT, first varchar(128), last varchar(128), PRIMARY KEY (id));
-</pre>
+<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> presidents (<span class="hljs-keyword">id</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> AUTO_INCREMENT, <span class="hljs-keyword">first</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">128</span>), <span class="hljs-keyword">last</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">128</span>), PRIMARY <span class="hljs-keyword">KEY</span> (<span class="hljs-keyword">id</span>));
+</code></pre>
 <p>Insert some data in the table:</p>
-<pre>insert into presidents (first, last) values ('George', 'Washington');
-insert into presidents (first, last) values ('John', 'Adams');
-insert into presidents (first, last) values ('Thomas', 'Jefferson');
-</pre>
+<pre><code class="lang-sql"><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> presidents (<span class="hljs-keyword">first</span>, <span class="hljs-keyword">last</span>) <span class="hljs-keyword">values</span> (<span class="hljs-string">'George'</span>, <span class="hljs-string">'Washington'</span>);
+<span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> presidents (<span class="hljs-keyword">first</span>, <span class="hljs-keyword">last</span>) <span class="hljs-keyword">values</span> (<span class="hljs-string">'John'</span>, <span class="hljs-string">'Adams'</span>);
+<span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> presidents (<span class="hljs-keyword">first</span>, <span class="hljs-keyword">last</span>) <span class="hljs-keyword">values</span> (<span class="hljs-string">'Thomas'</span>, <span class="hljs-string">'Jefferson'</span>);
+</code></pre>
 <p>Make sure that life is good:</p>
-<pre>select * from presidents;
-mysql> select * from presidents;
-+----+--------+------------+
-| id | first  | last       |
-+----+--------+------------+
+<pre><code class="lang-sql">select * from presidents;
+<span class="hljs-section">mysql&gt; select * from presidents;
++----+--------+------------+</span>
+<span class="hljs-section">| id | first  | last       |
++----+--------+------------+</span>
 |  1 | George | Washington |
 |  2 | John   | Adams      |
-|  3 | Thomas | Jefferson  |
-+----+--------+------------+
+<span class="hljs-section">|  3 | Thomas | Jefferson  |
++----+--------+------------+</span>
 3 rows in set (0.00 sec)
-</pre>
+</code></pre>
 <p>Type the following to exit mysql:</p>
-<pre>exit;
-</pre>
-<a class="anchor" id="python-script"></a>
+<pre><code><span class="hljs-keyword">exit</span>;
+</code></pre><a class="anchor" id="python-script"></a>
 <h2>Python Script</h2>
 <p>Put this in &#39;/usr/lib/cgi-bin&#39; as <strong>get-presidents.py</strong>:</p>
-<pre>#! /usr/bin/python3
+<pre><code class="lang-python"><span class="hljs-comment">#! /usr/bin/python3</span>
 
 import cgitb
-cgitb.enable()
+cgitb.<span class="hljs-builtin-name">enable</span>()
 
 import pymysql
 import json
 
-print("Content-Type: text/json")
-print()
+<span class="hljs-builtin-name">print</span>(<span class="hljs-string">"Content-Type: text/json"</span>)
+<span class="hljs-builtin-name">print</span>()
 
-conn = pymysql.connect(host='localhost', user='root', passwd='foobar', db='prog270')
+conn = pymysql.connect(<span class="hljs-attribute">host</span>=<span class="hljs-string">'localhost'</span>, <span class="hljs-attribute">user</span>=<span class="hljs-string">'root'</span>, <span class="hljs-attribute">passwd</span>=<span class="hljs-string">'foobar'</span>, <span class="hljs-attribute">db</span>=<span class="hljs-string">'prog270'</span>)
 
 cursor = conn.cursor()
 
-cursor.execute("SELECT * FROM presidents")
+cursor.execute(<span class="hljs-string">"SELECT * FROM presidents"</span>)
 
 rows = cursor.fetchall()
 
-print(json.dumps(rows));
+<span class="hljs-builtin-name">print</span>(json.dumps(rows));
 
 cursor.close()
 conn.close()
-</pre>
+</code></pre>
 <p>After you paste in the file, you will probably need to change the password in the <strong>pymysql.connect</strong> statement.</p>
 <p>You might want to use this command:</p>
-<pre>sudo nano /usr/lib/cgi-bin/get-presidents.py
-</pre>
-<p>When you are done:</p>
-<pre>sudo chmod 755 /usr/lib/cgi-bin/get-presidents.py
-</pre>
-<a class="anchor" id="problem"></a>
+<pre><code>sudo nano /usr/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">cgi</span>-<span class="hljs-title">bin</span>/<span class="hljs-title">get</span>-<span class="hljs-title">presidents</span>.<span class="hljs-title">py</span></span>
+</code></pre><p>When you are done:</p>
+<pre><code>sudo chmod <span class="hljs-number">755</span> /usr/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">cgi</span>-<span class="hljs-title">bin</span>/<span class="hljs-title">get</span>-<span class="hljs-title">presidents</span>.<span class="hljs-title">py</span></span>
+</code></pre><a class="anchor" id="problem"></a>
 <h2>Problem</h2>
 <p>At one point, I found that my script worked at the command line, but not in the browser. In particular, I got an error with <strong>import pymsql</strong>. It turned out that I had installed <strong>pymysql</strong> without sudo, so it ended up in my home directory. To fix this, you may need to uninstall from your home directory and reinstall as sudo:</p>
 <pre>
@@ -188,30 +176,30 @@ pip  pip-8.1.2.dist-info  pymysql  PyMySQL-0.7.9.dist-info
 <a class="anchor" id="show-data"></a>
 <h2>Show Data</h2>
 <p>Paste some HTML into a markdown file called <strong>AllTest/presidents.md</strong>:</p>
-<pre><div>
-  <button class="btn btn-primary" id="getPresidents" type="button"> Get Presidents </button>
-</div>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"btn btn-primary"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"getPresidents"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"button"</span>&gt;</span> Get Presidents <span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 
-<div>
-  <ul id='bar'>
-  </ul>
-</div>
-</pre>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">ul</span> <span class="hljs-attr">id</span>=<span class="hljs-string">'bar'</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
 <p>Open up <strong>/var/www/html/js/elven-help.js</strong> and edit it until you get something like the following:</p>
-<pre>$(document).ready(function() {
-    $('table').addClass('table table-striped table-hover');
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-string">'table'</span>).addClass(<span class="hljs-string">'table table-striped table-hover'</span>);
 
-    $('#getPresidents').click(getPresidents);
+    $(<span class="hljs-string">'#getPresidents'</span>).click(getPresidents);
 
-    function getPresidents() {
-        $.getJSON('/cgi-bin/get-presidents.py', function(presidents) {
-            presidents.forEach(function(president) {
-                $('#bar').append('<li>' + president[1] + ' ' + president[2] + '</li>');
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getPresidents</span>(<span class="hljs-params"></span>) </span>{
+        $.getJSON(<span class="hljs-string">'/cgi-bin/get-presidents.py'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">presidents</span>) </span>{
+            presidents.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">president</span>) </span>{
+                $(<span class="hljs-string">'#bar'</span>).append(<span class="hljs-string">'&lt;li&gt;'</span> + president[<span class="hljs-number">1</span>] + <span class="hljs-string">' '</span> + president[<span class="hljs-number">2</span>] + <span class="hljs-string">'&lt;/li&gt;'</span>);
             });
         })
     }
 });
-</pre>
+</code></pre>
 <p>Click the button to see the names of the first three presidents. The button click sends a command to the server which queries the database and sends data back in JSON format.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
@@ -226,55 +214,52 @@ pip  pip-8.1.2.dist-info  pymysql  PyMySQL-0.7.9.dist-info
 <h2>Optional Setup cgi dir</h2>
 <p>This seems to be working for me now. The goal is to use <strong>/var/www/cgi</strong> as your CGI directory in addition to <strong>/usr/lib/cgi-bin</strong>.</p>
 <p>Make sure the CGI directory exists:</p>
-<pre>cd /var/www
-sudo mkdir cgi
+<pre><code><span class="hljs-keyword">cd</span> /<span class="hljs-keyword">var</span>/www
+sudo <span class="hljs-keyword">mkdir</span> cgi
 sudo chown -R bcuser:bcuser cgi
-</pre>
-<p>Create a simple python test script in <strong>/var/www/cgi</strong>. Open a blank file called <strong>simple.py</strong> in the <strong>cgi</strong> directory. Files with a <strong>.py</strong> are python scripts.</p>
-<pre>cd /var/www/cgi
+</code></pre><p>Create a simple python test script in <strong>/var/www/cgi</strong>. Open a blank file called <strong>simple.py</strong> in the <strong>cgi</strong> directory. Files with a <strong>.py</strong> are python scripts.</p>
+<pre><code><span class="hljs-keyword">cd</span> <span class="hljs-string">/var/www/cgi</span>
 nano simple.py
-</pre>
-<p>Now edit <strong>serve-cgi-bin.conf</strong>:</p>
-<pre>cd /etc/apache2/conf-available
-sudo nano serve-cgi-bin.conf
-</pre>
-<p> Near the end add the following:</p>
-<pre><IfDefine ENABLE_USR_LIB_CGI_BIN>
-        ScriptAlias /cgi/ /var/www/cgi/
-        <Directory "/var/www/cgi">
+</code></pre><p>Now edit <strong>serve-cgi-bin.conf</strong>:</p>
+<pre><code><span class="hljs-keyword">cd</span> /etc/apache2/<span class="hljs-keyword">conf</span>-available
+sudo nano serve-cgi-bin.<span class="hljs-keyword">conf</span>
+</code></pre><p> Near the end add the following:</p>
+<pre><code class="lang-text"><span class="hljs-params">&lt;IfDefine ENABLE_USR_LIB_CGI_BIN&gt;</span>
+        ScriptAlias <span class="hljs-meta-keyword">/cgi/</span> <span class="hljs-meta-keyword">/var/</span>www<span class="hljs-meta-keyword">/cgi/</span>
+        <span class="hljs-params">&lt;Directory "/var/www/cgi"&gt;</span>
                 AllowOverride None
                 Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
                 Require all granted
-        </Directory>
-</IfDefine>
-</pre>
+        <span class="hljs-params">&lt;/Directory&gt;</span>
+<span class="hljs-params">&lt;/IfDefine&gt;</span>
+</code></pre>
 <p>It might be simplest if I just give you my entire file:</p>
-<pre><IfModule mod_alias.c>
-    <IfModule mod_cgi.c>
+<pre><code class="lang-text"><span class="hljs-params">&lt;IfModule mod_alias.c&gt;</span>
+    <span class="hljs-params">&lt;IfModule mod_cgi.c&gt;</span>
         Define ENABLE_USR_LIB_CGI_BIN
-    </IfModule>
+    <span class="hljs-params">&lt;/IfModule&gt;</span>
 
-    <IfModule mod_cgid.c>
+    <span class="hljs-params">&lt;IfModule mod_cgid.c&gt;</span>
         Define ENABLE_USR_LIB_CGI_BIN
-    </IfModule>
+    <span class="hljs-params">&lt;/IfModule&gt;</span>
 
-    <IfDefine ENABLE_USR_LIB_CGI_BIN>
-        ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
-        <Directory "/usr/lib/cgi-bin">
+    <span class="hljs-params">&lt;IfDefine ENABLE_USR_LIB_CGI_BIN&gt;</span>
+        ScriptAlias <span class="hljs-meta-keyword">/cgi-bin/</span> <span class="hljs-meta-keyword">/usr/</span>lib<span class="hljs-meta-keyword">/cgi-bin/</span>
+        <span class="hljs-params">&lt;Directory "/usr/lib/cgi-bin"&gt;</span>
             AllowOverride None
             Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
             Require all granted
-        </Directory>
-    </IfDefine>
-    <IfDefine ENABLE_USR_LIB_CGI_BIN>
-    ScriptAlias /cgi/ /var/www/cgi/
-    <Directory "/var/www/cgi">
+        <span class="hljs-params">&lt;/Directory&gt;</span>
+    <span class="hljs-params">&lt;/IfDefine&gt;</span>
+    <span class="hljs-params">&lt;IfDefine ENABLE_USR_LIB_CGI_BIN&gt;</span>
+    ScriptAlias <span class="hljs-meta-keyword">/cgi/</span> <span class="hljs-meta-keyword">/var/</span>www<span class="hljs-meta-keyword">/cgi/</span>
+    <span class="hljs-params">&lt;Directory "/var/www/cgi"&gt;</span>
       AllowOverride None
       Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
       Require all granted
-    </Directory>
-  </IfDefine>
-</IfModule>
-</pre>
+    <span class="hljs-params">&lt;/Directory&gt;</span>
+  <span class="hljs-params">&lt;/IfDefine&gt;</span>
+<span class="hljs-params">&lt;/IfModule&gt;</span>
+</code></pre>
 <!-- URLS -->
 </div></body></html>

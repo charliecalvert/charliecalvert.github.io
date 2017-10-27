@@ -11,18 +11,17 @@
 <p>Elven Site Pix Picker</p>
 <a class="anchor" id="copy-midterm"></a>
 <h2>Copy Midterm</h2>
-<pre>cp -r Week08-Midterm Week10-ElvenSitePixPicker
-</pre>
-<p>Don&#39;t forget to rename the project when you open it in WebStorm.</p>
+<pre><code><span class="hljs-keyword">cp</span> -r Week08-Midterm Week10-ElvenSitePixPicker
+</code></pre><p>Don&#39;t forget to rename the project when you open it in WebStorm.</p>
 <p>Make sure you <strong>~/.content/ElvenConfig.json</strong> contains the usual code plus the following, or something like it:</p>
-<pre>"elvenImages": {
-  "baseDir": "/var/www/html",
-  "markdownFileWithImages": "/home/bcuser/Documents/AllTest/california.md",
-  "allImagesJsonFile": "all-images.json",
-  "imageDir": "/images/california/",
-  "notUsedDir": "/home/bcuser/temp/not-used/california"
+<pre><code class="lang-json"><span class="hljs-string">"elvenImages"</span>: {
+  <span class="hljs-string">"baseDir"</span>: <span class="hljs-string">"/var/www/html"</span>,
+  <span class="hljs-string">"markdownFileWithImages"</span>: <span class="hljs-string">"/home/bcuser/Documents/AllTest/california.md"</span>,
+  <span class="hljs-string">"allImagesJsonFile"</span>: <span class="hljs-string">"all-images.json"</span>,
+  <span class="hljs-string">"imageDir"</span>: <span class="hljs-string">"/images/california/"</span>,
+  <span class="hljs-string">"notUsedDir"</span>: <span class="hljs-string">"/home/bcuser/temp/not-used/california"</span>
 },
-</pre>
+</code></pre>
 <a class="anchor" id="two-pages"></a>
 <h2>Two Pages</h2>
 <p>The first step will be to create two pages:</p>
@@ -34,93 +33,93 @@
 <h2>Page One</h2>
 <p>Take everything beneath the <strong>block content</strong> in <strong>index.jade</strong> and put it in <strong>make-html.jade</strong>.</p>
 <p>Replace the content you removed with the following:</p>
-<pre>div
-    a.pageLink#pageOne Page One
-    a.pageLink#pageTwo Page Two
+<pre><code class="lang-jade">div
+    a.pageLink#pageOne<span class="hljs-built_in"> Page </span>One
+    a.pageLink#pageTwo<span class="hljs-built_in"> Page </span>Two
 
 div#pageLoad
-</pre>
+</code></pre>
 <p>Add some CSS to <strong>public/css/style.css</strong> to make the anchors a bit prettier. At minimum, do this:</p>
-<pre>.pageLink {
-    margin: 5px;
-    padding: 3px;
-    border: black solid thin;
-    -webkit-border-radius: 4px;
-    -moz-border-radius:4px;
-    border-radius: 4px;
+<pre><code class="lang-css"><span class="hljs-selector-class">.pageLink</span> {
+    <span class="hljs-attribute">margin</span>: <span class="hljs-number">5px</span>;
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">3px</span>;
+    <span class="hljs-attribute">border</span>: black solid thin;
+    <span class="hljs-attribute">-webkit-border-radius</span>: <span class="hljs-number">4px</span>;
+    <span class="hljs-attribute">-moz-border-radius</span>:<span class="hljs-number">4px</span>;
+    <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">4px</span>;
 }
-</pre>
+</code></pre>
 <a class="anchor" id="load-the-pages"></a>
 <h2>Load the Pages</h2>
 <p>You will need code like this to load the pages:</p>
-<pre>function SiteConfig() {
-    $('#pageOne').click(pageOne);
-    $('#pageTwo').click(pageTwo);
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">SiteConfig</span>(<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-string">'#pageOne'</span>).click(pageOne);
+    $(<span class="hljs-string">'#pageTwo'</span>).click(pageTwo);
 }
 
-function pageOne() {
-    $('#pageLoad').load('/makeHtml', function() {
-        $('#loadConfig').click(loadConfig);
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">pageOne</span>(<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-string">'#pageLoad'</span>).load(<span class="hljs-string">'/makeHtml'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'#loadConfig'</span>).click(loadConfig);
         elf.walking.configurePageOne();
         loadConfig();
     });
 }
 
-function pageTwo() {
-    $('#pageLoad').load('/pixPicker', function() {
-        // CODE OMITTED HERE
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">pageTwo</span>(<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-string">'#pageLoad'</span>).load(<span class="hljs-string">'/pixPicker'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// CODE OMITTED HERE</span>
     });
 }
-</pre>
+</code></pre>
 <a class="anchor" id="server-side"></a>
 <h2>Server Side</h2>
 <p>Here are the methods found in <strong>routes/index.js</strong> for calling into the image code in <strong>elven-stite-tools</strong>.</p>
-<pre>router.get('/makeMarkdown', function(request, response) {
-    console.log('makeMarkdown route called');
-    var makeMarkdown = new imageHelp.MakeMarkdown();
+<pre><code class="lang-javascript">router.get<span class="hljs-params">('/makeMarkdown', function(request, response)</span> {
+    console.log<span class="hljs-params">('makeMarkdown route called')</span>;
+    var makeMarkdown = new imageHelp.MakeMarkdown<span class="hljs-params">()</span>;
 
-    makeMarkdown.loadAndRun(function(report) {
-        if (report.spacesInFileNames) {
-            console.log('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=');
-            console.log('You have spaces in one or more file names.');
-            console.log('The problem is probably in your images directory.');
-            console.log('FileNames or Directories with spaces in their ');
-            console.log('names is not a good idea. Run this command in ');
-            console.log('the offending directory and then restart:');
-            console.log('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=');
-            console.log('find -name "* *" -type f | rename "s/ /_/g"');
-            console.log('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=');
-            response.send({ error: 'spaces in file name' });
-        } else if (report.markdownFileExists) {
-            response.send({ error: 'Markdown file exists: ' + report.markdownFileWithImages });
+    makeMarkdown.loadAndRun<span class="hljs-params">(function(report)</span> {
+        <span class="hljs-keyword">if</span> <span class="hljs-params">(report.spacesInFileNames)</span> {
+            console.log<span class="hljs-params">('=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=')</span>;
+            console.log<span class="hljs-params">('You have spaces in one or more file names.')</span>;
+            console.log<span class="hljs-params">('The problem is probably in your images directory.')</span>;
+            console.log<span class="hljs-params">('FileNames or Directories with spaces in their ')</span>;
+            console.log<span class="hljs-params">('names is not a good idea. Run this command in ')</span>;
+            console.log<span class="hljs-params">('the offending directory and then restart:')</span>;
+            console.log<span class="hljs-params">('=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=')</span>;
+            console.log<span class="hljs-params">('find -name "* *" -type f | rename "s/ /_/g"')</span>;
+            console.log<span class="hljs-params">('=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=<span class="hljs-attr">-</span>=')</span>;
+            response.send<span class="hljs-params">({ error: 'spaces in file name' })</span>;
+        } else <span class="hljs-keyword">if</span> <span class="hljs-params">(report.markdownFileExists)</span> {
+            response.send<span class="hljs-params">({ error: 'Markdown file exists: ' + report.markdownFileWithImages })</span>;
         } else {
-            response.send({
+            response.send<span class="hljs-params">({
                 'success': 'makeMarkdown',
                 'report': report
-            });
+            })</span>;
         }
-        console.log(report);
+        console.log<span class="hljs-params">(report)</span>;
     });
 });
 
-router.get('/deleteMarkdown', function(request, response) {
-    var makeMarkdown = new imageHelp.MakeMarkdown();
-    makeMarkdown.deleteMarkdownFileWithImages(function(result) {
-        console.log(result);
-        response.send({ 'result': 'file deleted'});
+router.get<span class="hljs-params">('/deleteMarkdown', function(request, response)</span> {
+    var makeMarkdown = new imageHelp.MakeMarkdown<span class="hljs-params">()</span>;
+    makeMarkdown.deleteMarkdownFileWithImages<span class="hljs-params">(function(result)</span> {
+        console.log<span class="hljs-params">(result)</span>;
+        response.send<span class="hljs-params">({ 'result': 'file deleted'})</span>;
     })
 });
-</pre>
+</code></pre>
 <p>On the client side, these are simple button clicks, with no parameters (requestQuery) being passed.</p>
 <a class="anchor" id="nodemon-warning"></a>
 <h2>Nodemon Warning</h2>
 <p>There is one catch here. Since <strong>all-images.json</strong> gets rewritten, you have to tell nodemon to ignore that file or it will keep restarting your application.</p>
 <p>Save the following as <strong>nodemon.json</strong> in the root of your project:</p>
-<pre>{
-  "verbose": false,
-  "ignore": ["all-images.json"]
+<pre><code class="lang-javascript">{
+  <span class="hljs-attr">"verbose"</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">"ignore"</span>: [<span class="hljs-string">"all-images.json"</span>]
 }
-</pre>
+</code></pre>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Tell me the project and branch.</p>

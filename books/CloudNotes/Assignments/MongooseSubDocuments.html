@@ -13,19 +13,17 @@
 <a class="anchor" id="step-one"></a>
 <h2>Step One</h2>
 <p>Create the project</p>
-<pre>express Week10-MongooseSubdocs
+<pre><code>express Week10-MongooseSubdocs
 cd Week10-MongooseSubdocs
-npm install mongoose --save
-npm install
-copy %ELF_TEMPLATES%\.bowerrc
-bower init
-</pre>
-<p>Then after bower init, do this:</p>
-<pre>bower install angular --save
-bower install angular-route --save
-bower install bootstrap --save
-</pre>
-<p>Set the port to 30025 and in <strong>routes/index.js</strong> set the title to <strong>Mongoose SubDocs LastName</strong>. Add <strong>nodemon</strong> to the <strong>start</strong> script in <strong>package.json</strong>.</p>
+npm <span class="hljs-keyword">install </span>mongoose --save
+npm <span class="hljs-keyword">install
+</span>copy %ELF_TEMPLATES%\.<span class="hljs-keyword">bowerrc
+</span><span class="hljs-keyword">bower </span>init
+</code></pre><p>Then after bower init, do this:</p>
+<pre><code><span class="hljs-keyword">bower </span><span class="hljs-keyword">install </span>angular --save
+<span class="hljs-keyword">bower </span><span class="hljs-keyword">install </span>angular-route --save
+<span class="hljs-keyword">bower </span><span class="hljs-keyword">install </span><span class="hljs-keyword">bootstrap </span>--save
+</code></pre><p>Set the port to 30025 and in <strong>routes/index.js</strong> set the title to <strong>Mongoose SubDocs LastName</strong>. Add <strong>nodemon</strong> to the <strong>start</strong> script in <strong>package.json</strong>.</p>
 <p>Save JSON data as <strong>ValidScientists.json</strong>:</p>
 <ul>
 <li><a href="https://gist.github.com/charliecalvert/059f2f74d5bf2d98c6f8">Scientists JSON data</a></li>
@@ -34,341 +32,336 @@ bower install bootstrap --save
 <h2>Step Two</h2>
 <p>Define the Mongoose documents.</p>
 <p>The key thing to notice is that we have a main document and an array of sub-documents. In particular, each scientist document has zero or more comments associated with it. The comments take the form of sub-documents. Notice how the <strong>comments</strong> field of the <strong>scientistSchema</strong> is declared.   </p>
-<pre>var mongoose = require('mongoose');
+<pre><code><span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
 
-var commentSchema = mongoose.Schema({
-    commentText: String,
-    date: { type: Date, default: Date.now }
+<span class="hljs-keyword">var</span> commentSchema = mongoose.Schema({
+    commentText: <span class="hljs-built_in">String</span>,
+    date: { <span class="hljs-keyword">type</span>: <span class="hljs-built_in">Date</span>, <span class="hljs-keyword">default</span>: <span class="hljs-built_in">Date</span>.now }
 });
 
-var scientistsSchema = mongoose.Schema({
-    "firstName": String,
-    "lastName": String,
-    "subject": String,
-    "subjects": [String],
+<span class="hljs-keyword">var</span> scientistsSchema = mongoose.Schema({
+    <span class="hljs-string">"firstName"</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">"lastName"</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">"subject"</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">"subjects"</span>: [<span class="hljs-built_in">String</span>],
     comments: [commentSchema]
 });
 
-module.exports = {
-    comment: mongoose.model('comment', commentSchema),
-    scientist: mongoose.model('scientist', scientistsSchema)
+<span class="hljs-built_in">module</span>.exports = {
+    comment: mongoose.model(<span class="hljs-string">'comment'</span>, commentSchema),
+    scientist: mongoose.model(<span class="hljs-string">'scientist'</span>, scientistsSchema)
 };
-</pre>
-<a class="anchor" id="step-three"></a>
+</code></pre><a class="anchor" id="step-three"></a>
 <h2>Step Three</h2>
 <p>Define the views</p>
 <p>Here is layout.jade:</p>
-<pre>doctype html
+<pre><code>doctype html
 html
     head
         title= title
-        link(rel='stylesheet', href='/stylesheets/style.css')
-        link(rel='stylesheet', href='/components/bootstrap/dist/css/bootstrap.css')
-        script(src="components/jquery/dist/jquery.js")
-        script(src="components/bootstrap/dist/js/bootstrap.js")
-        script(src="components/angular/angular.js")
-        script(src="javascripts/control.js")
-        script(src="javascripts/comment-factory.js")
-    body(ng-app='elvenApp')
+        link(<span class="hljs-attribute">rel</span>=<span class="hljs-string">'stylesheet'</span>, <span class="hljs-attribute">href</span>=<span class="hljs-string">'/stylesheets/style.css'</span>)
+        link(<span class="hljs-attribute">rel</span>=<span class="hljs-string">'stylesheet'</span>, <span class="hljs-attribute">href</span>=<span class="hljs-string">'/components/bootstrap/dist/css/bootstrap.css'</span>)
+        script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"components/jquery/dist/jquery.js"</span>)
+        script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"components/bootstrap/dist/js/bootstrap.js"</span>)
+        script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"components/angular/angular.js"</span>)
+        script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"javascripts/control.js"</span>)
+        script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"javascripts/comment-factory.js"</span>)
+    body(<span class="hljs-attribute">ng-app</span>=<span class="hljs-string">'elvenApp'</span>)
         block content
-</pre>
-<p>Here is index.jade:</p>
-<pre>extends layout
+</code></pre><p>Here is index.jade:</p>
+<pre><code>extends layout
 
-block content
+block <span class="hljs-attribute">content</span>
     h1= title
-    p Welcome to #{title}
+    <span class="hljs-selector-tag">p</span> Welcome to #{title}
 
-    div(ng-controller='MainController as mainController')
+    div(ng-controller=<span class="hljs-string">'MainController as mainController'</span>)
 
-        div.names
-            div.btn-group
-                button.btn.btn-default(ng-click='mainController.emptyCollection()') Empty Collection
-                button.btn.btn-default(ng-click='mainController.insertValidCollection()') Insert Valid Collection
+        <span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.names</span>
+            <span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.btn-group</span>
+                <span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-default</span>(ng-click=<span class="hljs-string">'mainController.emptyCollection()'</span>) Empty Collection
+                <span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-default</span>(ng-click=<span class="hljs-string">'mainController.insertValidCollection()'</span>) Insert Valid Collection
 
-        div.names
-            ul
-                li(ng-repeat='scientist in mainController.scientists')
-                    a(ng-click="mainController.selectScientist(scientist)") {{scientist.name}}
+        <span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.names</span>
+            <span class="hljs-selector-tag">ul</span>
+                li(ng-repeat=<span class="hljs-string">'scientist in mainController.scientists'</span>)
+                    a(ng-click=<span class="hljs-string">"mainController.selectScientist(scientist)"</span>) {{scientist.name}}
 
-        div.names
-            div
-                label(class='col-sm-2, control-label') First:
-                span {{mainController.scientist.firstName}}
-            div
-                label(class='col-sm-2, control-label') Last:
-                span {{mainController.scientist.lastName}}
-            div
-                label(class='col-sm-2, control-label') Subject:
-                span {{mainController.scientist.subject}}
+        <span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.names</span>
+            <span class="hljs-selector-tag">div</span>
+                label(class=<span class="hljs-string">'col-sm-2, control-label'</span>) First:
+                <span class="hljs-selector-tag">span</span> {{mainController<span class="hljs-selector-class">.scientist</span><span class="hljs-selector-class">.firstName</span>}}
+            <span class="hljs-selector-tag">div</span>
+                label(class=<span class="hljs-string">'col-sm-2, control-label'</span>) Last:
+                <span class="hljs-selector-tag">span</span> {{mainController<span class="hljs-selector-class">.scientist</span><span class="hljs-selector-class">.lastName</span>}}
+            <span class="hljs-selector-tag">div</span>
+                label(class=<span class="hljs-string">'col-sm-2, control-label'</span>) Subject:
+                <span class="hljs-selector-tag">span</span> {{mainController<span class="hljs-selector-class">.scientist</span><span class="hljs-selector-class">.subject</span>}}
 
-        div.names
-            ul
-                li(ng-repeat='comment in mainController.scientist.comments')
-                    a(ng-click="mainController.selectComment(comment)") {{comment.commentText}}
+        <span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.names</span>
+            <span class="hljs-selector-tag">ul</span>
+                li(ng-repeat=<span class="hljs-string">'comment in mainController.scientist.comments'</span>)
+                    a(ng-click=<span class="hljs-string">"mainController.selectComment(comment)"</span>) {{comment.commentText}}
 
-        div.names(ng-form="newCommentForm")
-            button.btn.btn-default(ng-click='mainController.newComment()') New Comment
+        <span class="hljs-selector-tag">div</span>.names(ng-form=<span class="hljs-string">"newCommentForm"</span>)
+            <span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-default</span>(ng-click=<span class="hljs-string">'mainController.newComment()'</span>) New Comment
             hr
-            label(class='col-sm-2, control-label') Text
-            input.form-control(type='text', ng-model='mainController.newCommentText')
+            label(class=<span class="hljs-string">'col-sm-2, control-label'</span>) Text
+            <span class="hljs-selector-tag">input</span>.form-control(type=<span class="hljs-string">'text'</span>, ng-model=<span class="hljs-string">'mainController.newCommentText'</span>)
 
-        div.names(ng-form="myform")
-            button.btn.btn-default(ng-click='mainController.updateComment()') Update Comment
-            button.btn.btn-default(ng-click='mainController.deleteComment()') Delete Comment
+        <span class="hljs-selector-tag">div</span>.names(ng-form=<span class="hljs-string">"myform"</span>)
+            <span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-default</span>(ng-click=<span class="hljs-string">'mainController.updateComment()'</span>) Update Comment
+            <span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-default</span>(ng-click=<span class="hljs-string">'mainController.deleteComment()'</span>) Delete Comment
             hr
-            label(class='col-sm-2, control-label') Text
-            input.form-control(type='text', ng-model='mainController.comment.commentText')
+            label(class=<span class="hljs-string">'col-sm-2, control-label'</span>) Text
+            <span class="hljs-selector-tag">input</span>.form-control(type=<span class="hljs-string">'text'</span>, ng-model=<span class="hljs-string">'mainController.comment.commentText'</span>)
             br
-            label(class='col-sm-2, control-label') Date
-            input.form-control(type='text', ng-model='mainController.comment.date')
+            label(class=<span class="hljs-string">'col-sm-2, control-label'</span>) Date
+            <span class="hljs-selector-tag">input</span>.form-control(type=<span class="hljs-string">'text'</span>, ng-model=<span class="hljs-string">'mainController.comment.date'</span>)
             br
-            label(class='col-sm-2, control-label') Id
-            input.form-control(type='text', ng-model='mainController.comment._id')
-</pre>
-<a class="anchor" id="step-four"></a>
+            label(class=<span class="hljs-string">'col-sm-2, control-label'</span>) Id
+            <span class="hljs-selector-tag">input</span>.form-control(type=<span class="hljs-string">'text'</span>, ng-model=<span class="hljs-string">'mainController.comment._id'</span>)
+</code></pre><a class="anchor" id="step-four"></a>
 <h2>Step Four</h2>
 <p>Define the back end</p>
 <p>Here is <strong>index.js</strong></p>
-<pre>var express = require('express');
-var router = express.Router();
-var mongoose = require('mongoose');
-var scientistSchema = require('../models/scientists');
-var scientists = scientistSchema.scientist;
-var comments = scientistSchema.comment;
-var fs = require('fs');
+<pre><code><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> router = express.Router();
+<span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
+<span class="hljs-keyword">var</span> scientistSchema = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models/scientists'</span>);
+<span class="hljs-keyword">var</span> scientists = scientistSchema.scientist;
+<span class="hljs-keyword">var</span> comments = scientistSchema.comment;
+<span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
 
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-    res.render('index', {title: 'Express'});
+<span class="hljs-comment">/* GET home page. */</span>
+router.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+    res.render(<span class="hljs-string">'index'</span>, {<span class="hljs-attribute">title</span>: <span class="hljs-string">'Express'</span>});
 });
 
-var allData;
-var connected = false;
-var numberOfScientists = 0;
-var totalScientistsSaved = 0;
+<span class="hljs-keyword">var</span> allData;
+<span class="hljs-keyword">var</span> connected = <span class="hljs-literal">false</span>;
+<span class="hljs-keyword">var</span> numberOfScientists = <span class="hljs-number">0</span>;
+<span class="hljs-keyword">var</span> totalScientistsSaved = <span class="hljs-number">0</span>;
 
-function doConnection() {
-    connected = true;
-    var userName = 'csc';
-    var password = 'Re*lD*t*22#';
-    var siteAndPort = 'ds049848.mongolab.com:49848';
-    var databaseName = 'elvenlab01';
-    var url = 'mongodb://' + userName + ':' + password + '@' + siteAndPort + '/' + databaseName;
-    console.log(url);
-    mongoose.connect(url);
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">doConnection</span>(<span class="hljs-params"></span>) </span>{
+    connected = <span class="hljs-literal">true</span>;
+    <span class="hljs-keyword">var</span> userName = <span class="hljs-string">'csc'</span>;
+    <span class="hljs-keyword">var</span> password = <span class="hljs-string">'Re*lD*t*22#'</span>;
+    <span class="hljs-keyword">var</span> siteAndPort = <span class="hljs-string">'ds049848.mongolab.com:49848'</span>;
+    <span class="hljs-keyword">var</span> databaseName = <span class="hljs-string">'elvenlab01'</span>;
+    <span class="hljs-keyword">var</span> <span class="hljs-built_in">url</span> = <span class="hljs-string">'mongodb://'</span> + userName + <span class="hljs-string">':'</span> + password + <span class="hljs-string">'@'</span> + siteAndPort + <span class="hljs-string">'/'</span> + databaseName;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">url</span>);
+    mongoose.connect(<span class="hljs-built_in">url</span>);
 }
 
-function insertScientist(scientist, response) {
-    if (!connected) {
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insertScientist</span>(<span class="hljs-params">scientist, response</span>) </span>{
+    <span class="hljs-keyword">if</span> (!connected) {
         doConnection();
     }
-    var newScientist = new scientists({
-        "firstName": scientist.firstName,
-        "lastName": scientist.lastName,
-        "subject": scientist.subject,
-        "subjects": scientist.subjects,
-        "comments": scientist.comments
+    <span class="hljs-keyword">var</span> newScientist = <span class="hljs-keyword">new</span> scientists({
+        <span class="hljs-string">"firstName"</span>: scientist.firstName,
+        <span class="hljs-string">"lastName"</span>: scientist.lastName,
+        <span class="hljs-string">"subject"</span>: scientist.subject,
+        <span class="hljs-string">"subjects"</span>: scientist.subjects,
+        <span class="hljs-string">"comments"</span>: scientist.comments
     });
 
-    console.log('inserting', newScientist.lastName);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'inserting'</span>, newScientist.lastName);
 
-    newScientist.save(function(err) {
-        console.log('saved: ', newScientist.lastName);
+    newScientist.save(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'saved: '</span>, newScientist.lastName);
         totalScientistsSaved++;
-        if (totalScientistsSaved === numberOfScientists) {
-            //mongoose.disconnect();
-            response.send({result: 'Success'});
+        <span class="hljs-keyword">if</span> (totalScientistsSaved === numberOfScientists) {
+            <span class="hljs-comment">//mongoose.disconnect();</span>
+            response.send({<span class="hljs-attribute">result</span>: <span class="hljs-string">'Success'</span>});
         }
     });
 }
 
-function writeData(fileName, data) {
-    var data = JSON.stringify(data, null, 4);
-    fs.writeFile(fileName, data, function(err, data) {
-        if (err) throw(err);
-        console.log('success writing file');
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">writeData</span>(<span class="hljs-params">fileName, data</span>) </span>{
+    <span class="hljs-keyword">var</span> data = <span class="hljs-built_in">JSON</span>.stringify(data, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
+    fs.writeFile(fileName, data, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, data</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">throw</span>(err);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'success writing file'</span>);
     });
 }
 
-function readDataAndInsert(response) {
-    fs.readFile('ValidScientists.json', function(err, scientists) {
-        if (err) throw (err);
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readDataAndInsert</span>(<span class="hljs-params">response</span>) </span>{
+    fs.readFile(<span class="hljs-string">'ValidScientists.json'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, scientists</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">throw</span> (err);
         numberOfScientists = scientists.length;
-        scientists = JSON.parse(scientists);
-        for (var i = 0; i < scientists.length; i++) {
+        scientists = <span class="hljs-built_in">JSON</span>.parse(scientists);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; scientists.length; i++) {
             insertScientist(scientists[i], response);
         }
     });
 }
 
-router.get('/all-data', function(request, response) {
-    if (!connected) {
+router.get(<span class="hljs-string">'/all-data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+    <span class="hljs-keyword">if</span> (!connected) {
         doConnection();
     }
 
-    scientists.find({}, function(err, data) {
-        console.log(data.length);
-        console.log(data[0]);
+    scientists.find({}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, data</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(data.length);
+        <span class="hljs-built_in">console</span>.log(data[<span class="hljs-number">0</span>]);
         allData = data;
 
-        writeData('scientists.json', allData);
+        writeData(<span class="hljs-string">'scientists.json'</span>, allData);
 
         response.send({
-            result: 'Success',
-            allData: data
+            <span class="hljs-attribute">result</span>: <span class="hljs-string">'Success'</span>,
+            <span class="hljs-attribute">allData</span>: data
         });
     });
 });
 
-router.post('/emptyCollection', function(request, response) {
-    scientists.remove({}, function(err) {
-        response.send({result: 'collection removed'});
+router.post(<span class="hljs-string">'/emptyCollection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+    scientists.remove({}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+        response.send({<span class="hljs-attribute">result</span>: <span class="hljs-string">'collection removed'</span>});
     });
 });
 
-router.post('/insertValidCollection', function(request, response) {
+router.post(<span class="hljs-string">'/insertValidCollection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
     readDataAndInsert(response);
 });
 
-router.post('/newComment', function(request, response) {
-    if (!connected) {
+router.post(<span class="hljs-string">'/newComment'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+    <span class="hljs-keyword">if</span> (!connected) {
         doConnection();
     }
 
-    console.log('newComments called. Body is next: ');
-    console.log(request.body);
-    var scientist = request.body.scientist;
-    var comment = request.body.comment;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'newComments called. Body is next: '</span>);
+    <span class="hljs-built_in">console</span>.log(request.body);
+    <span class="hljs-keyword">var</span> scientist = request.body.scientist;
+    <span class="hljs-keyword">var</span> comment = request.body.comment;
 
-    scientists.findOne({"_id": scientist._id }, function(err, scientist) {
-        console.log('After Find.');
-        console.log(scientist);
-        if (scientist.comments) {
+    scientists.findOne({<span class="hljs-string">"_id"</span>: scientist._id }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, scientist</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'After Find.'</span>);
+        <span class="hljs-built_in">console</span>.log(scientist);
+        <span class="hljs-keyword">if</span> (scientist.comments) {
             scientist.comments.push(comment);
-            scientist.markModified('comments');
-            scientist.save(function(err, data) {
-                console.log('After save.');
-                console.log("Error:", err);
-                console.log("Data: ", data);
-                response.send({result: 'Success', data: data});
+            scientist.markModified(<span class="hljs-string">'comments'</span>);
+            scientist.save(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, data</span>) </span>{
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'After save.'</span>);
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Error:"</span>, err);
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Data: "</span>, data);
+                response.send({<span class="hljs-attribute">result</span>: <span class="hljs-string">'Success'</span>, <span class="hljs-attribute">data</span>: data});
             });
-        } else {
-            response.send({result: 'Error'});
+        } <span class="hljs-title">else</span> {
+            response.send({<span class="hljs-attribute">result</span>: <span class="hljs-string">'Error'</span>});
         }
     });
 });
 
-function remove(arr, item) {        
-    for(var i = arr.length; i--;) {        
-        if(arr[i]._id == item._id) {            
-            arr.splice(i, 1);
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">remove</span>(<span class="hljs-params">arr, item</span>) </span>{        
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i = arr.length; i--;) {        
+        <span class="hljs-keyword">if</span>(arr[i]._id == item._id) {            
+            arr.splice(i, <span class="hljs-number">1</span>);
         }
     }
 }
 
-router.post('/deleteComment', function(request, response) {
-//    throw("not implemented");
-    if (!connected) {
+router.post(<span class="hljs-string">'/deleteComment'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-comment">//    throw("not implemented");</span>
+    <span class="hljs-keyword">if</span> (!connected) {
         doConnection();
     }
 
-    var scientist = request.body.scientist;
-    var comment = request.body.comment;
-    console.log(comment);
-    scientists.findOne({"_id": scientist._id }, function(err, scientist) {
-        if (scientist.comments) {
+    <span class="hljs-keyword">var</span> scientist = request.body.scientist;
+    <span class="hljs-keyword">var</span> comment = request.body.comment;
+    <span class="hljs-built_in">console</span>.log(comment);
+    scientists.findOne({<span class="hljs-string">"_id"</span>: scientist._id }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, scientist</span>) </span>{
+        <span class="hljs-keyword">if</span> (scientist.comments) {
             remove(scientist.comments, comment);
-            scientist.markModified('comments');
-            scientist.save(function(err, updatedScientist) {
-                console.log(updatedScientist);
-                console.log('After save.');
-                response.send({result: 'Success', update: updatedScientist});
+            scientist.markModified(<span class="hljs-string">'comments'</span>);
+            scientist.save(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, updatedScientist</span>) </span>{
+                <span class="hljs-built_in">console</span>.log(updatedScientist);
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'After save.'</span>);
+                response.send({<span class="hljs-attribute">result</span>: <span class="hljs-string">'Success'</span>, <span class="hljs-attribute">update</span>: updatedScientist});
             });
-        } else {
-            response.send({result: 'Error'});
+        } <span class="hljs-title">else</span> {
+            response.send({<span class="hljs-attribute">result</span>: <span class="hljs-string">'Error'</span>});
         }
     });
 });
 
-router.post('/updateComments', function(request, response) {
-    if (!connected) {
+router.post(<span class="hljs-string">'/updateComments'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+    <span class="hljs-keyword">if</span> (!connected) {
         doConnection();
     }
 
-    console.log('updateComments called. Body is next: ');
-    console.log(request.body);
-    scientists.update({_id: request.body.id}, {
-            $set: {
-                comments: request.body.comments
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'updateComments called. Body is next: '</span>);
+    <span class="hljs-built_in">console</span>.log(request.body);
+    scientists.update({<span class="hljs-attribute">_id</span>: request.body.id}, {
+            $<span class="hljs-attribute">set</span>: {
+                <span class="hljs-attribute">comments</span>: request.body.comments
             }
         },
-        function(err, electionObject) {
-            console.log(err, electionObject);
-            if (err) {
-                console.log(err);
+        <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, electionObject</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(err, electionObject);
+            <span class="hljs-keyword">if</span> (err) {
+                <span class="hljs-built_in">console</span>.log(err);
             }
-            response.send({result: 'Success', electionObject: electionObject});
+            response.send({<span class="hljs-attribute">result</span>: <span class="hljs-string">'Success'</span>, <span class="hljs-attribute">electionObject</span>: electionObject});
         }
     );
 });
 
-module.exports = router;
-</pre>
-<a class="anchor" id="step-five"></a>
+<span class="hljs-built_in">module</span>.exports = router;
+</code></pre><a class="anchor" id="step-five"></a>
 <h2>Step Five</h2>
 <p>Define the front end</p>
 <p>Here is <strong>public/javascripts/control.js</strong>:</p>
-<pre>(function() {
+<pre><code>(<span class="hljs-name">function</span>() {
 
-    var app = angular.module('elvenApp', []);
+    var app = angular.module(<span class="hljs-name">'elvenApp'</span>, [])<span class="hljs-comment">;</span>
 
-    app.controller('MainController', function(commentFactory) {
+    app.controller(<span class="hljs-name">'MainController'</span>, function(<span class="hljs-comment">comment</span><span class="hljs-name">Factory</span>) {
 
         var mainController = this;
 
         mainController.newComment = function() {
-            commentFactory.newComment(mainController.scientist, mainController.newCommentText);
-        };
+            commentFactory.newComment(<span class="hljs-name">mainController.scientist</span>, mainController.newCommentText)<span class="hljs-comment">;</span>
+        }<span class="hljs-comment">;</span>
 
         mainController.updateComment = function() {
-            commentFactory.updateComment(mainController.scientist);
-        };
+            commentFactory.updateComment(<span class="hljs-name">mainController.scientist</span>)<span class="hljs-comment">;</span>
+        }<span class="hljs-comment">;</span>
 
-        mainController.selectScientist = function(scientist) {
-            commentFactory.getScientistById(scientist.id, mainController)
-        };
+        mainController.selectScientist = function(<span class="hljs-name">scientist</span>) {
+            commentFactory.getScientistById(<span class="hljs-name">scientist.id</span>, mainController)
+        }<span class="hljs-comment">;</span>
 
-        mainController.selectComment = function(comment) {
+        mainController.selectComment = function(<span class="hljs-comment">comment</span>) {
             mainController.comment = comment;
-        };
+        }<span class="hljs-comment">;</span>
 
         mainController.insertValidCollection = function() {
-            commentFactory.insertValidCollection();
-        };
+            commentFactory.insertValidCollection()<span class="hljs-comment">;</span>
+        }<span class="hljs-comment">;</span>
 
         mainController.emptyCollection = function() {
-            commentFactory.emptyCollection();
-        };
+            commentFactory.emptyCollection()<span class="hljs-comment">;</span>
+        }<span class="hljs-comment">;</span>
 
         mainController.deleteComment = function() {
-            commentFactory.deleteComment(mainController.scientist, mainController.comment);
-        };
+            commentFactory.deleteComment(<span class="hljs-name">mainController.scientist</span>, mainController.comment)<span class="hljs-comment">;</span>
+        }<span class="hljs-comment">;</span>
 
 
-        commentFactory.getScientists(mainController);
-        console.log(mainController.scientists);
-    });
+        commentFactory.getScientists(<span class="hljs-name">mainController</span>)<span class="hljs-comment">;</span>
+        console.log(<span class="hljs-name">mainController.scientists</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
 
-})();
-</pre>
-<p>Here is <strong>public/javascripts/comment-factory.js</strong>:</p>
-<pre>(function() {
+})()<span class="hljs-comment">;</span>
+</code></pre><p>Here is <strong>public/javascripts/comment-factory.js</strong>:</p>
+<pre><code>(<span class="hljs-name">function</span>() {
 
-    var app = angular.module('elvenApp');
+    var app = angular.module(<span class="hljs-name">'elvenApp'</span>)<span class="hljs-comment">;</span>
 
-    app.factory('commentFactory', function($http) {
+    app.factory(<span class="hljs-name">'commentFactory'</span>, function($http) {
 
         var mongoFactory = {
 
@@ -376,88 +369,87 @@ module.exports = router;
 
             currentId: null,
 
-            getScientists: function(controller) {
-                $http.get('/all-data').success(function(data) {
-                    if (data.allData.length > 0) {
+            getScientists: function(<span class="hljs-name">controller</span>) {
+                $http.get(<span class="hljs-name">'/all-data'</span>).success(<span class="hljs-name">function</span>(<span class="hljs-name">data</span>) {
+                    if (<span class="hljs-name">data.allData.length</span> &gt; <span class="hljs-number">0</span>) {
                         mongoFactory.allData = data.allData;
-                        allDataNames = data.allData.map(function(scientist) {
-                            return {id: scientist._id, name: scientist.firstName + ' ' + scientist.lastName};
-                        });
+                        allDataNames = data.allData.map(<span class="hljs-name">function</span>(<span class="hljs-name">scientist</span>) {
+                            return {id: scientist._id, name: scientist.firstName + ' ' + scientist.lastName}<span class="hljs-comment">;</span>
+                        })<span class="hljs-comment">;</span>
                         controller.scientists = allDataNames;
-                        mongoFactory.getScientistById(allDataNames[0].id, controller);
+                        mongoFactory.getScientistById(<span class="hljs-name">allDataNames</span>[<span class="hljs-number">0</span>].id, controller)<span class="hljs-comment">;</span>
                     }
-                }).error(function() {
-                    console.log("error");
-                });
+                }).error(<span class="hljs-name">function</span>() {
+                    console.log(<span class="hljs-string">"error"</span>)<span class="hljs-comment">;</span>
+                })<span class="hljs-comment">;</span>
 
             },
 
-            newComment: function(scientist, text) {
+            newComment: function(<span class="hljs-name">scientist</span>, text) {
                 var comment = {
                     commentText: text,
-                    date: new Date().toJSON().slice(0, 10)
-                };
-                if (scientist.comments === null) {
-                    scientist.comments = [];
+                    date: new Date().toJSON().slice(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>)
+                }<span class="hljs-comment">;</span>
+                if (<span class="hljs-name">scientist.comments</span> === null) {
+                    scientist.comments = []<span class="hljs-comment">;</span>
                 }
-                var payLoad = {scientist: scientist, comment: comment};
-                $http.post('/newComment', payLoad).success(function(result) {
-                    console.log(result.data.comments[result.data.comments.length - 1]._id);
-                    scientist.comments.push(result.data.comments[result.data.comments.length - 1]);
-                }).error(function(err) {
-                    console.log(err);
-                });
+                var payLoad = {scientist: scientist, comment: comment}<span class="hljs-comment">;</span>
+                $http.post(<span class="hljs-name">'/newComment'</span>, payLoad).success(<span class="hljs-name">function</span>(<span class="hljs-name">result</span>) {
+                    console.log(<span class="hljs-name">result.data.comments</span>[result.data.comments.length - <span class="hljs-number">1</span>]._id)<span class="hljs-comment">;</span>
+                    scientist.comments.push(<span class="hljs-name">result.data.comments</span>[result.data.comments.length - <span class="hljs-number">1</span>])<span class="hljs-comment">;</span>
+                }).error(<span class="hljs-name">function</span>(<span class="hljs-name">err</span>) {
+                    console.log(<span class="hljs-name">err</span>)<span class="hljs-comment">;</span>
+                })<span class="hljs-comment">;</span>
             },
 
-            updateComment: function(scientist) {
-                var payLoad = {id: scientist._id, comments: scientist.comments};
-                $http.post('/updateComments', payLoad).success(function(result) {
-                    console.log(result.electionObject);
-                }).error(function(err) {
-                    console.log(err);
-                });
+            updateComment: function(<span class="hljs-name">scientist</span>) {
+                var payLoad = {id: scientist._id, comments: scientist.comments}<span class="hljs-comment">;</span>
+                $http.post(<span class="hljs-name">'/updateComments'</span>, payLoad).success(<span class="hljs-name">function</span>(<span class="hljs-name">result</span>) {
+                    console.log(<span class="hljs-name">result.electionObject</span>)<span class="hljs-comment">;</span>
+                }).error(<span class="hljs-name">function</span>(<span class="hljs-name">err</span>) {
+                    console.log(<span class="hljs-name">err</span>)<span class="hljs-comment">;</span>
+                })<span class="hljs-comment">;</span>
             },
 
-            getScientistById: function(id, controller) {
+            getScientistById: function(<span class="hljs-name"><span class="hljs-builtin-name">id</span></span>, controller) {
                 mongoFactory.currentId = id;
-                var items = mongoFactory.allData.filter(function(scientist) {
+                var items = mongoFactory.allData.filter(<span class="hljs-name">function</span>(<span class="hljs-name">scientist</span>) {
                     return scientist._id === id;
-                });
-                return controller.scientist = items[0];
+                })<span class="hljs-comment">;</span>
+                return controller.scientist = items[<span class="hljs-number">0</span>]<span class="hljs-comment">;</span>
             },
 
             insertValidCollection: function() {
-                $http.post('/insertValidCollection', {}).success(function(result) {
-                    console.log(result);
-                }).error(function() {
-                    console.log(err);
-                });
+                $http.post(<span class="hljs-name">'/insertValidCollection'</span>, {}).success(<span class="hljs-name">function</span>(<span class="hljs-name">result</span>) {
+                    console.log(<span class="hljs-name">result</span>)<span class="hljs-comment">;</span>
+                }).error(<span class="hljs-name">function</span>() {
+                    console.log(<span class="hljs-name">err</span>)<span class="hljs-comment">;</span>
+                })<span class="hljs-comment">;</span>
             },
 
             emptyCollection: function() {
-                $http.post('/emptyCollection', {}).success(function(result) {
-                    console.log(result);
-                }).error(function(err) {
-                    console.log(err);
-                });
+                $http.post(<span class="hljs-name">'/emptyCollection'</span>, {}).success(<span class="hljs-name">function</span>(<span class="hljs-name">result</span>) {
+                    console.log(<span class="hljs-name">result</span>)<span class="hljs-comment">;</span>
+                }).error(<span class="hljs-name">function</span>(<span class="hljs-name">err</span>) {
+                    console.log(<span class="hljs-name">err</span>)<span class="hljs-comment">;</span>
+                })<span class="hljs-comment">;</span>
             },
 
-            deleteComment: function(scientist, comment) {
-                $http.post('/deleteComment', {scientist: scientist, comment: comment}).success(function(result) {
-                    console.log(result);
+            deleteComment: function(<span class="hljs-name">scientist</span>, comment) {
+                $http.post(<span class="hljs-name">'/deleteComment'</span>, {scientist: scientist, comment: comment}).success(<span class="hljs-name">function</span>(<span class="hljs-name">result</span>) {
+                    console.log(<span class="hljs-name">result</span>)<span class="hljs-comment">;</span>
                     scientist.comments = result.update.comments;
-                }).error(function(err) {
-                    console.log(err);
-                });
+                }).error(<span class="hljs-name">function</span>(<span class="hljs-name">err</span>) {
+                    console.log(<span class="hljs-name">err</span>)<span class="hljs-comment">;</span>
+                })<span class="hljs-comment">;</span>
             }
-        };
+        }<span class="hljs-comment">;</span>
 
         return mongoFactory;
-    });
+    })<span class="hljs-comment">;</span>
 
-})();
-</pre>
-<a class="anchor" id="turn-it-in"></a>
+})()<span class="hljs-comment">;</span>
+</code></pre><a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Submit the project in your repository in a folder called <strong>Week10-MongooseSubdocs</strong></p>
 <a class="anchor" id="hints"></a>

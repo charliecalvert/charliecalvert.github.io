@@ -44,29 +44,27 @@ only with abstractions for our major classes. </p>
 <p>Read in a list of filenames stored in JSON format from a file called
 <strong>FileList.json</strong>. It should look something like this, but the 
 details are up to you:</p>
-<pre>{
-    "Foo.json": "/home/bcuser/files/Foo.json",
-    "Bar.json": "/home/bcuser/files/Bar.json",
-    "Goober.json": "/home/bcuser/files/Goober.json",
-    "Baz.json": "/home/bcuser/files/Baz.json"
+<pre><code>{
+    <span class="hljs-attr">"Foo.json"</span>: <span class="hljs-string">"/home/bcuser/files/Foo.json"</span>,
+    <span class="hljs-attr">"Bar.json"</span>: <span class="hljs-string">"/home/bcuser/files/Bar.json"</span>,
+    <span class="hljs-attr">"Goober.json"</span>: <span class="hljs-string">"/home/bcuser/files/Goober.json"</span>,
+    <span class="hljs-attr">"Baz.json"</span>: <span class="hljs-string">"/home/bcuser/files/Baz.json"</span>
 }
-</pre>
-<p>Or what have you. Display the items in an unordered list and/or a
+</code></pre><p>Or what have you. Display the items in an unordered list and/or a
 series of radiobuttons. See Presidents.json for additional information
 on how to handle the auto generation of radiobuttons.</p>
 <p>If you want, you can gussy up an unordered list with a few lines of CSS:</p>
-<pre>li {
-  background-color: #00BBFF;
-  border: black solid 1px;
-  margin: 3px;
-  width: 250px;  
+<pre><code><span class="hljs-selector-tag">li</span> {
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#00BBFF</span>;
+  <span class="hljs-attribute">border</span>: black solid <span class="hljs-number">1px</span>;
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">3px</span>;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">250px</span>;  
 }
 
-li:hover {
-    background-color: #00FFBB;
+<span class="hljs-selector-tag">li</span><span class="hljs-selector-pseudo">:hover</span> {
+    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#00FFBB</span>;
 }
-</pre>
-<p>The CSS shown above puts each item in a list in its own block, and it highlights each item in turn as the user moves the mouse over it.</p>
+</code></pre><p>The CSS shown above puts each item in a list in its own block, and it highlights each item in turn as the user moves the mouse over it.</p>
 <p>When the user clicks on a particular file name, read it in and display 
 its contents to the user. You can use the Presidents.json file from
 BridgeReader01 as the basis for your Foo.json and Bar.json files, but
@@ -77,66 +75,55 @@ or request.body, then read it in with fs.readFile (asynch version) and
 send it back via response.send.</p>
 <p>##Property Names</p>
 <p>Just a reminder. There are no rules about the names for properties in JavaScript. Thus we can create properties shaped like this:</p>
-<pre>"Foo.json": "/home/bcuser/files/Foo.json",
-</pre>
-<p>Note, however, that you can&#39;t write this to access the value for the property shown above: </p>
-<pre>myJsonObject.Foo.json 
-</pre>
-<p>Think about it for a second, and you can see why. (The second period is going to cause problems!)</p>
+<pre><code><span class="hljs-string">"Foo.json"</span>: <span class="hljs-string">"/home/bcuser/files/Foo.json"</span>,
+</code></pre><p>Note, however, that you can&#39;t write this to access the value for the property shown above: </p>
+<pre><code>myJsonObject<span class="hljs-selector-class">.Foo</span><span class="hljs-selector-class">.json</span> 
+</code></pre><p>Think about it for a second, and you can see why. (The second period is going to cause problems!)</p>
 <p>You can, however, do this:</p>
-<pre>myJsonObject['Foo.json']; // Yields home/bcuser/files/Foo.json
-</pre>
-<p>##User Choice</p>
+<pre><code>myJsonObject[<span class="hljs-string">'Foo.json'</span>]; <span class="hljs-regexp">//</span> Yields home<span class="hljs-regexp">/bcuser/</span>files<span class="hljs-regexp">/Foo.json</span>
+</code></pre><p>##User Choice</p>
 <p>When the user clicks on an item in our unordered list, we want to send a request back to the server based on the selection the user made. In particular, they click on a file name, and then send a request back to the server for the contents of the file the user selected.</p>
 <p>Ideally, it is safest to keep all the information about filepaths on the server side, and never send it to the client. However, at this stage, it is probably okay for us to cheat. Here is a hurried explanation of how to keep track of two bits of information in a single list item.</p>
 <p>The file list that we read in has two bits of information per line:</p>
-<pre>"Foo.json": "/home/bcuser/files/Foo.json",
-</pre>
-<p>There is a file name: <strong>Foo.json</strong>. There is also the path to the file: <strong>/home/bcuser/files/Foo.json</strong>. Here is how to encode both pieces of information in a list item:</p>
-<pre>$.getJSON('/read', fileObject, function(fileList) {
-    var serverData = fileList;
-    for (var file in serverData) {
-        $('#displayList').append('<li data=' + serverData[file] + '>' + file + '</li>');
+<pre><code><span class="hljs-string">"Foo.json"</span>: <span class="hljs-string">"/home/bcuser/files/Foo.json"</span>,
+</code></pre><p>There is a file name: <strong>Foo.json</strong>. There is also the path to the file: <strong>/home/bcuser/files/Foo.json</strong>. Here is how to encode both pieces of information in a list item:</p>
+<pre><code>$.getJSON(<span class="hljs-string">'/read'</span>, fileObject, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">fileList</span>) </span>{
+    <span class="hljs-keyword">var</span> serverData = fileList;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> file <span class="hljs-keyword">in</span> serverData) {
+        $(<span class="hljs-string">'#displayList'</span>).append(<span class="hljs-string">'&lt;li data='</span> + serverData[file] + <span class="hljs-string">'&gt;'</span> + file + <span class="hljs-string">'&lt;/li&gt;'</span>);
     }
-}).error(function....
-</pre>
-<p>Now the list items in your unordered list look like this:</p>
-<pre><li data="/home/charlie/Documents/Data/Presidents01.json">President01.json</li>
-</pre>
-<p>When the user clicks on the items, you can retrieve the data like this:</p>
-<pre>function pickFile(event) {
-    var fileName = event.target.innerHTML;  // Was innerText
-    var filePathName = event.target.attributes.data.value;
+}).error(<span class="hljs-function"><span class="hljs-keyword">function</span>....</span>
+</code></pre><p>Now the list items in your unordered list look like this:</p>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">data</span>=<span class="hljs-string">"/home/charlie/Documents/Data/Presidents01.json"</span>&gt;</span>President01.json<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+</code></pre><p>When the user clicks on the items, you can retrieve the data like this:</p>
+<pre><code><span class="hljs-function">function <span class="hljs-title">pickFile</span>(<span class="hljs-params"><span class="hljs-keyword">event</span></span>) </span>{
+    <span class="hljs-keyword">var</span> fileName = <span class="hljs-keyword">event</span>.target.innerHTML;  <span class="hljs-comment">// Was innerText</span>
+    <span class="hljs-keyword">var</span> filePathName = <span class="hljs-keyword">event</span>.target.attributes.data.<span class="hljs-keyword">value</span>;
 }
 
-$("#displayList").click(pickFile);
-</pre>
-<p>##Handling User Input</p>
+$(<span class="hljs-string">"#displayList"</span>).click(pickFile);
+</code></pre><p>##Handling User Input</p>
 <p>It is perhaps saying a word about what to do when the user clicks on a <strong>listitem</strong> to make a file selection. The best example of what you want to do is in <a href="https://github.com/charliecalvert/JsObjects/tree/master/HtmlCssJavascript/ClickEvents">ClickEvents</a>.</p>
 <p>When you respond to a click on a <strong>listItem</strong>, you want to call <strong>\$.getJSON.</strong></p>
-<pre>$(listItem).click(listClick);
+<pre><code>$(listItem).click(listClick);
 
-... // Code omitted here
+... <span class="hljs-comment">// Code omitted here</span>
 
-var listClick = function(event) { 
-   // Your getJSON code here.
+<span class="hljs-keyword">var</span> listClick = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{ 
+   <span class="hljs-comment">// Your getJSON code here.</span>
 };
-</pre>
-<p>The user clicks on a <strong>listItem</strong> and invokes the click handler shown above. Use .getJSON to invoke a route on the server and to send a simple JavaScript object to the server specifying the user&#39;s choice. Assuming you saved the path to the file in an attribute called data, as recommended above, you can get the user&#39;s choice like this:</p>
-<pre>$('#debug01').html("You picked: " + event.target.innerHTML) // innerText
-$('#debug02').html("Value: " + event.target.attributes.data.value);
-</pre>
-<p>The server gets the call and uses <strong>request.query</strong> to discover the file the user requested. Use <strong>fs.readFile</strong> to read the file from disk. Use response.send to send the contents of the file back to the client. There are many examples of how to do this sort of thing in JsObjects, including <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/UnitTests/AsyncJsonReader">AsyncJsonReader</a>.</p>
+</code></pre><p>The user clicks on a <strong>listItem</strong> and invokes the click handler shown above. Use .getJSON to invoke a route on the server and to send a simple JavaScript object to the server specifying the user&#39;s choice. Assuming you saved the path to the file in an attribute called data, as recommended above, you can get the user&#39;s choice like this:</p>
+<pre><code>$(<span class="hljs-string">'#debug01'</span>).html(<span class="hljs-string">"You picked: "</span> + <span class="hljs-keyword">event</span>.target.innerHTML) <span class="hljs-comment">// innerText</span>
+$(<span class="hljs-string">'#debug02'</span>).html(<span class="hljs-string">"Value: "</span> + <span class="hljs-keyword">event</span>.target.attributes.data.value);
+</code></pre><p>The server gets the call and uses <strong>request.query</strong> to discover the file the user requested. Use <strong>fs.readFile</strong> to read the file from disk. Use response.send to send the contents of the file back to the client. There are many examples of how to do this sort of thing in JsObjects, including <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/UnitTests/AsyncJsonReader">AsyncJsonReader</a>.</p>
 <p>Parse the content of the file sent from the server. It is sent as a parameter to your \$.getJSON callback. The callback is an anonymous function passed as the second parameter to \$.getJSON.
 Display the parsed content to the user</p>
 <p>##Test and run</p>
 <p>To start the app I should be able to run:</p>
-<pre>npm start
-</pre>
-<p>To start the tests, I should be able to run:</p>
-<pre>node TestRunner.js
-</pre>
-<p>You must have at least 25 tests, no matter how trivial. For instance write tests that prove you can:</p>
+<pre><code><span class="hljs-built_in">npm</span> start
+</code></pre><p>To start the tests, I should be able to run:</p>
+<pre><code><span class="hljs-keyword">node</span> <span class="hljs-title">TestRunner</span>.js
+</code></pre><p>You must have at least 25 tests, no matter how trivial. For instance write tests that prove you can:</p>
 <ol>
 <li>Use require to reach your ReaderFactory</li>
 <li>Use require to reach your BridgeFactory</li>
@@ -165,30 +152,27 @@ Display the parsed content to the user</p>
 <p>If you can, when you type <strong>grunt jshint</strong>, I want it to come back clean.</p>
 <p>##Markdown</p>
 <p>You can place a markdown file such as this one in your public directory. Call it <strong>MarkdownSample.md</strong>:</p>
-<pre># Markdown Sample Header
+<pre><code><span class="hljs-section"># Markdown Sample Header</span>
 
 This is a sample markdown file. You can make lists like this:
 
-- One
-- Two
-- Three
+<span class="hljs-bullet">- </span>One
+<span class="hljs-bullet">- </span>Two
+<span class="hljs-bullet">- </span>Three
 
-## Details
+<span class="hljs-section">## Details</span>
 
 Try pasting the contents of this file into this editor:
 
-- [StackEditIO](https://stackedit.io/)
+<span class="hljs-bullet">- </span>[<span class="hljs-string">StackEditIO</span>](<span class="hljs-link">https://stackedit.io/</span>)
 
-That's the editor found at **https://Stackedit.io**
-</pre>
-<p>Then use Jade to create a <strong>pre</strong> in which you can display it:</p>
-<pre>div
-    pre#markdown
-</pre>
-<p>And display it like this:</p>
-<pre>$("#markdown").load("MarkdownSample.md");
-</pre>
-<p>\$.load is a wrapper around \$.Ajax for use when you just want to load a file from the file system.</p>
+That's the editor found at <span class="hljs-strong">**https://Stackedit.io**</span>
+</code></pre><p>Then use Jade to create a <strong>pre</strong> in which you can display it:</p>
+<pre><code><span class="hljs-keyword">div</span>
+    pre<span class="hljs-comment">#markdown</span>
+</code></pre><p>And display it like this:</p>
+<pre><code><span class="hljs-meta">$</span><span class="bash">(<span class="hljs-string">"#markdown"</span>).load(<span class="hljs-string">"MarkdownSample.md"</span>);</span>
+</code></pre><p>\$.load is a wrapper around \$.Ajax for use when you just want to load a file from the file system.</p>
 <p>We will get a real markdown editor and display tool going next week.</p>
 <p>For a working example, see the <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/NodeCode/NodeRoutes03">NodesRoutes03</a> example.</p>
 <p>##Turn it in</p>

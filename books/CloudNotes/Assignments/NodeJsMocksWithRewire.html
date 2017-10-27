@@ -17,115 +17,111 @@
 <p>Our unit tests should not rely on calls to read and write files from disk. </p>
 <a class="anchor" id="implementation"></a>
 <h2>Implementation</h2>
-<pre>'use strict';
+<pre><code><span class="hljs-meta">'use strict'</span>;
 
-var fs = require('fs');
+<span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
 
-var splitChar = "\n",
-    csvFileData = '',
+<span class="hljs-keyword">var</span> splitChar = <span class="hljs-string">"\n"</span>,
+    csvFileData = <span class="hljs-string">''</span>,
     rawCsv,
     fileName;
 
-function Convert(fileNameInit) {
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Convert</span>(<span class="hljs-params">fileNameInit</span>) </span>{
     fileName = fileNameInit;
 }
 
-Convert.prototype.getMeetingNames = function () {
-   // Use map to implement this method
+Convert.prototype.getMeetingNames = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+   <span class="hljs-comment">// Use map to implement this method</span>
 };
 
-function readFile() {
-    rawCsv = fs.readFileSync(fileName, 'utf8');
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readFile</span>(<span class="hljs-params"></span>) </span>{
+    rawCsv = fs.readFileSync(fileName, <span class="hljs-string">'utf8'</span>);
     csvFileData = rawCsv.toString().trim().split(splitChar);
-    return csvFileData;
+    <span class="hljs-keyword">return</span> csvFileData;
 }
 
-function removeTitles() {
-    csvFileData.splice(0, 1);
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">removeTitles</span>(<span class="hljs-params"></span>) </span>{
+    csvFileData.splice(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>);
 }
 
-Convert.prototype.run = function () {
+Convert.prototype.run = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
     csvFileData = readFile();
     removeTitles();
-    return csvFileData;
+    <span class="hljs-keyword">return</span> csvFileData;
 };
 
 exports.ConvertToJson = Convert;
-</pre>
-<a class="anchor" id="test"></a>
+</code></pre><a class="anchor" id="test"></a>
 <h2>Example Test</h2>
 <p>Here is a simple test:</p>
-<pre>var chai = require('chai');
-var expect = chai.expect;
-var rewire = require("rewire");
-var parseCsv = rewire('../source/convert.js');
+<pre><code><span class="hljs-keyword">var</span> chai = <span class="hljs-built_in">require</span>(<span class="hljs-string">'chai'</span>);
+<span class="hljs-keyword">var</span> expect = chai.expect;
+<span class="hljs-keyword">var</span> rewire = <span class="hljs-built_in">require</span>(<span class="hljs-string">"rewire"</span>);
+<span class="hljs-keyword">var</span> parseCsv = rewire(<span class="hljs-string">'../source/convert.js'</span>);
 
 
-describe("Json Tests", function () {
-    'use strict';
+describe(<span class="hljs-string">"Json Tests"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
 
-    var convertToJson;
+    <span class="hljs-keyword">var</span> convertToJson;
 
-    var fsMock = {
-        readFileSync: function (path, encoding) {
-            return 'meeting_id, day, time, town, meeting_name\n' +
-                '1,Sunday,06:00:00,Bellevue,Function Kings\n' +
-                '2,Sunday,07:00:00,Seattle,Wayward Commas\n' +
-                '3,Monday,07:00:00,Bellevue,Syntax Ships';
+    <span class="hljs-keyword">var</span> fsMock = {
+        <span class="hljs-attr">readFileSync</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">path, encoding</span>) </span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-string">'meeting_id, day, time, town, meeting_name\n'</span> +
+                <span class="hljs-string">'1,Sunday,06:00:00,Bellevue,Function Kings\n'</span> +
+                <span class="hljs-string">'2,Sunday,07:00:00,Seattle,Wayward Commas\n'</span> +
+                <span class="hljs-string">'3,Monday,07:00:00,Bellevue,Syntax Ships'</span>;
         }
     };
 
-    parseCsv.__set__("fs", fsMock);
+    parseCsv.__set__(<span class="hljs-string">"fs"</span>, fsMock);
 
-    beforeEach(function() {
-        convertToJson = new parseCsv.ConvertToJson('Data/IsitMeetings.csv');
+    beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        convertToJson = <span class="hljs-keyword">new</span> parseCsv.ConvertToJson(<span class="hljs-string">'Data/IsitMeetings.csv'</span>);
     });
 
-    it("proves that true is true", function () {
-        expect(true).to.equal(true);
+    it(<span class="hljs-string">"proves that true is true"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        expect(<span class="hljs-literal">true</span>).to.equal(<span class="hljs-literal">true</span>);
     });
 
-    it('proves fileName is Data/IsitMeetings.csv', function() {
+    it(<span class="hljs-string">'proves fileName is Data/IsitMeetings.csv'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 
-        var fileName = parseCsv.__get__("fileName");
-        expect(fileName).to.equal('Data/IsitMeetings.csv');
+        <span class="hljs-keyword">var</span> fileName = parseCsv.__get__(<span class="hljs-string">"fileName"</span>);
+        expect(fileName).to.equal(<span class="hljs-string">'Data/IsitMeetings.csv'</span>);
     });
 
-    it("can read file data in format we expect", function() {
+    it(<span class="hljs-string">"can read file data in format we expect"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
         convertToJson.run();
-        var rawCsv = parseCsv.__get__("rawCsv");
-        expect(rawCsv.length).to.equal(164);
+        <span class="hljs-keyword">var</span> rawCsv = parseCsv.__get__(<span class="hljs-string">"rawCsv"</span>);
+        expect(rawCsv.length).to.equal(<span class="hljs-number">164</span>);
     });
 
-    it("proves we have ten records in the json object", function() {
-        var json = convertToJson.run();
-        expect(json.length).to.equal(3);
+    it(<span class="hljs-string">"proves we have ten records in the json object"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> json = convertToJson.run();
+        expect(json.length).to.equal(<span class="hljs-number">3</span>);
     });
 
-    it("proves we can get meeting names", function() {
+    it(<span class="hljs-string">"proves we can get meeting names"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
         convertToJson.run();
-        var meetings = convertToJson.getMeetingNames();
-        expect(meetings[0]).to.equal('Function Kings');
-        expect(meetings[1]).to.equal('Wayward Commas');
-        expect(meetings[2]).to.equal('Syntax Ships');
+        <span class="hljs-keyword">var</span> meetings = convertToJson.getMeetingNames();
+        expect(meetings[<span class="hljs-number">0</span>]).to.equal(<span class="hljs-string">'Function Kings'</span>);
+        expect(meetings[<span class="hljs-number">1</span>]).to.equal(<span class="hljs-string">'Wayward Commas'</span>);
+        expect(meetings[<span class="hljs-number">2</span>]).to.equal(<span class="hljs-string">'Syntax Ships'</span>);
     });
 
 });
-</pre>
-<p>Below I describe the important parts of the tests.</p>
+</code></pre><p>Below I describe the important parts of the tests.</p>
 <a class="anchor" id="chai"></a>
 <h3>chai</h3>
 <p>Here we load chai and access its <strong>expect</strong> object:</p>
-<pre>var chai = require('chai');
-var expect = chai.expect;
-</pre>
-<a class="anchor" id="rewire"></a>
+<pre><code><span class="hljs-attribute">var chai</span> = require(<span class="hljs-string">'chai'</span>);
+<span class="hljs-attribute">var expect</span> = chai.expect;
+</code></pre><a class="anchor" id="rewire"></a>
 <h3>rewire</h3>
 <p>First we load rewire, then we use it to load the code that we want to test.</p>
-<pre>var rewire = require("rewire");
-var parseCsv = rewire('../source/convert.js');
-</pre>
-<p>By loading the code this way, we gain the ability to mock certain features of the code. In particular:</p>
+<pre><code><span class="hljs-attribute">var rewire</span> = require(<span class="hljs-string">"rewire"</span>);
+<span class="hljs-attribute">var parseCsv</span> = rewire(<span class="hljs-string">'../source/convert.js'</span>);
+</code></pre><p>By loading the code this way, we gain the ability to mock certain features of the code. In particular:</p>
 <ul>
 <li>we can mock the NodeJs <strong>fs</strong> file system</li>
 <li>we can access private variable inside <strong>convert.js</strong> by using getters and setters.</li>
@@ -133,24 +129,22 @@ var parseCsv = rewire('../source/convert.js');
 <a class="anchor" id="mock"></a>
 <h3>Mock</h3>
 <p>This is how to mock the <strong>readFileSync</strong> method from the NodeJs <strong>fs</strong> module:</p>
-<pre>   var fsMock = {
-        readFileSync: function (path, encoding) {
-            return 'meeting_id, day, time, town, meeting_name\n' +
-                '1,Sunday,06:00:00,Bellevue,Function Kings\n' +
-                '2,Sunday,07:00:00,Seattle,Wayward Commas\n' +
-                '3,Monday,07:00:00,Bellevue,Syntax Ships';
+<pre><code>   <span class="hljs-keyword">var</span> fsMock = {
+        readFileSync: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(path, encoding)</span> </span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-string">'meeting_id, day, time, town, meeting_name\n'</span> +
+                <span class="hljs-string">'1,Sunday,06:00:00,Bellevue,Function Kings\n'</span> +
+                <span class="hljs-string">'2,Sunday,07:00:00,Seattle,Wayward Commas\n'</span> +
+                <span class="hljs-string">'3,Monday,07:00:00,Bellevue,Syntax Ships'</span>;
         }
     };
 
-    parseCsv.__set__("fs", fsMock);
-</pre>
-<a class="anchor" id="access-private-variables"></a>
+    parseCsv.__set__(<span class="hljs-string">"fs"</span>, fsMock);
+</code></pre><a class="anchor" id="access-private-variables"></a>
 <h3>Access Private Variables</h3>
 <p>This is how we access private variables:</p>
-<pre>var fileName = parseCsv.__get__("fileName");
-var rawCsv = parseCsv.__get__("rawCsv");
-</pre>
-<a class="anchor" id="run-the-test-in-webstorm"></a>
+<pre><code><span class="hljs-attribute">var fileName</span> = parseCsv.__get__(<span class="hljs-string">"fileName"</span>);
+<span class="hljs-attribute">var rawCsv</span> = parseCsv.__get__(<span class="hljs-string">"rawCsv"</span>);
+</code></pre><a class="anchor" id="run-the-test-in-webstorm"></a>
 <h2>Run the test in WebStorm</h2>
 <p>Run these tests with Mocha inside Webstorm. </p>
 <ul>

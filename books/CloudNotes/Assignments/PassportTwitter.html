@@ -36,45 +36,45 @@ npm install passport-twitter --save
 <p>Besides <strong>express</strong>, <strong>router</strong> and <strong>passport</strong>, at the top of your <strong>login-twitter</strong> file you will need to link in the Twitter passport code:</p>
 </li>
 </ul>
-<pre>var TwitterStrategy = require('passport-twitter').Strategy;
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var TwitterStrategy</span> = require(<span class="hljs-string">'passport-twitter'</span>).Strategy;
+</code></pre>
 <p>The use the strategy:</p>
-<pre>var TWITTER_CONSUMER_KEY = 'YOUR CONSUMER KEY HERE';
-var TWITTER_CONSUMER_SECRET = 'YOUR CONSUMER SECRET HERE';
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> TWITTER_CONSUMER_KEY = <span class="hljs-string">'YOUR CONSUMER KEY HERE'</span>;
+<span class="hljs-keyword">var</span> TWITTER_CONSUMER_SECRET = <span class="hljs-string">'YOUR CONSUMER SECRET HERE'</span>;
 
-passport.use(new TwitterStrategy({
-        consumerKey: TWITTER_CONSUMER_KEY,
-        consumerSecret: TWITTER_CONSUMER_SECRET,
-        callbackURL: "http://localhost:30025/twitter/callback"        
+passport.use(<span class="hljs-keyword">new</span> TwitterStrategy({
+        <span class="hljs-attr">consumerKey</span>: TWITTER_CONSUMER_KEY,
+        <span class="hljs-attr">consumerSecret</span>: TWITTER_CONSUMER_SECRET,
+        <span class="hljs-attr">callbackURL</span>: <span class="hljs-string">"http://localhost:30025/twitter/callback"</span>        
     },
-    function(token, tokenSecret, profile, cb) {
-        console.log('Twitter strategy callback', profile);
-        process.nextTick(function() {
-            return cb(null, profile);
+    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">token, tokenSecret, profile, cb</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Twitter strategy callback'</span>, profile);
+        process.nextTick(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-keyword">return</span> cb(<span class="hljs-literal">null</span>, profile);
         });
     }));
-</pre>
+</code></pre>
 <p><strong>NOTE</strong>: You will want to match either <strong>localhost</strong> or <strong>127.0.0.1</strong> in your app and in your browser URL. Don&#39;t use one in one place, and one in the other. In other words, since we are using <strong>localhost</strong> for the <strong>callbackURL</strong>, when we are in the browser to test our app, we should type <strong>localhost</strong> and not <strong>127.0.0.1</strong>.</p>
 <p>We also want to handle the <strong>login</strong>, <strong>callback</strong> and <strong>profile</strong> routes:</p>
-<pre>router.get('/login',
-    passport.authenticate('twitter'));
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/login'</span>,
+    passport.authenticate(<span class="hljs-string">'twitter'</span>));
 
-router.get('/callback',
-    passport.authenticate('twitter', { failureRedirect: '/login' }),
-    function(req, res) {
-        // Successful authentication, redirect home.
-        res.redirect('/');
+router.get(<span class="hljs-string">'/callback'</span>,
+    passport.authenticate(<span class="hljs-string">'twitter'</span>, { <span class="hljs-attr">failureRedirect</span>: <span class="hljs-string">'/login'</span> }),
+    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+        <span class="hljs-comment">// Successful authentication, redirect home.</span>
+        res.redirect(<span class="hljs-string">'/'</span>);
     });
 
-router.get('/profile', function(req, res) {
-        'use strict';
-        console.log(req);
-        res.render('profile-temp', {
-            title: 'Twitter Profile',
-            user: req.user
+router.get(<span class="hljs-string">'/profile'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-built_in">console</span>.log(req);
+        res.render(<span class="hljs-string">'profile-temp'</span>, {
+            <span class="hljs-attr">title</span>: <span class="hljs-string">'Twitter Profile'</span>,
+            <span class="hljs-attr">user</span>: req.user
         });
     });
-</pre>
+</code></pre>
 <a class="anchor" id="setting-up-app-js"></a>
 <h2>Setting up app.js</h2>
 <p>We are also going to have to load our <strong>login-twitter.js</strong> module in <strong>app.js</strong>. You already saw how to do this with the Google module, so I will leave this portion of the program as an exercise. If you changed the name of your login files, be sure to make the related changes in <strong>app.js</strong>.</p>
@@ -86,27 +86,25 @@ router.get('/profile', function(req, res) {
 <p><a href="http://localhost:30025/twitter/login">http://localhost:30025/twitter/login</a></p>
 </blockquote>
 <p>Or better, set up the page to handle all this with clicks. So layout.jade:</p>
-<pre>doctype html
+<pre><code>doctype html
 html
   head
     title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src="//code.jquery.com/jquery-1.11.0.min.js")
-    script(src="javascripts/Control.js")
+    link(<span class="hljs-attribute">rel</span>=<span class="hljs-string">'stylesheet'</span>, <span class="hljs-attribute">href</span>=<span class="hljs-string">'/stylesheets/style.css'</span>)
+    script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"//code.jquery.com/jquery-1.11.0.min.js"</span>)
+    script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"javascripts/Control.js"</span>)
   body
     block content
-</pre>
-<p>And the following bootstrap code in index.jade:</p>
-<pre>  .panel.panel-default
-      .panel-heading Twitter
-      .panel-body
-          ul.list-group
-              li.list-group-item
-                  a(href='/twitter/login') Log In with Twitter
-              li.list-group-item
-                  a(href='/twitter/profile') Twitter Profile
-</pre>
-<a class="anchor" id="permissions"></a>
+</code></pre><p>And the following bootstrap code in index.jade:</p>
+<pre><code>  .<span class="hljs-string">panel.</span><span class="hljs-string">panel-default
+</span>      .<span class="hljs-string">panel-heading </span><span class="hljs-string">Twitter
+</span>      .<span class="hljs-string">panel-body
+</span>          <span class="hljs-string">ul.</span><span class="hljs-built_in">list-group</span>
+              <span class="hljs-string">li.</span><span class="hljs-built_in">list-group-item</span>
+                  a(<span class="hljs-string">href=</span><span class="hljs-string">'/twitter/login'</span>) <span class="hljs-string">Log </span><span class="hljs-string">In </span><span class="hljs-string">with </span><span class="hljs-string">Twitter
+</span>              <span class="hljs-string">li.</span><span class="hljs-built_in">list-group-item</span>
+                  a(<span class="hljs-string">href=</span><span class="hljs-string">'/twitter/profile'</span>) <span class="hljs-string">Twitter </span><span class="hljs-string">Profile</span>
+</code></pre><a class="anchor" id="permissions"></a>
 <h2>Permissions</h2>
 <p>You want to track who has permissions to access your account information:</p>
 <blockquote>

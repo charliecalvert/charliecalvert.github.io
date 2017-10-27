@@ -88,8 +88,8 @@ bower install bootswatch --save
 </pre>
 
 <p>In bower.json, you will probably have to edit the entry so it looks like this:</p>
-<pre>"bootswatch": "^3.3.6"
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-string">"bootswatch"</span>: <span class="hljs-string">"^3.3.6"</span>
+</code></pre>
 <p>Make sure it does <strong>not</strong> contain <strong>&quot;^3.3.6+2&quot;</strong>.</p>
 <p>Use it in <strong>layout.jade</strong>. Modify the line that loads <strong>bootstrap.css</strong> so that it looks something like this:</p>
 <pre>
@@ -132,17 +132,17 @@ select.form-control#dataType(name='dataType')
 <h2>Settings-Model</h2>
 <p>We want to save settings:</p>
 <p>The model looks like this, only use your last name:</p>
-<pre>var mongoose = require('mongoose');
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
 
-var settingsSchema = mongoose.Schema({
-    "keyNote": String,
-    "dataSource": String,
-    "dataType": String,
-    "comment": String
+<span class="hljs-keyword">var</span> settingsSchema = mongoose.Schema({
+    <span class="hljs-string">"keyNote"</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">"dataSource"</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">"dataType"</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-string">"comment"</span>: <span class="hljs-built_in">String</span>
 });
 
-module.exports = mongoose.model('prog272_lastname_setting', settingsSchema);
-</pre>
+<span class="hljs-built_in">module</span>.exports = mongoose.model(<span class="hljs-string">'prog272_lastname_setting'</span>, settingsSchema);
+</code></pre>
 <p><strong>NOTE</strong>: <em>Please do not use hypens (-) in your model (collection) names. They work okay in mongoose, but the mongo shell has a hard time with them. Use underscores instead.</em></p>
 <p>Good: <strong>module.exports = mongoose.model(&#39;prog272_lastname_setting&#39;, settingsSchema);</strong>
 Bad: <strong>module.exports = mongoose.model(&#39;prog272-lastname-setting&#39;, settingsSchema);</strong>
@@ -150,81 +150,81 @@ Bad: <strong>module.exports = mongoose.model(&#39;prog272LastnameSetting&#39;, s
 <a class="anchor" id="settings-database"></a>
 <h2>Settings-Database</h2>
 <p>Create a file in <strong>routes</strong> called <strong>database-settings.js</strong>. Make appropriate changes in <strong>app.js</strong>. Beside the standard code, such as requiring <strong>connect.js</strong>, also include this:</p>
-<pre>// CODE OMITTED HERE
+<pre><code class="lang-javascript"><span class="hljs-comment">// CODE OMITTED HERE</span>
 
-var settings = require('../models/settings');
+<span class="hljs-keyword">var</span> settings = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models/settings'</span>);
 
-// CODE OMITTED HERE
+<span class="hljs-comment">// CODE OMITTED HERE</span>
 
-function saveSettings(request, response) {
-    console.log('request body', request.body);
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">saveSettings</span>(<span class="hljs-params">request, response</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'request body'</span>, request.body);
 
-    var newSettings = new settings({
-        "keyNote": 'settings',
-        "dataSource": request.body.dataSource,
-        "dataType": request.body.dataType,
-        "comment": request.body.comment
+    <span class="hljs-keyword">var</span> newSettings = <span class="hljs-keyword">new</span> settings({
+        <span class="hljs-string">"keyNote"</span>: <span class="hljs-string">'settings'</span>,
+        <span class="hljs-string">"dataSource"</span>: request.body.dataSource,
+        <span class="hljs-string">"dataType"</span>: request.body.dataType,
+        <span class="hljs-string">"comment"</span>: request.body.comment
     });
 
-    console.log('inserting', newSettings.comment);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'inserting'</span>, newSettings.comment);
 
-    newSettings.save(function(err) {
-        console.log('saved: ', newSettings.dataSource, newSettings.dataType, newSettings.comment);
-        response.send({ result: 'success', query: request.body});
+    newSettings.save(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'saved: '</span>, newSettings.dataSource, newSettings.dataType, newSettings.comment);
+        response.send({ <span class="hljs-attr">result</span>: <span class="hljs-string">'success'</span>, <span class="hljs-attr">query</span>: request.body});
 
     });
 }
 
-router.post('/updateSettings', function(request, response) {
-    console.log('request body', request.body);
-    if (!connect.connected) {
+router.post(<span class="hljs-string">'/updateSettings'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'request body'</span>, request.body);
+    <span class="hljs-keyword">if</span> (!connect.connected) {
         connect.doConnection();
     }
 
-    settings.findOne({keyNote: 'settings'}, function(err, doc) {
-        console.log('findone', err, doc);
-        if (err) {
-            response.send({result: 'error'});
-        } else {
-            if(doc === null) {
+    settings.findOne({<span class="hljs-attr">keyNote</span>: <span class="hljs-string">'settings'</span>}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, doc</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'findone'</span>, err, doc);
+        <span class="hljs-keyword">if</span> (err) {
+            response.send({<span class="hljs-attr">result</span>: <span class="hljs-string">'error'</span>});
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">if</span>(doc === <span class="hljs-literal">null</span>) {
                 saveSettings(request, response);
-            } else {
+            } <span class="hljs-keyword">else</span> {
                 doc.dataType = request.body.dataType;
                 doc.dataSource = request.body.dataSource;
                 doc.comment = request.body.comment;
                 doc.save();
-                response.send( {result: 'success', query: request.body });
+                response.send( {<span class="hljs-attr">result</span>: <span class="hljs-string">'success'</span>, <span class="hljs-attr">query</span>: request.body });
             }
         }
     });
 });
 
-router.get('/getSettings', function(request, response) {
-    console.log('request body', request.body);
-    if (!connect.connected) {
+router.get(<span class="hljs-string">'/getSettings'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'request body'</span>, request.body);
+    <span class="hljs-keyword">if</span> (!connect.connected) {
         connect.doConnection();
     }
 
-    settings.findOne({keyNote: 'settings'}, function(err, doc) {
-        console.log('findone', err, doc);
-        if (err) {
-            response.send({result: 'error'});
-        } else {
-            if(doc === null) {
-                response.send({settings: {dataType: 'Database', dataSource: 'Local MongoDb', comment: 'Default Comment'}})
-            } else {
-                response.send({settings: doc});
+    settings.findOne({<span class="hljs-attr">keyNote</span>: <span class="hljs-string">'settings'</span>}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, doc</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'findone'</span>, err, doc);
+        <span class="hljs-keyword">if</span> (err) {
+            response.send({<span class="hljs-attr">result</span>: <span class="hljs-string">'error'</span>});
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">if</span>(doc === <span class="hljs-literal">null</span>) {
+                response.send({<span class="hljs-attr">settings</span>: {<span class="hljs-attr">dataType</span>: <span class="hljs-string">'Database'</span>, <span class="hljs-attr">dataSource</span>: <span class="hljs-string">'Local MongoDb'</span>, <span class="hljs-attr">comment</span>: <span class="hljs-string">'Default Comment'</span>}})
+            } <span class="hljs-keyword">else</span> {
+                response.send({<span class="hljs-attr">settings</span>: doc});
             }
         }
     });
 });
-</pre>
+</code></pre>
 <p>In <strong>connect.js</strong> you need to change this line:</p>
-<pre>db.once('open', function(callback) {
-    connect.connected = true;   <== THIS IS CORRECT
-    console.log('Opened connection to mongo');
+<pre><code class="lang-javascripts">db.once(<span class="hljs-string">'open'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(callback)</span></span> {
+    connect.connected = <span class="hljs-literal">true</span>;   &lt;== THIS IS CORRECT
+    console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'Opened connection to mongo'</span>);
 });
-</pre>
+</code></pre>
 <p>If you see <strong>connected = true;</strong> then you need to change it as shown above. Change in both simple and mLab. This is around lines 20 and 42 of <strong>routes/connect.js</strong>.</p>
 <a class="anchor" id="settings-home-page"></a>
 <h2>Settings Home Page</h2>
@@ -259,62 +259,62 @@ router.get('/getSettings', function(request, response) {
 </pre>
 
 <p>Update <strong>home.js</strong></p>
-<pre>/**
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
  * Created by charlie on 5/18/16.
- */
+ */</span>
 
-define(function() {
-    'use strict';
+define(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
 
-    function getSettings() {
-        $.getJSON('/databaseSettings/getSettings', function(response) {
-            $('#debug').html(JSON.stringify(response, null, 4));
-            $('#dataType').val(response.settings.dataType);
-            $('#dataSource').val(response.settings.dataSource);
-            $('#comment').val(response.settings.comment);
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getSettings</span>(<span class="hljs-params"></span>) </span>{
+        $.getJSON(<span class="hljs-string">'/databaseSettings/getSettings'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+            $(<span class="hljs-string">'#debug'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(response, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+            $(<span class="hljs-string">'#dataType'</span>).val(response.settings.dataType);
+            $(<span class="hljs-string">'#dataSource'</span>).val(response.settings.dataSource);
+            $(<span class="hljs-string">'#comment'</span>).val(response.settings.comment);
         })
-            .fail(function(a, b, c) {
-                console.log('Error', a, b, c);
-                $('#debug').html('Error occured: ', a.status);
+            .fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a, b, c</span>) </span>{
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Error'</span>, a, b, c);
+                $(<span class="hljs-string">'#debug'</span>).html(<span class="hljs-string">'Error occured: '</span>, a.status);
             })
-            .done(function() {
-                console.log('second success');
+            .done(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'second success'</span>);
             })
-            .always(function() {
-                console.log('complete');
+            .always(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'complete'</span>);
             });
     }
 
-    var home = {
-        color: 'red',
-        size: 'big',
-        init: function() {
-            console.log(home.color);
-            $('#elf-view').load('/home', function() {
-                $('#display').html(home.color);
-                $('#display2').html(home.size);
+    <span class="hljs-keyword">var</span> home = {
+        <span class="hljs-attr">color</span>: <span class="hljs-string">'red'</span>,
+        <span class="hljs-attr">size</span>: <span class="hljs-string">'big'</span>,
+        <span class="hljs-attr">init</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-built_in">console</span>.log(home.color);
+            $(<span class="hljs-string">'#elf-view'</span>).load(<span class="hljs-string">'/home'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                $(<span class="hljs-string">'#display'</span>).html(home.color);
+                $(<span class="hljs-string">'#display2'</span>).html(home.size);
                 getSettings();
-                $("#target").submit(function(event) {
+                $(<span class="hljs-string">"#target"</span>).submit(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
                     event.preventDefault();
-                    var userFormData = $(this).serialize();
-                    $('#debug').html(userFormData);
-                    var userData = {
-                        dataType: $('#dataType').val(),
-                        dataSource: $('#dataSource').val(),
-                        comment: $('#comment').val()
+                    <span class="hljs-keyword">var</span> userFormData = $(<span class="hljs-keyword">this</span>).serialize();
+                    $(<span class="hljs-string">'#debug'</span>).html(userFormData);
+                    <span class="hljs-keyword">var</span> userData = {
+                        <span class="hljs-attr">dataType</span>: $(<span class="hljs-string">'#dataType'</span>).val(),
+                        <span class="hljs-attr">dataSource</span>: $(<span class="hljs-string">'#dataSource'</span>).val(),
+                        <span class="hljs-attr">comment</span>: $(<span class="hljs-string">'#comment'</span>).val()
                     };
-                    $.post('/databaseSettings/updateSettings', userData, function(result) {
-                        $('#debug').html(JSON.stringify(result, null, 4));
-                        console.log(settings);
+                    $.post(<span class="hljs-string">'/databaseSettings/updateSettings'</span>, userData, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+                        $(<span class="hljs-string">'#debug'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+                        <span class="hljs-built_in">console</span>.log(settings);
                     });
                 });
 
             });
         }
     };
-    return home;
+    <span class="hljs-keyword">return</span> home;
 });
-</pre>
+</code></pre>
 <a class="anchor" id="settings-options"></a>
 <h2>Settings Options</h2>
 <p>You know how to load and save the settings for your application. The next step is to change the behavior of the application based on those settings.</p>
@@ -324,46 +324,46 @@ define(function() {
 <li>JSON</li>
 </ul>
 <p>Let&#39;s capture that choice in a simple object to be stored in its own file called <strong>public/javascripts/settings.js</strong>:</p>
-<pre>define(function() {
-   return {
-        useDatabase: true,
-        useLocalMongoDb: true,
-        report: function() {
-            console.log('useDatabase', this.useDatabase);
-            console.log('useLocalMongoDb', this.useLocalMongoDb)
+<pre><code class="lang-javascript">define(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+   <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">useDatabase</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">useLocalMongoDb</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">report</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'useDatabase'</span>, <span class="hljs-keyword">this</span>.useDatabase);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'useLocalMongoDb'</span>, <span class="hljs-keyword">this</span>.useLocalMongoDb)
         },
-        setSettings: function(settings) {
-            this.useDatabase = settings.dataType.toLowerCase() === 'database';
-            this.useLocalMongoDb = settings.dataSource.toLowerCase() === 'local mongodb';
-            this.report()
+        <span class="hljs-attr">setSettings</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">settings</span>) </span>{
+            <span class="hljs-keyword">this</span>.useDatabase = settings.dataType.toLowerCase() === <span class="hljs-string">'database'</span>;
+            <span class="hljs-keyword">this</span>.useLocalMongoDb = settings.dataSource.toLowerCase() === <span class="hljs-string">'local mongodb'</span>;
+            <span class="hljs-keyword">this</span>.report()
         }
     };
 });
-</pre>
+</code></pre>
 <p>Given this object, we can now decide whether to get our data from the database or from a JSON file depending on the options the user choose. For instance, in <strong>public/javascripts/renewables/renewables.js</strong>, we can use the require js dependency injection to access the settings object and decide whether or not to use the mongodb database:</p>
-<pre>define(['jquery', 'settings'], function($, settings) {
-    'use strict';
+<pre><code class="lang-javascript">define([<span class="hljs-string">'jquery'</span>, <span class="hljs-string">'settings'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$, settings</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
 
-    var index = 0;
-    //var useDatabase = true;
+    <span class="hljs-keyword">var</span> index = <span class="hljs-number">0</span>;
+    <span class="hljs-comment">//var useDatabase = true;</span>
 
-    function getRenewable() {
-        //console.log('getRenewable called');
-        var routeType = settings.useDatabase ? 0 : 1;
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getRenewable</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">//console.log('getRenewable called');</span>
+        <span class="hljs-keyword">var</span> routeType = settings.useDatabase ? <span class="hljs-number">0</span> : <span class="hljs-number">1</span>;
 
-        var renewableRoutes = ['/allRenewables', '/renewables'];
-        $.getJSON(renewableRoutes[routeType], function(response) {
-            // CODE OMITTED HERE
+        <span class="hljs-keyword">var</span> renewableRoutes = [<span class="hljs-string">'/allRenewables'</span>, <span class="hljs-string">'/renewables'</span>];
+        $.getJSON(renewableRoutes[routeType], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+            <span class="hljs-comment">// CODE OMITTED HERE</span>
         });
     }
 });
-</pre>
+</code></pre>
 <p>Your job is to make sure the settings are set correctly when the user either loads or saves the settings from the database. This typically takes place in <strong>home.js</strong> Again, you will use dependency injection to access the settings object:</p>
-<pre>define(['settings'], function (settings) {
-  // MAKE SURE THE SETTINGS ARE SAVED TO THE settings OBJECT
-  // CODE OMITTED HERE
+<pre><code class="lang-javascript">define([<span class="hljs-string">'settings'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(settings)</span> </span>{
+  <span class="hljs-comment">// MAKE SURE THE SETTINGS ARE SAVED TO THE settings OBJECT</span>
+  <span class="hljs-comment">// CODE OMITTED HERE</span>
 });
-</pre>
+</code></pre>
 <p>The exact details of what happens in <strong>home.js</strong> are left as an exercise. You will have to add only a small amount of code that saves the settings to the <strong>settings</strong> object. This will involve a call to <strong>settings.setSettings()</strong>.</p>
 <a class="anchor" id="database-notes"></a>
 <h2>Database Notes</h2>
@@ -384,12 +384,12 @@ db.shutdownServer()
 </ul>
 <p>In mongo shell, to empty a collection: <strong>db.myCollection.remove({})</strong>.</p>
 <p>Make sure you put your preface your collections with prog219 and end them with your last name:</p>
-<pre>module.exports = mongoose.model('prog219_calvert_renewables', renewablesSchema);
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">module</span>.<span class="hljs-keyword">exports</span> = mongoose.model(<span class="hljs-string">'prog219_calvert_renewables'</span>, renewablesSchema);
+</code></pre>
 <p><strong>NOTE</strong>: <em>Please do not use hypens (-) in your model (collection) names. They work okay in mongoose, but the mongo shell has a hard time with them. Let&#39;s use underscores instead.</em></p>
 <p>In <strong>routes/connect.js</strong>, set your simple url to use a dbs called renew:</p>
-<pre>var url= 'mongodb://127.0.0.1:27017/renew';
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var url</span>= <span class="hljs-string">'mongodb://127.0.0.1:27017/renew'</span>;
+</code></pre>
 <p><strong>NOTE</strong>: <em>Recall that I will be grading many assignments. I don&#39;t want the data in my Mongo Lab (MLab) database as there will be too much of it. So I&#39;m going to put it in my local database. There will be a lot of data in there, and I need to know who created which collections. As a result, this naming scheme is essential.</em></p>
 <p>If you are in both prog219 and prog272, and your last name is ng, then I&#39;m expecting to see something like this in the mongo shell:</p>
 <pre>
@@ -404,25 +404,25 @@ prog272_ng_renewables
 <h2>Data Choice</h2>
 <p>The database has already translated the unusable keys from our raw data into usable keys. But if we read directly from the JSON, then we have not done so. This means we have to have a special case for when we use JSON data and when we use Database data.</p>
 <p>Create a variable called <strong>useDatabase</strong>.</p>
-<pre>var useDatabase = false;
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> useDatabase = <span class="hljs-literal">false</span>;
 
-function getRenewable() {
-    //console.log('getRenewable called');
-    var routeType = useDatabase ? 0 : 1;
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getRenewable</span></span>() {
+    <span class="hljs-comment">//console.log('getRenewable called');</span>
+    <span class="hljs-keyword">var</span> routeType = useDatabase ? <span class="hljs-number">0</span> : <span class="hljs-type">1</span>;
 
-    var renewableRoutes = ['/allRenewables', '/renewables'];
-    $.getJSON(renewableRoutes[routeType], function(response) {
-            renewables.renewablesList = response.renewables;
-            showRenewable(renewables.renewablesList[index]);
+    <span class="hljs-keyword">var</span> renew<span class="hljs-type">ableRoutes</span> = [<span class="hljs-string">'/allRenewables'</span>, <span class="hljs-string">'/renewables'</span>];
+    $.getJSON(renew<span class="hljs-type">ableRoutes</span>[routeType], <span class="hljs-function"><span class="hljs-keyword">function</span></span>(response) {
+            renew<span class="hljs-type">ables</span>.renew<span class="hljs-type">ablesList</span> = response.renew<span class="hljs-type">ables</span>;
+            showRenew<span class="hljs-type">able</span>(renew<span class="hljs-type">ables</span>.renew<span class="hljs-type">ablesList</span>[index]);
             etc....
     })
-</pre>
+</code></pre>
 <p>Then in <strong>showRenewable</strong>:</p>
-<pre>function showRenewable(renewable) {
-    if (!useDatabase) {
-        renewable = getSimpleKeys(renewable);
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showRenewable</span></span>(renew<span class="hljs-type">able</span>) {
+    <span class="hljs-keyword">if</span> (!useDatabase) {
+        renew<span class="hljs-type">able</span> = getSimpleKeys(renew<span class="hljs-type">able</span>);
     }
-</pre>
+</code></pre>
 <a class="anchor" id="containers"></a>
 <h2>Containers</h2>
 <p>I&#39;ve noticed a lot of student&#39;s applications don&#39;t look quite right on a large screen. The problem is that the various &quot;pages&quot; we are loading are not restricted to the middle of the screen, but instead &quot;bleed&quot; off to the right and left. To fix this, put them inside a container. Consider the jade for our standard <strong>about.jade</strong> page. This is not right because there is no container:</p>
@@ -470,21 +470,21 @@ p#display2
 <a class="anchor" id="menu"></a>
 <h2>Menu</h2>
 <p>You should have menu that works both on a mobile device and on desktop. Be sure the hamburger manu closes automatically after you make a selection. In <strong>main.js</strong>, near the bottom, add code to hide the main when an anchor is selected:</p>
-<pre>requirejs(['jquery'], function($) {
-    'use strict';
-    requirejs(['bootstrap', 'control'], function(bootstrap, control) {
+<pre><code class="lang-javascript">requirejs([<span class="hljs-string">'jquery'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    requirejs([<span class="hljs-string">'bootstrap'</span>, <span class="hljs-string">'control'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">bootstrap, control</span>) </span>{
         control.init();
-        $('.navbar-nav li.trigger-collapse a').click(function(event) {
-            $('.navbar-collapse').collapse('hide');
+        $(<span class="hljs-string">'.navbar-nav li.trigger-collapse a'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+            $(<span class="hljs-string">'.navbar-collapse'</span>).collapse(<span class="hljs-string">'hide'</span>);
         });
     });
 });
-</pre>
+</code></pre>
 <p>The three new lines which we use to close the menu after a selection are listed directly after the call to <strong>control.init()</strong>:</p>
-<pre>$('.navbar-nav li.trigger-collapse a').click(function(event) {
-    $('.navbar-collapse').collapse('hide');
+<pre><code class="lang-javascript">$(<span class="hljs-string">'.navbar-nav li.trigger-collapse a'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    $(<span class="hljs-string">'.navbar-collapse'</span>).collapse(<span class="hljs-string">'hide'</span>);
 });
-</pre>
+</code></pre>
 <p>Remember that if you have a link from the menu, and a link from a button, don&#39;t try to use IDs to form the link between the button/menu and the code that you want to execute. When setting up the event handler, use a class instead. Here is the menu with a class called <strong>.renewablesMenu</strong>:</p>
 <pre>
 li.trigger-collapse(ng-class="{ active: isActive('/renewables')}")
@@ -497,25 +497,25 @@ button.renewablesMenu.btn.btn-info Renewables
 </pre>
 
 <p>And here is the code that sets up the event handler:</p>
-<pre>$('.renewablesMenu').click(renewables.init);
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-meta">$</span><span class="bash">(<span class="hljs-string">'.renewablesMenu'</span>).click(renewables.init);</span>
+</code></pre>
 <a class="anchor" id="disable-buttons"></a>
 <h2>Disable Buttons</h2>
 <p>In some cases, such as the Database page, you want to prevent the user from clicking buttons too quickly. In other words, if a call is going to take a long time, such as inserting the data on mLab, then you don&#39;t want the user to try to view or empty the collection until the insert is completed. Here are some very broad hints on how to proceed:</p>
-<pre>function enableAll(disable) {
-    $('#convertRenewables').prop('disabled', disable);
-    $('#allRenewables').prop('disabled', disable);
-    $('#emptyRenewables').prop('disabled', disable);
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">enableAll</span>(<span class="hljs-params">disable</span>) </span>{
+    $(<span class="hljs-string">'#convertRenewables'</span>).prop(<span class="hljs-string">'disabled'</span>, disable);
+    $(<span class="hljs-string">'#allRenewables'</span>).prop(<span class="hljs-string">'disabled'</span>, disable);
+    $(<span class="hljs-string">'#emptyRenewables'</span>).prop(<span class="hljs-string">'disabled'</span>, disable);
 }
 
-function insertCollection() {
-    $('#allRenewables').prop('disabled', true);
-    $('#emptyRenewables').prop('disabled', true);
-    $.getJSON('/insertRenewables', function(response) {
-            enableAll(false);
-            // ETC
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insertCollection</span>(<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-string">'#allRenewables'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">true</span>);
+    $(<span class="hljs-string">'#emptyRenewables'</span>).prop(<span class="hljs-string">'disabled'</span>, <span class="hljs-literal">true</span>);
+    $.getJSON(<span class="hljs-string">'/insertRenewables'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+            enableAll(<span class="hljs-literal">false</span>);
+            <span class="hljs-comment">// ETC</span>
     });
-</pre>
+</code></pre>
 <p>Adopt this code as appropriate to your project. For instance, the route I call in the first parameter to <strong>getJSON</strong> may not be write for your final project.</p>
 <a class="anchor" id="errors"></a>
 <h2>Trouble Shoot Errors</h2>
@@ -537,21 +537,21 @@ function insertCollection() {
 <p>That may not be the name of the file you want to ignore in this case, but be sure you do teach nodemon to ignore any JSON files that you write to disk during program operation. Either that, or start the program with <strong>node</strong> rather than <strong>nodemon</strong> when turning in the final.</p>
 <p>This was a bug on my end, yet at least a few students should have been able to fix it.</p>
 <p>If you insert multiple times in one session, then <strong>totalRenewablesSaved</strong> gets increment past 12, and the program never sends a message back to the client that it has completed inserting data. The fix is simple: just set <strong>totalRenewablesSaved</strong> to zero before each insert:</p>
-<pre>allMongo.readDataAndInsert = function(response) {
-    'use strict';
-    fs.readFile('data/Renewable.json', function(err, renewables) {
-        if (err) {
-            throw (err);
+<pre><code class="lang-javascript">allMongo.readDataAndInsert = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    fs.readFile(<span class="hljs-string">'data/Renewable.json'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, renewables</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) {
+            <span class="hljs-keyword">throw</span> (err);
         }
-        renewables = JSON.parse(renewables);
-        totalRenewablesSaved = 0;    <================= FIX IS HERE
-        allMongo.numberOfRenewables = renewables.length;
-        for (var i = 0; i < renewables.length; i++) {
-            insertRenewable(renewables[i], response);
+        renewables = <span class="hljs-built_in">JSON</span>.parse(renewables);
+        totalRenewablesSaved = <span class="hljs-number">0</span>;    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">=================</span> <span class="hljs-attr">FIX</span> <span class="hljs-attr">IS</span> <span class="hljs-attr">HERE</span>
+        <span class="hljs-attr">allMongo.numberOfRenewables</span> = <span class="hljs-string">renewables.length;</span>
+        <span class="hljs-attr">for</span> (<span class="hljs-attr">var</span> <span class="hljs-attr">i</span> = <span class="hljs-string">0;</span> <span class="hljs-attr">i</span> &lt; <span class="hljs-attr">renewables.length</span>; <span class="hljs-attr">i</span>++) {
+            <span class="hljs-attr">insertRenewable</span>(<span class="hljs-attr">renewables</span>[<span class="hljs-attr">i</span>], <span class="hljs-attr">response</span>);
         }
     });
-};
-</pre>
+};</span></span>
+</code></pre>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Put your work in a branch called <strong>Final</strong> in a folder called <strong>SolarVoyager</strong>. If you do anything else other than this, please spell it out carefully when you turn in the Final. I will <strong>take off points</strong> and will likely ask you to re-submit if I don&#39;t immediately know where to look for final.</p>

@@ -25,66 +25,66 @@ wget https://s3.amazonaws.com/bucket01.elvenware.com/downloads/RenewableTypes.js
 
 <a class="anchor" id="server-starter"></a>
 <h2>Server Starter</h2>
-<pre>router.get('/renewables', function(request, response) {
-  console.log('Renewables called');
-  response.send({ result: 'Success'});
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/renewables'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Renewables called'</span>);
+  response.send({ <span class="hljs-attr">result</span>: <span class="hljs-string">'Success'</span>});
 });
-</pre>
+</code></pre>
 <p>If that works, then get it to read the JSON and parse it so that it is converted from a string to an object:</p>
-<pre>router.get('/renewables', function(request, response) {
-  console.log('Renewables called');
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/renewables'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Renewables called'</span>);
 
-  fs.readFile('data/Renewable.json', 'utf8', function(err, data) {
-      if (err) throw err;
-      console.log(data);
-      response.send({ result: 'Success', renewables: JSON.parse(data) });
+  fs.readFile(<span class="hljs-string">'data/Renewable.json'</span>, <span class="hljs-string">'utf8'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, data</span>) </span>{
+      <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">throw</span> err;
+      <span class="hljs-built_in">console</span>.log(data);
+      response.send({ <span class="hljs-attr">result</span>: <span class="hljs-string">'Success'</span>, <span class="hljs-attr">renewables</span>: <span class="hljs-built_in">JSON</span>.parse(data) });
   });
 
 });
-</pre>
+</code></pre>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Put a button on the main HTML file. When they click it, call the renewables routes and display the JSON in a PRE tag. This is the same thing we did in ExpressRoutes, but this time we are loading a JSON file rather than adding two numbers.</p>
 <a class="anchor" id="more-complete-error"></a>
 <h2>More complete Error</h2>
 <p>On server, include the built in file system package near the top of your file:</p>
-<pre>var express = require('express');
-var router = express.Router();
-var fs = require('fs');
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var express</span> = require(<span class="hljs-string">'express'</span>);
+<span class="hljs-attribute">var router</span> = express.Router();
+<span class="hljs-attribute">var fs</span> = require(<span class="hljs-string">'fs'</span>);
+</code></pre>
 <p>Then, in your <strong>/renewables</strong> route, do something like this:</p>
-<pre>fs.readFile('data/Renewable.json', 'utf8', function (err, data) {
-    if (err) {
-        // response.send(err, 404);
-        response.status(404).send(err);
-    } else {
-        var json = JSON.parse(data);
-        console.log(json);
-        response.send({result: 'Success', renewables: json});
+<pre><code class="lang-javascript">fs.readFile(<span class="hljs-string">'data/Renewable.json'</span>, <span class="hljs-string">'utf8'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err, data</span>) </span>{
+    <span class="hljs-keyword">if</span> (err) {
+        <span class="hljs-comment">// response.send(err, 404);</span>
+        response.status(<span class="hljs-number">404</span>).send(err);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">var</span> json = <span class="hljs-built_in">JSON</span>.parse(data);
+        <span class="hljs-built_in">console</span>.log(json);
+        response.send({<span class="hljs-attr">result</span>: <span class="hljs-string">'Success'</span>, <span class="hljs-attr">renewables</span>: json});
     }
 });
-</pre>
+</code></pre>
 <p>Note that we translated the string that we loaded from the file system in JSON with this call:</p>
-<pre>var json = JSON.parse(data);
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var json</span> = JSON.parse(data);
+</code></pre>
 <p>On the client lets begin to handle all the events associated with a call to getJSON:</p>
-<pre>$(document).ready(function () {
-    'use strict';
-    $.getJSON('/renewables', function (response) {
-            console.log(response);
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    $.getJSON(<span class="hljs-string">'/renewables'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">response</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(response);
         })
-        .done(function () {
-            console.log("second success");
+        .done(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"second success"</span>);
         })
-        .fail(function (a, b, c) {
-            console.log('Error', a, b, c);
-            $('#debug').html('Error occured: ', a.status);
+        .fail(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">a, b, c</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Error'</span>, a, b, c);
+            $(<span class="hljs-string">'#debug'</span>).html(<span class="hljs-string">'Error occured: '</span>, a.status);
         })
-        .always(function () {
-            console.log("complete");
+        .always(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"complete"</span>);
         });
 });
-</pre>
+</code></pre>
 <a class="anchor" id="for-later"></a>
 <h2>For Later</h2>
 <p>Don&#39;t do this yet:</p>

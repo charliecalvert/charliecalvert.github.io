@@ -55,29 +55,29 @@
 <p>Add request to your server:</p>
 <p>  npm install request --save</p>
 <p>Require it at the top of <strong>routes/api.js</strong></p>
-<pre>var request = require('request');
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var request</span> = require(<span class="hljs-string">'request'</span>);
+</code></pre>
 <p>The data I return from the server is shaped, for now, like this:</p>
-<pre>router.get('/user', function(req, res, next) {
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/user'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req, res, next)</span> {</span>
     var options = {
-        url: 'https://api.github.com/users/charliecalvert',
+        url: <span class="hljs-string">'https://api.github.com/users/charliecalvert'</span>,
         headers: {
-            'User-Agent': 'request'
+            <span class="hljs-string">'User-Agent'</span>: <span class="hljs-string">'request'</span>
         }
     };
 
-    request(options, function(error, response, body) {
-        // Print the error if one occurred
-        console.log('error:', error);
-        // Print the response status code if a response was received
-        console.log('statusCode:', response && response.statusCode);
-        // Print the HTML for the Google homepage.
-        console.log('body:', body);
-        res.send({error: error, response: response, body: body});
+    request(options, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(error, response, body)</span> {</span>
+        <span class="hljs-comment">// Print the error if one occurred</span>
+        console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'error:'</span>, <span class="hljs-built_in">error</span>);
+        <span class="hljs-comment">// Print the response status code if a response was received</span>
+        console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'statusCode:'</span>, response &amp;&amp; response.statusCode);
+        <span class="hljs-comment">// Print the HTML for the Google homepage.</span>
+        console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'body:'</span>, body);
+        res.send({<span class="hljs-built_in">error</span>: <span class="hljs-built_in">error</span>, response: response, body: body});
     });
 
 });
-</pre>
+</code></pre>
 <p>Note that I&#39;m sending back three properties:</p>
 <ul>
 <li>error</li>
@@ -85,49 +85,49 @@
 <li>body</li>
 </ul>
 <p>The last contains the core data that we want to retrieve from GitHub. The first few lines should look something like this, with your data rather than mine:</p>
-<pre>{
-    "login": "charliecalvert",
-    "id": 1811478,
-    "avatar_url": "https://avatars3.githubusercontent.com/u/1811478?v=3",
-    "gravatar_id": "",
-    "url": "https://api.github.com/users/charliecalvert",
-    "html_url": "https://github.com/charliecalvert",
-    "followers_url": "https://api.github.com/users/charliecalvert/followers",
+<pre><code class="lang-javascript">{
+    <span class="hljs-string">"login"</span>: <span class="hljs-string">"charliecalvert"</span>,
+    <span class="hljs-string">"id"</span>: <span class="hljs-number">1811478</span>,
+    <span class="hljs-string">"avatar_url"</span>: <span class="hljs-string">"https://avatars3.githubusercontent.com/u/1811478?v=3"</span>,
+    <span class="hljs-string">"gravatar_id"</span>: <span class="hljs-string">""</span>,
+    <span class="hljs-string">"url"</span>: <span class="hljs-string">"https://api.github.com/users/charliecalvert"</span>,
+    <span class="hljs-string">"html_url"</span>: <span class="hljs-string">"https://github.com/charliecalvert"</span>,
+    <span class="hljs-string">"followers_url"</span>: <span class="hljs-string">"https://api.github.com/users/charliecalvert/followers"</span>,
 
-    // MANY LINES OMITTED
+    <span class="hljs-comment">// MANY LINES OMITTED</span>
 }
-</pre>
+</code></pre>
 <a class="anchor" id="display-user-data"></a>
 <h2>Display User Data</h2>
 <p>The first step would be to rename <strong>components/App.js</strong> to <strong>components/GetUserInfo.js</strong>. That might look something like this on your system, where you may need to change or skip the first line:</p>
-<pre>$ cd GitExplorer/client/src/
-$ git mv components/App.js components/GetUserInfo.js
-</pre>
+<pre><code class="lang-bash"><span class="hljs-meta">$</span><span class="bash"> <span class="hljs-built_in">cd</span> GitExplorer/client/src/</span>
+<span class="hljs-meta">$</span><span class="bash"> git mv components/App.js components/GetUserInfo.js</span>
+</code></pre>
 <p>Open up the source for <strong>GetUserInfo.js</strong>, and rename the component class from <strong>App</strong> to <strong>GetUserInfo</strong>. This will take two changes:</p>
-<pre>// CODE OMITTED HERE
-class GetUserInfo extends Component {
-// CODE OMITTED HERE  
+<pre><code class="lang-javascript"><span class="hljs-comment">// CODE OMITTED HERE</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GetUserInfo</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+<span class="hljs-comment">// CODE OMITTED HERE  </span>
 }
 
-export default GetUserInfo;
-</pre>
+export <span class="hljs-keyword">default</span> <span class="hljs-type">GetUserInfo</span>;
+</code></pre>
 <p>Create a <strong>getUser method</strong> that looks a little like this:</p>
-<pre>getUser = () => {
+<pre><code class="lang-javascript">getUser = () =&gt; {
 
-    const that = this;
-    fetch('/api/user')
-        .then(function (response) {
-            // YOU WRITE IT
-        }).then(function (json) {
-            // DISPLAY WITH LOGGER AS NEEDED
-            // PARSE THE JSON BODY INTO JS SINCE IT IS PROPABLY A STRING:
-            var body = JSON.parse(json.body);
+    <span class="hljs-keyword">const</span> that = this;
+    fetch(<span class="hljs-string">'/api/user'</span>)
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(response)</span> </span>{
+            <span class="hljs-comment">// YOU WRITE IT</span>
+        }).then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(json)</span> </span>{
+            <span class="hljs-comment">// DISPLAY WITH LOGGER AS NEEDED</span>
+            <span class="hljs-comment">// PARSE THE JSON BODY INTO JS SINCE IT IS PROPABLY A STRING:</span>
+            <span class="hljs-keyword">var</span> body = JSON.parse(json.body);
             that.setState({userLogin: body.login});
-        }).catch(function (ex) {
-            // DISPLAY WITH LOGGER
+        }).<span class="hljs-keyword">catch</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(ex)</span> </span>{
+            <span class="hljs-comment">// DISPLAY WITH LOGGER</span>
         });
 };
-</pre>
+</code></pre>
 <p>Ultmately, your setState method will need to be more complicated than this, as there is more than just a login field to dispay.</p>
 <p>Add a paragraph and button in the render method to display your input.</p>
 <p>Make any necessary changes in App.js.</p>
@@ -135,42 +135,41 @@ export default GetUserInfo;
 <a class="anchor" id="don-t-forget-enzyme-debug-"></a>
 <h2>Don&#39;t forget Enzyme Debug:</h2>
 <p>Here are part of my header tests with the debug info:</p>
-<pre>describe('My Header tests', function () {
-    var quiet = false;            <========== LOOK HERE!
+<pre><code class="lang-javascript">describe('My Header tests', function () {
+    var quiet = false<span class="hljs-comment">;            &lt;========== LOOK HERE!</span>
 
-    function getFirst(wrapper) {  <========== LOOK HERE!
-        const eightp = wrapper.find('h2').first().debug();
+    function getFirst(<span class="hljs-name">wrapper</span>) {  &lt;========== LOOK HERE!
+        const eightp = wrapper.find('h2').first().debug()<span class="hljs-comment">;</span>
         if (!quiet) {
-            console.log("HEADER:", eightp);
+            console.log(<span class="hljs-string">"HEADER:"</span>, eightp)<span class="hljs-comment">;</span>
         }
     }
 
-    it('renders and reads H1 text', () => {
-        const wrapper = shallow(<Header />);
-        const welcome = <h2>Welcome to React</h2>;
-        expect(wrapper.contains(welcome)).toEqual(true);
-        getFirst(wrapper)         <========== LOOK HERE!
-    });
+    it('renders and reads H1 text', () =&gt; {
+        const wrapper = shallow(<span class="hljs-name">&lt;Header</span> /&gt;)<span class="hljs-comment">;</span>
+        const welcome = &lt;h2&gt;Welcome to React&lt;/h2&gt;<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">welcome</span>)).toEqual(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+        getFirst(<span class="hljs-name">wrapper</span>)         &lt;========== LOOK HERE!
+    })<span class="hljs-comment">;</span>
 
     // MORE CODE HERE AND ELSEWHERE
-});
-</pre>
+})<span class="hljs-comment">;</span>
+</code></pre>
 <a class="anchor" id="each-test-suite-gets-unique-name"></a>
 <h2>Each Test Suite Gets Unique Name</h2>
 <p>Make sure each test suite you create has a unique and easy to understand name:</p>
-<pre>describe('My Get User Info Test', function () {...})
-</pre>
+<pre><code class="lang-javascript">describe('<span class="hljs-type">My</span> <span class="hljs-type">Get</span> <span class="hljs-type">User</span> <span class="hljs-type">Info</span> <span class="hljs-type">Test</span>', function () <span class="hljs-meta">{...}</span>)
+</code></pre>
 <p>We need to be able to easily know where each failing test is located. Give the suite a good name, and it can help us quickly find the failing test so we can fix it:</p>
-<pre>My Get User Info Test › renders default message for state.userLogin
+<pre><code>My <span class="hljs-builtin-name">Get</span><span class="hljs-built_in"> User </span><span class="hljs-builtin-name">Info</span> Test › renders<span class="hljs-built_in"> default </span>message <span class="hljs-keyword">for</span> state.userLogin
 
    expect(received).toEqual(expected)
 
-   Expected value to equal:
-     true
+   Expected value <span class="hljs-keyword">to</span> equal:
+     <span class="hljs-literal">true</span>
    Received:
-     false
-</pre>
-<a class="anchor" id="turn-it-in"></a>
+     <span class="hljs-literal">false</span>
+</code></pre><a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Commit, push. When you turn in the assignment, designate the directory in your repo where you did your work.</p>
 <p>It would be good to tag your work just after you push an assignment. An ideal process:</p>
@@ -181,10 +180,9 @@ export default GetUserInfo;
 </ul>
 <p>You don&#39;t have to use the branch, just create it. Then I can look in that branch for the code you submitted for the assignment. The branch would serve as a record of your project at the time your turned it in.</p>
 <p>A reminder of how to tag:</p>
-<pre>$ git tag -a v3.0.? -m "Turning in ReactPropsRefine"
-$ git push origin v3.0.?
-</pre>
-<p>The question mark stands for the next tag in your series of tags. For instance, on your system it might v3.0.4.</p>
+<pre><code><span class="hljs-meta">$</span><span class="bash"> git tag -a v3.0.? -m <span class="hljs-string">"Turning in ReactPropsRefine"</span></span>
+<span class="hljs-meta">$</span><span class="bash"> git push origin v3.0.?</span>
+</code></pre><p>The question mark stands for the next tag in your series of tags. For instance, on your system it might v3.0.4.</p>
 <a class="anchor" id="notes"></a>
 <h2>Notes</h2>
 <p>Don&#39;t spend a lot of time fretting over whether or not this is the right architecture. I have several refactorings I want us to do as we add new features, but that is for next week. Just get this far.</p>

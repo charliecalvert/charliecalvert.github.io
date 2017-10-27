@@ -71,42 +71,42 @@ npm start
 <a class="anchor" id="javascript-start"></a>
 <h2>JavaScript Start</h2>
 <p>Open <strong>control.js</strong> and put the following code in it:</p>
-<pre>var myModule = angular.module('elfApp', ['ngRoute']);
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> myModule = angular.module(<span class="hljs-string">'elfApp'</span>, [<span class="hljs-string">'ngRoute'</span>]);
 
-myModule.config(function($routeProvider, $locationProvider) {
-    'use strict';
+myModule.config(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$routeProvider, $locationProvider</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
 
-    $routeProvider.when('/', {
-        templateUrl: 'home-page',
-        controller: 'HomeController'
-    }).when('/first', {
-        templateUrl: 'first-page',
-        controller: 'FirstController'
-    }).when('/about', {
-        templateUrl: 'about-page',
-        controller: 'AboutController'
+    $routeProvider.when(<span class="hljs-string">'/'</span>, {
+        <span class="hljs-attr">templateUrl</span>: <span class="hljs-string">'home-page'</span>,
+        <span class="hljs-attr">controller</span>: <span class="hljs-string">'HomeController'</span>
+    }).when(<span class="hljs-string">'/first'</span>, {
+        <span class="hljs-attr">templateUrl</span>: <span class="hljs-string">'first-page'</span>,
+        <span class="hljs-attr">controller</span>: <span class="hljs-string">'FirstController'</span>
+    }).when(<span class="hljs-string">'/about'</span>, {
+        <span class="hljs-attr">templateUrl</span>: <span class="hljs-string">'about-page'</span>,
+        <span class="hljs-attr">controller</span>: <span class="hljs-string">'AboutController'</span>
     }).otherwise({
-        redirectTo: '/'
+        <span class="hljs-attr">redirectTo</span>: <span class="hljs-string">'/'</span>
     });
 });
 
-$(document).ready(function() {
-    'use strict';
-    $('.navbar-nav li.trigger-collapse a').click(function(event) {
-        $('.navbar-collapse').collapse('hide');
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    $(<span class="hljs-string">'.navbar-nav li.trigger-collapse a'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+        $(<span class="hljs-string">'.navbar-collapse'</span>).collapse(<span class="hljs-string">'hide'</span>);
     });
 });
-</pre>
+</code></pre>
 <p>Then three very similar Controllers. I will give you the first. Save it as <strong>public/javascripts/home.js</strong></p>
-<pre>var elfApp = angular.module('elfApp');
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfApp = angular.module(<span class="hljs-string">'elfApp'</span>);
 
-elfApp.controller('HomeController', function($scope) {
-    'use strict';
+elfApp.controller(<span class="hljs-string">'HomeController'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$scope</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
 
-    $scope.description = 'HomeController Data';
+    $scope.description = <span class="hljs-string">'HomeController Data'</span>;
 
 });
-</pre>
+</code></pre>
 <p>Create two more pages:</p>
 <ul>
 <li>about.js</li>
@@ -145,54 +145,54 @@ elf-home-description
 </ul>
 <p>Change the H1 element to refect the page contents. In other words, they should have similar, but not identical contents. For instance, change the word <strong>Home</strong> to <strong>First</strong> and <strong>About</strong> as appropriate.</p>
 <p>We will also need to add a new route to <strong>routes/index.js</strong>:</p>
-<pre>router.get('/:id', function(req, res, next) { 'use strict';
-  res.render(req.params.id, { title: 'ibitday' });
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-keyword">function</span>(req, res, <span class="hljs-keyword">next</span>) { <span class="hljs-string">'use strict'</span>;
+  res.render(req.params.id, { title: <span class="hljs-string">'ibitday'</span> });
 });
-</pre>
+</code></pre>
 <a class="anchor" id="main-index-page"></a>
 <h2>Main Index Page</h2>
 <p>This is a SPA. As a result, our main page is always loaded. We need to have a location in that page where we load in content for our other &quot;pages&quot;. The end result is that the top few lines of our main page are static. As the user selects items from the menu, the area below this main section morphs to reflect the content of the user&#39;s selection. Thus we have one main page that morphs into other &quot;pages&quot; as the user requests.</p>
 <p>To create a place on the main page where new &quot;pages&quot; can be loaded, add the angular <strong>ng-view</strong> directive to your main page:</p>
-<pre>extends layout
+<pre><code class="lang-javascript">extends layout
 
-block content
-  .container
+block <span class="hljs-attribute">content</span>
+  <span class="hljs-selector-class">.container</span>
     h1= title
-    p Welcome to #{title}
-    p Author #{author}
+    <span class="hljs-selector-tag">p</span> Welcome to #{title}
+    <span class="hljs-selector-tag">p</span> Author #{author}
 
-    div(data-ng-view="")
-</pre>
+    div(data-ng-view=<span class="hljs-string">""</span>)
+</code></pre>
 <p>As stated above, we are building a SPA. As a result, the H1 and two paragraph elements shown above are relatively static. The new &quot;pages&quot; loaded when the user makes menu selections are placed inside the <strong>ng-view</strong>.</p>
 <a class="anchor" id="menu"></a>
 <h2>Menu</h2>
-<pre>extends layout
+<pre><code class="lang-javascript">extends layout
 
-block content
-  header.navbar.navbar-inverse.navbar-fixed-top.bs-docs-nav(role='banner')
-    .container
-      .navbar-header
-        button.navbar-toggle(type='button', data-toggle='collapse', data-target='.bs-navbar-collapse')
-          span.sr-only Toggle navigation
-          span.icon-bar
-          span.icon-bar
-          span.icon-bar
-        a.navbar-brand(href='.#/') Solar Explorer
-      nav.collapse.navbar-collapse.bs-navbar-collapse(role="navigation")
-        ul.nav.navbar-nav
-          li.trigger-collapse(ng-class="{ active: isActive('/')}")
-            a(ng-href='#/') Home
-          li.trigger-collapse(ng-class="{ active: isActive('/first')}")
-            a(ng-href='#/first') First
-          li.trigger-collapse(ng-class="{ active: isActive('/about')}")
-            a(ng-href='#/about') About
-  .container
+block <span class="hljs-attribute">content</span>
+  <span class="hljs-selector-tag">header</span><span class="hljs-selector-class">.navbar</span><span class="hljs-selector-class">.navbar-inverse</span><span class="hljs-selector-class">.navbar-fixed-top</span><span class="hljs-selector-class">.bs-docs-nav</span>(role=<span class="hljs-string">'banner'</span>)
+    <span class="hljs-selector-class">.container</span>
+      <span class="hljs-selector-class">.navbar-header</span>
+        <span class="hljs-selector-tag">button</span>.navbar-toggle(type=<span class="hljs-string">'button'</span>, data-toggle=<span class="hljs-string">'collapse'</span>, data-target=<span class="hljs-string">'.bs-navbar-collapse'</span>)
+          <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.sr-only</span> Toggle navigation
+          <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.icon-bar</span>
+          <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.icon-bar</span>
+          <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.icon-bar</span>
+        <span class="hljs-selector-tag">a</span>.navbar-brand(href=<span class="hljs-string">'.#/'</span>) Solar Explorer
+      <span class="hljs-selector-tag">nav</span><span class="hljs-selector-class">.collapse</span><span class="hljs-selector-class">.navbar-collapse</span><span class="hljs-selector-class">.bs-navbar-collapse</span>(role=<span class="hljs-string">"navigation"</span>)
+        <span class="hljs-selector-tag">ul</span><span class="hljs-selector-class">.nav</span><span class="hljs-selector-class">.navbar-nav</span>
+          <span class="hljs-selector-tag">li</span>.trigger-collapse(ng-class=<span class="hljs-string">"{ active: isActive('/')}"</span>)
+            a(ng-href=<span class="hljs-string">'#/'</span>) Home
+          <span class="hljs-selector-tag">li</span>.trigger-collapse(ng-class=<span class="hljs-string">"{ active: isActive('/first')}"</span>)
+            a(ng-href=<span class="hljs-string">'#/first'</span>) First
+          <span class="hljs-selector-tag">li</span>.trigger-collapse(ng-class=<span class="hljs-string">"{ active: isActive('/about')}"</span>)
+            a(ng-href=<span class="hljs-string">'#/about'</span>) About
+  <span class="hljs-selector-class">.container</span>
     h1= title
-    p Welcome to #{title}
-    p Author #{author}
+    <span class="hljs-selector-tag">p</span> Welcome to #{title}
+    <span class="hljs-selector-tag">p</span> Author #{author}
 
-    div(data-ng-view="")
-</pre>
+    div(data-ng-view=<span class="hljs-string">""</span>)
+</code></pre>
 <a class="anchor" id="simple-directive-"></a>
 <h2>Simple Directive:</h2>
 <p>Let&#39;s create a directive. An angular directive allows us to create custom HTML element. Examples of angular directives that we have used already are <strong>ng-app</strong> or <strong>ng-view</strong>. We can use these elements in our HTML files, yet they are not part of HTML5. They are custom elements created by the angular team.</p>
@@ -204,14 +204,14 @@ elf-first-description
 </pre>
 
 <p>To create the directive, add this code to <strong>first.js</strong>:</p>
-<pre>elfApp.directive('elfFirstDescription', function() {
-    'use strict';
-    return {
-        controller: 'FirstController',
-        templateUrl: 'first-controller'
+<pre><code class="lang-javascript">elfApp.directive(<span class="hljs-string">'elfFirstDescription'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">controller</span>: <span class="hljs-string">'FirstController'</span>,
+        <span class="hljs-attr">templateUrl</span>: <span class="hljs-string">'first-controller'</span>
     };
 });
-</pre>
+</code></pre>
 <p>We need to add the Jade that defines our <strong>templateUrl</strong> to a new file called <strong>view/first-controller.jade</strong>:</p>
 <pre>
 .panel.panel-default
@@ -225,46 +225,46 @@ elf-first-description
 <a class="anchor" id="loading-data"></a>
 <h2>Loading Data</h2>
 <p>Here is a JSON file. Save it in <strong>public/Presidents.json</strong>:</p>
-<pre>[
+<pre><code class="lang-json">[
     {
-        "firstName": "George", "lastName": "Washington", "address": "101 June Street", "city": "Bellevue", "state": "WA"
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"George"</span>, <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Washington"</span>, <span class="hljs-attr">"address"</span>: <span class="hljs-string">"101 June Street"</span>, <span class="hljs-attr">"city"</span>: <span class="hljs-string">"Bellevue"</span>, <span class="hljs-attr">"state"</span>: <span class="hljs-string">"WA"</span>
     },
     {
-        "firstName": "John", "lastName": "Adams", "address":  "101 June Street", "city": "Bellevue", "state": "WA"
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"John"</span>, <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Adams"</span>, <span class="hljs-attr">"address"</span>:  <span class="hljs-string">"101 June Street"</span>, <span class="hljs-attr">"city"</span>: <span class="hljs-string">"Bellevue"</span>, <span class="hljs-attr">"state"</span>: <span class="hljs-string">"WA"</span>
     },
     {
-        "firstName": "Thomas", "lastName": "Jefferson", "address":  "101 June Street", "city": "Bellevue", "state": "WA"
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Thomas"</span>, <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Jefferson"</span>, <span class="hljs-attr">"address"</span>:  <span class="hljs-string">"101 June Street"</span>, <span class="hljs-attr">"city"</span>: <span class="hljs-string">"Bellevue"</span>, <span class="hljs-attr">"state"</span>: <span class="hljs-string">"WA"</span>
     },
     {
-        "firstName": "James", "lastName": "Madison", "address":  "101 June Street", "city": "Bellevue", "state": "WA"
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"James"</span>, <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Madison"</span>, <span class="hljs-attr">"address"</span>:  <span class="hljs-string">"101 June Street"</span>, <span class="hljs-attr">"city"</span>: <span class="hljs-string">"Bellevue"</span>, <span class="hljs-attr">"state"</span>: <span class="hljs-string">"WA"</span>
     }
 ]
-</pre>
+</code></pre>
 <p>Here is code to load it. As you can see we put it in the <strong>FirstController</strong>:</p>
-<pre>elfApp.controller('FirstController', function($scope, $http) {
-    'use strict';
+<pre><code class="lang-javascript">elfApp.controller(<span class="hljs-string">'FirstController'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$scope, $http</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
 
-    $scope.description = 'First Controller Description';
+    $scope.description = <span class="hljs-string">'First Controller Description'</span>;
 
-    $scope.loadData = function() {
-        $http.get('Presidents.json')
-            .then(function(presidents) {
-                $scope.presidents = JSON.stringify(presidents, null, 4);
+    $scope.loadData = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $http.get(<span class="hljs-string">'Presidents.json'</span>)
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">presidents</span>) </span>{
+                $scope.presidents = <span class="hljs-built_in">JSON</span>.stringify(presidents, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
             })
     };
 
     $scope.loadData();
 });
-</pre>
+</code></pre>
 <p>Here is the directive to display the data:</p>
-<pre>elfApp.directive('elfFirstData', function() {
-    'use strict';
-    return {
-        controller: 'FirstController',
-        templateUrl: 'first-data'
+<pre><code class="lang-javascript">elfApp.directive(<span class="hljs-string">'elfFirstData'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">controller</span>: <span class="hljs-string">'FirstController'</span>,
+        <span class="hljs-attr">templateUrl</span>: <span class="hljs-string">'first-data'</span>
     };
 });
-</pre>
+</code></pre>
 <p>Here is <strong>views/first-data.jade</strong>. This is where our list of presidents from the <strong>Presidents.json</strong> file will be loaded:</p>
 <pre>
 .panel.panel-default
@@ -289,161 +289,161 @@ npm install jasmine-jquery --save-dev
 <li>load <strong>public/javascripts/control.js</strong> before we load the other files in <strong>public/javascripts</strong>.</li>
 </ul>
 <p>Here is the updated <strong>files</strong> section from <strong>karma.conf.js</strong>:</p>
-<pre>files: [
-    'public/components/jquery/dist/jquery.min.js',
-    'public/components/angular/angular.js',             <=== HERE
-    'public/components/angular-mocks/angular-mocks.js', <=== HERE
-    'public/components/angular-route/angular-route.js', <=== HERE
-    'node_modules/jasmine-jquery/lib/*.js',
-    'public/javascripts/control.js',                    <=== HERE
-    'public/javascripts/*.js',
-    'spec/**/*.html',
-    'spec/test*.js'
+<pre><code class="lang-javascript">files: [
+    <span class="hljs-symbol">'public</span>/components/jquery/dist/jquery.min.js',
+    <span class="hljs-symbol">'public</span>/components/angular/angular.js',             &lt;=== <span class="hljs-type">HERE</span>
+    <span class="hljs-symbol">'public</span>/components/angular-mocks/angular-mocks.js', &lt;=== <span class="hljs-type">HERE</span>
+    <span class="hljs-symbol">'public</span>/components/angular-route/angular-route.js', &lt;=== <span class="hljs-type">HERE</span>
+    <span class="hljs-symbol">'node_modules</span>/jasmine-jquery/lib/*.js',
+    <span class="hljs-symbol">'public</span>/javascripts/control.js',                    &lt;=== <span class="hljs-type">HERE</span>
+    <span class="hljs-symbol">'public</span>/javascripts/*.js',
+    <span class="hljs-symbol">'spec</span>/**/*.html',
+    <span class="hljs-symbol">'spec</span>/test*.js'
 ],
-</pre>
+</code></pre>
 <p>In <strong>Gruntfile.js</strong>, ensure that we build our HTML to use in our tests:</p>
-<pre>jade: {
+<pre><code class="lang-javascript">jade: {
     compile: {
         options: {
-            pretty: true,
+            pretty: <span class="hljs-literal">true</span>,
             data: {
-                debug: false
+                debug: <span class="hljs-literal">false</span>
             }
         },
         files: {
-            'spec/fixtures/home-page.html': ['views/home-page.jade'],
-            'spec/fixtures/first-page.html': ['views/first-page.jade'],
-            'spec/fixtures/about-page.html': ['views/about-page.jade']
+            <span class="hljs-symbol">'spec</span>/fixtures/home-page.html': [<span class="hljs-symbol">'views</span>/home-page.jade'],
+            <span class="hljs-symbol">'spec</span>/fixtures/first-page.html': [<span class="hljs-symbol">'views</span>/first-page.jade'],
+            <span class="hljs-symbol">'spec</span>/fixtures/about-page.html': [<span class="hljs-symbol">'views</span>/about-page.jade']
         }
     }
 },
-</pre>
+</code></pre>
 <p>And a small modification at the bottom of the page where we add Jade to test task:</p>
-<pre>    grunt.registerTask('test', ['jshint', 'jade', 'karma']);
-</pre>
+<pre><code class="lang-javascript">    <span class="hljs-selector-tag">grunt</span><span class="hljs-selector-class">.registerTask</span>(<span class="hljs-string">'test'</span>, [<span class="hljs-string">'jshint'</span>, <span class="hljs-string">'jade'</span>, <span class="hljs-string">'karma'</span>]);
+</code></pre>
 <p>Finally, let&#39;s modify <strong>spec/test-basic.js</strong>:</p>
-<pre>describe('Elvenware Simple Plain Suite', function () {
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Elvenware Simple Plain Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">
+    'use strict'</span>;
 
-    'use strict';
+    <span class="hljs-keyword">var</span> scope;
 
-    var scope;
+    beforeEach(<span class="hljs-built_in">module</span>(<span class="hljs-string">'elfApp'</span>));
 
-    beforeEach(module('elfApp'));
-
-    /*
+    <span class="hljs-comment">/*
      * instantiate the controller without the directive
-     */
-    beforeEach(inject(function (_$rootScope_, _$controller_) {
-        scope = _$rootScope_.$new();
-        _$controller_('HomeController', {
-            $scope: scope
+     */</span>
+    beforeEach(inject(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">_$rootScope_, _$controller_</span>) </span>{
+        scope = _$rootScope_.$<span class="hljs-keyword">new</span>();
+        _$controller_(<span class="hljs-string">'HomeController'</span>, {
+            <span class="hljs-attr">$scope</span>: scope
         });
     }));
 
-    it('expects true to be true', function () {
-        expect(true).toBe(true);
+    it(<span class="hljs-string">'expects true to be true'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">true</span>);
     });
 
-    it('should find the description', function () {
-        expect(scope.description).toBe('HomeController Data');
+    it(<span class="hljs-string">'should find the description'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        expect(scope.description).toBe(<span class="hljs-string">'HomeController Data'</span>);
     });
 
 });
-</pre>
+</code></pre>
 <p>Now run <strong>grunt test</strong>.</p>
 <a class="anchor" id="test-fixture"></a>
 <h2>Test Fixture</h2>
-<pre>describe('Elvenware Test Fixture Suite', function () {
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Elvenware Test Fixture Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
 
-    'use strict';
+    <span class="hljs-string">'use strict'</span>;
 
-    var scope;
-    var $templateCache;
-    var $compile;
+    <span class="hljs-keyword">var</span> scope;
+    <span class="hljs-keyword">var</span> $templateCache;
+    <span class="hljs-keyword">var</span> $compile;
 
-    beforeEach(module('elfApp'));
+    beforeEach(module(<span class="hljs-string">'elfApp'</span>));
 
-    /*
+    <span class="hljs-comment">/*
      * instantiate the controller without the directive
      * Get the Angular compiler and templateCache for processing Angular templates
-     */
-    beforeEach(inject(function (_$compile_, _$rootScope_, _$templateCache_, _$controller_) {
+     */</span>
+    beforeEach(inject(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(_$compile_, _$rootScope_, _$templateCache_, _$controller_)</span> </span>{
         scope = _$rootScope_.$new();
         $compile = _$compile_;
         $templateCache = _$templateCache_;
 
-        _$controller_('HomeController', {
+        _$controller_(<span class="hljs-string">'HomeController'</span>, {
             $scope: scope
         });
     }));
 
-    beforeEach(function () {
-        jasmine.getFixtures().fixturesPath = 'base/spec/fixtures/';
-        loadFixtures('home-page.html');
+    beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+        jasmine.getFixtures().fixturesPath = <span class="hljs-string">'base/spec/fixtures/'</span>;
+        loadFixtures(<span class="hljs-string">'home-page.html'</span>);
     });
 
-    it('expects true to be true', function () {
-        expect(true).toBe(true);
+    it(<span class="hljs-string">'expects true to be true'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+        expect(<span class="hljs-keyword">true</span>).toBe(<span class="hljs-keyword">true</span>);
     });
 
-    it('should be possible to access the fixture', function() {
-        var spanElement = document.getElementsByTagName('h1');
-        expect(spanElement[0].innerHTML).toBe('Home');
+    it(<span class="hljs-string">'should be possible to access the fixture'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">var</span> spanElement = document.getElementsByTagName(<span class="hljs-string">'h1'</span>);
+        expect(spanElement[<span class="hljs-number">0</span>].innerHTML).toBe(<span class="hljs-string">'Home'</span>);
     });
 });
-</pre>
+</code></pre>
 <a class="anchor" id="test-directive"></a>
 <h2>Test Directive</h2>
-<pre>describe('Elvenware Home Directive Suite', function () {
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Elvenware Home Directive Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
 
-    'use strict';
+    <span class="hljs-string">'use strict'</span>;
 
-    var scope;
-    var $templateCache;
-    var $compile;
+    <span class="hljs-keyword">var</span> scope;
+    <span class="hljs-keyword">var</span> $templateCache;
+    <span class="hljs-keyword">var</span> $compile;
 
-    beforeEach(module('elfApp'));
+    beforeEach(module(<span class="hljs-string">'elfApp'</span>));
 
-    /*
+    <span class="hljs-comment">/*
      * instantiate the controller without the directive
      * Get the Angular compiler and templateCache for processing Angular templates
-     */
-    beforeEach(inject(function (_$compile_, _$rootScope_, _$templateCache_, _$controller_) {
+     */</span>
+    beforeEach(inject(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(_$compile_, _$rootScope_, _$templateCache_, _$controller_)</span> </span>{
         scope = _$rootScope_.$new();
         $compile = _$compile_;
         $templateCache = _$templateCache_;
 
-        _$controller_('HomeController', {
+        _$controller_(<span class="hljs-string">'HomeController'</span>, {
             $scope: scope
         });
     }));
 
-    beforeEach(function () {
-        jasmine.getFixtures().fixturesPath = 'base/spec/fixtures/';
-        loadFixtures('home-description.html');
+    beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+        jasmine.getFixtures().fixturesPath = <span class="hljs-string">'base/spec/fixtures/'</span>;
+        loadFixtures(<span class="hljs-string">'home-description.html'</span>);
     });
 
-    it('expects true to be true', function () {
-        expect(true).toBe(true);
+    it(<span class="hljs-string">'expects true to be true'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+        expect(<span class="hljs-keyword">true</span>).toBe(<span class="hljs-keyword">true</span>);
     });
 
-    it('should be possible to access the fixture', function() {
-        var spanElement = document.getElementById('homeDescription');
-        //console.log(spanElement);
-        expect(spanElement.innerHTML).toContain('{{desc');
+    it(<span class="hljs-string">'should be possible to access the fixture'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">var</span> spanElement = document.getElementById(<span class="hljs-string">'homeDescription'</span>);
+        <span class="hljs-comment">//console.log(spanElement);</span>
+        expect(spanElement.innerHTML).toContain(<span class="hljs-string">'{{desc'</span>);
     });
 
-    it('should be able to see the fixture content', function() {
-        var el = document.getElementById('homeDescription');
-        //console.log(el);
-        $templateCache.put('home-description', el);
-        var element = $compile('<elf-home-description></elf-home-description>')(scope);
+    it(<span class="hljs-string">'should be able to see the fixture content'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">var</span> el = document.getElementById(<span class="hljs-string">'homeDescription'</span>);
+        <span class="hljs-comment">//console.log(el);</span>
+        $templateCache.put(<span class="hljs-string">'home-description'</span>, el);
+        <span class="hljs-keyword">var</span> element = $compile(<span class="hljs-string">'&lt;elf-home-description&gt;&lt;/elf-home-description&gt;'</span>)(scope);
         scope.$digest();
-        //console.log(element);
-        expect(element.text()).toContain('HomeController Data');
+        <span class="hljs-comment">//console.log(element);</span>
+        expect(element.text()).toContain(<span class="hljs-string">'HomeController Data'</span>);
     });
 });
-</pre>
+</code></pre>
 <p>If all the tests are working, the output should look something like this:</p>
 <pre>
 Elvenware Simple Plain Suite

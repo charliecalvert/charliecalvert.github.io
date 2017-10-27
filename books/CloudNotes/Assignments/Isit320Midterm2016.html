@@ -43,29 +43,29 @@
 <li>In the data master, allow the user to view records in edit controls with arrows to iterate through the game records</li>
 </ul>
 <p>Look at the <strong>Week03-ExpressRoutes</strong> program. There we have two edit controls. Here is the Jade for them:</p>
-<pre>div
-  input#operatorA(type="text", value=2)
+<pre><code class="lang-text">div
+  input<span class="hljs-function"><span class="hljs-keyword">#</span><span class="hljs-title">operatorA</span><span class="hljs-params">(<span class="hljs-variable">type</span>=<span class="hljs-string">"text"</span>, <span class="hljs-variable">value</span>=2)</span></span>
 div  
-  input#operatorB(type="text", value=3)
-</pre>
+  input<span class="hljs-function"><span class="hljs-keyword">#</span><span class="hljs-title">operatorB</span><span class="hljs-params">(<span class="hljs-variable">type</span>=<span class="hljs-string">"text"</span>, <span class="hljs-variable">value</span>=3)</span></span>
+</code></pre>
 <p>In the DataMaster part of the midterm, place at least three edit controls on your main window. When the user selects the hyperlink to read in records from the database, display at least three fields from the first record in the edit controls. We used code like this to read from an edit control:</p>
-<pre>$('#operatorA').val();
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-meta">$</span><span class="bash">(<span class="hljs-string">'#operatorA'</span>).val();</span>
+</code></pre>
 <p>To insert the number 1 into the the control, do something like this:</p>
-<pre>$('#operatorA').val(1);
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-meta">$</span><span class="bash">(<span class="hljs-string">'#operatorA'</span>).val(1);</span>
+</code></pre>
 <p>Here is one of my game records, though yours may look different than mine:</p>
-<pre>{
-    "id": "AA",
-    "npc_id": 1,
-    "npc_name": "Suzie One",
-    "description": "NPC AA",
-    "color": "#00FFFF",
-    "value": 15,
-    "question": "Is 2 + 2 equal to 4?",
-    "answer": true
+<pre><code class="lang-javascript">{
+    <span class="hljs-string">"id"</span>: <span class="hljs-string">"AA"</span>,
+    <span class="hljs-string">"npc_id"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">"npc_name"</span>: <span class="hljs-string">"Suzie One"</span>,
+    <span class="hljs-string">"description"</span>: <span class="hljs-string">"NPC AA"</span>,
+    <span class="hljs-string">"color"</span>: <span class="hljs-string">"#00FFFF"</span>,
+    <span class="hljs-string">"value"</span>: <span class="hljs-number">15</span>,
+    <span class="hljs-string">"question"</span>: <span class="hljs-string">"Is 2 + 2 equal to 4?"</span>,
+    <span class="hljs-string">"answer"</span>: <span class="hljs-literal">true</span>
 },
-</pre>
+</code></pre>
 <p>Display at least three of the value part of the these key/value pairs. For instance, display the <strong>npc_name</strong>, <strong>description</strong> and <strong>question</strong>.</p>
 <p>Now place two buttons on the page. If the user clicks one of the buttons you can see the next record, if she presses the other, you can see the previous record. Check to be sure you aren&#39;t iterating past the beginning and end of the records.</p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/data-master-iterate.png" alt="&#39;Minimal iterator picture&#39;"></p>
@@ -104,38 +104,38 @@ div
 </ul>
 <p>Inside of <strong>control.js</strong> you probably have a array called <strong>npcs</strong> which is used to keep track of the spheres you have been creating. <em>Carefully</em> rename this variable to <strong>npcList</strong> and declare it is a public property of <strong>Npcs</strong>. You will still reference this property from inside <strong>control.js</strong>. Check each place where you reference and make sure it is being handled correctly.</p>
 <p>In <strong>Npcs</strong> delcare a private function called <strong>getName</strong> and a couple public properties.</p>
-<pre>// When you insert an NPC, put it here.
-// When you delete an NPC remove it from this list.
+<pre><code class="lang-javascript"><span class="hljs-comment">// When you insert an NPC, put it here.</span>
+<span class="hljs-comment">// When you delete an NPC remove it from this list.</span>
 Npcs.prototype.npcList = [];
 
-// Track the coordinates of the NPCs here. Possibly redundant?
+<span class="hljs-comment">// Track the coordinates of the NPCs here. Possibly redundant?</span>
 Npcs.prototype.npcCoordinates = [];
 
-var baseName = 'npc';
+<span class="hljs-keyword">var</span> baseName = <span class="hljs-string">'npc'</span>;
 
-function getName(baseName, x, z) {
-    return baseName + '_' + x + '_' + z;
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getName</span><span class="hljs-params">(baseName, x, z)</span> </span>{
+    <span class="hljs-keyword">return</span> baseName + <span class="hljs-string">'_'</span> + x + <span class="hljs-string">'_'</span> + z;
 }
-</pre>
+</code></pre>
 <p>Note that you can use the JavaScript <strong>split</strong> function to retrieve the X and Z coordinates from this name. That is, you can use <strong>split</strong> to reverse engineer the <strong>getName</strong> method. The result of this effort should be X and Z coordinates you passed in when creating the name.</p>
 <p>When you create a new NPC, assign it a name property. Your code might look something like this:</p>
-<pre>sphere.name = getName(baseName, x, z);
-</pre>
+<pre><code class="lang-javascript">sphere.name = getName(<span class="hljs-keyword">baseName, </span>x, z)<span class="hljs-comment">;</span>
+</code></pre>
 <p>We will use this name to help us find a particular sphere.</p>
 <a class="anchor" id="npc-detection"></a>
 <h2>NPC Detection</h2>
 <p>Now add a public method to <strong>Collisions</strong> called <strong>npcDetection</strong>. Call it from the animate method. When you are done your program should now how to detect a collision with an NPC. Remember, we are not using ray tracing at this point. Instead, just detect if you are on the same grid coordinates as the NPC. For instance, iterate through the <strong>npcList</strong>, use the name to get the coordinates of the NPC, and compare them to the current position of the <strong>mainCharacter</strong>. Of they match, then you have a hit.</p>
 <p>If you find that you have stumbled on an NPC, then remove it from the <strong>npcList</strong> and from the <strong>scene</strong>. To help you do so, add a method to <strong>Npcs</strong> called <strong>removeNpc</strong>. It might look a little like this, but it should be a public method of <strong>Npcs</strong>:</p>
-<pre>var removeNpc = function(x, z, scene, gridNpc) {
-      gridNpc[x][z] = 0;      
-      var objectName = getName(baseName, x, z);
-      var selectedObject = scene.getObjectByName(objectName);
-      var index = this.npcList.indexOf(selectedObject);
-      this.npcList.splice(index, 1);
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> removeNpc = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x, z, scene, gridNpc)</span> </span>{
+      gridNpc[x][z] = <span class="hljs-number">0</span>;      
+      <span class="hljs-keyword">var</span> objectName = getName(baseName, x, z);
+      <span class="hljs-keyword">var</span> selectedObject = scene.getObjectByName(objectName);
+      <span class="hljs-keyword">var</span> index = <span class="hljs-keyword">this</span>.npcList.indexOf(selectedObject);
+      <span class="hljs-keyword">this</span>.npcList.splice(index, <span class="hljs-number">1</span>);
       scene.remove(selectedObject);
   };
 }
-</pre>
+</code></pre>
 <p>The <strong>GridNpc</strong> property should point at the NPC 2D 24X24 array that we load to track the location of the NPCs. The idea is that once we have discovered and removed an NPC from the scene,  we should also remove it from the grid array.</p>
 <p>Call <strong>removeNpc</strong> from <strong>control.js</strong> when <strong>collisions.npcDetection</strong> finds an NPC. Except for the method not being public, the code shown above works for me. It removes the NPC both from the <strong>npcList</strong> and from the <strong>Scene</strong>. Remove the NPC from the <strong>Scene</strong> results in the character disappearing. The character is removed from the board.</p>
 <p>At some point you will probably want to create a variable with object scope in <strong>control.js</strong> called <strong>mainCharacter</strong>. At minimum <strong>mainCharacter</strong> should be an object literal with two properties, <strong>x</strong> and <strong>z</strong> which track the cameras current position in grid coordinates.</p>
@@ -145,25 +145,25 @@ function getName(baseName, x, z) {
 <p>Put your work in two Git folders located in the root of your repository. Call them <strong>Week07-Midterm</strong> and <strong>Week07-DataMaster</strong>. Submit the URL of your repository. Please follow these naming conventions. If, for some reason, you want to use other names, be sure to specify the folders in which you have placed your game and your database code.</p>
 <p>Make sure the CouchDb database has your name appended to it: <strong>game-data-lastname</strong>.</p>
 <p>Set the zeroth item in your <strong>Couch.js</strong> array of addresses to <strong>192.168.2.19:5984</strong>. You don&#39;t have to set the index to that number, but do make it the first item in your array. Thank you. (That&#39;s the IP address of my CouchDb server here at home.) Example</p>
-<pre>var servers = ['http://192.168.2.19:5984', 'http://192.168.0.6:5984'];
-</pre>
+<pre><code class="lang-javascript">var servers = ['http://192.168.2.19:<span class="hljs-number">5984</span>', 'http://192.168.0.6:<span class="hljs-number">5984</span>'];
+</code></pre>
 <a class="anchor" id="hint"></a>
 <h2>Hint</h2>
 <p>Take full advantage of $.getJSON:</p>
-<pre>function showDebug(value) {
-    console.log(value);
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showDebug</span>(<span class="hljs-params">value</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(value);
 }
 
-$.getJSON('grid000.json', function (grid) {
-  // YOUR CODE HERE
-}).done(function () {
-    showDebug('Grid loaded second success');
-}).fail(function (jqxhr, textStatus, error) {
-    showDebug('Grid loaded error: ' + jqxhr.status + ' ' + textStatus + ' ' + error);
-}).always(function () {
-    showDebug('Grid loaded complete');
+$.getJSON(<span class="hljs-string">'grid000.json'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">grid</span>) </span>{
+  <span class="hljs-comment">// YOUR CODE HERE</span>
+}).done(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    showDebug(<span class="hljs-string">'Grid loaded second success'</span>);
+}).fail(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">jqxhr, textStatus, error</span>) </span>{
+    showDebug(<span class="hljs-string">'Grid loaded error: '</span> + jqxhr.status + <span class="hljs-string">' '</span> + textStatus + <span class="hljs-string">' '</span> + error);
+}).always(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    showDebug(<span class="hljs-string">'Grid loaded complete'</span>);
 });
-</pre>
+</code></pre>
 <a class="anchor" id="extra-credit"></a>
 <h2>Extra Credit</h2>
 <p>Add sky.</p>

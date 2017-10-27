@@ -35,9 +35,9 @@
 <a class="anchor" id="updated-routes"></a>
 <h2>Updated Routes</h2>
 <p>I&#39;ll put the files in JsObjects:</p>
-<pre>mkdir public/javascripts/route-provider/
-cp -v $ELF_TEMPLATES/Routes/* public/javascripts/route-provider/.
-</pre>
+<pre><code class="lang-bash">mkdir <span class="hljs-keyword">public</span><span class="hljs-regexp">/javascripts/</span>route-provider/
+cp -v $ELF_TEMPLATES<span class="hljs-regexp">/Routes/</span>* <span class="hljs-keyword">public</span><span class="hljs-regexp">/javascripts/</span>route-provider/.
+</code></pre>
 <p>This copies over updated, but backward compatible, copies of <strong>routes.js</strong> and <strong>run-query.js</strong>.</p>
 <p>It is crucial that you understand how these files work. The pith explanation of how to use them:</p>
 <ul>
@@ -50,49 +50,49 @@ cp -v $ELF_TEMPLATES/Routes/* public/javascripts/route-provider/.
 </li>
 </ul>
 <p>Here is a sample <strong>.when</strong> block</p>
-<pre>.when('/deleteDb', {
-    templateUrl: '/display-default',
-    controller: queryController,
-    resolve: {
-        result: queryController.delete
+<pre><code class="lang-javascript"><span class="hljs-selector-class">.when</span>(<span class="hljs-string">'/deleteDb'</span>, {
+    <span class="hljs-attribute">templateUrl</span>: <span class="hljs-string">'/display-default'</span>,
+    <span class="hljs-attribute">controller</span>: queryController,
+    <span class="hljs-attribute">resolve</span>: {
+        <span class="hljs-attribute">result</span>: queryController.delete
     }
-}).when('/createDb', { ... })
-</pre>
+})<span class="hljs-selector-class">.when</span>(<span class="hljs-string">'/createDb'</span>, { ... })
+</code></pre>
 <p>Here is a sample <strong>controller</strong>:</p>
-<pre>define(['runQuery', 'utility', 'jsonToHtml'], function(runQuery, utility, jsonToHtml) {
-    'use strict';
+<pre><code class="lang-javascript">define([<span class="hljs-string">'runQuery'</span>, <span class="hljs-string">'utility'</span>, <span class="hljs-string">'jsonToHtml'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">runQuery, utility, jsonToHtml</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
 
-    var nameController = function(query, data) {
+    <span class="hljs-keyword">var</span> nameController = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">query, data</span>) </span>{
         utility.clearAll();
-        if (query.requestFailed) {
+        <span class="hljs-keyword">if</span> (query.requestFailed) {
             utility.failed(query.requestFailed);
-            return;
+            <span class="hljs-keyword">return</span>;
         }
 
-        var debug = $('#debug');
-        var docs = $('#docs');
-        var displayData = JSON.stringify(data, null, 5);
-        if (query === '/databaseName') {
+        <span class="hljs-keyword">var</span> debug = $(<span class="hljs-string">'#debug'</span>);
+        <span class="hljs-keyword">var</span> docs = $(<span class="hljs-string">'#docs'</span>);
+        <span class="hljs-keyword">var</span> displayData = <span class="hljs-built_in">JSON</span>.stringify(data, <span class="hljs-literal">null</span>, <span class="hljs-number">5</span>);
+        <span class="hljs-keyword">if</span> (query === <span class="hljs-string">'/databaseName'</span>) {
             debug.html(displayData);
-        } else {
-            docs.html('allDatabases: ' + displayData);
-            var jsonHtmlTable = jsonToHtml(JSON.parse(displayData), 'jsonTable', 'table table-bordered table-striped', 'Download');
-            $('#myTable').html(jsonHtmlTable);
+        } <span class="hljs-keyword">else</span> {
+            docs.html(<span class="hljs-string">'allDatabases: '</span> + displayData);
+            <span class="hljs-keyword">var</span> jsonHtmlTable = jsonToHtml(<span class="hljs-built_in">JSON</span>.parse(displayData), <span class="hljs-string">'jsonTable'</span>, <span class="hljs-string">'table table-bordered table-striped'</span>, <span class="hljs-string">'Download'</span>);
+            $(<span class="hljs-string">'#myTable'</span>).html(jsonHtmlTable);
 
         }
     };
 
-    nameController.databaseName = function($q) {
-        return runQuery('/databaseName', $q);
+    nameController.databaseName = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$q</span>) </span>{
+        <span class="hljs-keyword">return</span> runQuery(<span class="hljs-string">'/databaseName'</span>, $q);
     };
 
-    nameController.allDbs = function($q) {
-        return runQuery('/listDb', $q);
+    nameController.allDbs = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$q</span>) </span>{
+        <span class="hljs-keyword">return</span> runQuery(<span class="hljs-string">'/listDb'</span>, $q);
     };
 
-    return nameController;
+    <span class="hljs-keyword">return</span> nameController;
 });
-</pre>
+</code></pre>
 <p>That&#39;s the rhythm:</p>
 <ul>
 <li>Add menu item</li>
@@ -114,33 +114,33 @@ cp -v $ELF_TEMPLATES/Routes/* public/javascripts/route-provider/.
 <a class="anchor" id="the-templateurl"></a>
 <h2>The templateUrl</h2>
 <p>The HTML you create in your pug file will be loaded into index.jade in the section called:</p>
-<pre>#elfContent
-</pre>
+<pre><code class="lang-jade"><span class="hljs-meta">#</span><span class="bash">elfContent</span>
+</code></pre>
 <p>In other words, you have to be sure that your <strong>index.jade/pug</strong> file contains a DIV with the ID <strong>#elfContent</strong>. If it is there, the routing code will insert your HTML into that DIV. See these lines in <strong>route.js</strong> to understand exactly what is happening:</p>
-<pre>$('#elfContent').load(control.templateUrl, function(result) {
+<pre><code class="lang-javascript">$(<span class="hljs-string">'#elfContent'</span>).load(control.templateUrl, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
   that.resolveRequest(control)
 });
-</pre>
+</code></pre>
 <a class="anchor" id="setserver"></a>
 <h2>SetServer</h2>
 <p>We need to isolate the code for setting up our IP address in its own file. This is a simple refactor.</p>
 <p>First create <strong>routes/set-server.js</strong>. The code in it looks like this:</p>
-<pre>var servers = ['http://127.0.0.1:5984', 'http://192.168.2.19:5984',
-    'http://192.168.2.27:5984',
-    'http://168.156.41.96:5984'
+<pre><code class="lang-javascript">var servers = ['http://127.0.0.1:<span class="hljs-number">5984</span>', 'http://192.168.2.19:<span class="hljs-number">5984</span>',
+    'http://192.168.2.27:<span class="hljs-number">5984</span>',
+    'http://168.156.41.96:<span class="hljs-number">5984</span>'
 ];
-var serverIndex = 2;
+var serverIndex = <span class="hljs-number">2</span>;
 var serverUrl = servers[serverIndex];
-console.log('Middleware attaching to database on: ', serverUrl);
+console.<span class="hljs-built_in">log</span>('Middleware attaching to database on: ', serverUrl);
 
 module.exports.serverUrl = serverUrl;
-</pre>
+</code></pre>
 <p>Use it like this in <strong>Couch.js</strong>:</p>
-<pre>var setServer = require('./set-server');
-var nano = require('nano')(setServer.serverUrl);
-// CODE OMITTED ....
-var couchBulk = require('./CouchBulk')(router, dbName, setServer.serverUrl);
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> setServer = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./set-server'</span>);
+<span class="hljs-keyword">var</span> nano = <span class="hljs-built_in">require</span>(<span class="hljs-string">'nano'</span>)(setServer.serverUrl);
+<span class="hljs-comment">// CODE OMITTED ....</span>
+<span class="hljs-keyword">var</span> couchBulk = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./CouchBulk'</span>)(router, dbName, setServer.serverUrl);
+</code></pre>
 <p><strong>Figure</strong>: <em>Your error display need not look exactly like this, but we want it should display enough information to help a pre-release user understand what has gone wrong.</em></p>
 <p>You will also need to make a change of a similar kind in <strong>middleware.js</strong>.</p>
 <a class="anchor" id="handle-errors"></a>
@@ -148,49 +148,49 @@ var couchBulk = require('./CouchBulk')(router, dbName, setServer.serverUrl);
 <p>We should now be able to display good error information, particularlly if we try to connect to the wrong server.</p>
 <p>A key point to grasp is that <strong>run-query.js</strong>, which will be called automatically, always sends errors to the controller in the query, the first parameter, as <strong>requestFailed</strong>.</p>
 <p>So you can write code that looks like this:</p>
-<pre>if (query.requestFailed) {
-    utility.failed(query.requestFailed);
-    return;
+<pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (<span class="hljs-keyword">query</span>.requestFailed) {
+    utility.failed(<span class="hljs-keyword">query</span>.requestFailed);
+    <span class="hljs-keyword">return</span>;
 }
-</pre>
+</code></pre>
 <p>Where the <strong>utility.failed</strong> method is part of an object that looks like this:</p>
-<pre>define(function() {
-    'use strict';
+<pre><code class="lang-javascript">define(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
 
-    var utils = {
+    <span class="hljs-keyword">var</span> utils = {
 
-        clearAll: function() {
+        <span class="hljs-attr">clearAll</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 
-            function clear(selector) {
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clear</span>(<span class="hljs-params">selector</span>) </span>{
                 $(selector).empty();
             }
 
-            clear('#docs');
-            clear('#debug');
-            clear('#myTable');
+            clear(<span class="hljs-string">'#docs'</span>);
+            clear(<span class="hljs-string">'#debug'</span>);
+            clear(<span class="hljs-string">'#myTable'</span>);
         },
 
-        failed: function(requestFailed) {
-            var debug = $('#debug');
-            debug.html(JSON.stringify(requestFailed, null, 4));
-            var docs = $('#docs');
+        <span class="hljs-attr">failed</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">requestFailed</span>) </span>{
+            <span class="hljs-keyword">var</span> debug = $(<span class="hljs-string">'#debug'</span>);
+            debug.html(<span class="hljs-built_in">JSON</span>.stringify(requestFailed, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+            <span class="hljs-keyword">var</span> docs = $(<span class="hljs-string">'#docs'</span>);
             docs.html(requestFailed.description);
         }
     };
 
-    return utils;
+    <span class="hljs-keyword">return</span> utils;
 });
-</pre>
+</code></pre>
 <p>Save this file as <strong>public/javascripts/utility.js</strong>. Don&#39;t forget to load it in <strong>main.js.</strong></p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/datamaster-error.gif" alt="data-master-error"></p>
 <a class="anchor" id="jsontotable"></a>
 <h2>JsonToTable</h2>
 <p>This is my fork of this project:</p>
-<pre>bower install elf-json-to-html-table --save
-</pre>
+<pre><code class="lang-bash">bower <span class="hljs-keyword">install</span> elf-<span class="hljs-keyword">json</span>-<span class="hljs-keyword">to</span>-html-<span class="hljs-keyword">table</span> <span class="hljs-comment">--save</span>
+</code></pre>
 <p>In main:</p>
-<pre>'jsonToHtml': '/components/elf-json-to-table/json-to-table',
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-symbol">'jsonToHtml</span>': '/components/elf-json-<span class="hljs-keyword">to</span>-table/json-<span class="hljs-keyword">to</span>-table',
+</code></pre>
 <p>Some background:</p>
 <ul>
 <li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/ElfLogBower.html">http://www.ccalvert.net/books/CloudNotes/Assignments/ElfLogBower.html</a></li>
@@ -198,10 +198,10 @@ var couchBulk = require('./CouchBulk')(router, dbName, setServer.serverUrl);
 <a class="anchor" id="display-table"></a>
 <h2>Display Table</h2>
 <p>Here is how to call jsonToHtml:</p>
-<pre>var jsonHtmlTable = jsonToHtml(editedGameDocs, 'jsonTable', 'table table-bordered table-striped', 'Download');
+<pre><code class="lang-javascript%60"><span class="hljs-keyword">var</span> jsonHtmlTable = jsonToHtml(editedGameDocs, <span class="hljs-string">'jsonTable'</span>, <span class="hljs-string">'table table-bordered table-striped'</span>, <span class="hljs-string">'Download'</span>);
 
-$('#myTable').html(jsonHtmlTable);
-</pre>
+$(<span class="hljs-string">'#myTable'</span>).html(jsonHtmlTable);
+</code></pre>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/data-master-bulk.png" alt="Bulk"></p>
 <p><strong>Figure</strong>: <em>Bulk Document View</em></p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/data-master-one-doc.png" alt="One Doc"></p>
@@ -215,14 +215,14 @@ $('#myTable').html(jsonHtmlTable);
 <a class="anchor" id="default-route"></a>
 <h2>Default Route for Jade/Pug Files</h2>
 <p>Near the bottom of <strong>routes/index.js</strong>, create a default route to handle requests for Jade files:</p>
-<pre>router.get('/:id', function(request, response) {
-    'use strict';
-    console.log('Requested: ', request.params.id);
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Requested: '</span>, request.params.id);
     response.render(request.params.id, {
-        title: request.params.id
+        <span class="hljs-attr">title</span>: request.params.id
     });
 });
-</pre>
+</code></pre>
 <p>This should be last route in the file. It says, in effect: <em>if none of the other routes in this file have matched the request, then assume this is a request to render a jade/pug file. For instance, if the user asks for /foo, then the code will attempt to render as HTML the file in the views directory called <strong>foo.jade</strong>.</em></p>
 <p>Additional details are in the <a href="http://www.elvenware.com/charlie/development/web/JavaScript/NodeJs.html#node-parameters">NodeJs chapter on Elvenware</a>:</p>
 <a class="anchor" id="login"></a>
@@ -251,18 +251,18 @@ $('#myTable').html(jsonHtmlTable);
 <li>and an anchor.</li>
 </ul>
 <p>They have to appear in that order.</p>
-<pre>var handleClicks = function(event) {
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> handleClicks = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
     event.preventDefault();
     route.setRoute(event.target.pathname);
     control(route);
 };
-$('#navigationbar').addClass('databaseOptions');
-$('#main-content').load('/menu-links', function() {
-    $('.databaseOptions ul li a').click(function(event) {
+$(<span class="hljs-string">'#navigationbar'</span>).addClass(<span class="hljs-string">'databaseOptions'</span>);
+$(<span class="hljs-string">'#main-content'</span>).load(<span class="hljs-string">'/menu-links'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-string">'.databaseOptions ul li a'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
         handleClicks(event);
     });
 });
-</pre>
+</code></pre>
 <a class="anchor" id="extra-credit"></a>
 <h2>Extra Credit</h2>
 <p>Use pug instead of Jade.</p>

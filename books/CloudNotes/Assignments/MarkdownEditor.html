@@ -39,177 +39,160 @@
 <li>Copy the files: <strong>cp -v $JSOBJECTS/Utilities/Templates/JavaScript/Markdown/*.js .</strong></li>
 </ul>
 <p><strong>NOTE</strong>: <em>Passing <strong>-v</strong> to <strong>cp</strong> puts the copy command in verbose mode. This means that it explains what is being done, rather than just executing silently. For instance</em>:</p>
-<pre>cp -v $JSOBJECTS/Utilities/Templates/JavaScript/Markdown/*.js .
-‘/home/charlie/Git/JsObjects/Utilities/Templates/JavaScript/Markdown/Converter.js’ -> ‘./Converter.js’
-‘/home/charlie/Git/JsObjects/Utilities/Templates/JavaScript/Markdown/Editor.js’ -> ‘./Editor.js’
-</pre>
-<p>When you are done you should have two files in the <strong>Markdown</strong> folder:</p>
+<pre><code>cp -v $JSOBJECTS/Utilities/Templates/JavaScript/Markdown/*<span class="hljs-string">.js</span> .
+‘<span class="hljs-string">/home/charlie/Git/JsObjects/Utilities/Templates/JavaScript/Markdown/Converter.js</span>’ -&gt; ‘<span class="hljs-string">./Converter.js</span>’
+‘<span class="hljs-string">/home/charlie/Git/JsObjects/Utilities/Templates/JavaScript/Markdown/Editor.js</span>’ -&gt; ‘<span class="hljs-string">./Editor.js</span>’
+</code></pre><p>When you are done you should have two files in the <strong>Markdown</strong> folder:</p>
 <ul>
 <li><strong>/public/javascripts/Markdown/Editor.js</strong></li>
 <li><strong>/public/javascripts/Markdown/Converter.js</strong></li>
 </ul>
 <p>Now navigate to <strong>/javascripts/stylesheets</strong> and copy in the CSS file:</p>
-<pre>cp -v $JSOBJECTS/Utilities/Templates/JavaScript/Markdown/markdown.css .
-</pre>
-<p>The <strong>markdown.css</strong> stylesheet is a modified version of the <strong>demo.css</strong> file that ships with <strong>pagedown.</strong> Feel free to make additional or contrary changes to this file. </p>
+<pre><code>cp -v <span class="hljs-variable">$JSOBJECTS</span><span class="hljs-regexp">/Utilities/</span>Templates<span class="hljs-regexp">/JavaScript/</span>Markdown<span class="hljs-regexp">/markdown.css .</span>
+</code></pre><p>The <strong>markdown.css</strong> stylesheet is a modified version of the <strong>demo.css</strong> file that ships with <strong>pagedown.</strong> Feel free to make additional or contrary changes to this file. </p>
 <p>##Fix up the Jade code.</p>
 <p>In addition to the usual require <strong>script</strong> tag, your <strong>layout.jade</strong> file should link in <strong>markdown.css</strong>:</p>
-<pre>link(rel='stylesheet', href='/stylesheets/markdown.css')
-</pre>
-<p>In <strong>index.jade</strong>, or whichever jade file you want to use for this editor, add the following code:</p>
-<pre>div#markdown.clearfix
-  div.wmd-panel
-    div#wmd-button-bar
-    textarea.wmd-input#wmd-input
+<pre><code>link(<span class="hljs-attribute">rel</span>=<span class="hljs-string">'stylesheet'</span>, <span class="hljs-attribute">href</span>=<span class="hljs-string">'/stylesheets/markdown.css'</span>)
+</code></pre><p>In <strong>index.jade</strong>, or whichever jade file you want to use for this editor, add the following code:</p>
+<pre><code>div<span class="hljs-selector-id">#markdown</span><span class="hljs-selector-class">.clearfix</span>
+  <span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.wmd-panel</span>
+    div<span class="hljs-selector-id">#wmd-button-bar</span>
+    <span class="hljs-selector-tag">textarea</span>.wmd-input<span class="hljs-selector-id">#wmd-input</span>
 
-  div#wmd-preview.wmd-panel.wmd-preview
-</pre>
-<p>The above is the generic case. I want to show what you to do if you need to distinguish one editor from another, so I append -elf to the ids, like this:</p>
-<pre>div.wmd-panel
-  div#wmd-button-bar-elf
-  textarea.wmd-input#wmd-input-elf
+  div<span class="hljs-selector-id">#wmd-preview</span><span class="hljs-selector-class">.wmd-panel</span><span class="hljs-selector-class">.wmd-preview</span>
+</code></pre><p>The above is the generic case. I want to show what you to do if you need to distinguish one editor from another, so I append -elf to the ids, like this:</p>
+<pre><code><span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.wmd-panel</span>
+  div<span class="hljs-selector-id">#wmd-button-bar-elf</span>
+  <span class="hljs-selector-tag">textarea</span>.wmd-input<span class="hljs-selector-id">#wmd-input-elf</span>
 
-div#wmd-preview-elf.wmd-panel.wmd-preview
-</pre>
-<a class="anchor" id="setup-pagedown"></a>
+div<span class="hljs-selector-id">#wmd-preview-elf</span><span class="hljs-selector-class">.wmd-panel</span><span class="hljs-selector-class">.wmd-preview</span>
+</code></pre><a class="anchor" id="setup-pagedown"></a>
 <h2>Setup pagedown</h2>
 <p>The follwing code initializes pagedown. </p>
-<pre>define(function() {
+<pre><code>define(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
 
-    var PagedownSetup = (function() {
+    <span class="hljs-keyword">var</span> PagedownSetup = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
 
-        function PagedownSetup() {
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">PagedownSetup</span><span class="hljs-params">()</span> </span>{
 
         }
 
-        PagedownSetup.prototype.setupConverter = function(Markdown) {
+        PagedownSetup.prototype.setupConverter = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(Markdown)</span> </span>{
 
-            var converter = new Markdown.Converter();
+            <span class="hljs-keyword">var</span> converter = <span class="hljs-keyword">new</span> Markdown.Converter();
 
-            converter.hooks.chain("preConversion", function(text) {
-                return text.replace(/((\b)(the|with)(\b))/gi, "**$1**");
+            converter.hooks.chain(<span class="hljs-string">"preConversion"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(text)</span> </span>{
+                <span class="hljs-keyword">return</span> text.replace(/((\b)(the|<span class="hljs-keyword">with</span>)(\b))/gi, <span class="hljs-string">"**$1**"</span>);
             }); 
 
-            var help = function() {
-                alert("Do you need help?");
+            <span class="hljs-keyword">var</span> help = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+                alert(<span class="hljs-string">"Do you need help?"</span>);
             };
 
-            var options = {
+            <span class="hljs-keyword">var</span> options = {
                 helpButton : {
                     handler : help
                 },
                 strings : {
-                    quoteexample : "whatever you're quoting, put it right here"
+                    quoteexample : <span class="hljs-string">"whatever you're quoting, put it right here"</span>
                 }
             };
 
-            var editor = new Markdown.Editor(converter, "-elf", options);
+            <span class="hljs-keyword">var</span> editor = <span class="hljs-keyword">new</span> Markdown.Editor(converter, <span class="hljs-string">"-elf"</span>, options);
             editor.run();
 
-            return editor.getConverter();
+            <span class="hljs-keyword">return</span> editor.getConverter();
         };
 
-        return PagedownSetup;
+        <span class="hljs-keyword">return</span> PagedownSetup;
 
     }());
 
-    return PagedownSetup;
+    <span class="hljs-keyword">return</span> PagedownSetup;
 
 });
-</pre>
-<p>It starts by creating the markdown converter which can convert markdown to HTML:</p>
+</code></pre><p>It starts by creating the markdown converter which can convert markdown to HTML:</p>
 <p>The other essential lines of code are these two, which create and run the editor:</p>
-<pre>var editor = new Markdown.Editor(converter, "-elf", options);
+<pre><code><span class="hljs-keyword">var</span> editor = <span class="hljs-keyword">new</span> <span class="hljs-type">Markdown</span>.Editor(converter, <span class="hljs-string">"-elf"</span>, options);
 editor.run();
-</pre>
-<p>The editor is the text control you placed in your Jade/HTML:</p>
-<pre>textarea.wmd-input#wmd-input
-</pre>
-<p>The other interesting bit of code here is the one which is fired whenever you type something into the editor. The event is first just before your markdown is passed to the editor for conversion to HTML:</p>
-<pre>converter.hooks.chain("preConversion", function(text) {
-    return text.replace(/((\b)(the|with)(\b))/gi, "**$1**");
+</code></pre><p>The editor is the text control you placed in your Jade/HTML:</p>
+<pre><code><span class="hljs-selector-tag">textarea</span><span class="hljs-selector-class">.wmd-input</span><span class="hljs-selector-id">#wmd-input</span>
+</code></pre><p>The other interesting bit of code here is the one which is fired whenever you type something into the editor. The event is first just before your markdown is passed to the editor for conversion to HTML:</p>
+<pre><code>converter.hooks.chain(<span class="hljs-string">"preConversion"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(text)</span> </span>{
+    <span class="hljs-keyword">return</span> text.replace(/((\b)(the|<span class="hljs-keyword">with</span>)(\b))/gi, <span class="hljs-string">"**$1**"</span>);
 }); 
-</pre>
-<p>This code uses a regular expression to surround any instances of the words <strong>the</strong> or <strong>with</strong> with two asterisks. This makes them bold. If you deleted this method, your code would still work. You cannot, however, just comment out of the both of the method. If you are going to include this event handler, then you must at least return the text that is passed in in its sole parameter:</p>
-<pre>converter.hooks.chain("preConversion", function(text) {
-    return text;
+</code></pre><p>This code uses a regular expression to surround any instances of the words <strong>the</strong> or <strong>with</strong> with two asterisks. This makes them bold. If you deleted this method, your code would still work. You cannot, however, just comment out of the both of the method. If you are going to include this event handler, then you must at least return the text that is passed in in its sole parameter:</p>
+<pre><code>converter.hooks.chain(<span class="hljs-string">"preConversion"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(text)</span> </span>{
+    <span class="hljs-keyword">return</span> text;
 }); 
-</pre>
-<p>The code shown above does not do anything, but it at least doesn&#39;t cause any harm. Here is yet a third variation, which will make bold the worlds <strong>the</strong>, <strong>and</strong> and <strong>function</strong> whenever they are typed in by the user:</p>
-<pre>converter.hooks.chain("preConversion", function(text) {
-    return text.replace(/((\b)(the|and|function)(\b))/gi, "**$1**");
+</code></pre><p>The code shown above does not do anything, but it at least doesn&#39;t cause any harm. Here is yet a third variation, which will make bold the worlds <strong>the</strong>, <strong>and</strong> and <strong>function</strong> whenever they are typed in by the user:</p>
+<pre><code>converter.hooks.chain(<span class="hljs-string">"preConversion"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(text)</span></span> {
+    <span class="hljs-keyword">return</span> text.replace(/((\b)(the|<span class="hljs-keyword">and</span>|<span class="hljs-function"><span class="hljs-keyword">function</span>)</span>(\b))/gi, <span class="hljs-string">"**$1**"</span>);
 });
-</pre>
-<p>You may also be interested in this event:</p>
-<pre>converter.hooks.chain("plainLinkText", function(url) {
-    return url.replace(/^https?:\/\//, "");
+</code></pre><p>You may also be interested in this event:</p>
+<pre><code>converter.hooks.chain(<span class="hljs-string">"plainLinkText"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">url</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">url</span>.replace(<span class="hljs-regexp">/^https?:\/\//</span>, <span class="hljs-string">""</span>);
 });
-</pre>
-<p>##Run pagedown</p>
+</code></pre><p>##Run pagedown</p>
 <p>The following code actually runs a program that can dynamically convert markdown to HTML:</p>
-<pre>define(["PagedownSetup", "Markdown", "Editor"], 
-    function(PagedownSetup, Markdown, Editor) {
+<pre><code>define([<span class="hljs-string">"PagedownSetup"</span>, <span class="hljs-string">"Markdown"</span>, <span class="hljs-string">"Editor"</span>], 
+    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">PagedownSetup, Markdown, Editor</span>) </span>{
 
 
-    var MarkShow = (function() {
+    <span class="hljs-keyword">var</span> MarkShow = (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 
-        var saveMarkdown;
-        var converter;
+        <span class="hljs-keyword">var</span> saveMarkdown;
+        <span class="hljs-keyword">var</span> converter;
 
-        function MarkShow() {
-            var pagedownSetup = new PagedownSetup();
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">MarkShow</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-keyword">var</span> pagedownSetup = <span class="hljs-keyword">new</span> PagedownSetup();
             concerter = pagedownSetup.setupConverter(Markdown);
 
-            inputText = $("#wmd-input-elf");
-            inputText.html("This is the starter text with tweaked editor.\n\n- A\n- B\n");
+            inputText = $(<span class="hljs-string">"#wmd-input-elf"</span>);
+            inputText.html(<span class="hljs-string">"This is the starter text with tweaked editor.\n\n- A\n- B\n"</span>);
 
-            converter.hooks.chain("preConversion", function(text) {
+            converter.hooks.chain(<span class="hljs-string">"preConversion"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">text</span>) </span>{
                 saveMarkdown = text;
-                return text;
+                <span class="hljs-keyword">return</span> text;
             });
         }
 
-        return MarkShow;
+        <span class="hljs-keyword">return</span> MarkShow;
 
     }());
 
-    return MarkShow;
+    <span class="hljs-keyword">return</span> MarkShow;
 });
-</pre>
-<p>The most important piece of this code is the event handler that saves the markdown the user has entered before it is converted to HTML. The variable <strong>saveMarkdown</strong> is your copy of the markdown the user is creating.</p>
+</code></pre><p>The most important piece of this code is the event handler that saves the markdown the user has entered before it is converted to HTML. The variable <strong>saveMarkdown</strong> is your copy of the markdown the user is creating.</p>
 <p>If you want to conver that markdown to your own copy of the HTML, you can do this:</p>
-<pre>var saveHtml = converter.makeHtml(saveMarkdown);
-</pre>
-<p>The variable <strong>saveHtml</strong> is the html you want to save. The following line of code converts that HTML into a string that you can display to the user. It converts angle bracket characters to the <a href="http://www.escapecodes.info/">HTML escape code</a> used to represent them on an HTML page. It also removes any stray asterisks which may be found in the HTML.</p>
-<pre>var html = saveHtml.replace(/</g,  "&lt;").replace(/>/g, "&gt;").replace(/\*/g, "");
-</pre>
-<p>##Require</p>
+<pre><code><span class="hljs-attribute">var saveHtml</span> = converter.makeHtml(saveMarkdown);
+</code></pre><p>The variable <strong>saveHtml</strong> is the html you want to save. The following line of code converts that HTML into a string that you can display to the user. It converts angle bracket characters to the <a href="http://www.escapecodes.info/">HTML escape code</a> used to represent them on an HTML page. It also removes any stray asterisks which may be found in the HTML.</p>
+<pre><code><span class="hljs-keyword">var</span> html = saveHtml.replace(<span class="hljs-regexp">/&lt;/g</span>,  <span class="hljs-string">"&amp;lt;"</span>).replace(<span class="hljs-regexp">/&gt;/g</span>, <span class="hljs-string">"&amp;gt;"</span>).replace(<span class="hljs-regexp">/\*/g</span>, <span class="hljs-string">""</span>);
+</code></pre><p>##Require</p>
 <p>To create the program, all you have to do is:</p>
 <ul>
 <li>Set up the <strong>Main.js</strong> file used by require </li>
 <li>Make sure that <strong>layout.jade</strong> is loading require in the usual manner. </li>
 </ul>
 <p>In <strong>Main.js</strong>, you will, of course, need to set up the paths to our copy of <strong>pagedown</strong>:</p>
-<pre>require.config({
-    paths : {
-        "jquery" : "jquery-2.1.1",
-        "Markdown" : "Markdown/Converter",
-        "Editor" : "Markdown/Editor"
+<pre><code><span class="hljs-selector-tag">require</span><span class="hljs-selector-class">.config</span>({
+    <span class="hljs-attribute">paths </span>: {
+        <span class="hljs-string">"jquery"</span> : <span class="hljs-string">"jquery-2.1.1"</span>,
+        <span class="hljs-string">"Markdown"</span> : <span class="hljs-string">"Markdown/Converter"</span>,
+        <span class="hljs-string">"Editor"</span> : <span class="hljs-string">"Markdown/Editor"</span>
     }
 });
-</pre>
-<p>You in the body of the call to <strong>require</strong> which appears in every <strong>Main.js</strong> file we have created so far, you will have to create an instance of <strong>MarkShow</strong>.</p>
+</code></pre><p>You in the body of the call to <strong>require</strong> which appears in every <strong>Main.js</strong> file we have created so far, you will have to create an instance of <strong>MarkShow</strong>.</p>
 <p>When you are done, the running program should look like this:</p>
 <p><img src="http://elvenware.com/charlie/books/CloudNotes/Images/MarkShow02.png" alt="MarkShow"></p>
 <p>In the screenshot shown below, we are adding in one more plugin to the <strong>setupConverter</strong> method in the <strong>PagedownSetup</strong> object:</p>
-<pre>converter.hooks.chain("preBlockGamut", function(text, rbg) {
-    return text.replace(
-        /^ {0,3}``` *\n((?:.*?\n)+?) {0,3}``` *$/gm, function(whole, inner) {
-            return "<blockquote>" + rbg(inner) + "</blockquote>\n";
+<pre><code>converter.hooks.chain(<span class="hljs-string">"preBlockGamut"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">text, rbg</span>) </span>{
+    <span class="hljs-keyword">return</span> text.replace(
+        <span class="hljs-regexp">/^ {0,3}``` *\n((?:.*?\n)+?) {0,3}``` *$/gm</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">whole, inner</span>) </span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-string">"&lt;blockquote&gt;"</span> + rbg(inner) + <span class="hljs-string">"&lt;/blockquote&gt;\n"</span>;
         });
 });
-</pre>
-<p>This code provides special treatment for three consecutive backticks before and after a block of markdown. Note that these are backticks, not apostrophes. Anyway, it is interesting to see that you can insert regular HTML as needed.</p>
+</code></pre><p>This code provides special treatment for three consecutive backticks before and after a block of markdown. Note that these are backticks, not apostrophes. Anyway, it is interesting to see that you can insert regular HTML as needed.</p>
 <p><img src="http://elvenware.com/charlie/books/CloudNotes/Images/MarkShow01.png" alt="MarkShow"></p>
 <p>I don&#39;t think the <strong>pre</strong> tags are actually necessary if you use the code button shown in the previous example, but I&#39;m not going to retake the screenshot just now.</p>
 </div></body></html>

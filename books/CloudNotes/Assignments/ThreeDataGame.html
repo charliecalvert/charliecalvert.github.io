@@ -20,43 +20,39 @@
 <h2>NPC Tests</h2>
 <p>As explained above, when you encounter an NPC, you should remove the NPC if you have enough points. If the <strong>mainCharacter</strong> does not have enough points, enough <strong>value</strong>, then the <strong>mainCharacter</strong> should be blocked by the NPC.</p>
 <p>You may find a different solution, but I use the &quot;bounceAway&quot; code to prevent the <strong>mainCharacter</strong> from walking through a strong NPC. By a strong NPC, I mean an NPC with more <strong>value</strong> than our main character.   we are not going to be strong enough to overcome it. Otherwise, remove it:</p>
-<pre>    if (rayHits.length > 0) {
-        if (mainCharacterStrongerThanNpc()) {
-            var cords = utilities.gameToGrid(core, selectedObject.position);
+<pre><code>    <span class="hljs-keyword">if</span> (rayHits.<span class="hljs-built_in">length</span> &gt; <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">if</span> (mainCharacterStrongerThanNpc()) {
+            <span class="hljs-built_in">var</span> cords = utilities.gameToGrid(core, selectedObject.<span class="hljs-built_in">position</span>);
             removeNpc(cords.xPos, cords.zPos);
-            return true;
-        } else {
-            bounceAway(position, rays, rayHits);
-            return false;
+            <span class="hljs-built_in">return</span> <span class="hljs-literal">true</span>;
+        } <span class="hljs-keyword">else</span> {
+            bounceAway(<span class="hljs-built_in">position</span>, rays, rayHits);
+            <span class="hljs-built_in">return</span> <span class="hljs-literal">false</span>;
         }
     }
-</pre>
-<p>The <strong>mainCharacterStrongEnough</strong> method is a predicate: it returns a <strong>boolean</strong> value. In that method you should compare the <strong>value</strong> of the <strong>mainCharacter</strong> with the <strong>value</strong> of the NPC. If the <strong>mainCharacter</strong> is <strong>strong enough</strong>, then it should overcome the NPC, that is, it should return <strong>true</strong>. Otherwise it should  <strong>false</strong>.</p>
+</code></pre><p>The <strong>mainCharacterStrongEnough</strong> method is a predicate: it returns a <strong>boolean</strong> value. In that method you should compare the <strong>value</strong> of the <strong>mainCharacter</strong> with the <strong>value</strong> of the NPC. If the <strong>mainCharacter</strong> is <strong>strong enough</strong>, then it should overcome the NPC, that is, it should return <strong>true</strong>. Otherwise it should  <strong>false</strong>.</p>
 <p><strong>NOTE</strong>: <em>At this point our collision detection for NPCs and walls is starting to look very similar, it may be possible to combine them into one method, passing in parameters or callbacks to account for minor differences. In any case, be sure both of the use the Rays array of directions.</em></p>
 <p>Remember also that you test for collisions needs to include two conditions:</p>
-<pre>if (intersections.length > 0 && intersections[0].distance < 15) {
-</pre>
-<p>In context, it looks like this:</p>
-<pre>for (var i = 0; i < rays.length; i += 1) {
-    raycasterNpc.set(position, rays[i]);
+<pre><code><span class="hljs-keyword">if</span> (intersections<span class="hljs-selector-class">.length</span> &gt; <span class="hljs-number">0</span> &amp;&amp; intersections[<span class="hljs-number">0</span>]<span class="hljs-selector-class">.distance</span> &lt; <span class="hljs-number">15</span>) {
+</code></pre><p>In context, it looks like this:</p>
+<pre><code>for (<span class="hljs-name">var</span> i = <span class="hljs-number">0</span><span class="hljs-comment">; i &lt; rays.length; i += 1) {</span>
+    raycasterNpc.set(<span class="hljs-name">position</span>, rays[i])<span class="hljs-comment">;</span>
 
-    var intersections = raycasterNpc.intersectObjects(core.Npcs.particles);
+    var intersections = raycasterNpc.intersectObjects(<span class="hljs-name">core</span>.Npcs.particles)<span class="hljs-comment">;</span>
 
-    if (intersections.length > 0 && intersections[0].distance < 15) {
-        selectedObject = intersections[0].object;
-        controls.isOnObject(true);               
-        rayHits.push(i);              
+    if (<span class="hljs-name">intersections</span>.length &gt; <span class="hljs-number">0</span> <span class="hljs-symbol">&amp;&amp;</span> intersections[<span class="hljs-number">0</span>].distance &lt; <span class="hljs-number">15</span>) {
+        selectedObject = intersections[<span class="hljs-number">0</span>].object<span class="hljs-comment">;</span>
+        controls.isOnObject(<span class="hljs-name">true</span>)<span class="hljs-comment">;               </span>
+        rayHits.push(<span class="hljs-name">i</span>)<span class="hljs-comment">;              </span>
     }
 }
-</pre>
-<a class="anchor" id="hide-map"></a>
+</code></pre><a class="anchor" id="hide-map"></a>
 <h2>Hide Map</h2>
 <p>Hide the map and the debug data displayed in HTML at the top left of the screen.</p>
 <p>Do something like this, where the first technique is JavaScript, and the second jQuery:</p>
-<pre>    document.addEventListener('keydown', onkeydown, false);
-    $(document).keydown(onkeydown);
-</pre>
-<p>Look jQuery <strong>toggle</strong> method to toggle the visibility of an object on and off. Just use the selector for your object (&quot;#myHtmlElementId) and call the <strong>toggle</strong> method on it.</p>
+<pre><code>    <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'keydown'</span>, onkeydown, <span class="hljs-literal">false</span>);
+    $(<span class="hljs-built_in">document</span>).keydown(onkeydown);
+</code></pre><p>Look jQuery <strong>toggle</strong> method to toggle the visibility of an object on and off. Just use the selector for your object (&quot;#myHtmlElementId) and call the <strong>toggle</strong> method on it.</p>
 <a class="anchor" id="extra-credit"></a>
 <h2>Extra Credit</h2>
 <p>When the mainCharacter encounters an NPC, show the question associated with the NPC and let the user press T for for true or F for false. If the correct answer is selected, the NPC should disappear, otherwise, the character should be moved back X number of units and the NPC kept in place.</p>

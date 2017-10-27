@@ -24,21 +24,21 @@
 <p>Make a copy of <strong>GetUserInfo</strong> and call it <strong>ShowUserInfo</strong>. Open your new file in an editor (probably WebStorm) and change instances of the variable <strong>GetUserInfo</strong> to <strong>ShowUserInfo</strong>. There will be at least two such instances.</p>
 <p>For now, you can leave most of <strong>ShowUserInfo</strong> as is, except for removing the method that queries the server with <strong>fetch</strong>. That method stays in <strong>GetUserInfo</strong>.</p>
 <p>Open <strong>GetUserInfo</strong> in your editor and change the <strong>render</strong> method to look something like this:</p>
-<pre>import fieldDefinitions from './field-definitions';
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> fieldDefinitions <span class="hljs-keyword">from</span> <span class="hljs-string">'./field-definitions'</span>;
 
-// CODE OMITTED
+<span class="hljs-comment">// CODE OMITTED</span>
 
 render() {
-        return (
-            <div className="App">
-                <ShowUserInfo
-                    fields={fieldDefinitions}
-                    gitUser={this.state.gitUser}
-                />
-            </div>
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">ShowUserInfo</span>
+                    <span class="hljs-attr">fields</span>=<span class="hljs-string">{fieldDefinitions}</span>
+                    <span class="hljs-attr">gitUser</span>=<span class="hljs-string">{this.state.gitUser}</span>
+                /&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
         );
-    }
-</pre>
+    }</span>
+</code></pre>
 <p>This will not be our final solution, but it is a start. But before we try to get any further, we should set up our tests.</p>
 <a class="anchor" id="component-children"></a>
 <h2>Component Children</h2>
@@ -50,12 +50,12 @@ render() {
 <p>As menmtioned earlier, the words that the React DOCS use are as a bit like following: &quot;There should always be one canonical place where state is maintained.&quot; In our case, that is <strong>GetUserInfo</strong>. It will have state. It was also share that state with other components, in our case, <strong>ShowUserInfo</strong>. Quite often, and in our case, <strong>ShowUserInfo</strong> should have no state. If it does have state, it is not related to the properties that it receives from <strong>GetUserInfo</strong>.</p>
 <p><strong>NOTE</strong>: <em>fetch stays in GetUserInfo because we are using that component to handle cases in which data changes. Specifically, <strong>fetch</strong> retrieves data from the server and we use that data to change state. We use <strong>GetUserInfo</strong> when we want to manipulate data, and <strong>ShowUserInfo</strong> when we want to display data. This follows the rule &quot;Each component should have only one reason to change.&quot; Or, to say the same thing somewhere differently: &quot;Each class should do one thing and do it well.&quot; A third rule that applies here is specific to React: &quot;There should be one place, and one place only, where data maintains state and can be mutated.&quot; Other components have <strong>props</strong> and are, at least in theory, immutable.</em></p>
 <p>The state passed by <strong>GetUserInfo</strong> to <strong>ShowUserInfio</strong> enters the constructor in the form of <strong>props:</strong></p>
-<pre>class ShowUserInfo extends Component {
+<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ShowUserInfo</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
     constructor(props) {
-        super(props);
+        <span class="hljs-keyword">super</span>(props);
     }
 }
-</pre>
+</code></pre>
 <p>As you know, this state contains two objects:</p>
 <ul>
 <li>fields: A definition of the fields to display</li>
@@ -64,19 +64,19 @@ render() {
 <a class="anchor" id="too-many-fields"></a>
 <h2>Too Many Fields</h2>
 <p>Code that looks like this is easy to use if you have just a few fields.</p>
-<pre>render() {
+<pre><code class="lang-javascript">render() {
         return (
-            <div className="App">
+            <span class="hljs-variable">&lt;div className="App"&gt;</span>
 
-                <p className="App-intro">
-                    state.userLogin: {this.state.userLogin}
-                </p>
+                <span class="hljs-variable">&lt;p className="App-intro"&gt;</span>
+                    <span class="hljs-keyword">state</span>.<span class="hljs-keyword">user</span>Login: {this.<span class="hljs-keyword">state</span>.<span class="hljs-keyword">user</span>Login}
+                &lt;/p&gt;
 
-               <button className="getUser" onClick={this.getUser}>Get User</button>
-            </div>
+               <span class="hljs-variable">&lt;button className="getUser" onClick={this.getUser}&gt;</span>Get User&lt;/button&gt;
+            &lt;/div&gt;
         );
     }
-</pre>
+</code></pre>
 <p>Here I have only one field, called <strong>userLogin</strong>. It is fairly easy to write code that displays this one field.</p>
 <p>If you have many fields, as we will when we query Git, the task becomes more difficult. In such cases, it might be helpful to automatically generate the fields.</p>
 <p><strong>NOTE</strong>: <em>A second reason to automatically generate fields is that it helps us to create regular, well formed code. Our code is easier to read if IDs. CLASSNAMES and attributes always come in a certain order, and if we follow certain coding practices such as using the same techniques for handling labels.</em></p>
@@ -90,53 +90,52 @@ render() {
 <a class="anchor" id="field-definitions"></a>
 <h2>Field Definitions</h2>
 <p>Here is the <strong>src/field-definitions.js</strong>:</p>
-<pre>/**
- * Created by charlie on 4/20/17.
+<pre><code class="lang-javascript">/**
+ * Created by charlie on <span class="hljs-number">4</span>/<span class="hljs-number">20</span>/<span class="hljs-number">17</span>.
  */
 
-/*eslint no-unused-vars: "off" */
-const unknown = 'unknown';
-const PARAGRAPH=0;
-const TEXT=1;
+/*eslint no-unused-vars: <span class="hljs-string">"off"</span> */
+const unknown = <span class="hljs-string">'unknown'</span>;
+const PARAGRAPH=<span class="hljs-number">0</span>;
+const TEXT=<span class="hljs-number">1</span>;
 const DEFAULT=PARAGRAPH;
-const types = ['paragraph', 'text'];
+const types = [<span class="hljs-string">'paragraph'</span>, <span class="hljs-string">'text'</span>];
 
 export default [
     {
-        id: 'login',
-        label: 'loginName',
-        type: types[DEFAULT],
-        sample: 'login-' + unknown
+        id: <span class="hljs-string">'login'</span>,
+        <span class="hljs-keyword">label</span><span class="bash">: <span class="hljs-string">'loginName'</span>,
+</span>        type: types[DEFAULT],
+        sample: <span class="hljs-string">'login-'</span> + unknown
     },{
-        id: 'avatar_url',
-        label: 'Avatar Url',
-        type: types[DEFAULT],
-        sample: 'ai' + unknown
+        id: <span class="hljs-string">'avatar_url'</span>,
+        <span class="hljs-keyword">label</span><span class="bash">: <span class="hljs-string">'Avatar Url'</span>,
+</span>        type: types[DEFAULT],
+        sample: <span class="hljs-string">'ai'</span> + unknown
     },
     {
-        id: 'url',
-        label: 'Url',
-        type: types[DEFAULT],
-        sample: 'url' + unknown
+        id: <span class="hljs-string">'url'</span>,
+        <span class="hljs-keyword">label</span><span class="bash">: <span class="hljs-string">'Url'</span>,
+</span>        type: types[DEFAULT],
+        sample: <span class="hljs-string">'url'</span> + unknown
     },
     {
-        id: 'html_url',
-        label: 'HTML Url',
-        type: types[DEFAULT],
-        sample: 'htmlUrl' + unknown
+        id: <span class="hljs-string">'html_url'</span>,
+        <span class="hljs-keyword">label</span><span class="bash">: <span class="hljs-string">'HTML Url'</span>,
+</span>        type: types[DEFAULT],
+        sample: <span class="hljs-string">'htmlUrl'</span> + unknown
     },
     {
-        id: 'followers_url',
-        label: 'Followers URL',
-        type: types[DEFAULT],
-        sample: 'followersUrl' + unknown
+        id: <span class="hljs-string">'followers_url'</span>,
+        <span class="hljs-keyword">label</span><span class="bash">: <span class="hljs-string">'Followers URL'</span>,
+</span>        type: types[DEFAULT],
+        sample: <span class="hljs-string">'followersUrl'</span> + unknown
     }
 ]
-</pre>
+</code></pre>
 <p>You probably recognize this data, as it mirrors some of the fields from our initial user query of GitHub. Recall that you run code like this to view the data:</p>
-<pre>curl https://api.github.com/users/charliecalvert
-</pre>
-<ul>
+<pre><code>curl https:<span class="hljs-regexp">//</span>api.github.com<span class="hljs-regexp">/users/</span>charliecalvert
+</code></pre><ul>
 <li><strong>id</strong> is the HTML id attribute for your control</li>
 <li><strong>label</strong> is the text to put in the label for our control</li>
 <li><strong>type</strong> is the element kind, such as P, TEXT, TEXTAREA, etc.<ul>
@@ -148,197 +147,196 @@ export default [
 <a class="anchor" id="process-fields"></a>
 <h2>Processing Field Definitions</h2>
 <p>Here is a simple <strong>Component</strong> that knows how to read this file and return HTML elements of the right type and shape:</p>
-<pre>import React, {Component} from 'react';
-import '../css/forms.css';
-import Debug from '../elf-logger';
-const logger = new Debug(false);
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> <span class="hljs-type">React</span>, {<span class="hljs-type">Component</span>} from <span class="hljs-symbol">'reac</span>t';
+<span class="hljs-keyword">import</span> '../css/forms.css';
+<span class="hljs-keyword">import</span> <span class="hljs-type">Debug</span> from '../elf-logger';
+const logger = <span class="hljs-keyword">new</span> <span class="hljs-type">Debug</span>(<span class="hljs-literal">false</span>);
 
-class ElfElements extends Component {
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ElfElements</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
     constructor(props) {
-        logger.log('FORM INPUT', 'constructor called', props);
-        super(props);
-        logger.log('FORM PROPS', this.props);
+        logger.log(<span class="hljs-symbol">'FORM</span> <span class="hljs-type">INPUT</span>', <span class="hljs-symbol">'constructor</span> called', props);
+        <span class="hljs-keyword">super</span>(props);
+        logger.log(<span class="hljs-symbol">'FORM</span> <span class="hljs-type">PROPS</span>', <span class="hljs-keyword">this</span>.props);
     }
 
     render() {
         const common = {
-            id: this.props.id,
-            value: this.props.defaultValue,
-            onChange: this.props.onChange
+            id: <span class="hljs-keyword">this</span>.props.id,
+            value: <span class="hljs-keyword">this</span>.props.defaultValue,
+            onChange: <span class="hljs-keyword">this</span>.props.onChange
         };
 
-        switch (this.props.type) {
+        switch (<span class="hljs-keyword">this</span>.props.<span class="hljs-keyword">type</span>) {
 
-            case 'year':
-                return (
-                    <input
+            <span class="hljs-keyword">case</span> <span class="hljs-symbol">'yea</span>r':
+                <span class="hljs-keyword">return</span> (
+                    &lt;input
                         {...common}
-                        type="number"
-                        value={this.props.value || new Date().getFullYear()}
-                    />
+                        <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"number"</span>
+                        value={<span class="hljs-keyword">this</span>.props.value || <span class="hljs-keyword">new</span> <span class="hljs-type">Date</span>().getFullYear()}
+                    /&gt;
                 );
 
-            case 'paragraph':
-                return <p
-                    className='ElfFormParagraph'
-                    id={this.props.id}
+            <span class="hljs-keyword">case</span> <span class="hljs-symbol">'paragrap</span>h':
+                <span class="hljs-keyword">return</span> &lt;p
+                    className=<span class="hljs-symbol">'ElfFormParagrap</span>h'
+                    id={<span class="hljs-keyword">this</span>.props.id}
 
-                    onChange={this.props.onChange}
-                >{this.props.value}</p>;
+                    onChange={<span class="hljs-keyword">this</span>.props.onChange}
+                &gt;{<span class="hljs-keyword">this</span>.props.value}&lt;/p&gt;;
 
-            case 'textarea':
-                return <textarea {...common} className='ElfFormInput' value={this.props.value} />;
+            <span class="hljs-keyword">case</span> <span class="hljs-symbol">'textare</span>a':
+                <span class="hljs-keyword">return</span> &lt;textarea {...common} className=<span class="hljs-symbol">'ElfFormInpu</span>t' value={<span class="hljs-keyword">this</span>.props.value} /&gt;;
 
-            case 'text': {
-                return <input
-                    className='ElfFormInput'
-                    id={this.props.id}
-                    value={this.props.value}
-                    type={this.props.type}
-                    onChange={this.props.onChange}
-                />;
+            <span class="hljs-keyword">case</span> <span class="hljs-symbol">'tex</span>t': {
+                <span class="hljs-keyword">return</span> &lt;input
+                    className=<span class="hljs-symbol">'ElfFormInpu</span>t'
+                    id={<span class="hljs-keyword">this</span>.props.id}
+                    value={<span class="hljs-keyword">this</span>.props.value}
+                    <span class="hljs-class"><span class="hljs-keyword">type</span></span>={<span class="hljs-keyword">this</span>.props.<span class="hljs-keyword">type</span>}
+                    onChange={<span class="hljs-keyword">this</span>.props.onChange}
+                /&gt;;
             }
 
-            default:
-                return <input {...common} type="text"/>;
+            <span class="hljs-keyword">default</span>:
+                <span class="hljs-keyword">return</span> &lt;input {...common} <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span>/&gt;;
         }
     }
 }
 
-export default ElfElements;
-</pre>
+export <span class="hljs-keyword">default</span> <span class="hljs-type">ElfElements</span>;
+</code></pre>
 <p>For instance, the first definition in <strong>field-definitions</strong> return something like this JSX/HTML:</p>
-<pre><p class="ElfFormParagraph" id="login">login-unknown</p>
-</pre>
+<pre><code class="lang-HTML">&lt;p <span class="hljs-attribute">class</span>=<span class="hljs-string">"ElfFormParagraph"</span> <span class="hljs-attribute">id</span>=<span class="hljs-string">"login"</span>&gt;login-unknown&lt;/p&gt;
+</code></pre>
 <a class="anchor" id="default-values-for-the-state"></a>
 <h2>Default Values for the State</h2>
 <p>We should properly initialize <strong>this.state</strong> in <strong>GetUserInfo</strong>. Fortunately, with our new <strong>field-definitions</strong>, we have a relatively painless way to do so. Here is the updated constructor for <strong>GetUserInfo</strong>:</p>
-<pre>constructor() {
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">()</span> <span class="hljs-comment">{
     super();
-    const tempGitUser = {};
-    for (let value of fieldDefinitions) {
+    const tempGitUser = {}</span>;</span>
+    <span class="hljs-keyword">for</span> (let value <span class="hljs-keyword">of</span> fieldDefinitions) <span class="hljs-comment">{
         tempGitUser[value.id] = value.sample;
-    }
-    this.state = {
+    }</span>
+    this.state = <span class="hljs-comment">{
         gitUser: tempGitUser
-    };
+    }</span>;
 
-    logger.log('GetUserInfo constructor called.')
+    logger.log(<span class="hljs-string">'GetUserInfo constructor called.'</span>)
 }
-</pre>
+</code></pre>
 <p>We first create an empty object, then iterator over the <strong>fieldDefinitions</strong> array, and create new objects with a single property.  for <strong>tempGitUser</strong>. For instance, we can create a property set to the value of the <strong>fieldDefinitions.id</strong> property to the value of the <strong>fieldDefinitions.sample</strong> property.</p>
 <p><strong>NOTE</strong>: <em>This ability to easily and dynamically add properties to an object based solely on pairs of strings is a powerful feature of JavaScript. We wish we could write code like this, but we can&#39;t since we don&#39;t know the property names until runtime</em>:</p>
-<pre> tempGitUser[0].login = 'login-unknown'
-</pre>
+<pre><code class="lang-javascript"> tempGitUser[<span class="hljs-number">0</span>]<span class="hljs-selector-class">.login</span> = <span class="hljs-string">'login-unknown'</span>
+</code></pre>
 <p> We can, however, achieve the same result by execute this code:</p>
-<pre>tempGitUser[value.id] = value.sample;
-</pre>
+<pre><code class="lang-javascript">tempGitUser[<span class="hljs-keyword">value</span>.id] = <span class="hljs-keyword">value</span>.sample;
+</code></pre>
 <p>Suppose we are looking at this member of the <strong>fieldDefinitions</strong> array:</p>
-<pre>{
-    id: 'login',
-    label: 'loginName',
+<pre><code class="lang-javascript">{
+    <span class="hljs-attribute">id</span>: <span class="hljs-string">'login'</span>,
+    label: <span class="hljs-string">'loginName'</span>,
     type: types[DEFAULT],
-    sample: 'login-' + unknown
+    sample: <span class="hljs-string">'login-'</span> + unknown
 },
-</pre>
+</code></pre>
 <p>Our code would adds a property to <strong>tempGitUser</strong> that look something like this:</p>
-<pre>{'login': 'login-unknown'}
-</pre>
+<pre><code class="lang-javascript">{<span class="hljs-symbol">'login'</span>: <span class="hljs-symbol">'login</span>-unknown'}
+</code></pre>
 <p>Each iteration of the loop adds one more property to the <strong>tempGitUser</strong> object. The end result is that we have default values for all the paragraph fields in our JSX.</p>
 <a class="anchor" id="using-elfelements"></a>
 <h2>Using ElfElements</h2>
 <p>We can understand some of what is going on here, but how did the control the write data. We do it like this:</p>
-<pre>import React, {Component} from 'react';
-import '../css/forms.css';
-import 'whatwg-fetch';
-import Debug from '../elf-logger';
-import ElfElements from './ElfElements';
-const logger = new Debug(false);
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React, {Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'../css/forms.css'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'whatwg-fetch'</span>;
+<span class="hljs-keyword">import</span> Debug <span class="hljs-keyword">from</span> <span class="hljs-string">'../elf-logger'</span>;
+<span class="hljs-keyword">import</span> ElfElements <span class="hljs-keyword">from</span> <span class="hljs-string">'./ElfElements'</span>;
+<span class="hljs-keyword">const</span> logger = <span class="hljs-keyword">new</span> Debug(<span class="hljs-literal">false</span>);
 
-class ShowUserInfo extends Component {
-    constructor(props) {
-        super(props);
-        //this.shouldUpdate = true;
-        logger.log('ShowUserInfo constructor called.');
-        logger.log('ShowUserInfo props.' + JSON.stringify(this.props.userData, null, 4));
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ShowUserInfo</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    <span class="hljs-keyword">constructor</span>(props) {
+        <span class="hljs-keyword">super</span>(props);
+        <span class="hljs-comment">//this.shouldUpdate = true;</span>
+        logger.log(<span class="hljs-string">'ShowUserInfo constructor called.'</span>);
+        logger.log(<span class="hljs-string">'ShowUserInfo props.'</span> + <span class="hljs-built_in">JSON</span>.stringify(<span class="hljs-keyword">this</span>.props.userData, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
     }
 
-    getForm = (field, index) => {
-        return (
-            <div className="ElfFormRow" key={field.id}>
-               <label className="ElfFormLabel" htmlFor={field.id}>{field.label}:</label>
-               <ElfElements {...field}
-                        value={this.props.gitUser[field.id]}
-                        onChange={this.props.onChange}
-               />
-            </div>
+    getForm = <span class="hljs-function">(<span class="hljs-params">field, index</span>) =&gt;</span> {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"ElfFormRow"</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{field.id}</span>&gt;</span>
+               <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"ElfFormLabel"</span> <span class="hljs-attr">htmlFor</span>=<span class="hljs-string">{field.id}</span>&gt;</span>{field.label}:<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+               <span class="hljs-tag">&lt;<span class="hljs-name">ElfElements</span> {<span class="hljs-attr">...field</span>}
+                        <span class="hljs-attr">value</span>=<span class="hljs-string">{this.props.gitUser[field.id]}</span>
+                        <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.props.onChange}</span>
+               /&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
         )
     };
 
     render() {
 
         return (
-            <form className="Form">{
-                this.props.fields.map((field, index) => {
+            <span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"Form"</span>&gt;</span>{
+                this.props.fields.map((field, index) =&gt; {
                     return this.getForm(field, index)
                 })
             }
-            <button className="getUser" onClick={this.props.onChange}>Get User</button>
-            </form>
+            <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"getUser"</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.props.onChange}</span>&gt;</span>Get User<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
         )
     }
 }
 
-export default ShowUserInfo;
-</pre>
+export default ShowUserInfo;</span>
+</code></pre>
 <a class="anchor" id="passing-fields-to-showuserinfo"></a>
 <h2>Passing Fields to ShowUserInfo</h2>
 <p>The props shown in the <strong>constructor</strong> of <strong>ShowUserInfo</strong> is the state passed from <strong>GetUserInfo</strong>. Here is the relevant code from <strong>GetUserInfo</strong>:</p>
-<pre>import fieldDefinitions from './field-definitions';
+<pre><code class="lang-HTML"><span class="hljs-keyword">import</span> fieldDefinitions <span class="hljs-keyword">from</span> <span class="hljs-string">'./field-definitions'</span>;
 
-// CODE OMITTED
+<span class="hljs-comment">// CODE OMITTED</span>
 
 render() {
-        return (
-            <div className="App">
-                <ShowUserInfo
-                    fields={fieldDefinitions}
-                    gitUser={this.state.gitUser}
-                    onChange={this.getUser}
-                />
-            </div>
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">ShowUserInfo</span>
+                    <span class="hljs-attr">fields</span>=<span class="hljs-string">{fieldDefinitions}</span>
+                    <span class="hljs-attr">gitUser</span>=<span class="hljs-string">{this.state.gitUser}</span>
+                    <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.getUser}</span>
+                /&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
         );
-    }
-</pre>
+    }</span>
+</code></pre>
 <p>As you can see, <strong>GetUserInfo</strong> passes in three pieces of state to <strong>ShowUserInfo</strong>. These become the <strong>props</strong> seen in the constructor of <strong>ShowUserInfo</strong>. They are used when <strong>ShowUserInfo</strong> generates its code.</p>
 <p>We got fields by loading a file that we created. The <strong>gitUser</strong> comes from querying our server. But what is <strong>onChange</strong>? Lets tackle it in the last section of this document.</p>
 <a class="anchor" id="passing-events"></a>
 <h2>Passing Events</h2>
 <p>The parent component, in this case <strong>GetUserInfo</strong> controls the data. In particular, we maintain the data in <strong>GetUserInfo&#39;s</strong> state, and we change it with this method:</p>
-<pre>getUser = (event) => {
-  const that = this;
-  fetch('/api/user')
-  .then(function(response) {
-    return response.json();
-  }).then(function(json) {
-    logger.log('parsed json', json);
-    var gitUser = JSON.parse(json.gitUser);
+<pre><code>getUser = <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+  fetch(<span class="hljs-string">'/api/user'</span>)
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+    <span class="hljs-keyword">return</span> response.json();
+  }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{
+    logger.log(<span class="hljs-string">'parsed json'</span>, json);
+    <span class="hljs-keyword">var</span> gitUser = <span class="hljs-built_in">JSON</span>.parse(json.gitUser);
     that.setState({
-      gitUser: gitUser
+      <span class="hljs-attr">gitUser</span>: gitUser
     });
     etc....
-</pre>
-<p>You will need to <strong>event.preventDefault()</strong> at the end of this method.</p>
+</code></pre><p>You will need to <strong>event.preventDefault()</strong> at the end of this method.</p>
 <p>As mentioned earlier, we pass this method as a prop from <strong>GetUserInfo</strong> to <strong>ShowUserInfo</strong>:</p>
-<pre><ShowUserInfo
-    fields={fieldDefinitions}
-    gitUser={this.state.gitUser}
-    onChange={this.getUser}
-/>
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">ShowUserInfo</span>
+    <span class="hljs-attr">fields</span>=<span class="hljs-string">{fieldDefinitions}</span>
+    <span class="hljs-attr">gitUser</span>=<span class="hljs-string">{this.state.gitUser}</span>
+    <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.getUser}</span>
+/&gt;</span>
+</code></pre>
 <p>Then we use it in <strong>ShowUserInfo</strong> like this:</p>
-<pre><button id="getUser" onClick={this.props.onChange}>Get User</button>
-</pre>
+<pre><code class="lang-javascript">&lt;<span class="hljs-selector-tag">button</span> id=<span class="hljs-string">"getUser"</span> onClick={this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.onChange</span>}&gt;Get User&lt;/button&gt;
+</code></pre>
 <p>Given our knowledge of JavaScript, it is fairly simple to see how <strong>this.props.onChange</strong> becomes a call to the <strong>GetUserInfo.getUser</strong> The key fact, which is hard to grasp at first is how the changes made by that method are propagated back down to <strong>ShowUserInfo</strong>.</p>
 <p>Obviously the task is handled by React. In particular, when we call <strong>setState</strong>, as we do in <strong>getUser</strong>, then two things happen:</p>
 <ul>

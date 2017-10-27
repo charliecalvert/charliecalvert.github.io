@@ -37,68 +37,68 @@
 <a class="anchor" id="facebook-specific-code"></a>
 <h2>Facebook Specific Code</h2>
 <p>Save the Facebook specific code in <strong>routes/login-facebook.js</strong>:</p>
-<pre>/**
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
  * Created by charlie on 11/5/16.
- */
+ */</span>
 
-var express = require('express');
-var router = express.Router();
-var passport = require('passport');
-var FacebookStrategy = require('passport-facebook').Strategy;
+<span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> router = express.Router();
+<span class="hljs-keyword">var</span> passport = <span class="hljs-built_in">require</span>(<span class="hljs-string">'passport'</span>);
+<span class="hljs-keyword">var</span> FacebookStrategy = <span class="hljs-built_in">require</span>(<span class="hljs-string">'passport-facebook'</span>).Strategy;
 
-/**************************************
+<span class="hljs-comment">/**************************************
  *  Facebook
- **************************************/
+ **************************************/</span>
 
-router.get('/profile', require('connect-ensure-login').ensureLoggedIn(),
-    function(req, res) {
-        'use strict';
-        console.log(req.user);
-        res.render('profile-facebook', {
-            title: 'Facebook Profile',
-            user: req.user
+router.get(<span class="hljs-string">'/profile'</span>, <span class="hljs-built_in">require</span>(<span class="hljs-string">'connect-ensure-login'</span>).ensureLoggedIn(),
+    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-built_in">console</span>.log(req.user);
+        res.render(<span class="hljs-string">'profile-facebook'</span>, {
+            <span class="hljs-attr">title</span>: <span class="hljs-string">'Facebook Profile'</span>,
+            <span class="hljs-attr">user</span>: req.user
         });
     });
 
-passport.use(new FacebookStrategy({
-        clientID: process.env.CLIENT_ID,
-        clientSecret: process.env.CLIENT_SECRET,
-        callbackURL: 'http://localhost:30025/facebook/login/callback'
+passport.use(<span class="hljs-keyword">new</span> FacebookStrategy({
+        <span class="hljs-attr">clientID</span>: process.env.CLIENT_ID,
+        <span class="hljs-attr">clientSecret</span>: process.env.CLIENT_SECRET,
+        <span class="hljs-attr">callbackURL</span>: <span class="hljs-string">'http://localhost:30025/facebook/login/callback'</span>
     },
-    function(accessToken, refreshToken, profile, done) {
-        'use strict';
-        return done(null, profile);
+    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">accessToken, refreshToken, profile, done</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-keyword">return</span> done(<span class="hljs-literal">null</span>, profile);
     }));
 
-router.get('/login',
-    passport.authenticate('facebook'));
+router.get(<span class="hljs-string">'/login'</span>,
+    passport.authenticate(<span class="hljs-string">'facebook'</span>));
 
-router.get('/login/callback',
-    passport.authenticate('facebook', {
-        failureRedirect: '/login'
+router.get(<span class="hljs-string">'/login/callback'</span>,
+    passport.authenticate(<span class="hljs-string">'facebook'</span>, {
+        <span class="hljs-attr">failureRedirect</span>: <span class="hljs-string">'/login'</span>
     }),
-    function(req, res) {
-        'use strict';
-        res.redirect('/');
+    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        res.redirect(<span class="hljs-string">'/'</span>);
     });
 
-module.exports = router;
-</pre>
+<span class="hljs-built_in">module</span>.exports = router;
+</code></pre>
 <p>Here is a way to use the <strong>profileFields</strong> property to alter the Facebook Strategy so you can get more information about the user:</p>
-<pre>passport.use(new FacebookStrategy({
-        clientID: process.env.CLIENT_ID,
-        clientSecret: process.env.CLIENT_SECRET,
-        callbackURL: 'http://localhost:30025/facebook/login/return',
-        profileFields: ['id', 'displayName', 'photos', 'email']
+<pre><code class="lang-javascript">passport.use(<span class="hljs-keyword">new</span> FacebookStrategy({
+        <span class="hljs-attr">clientID</span>: process.env.CLIENT_ID,
+        <span class="hljs-attr">clientSecret</span>: process.env.CLIENT_SECRET,
+        <span class="hljs-attr">callbackURL</span>: <span class="hljs-string">'http://localhost:30025/facebook/login/return'</span>,
+        <span class="hljs-attr">profileFields</span>: [<span class="hljs-string">'id'</span>, <span class="hljs-string">'displayName'</span>, <span class="hljs-string">'photos'</span>, <span class="hljs-string">'email'</span>]
     },
-    function(accessToken, refreshToken, profile, done) {
-        'use strict';
-        console.log('accessToken', accessToken);
-        console.log('refreshToken', refreshToken);
-        console.log('profile', profile);
-        return done(null, profile);
+    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">accessToken, refreshToken, profile, done</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'accessToken'</span>, accessToken);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'refreshToken'</span>, refreshToken);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'profile'</span>, profile);
+        <span class="hljs-keyword">return</span> done(<span class="hljs-literal">null</span>, profile);
     }));
-</pre>
+</code></pre>
 <a class="anchor" id="make-public"></a>
 <h2>Make Public</h2>
 <p>You need to make your app public if it is going to be used by more than one person. Since both you and I need to access the app, you should make it public.</p>

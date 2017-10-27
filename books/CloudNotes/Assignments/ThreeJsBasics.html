@@ -23,9 +23,9 @@ CreateAllExpress Week04-ThreeJsBasics
 <a class="anchor" id="step-02"></a>
 <h2>Step 02</h2>
 <p>Make sure you have <strong>bower.json</strong> and <strong>.bowerrc</strong> in place. If these files are missing, get them like this from JsObjects:</p>
-<pre>cp $ELF_TEMPLATES/bower.json .
-cp $ELF_TEMPLATES/.bowerrc .
-</pre>
+<pre><code class="lang-bash">cp <span class="hljs-variable">$ELF_TEMPLATES</span>/bower<span class="hljs-selector-class">.json</span> .
+cp <span class="hljs-variable">$ELF_TEMPLATES</span>/<span class="hljs-selector-class">.bowerrc</span> .
+</code></pre>
 <p>Install the libraries we need with <strong>bower install</strong>:</p>
 <pre>
 bower install jquery requirejs --save
@@ -47,10 +47,10 @@ git clone git@github.com:mrdoob/three.js.git
 <a class="anchor" id="step-three"></a>
 <h2>Step Three</h2>
 <p>Let&#39;s set up <a href="http://www.elvenware.com/charlie/development/web/JavaScript/Require.html">require js</a>. To get started, open up <strong>layout.jade</strong> and remove all the script tags. For instance, remove these, if they exist:</p>
-<pre>script(src="components/jquery/dist/jquery.js")
-script(src="components/bootstrap/dist/js/bootstrap.js")
-script(src="javascripts/control.js")
-</pre>
+<pre><code class="lang-text"><span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"components/jquery/dist/jquery.js"</span>)</span></span>
+<span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"components/bootstrap/dist/js/bootstrap.js"</span>)</span></span>
+<span class="hljs-function"><span class="hljs-title">script</span><span class="hljs-params">(src=<span class="hljs-string">"javascripts/control.js"</span>)</span></span>
+</code></pre>
 <p>Then put this in <strong>layout.jade</strong> on the place of the other tags:</p>
 <pre>
 script(data-main="javascripts/main" src="javascripts/require.js")
@@ -58,35 +58,35 @@ script(data-main="javascripts/main" src="javascripts/require.js")
 
 <p>This sets you to start working with <strong>requirejs</strong>. We will use this library to load our JavaScripts files when they are needed, rather than just at the start of the program. It also helps us define modules, and helps us see which modules depend on which other modules.</p>
 <p>To get start, open up <strong>main.js</strong>. This is where we will configure <strong>requirejs</strong>. In particular, put this in <strong>main.js</strong>:</p>
-<pre>requirejs.config({
-    baseUrl : '.',
-    paths : {
-        "jquery" : 'components/jquery/dist/jquery',
-        "bootstrap": 'components/bootstrap/dist/js/bootstrap',
-        "Three" : 'javascripts/three',
-        "control" : 'javascripts/control'
+<pre><code class="lang-javascript">requirejs.config({
+    <span class="hljs-attr">baseUrl</span> : <span class="hljs-string">'.'</span>,
+    <span class="hljs-attr">paths</span> : {
+        <span class="hljs-string">"jquery"</span> : <span class="hljs-string">'components/jquery/dist/jquery'</span>,
+        <span class="hljs-string">"bootstrap"</span>: <span class="hljs-string">'components/bootstrap/dist/js/bootstrap'</span>,
+        <span class="hljs-string">"Three"</span> : <span class="hljs-string">'javascripts/three'</span>,
+        <span class="hljs-string">"control"</span> : <span class="hljs-string">'javascripts/control'</span>
 
     },
-    shim : {
-        'Three' : {
-            exports: 'THREE'
+    <span class="hljs-attr">shim</span> : {
+        <span class="hljs-string">'Three'</span> : {
+            <span class="hljs-attr">exports</span>: <span class="hljs-string">'THREE'</span>
         }
     }
 });
 
-requirejs([ 'jquery'], function($) {
-    'use strict';
-    requirejs(['bootstrap', 'Three', 'control' ], function(bootstrap, THREE, Control) {
-        $(document).ready(function() {
-            var control = new Control(THREE);
+requirejs([ <span class="hljs-string">'jquery'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    requirejs([<span class="hljs-string">'bootstrap'</span>, <span class="hljs-string">'Three'</span>, <span class="hljs-string">'control'</span> ], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">bootstrap, THREE, Control</span>) </span>{
+        $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-keyword">var</span> control = <span class="hljs-keyword">new</span> Control(THREE);
         });
     });
 });
-</pre>
+</code></pre>
 <p>Here are some reminders to help you check that require is set up correctly.</p>
 <p>In <strong>layout.jade</strong> remove all script tags but this one:</p>
-<pre>script(data-main="javascripts/main" src="components/requirejs/require.js")
-</pre>
+<pre><code class="lang-javascript">script(<span class="hljs-attribute">data-main</span>=<span class="hljs-string">"javascripts/main"</span> <span class="hljs-attribute">src</span>=<span class="hljs-string">"components/requirejs/require.js"</span>)
+</code></pre>
 <p>In the Chrome developer tools network page, you should see <strong>require.js</strong> loaded first, then see <strong>main.js</strong> loaded, then the other JavaScript files. This helps prove to you that require is working. If jquery, for instance, is loaded before require, then something is wrong, likely in <strong>layout.jade</strong>.</p>
 <a class="anchor" id="buttons"></a>
 <h2>Buttons</h2>
@@ -107,57 +107,57 @@ block content
 <a class="anchor" id="step-four"></a>
 <h2>Step Four</h2>
 <p>Let&#39;s draw a shape in <strong>control.js</strong>. Replace all the code in <strong>control.js</strong> with the following requirejs module:</p>
-<pre>
-/* globals define: true, THREE:true */
+<pre><code class="lang-javascript">
+<span class="hljs-comment">/* globals define: true, THREE:true */</span>
 
-define(function() {
+define(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 
-    var scene = null;
-    var camera = null;
-    var renderer = null;
-    var cube = null;
-    var THREE = null;
+    <span class="hljs-keyword">var</span> scene = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">var</span> camera = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">var</span> renderer = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">var</span> cube = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">var</span> THREE = <span class="hljs-literal">null</span>;
 
-    function Control(threeInit) {
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Control</span>(<span class="hljs-params">threeInit</span>) </span>{
         THREE = threeInit;
-        console.log("Control called");
-        scene = new THREE.Scene();
-        var width = window.innerWidth / window.innerHeight;
-        camera = new THREE.PerspectiveCamera(75, width, 0.1, 1000);
-        renderer = new THREE.WebGLRenderer({
-            antialias : true
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Control called"</span>);
+        scene = <span class="hljs-keyword">new</span> THREE.Scene();
+        <span class="hljs-keyword">var</span> width = <span class="hljs-built_in">window</span>.innerWidth / <span class="hljs-built_in">window</span>.innerHeight;
+        camera = <span class="hljs-keyword">new</span> THREE.PerspectiveCamera(<span class="hljs-number">75</span>, width, <span class="hljs-number">0.1</span>, <span class="hljs-number">1000</span>);
+        renderer = <span class="hljs-keyword">new</span> THREE.WebGLRenderer({
+            <span class="hljs-attr">antialias</span> : <span class="hljs-literal">true</span>
         });
-        renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
-        document.body.appendChild(renderer.domElement);
-        cube = addCube(scene, camera, false, 1, 1);
-        camera.position.z = 23;
-        camera.position.x = 2;
-        camera.position.y = 0;
+        renderer.setSize(<span class="hljs-built_in">window</span>.innerWidth / <span class="hljs-number">2</span>, <span class="hljs-built_in">window</span>.innerHeight / <span class="hljs-number">2</span>);
+        <span class="hljs-built_in">document</span>.body.appendChild(renderer.domElement);
+        cube = addCube(scene, camera, <span class="hljs-literal">false</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>);
+        camera.position.z = <span class="hljs-number">23</span>;
+        camera.position.x = <span class="hljs-number">2</span>;
+        camera.position.y = <span class="hljs-number">0</span>;
         render();
     }
 
-    function render() {
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params"></span>) </span>{
         requestAnimationFrame(render);
-        cube.rotation.x += 0.01;
-        cube.rotation.y += 0.01;
+        cube.rotation.x += <span class="hljs-number">0.01</span>;
+        cube.rotation.y += <span class="hljs-number">0.01</span>;
         renderer.render(scene, camera);
     }
 
-    function addCube(scene, camera, wireFrame, x, y) {
-        var geometry = new THREE.BoxGeometry(7, 7, 7);
-        var material = new THREE.MeshNormalMaterial({            
-            wireframe : wireFrame
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addCube</span>(<span class="hljs-params">scene, camera, wireFrame, x, y</span>) </span>{
+        <span class="hljs-keyword">var</span> geometry = <span class="hljs-keyword">new</span> THREE.BoxGeometry(<span class="hljs-number">7</span>, <span class="hljs-number">7</span>, <span class="hljs-number">7</span>);
+        <span class="hljs-keyword">var</span> material = <span class="hljs-keyword">new</span> THREE.MeshNormalMaterial({            
+            <span class="hljs-attr">wireframe</span> : wireFrame
         });
-        var cube = new THREE.Mesh(geometry, material);
-        cube.position.set(x, 0, y);
+        <span class="hljs-keyword">var</span> cube = <span class="hljs-keyword">new</span> THREE.Mesh(geometry, material);
+        cube.position.set(x, <span class="hljs-number">0</span>, y);
         scene.add(cube);
 
-        return cube;
+        <span class="hljs-keyword">return</span> cube;
     }
 
-    return Control;
+    <span class="hljs-keyword">return</span> Control;
 });
-</pre>
+</code></pre>
 <!-- Links -->
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
@@ -165,19 +165,18 @@ define(function() {
 <a class="anchor" id="concepts"></a>
 <h2>Concepts</h2>
 <p>Let&#39;s look at this code for calling our threejs <a href="http://threejs.org/docs/#Reference/Renderers/WebGLRenderer">renderer</a>:</p>
-<pre>function render() {
-    requestAnimationFrame(render);
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-    renderer.render(scene, camera);
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span><span class="hljs-params">()</span> {</span>
+    requestAnimationFrame(<span class="hljs-built_in">render</span>);
+    <span class="hljs-built_in">cube</span>.rotation.x += <span class="hljs-number">0.01</span>;
+    <span class="hljs-built_in">cube</span>.rotation.y += <span class="hljs-number">0.01</span>;
+    renderer.<span class="hljs-built_in">render</span>(scene, camera);
 }
-</pre>
+</code></pre>
 <p>This code first calls <strong>requestAnimationFrame</strong>, which <a href="https://developer.mozilla.org/en-US/docs/Web/API/window.requestAnimationFrame">tells the browser</a> to call the <strong>render</strong> method in its animation loop. The effect is to end up calling <strong>render</strong> over and over, each time the Window is ready to redraw the screen.</p>
 <p>The next two lines rotate the cube we created. In this assignment, we want to stop rotating the cube, so you should comment those lines out, or delete them entirely.</p>
 <p>Finally, we call <strong>renderer.render</strong>. That line of code actually draws our scene and tells the camera to show us what it sees. Note that in the <strong>control.js</strong> constructor, or in a method called by the constructor, we fill the scenes with the objects we want to view. For instance, we load the <strong>cube</strong> in the scene:</p>
-<pre>scene.add(cube);
-</pre>
-<p>Hopefully you now have some sense of how <strong>render</strong> works. It is certainly one of the most important methods in our program.</p>
+<pre><code><span class="hljs-built_in">scene</span>.add(<span class="hljs-built_in">cube</span>);
+</code></pre><p>Hopefully you now have some sense of how <strong>render</strong> works. It is certainly one of the most important methods in our program.</p>
 <a class="anchor" id="jscs-ignore"></a>
 <h2>JSCS Ignore</h2>
 <p>We should ignore certain files in <strong>.jscsrc</strong>:</p>
