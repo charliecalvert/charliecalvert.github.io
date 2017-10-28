@@ -8,6 +8,7 @@
 <li><a href="#refactor-tests">Refactor Tests</a></li>
 <li><a href="#coverage-ignore">Ignore Files in Coverage</a></li>
 <li><a href="#button-clicks">Button Clicks</a></li>
+<li><a href="#surprise">A Gotcha</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>Learning more about testing.</p>
@@ -349,6 +350,42 @@ drwxrwxr-x<span class="hljs-number"> 15 </span>charlie charlie<span class="hljs-
 <p>Here is another way of describing the above:</p>
 <div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/Z7bU9vlO6yY?ecver=2" width="640" height="360" frameborder="0" gesture="media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
 
+<a class="anchor" id="surprise"></a>
+<h2>A Gotcha</h2>
+<p>When writing my second test, I accidentally misnamed the event I was subscribing to. This meant that the <strong>$.subscribe</strong> method was never called, and my <strong>expect</strong> tests never run. Since there were no failed tests, my code appeared to succeed. (This is perhaps one of the reasons we should always start with failing code. You don&#39;t want to start with a test that passes even when the conditions don&#39;t meet the requirements.)</p>
+<p>At any rate, I added another test that ensured that the <strong>$.subscribe</strong> method was called. You should add this code to your tests.</p>
+<pre><code class="lang-javascript">it('publishes clientMakeHtml event after button click', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;HomeButtons/&gt;</span>)<span class="hljs-comment">;</span>
+    let subscriptionCalled = false<span class="hljs-comment">;</span>
+    $.subscribe('clientMakeHtml', (<span class="hljs-name">event</span>, target) =&gt; {
+        console.log(<span class="hljs-name">JSON</span>.stringify(<span class="hljs-name">event</span>, null, <span class="hljs-number">4</span>))<span class="hljs-comment">;</span>
+        console.log(<span class="hljs-name">target</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">event</span>.type).toBe('clientMakeHtml')<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">target</span>.message).toBe('The user wants to makeHtml.')<span class="hljs-comment">;</span>
+        subscriptionCalled = true<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+    wrapper.find('#makeHtml').simulate('click')<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">subscriptionCalled</span>).toBeTruthy()<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>I&#39;ve added a variable called <strong>subscriptionCalled</strong> that is initialized to false:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> <span class="hljs-attr">subscriptionCalled</span> = <span class="hljs-literal">false</span>;
+</code></pre>
+<p>I set it to true at the end of the <strong>$.subscribe</strong> method:</p>
+<pre><code class="lang-javascript"><span class="hljs-attr">subscriptionCalled</span> = <span class="hljs-literal">true</span>;
+</code></pre>
+<p>And here is the test to check that it was set to true, thus proving that the <strong>$.subscribe</strong> method was called.</p>
+<p>An alternative would have been to use a method called <strong>done</strong> which is used to asynchronous code to tell <strong>Jest</strong> that a callback has been received. Since there are no callbacks in this code, it is not really an appropriate place to use it. However, it does allow us to write less verbose code. In that spirit, in this version, I have tried to remove the methods that are not needed.</p>
+<pre><code class="lang-javascript">it('publishes clientMakeHtml event after button click with done', (<span class="hljs-name">done</span>) =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;HomeButtons/&gt;</span>)<span class="hljs-comment">;</span>
+    $.subscribe('clientMakeHtml', (<span class="hljs-name">event</span>, target) =&gt; {
+        expect(<span class="hljs-name">target</span>.message).toBe('The user wants to makeHtml.')<span class="hljs-comment">;</span>
+        done()<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+    wrapper.find('#makeHtml').simulate('click')<span class="hljs-comment">;    </span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>Though I continually violate this rule, it is generally considered better to write shorter code so that the reader of the code can understand it more readily.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Push your work. Give me:</p>
