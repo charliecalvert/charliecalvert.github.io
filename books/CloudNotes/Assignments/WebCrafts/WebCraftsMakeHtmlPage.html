@@ -1,0 +1,169 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>WebCraftsMakeHtmlPage</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>WebCraftsMakeHtmlPage</h1><p>Welcome to WebCraftsMakeHtmlPage</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#webpack">WebPack</a></li>
+<li><a href="#react-in-make-html">Insert React in MakeHtml</a></li>
+<li><a href="#go-home">Go Home</a></li>
+<li><a href="#react-navigation">React Navigation</a></li>
+<li><a href="#pub-sub">Pub Sub</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>The goal of this assignment is to start converting the <strong>MakeHtml</strong> page to react.</p>
+<a class="anchor" id="webpack"></a>
+<h2>WebPack</h2>
+<p>In <strong>webpack.config.js</strong> add a new property:</p>
+<pre><code><span class="hljs-symbol">devtool:</span> <span class="hljs-string">"source-map"</span>
+</code></pre><p>At runtime, look for a folder in the <strong>source</strong> page for the Chrome Dev Tools that says <strong>webpack</strong>. You have to click around a bit to find your <strong>source</strong> folder, but once you have it, you can set breakpoints and inspect.</p>
+<p>And lets add the ability to run webpack automatically when we update one of our ES6 files. Modify the <strong>bundle</strong> property in <strong>package.json</strong>. (It may be called something else on your system, such as <strong>bundle</strong>. The key thing is to change the property that runs webpack.)</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"buildDev"</span>: <span class="hljs-string">"node_modules/.bin/webpack --watch"</span>
+</code></pre>
+<p>This won&#39;t refresh the page automatically, but it will run <strong>webpack</strong>. Then you can press F5 in the browser to refresh.</p>
+<a class="anchor" id="react-in-make-html"></a>
+<h2>Insert React in MakeHtml</h2>
+<p>Add this method to <strong>public/javascripts/make-html/make-html.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">publishRectMakeHtml</span>(<span class="hljs-params"></span>) </span>{
+    $.publish(<span class="hljs-string">'reactMakeHtml'</span>, {
+        <span class="hljs-attr">message</span> : <span class="hljs-string">"Publisher Constructor Called"</span>
+    });
+}
+</code></pre>
+<p>In the same file, make sure it gets called when <strong>makeHtml</strong> is displayed:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">init</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'#pageLoad'</span>).load(<span class="hljs-string">'/makers/makeHtml'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            $(<span class="hljs-string">'#loadConfig'</span>).click(loadConfig);
+            $(<span class="hljs-string">'#walk'</span>).click(walk);
+            $(<span class="hljs-string">'#walktype'</span>).change(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                radioWalkType = $(<span class="hljs-string">'input[name=walktype]:checked'</span>).attr(<span class="hljs-string">'id'</span>);
+            });
+            walking.configurePageOne();
+            loadConfig();
+            publishRectMakeHtml(); <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">===</span> <span class="hljs-attr">HERE</span>
+        });
+    }
+};</span></span>
+</code></pre>
+<a class="anchor" id="go-home"></a>
+<h2>Go Home</h2>
+<p>Before we can handle the <strong>reactMakeHtml</strong> message, we have to make a couple simple changes. It turns out that memory is managed better if React has complete control of the DIV on which we place our components. So let&#39;s set up two DIVs on <strong>views/index.pug</strong>, one for <strong>jQuery</strong> and one for <strong>React</strong>. For now, I will call the <strong>jQuery</strong> DIV <strong>pageLoad</strong> and the <strong>React</strong> DIV <strong>home</strong>:</p>
+<pre>extends layout
+
+block content
+
+    .jumbotron
+        h1 Elven Site Builder
+
+    div#home
+
+    div#pageLoad
+        p To see options, select a button above.
+</pre>
+<a class="anchor" id="react-navigation"></a>
+<h2>React Navigation</h2>
+<p>We should let React handle the React DIV. The <strong>PageLoad</strong> DIV, however, needs to be cleared when we navigate back home. First, let&#39;s declare a bit of Pug code that consists of little more than an empty DIV. I save this as <strong>views/empyt.pug</strong>:</p>
+<pre>block content
+
+    #empty
+</pre>
+<p>The next step is declare code to navigate through the React components:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> ReactHome <span class="hljs-keyword">from</span> <span class="hljs-string">'./ReactHome'</span>;
+<span class="hljs-keyword">import</span> MakeHtml <span class="hljs-keyword">from</span> <span class="hljs-string">'./MakeHtml'</span>;
+
+<span class="hljs-keyword">let</span> homeDiv = <span class="hljs-literal">null</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">reactMakeHtml</span>(<span class="hljs-params">event, customMessage</span>) </span>{
+    ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MakeHtml</span>/&gt;</span></span>, homeDiv);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">reactHome</span>(<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-string">'#pageLoad'</span>).load(<span class="hljs-string">'/empty'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        home();
+    });
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">home</span>(<span class="hljs-params"></span>) </span>{
+    ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ReactHome</span>/&gt;</span></span>, homeDiv);
+}
+
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    homeDiv = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'home'</span>);
+    home();
+    $.subscribe(<span class="hljs-string">'reactMakeHtml'</span>, reactMakeHtml);
+    $.subscribe(<span class="hljs-string">'home'</span>, reactHome);
+});
+</code></pre>
+<a class="anchor" id="pub-sub"></a>
+<h2>Pub Sub</h2>
+<p>Publishers:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">File</th>
+<th style="text-align:left">Publisher</th>
+<th style="text-align:left">Subscriber</th>
+<th style="text-align:left">Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">HomeButtons</td>
+<td style="text-align:left">clientMakeHtml</td>
+<td style="text-align:left">control</td>
+<td style="text-align:left">Show MakeHtml Page</td>
+</tr>
+<tr>
+<td style="text-align:left">HomeButtons</td>
+<td style="text-align:left">clientMakeImage</td>
+<td style="text-align:left">control</td>
+<td style="text-align:left">Show MakeImage Page</td>
+</tr>
+<tr>
+<td style="text-align:left">MakeHtml</td>
+<td style="text-align:left">home</td>
+<td style="text-align:left">react-main</td>
+<td style="text-align:left">Show Home Page</td>
+</tr>
+<tr>
+<td style="text-align:left">make-html</td>
+<td style="text-align:left">reactMakeHtml</td>
+<td style="text-align:left">react-main</td>
+<td style="text-align:left">Insert React MakeHtml</td>
+</tr>
+</tbody>
+</table>
+<p>Another way to look at the messages:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Message</th>
+<th style="text-align:left">What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">reactMakeHtml</td>
+<td style="text-align:left">Inserts React code into MakeHtml</td>
+</tr>
+<tr>
+<td style="text-align:left">home</td>
+<td style="text-align:left">Inserts React code into home page</td>
+</tr>
+<tr>
+<td style="text-align:left">clientMakeHtml</td>
+<td style="text-align:left">Displays MakeHtml page</td>
+</tr>
+<tr>
+<td style="text-align:left">clientMakeImage</td>
+<td style="text-align:left">Displays MakeImage page</td>
+</tr>
+</tbody>
+</table>
+<p>Here is the flow:</p>
+<ul>
+<li>The User Clicks the <strong>MakeHtml</strong> button on the home page.<ul>
+<li>In <strong>HomeButtons.js</strong> this causes the <strong>clientMakeHtml</strong> event to be published.
+-</li>
+</ul>
+</li>
+</ul>
+</div></body></html>
