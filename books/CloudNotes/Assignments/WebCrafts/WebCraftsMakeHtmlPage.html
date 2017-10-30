@@ -7,6 +7,7 @@
 <li><a href="#react-navigation">React Navigation</a></li>
 <li><a href="#the-makehtml-react-code">The MakeHtml React code</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#going-forward">Going Forward</a></li>
 <li><a href="#clear-jquery-page">Alternative way to Clear the jQuery Page</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>The goal of this assignment is to start converting the <strong>MakeHtml</strong> page to React.</p>
@@ -282,6 +283,122 @@ $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"
 <li>Branch (Week07)</li>
 <li>Merge your code back into the <strong>master</strong> branch.</li>
 </ul>
+<a class="anchor" id="going-forward"></a>
+<h2>Going Forward</h2>
+<p>So how do we move forward? How do we begin to integrate React into our code?</p>
+<p>Right now I have this configuration, but it will change:</p>
+<ul>
+<li><strong>source/MakeHtml</strong> is very simple, as shown below</li>
+</ul>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> MuiThemeProvider <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/styles/MuiThemeProvider'</span>;
+<span class="hljs-keyword">import</span> MakeHtmlDropDowns <span class="hljs-keyword">from</span> <span class="hljs-string">'./MakeHtmlDropDowns'</span>;
+<span class="hljs-keyword">import</span> MakeHtmlHomeButton <span class="hljs-keyword">from</span> <span class="hljs-string">'./MakeHtmlHomeButton'</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MakeHtml</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+    render() {
+
+        <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">MakeHtmlHomeButton</span>/&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">MakeHtmlDropDowns</span>/&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span></span>;
+    };
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> MakeHtml;
+</code></pre>
+<p>I&#39;ll leave it up to you to put together the <strong>MakeHtmlHomeButton</strong> component, which is obviously very similar to the original <strong>MakeHtml</strong> component shown above.</p>
+<p>The <strong>MakeHtmlDropDowns</strong> component has a number of tricks in it. We will review in class:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> MuiThemeProvider <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/styles/MuiThemeProvider'</span>;
+<span class="hljs-keyword">import</span> DropDownMenu <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/DropDownMenu'</span>;
+<span class="hljs-keyword">import</span> MenuItem <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/MenuItem'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'whatwg-fetch'</span>;
+
+<span class="hljs-keyword">const</span> styles = {
+    <span class="hljs-attr">customWidth</span>: {
+        <span class="hljs-attr">width</span>: <span class="hljs-number">500</span>,
+    },
+};
+
+<span class="hljs-keyword">const</span> items = [];
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MakeHtmlDropDowns</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+
+
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">super</span>();
+
+        <span class="hljs-keyword">this</span>.state = {
+            <span class="hljs-attr">makeImage</span>: <span class="hljs-string">'Make Image'</span>,
+            <span class="hljs-attr">makeHtml</span>: <span class="hljs-string">'Make HTML'</span>,
+            <span class="hljs-attr">value</span>: <span class="hljs-number">1</span>
+        };
+        <span class="hljs-keyword">this</span>.handleChange = <span class="hljs-keyword">this</span>.handleChange.bind(<span class="hljs-keyword">this</span>);
+    }
+
+    handleChange(event, index, value) {
+        <span class="hljs-keyword">this</span>.setState({value});
+    }
+
+    <span class="hljs-comment">/**
+     * @typedef {Object} configSummary
+     * @property {Object} siteDirs
+     * @property {Object} destinationDirs
+     * @property {String} baseDir
+     * @property {String} mostRecentDate
+     */</span>
+    loadConfig() {
+        <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+        fetch(<span class="hljs-string">'/makers/config'</span>)
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">response</span>) </span>{
+                <span class="hljs-keyword">return</span> response.json();
+            })
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">configSummary</span>) </span>{
+                <span class="hljs-comment">//console.log('parsed json', JSON.stringify(configSummary, null, 4));</span>
+                items.length = <span class="hljs-number">0</span>;
+                configSummary.siteDirs.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">dir, index</span>) </span>{
+                    <span class="hljs-keyword">const</span> showDir = configSummary.baseDir + dir;
+                    items.push(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MenuItem</span> <span class="hljs-attr">value</span>=<span class="hljs-string">{index}</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{index}</span> <span class="hljs-attr">primaryText</span>=<span class="hljs-string">{showDir}</span> /&gt;</span>);
+                });
+            })
+            .catch(function (ex) {
+                console.log('parsing failed', ex);
+            });
+    }
+
+    componentDidMount() {
+        this.loadConfig();
+    }
+
+    render() {
+        return <span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Home Page<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">DropDownMenu</span>
+                    <span class="hljs-attr">value</span>=<span class="hljs-string">{this.state.value}</span>
+                    <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.handleChange}</span>
+                    <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.customWidth}</span>
+                    <span class="hljs-attr">autoWidth</span>=<span class="hljs-string">{false}</span>
+                &gt;</span>
+                    {items}
+                <span class="hljs-tag">&lt;/<span class="hljs-name">DropDownMenu</span>&gt;</span>
+
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>This is a DropDown component.<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span>
+    };
+}
+
+var buttonStyle = {
+    margin: '15px'
+};
+
+export default MakeHtmlDropDowns;</span>
+</code></pre>
+<p>This is far from a complete solution, but it should help you get started. What I&#39;m looking for now is your ability to think ahead and create code of your own.</p>
 <a class="anchor" id="clear-jquery-page"></a>
 <h2>Alternative way to Clear the jQuery Page</h2>
 <p>We should let React handle the React DIV. The <strong>PageLoad</strong> DIV, however, needs to be cleared when we navigate back home. First, let&#39;s declare a bit of Pug code that consists of little more than an empty DIV. I save this as <strong>views/empyt.pug</strong>:</p>
@@ -297,7 +414,7 @@ $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"
 }
 </code></pre>
 <p>Another alternative, here is how to empty a node using pure JavaScript. It works in ie 9+:</p>
-<pre><code class="lang-javascript">homeDiv.innerHTML%20%3D%20%27%27%3B
+<pre><code class="lang-javascript"><span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'pageLoad'</span>).innerHTML = <span class="hljs-string">''</span>;
 </code></pre>
 <p>See also <a href="http://youmightnotneedjquery.com/">You Might not Need jQuery</a>. This site has standard JavaScript code for many of the methods in jQuery. Back in the day, the standard JavaScript code did not run in many browsers, but it does now.</p>
 </div></body></html>
