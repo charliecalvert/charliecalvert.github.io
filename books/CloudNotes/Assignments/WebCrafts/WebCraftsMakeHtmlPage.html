@@ -6,19 +6,46 @@
 <li><a href="#react-navigation">React Navigation</a></li>
 <li><a href="#pub-sub">Pub Sub</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
-<p>The goal of this assignment is to start converting the <strong>MakeHtml</strong> page to react.</p>
+<p>The goal of this assignment is to start converting the <strong>MakeHtml</strong> page to React.</p>
 <a class="anchor" id="webpack"></a>
 <h2>WebPack</h2>
+<p>First, let&#39;s do something to improve our development experience. In particular, let&#39;s add code that will allows us to debug our ES6 code directly in the <a href="https://developer.chrome.com/devtools">Chrome Developer Tools</a></p>
 <p>In <strong>webpack.config.js</strong> add a new property:</p>
 <pre><code><span class="hljs-symbol">devtool:</span> <span class="hljs-string">"source-map"</span>
-</code></pre><p>At runtime, look for a folder in the <strong>source</strong> page for the Chrome Dev Tools that says <strong>webpack</strong>. You have to click around a bit to find your <strong>source</strong> folder, but once you have it, you can set breakpoints and inspect.</p>
-<p>And lets add the ability to run webpack automatically when we update one of our ES6 files. Modify the <strong>bundle</strong> property in <strong>package.json</strong>. (It may be called something else on your system, such as <strong>bundle</strong>. The key thing is to change the property that runs webpack.)</p>
+</code></pre><p>At runtime, look for a folder in the <strong>source</strong> page for the Chrome Dev Tools that says <strong>webpack</strong>. You have to click around a bit to find your <strong>source</strong> folder, but once you have it, you can set breakpoints and inspect directly on ES6 code. This is much better than having to spelunk through <strong>bundle.js</strong>.</p>
+<p>We call run webpack automatically when we update one of our ES6 files. This does for WebPack something similar to what <strong>nodemon</strong> does for your ES5 JavaScript files.</p>
+<p>Modify the <strong>buildDev</strong> property in <strong>package.json</strong>. (It may be called something else on your system, such as <strong>bundle</strong>. The key thing is to change the property that runs webpack.)</p>
 <pre><code class="lang-javascript"><span class="hljs-string">"buildDev"</span>: <span class="hljs-string">"node_modules/.bin/webpack --watch"</span>
 </code></pre>
-<p>This won&#39;t refresh the page automatically, but it will run <strong>webpack</strong>. Then you can press F5 in the browser to refresh.</p>
+<p>By adding the <strong>--watch</strong> flag we tell WebPack to monitor our ES6 files referenced in the <strong>entry</strong> property of <strong>webpack.config.js</strong>. This won&#39;t refresh our web page automatically, but it will run <strong>webpack</strong> and generate a new <strong>bundle.js</strong> file. Then you can press F5 in the browser to refresh your Web App.</p>
 <a class="anchor" id="react-in-make-html"></a>
 <h2>Insert React in MakeHtml</h2>
-<p>Add this method to <strong>public/javascripts/make-html/make-html.js</strong>:</p>
+<p>We have already added React buttons with <strong>material-ui</strong> styling to the home page. The next step is to make similar changes to the <strong>MakeHtml</strong> page. Because we need to attach our React code to a DOM node, we cannot insert our React code into the <strong>MakeHtml</strong> page until the <strong>MakeHtml</strong> page is loaded. Our goal, then, is to find the place in our code where the <strong>MakeHtml</strong> page is loaded, and to then piggyback on that code, inserting code that will add our React code after the page is loaded.</p>
+<p>This is a serious problem for developers. If you are handed a fairly large code base, you sometimes must spelunk through it looking for the place where certain events take place. In this course, I will step you through that process, but you must take a moment to consider the magnitude of such problems and whether or not you think you are up to them.</p>
+<p>Here is what happens when the <strong>MakeHtml</strong> button on the main page is pressed:</p>
+<ul>
+<li><strong>MakeHtml</strong> button clicked.</li>
+<li>Code found in <strong>public/javascripts/control.js</strong> causes <strong>makeHtml.item</strong> to fire.<ul>
+<li><strong>$.subscribe(&#39;clientMakeHtml&#39;, makeHtml.init);</strong></li>
+</ul>
+</li>
+</ul>
+<p>The question then becomes, where is <strong>makeHtml.init</strong> implemented? At the top of <strong>control.js</strong>, we see this code:</p>
+<pre><code class="lang-javascript">define([<span class="hljs-string">'makeHtml'</span>, <span class="hljs-string">'makeImage'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(makeHtml, makeImage)</span> </span>{ ... });
+</code></pre>
+<p>This tells us that the <strong>makeHtml</strong> is loaded by <strong>RequireJs</strong> in <strong>main.js</strong>. In particular, see this line from <strong>main.js</strong>:</p>
+<pre><code class="lang-javascripts">makeHtml: 'javascripts/<span class="hljs-built_in">make</span>-html/<span class="hljs-built_in">make</span>-html',
+</code></pre>
+<p>Now we know what file to look in. If you open that file, you will find the <strong>init</strong> method near the bottom of the file:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">return</span> {
+    <span class="hljs-attribute">init</span>: <span class="hljs-built_in">function</span>() {
+        $(<span class="hljs-string">'#pageLoad'</span>).<span class="hljs-built_in">load</span>(<span class="hljs-string">'/makers/makeHtml'</span>, function() {
+          // CODE OMITTED HERE
+        });        
+    }
+};
+</code></pre>
+<p>Now we know where the <strong>MakeHtml</strong> page is loaded, and hence where we need to insert our shim for our React code. Add this method to <strong>public/javascripts/make-html/make-html.js</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">publishRectMakeHtml</span>(<span class="hljs-params"></span>) </span>{
     $.publish(<span class="hljs-string">'reactMakeHtml'</span>, {
         <span class="hljs-attr">message</span> : <span class="hljs-string">"Publisher Constructor Called"</span>
