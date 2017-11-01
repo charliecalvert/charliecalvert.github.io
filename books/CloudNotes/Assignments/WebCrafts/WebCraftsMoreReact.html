@@ -3,7 +3,13 @@
 <li><a href="#git-ignore">Git Ignore</a></li>
 <li><a href="#bugs">Bugs</a></li>
 <li><a href="#config-wrong">Bugs: The Case of the Wrong Config File</a></li>
-<li><a href="#missing-markdown">Bug: The Case of the Missing Markdown</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#missing-markdown">Bug: The Case of the Missing Markdown</a></li>
+<li><a href="#bug-the-case-of-the-missing-highlight">Bug: The Case of the Missing Highlight</a></li>
+<li><a href="#the-react-makehtml-files">The React MakeHtml files</a></li>
+<li><a href="#two-dropdowns">Two DropDowns</a></li>
+<li><a href="#details">Details</a></li>
+<li><a href="#generate-html">Generate HTML</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>Additional hints on getting WebCraft converted to React.</p>
 <a class="anchor" id="git-ignore"></a>
@@ -20,7 +26,8 @@ git rm public/javascripts/bundle.js.map
 <h2>Bugs</h2>
 <p>There are two bugs in <strong>isit-site-tools</strong> that need to be fixed. The simplest way to get the fix is to merge in the code from the upstream repository that you forked earlier. I ran the following from the root of <strong>isit-site-tools</strong>:</p>
 <pre><code>git pull git<span class="hljs-meta">@github</span>.<span class="hljs-string">com:</span>charliecalvert/isit-site-tools.git
-</code></pre><p>To my surprise, this did not cause the require statements that we inserted with the <strong>find</strong> and <strong>sed</strong> commands to be changed back to their original values.</p>
+</code></pre><p>Our changes are preserved in this process. In other words, it will not cause the <strong>require</strong> statements that we inserted with the <strong>find</strong> and <strong>sed</strong> commands to be changed back to their original values.</p>
+<p><strong>NOTE</strong> <em>See point 5 in <a href="https://help.github.com/articles/syncing-a-fork/">this documentation</a> for confirmation that your changes will not be lost.</em></p>
 <p>Please also see this: which would probably simplify the process, but I have not tried it yet:</p>
 <ul>
 <li><a href="https://gist.github.com/CristinaSolana/1885435">https://gist.github.com/CristinaSolana/1885435</a></li>
@@ -87,4 +94,143 @@ git rm public/javascripts/bundle.js.map
 };
 </code></pre>
 <p>The key change is the line that looks for an empty directories property and return to emtpy arrays if it is found. Otherwise, the <strong>details.directories</strong> object is iterated with <strong>forEach</strong> and the markdown found in the directories is converted to HTML. The code called by <strong>makePage.run</strong> note only performs the conversion, but also returns an object with detailed information about which files were converted. That object is then passed to our client so that the user can see what the the program did.</p>
+<a class="anchor" id="bug-the-case-of-the-missing-highlight"></a>
+<h2>Bug: The Case of the Missing Highlight</h2>
+<p>Please read the section called <a href="#bugs">Bugs</a> before reading more. In short, this is done automaticlly, just read it.</p>
+<p>This was the big change that has been holding me up from using this version of the app.</p>
+<p>We have better support now for highlighting and perhaps for bootswatch. The changes are to two methods to a file called <strong>create-markdown</strong> in <strong>markdown-to-html/private</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">function</span> <span class="hljs-string">createDetails(report,</span> <span class="hljs-string">directoryToWalk,</span> <span class="hljs-string">destinationDir,</span> <span class="hljs-string">highlight,</span> <span class="hljs-string">bootswatch)</span> <span class="hljs-string">{</span>
+    <span class="hljs-string">return</span> <span class="hljs-string">{</span>
+<span class="hljs-attr">        report:</span> <span class="hljs-string">report,</span>
+<span class="hljs-attr">        bootswatch:</span> <span class="hljs-string">bootswatch,</span>     <span class="hljs-string">&lt;===</span> <span class="hljs-string">HERE</span>
+<span class="hljs-attr">        directoryToWalk:</span> <span class="hljs-string">directoryToWalk,</span>
+<span class="hljs-attr">        destinationDir:</span> <span class="hljs-string">destinationDir,</span>
+<span class="hljs-attr">        directories:</span> <span class="hljs-string">walkCore.getDirectories(report),</span>
+<span class="hljs-attr">        highlight:</span> <span class="hljs-string">highlight,</span>       <span class="hljs-string">&lt;===</span> <span class="hljs-string">HERE</span>
+<span class="hljs-attr">        testRun:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-string">};</span>
+<span class="hljs-string">}</span>
+</code></pre>
+<p>The changes are in the header for the method, and in the two places called out in the code.</p>
+<p>Also this method was changed:</p>
+<pre><code class="lang-javascript"><span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">configSummary, directoryIndex</span>) </span>{
+<span class="hljs-meta">'use strict'</span>;
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve, reject</span>) </span>{
+      elfLog.setLevel(elfLog.logLevelNano);
+      <span class="hljs-keyword">const</span> directoryToWalk = configSummary[<span class="hljs-string">'base-dir'</span>] + configSummary[<span class="hljs-string">'site-dirs'</span>][directoryIndex];
+      <span class="hljs-keyword">const</span> destinationDir = configSummary[<span class="hljs-string">'destination-dirs'</span>][directoryIndex];
+      <span class="hljs-keyword">const</span> mostRecentDate = configSummary[<span class="hljs-string">'most-recent-date'</span>];
+      <span class="hljs-keyword">const</span> bootswatch = configSummary.bootswatch;  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">===</span> <span class="hljs-attr">HERE</span>
+      <span class="hljs-attr">const</span> <span class="hljs-attr">highlight</span> = <span class="hljs-string">configSummary[</span>'<span class="hljs-attr">highlight</span>']; &lt;=== <span class="hljs-string">HERE</span>
+      <span class="hljs-attr">fs.access</span>(<span class="hljs-attr">directoryToWalk</span>, <span class="hljs-attr">fs.F_OK</span> | <span class="hljs-attr">fs.R_OK</span>, <span class="hljs-attr">function</span>(<span class="hljs-attr">err</span>) {
+          <span class="hljs-attr">if</span> (<span class="hljs-attr">err</span>) {
+              <span class="hljs-attr">reject</span>(<span class="hljs-attr">err</span>);
+          } <span class="hljs-attr">else</span> {
+              <span class="hljs-attr">elfLog.details</span>('<span class="hljs-attr">Folder</span> <span class="hljs-attr">to</span> <span class="hljs-attr">Walk:</span> ' + <span class="hljs-attr">directoryToWalk</span>);
+
+              <span class="hljs-attr">walkCore.buildFileReport</span>(<span class="hljs-attr">directoryToWalk</span>, '<span class="hljs-attr">.md</span>', <span class="hljs-attr">mostRecentDate</span>, <span class="hljs-attr">function</span>(<span class="hljs-attr">report</span>) {
+                  <span class="hljs-attr">elfLog.nano</span>('<span class="hljs-attr">In</span> <span class="hljs-attr">buildFileReport</span> <span class="hljs-attr">callback</span>');
+                  <span class="hljs-attr">const</span> <span class="hljs-attr">details</span> = <span class="hljs-string">createDetails(report,</span> <span class="hljs-attr">directoryToWalk</span>,
+                       <span class="hljs-attr">destinationDir</span>, <span class="hljs-attr">highlight</span>, <span class="hljs-attr">bootswatch</span>); &lt;=== <span class="hljs-string">HERE</span>
+                  <span class="hljs-attr">pageMaker</span>(<span class="hljs-attr">details</span>, <span class="hljs-attr">configSummary</span>, <span class="hljs-attr">destinationDir</span>)
+                      <span class="hljs-attr">.then</span>(<span class="hljs-attr">resolve</span>)
+                      <span class="hljs-attr">.catch</span>(<span class="hljs-attr">reject</span>)
+              });
+          }
+      });
+  });
+};</span></span>
+</code></pre>
+<a class="anchor" id="the-react-makehtml-files"></a>
+<h2>The React MakeHtml files</h2>
+<p>There are three:</p>
+<ul>
+<li>MakeHtml.js</li>
+<li>MakeHtmlDropDowns</li>
+<li>MakeHtmlHomeButton</li>
+</ul>
+<a class="anchor" id="two-dropdowns"></a>
+<h2>Two DropDowns</h2>
+<p>Right now we are just trying to create a relatively simple effect. We want:</p>
+<ul>
+<li>Two DropDowns<ul>
+<li>The first has the <strong>siteDirs</strong> from the <strong>ElvenConfig.json</strong> file.</li>
+<li>The second has the <strong>destinationDirs</strong> from the config file.</li>
+</ul>
+</li>
+<li>If you select the one or the other, the matching item appears automatically.</li>
+<li>If you click a <strong>RaisedButton</strong> labeled <strong>Generate HTML</strong> then the markdown files in the <strong>siteDirs</strong> directory should be converted into HTML found in the <strong>destinationDirs</strong> directory.</li>
+<li>Only the files updated after the <strong>mostRecentDate</strong> from the config file will be processed. If there are no such files in the chosen directory, then the program returns an empty array.</li>
+</ul>
+<p>Watch this video for details:</p>
+<div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/aHJ0GzrfnRI?ecver=2" width="640" height="360" frameborder="0" gesture="media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
+
+<p>I&#39;ll leave it up to you to create the <strong>DropDowns</strong> and the <strong>Button</strong>. For now, we can put this all in <strong>MakeHtmlDropDowns</strong>, but later we may refactor.</p>
+<a class="anchor" id="details"></a>
+<h2>Details</h2>
+<p>Here is the state for the <strong>MakeHtmlDropDowns.js</strong> file:</p>
+<pre><code class="lang-javascript">this.<span class="hljs-keyword">state</span> = {
+    walk: 'Generate HTML',
+    siteDir: '<span class="hljs-literal">unknown</span>',
+    destDir: '<span class="hljs-literal">unknown</span>',
+    configSummary: [],
+    value: <span class="hljs-number">1</span>
+};
+</code></pre>
+<p>In module global scope just below the import statements, declare two arrays:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">const siteDirs</span> = [];
+<span class="hljs-attribute">const destDirs</span> = [];
+</code></pre>
+<p>There was a method in this file called something like <strong>handleChange</strong>. It should become <strong>handleSiteDir</strong>. A second method should be called <strong>handleDestinationDir</strong>. These methods are referenced in our JSX:</p>
+<pre><code class="lang-xml"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">DropDownMenu</span>
+    <span class="hljs-attr">value</span>=</span></span><span class="hljs-template-variable">{this.state.value}</span><span class="xml"><span class="hljs-tag">
+    <span class="hljs-attr">onChange</span>=</span></span><span class="hljs-template-variable">{this.handleSiteDir}</span><span class="xml"><span class="hljs-tag">
+    <span class="hljs-attr">autoWidth</span>=</span></span><span class="hljs-template-variable">{true}</span><span class="xml"><span class="hljs-tag">
+&gt;</span>
+    </span><span class="hljs-template-variable">{siteDirs}</span><span class="xml">
+<span class="hljs-tag">&lt;/<span class="hljs-name">DropDownMenu</span>&gt;</span></span>
+</code></pre>
+<p>Here was <strong>handleChange</strong>:</p>
+<pre><code class="lang-javascript">handleChange(<span class="hljs-keyword">event</span>, index, <span class="hljs-keyword">value</span>) {
+    <span class="hljs-keyword">this</span>.setState({<span class="hljs-keyword">value</span>});
+}
+</code></pre>
+<p>This is using ES6, but it might be clearer like this:</p>
+<pre><code class="lang-javascript">handleChange(<span class="hljs-keyword">event</span>, index, <span class="hljs-keyword">value</span>) {
+    <span class="hljs-keyword">this</span>.setState({<span class="hljs-keyword">value</span>: <span class="hljs-keyword">value</span>});
+}
+</code></pre>
+<p>Change its name to <strong>handleSiteDir</strong> and in the <strong>setState</strong> method also set <strong>state.siteDir</strong> to:</p>
+<pre><code>event<span class="hljs-selector-class">.target</span><span class="hljs-selector-class">.innerHTML</span>,
+</code></pre><p>And set <strong>destDir</strong> to:</p>
+<pre><code><span class="hljs-selector-tag">destDirs</span><span class="hljs-selector-attr">[value]</span><span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.primaryText</span>
+</code></pre><p>Right similar code to for <strong>handleDestinationDir</strong>.</p>
+<p><strong>NOTE</strong>: <em>We don&#39;t actually do anything with state.siteDir and state.destDir. But we may display them later, or use them for debugging or delete them. At any rate, get them to work so you are sure you see what is going on here.</em></p>
+<a class="anchor" id="generate-html"></a>
+<h2>Generate HTML</h2>
+<p>When the button is clicked it should generate call <strong>makers/walk</strong> route in <strong>routes/makers</strong>:</p>
+<pre><code class="lang-javascript">generateHtml() {
+    console.<span class="hljs-keyword">log</span>(this.<span class="hljs-keyword">state</span>.value);
+    console.<span class="hljs-keyword">log</span>(siteDirs[this.<span class="hljs-keyword">state</span>.value]);
+    //walking.runWalkReact('qSingle', this.<span class="hljs-keyword">state</span>.siteDir, this.<span class="hljs-keyword">state</span>.destDir);
+    const query = '/makers/walk?siteDirsIndex=' + this.<span class="hljs-keyword">state</span>.value;
+    var that = this;
+    fetch(query)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(configSummary) {
+            console.<span class="hljs-keyword">log</span>(JSON.stringify(configSummary, null, <span class="hljs-number">4</span>));
+            // CALL that.<span class="hljs-built_in">set</span>State <span class="hljs-keyword">to</span> **<span class="hljs-keyword">state</span>.configSummary** <span class="hljs-keyword">to</span> configSummary.htmlFilesWritten
+        })
+        .catch(function(ex) {
+            console.<span class="hljs-keyword">log</span>('parsing failed', ex);
+        });
+}
+</code></pre>
+<pre><code>        //Object.keys(configSummary).map(<span class="hljs-keyword">function</span> <span class="hljs-title"></span>(key) { <span class="hljs-keyword">return</span> <span class="hljs-type">configSummary[key]</span>; });
+</code></pre><p>You&#39;ll need a PRE tag in your JSX to display <strong>state.configSummary</strong></p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Push and tell me repo and branch.</p>
 </div></body></html>
