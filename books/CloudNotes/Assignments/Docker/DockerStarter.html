@@ -9,8 +9,13 @@
 <li><a href="#save-new-image">Save New Image</a></li>
 <li><a href="#learn-more-about-apache-on-docker">Learn More about Apache on Docker</a></li>
 <li><a href="#install-node">Install Node on Docker Instance</a></li>
+<li><a href="#the-docker-file">The Docker File</a></li>
+<li><a href="#set-up-ubuntu-">Set up Ubuntu:</a></li>
+<li><a href="#run-apache">Run Apache</a></li>
+<li><a href="#delete-an-image">Delete an image</a></li>
 <li><a href="#references">References</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
+<p>This assignment introduces Docker.</p>
 <a class="anchor" id="docker-install"></a>
 <h2>Docker Install</h2>
 <p>There are two scripts in <strong>JsObjects/InstallScripts</strong>:</p>
@@ -84,8 +89,115 @@ docker run -it charliecalvert/ubuntu-node
 <pre>curl -sL https://deb.nodesource.com/setup_8.x | bash -
 apt-get install -y nodejs
 </pre>
-<a class="anchor" id="references"></a>
+<a class="anchor" id="the-docker-file"></a>
+<h2>The Docker File</h2>
+<p>We can automate the above process by creating a <a href="https://docs.docker.com/engine/reference/builder">Docker File</a>.</p>
+<pre><code>mkdir -p ~<span class="hljs-string">/DockerCode/MakeHtml</span>
+<span class="hljs-keyword">cd</span> ~<span class="hljs-string">/DockerCode/MakeHtml</span>
+</code></pre><p>Simple example:</p>
+<pre><code><span class="hljs-keyword">FROM</span> ubuntu
+<span class="hljs-keyword">RUN</span><span class="bash"> <span class="hljs-built_in">echo</span> <span class="hljs-string">'Dockerfile'</span> &gt; /tmp/Dockerfile</span>
+</code></pre><a class="anchor" id="set-up-ubuntu-"></a>
+<h2>Set up Ubuntu:</h2>
+<p>In this section of the text we learn how to create an UbuntuServer image that is up to date and contains certain key pieces.</p>
+<p>Place this text in <strong>~/Docker/UbuntuBase/Dockerfile</strong>:</p>
+<pre><code><span class="hljs-keyword">FROM</span> ubuntu
+ENV DEBIAN_FRONTEND noninteractive
+<span class="hljs-builtin-name">RUN</span> apt-<span class="hljs-builtin-name">get</span> update --yes
+<span class="hljs-builtin-name">RUN</span> apt-<span class="hljs-builtin-name">get</span><span class="hljs-built_in"> upgrade </span>--yes
+
+<span class="hljs-builtin-name">RUN</span> apt-<span class="hljs-builtin-name">get</span> install git -y
+<span class="hljs-builtin-name">RUN</span> apt-<span class="hljs-builtin-name">get</span> install build-essential -y
+<span class="hljs-builtin-name">RUN</span> apt-<span class="hljs-builtin-name">get</span> install nano -y
+</code></pre><p>Create the image:</p>
+<pre><code>docker built -<span class="hljs-built_in">t</span> &lt;DOCKER-HUB-NAME&gt;/ubuntu-<span class="hljs-built_in">base</span>
+</code></pre><p>Run it like this:</p>
+<pre><code>docker <span class="hljs-built_in">run</span> -<span class="hljs-keyword">it</span> &lt;DOCKER-HUB-NAME&gt;/ubuntu-base
+</code></pre><p>For instance:</p>
+<pre><code><span class="hljs-symbol">docker</span> <span class="hljs-keyword">build </span>-t charliecalvert/ubuntu-<span class="hljs-keyword">base
+</span><span class="hljs-symbol">docker</span> run -<span class="hljs-keyword">it </span>charliecalvert/ubuntu-<span class="hljs-keyword">base</span>
+</code></pre><p>The build command creates a Docker image based on your <strong>Dockerfile</strong>. The run command creates a container based on the image and runs it. To delete an image, see the text further down in this file.</p>
+<a class="anchor" id="run-apache"></a>
+<h2>Run Apache</h2>
+<p>The next step would be to add Apache to our base ubuntu image.</p>
+<p>Create a directory called <strong>~/Docker/Apache</strong>. Create a file called:</p>
+<pre><code><span class="hljs-regexp">~/Docker/</span>Apache/<span class="hljs-number">000</span>-<span class="hljs-keyword">default</span>.conf
+</code></pre><p>Place this text in it:</p>
+<pre>ServerName www.example.com
+
+<VirtualHost *:80>
+    # The ServerName directive sets the request scheme, hostname and port that
+    # the server uses to identify itself. This is used when creating
+    # redirection URLs. In the context of virtual hosts, the ServerName
+    # specifies what hostname must appear in the request's Host: header to
+    # match this virtual host. For the default virtual host (this file) this
+    # value is not decisive as it is used as a last resort host regardless.
+    # However, you must set it for any further virtual host explicitly.
+    # ServerName www.example.com
+
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html
+
+    # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+    # error, crit, alert, emerg.
+    # It is also possible to configure the loglevel for particular
+    # modules, e.g.
+    #LogLevel info ssl:warn
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    # For most configuration files from conf-available/, which are
+    # enabled or disabled at a global level, it is possible to
+    # include a line for only one particular virtual host. For example the
+    # following line enables the CGI configuration for this host only
+    # after it has been globally disabled with "a2disconf".
+    #Include conf-available/serve-cgi-bin.conf
+</VirtualHost>
+</pre>
+<p>Put this <strong>Dockerfile</strong> in the same directory:</p>
+<pre><code><span class="hljs-keyword">FROM</span> charliecalvert/ubuntu-base
+
+<span class="hljs-keyword">RUN</span><span class="bash"> apt-get install apache2 -y
+</span><span class="hljs-keyword">env</span> APACHE_RUN_USER    www-data
+<span class="hljs-keyword">env</span> APACHE_RUN_GROUP   www-data
+<span class="hljs-keyword">ENV</span> APACHE_LOG_DIR     /var/log/apache2
+<span class="hljs-keyword">env</span> APACHE_PID_FILE    /var/<span class="hljs-keyword">run</span><span class="bash">/apache2.pid
+</span><span class="hljs-keyword">env</span> APACHE_RUN_DIR     /var/<span class="hljs-keyword">run</span><span class="bash">/apache2
+</span><span class="hljs-keyword">env</span> APACHE_LOCK_DIR    /var/lock/apache2
+
+<span class="hljs-keyword">ADD</span><span class="bash"> 000-default.conf   /etc/apache2/sites-enabled/
+</span>
+<span class="hljs-keyword">RUN</span><span class="bash"> mkdir -p <span class="hljs-variable">$APACHE_RUN_DIR</span> <span class="hljs-variable">$APACHE_LOCK_DIR</span> <span class="hljs-variable">$APACHE_LOG_DIR</span>
+</span>
+<span class="hljs-keyword">EXPOSE</span> <span class="hljs-number">80</span>
+
+<span class="hljs-keyword">CMD</span><span class="bash"> [<span class="hljs-string">"apache2"</span>, <span class="hljs-string">"-D"</span>, <span class="hljs-string">"FOREGROUND"</span>]</span>
+</code></pre><p>Then build it:</p>
+<pre><code><span class="hljs-symbol">docker</span> <span class="hljs-keyword">built </span>-t &lt;DOCKER-HUB-NAME&gt;/apache
+</code></pre><a class="anchor" id="delete-an-image"></a>
+<h2>Delete an image</h2>
+<p>The basic command looks like this:</p>
+<pre><code>docker rmi <span class="hljs-tag">&lt;<span class="hljs-name">ImageName</span>&gt;</span>
+</code></pre><p>Like this:</p>
+<pre><code><span class="hljs-attribute">docker</span> rmi charliecalvert/foobar
+</code></pre><p>Sometimes, when you try that, you get this:</p>
+<pre><code>$ docker rmi charliecalvert/foobar
+<span class="hljs-keyword">Error </span>response from daemon: conflict: unable to remove repository reference "charliecalvert/foobar" (must force) - container a37009760711 is using its referenced image 982c61b58757
+</code></pre><p>In that case, delete the referenced container with the <strong>rm</strong> command:</p>
+<pre><code>$ docker rm a<span class="hljs-number">37009760711</span>
+a<span class="hljs-number">37009760711</span>
+</code></pre><p>Now you should be able to delete the image:</p>
+<pre><code>ubuntu<span class="hljs-variable">@ip</span>-<span class="hljs-number">172</span>-<span class="hljs-number">31</span>-<span class="hljs-number">26</span>-<span class="hljs-number">184</span><span class="hljs-symbol">:~/DockerCode/MakeHtml</span>
+<span class="hljs-variable">$ </span>docker rmi charliecalvert/foobar
+<span class="hljs-symbol">Untagged:</span> charliecalvert/<span class="hljs-symbol">foobar:</span>latest
+<span class="hljs-symbol">Deleted:</span> <span class="hljs-symbol">sha256:</span><span class="hljs-number">982</span>c61b5875720bbe5d3a8fa02c0e932734add5c366e2bb6c3d691b4798c128d
+</code></pre><a class="anchor" id="references"></a>
 <h2>References</h2>
+<p>These are useful:</p>
+<ul>
+<li><a href="https://docs.docker.com/glossary/">Docker Glossary</a></li>
+</ul>
 <p>This is for later:</p>
 <ul>
 <li><a href="https://writing.pupius.co.uk/apache-and-php-on-docker-44faef716150">https://writing.pupius.co.uk/apache-and-php-on-docker-44faef716150</a></li>
