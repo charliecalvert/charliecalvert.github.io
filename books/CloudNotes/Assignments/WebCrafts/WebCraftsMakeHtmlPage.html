@@ -1,6 +1,7 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>WebCraftsMakeHtmlPage</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>WebCraftsMakeHtmlPage</h1><p>Welcome to WebCraftsMakeHtmlPage</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
-<li><a href="#webpack">WebPack</a></li>
+<li><a href="#webpack">WebPack Source Maps</a></li>
+<li><a href="#webpack-watch">Run WebPack when Sources Files Change</a></li>
 <li><a href="#pubsub-flow">Pub Sub Flow</a></li>
 <li><a href="#react-in-make-html">How to Insert React in MakeHtml</a></li>
 <li><a href="#go-home">Go Home</a></li>
@@ -13,13 +14,14 @@
 <p>The goal of this assignment is to start converting the <strong>MakeHtml</strong> page to React.</p>
 <p>Do your work in a branch called <strong>Week07</strong></p>
 <a class="anchor" id="webpack"></a>
-<h2>WebPack</h2>
+<h2>WebPack Source Maps</h2>
 <p>First, let&#39;s do something to improve our development experience. In particular, let&#39;s add code that will allows us to debug our ES6 code directly in the <a href="https://developer.chrome.com/devtools">Chrome Developer Tools</a></p>
 <p>In <strong>webpack.config.js</strong> add a new property:</p>
 <pre><code><span class="hljs-symbol">devtool:</span> <span class="hljs-string">"source-map"</span>
 </code></pre><p>At runtime, look for a folder in the <strong>source</strong> page for the Chrome Dev Tools that says <strong>webpack</strong>. You have to click around a bit to find your <strong>source</strong> folder, but once you have it, you can set breakpoints and inspect directly on ES6 code. This is much better than having to spelunk through <strong>bundle.js</strong>.</p>
-<p>We call run webpack automatically when we update one of our ES6 files. This does for WebPack something similar to what <strong>nodemon</strong> does for your ES5 JavaScript files.</p>
-<p>Modify the <strong>buildDev</strong> property in <strong>package.json</strong>. (It may be called something else on your system, such as <strong>bundle</strong>. The key thing is to change the property that runs webpack.)</p>
+<a class="anchor" id="webpack-watch"></a>
+<h2>Run WebPack when Sources Files Change</h2>
+<p>If we pass in <strong>--watch</strong> to <strong>webpack</strong> then webpack will run automatically when we update one of our ES6 files. This does for WebPack something similar to what <strong>nodemon</strong> does for your ES5 JavaScript files. To get this useful feature, modify the <strong>buildDev</strong> property in <strong>package.json</strong>. (It may be called something else on your system, such as <strong>bundle</strong>. The key thing is to change the property that runs webpack.)</p>
 <pre><code class="lang-javascript"><span class="hljs-string">"buildDev"</span>: <span class="hljs-string">"node_modules/.bin/webpack --watch"</span>
 </code></pre>
 <p>By adding the <strong>--watch</strong> flag we tell WebPack to monitor our ES6 files referenced in the <strong>entry</strong> property of <strong>webpack.config.js</strong>. This won&#39;t refresh our web page automatically, but it will run <strong>webpack</strong> and generate a new <strong>bundle.js</strong> file. Then you can press F5 in the browser to refresh your Web App.</p>
