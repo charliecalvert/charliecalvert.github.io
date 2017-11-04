@@ -1,7 +1,9 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>DockerFile</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>DockerFile</h1><p>Welcome to DockerFile</p><ul><!--TOC_Start--><li><a href="#the-docker-file">The Docker File</a></li>
 <li><a href="#set-up-ubuntu-">Set up Ubuntu:</a></li>
+<li><a href="#disable-apache-on-ubuntu-server">Disable Apache on Ubuntu Server</a></li>
 <li><a href="#run-apache">Run Apache</a></li>
+<li><a href="#create-makehtml">Create MakeHtml</a></li>
 <li><a href="#get-bash-shell-in-background-docker-task">Get Bash Shell in Background Docker Task</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="the-docker-file"></a>
 <h2>The Docker File</h2>
 <p>We can automate the process outlined in the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/Docker/DockerStarter.html">Docker Starter Assignment</a> by creating a <a href="https://docs.docker.com/engine/reference/builder">Docker File</a>.</p>
@@ -30,9 +32,22 @@ ENV DEBIAN_FRONTEND noninteractive
 <pre><code><span class="hljs-symbol">docker</span> <span class="hljs-keyword">build </span>-t charliecalvert/ubuntu-<span class="hljs-keyword">base
 </span><span class="hljs-symbol">docker</span> run -<span class="hljs-keyword">it </span>charliecalvert/ubuntu-<span class="hljs-keyword">base</span>
 </code></pre><p>The build command creates a Docker image based on your <strong>Dockerfile</strong>. The run command creates a container based on the image and runs it. To delete an image, see the text further down in this file.</p>
-<a class="anchor" id="run-apache"></a>
+<a class="anchor" id="disable-apache-on-ubuntu-server"></a>
+<h2>Disable Apache on Ubuntu Server</h2>
+<p>We are going to be running the Apache in a Docker container. As a result, we usually do not want to be running Apache on our Server. In our case, we frequently already have Apache installed and running on our server. We want, at minimum to stop it, which means it won&#39;t run until either:</p>
+<ul>
+<li>We restart it</li>
+<li>Or the Server is rebooted</li>
+</ul>
+<p>Make sure your Ubuntu Server is not running Apache:</p>
+<pre><code>sudo<span class="hljs-built_in"> service </span>apache2 status
+sudo<span class="hljs-built_in"> service </span>apache2 stop
+</code></pre><p>If you don&#39;t want to have Apache start automatically when your server boots up, then disable it:</p>
+<pre><code>sudo<span class="hljs-built_in"> service </span>apache2 stop
+sudo systemctl <span class="hljs-builtin-name">disable</span> apache2
+</code></pre><a class="anchor" id="run-apache"></a>
 <h2>Run Apache</h2>
-<p>The next step would be to add Apache to our base ubuntu image.</p>
+<p>The next step would be to add Apache to our Docker base ubuntu image.</p>
 <p>Create a directory called <strong>~/Docker/Apache</strong>. Create a file called:</p>
 <pre><code><span class="hljs-regexp">~/Docker/</span>Apache/<span class="hljs-number">000</span>-<span class="hljs-keyword">default</span>.conf
 </code></pre><p>Place this text in it:</p>
@@ -87,8 +102,19 @@ ENV DEBIAN_FRONTEND noninteractive
 
 <span class="hljs-keyword">CMD</span><span class="bash"> [<span class="hljs-string">"apache2"</span>, <span class="hljs-string">"-D"</span>, <span class="hljs-string">"FOREGROUND"</span>]</span>
 </code></pre><p>Then build it:</p>
-<pre><code><span class="hljs-symbol">docker</span> <span class="hljs-keyword">built </span>-t &lt;DOCKER-HUB-NAME&gt;/apache
-</code></pre><a class="anchor" id="get-bash-shell-in-background-docker-task"></a>
+<pre><code><span class="hljs-symbol">docker</span> <span class="hljs-keyword">build </span>-t &lt;DOCKER-HUB-NAME&gt;/apache
+</code></pre><p>And run it in the background:</p>
+<pre><code>docker <span class="hljs-keyword">run</span><span class="bash"> -d -p 80:80 charliecalvert/apache</span>
+</code></pre><a class="anchor" id="create-makehtml"></a>
+<h2>Create MakeHtml</h2>
+<p>useradd -ms /bin/bash bcuser
+usermod -aG sudo bcuser
+su bcuser</p>
+<p>mkdir Git
+cd Git
+git clone <a href="http://git@github.com/charliecalvert/JsObjects.git">http://git@github.com/charliecalvert/JsObjects.git</a></p>
+<a class="anchor" id="get-bash-shell-in-background-docker-task"></a>
 <h2>Get Bash Shell in Background Docker Task</h2>
-<p>docker exec -it charliecalvert/apache bash</p>
-</div></body></html>
+<p>Open a bash shell on the instance running in background:</p>
+<pre><code>docker exec -<span class="hljs-keyword">it</span> &lt;CONTAINER_ID_OR_NAME&gt; bash
+</code></pre></div></body></html>
