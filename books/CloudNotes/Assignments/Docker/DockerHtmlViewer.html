@@ -1,7 +1,9 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>DockerHtmlViewer</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>DockerHtmlViewer</h1><p>Welcome to DockerHtmlViewer</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
-<li><a href="#video">Video</a></li>
+<li><a href="#video-simple-docker">Video Simple Docker</a></li>
+<li><a href="#video-apache-control">Video Apache Control</a></li>
 <li><a href="#copy-files">Copy files</a></li>
+<li><a href="#stop-and-start-container">Stop and Start Container</a></li>
 <li><a href="#link-directory">Link Directory</a></li>
 <li><a href="#more-flexibility">More flexibility</a></li>
 <li><a href="#save-a-container-as-an-image">Save a Container as an Image</a></li>
@@ -14,9 +16,13 @@
 <li>Link a directory from the host to the container.</li>
 </ul>
 <p>This assignment has enough in it to get you going. I&#39;ll try to clarify it over the next little bit.</p>
-<a class="anchor" id="video"></a>
-<h2>Video</h2>
+<a class="anchor" id="video-simple-docker"></a>
+<h2>Video Simple Docker</h2>
 <div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/bYy19vDMRRs?ecver=2" width="640" height="360" frameborder="0" gesture="media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
+
+<a class="anchor" id="video-apache-control"></a>
+<h2>Video Apache Control</h2>
+<div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/mDY0dZ_78jE?ecver=2" width="640" height="360" frameborder="0" gesture="media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
 
 <a class="anchor" id="copy-files"></a>
 <h2>Copy files</h2>
@@ -47,7 +53,13 @@ docker stop html-viewer-container
 docker rm html-viewer-container
 docker rmi charliecalvert/html-viewer
 </code></pre><p>To be clear, we still have our <strong>MakeHtml</strong> directory. We will work on it more later. But in this directory we have a much simple Docker file. We have removed from the MakeHtml <strong>Dockerfile</strong> all the code that recreated the <strong>bcuser</strong> user, JsObjects and a node environment. The plan is now to build the html files on the host and then copy them to the container.</p>
-<a class="anchor" id="link-directory"></a>
+<a class="anchor" id="stop-and-start-container"></a>
+<h2>Stop and Start Container</h2>
+<p>Suppose you have a running container and want to stop it:</p>
+<pre><code>docker <span class="hljs-keyword">stop</span> html-viewer-<span class="hljs-keyword">container</span>
+</code></pre><p>Then you can start it again like this:</p>
+<pre><code>docker <span class="hljs-keyword">start</span> html-viewer-<span class="hljs-keyword">container</span>
+</code></pre><a class="anchor" id="link-directory"></a>
 <h2>Link Directory</h2>
 <p>It is also possible to link a directory on the host to a directory in the container. The catch is that you have to do this when you start the container. You can hardcode the link into the container. Again, Docker says it won&#39;t let you hardcode the link because it is not guaranteed to be reproducable in all environments.</p>
 <pre><code>docker run --name maker-elf -v /var/www/<span class="hljs-selector-tag">html</span>:/var/www/<span class="hljs-selector-tag">html</span> -d -<span class="hljs-selector-tag">p</span> <span class="hljs-number">80</span>:<span class="hljs-number">80</span> charliecalvert/apache
