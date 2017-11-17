@@ -70,4 +70,52 @@ sudo<span class="hljs-built_in"> service </span>apache2 start
 sudo<span class="hljs-built_in"> service </span>apache2 stop
 sudo systemctl <span class="hljs-builtin-name">disable</span> apache2
 </code></pre>
+<p>Apache status:</p>
+<pre><code class="lang-bash"><span class="hljs-comment">#!/bin/bash</span>
+
+sudo<span class="hljs-built_in"> service </span>apache2 status
+</code></pre>
+<p>Or, perhaps you would prefer the <strong>ApacheCheck</strong> program from JsObjects:</p>
+<pre><code><span class="hljs-attribute">cp</span> <span class="hljs-variable">$SETUP_LINUXBOX</span>/ApacheCheck .
+</code></pre><p>Then just run the script and use the menu. The program looks like this:</p>
+<pre><code class="lang-bash"><span class="hljs-comment">#!/bin/bash</span>
+
+<span class="hljs-attribute">RED</span>=<span class="hljs-string">'\033[0;31m'</span>
+<span class="hljs-attribute">LIGHT_RED</span>=<span class="hljs-string">'\033[1;31m'</span>
+<span class="hljs-attribute">LIGHT_GREEN</span>=<span class="hljs-string">'\033[1;32m'</span>
+<span class="hljs-attribute">YELLOW</span>=<span class="hljs-string">'\033[1;33m'</span>
+<span class="hljs-attribute">BLUE</span>=<span class="hljs-string">'\033[1;36m'</span>
+<span class="hljs-attribute">NC</span>=<span class="hljs-string">'\033[0m'</span> # <span class="hljs-literal">No</span> Color
+
+function start() {
+    sudo systemctl <span class="hljs-builtin-name">enable</span> apache2
+    sudo<span class="hljs-built_in"> service </span>apache2 start
+}
+
+function stop() {
+    sudo<span class="hljs-built_in"> service </span>apache2 stop
+    sudo systemctl <span class="hljs-builtin-name">disable</span> apache2
+}
+
+function status() {
+    sudo<span class="hljs-built_in"> service </span>apache2 status
+}
+
+<span class="hljs-keyword">while</span> <span class="hljs-literal">true</span>; <span class="hljs-keyword">do</span>
+    message <span class="hljs-string">"Menu"</span>
+    echo -e <span class="hljs-string">"<span class="hljs-variable">$LIGHT_GREEN</span>  a) Start and Enable Apache"</span>
+    echo -e <span class="hljs-string">"<span class="hljs-variable">$LIGHT_GREEN</span>  b) Stop and Disable Apache"</span>
+    echo -e <span class="hljs-string">"<span class="hljs-variable">$LIGHT_GREEN</span>  c) Apache Status"</span>
+    echo -e <span class="hljs-string">"<span class="hljs-variable">$LIGHT_RED</span>  x) Exit"</span>
+    echo -e <span class="hljs-string">"\n<span class="hljs-variable">$NC</span>"</span>
+    read -p <span class="hljs-string">"Please make a selection: "</span> eotuyx
+    case <span class="hljs-variable">$eotuyx</span> <span class="hljs-keyword">in</span>
+        [Aa]* ) start <span class="hljs-literal">false</span>; continue;;
+        [Bb]* ) stop <span class="hljs-literal">false</span>; continue;;
+        [Cc]* ) status <span class="hljs-literal">true</span>; continue;;
+        [XxQq]* ) break;;
+        * )  -e <span class="hljs-string">"\n<span class="hljs-variable">$NC</span>"</span> + <span class="hljs-string">"Please answer with c, r or x."</span>;;
+    esac
+done
+</code></pre>
 </div></body></html>
