@@ -21,6 +21,8 @@
 </code></pre><p>You will need to put at least one file in that directory. In particular, you will need a <strong>Dockerfile</strong>.</p>
 <p>The one catch here is that the <strong>html</strong> directory must be in the <strong>context</strong> directory. We can&#39;t copy the files directly from a location like <strong>/var/www/html</strong>. First copy them from <strong>/var/www/html</strong> to the directory that contains your <strong>Dockerfile</strong>. This is the context directory. For instance:</p>
 <pre><code>cp -rv <span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html ~/</span>DockerCode<span class="hljs-regexp">/HtmlViewer/</span>.
+</code></pre><p>Or this should also work:</p>
+<pre><code>cp -ruvp <span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html ~/</span>DockerCode<span class="hljs-regexp">/HtmlViewer/</span>.
 </code></pre><p>Docker says this is necessary so that we can create a reproducable environment. I feel this going to far. But there it is.</p>
 <p>The Docker <strong>COPY</strong> command, when placed in a <strong>Dockerfile</strong>, is simple to use:</p>
 <pre><code><span class="hljs-keyword">FROM</span> charliecalvert/apache
@@ -31,6 +33,12 @@
 </span>
 docker build -t charliecalvert/html-viewer .
 docker run --name html-viewer-container -d -p 80:80 charliecalvert/html-viewer
+</code></pre><p>And to <strong>stop</strong> all and delete what we created:</p>
+<pre><code><span class="hljs-meta">#!/bin/bash
+</span>
+docker stop html-viewer-container
+docker rm html-viewer-container
+docker rmi charliecalvert/html-viewer
 </code></pre><p>To be clear, we still have our <strong>MakeHtml</strong> directory. We will work on it more later. But in this directory we have a much simple Docker file. We have removed from the MakeHtml <strong>Dockerfile</strong> all the code that recreated the <strong>bcuser</strong> user, JsObjects and a node environment. The plan is now to build the html files on the host and then copy them to the container.</p>
 <a class="anchor" id="link-directory"></a>
 <h2>Link Directory</h2>
