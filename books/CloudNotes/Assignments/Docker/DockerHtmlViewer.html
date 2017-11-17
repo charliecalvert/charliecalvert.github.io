@@ -15,13 +15,18 @@
 <a class="anchor" id="copy-files"></a>
 <h2>Copy files</h2>
 <p>The advantage of this solution is that it provides a container that will act in a defined and reliable manner wherever it is installed.</p>
+<p>This is simple to do, but place the <strong>Dockerfile</strong> for this part of the assignment it in its own directory:</p>
+<pre><code>DockerCode/ApacheCopy
+</code></pre><p>You will need to put at least one file in that directory. In particular, you will need a <strong>Dockerfile</strong>.</p>
 <p>The Docker <strong>COPY</strong> command, when placed in a <strong>Dockerfile</strong>, is simple to use:</p>
 <pre><code><span class="hljs-keyword">FROM</span> charliecalvert/apache
 <span class="hljs-keyword">COPY</span><span class="bash"> html /var/www/html</span>
 </code></pre><p>This will copy the files from the <strong>html</strong> directory on the host to the <strong>/var/www/html</strong> directory in the container. Note that I am building directly on top of our <strong>apache</strong> container.</p>
-<p>To be clear, I have removed from the <strong>Dockerfile</strong> all the code that recreated the <strong>bcuser</strong> user, JsObjects and a node environment. The plan is now to build the html files on the host and then copying them to the container.</p>
-<p>The one catch here is that the <strong>html</strong> directory must be in the <strong>context</strong> directory. We can&#39;t copy the files directly from a location like <strong>/var/www/html</strong>. First copy them from <strong>/var/www/html</strong> to the directory that contains your <strong>Dockerfile</strong>. For instance:</p>
-<pre><code>cp -rv <span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html ~/</span>DockerCode<span class="hljs-regexp">/MakeHtml/</span>.
+<p>You should probably also write a little script called <strong>build</strong> containing the code to build this Image:</p>
+<pre><code>build -t charliecalvert/apache-<span class="hljs-keyword">copy</span><span class="bash"></span>
+</code></pre><p>To be clear, we still have our <strong>MakeHtml</strong> directory. We will work on it more later. But in this directory we have a much simple Docker file. We have removed from the MakeHtml <strong>Dockerfile</strong> all the code that recreated the <strong>bcuser</strong> user, JsObjects and a node environment. The plan is now to build the html files on the host and then copy them to the container.</p>
+<p>The one catch here is that the <strong>html</strong> directory must be in the <strong>context</strong> directory. We can&#39;t copy the files directly from a location like <strong>/var/www/html</strong>. First copy them from <strong>/var/www/html</strong> to the directory that contains your <strong>Dockerfile</strong>. This is the context directory. For instance:</p>
+<pre><code>cp -rv <span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html ~/</span>DockerCode<span class="hljs-regexp">/ApacheCopy/</span>.
 </code></pre><p>Docker says this is necessary so that we can create a reproducable environment. I feel this going to far. But there it is.</p>
 <a class="anchor" id="link-directory"></a>
 <h2>Link Directory</h2>
