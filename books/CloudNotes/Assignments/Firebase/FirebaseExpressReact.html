@@ -1,0 +1,345 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>FirebaseExpressReact</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>FirebaseExpressReact</h1><p>Welcome to FirebaseExpressReact</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#where">Where</a></li>
+<li><a href="#the-gift-outright">The Gift Outright</a></li>
+<li><a href="#use-firebase-login">Use Firebase Login</a></li>
+<li><a href="#the-reducer">The Reducer</a></li>
+<li><a href="#the-main-component">The Main Component</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>The goal is to expand the <strong>FirebaseExpress</strong> project so that it works with <strong>React</strong> and <strong>Redux</strong>.</p>
+<a class="anchor" id="where"></a>
+<h2>Where</h2>
+<p>Place your work in a folder called <strong>Week10-FireBaseReact</strong> in your main repository. Work in the <strong>Week10</strong> branch. User <strong>CreateExpressProject</strong> to bootstrap your project.</p>
+<a class="anchor" id="the-gift-outright"></a>
+<h2>The Gift Outright</h2>
+<p>Here is the <strong>elven-fire-login.js</strong> file converted to React. The file is now called <strong>FireBaseLogin</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-meta"><span class="hljs-meta-keyword">import</span> React, {Component} from 'react';</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">import</span> RaisedButton from 'material-ui/RaisedButton';</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">import</span> {connect} from 'react-redux';</span>
+
+<span class="hljs-keyword">const</span> buttonStyle = {
+    margin: <span class="hljs-string">'10px 10px 10px 0'</span>
+};
+
+<span class="hljs-keyword">const</span> defaultState = {
+    googleApiToken: <span class="hljs-string">'Unknown'</span>,
+    elfUser: <span class="hljs-string">"Unknown"</span>,
+    signInStatus: <span class="hljs-string">'Not Logged In'</span>,
+    email: <span class="hljs-string">'Unknown'</span>,
+    emailVerified: <span class="hljs-literal">false</span>,
+    isAnonymous: <span class="hljs-literal">false</span>,
+    providerData: <span class="hljs-string">'Unknown'</span>,
+    photoURL: <span class="hljs-string">"favicon.png"</span>,
+    uid: <span class="hljs-number">0</span>
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ElvenLogin</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+
+    constructor(props) {
+        <span class="hljs-keyword">super</span>(props);
+        <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.props.configured) {
+            <span class="hljs-keyword">this</span>.elfConfigure();
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">this</span>.elfSignIn();
+        }
+
+        <span class="hljs-keyword">this</span>.state = defaultState;
+        <span class="hljs-keyword">this</span>.elfUser = {};
+    }
+
+    <span class="hljs-comment">// Handle Login/Logout button.</span>
+    toggleSignIn() {
+        <span class="hljs-keyword">if</span> (!firebase.auth().currentUser) {
+            <span class="hljs-keyword">const</span> provider = <span class="hljs-keyword">new</span> firebase.auth.GoogleAuthProvider();
+            provider.addScope(<span class="hljs-string">'https://www.googleapis.com/auth/plus.login'</span>);
+            firebase.auth().signInWithRedirect(provider);
+        } <span class="hljs-keyword">else</span> {
+            firebase.auth().signOut();
+        }
+        document.getElementById(<span class="hljs-string">'elf-sign-in'</span>).disabled = <span class="hljs-literal">true</span>;
+    }
+
+    elfConfigure = () =&gt; {
+        <span class="hljs-keyword">const</span> config = {
+            apiKey: <span class="hljs-string">"AIzaSyDv-GtVcZGjqeZXHYh6aB1ewhRe4nyPYcE"</span>,
+            authDomain: <span class="hljs-string">"prog270-data-calvert.firebaseapp.com"</span>,
+            databaseURL: <span class="hljs-string">"https://prog270-data-calvert.firebaseio.com"</span>,
+            storageBucket: <span class="hljs-string">"prog270-data-calvert.appspot.com"</span>,
+            messagingSenderId: <span class="hljs-string">"250292177396"</span>
+        };
+        firebase.initializeApp(config);
+        <span class="hljs-keyword">this</span>.elfSignIn();
+    };
+
+    elfSignIn = (showLoginStatus) =&gt; {
+        <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+        firebase.auth().getRedirectResult().then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(result)</span> </span>{
+            <span class="hljs-keyword">if</span> (result.credential) {
+                that.setState({googleApiToken: result.credential.accessToken})
+            } <span class="hljs-keyword">else</span> {
+                that.setState({googleApiToken: <span class="hljs-string">'Unknown'</span>})
+            }
+            that.elfUser = result.user;
+        }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(error)</span> </span>{
+            <span class="hljs-keyword">const</span> fireBaseAuthCredential = error.credential;
+            <span class="hljs-keyword">if</span> (error.code === <span class="hljs-string">'auth/account-exists-with-different-credential'</span>) {
+                alert(<span class="hljs-string">'You have already signed up with a different auth provider for that email.'</span>);
+                <span class="hljs-comment">// If you use multiple auth providers handle linking accounts here.</span>
+            } <span class="hljs-keyword">else</span> {
+                console.error(error);
+            }
+        });
+
+        firebase.auth().onAuthStateChanged(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(user)</span> </span>{
+            that.props.dispatch({type: <span class="hljs-string">'LOGIN_STATUS'</span>, loggedIn: user });
+
+            <span class="hljs-keyword">if</span> (user) {
+                <span class="hljs-comment">// User is signed in.</span>
+                that.elfUser = user;
+                that.setState({
+                    elfUser: user.displayName,
+                    email: user.email,
+                    emailVerified: user.emailVerified,
+                    signInStatus: <span class="hljs-string">'Logged In'</span>,
+                    isAnonymous: user.isAnonymous,
+                    providerData: user.providerData,
+                    photoURL: user.photoURL,
+                    uid: user.uid
+                })
+            } <span class="hljs-keyword">else</span> {
+                that.setState(defaultState)
+            }
+
+            document.getElementById(<span class="hljs-string">'elf-sign-in'</span>).disabled = <span class="hljs-literal">false</span>;
+        });
+
+    };
+
+    render() {
+        <span class="hljs-keyword">return</span> (
+            &lt;div&gt;
+                &lt;p&gt;ElvenLogin&lt;/p&gt;
+                &lt;RaisedButton
+                    id=<span class="hljs-string">"elf-sign-in"</span>
+                    label={<span class="hljs-keyword">this</span>.props.signInLabel}
+                    style={buttonStyle}
+                    primary={<span class="hljs-literal">true</span>}
+                    onClick={<span class="hljs-keyword">this</span>.toggleSignIn}
+                /&gt;
+
+                &lt;p&gt;&lt;span&gt;{<span class="hljs-keyword">this</span>.state.signInStatus}&lt;/span&gt;&lt;/p&gt;
+                &lt;pre&gt;&lt;code&gt;{<span class="hljs-keyword">this</span>.state.elfUser}&lt;/code&gt;&lt;/pre&gt;
+                &lt;pre&gt;&lt;code&gt;{<span class="hljs-keyword">this</span>.state.email}&lt;/code&gt;&lt;/pre&gt;
+
+                &lt;img id=<span class="hljs-string">"elfPhoto"</span> src={<span class="hljs-keyword">this</span>.state.photoURL} alt=<span class="hljs-string">''</span> width=<span class="hljs-string">"10%"</span> min-width=<span class="hljs-string">"120px"</span>/&gt;
+
+            &lt;/div&gt;
+        )
+    }
+}
+
+<span class="hljs-keyword">const</span> mapStateToProps = (state) =&gt; {
+    <span class="hljs-keyword">return</span> {
+        loggedIn: state.loggedIn,
+        signInLabel: state.signInLabel,
+        configured: state.configured
+    }
+};
+
+ElvenLogin = connect(mapStateToProps)(ElvenLogin);
+
+export <span class="hljs-keyword">default</span> ElvenLogin;
+</code></pre>
+<a class="anchor" id="use-firebase-login"></a>
+<h2>Use Firebase Login</h2>
+<p>You could use the <strong>ElvenLogin</strong> Firebase code as shown below. Note that I give you the code to get your ElvenConfig file into the Firebase database:</p>
+<pre><code class="lang-javascript"><span class="hljs-meta"><span class="hljs-meta-keyword">import</span> React, {Component} from 'react';</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">import</span> RaisedButton from 'material-ui/RaisedButton';</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">import</span> {connect} from 'react-redux';</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">import</span> ElvenLogin from "./ElvenLogin";</span>
+
+<span class="hljs-keyword">const</span> buttonStyle = {
+    margin: <span class="hljs-string">'10px 10px 10px 0'</span>
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+
+    setConfig() {
+         <span class="hljs-comment">// Change the value of the base-dir for the user.</span>
+         <span class="hljs-comment">// You write the code.</span>
+    }
+
+    insertConfig() {
+        fetch(<span class="hljs-string">'/get-config'</span>)
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(response)</span> </span>{
+                <span class="hljs-keyword">return</span> response.json();
+            })
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(configuration)</span> </span>{
+                console.log(configuration);
+                firebase.database().ref(<span class="hljs-string">'/'</span>).set(configuration);
+            })
+            .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(ex)</span> </span>{
+                console.log(<span class="hljs-string">'parsing failed'</span>, ex);
+            });
+    }
+
+    render() {
+        <span class="hljs-keyword">return</span> (
+
+            &lt;div&gt;
+                &lt;p&gt;React Stuff&lt;/p&gt;
+
+                &lt;RaisedButton
+                    label=<span class="hljs-string">'Insert Config'</span>
+                    style={buttonStyle}
+                    primary={<span class="hljs-literal">true</span>}
+                    onClick={<span class="hljs-keyword">this</span>.insertConfig}
+                /&gt;
+
+                &lt;RaisedButton
+                    label=<span class="hljs-string">'Update user'</span>
+                    style={buttonStyle}
+                    primary={<span class="hljs-literal">true</span>}
+                    onClick={<span class="hljs-keyword">this</span>.setConfig}
+                /&gt;
+
+                &lt;ElvenLogin /&gt;
+            &lt;/div&gt;
+
+        );
+    }
+}
+
+<span class="hljs-keyword">const</span> mapStateToProps = (state) =&gt; {
+    <span class="hljs-keyword">return</span> {
+        loggedIn: state.loggedIn,
+        signInLabel: state.signInLabel,
+        configured: state.configured
+    }
+};
+
+App = connect(mapStateToProps)(App);
+
+export <span class="hljs-keyword">default</span> App;
+</code></pre>
+<a class="anchor" id="the-reducer"></a>
+<h2>The Reducer</h2>
+<p>This reducer worked for me:</p>
+<pre><code class="lang-javascript">const initialState = {
+    loggedIn: true,
+    signInLabel: 'Sign Out',
+    component: 'app',
+    configured: false
+};
+
+const fireReducer = (<span class="hljs-keyword">state</span> = initialState, action) =&gt; {
+    switch (action.type) {
+        case 'SWITCH_COMPONENT':
+            return {
+                ...<span class="hljs-keyword">state</span>,
+                configured: true,
+                component: action.component,
+                <span class="hljs-keyword">user</span>Name: action.<span class="hljs-keyword">user</span>Name
+            };
+        case 'GET_LOGIN_STATUS':
+            return {...<span class="hljs-keyword">state</span> };
+        case 'LOGIN_STATUS':
+            return {
+                ...<span class="hljs-keyword">state</span>,
+                loggedIn: action.loggedIn,
+                signInLabel: action.loggedIn ? 'Sign Out' : 'Sign In'
+            };
+        <span class="hljs-keyword">default</span>:
+            return <span class="hljs-keyword">state</span>;
+    }
+};
+
+export <span class="hljs-keyword">default</span> fireReducer;
+</code></pre>
+<p>It should, of course, be in a file called fireReducer.</p>
+<a class="anchor" id="the-main-component"></a>
+<h2>The Main Component</h2>
+<p>The <strong>render</strong> method for my main component, looks like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// CODE OMITTED HERE</span>
+
+<span class="hljs-keyword">import</span> AppBar from <span class="hljs-string">'material-ui/AppBar'</span>;
+<span class="hljs-keyword">import</span> Drawer from <span class="hljs-string">'material-ui/Drawer'</span>;
+<span class="hljs-keyword">import</span> IconButton from <span class="hljs-string">'material-ui/IconButton'</span>;
+<span class="hljs-keyword">import</span> MenuItem from <span class="hljs-string">'material-ui/MenuItem'</span>;
+<span class="hljs-keyword">import</span> FlatButton from <span class="hljs-string">'material-ui/FlatButton'</span>;
+<span class="hljs-keyword">import</span> Paper from <span class="hljs-string">'material-ui/Paper'</span>;
+<span class="hljs-keyword">import</span> {Toolbar, ToolbarTitle} from <span class="hljs-string">'material-ui/Toolbar'</span>
+
+<span class="hljs-comment">// CODE OMITTED HERE</span>
+
+render() {
+     let content = <span class="hljs-literal">null</span>;
+     switch (<span class="hljs-keyword">this</span>.props.component) {
+         case <span class="hljs-string">'app'</span>:
+             content = &lt;App/&gt;;
+             <span class="hljs-keyword">break</span>;
+
+         case <span class="hljs-string">'show_users'</span>:
+             content = &lt;ShowUsers/&gt;;
+             <span class="hljs-keyword">break</span>;
+
+         case <span class="hljs-string">'show_user'</span>:
+             content = &lt;ShowUser/&gt;;
+             <span class="hljs-keyword">break</span>;
+
+         <span class="hljs-keyword">default</span>:
+             content = &lt;App/&gt;
+
+     }
+
+     <span class="hljs-keyword">return</span> (
+         &lt;div&gt;
+             &lt;AppBar
+                 iconClassNameRight=<span class="hljs-string">"muidocs-icon-navigation-expand-more"</span>
+                 title=<span class="hljs-string">"Title"</span>
+                 onLeftIconButtonTouchTap={<span class="hljs-keyword">this</span>.handleToggle}
+             /&gt;
+
+             &lt;Paper style={paperStyle} zDepth={<span class="hljs-number">5</span>}&gt;
+
+                 &lt;Toolbar style={{<span class="hljs-string">"justifyContent"</span>: <span class="hljs-string">"center"</span>}}&gt;
+                     &lt;ToolbarTitle text=<span class="hljs-string">"Material UI"</span>/&gt;
+                 &lt;/Toolbar&gt;
+                 {content}
+             &lt;/Paper&gt;
+             &lt; Drawer
+                 docked={<span class="hljs-literal">false</span>}
+                 width={<span class="hljs-number">200</span>}
+                 <span class="hljs-keyword">open</span>={<span class="hljs-keyword">this</span>.state.<span class="hljs-keyword">open</span>}
+                 onRequestChange={(<span class="hljs-keyword">open</span>) =&gt; <span class="hljs-keyword">this</span>.setState({<span class="hljs-keyword">open</span>})}&gt;
+
+                 &lt;AppBar title=<span class="hljs-string">"AppBar"</span>/&gt;
+                 &lt;MenuItem onClick={<span class="hljs-keyword">this</span>.handleShowLogin}&gt;Show Login&lt;/MenuItem&gt;
+                 &lt;MenuItem onClick={<span class="hljs-keyword">this</span>.handleShowUsers}&gt;Show Users&lt;/MenuItem&gt;
+
+             &lt;/Drawer&gt;
+
+
+         &lt;/div&gt;
+     );
+}
+<span class="hljs-comment">// CODE OMITTED HERE</span>
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Push your code, specify:</p>
+<ul>
+<li>Repository</li>
+<li>Directory</li>
+<li>Branch</li>
+</ul>
+<p>Features I want to see:</p>
+<ul>
+<li>Create a ShowUsers component. Even if you have only one user.<ul>
+<li>All the user to select a user</li>
+</ul>
+</li>
+<li>Create a ShowUser component. Display some of the properties for the user.</li>
+</ul>
+</div></body></html>
