@@ -3,8 +3,10 @@
 <li><a href="#references">References</a></li>
 <li><a href="#update-isit-code">Update Isit-Code</a></li>
 <li><a href="#running-tests-in-isit-code">Running Tests in Isit-Code</a></li>
+<li><a href="#update-npm-package">Update NPM Package</a></li>
 <li><a href="#running-tests-in-isit-site-tools">Running Tests in Isit-Site-Tools</a></li>
-<li><a href="#test-images">Test images</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#test-images">Test images</a></li>
+<li><a href="#webcrafts">WebCrafts</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>The primary goal here is to make sure you can handle the updated ElvenConfig.json file that supports multiple <strong>users</strong>.</p>
 <a class="anchor" id="references"></a>
@@ -22,6 +24,11 @@ git pull upstream master
 <a class="anchor" id="running-tests-in-isit-code"></a>
 <h2>Running Tests in Isit-Code</h2>
 <p>89 tests should pass.</p>
+<a class="anchor" id="update-npm-package"></a>
+<h2>Update NPM Package</h2>
+<p>At the root of <strong>isit-code</strong>, add, commit and push. Then:</p>
+<p>  npm version patch
+  npm publish</p>
 <a class="anchor" id="running-tests-in-isit-site-tools"></a>
 <h2>Running Tests in Isit-Site-Tools</h2>
 <p>Make sure you have the latest changes. Your <strong>isit-site-tools</strong> is a fork of my <strong>isit-site-tools</strong>. To update your code, you want to pull from my &#39;isit-site-tools&#39; and merge it into your code. You forked from my repo, so you pull from it to get the most recent changes, then merge those changes.</p>
@@ -43,5 +50,39 @@ git pull upstream master
             <span class="hljs-string">"createSmallImages"</span>: <span class="hljs-literal">true</span>
         }
 ]
+</code></pre>
+<a class="anchor" id="update-npm-package"></a>
+<h2>Update NPM Package</h2>
+<p>At the root of <strong>isit-site-tools</strong>, add, commit and push. Then:</p>
+<p>  npm version patch
+  npm publish</p>
+<a class="anchor" id="webcrafts"></a>
+<h2>WebCrafts</h2>
+<p>After getting your most recent <strong>site-code</strong> and <strong>site-tools</strong> packages, you have to make a few small changes to the <strong>/config</strong> route in <strong>routes/makers</strong>:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/config'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    config.useLocalConfig = <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">var</span> user = <span class="hljs-string">'calvert'</span>;
+    config.loadAsync()
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">configData</span>) </span>{
+            elfLog.nano(<span class="hljs-string">'CONFIG DATA: '</span>, <span class="hljs-built_in">JSON</span>.stringify(configData, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+
+            <span class="hljs-keyword">var</span> baseDir = config.get(<span class="hljs-string">'users'</span>, user, <span class="hljs-string">'base-dir'</span>);
+            <span class="hljs-keyword">var</span> siteDirs = config.get(<span class="hljs-comment">// YOU CHANGE IT //);</span>
+            <span class="hljs-keyword">var</span> mostRecentDate = config.get(<span class="hljs-comment">// YOU CHANGE IT //);</span>
+            <span class="hljs-keyword">var</span> destinationDirs = config.get(<span class="hljs-comment">// YOU CHANGE IT //);</span>
+            <span class="hljs-keyword">var</span> configSummary = {
+                <span class="hljs-string">'baseDir'</span>: baseDir,
+                <span class="hljs-string">'mostRecentDate'</span>: mostRecentDate,
+                <span class="hljs-string">'siteDirs'</span>: siteDirs,
+                <span class="hljs-string">'destinationDirs'</span>: destinationDirs
+            };
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Config is:'</span>, configSummary);
+            response.status(<span class="hljs-number">200</span>).send(configSummary);
+        })
+        .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+            <span class="hljs-keyword">throw</span> err;
+        });
+});
 </code></pre>
 </div></body></html>
