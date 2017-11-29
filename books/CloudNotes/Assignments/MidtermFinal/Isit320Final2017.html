@@ -1,10 +1,16 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Isit320Final2017</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Isit320Final2017</h1><p>Welcome to Isit320Final2017</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#the-config-file">The Config File</a></li>
+<li><a href="#merge-code-you-forked1">Merge Code you Forked1</a></li>
 <li><a href="#tests">Tests</a></li>
+<li><a href="#firebase">Firebase</a></li>
+<li><a href="#ec2-ports">EC2 Ports</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#long-link-to-ec2">Long Link to EC2</a></li>
 <li><a href="#attitude">Attitude</a></li>
-<li><a href="#atom-and-merging">Atom and merging</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#server-ports">Server Ports</a></li>
+<li><a href="#gratuitous-hint">Gratuitous Hint</a></li>
+<li><a href="#close-down-ec2-instances">Close Down EC2 Instances</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>THIS IS A WORK IN PROGRESS. IT IS NOT THE FINAL FINAL, BUT HOPEFULLY CLOSE ENOUGH TO LET YOU GET STARTED.</p>
 <p>The goal of the final is to demonstrate your ability to deploy web sites to the cloud. In particular, I want to see:</p>
@@ -28,19 +34,57 @@
 </code></pre>
 <p>Go through your tests and find the places where the &#39;calvert&#39; user is being used explicitly, and replace it with your last name. For instance, replace it with Smith.</p>
 <p>The goal is to allow me to insert your lastname section in my ElvenConfig file and have it work out of the box.</p>
+<p>Make sure the most recent Config file is on EC2.</p>
+<a class="anchor" id="merge-code-you-forked1"></a>
+<h2>Merge Code you Forked1</h2>
+<p>Be sure to merge in the latest changes from the repositories that you forked. I made changes as recently as November 29, 2017, but may do more.</p>
+<p>If you have things set up correctly, per the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/WebCrafts/WebCraftsUpToDate.html">UpToDate</a> assigment, it should be relatively easy to <strong>fetch</strong> and <strong>pull</strong>.</p>
+<p>The Atom editor makes merging conflicts easier:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/up-to-date-merge-atom.png" alt="Atom makes merging easy"></p>
 <a class="anchor" id="tests"></a>
 <h2>Tests</h2>
 <p>The following programs should the specified number of tests passing.</p>
+<a class="anchor" id="firebase"></a>
+<h2>Firebase</h2>
+<p>Part of the security mechanism for Firebase is to make sure that the app can only be run from authorized locations. When you move to EC2, you might get an error like this one: <strong>uncaught exception: Error: This domain (34.333.134.3) is not authorized to run this operation. Add it to the OAuth redirect domains list in the Firebase console -&gt; Auth section -&gt; Sign in method tab.</strong></p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/firebase-not-auth.png" alt="Firebase EC2 Error"></p>
+<p>When adding the domain, use the long name from EC2. It looks something like this:</p>
+<pre><code>ec2<span class="hljs-number">-34</span><span class="hljs-number">-233</span><span class="hljs-number">-323</span><span class="hljs-number">-3.</span>us-west<span class="hljs-number">-2.</span>compute.amazonaws.com
+</code></pre><p>You can find it on the AWS EC2 <strong>instances</strong> page.</p>
+<a class="anchor" id="ec2-ports"></a>
+<h2>EC2 Ports</h2>
+<p>Check currently open ports:</p>
+<ul>
+<li>In the EC2 instances page select your EC2 instance.</li>
+<li>Find your <strong>security group</strong></li>
+<li>View inbound rules and make sure 30026, 30027 and 30028 are listed</li>
+</ul>
+<p>If you need to open a port:</p>
+<ul>
+<li>Get the name of your Security Group as described above.</li>
+<li>Turn to the Security Groups section in the EC2 Dashboard</li>
+<li>Select your Security Group</li>
+<li>Turn to the Inbound page at the bottom of the Dashboard</li>
+<li>Edit and add a <strong>Custom TCP</strong> rule for the appropriate port.</li>
+</ul>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
+<p>Here is a preliminary list of what I&#39;m looking for:</p>
 <ul>
 <li>Webcrafts should work<ul>
 <li>Markdown to HTML</li>
 <li>Images to HTML</li>
 </ul>
 </li>
-<li>EC2<ul>
-<li>Get the XXX app running on EC2 with systemd and/or ...</li>
+<li>On EC2 and kept running with <strong>systemd</strong><ul>
+<li>WebCrafts running on port 30025</li>
+<li>Firebase React on 30026</li>
+<li>Firebase Express (the HTML version) on 30027</li>
+<li>Send me the link to the long name for your app:<ul>
+<li>ec2-xxx-us.west-2-compute-amazonaws.com:3002X.</li>
+</ul>
+</li>
+<li>Install Apache and after I run WebCrafts I should be able to see pages there.</li>
 </ul>
 </li>
 <li>Repositories:<ul>
@@ -65,6 +109,19 @@
 </ul>
 </li>
 </ul>
+<p>For all the code I need to see:</p>
+<ul>
+<li>repository</li>
+<li>directory</li>
+<li>branch</li>
+</ul>
+<p>I&#39;m expecting to find your <em>final</em> code in <strong>master</strong>, but it would not be a serious mistake to have it elsewhere so long as you say where. If you don&#39;t say where, I will look only in master. But I want to see that you have been working in various branches with checkin dates distributed throughout the quarter.</p>
+<a class="anchor" id="long-link-to-ec2"></a>
+<h2>Long Link to EC2</h2>
+<p>This is reminder to send me the long link to your EC2 instance. It might look a bit like this:</p>
+<ul>
+<li>ec2-xxx-us.west-2-compute-amazonaws.com.</li>
+</ul>
 <a class="anchor" id="attitude"></a>
 <h2>Attitude</h2>
 <p>Complete as much of the exam as you can. It is better to get it in, and get it in more or less on time, than to spin trying to complete something you don&#39;t understand.</p>
@@ -76,8 +133,57 @@
 </ul>
 <p>Students start in different places. I&#39;m looking for evidence that a student worked hard and learned something new rather than being overly concerned with whether they can complete each assignment perfectly.</p>
 <p>When I was growing up, A&#39;s were not fetishized. People could and very frequently did get into Ivy League colleges with a B average. Today, in the technical world, what matters is the interview, not your grades. As a result, I try to keep things simple and give students the grade they deserve.</p>
-<a class="anchor" id="atom-and-merging"></a>
-<h2>Atom and merging</h2>
-<p>Atom makes merging easier:</p>
-<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/up-to-date-merge-atom.png" alt="Atom makes merging easy"></p>
+<a class="anchor" id="server-ports"></a>
+<h2>Server Ports</h2>
+<p>Make sure programs that run on a server port such as 30026 are set up like this in <strong>www/bin</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var port</span> = normalizePort(process.env.SERVER_PORT || <span class="hljs-string">'30026'</span>);
+</code></pre>
+<p>Note that we are using <strong>SERVER_PORT</strong> rather than <strong>PORT</strong>.</p>
+<a class="anchor" id="gratuitous-hint"></a>
+<h2>Gratuitous Hint</h2>
+<p>Fancier Bash hints on current repo. Near top of <strong>.bashrc</strong>:</p>
+<pre><code class="lang-bash">COLOR_RED=<span class="hljs-string">"\033[0;31m"</span>
+COLOR_YELLOW=<span class="hljs-string">"\033[0;33m"</span>
+COLOR_GREEN=<span class="hljs-string">"\033[0;32m"</span>
+COLOR_OCHRE=<span class="hljs-string">"\033[38;5;95m"</span>
+COLOR_BLUE=<span class="hljs-string">"\033[0;34m"</span>
+COLOR_WHITE=<span class="hljs-string">"\033[0;37m"</span>
+COLOR_RESET=<span class="hljs-string">"\033[0m"</span>
+
+<span class="hljs-keyword">function</span> git_color {
+  <span class="hljs-built_in">local</span> git_status=<span class="hljs-string">"<span class="hljs-variable">$(git status 2&gt; /dev/null)</span>"</span>
+
+  <span class="hljs-keyword">if</span> [[ ! <span class="hljs-variable">$git_status</span> =~ <span class="hljs-string">"working directory clean"</span> ]]; <span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-variable">$COLOR_RED</span>
+  <span class="hljs-keyword">elif</span> [[ <span class="hljs-variable">$git_status</span> =~ <span class="hljs-string">"Your branch is ahead of"</span> ]]; <span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-variable">$COLOR_YELLOW</span>
+  <span class="hljs-keyword">elif</span> [[ <span class="hljs-variable">$git_status</span> =~ <span class="hljs-string">"nothing to commit"</span> ]]; <span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-variable">$COLOR_GREEN</span>
+  <span class="hljs-keyword">else</span>
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-variable">$COLOR_OCHRE</span>
+  <span class="hljs-keyword">fi</span>
+}
+
+<span class="hljs-keyword">function</span> git_branch {
+  <span class="hljs-built_in">local</span> git_status=<span class="hljs-string">"<span class="hljs-variable">$(git status 2&gt; /dev/null)</span>"</span>
+  <span class="hljs-built_in">local</span> on_branch=<span class="hljs-string">"On branch ([^<span class="hljs-variable">${IFS}</span>]*)"</span>
+  <span class="hljs-built_in">local</span> on_commit=<span class="hljs-string">"HEAD detached at ([^<span class="hljs-variable">${IFS}</span>]*)"</span>
+
+  <span class="hljs-keyword">if</span> [[ <span class="hljs-variable">$git_status</span> =~ <span class="hljs-variable">$on_branch</span> ]]; <span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">local</span> branch=<span class="hljs-variable">${BASH_REMATCH[1]}</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"(<span class="hljs-variable">$branch</span>)"</span>
+  <span class="hljs-keyword">elif</span> [[ <span class="hljs-variable">$git_status</span> =~ <span class="hljs-variable">$on_commit</span> ]]; <span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">local</span> commit=<span class="hljs-variable">${BASH_REMATCH[1]}</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"(<span class="hljs-variable">$commit</span>)"</span>
+  <span class="hljs-keyword">fi</span>
+}
+</code></pre>
+<p>Below the PS1 statements and right before <strong>unset color prompt</strong> :</p>
+<pre><code class="lang-bash">PS1+=<span class="hljs-string">"\[\$(git_color)\]"</span>
+PS1+=<span class="hljs-string">"\$(git_branch)"</span>                       <span class="hljs-comment"># prints current branch</span>
+PS1+=<span class="hljs-string">"\[$COLOR_BLUE\]\n\$\[$COLOR_RESET\] "</span>   <span class="hljs-comment"># '#' for root, else '$'</span>
+</code></pre>
+<a class="anchor" id="close-down-ec2-instances"></a>
+<h2>Close Down EC2 Instances</h2>
+<p>You can keep, delete, mangle, change in whatever way you want your EC2 instances after December 11, 2017. See the Canvas announcement on this subject for more information.</p>
 </div></body></html>
