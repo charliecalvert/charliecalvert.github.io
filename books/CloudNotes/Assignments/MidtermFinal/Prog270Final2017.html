@@ -1,0 +1,134 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Prog270Final2017</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Prog270Final2017</h1><p>Welcome to Prog270Final2017</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#the-website">The Website</a></li>
+<li><a href="#set-port-for-a-docker-container">Set Port for a Docker Container</a></li>
+<li><a href="#naming">Naming</a></li>
+<li><a href="#extra-credit-scripts">Extra Credit Scripts</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#finding-assignments">Finding Assignments</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>The goal of the final is to demonstrate your ability to deploy web sites to the cloud. In particular, I want to see the following running simultaneously on EC2:</p>
+<ul>
+<li>Your Apache website running on Port 80</li>
+<li>Your Express program running on Port 30025</li>
+<li>Your Docker website with your site stored inside it running on Port 30026</li>
+<li>Your Docker website using the HTML stored in Apache directory and running on port 30027</li>
+<li>Your Firebase Login Application running on Firebase</li>
+</ul>
+<a class="anchor" id="the-website"></a>
+<h2>The Website</h2>
+<p>Your site should look more or less the same as it did on the Midterm, only this is a chance to polish and refine your code. The main page of your site should:</p>
+<ul>
+<li>Feature your last name</li>
+<li>If it is stored in /var/www/html/ then have the word Apache in it</li>
+<li>If it is stored in your Docker container, then it should have the word Docker in it.</li>
+</ul>
+<p>For instance, create an H1, H2 or H3 tag near the top of the Home Page that says something like:</p>
+<ul>
+<li>My Vacation Site<ul>
+<li>Hosted on Docker</li>
+</ul>
+</li>
+</ul>
+<p>Here <strong>My Vacation Site</strong> might be in an H1 tag, and the <strong>Hosted on Docker</strong> tag could be a subheading with an H2 or H3 tag. The original source for your page should be written in Markdown, of course, using #, ## or ### to designate the type of your Heading tags.</p>
+<p>The site should include the code for your custom web site, plus links to all your homework pages. You might, for instance, have the links to your custom Midterm site spelled out on the home page, and then a single single link to another page which contains links to your homework. For instance:</p>
+<ul>
+<li>My Vacation Site<ul>
+<li>Mexico</li>
+<li>Canada</li>
+<li>Alaska</li>
+<li>Assignments</li>
+</ul>
+</li>
+</ul>
+<p>The specific implementation is up to you, the above is just a suggestion.</p>
+<a class="anchor" id="set-port-for-a-docker-container"></a>
+<h2>Set Port for a Docker Container</h2>
+<p>Our docker containers have an instance of Apache in them running on Port 80. For the outside world, however, we want them running on a different port, say 10025:</p>
+<pre><code>docker <span class="hljs-built_in">run</span> <span class="hljs-comment">--name charlie -d -p 10025:80 charliecalvert/apache</span>
+</code></pre><p>The above command does what what we want. It starts the image, mapping the Docker container&#39;s Port 80 to the hosts Port 30025.    </p>
+<a class="anchor" id="naming"></a>
+<h2>Naming</h2>
+<p>I should be able to download from the Docker Hub the following:</p>
+<ul>
+<li>lastname/ubuntu-base</li>
+<li>lastname/apache</li>
+<li>lastname/make-html</li>
+</ul>
+<p>The <strong>make-html</strong> image should contain your web site and all your homework.</p>
+<p>In the <strong>DockerCode</strong> folder for your repo, put the Dockerfiles for each of you images:</p>
+<ul>
+<li>DockerCode<ul>
+<li>UbuntuBase<ul>
+<li>Dockerfile</li>
+</ul>
+</li>
+<li>Apache<ul>
+<li>Dockerfile</li>
+</ul>
+</li>
+<li>MakeHtml<ul>
+<li>Dockerfile</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<a class="anchor" id="extra-credit-scripts"></a>
+<h2>Extra Credit Scripts</h2>
+<p>From the DockerCode folder, we should be able to give a single command to either either create and run or remove all your containers and images.</p>
+<ul>
+<li>DockerCode<ul>
+<li>UbuntuBase<ul>
+<li>build</li>
+<li>delete</li>
+<li>Dockerfile</li>
+</ul>
+</li>
+<li>Apache<ul>
+<li>build</li>
+<li>delete</li>
+<li>Dockerfile</li>
+</ul>
+</li>
+<li>MakeHtml<ul>
+<li>build</li>
+<li>delete</li>
+<li>Dockerfile</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>buildA1ll</li>
+<li>deleteAll</li>
+</ul>
+<p>The above shows the final hierarchy of scripts. Each directory has as <strong>build</strong> and <strong>delete</strong> script, where build creates and starts the image. The <strong>delete</strong> removes the container and the image. The <strong>buildAll</strong> and <strong>deleteAll</strong> call each of the scripts in turn. Maybe something like:</p>
+<pre><code><span class="hljs-keyword">cd</span> UbuntuBase
+build
+<span class="hljs-keyword">cd</span> <span class="hljs-string">../Apache</span>
+build
+<span class="hljs-string">...</span> and so on.<span class="hljs-string">..</span>
+</code></pre><a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Provide links to your:</p>
+<ul>
+<li>Four projects running on EC2</li>
+<li>Your Firebase Login project running on the Firebase Servers</li>
+</ul>
+<p>Make sure your repository contains your:</p>
+<ul>
+<li>Dockerfiles and any scripts you created in a directory called <strong>DockerCode</strong></li>
+<li>Markdown files in a directory called <strong>AllTest</strong></li>
+<li>HTML files in a directory called <strong>FinalHtml</strong></li>
+<li><strong>ApacheHelpers</strong> directory</li>
+<li><strong>Week10-ExpressBasics</strong> directory</li>
+<li>Firebase Login code.</li>
+</ul>
+<p>If you have any doubt as to whether or not I will be able to find your files, please spell out their location very clearly. It&#39;s late in the quarter, and if I can&#39;t find your file right away I might just assume they were not created or not assembled for the final.</p>
+<a class="anchor" id="finding-assignments"></a>
+<h2>Finding Assignments</h2>
+<p>A poorly maintained list of assignments is here:</p>
+<ul>
+<li><a href="http://www.ccalvert.net/">http://www.ccalvert.net/</a></li>
+</ul>
+</div></body></html>
