@@ -1,14 +1,20 @@
-<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>JavaScriptReact</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>JavaScriptReact</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>JavaScriptReact</h1><p>Welcome to JavaScriptReact</p><ul><!--TOC_Start--><li><a href="#react">React</a></li>
 <li><a href="#create-react-app">Create React Application</a></li>
 <li><a href="#fetch">Rest with <em>fetch</em></a></li>
 <li><a href="#more-fetch">More on <strong>fetch</strong></a></li>
+<li><a href="#mocking-fetch">Mocking Fetch</a></li>
+<li><a href="#create-mocks-folder">Create Mocks Folder</a></li>
+<li><a href="#mock-data">Mock Data</a></li>
+<li><a href="#mock-fetch">Mock fetch</a></li>
 <li><a href="#enospc">ENOSPC Error</a></li>
 <li><a href="#props-single-node">Props Single Node Error</a></li>
 <li><a href="#react-in-webstorm">React in WebStorm</a></li>
 <li><a href="#enzyme-mount-vs-shallow">Enzyme mount vs shallow</a></li>
 <li><a href="#react-links">React Links</a></li>
-<li><a href="#enzyme-debug-class">Enzym Debug Class</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react"></a>
+<li><a href="#enzyme-debug-class">Enzym Debug Class</a></li>
+<li><a href="#promises">Promises</a></li>
+<li><a href="#chained-promises">Chained Promises</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react"></a>
 <h1>React</h1>
 <p>Information on React.</p>
 <a class="anchor" id="create-react-app"></a>
@@ -16,43 +22,41 @@
 <p>Here is a simple way to create a React Application.</p>
 <p>We want create-react-app to open Chrome or Chromium, not FireFox. (Unless you really prefer FireFox. But I tend to use Chrome or Chromium.)</p>
 <p>Click the Gear icon (Menu) at the top right of Lubuntu. Choose <strong>System Settings</strong>. Open up <strong>Details</strong>. Select <strong>Default Applications</strong>. Pick Chrome or Chromium, as you prefer. More details are <a href="https://help.ubuntu.com/stable/ubuntu-help/net-default-browser.html">here</a></p>
-<pre>npm install -g create-react-app
-mkdir ~/Source
-cd ~/Source
-create-react-app test
-cd test
-npm start
-</pre>
-<a class="anchor" id="fetch"></a>
+<pre><code><span class="hljs-string">npm </span><span class="hljs-string">install </span>-g <span class="hljs-built_in">create-react-app</span>
+<span class="hljs-string">mkdir </span>~/<span class="hljs-string">Source
+</span><span class="hljs-string">cd </span>~/<span class="hljs-string">Source
+</span><span class="hljs-built_in">create-react-app</span> <span class="hljs-string">test
+</span><span class="hljs-string">cd </span><span class="hljs-string">test
+</span><span class="hljs-string">npm </span><span class="hljs-string">start</span>
+</code></pre><a class="anchor" id="fetch"></a>
 <h2>Rest with <em>fetch</em></h2>
 <p>Use <strong>fetch</strong> to retrieve data from the server. We make REST calls with <strong>fetch</strong>. For those familiar with jQuery, we will use fetch in lieu of <strong>$.ajax</strong> or <strong>$.getJSON</strong>.</p>
 <p><strong>fetch</strong> will eventually become part of JavaScript in ES6, but for now we have to install it separately:</p>
-<pre>npm install --save whatwg-fetch
-</pre>
-<p>In some cases, you may need to add it to <strong>webpack.config.js</strong> or <strong>config/webpack.config.dev.js</strong> in the <strong>entry</strong> property:</p>
-<pre>entry: [
-    'whatwg-fetch',
-    ... and so on
-]
-</pre>
+<pre><code>npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save whatwg-fetch</span>
+</code></pre><p>In some cases, you may need to add it to <strong>webpack.config.js</strong> or <strong>config/webpack.config.dev.js</strong> in the <strong>entry</strong> property:</p>
+<pre><code class="lang-javascript">entry: <span class="hljs-meta">[</span>
+    <span class="hljs-string">'whatwg-fetch'</span>,
+    <span class="hljs-params">...</span> <span class="hljs-literal">and</span> so <span class="hljs-keyword">on</span>
+<span class="hljs-meta">]</span>
+</code></pre>
 <p>Here is a simple call to fetch using ES6 arrow function syntax:</p>
-<pre>bar = () => {
-    const that = this;
-    fetch('/api/foo')
-        .then(function(response) {
-            return response.json();
-        }).then(function(json) {
-            console.log('json sent from server', json);            
-            that.setState(foo => (json));
-        }).catch(function(ex) {
-            console.log('parsing failed', ex);
+<pre><code class="lang-javascript">bar = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+    fetch(<span class="hljs-string">'/api/foo'</span>)
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+            <span class="hljs-keyword">return</span> response.json();
+        }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'json sent from server'</span>, json);            
+            that.setState(<span class="hljs-function"><span class="hljs-params">foo</span> =&gt;</span> (json));
+        }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ex</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsing failed'</span>, ex);
         });
 };
-</pre>
+</code></pre>
 <p>If the call succeeds, then it is the second <strong>.this</strong> method that gets the data from the server:</p>
-<pre>console.log('json sent from server', json);
-that.setState(foo => (json));
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'json sent from server'</span>, json);
+that.setState(<span class="hljs-function"><span class="hljs-params">foo</span> =&gt;</span> (json));
+</code></pre>
 <p>Here we use it to set a react components state, but exactly what you do with it is up to you. Certainly you don&#39;t have to use it set a component&#39;s state.</p>
 <a class="anchor" id="more-fetch"></a>
 <h2>More on <strong>fetch</strong></h2>
@@ -62,59 +66,183 @@ that.setState(foo => (json));
 <li>The second is called when data is returned from the server.</li>
 </ul>
 <p>This example checks to <strong>reponse.ok</strong> in the first <strong>.then</strong> method of our promise to see that everything is good:</p>
-<pre>const getServer = (url, dispatch) => {
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> getServer = <span class="hljs-function">(<span class="hljs-params">url, dispatch</span>) =&gt;</span> {
     fetch(url)
-        .then(function(response) {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error(response.statusText + '\n' +
-                    response.url + '\n' +
-                    'status: ' + response.status);
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+            <span class="hljs-keyword">if</span> (response.ok) {
+                <span class="hljs-keyword">return</span> response.json();
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(response.statusText + <span class="hljs-string">'\n'</span> +
+                    response.url + <span class="hljs-string">'\n'</span> +
+                    <span class="hljs-string">'status: '</span> + response.status);
             }
-        }).then(function(json) {
+        }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{
             dispatch({
-                type: 'YOU-RANG',
-                youRang: json
+                <span class="hljs-attr">type</span>: <span class="hljs-string">'YOU-RANG'</span>,
+                <span class="hljs-attr">youRang</span>: json
             });
-        }).catch(function(ex) {
+        }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ex</span>) </span>{
             alert(ex);
-            console.log('parsing failed', ex);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsing failed'</span>, ex);
         });
 
 };
-</pre>
+</code></pre>
 <p>Or in excruciating detail, here are the things you can check when documenting the status of a call:</p>
-<pre>const getServer = (url, dispatch) => {
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> getServer = <span class="hljs-function">(<span class="hljs-params">url, dispatch</span>) =&gt;</span> {
     fetch(url)
-        .then(function(response) {
-            console.log('fetch ok:', response.ok);
-            console.log('fetch status:', response.status);
-            console.log('fetch statusText:', response.statusText);
-            console.log('fetch type:', response.type);
-            console.log('fetch url:', response.url);
-            console.log('fetch body used:', response.bodyUsed);
-            const json = response.json();
-            console.log('fetch json:', json);
-            if (response.ok) {
-                return json;
-            } else {
-                throw new Error(response.statusText + '\n' +
-                    response.url + '\n' +
-                    'status: ' + response.status);
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch ok:'</span>, response.ok);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch status:'</span>, response.status);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch statusText:'</span>, response.statusText);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch type:'</span>, response.type);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch url:'</span>, response.url);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch body used:'</span>, response.bodyUsed);
+            <span class="hljs-keyword">const</span> json = response.json();
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'fetch json:'</span>, json);
+            <span class="hljs-keyword">if</span> (response.ok) {
+                <span class="hljs-keyword">return</span> json;
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(response.statusText + <span class="hljs-string">'\n'</span> +
+                    response.url + <span class="hljs-string">'\n'</span> +
+                    <span class="hljs-string">'status: '</span> + response.status);
             }
-        }).then(function(json) {
+        }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{
             dispatch({
-                type: 'YOU-RANG',
-                youRang: json
+                <span class="hljs-attr">type</span>: <span class="hljs-string">'YOU-RANG'</span>,
+                <span class="hljs-attr">youRang</span>: json
             });
-        }).catch(function(ex) {
+        }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ex</span>) </span>{
             alert(ex);
-            console.log('parsing failed', ex);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsing failed'</span>, ex);
         });
 
 };
-</pre>
+</code></pre>
+<a class="anchor" id="mocking-fetch"></a>
+<h2>Mocking Fetch</h2>
+<p>The next few sections describe how to mock fetch:</p>
+<a class="anchor" id="create-mocks-folder"></a>
+<h2>Create Mocks Folder</h2>
+<p>A powerful mock library called <a href="https://facebook.github.io/jest/docs/en/manual-mocks.html">Manual Mocks</a> is built into Jest.  To use it, start by:</p>
+<ul>
+<li>Creating a new folder in the root of your project called: <strong>__mocks__</strong><ul>
+<li>That&#39;s two underscores, the word mocks, and two more underscores</li>
+</ul>
+</li>
+<li>Create two empty files in that directory called <strong>whatwg-fetch.js</strong> and <strong>mock-data.js</strong>.<ul>
+<li>The next two sections describe what goes into these files</li>
+</ul>
+</li>
+</ul>
+<a class="anchor" id="mock-data"></a>
+<h2>Mock Data</h2>
+<p>First lets create a simple module that contains the data we will use in our mock and call it <strong>__mocks__/mock-data.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 4/18/17.
+ */</span>
+
+<span class="hljs-keyword">const</span> getData = <span class="hljs-function">(<span class="hljs-params">url</span>) =&gt;</span> {
+    <span class="hljs-keyword">switch</span> (url) {
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'./address-list.json'</span>:
+            <span class="hljs-keyword">return</span> [{
+                <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Lamar"</span>,
+                <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"Alexander"</span>,
+                <span class="hljs-string">"street"</span>: <span class="hljs-string">"455 Dirksen Senate Office Building"</span>,
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"Washington DC"</span>,
+                <span class="hljs-string">"state"</span>: <span class="hljs-string">"TN"</span>,
+                <span class="hljs-string">"zip"</span>: <span class="hljs-string">" 20510"</span>,
+                <span class="hljs-string">"phone"</span>: <span class="hljs-string">"202-224-4944"</span>,
+                <span class="hljs-string">"website"</span>: <span class="hljs-string">"https://www.alexander.senate.gov/public"</span>,
+                <span class="hljs-string">"email"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"contact"</span>: <span class="hljs-string">"http://www.alexander.senate.gov/public/index.cfm?p=Email"</span>
+            },
+            {
+                <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Roger"</span>,
+                <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"Wicker"</span>,
+                <span class="hljs-string">"street"</span>: <span class="hljs-string">"555 Dirksen Senate Office Building"</span>,
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"Washington DC"</span>,
+                <span class="hljs-string">"state"</span>: <span class="hljs-string">"MS"</span>,
+                <span class="hljs-string">"zip"</span>: <span class="hljs-string">" 20510"</span>,
+                <span class="hljs-string">"phone"</span>: <span class="hljs-string">"202-224-6253"</span>,
+                <span class="hljs-string">"website"</span>: <span class="hljs-string">"https://www.wicker.senate.gov"</span>,
+                <span class="hljs-string">"email"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"contact"</span>: <span class="hljs-string">"https://www.wicker.senate.gov/public/index.cfm/contact"</span>
+            },
+            {
+                <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Timothy"</span>,
+                <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"Kaine"</span>,
+                <span class="hljs-string">"street"</span>: <span class="hljs-string">"231 Russell Senate Office Building"</span>,
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"Washington DC"</span>,
+                <span class="hljs-string">"state"</span>: <span class="hljs-string">"VA"</span>,
+                <span class="hljs-string">"zip"</span>: <span class="hljs-string">" 20510"</span>,
+                <span class="hljs-string">"phone"</span>: <span class="hljs-string">"202-224-4024"</span>,
+                <span class="hljs-string">"website"</span>: <span class="hljs-string">"https://www.kaine.senate.gov"</span>,
+                <span class="hljs-string">"email"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"contact"</span>: <span class="hljs-string">"https://www.kaine.senate.gov/contact"</span>
+            }];
+
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">return</span> [];
+    }
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> getData;
+</code></pre>
+<p>This code simply creates sets of data that mimic what our server would return given a call to a specific <strong>url</strong>.</p>
+<a class="anchor" id="mock-fetch"></a>
+<h2>Mock fetch</h2>
+<p>Below is the source code for our new mock for <strong>fetch</strong> called <strong>whatwg-fetch.js</strong>. Save it and <strong>mock-data.js</strong> in the <strong>__mocks__</strong> folder. Note in particular the call to <strong>jest.genMockFromModule</strong>. That call asks Jest to generate a mock object for the module we want to replace with a mock:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 4/17/17.
+ */</span>
+
+<span class="hljs-keyword">import</span> getData <span class="hljs-keyword">from</span> <span class="hljs-string">'./mock-data'</span>;
+
+<span class="hljs-meta">'use strict'</span>;
+
+<span class="hljs-keyword">const</span> whatwgFetch = jest.genMockFromModule(<span class="hljs-string">'whatwg-fetch'</span>);
+
+<span class="hljs-keyword">const</span> fetch = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">url</span>) </span>{
+
+    <span class="hljs-keyword">const</span> objectState = getData(url);
+
+    <span class="hljs-keyword">const</span> response = {};
+    response.json = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> objectState;
+    };
+
+    <span class="hljs-comment">//console.log("FETCH STATER", objectState);</span>
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">then</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">func</span>) </span>{
+            <span class="hljs-comment">//console.log('FETCH TEST ONE', func(response));</span>
+            <span class="hljs-keyword">return</span> {
+                <span class="hljs-attr">then</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">func</span>) </span>{
+                    <span class="hljs-comment">//func(JSON.stringify(stater));</span>
+                    func(objectState);
+                    <span class="hljs-keyword">return</span> {
+                        <span class="hljs-attr">catch</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+
+                        }
+                    };
+                }
+            };
+        }
+    };
+};
+
+whatwgFetch.fetch = fetch;
+<span class="hljs-built_in">window</span>.fetch = fetch;
+
+<span class="hljs-built_in">module</span>.exports = whatwgFetch;
+</code></pre>
+<p>Over time, you can comment out the calls to <strong>console.log</strong>. But they might be helpful at first when you are trying to understand what is going on. Note in particular that we are now putting calls to the callbacks (func) passed into our labyrinthine series of <strong>return</strong> statements. The most important is the second call to <strong>then</strong> where we pass back the <strong>stater</strong> object. Recall that this is used as follows in our call to <strong>fetch</strong>:</p>
+<pre><code class="lang-javascript">.then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">json</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'GETONE-FETCH-TWO'</span>);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsed json'</span>, json);
+    that.setState(<span class="hljs-function"><span class="hljs-params">foo</span> =&gt;</span> (json));
+})
+</code></pre>
 <a class="anchor" id="enospc"></a>
 <h2>ENOSPC Error</h2>
 <p>While testing, If you get an <strong>ENOSPC</strong> error, do this:</p>
@@ -130,14 +258,14 @@ that.setState(foo => (json));
 <h2>Props Single Node Error</h2>
 <p>Here is the error: <em>Method “props” is only meant to be run on a single node. 0 found instead.</em></p>
 <p>I got this when I had a mismatch between what I thought a button click method was called and what it was really called. For instance, here is my test:</p>
-<pre>wrapper.find('button#foo').simulate('click');
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">wrapper</span><span class="hljs-selector-class">.find</span>(<span class="hljs-string">'button#foo'</span>)<span class="hljs-selector-class">.simulate</span>(<span class="hljs-string">'click'</span>);
+</code></pre>
 <p>And here is my JSX:</p>
-<pre><button id="bar" onClick={this.getBar}>Get User</button>
-</pre>
+<pre><code class="lang-HTML"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"bar"</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.getBar}</span>&gt;</span>Get User<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+</code></pre>
 <p>Note that the <strong>ID</strong> of the button is <strong>bar</strong>, but I&#39;m trying to <strong>find</strong> something with an <strong>ID</strong> of <strong>foo</strong>. To fix the proplem, bring them into sync:</p>
-<pre>wrapper.find('button#bar').simulate('click');
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">wrapper</span><span class="hljs-selector-class">.find</span>(<span class="hljs-string">'button#bar'</span>)<span class="hljs-selector-class">.simulate</span>(<span class="hljs-string">'click'</span>);
+</code></pre>
 <a class="anchor" id="react-in-webstorm"></a>
 <h2>React in WebStorm</h2>
 <ul>
@@ -147,23 +275,23 @@ that.setState(foo => (json));
 <a class="anchor" id="enzyme-mount-vs-shallow"></a>
 <h2>Enzyme mount vs shallow</h2>
 <p>Suppose one component nests another. For instance, suppose that your custom component <strong>MyComponent</strong> renders a second component called <strong>MyOtherComponent</strong>. Here is <strong>MyComponent&#39;s</strong> render method :</p>
-<pre>class MyComponent extends Component {
+<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
   render() {
-      return (
-          <div>
-              <MyOtherComponent />
-          </div>
+      <span class="hljs-keyword">return</span> (
+          &lt;div&gt;
+              &lt;<span class="hljs-type">MyOtherComponent</span> /&gt;
+          &lt;/div&gt;
       );
   }
 }
-</pre>
+</code></pre>
 <p>Here <strong>MyComponent</strong> does nothing but ask <strong>MyOtherComponent</strong> to render itself.</p>
 <p>In cases like this, if you use Enzyme&#39;s <a href="https://github.com/airbnb/enzyme/blob/master/docs/api/shallow.md">shallow</a>, you will only see the output from <strong>MyComponent</strong>. During the test, it will seem as though <strong>MyOtherComponent</strong> does not exist, or at least does not render anthing. Indeed, that is often what you want. But sometimes, it is best to see the output from both <strong>MyComponent</strong> and <strong>MyOtherComponent</strong>. To do that, you use <strong>mount</strong> rather than <strong>shallow</strong>. We usually do this:</p>
-<pre>import { shallow } from 'enzyme';
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { shallow } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+</code></pre>
 <p>If you want to see output from both components, then do this:</p>
-<pre>import { mount } from 'enzyme';
-</pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { mount } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+</code></pre>
 <a class="anchor" id="react-links"></a>
 <h2>React Links</h2>
 <ul>
@@ -193,4 +321,12 @@ that.setState(foo => (json));
 <li><a href="https://gist.github.com/charliecalvert/51daef341699943b07c9570c3ad2cbab">ElfEnzymeDebug</a></li>
 </ul>
 <p>We could also, at least in theory, add to this class over time as we discover more useful tests.</p>
+<a class="anchor" id="promises"></a>
+<h2>Promises</h2>
+<div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/nWV4Ed2gckk?ecver=2" width="640" height="360" frameborder="0" gesture="media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
+
+<a class="anchor" id="chained-promises"></a>
+<h2>Chained Promises</h2>
+<div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/PU4gq6yTqyA?ecver=2" width="640" height="360" frameborder="0" gesture="media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
+
 </div></body></html>
