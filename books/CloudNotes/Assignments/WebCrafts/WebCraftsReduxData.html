@@ -77,35 +77,45 @@ npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save 
 <p>Put in Redux:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> {connect} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-redux'</span>;
 
-<span class="hljs-keyword">let</span> App = <span class="hljs-function">(<span class="hljs-params">{put, the, dispatched, functions, here}</span>) =&gt;</span> {
+let App = <span class="hljs-function"><span class="hljs-params">({put, the, dispatched, functions, here})</span> =&gt;</span> {
 
     <span class="hljs-keyword">return</span> (
-      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">header</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-header"</span>&gt;</span>
-          <span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">{logo}</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-logo"</span> <span class="hljs-attr">alt</span>=<span class="hljs-string">"logo"</span> /&gt;</span>
-          <span class="hljs-tag">&lt;<span class="hljs-name">h1</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-title"</span>&gt;</span>Welcome to React<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">header</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-intro"</span>&gt;</span>
+      &lt;div className=<span class="hljs-string">"App"</span>&gt;
+        &lt;header className=<span class="hljs-string">"App-header"</span>&gt;
+          &lt;img src={logo} className=<span class="hljs-string">"App-logo"</span> alt=<span class="hljs-string">"logo"</span> /&gt;
+          &lt;h1 className=<span class="hljs-string">"App-title"</span>&gt;Welcome to React&lt;/h1&gt;
+        &lt;/header&gt;
+        &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;
           App Reducer
-        <span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
-        // YOUR JSX HERE WITH RaisedButton HERE.
-      <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        &lt;/p&gt;
+        <span class="hljs-regexp">//</span> YOUR JSX HERE WITH RaisedButton HERE.
+      &lt;/div&gt;
     );
 
 };
 
-const mapStateToProps = (state) =&gt; {
-  // YOUR CODE HERE
+const mapStateToProps = <span class="hljs-function"><span class="hljs-params">(state)</span> =&gt;</span> {
+  <span class="hljs-regexp">//</span> YOUR CODE HERE
 };
 
-const mapDispatchToProps = (dispatch) =&gt; {
-  // YOUR CODE HERE
+const mapDispatchToProps = <span class="hljs-function"><span class="hljs-params">(dispatch)</span> =&gt;</span> {
+    siteDirsClick: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        dispatch({type: <span class="hljs-string">'SITE_DIRS'</span>})
+    },
+    destinationDirsClick: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-regexp">//</span> YOU DO IT
+    },
+    bootswatchClick: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-regexp">//</span> YOU DO IT
+    }
 };
 
 App = connect(
     mapStateToProps,
     mapDispatchToProps
-)(App);</span>
+)(App);
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> App;
 </code></pre>
 <p>When filling the dispatched functions, review the actions outlined above.</p>
 <a class="anchor" id="redux"></a>
@@ -142,21 +152,56 @@ registerServiceWorker();
 <li>SITE_DIRS</li>
 <li>DESTINATION_DIRS</li>
 </ul>
-<pre><code class="lang-javascript">import getConfig <span class="hljs-keyword">from</span> './get-config';
-const <span class="hljs-keyword">state</span> = getConfig();
+<pre><code class="lang-javascript">let <span class="hljs-keyword">state</span>Init = {
+    baseDir: '<span class="hljs-literal">unknown</span>',
+    bootswatch:'<span class="hljs-literal">unknown</span>',
+    siteDirs: ['<span class="hljs-literal">unknown</span>'],
+    destinationDirs: ['<span class="hljs-literal">unknown</span>']
+};
 
-
-const spokesman = (<span class="hljs-keyword">state</span> = <span class="hljs-keyword">state</span>, action) =&gt; {
+const configReducer = (<span class="hljs-keyword">state</span> = <span class="hljs-keyword">state</span>Init, action) =&gt; {
     switch (action.type) {
+        case 'ALL':
+            const <span class="hljs-keyword">user</span> = action.users.calvert;
+            return {
+                ...<span class="hljs-keyword">user</span>,
+                baseDir: <span class="hljs-keyword">user</span>['base-dir'],
+                bootswatch: <span class="hljs-keyword">user</span>.bootswatch,
+                siteDirs: // YOU DO IT,
+                destinationDirs: // YOU DO IT
+            };
+        case 'BOOTSWATCH':
+            return {
+                ...<span class="hljs-keyword">state</span>,
+                bootswatch: 'foo'
+            };
+        case 'SITE_DIRS':
+            return {
+                // YOU DO IT
+            };
+        case 'DESTINATION_DIRS':
+            return {
+                // YOU DO IT
+            };
         <span class="hljs-keyword">default</span>:
             return <span class="hljs-keyword">state</span>;
     }
 };
 
-export <span class="hljs-keyword">default</span> spokesman;
+export <span class="hljs-keyword">default</span> configReducer;
 </code></pre>
 <a class="anchor" id="dialogs"></a>
 <h2>Dialogs</h2>
+<p>Invoke the dialog like this in your JSX:</p>
+<pre><code class="lang-XML"><span class="hljs-tag">&lt;<span class="hljs-name">ScrollableDialog</span> <span class="hljs-attr">dirs</span>=<span class="hljs-string">{siteDirs}</span> <span class="hljs-attr">title</span>=<span class="hljs-string">"Site Dirs"</span>/&gt;</span>
+</code></pre>
+<p>The code passes two parameters to <strong>ScrollableDialog</strong> which turn up in the props of the dialog itself:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
+    super(props);  &lt;&lt; THE PARAMETERS ARE IN HERE
+    ...
+}</span></span>
+</code></pre>
+<p>And here is the dialog in its entirety:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> Dialog <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/Dialog'</span>;
 <span class="hljs-keyword">import</span> FlatButton <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/FlatButton'</span>;
