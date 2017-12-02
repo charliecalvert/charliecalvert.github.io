@@ -135,7 +135,136 @@ added 138 packages, removed 17 packages, updated 49 packages and moved 5 package
 </pre>
 <a class="anchor" id="tests"></a>
 <h2>Tests</h2>
-<p>The following programs should the specified number of tests passing.</p>
+<p>In <strong>isit-web-crafts</strong>, set your <strong><strong>mocks</strong>/mock-data.js</strong> file to the following:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> getData = <span class="hljs-function">(<span class="hljs-params">url</span>) =&gt;</span> {
+    <span class="hljs-keyword">switch</span> (url) {
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'/api/foo'</span>:
+            <span class="hljs-keyword">return</span> {
+                <span class="hljs-attr">foo</span>: <span class="hljs-string">'url-mock-bar'</span>,
+                <span class="hljs-attr">file</span>: <span class="hljs-string">'url-mock-api.js'</span>
+            };
+
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'/makers/config'</span>:
+            <span class="hljs-keyword">const</span> configSummary = {
+                <span class="hljs-string">'base-dir'</span>: <span class="hljs-string">'/home/bcuser/'</span>,
+                <span class="hljs-string">'bootswatch'</span>: <span class="hljs-string">'cosmo'</span>,
+                <span class="hljs-string">'most-recent-date'</span>: <span class="hljs-string">'2017-08-14'</span>,
+                <span class="hljs-string">'highlight'</span>: <span class="hljs-literal">true</span>,
+                <span class="hljs-string">'siteDirs'</span>: [
+                    <span class="hljs-string">'Documents/AllTest'</span>,
+                    <span class="hljs-string">'Git/CloudNotes/Isit320'</span>
+                ],
+                <span class="hljs-string">'destinationDirs'</span>: [
+                    <span class="hljs-string">'/var/www/html/AllSite/'</span>,
+                    <span class="hljs-string">'/home/charlie/Git/CloudNotes/Isit320/'</span>
+                ],
+                <span class="hljs-string">'destination-dirs-extra'</span>: [{
+                    <span class="hljs-string">'base'</span>: <span class="hljs-string">'/var/www/html/'</span>,
+                    <span class="hljs-string">'extra'</span>: <span class="hljs-string">''</span>
+                }, {
+                    <span class="hljs-string">'base'</span>: <span class="hljs-string">'/var/www/html/Assignments/'</span>,
+                    <span class="hljs-string">'extra'</span>: <span class="hljs-string">'Assignments'</span>
+                }]
+            };
+            <span class="hljs-keyword">return</span> configSummary;
+
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'/makers/walk?siteDirsIndex=1'</span>:
+            <span class="hljs-keyword">const</span> walkResult = {
+                <span class="hljs-attr">result</span>: <span class="hljs-string">'success'</span>,
+                <span class="hljs-attr">baseDir</span>: <span class="hljs-literal">undefined</span>,
+                <span class="hljs-attr">mostRecentDate</span>: <span class="hljs-literal">undefined</span>,
+                <span class="hljs-attr">destinationDir</span>: <span class="hljs-string">'/home/charlie/Git/CloudNotes/tips/'</span>,
+                <span class="hljs-attr">directories</span>: [<span class="hljs-string">'/home/charlie/Git/CloudNotes/Tips'</span>],
+                <span class="hljs-attr">masterListOfNames</span>: [<span class="hljs-string">'* [Summary.html](Summary.html)'</span>],
+                <span class="hljs-attr">htmlFilesWritten</span>:
+                    [<span class="hljs-string">'/home/charlie/Git/CloudNotes/tips/Summary.html'</span>,
+                        <span class="hljs-string">'/home/charlie/Git/CloudNotes/tips/master-list.html'</span>]
+            };
+
+            <span class="hljs-keyword">return</span> walkResult;
+
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">return</span> {};
+    }
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> getData;
+</code></pre>
+<p>Have the render method for <strong>MakeHtmlDropDowns</strong> contain, among other things, button with the ID <strong>generate</strong> and a PRE tag with the ID <strong>configSummary</strong>:</p>
+<pre><code class="lang-HTML">render() {
+      <span class="hljs-keyword">return</span> (
+          <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                  <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Render Markdown as HTML<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+                  // OTHER CONTROLS OMITTED HERE
+                  <span class="hljs-tag">&lt;<span class="hljs-name">RaisedButton</span>
+                      <span class="hljs-attr">id</span>=<span class="hljs-string">"generate"</span>
+                      <span class="hljs-attr">style</span>=<span class="hljs-string">{buttonStyle}</span>
+                      <span class="hljs-attr">primary</span>=<span class="hljs-string">{true}</span>
+                      <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.generateHtml}</span>
+                  &gt;</span>
+                      {this.state.walk}
+                  <span class="hljs-tag">&lt;/<span class="hljs-name">RaisedButton</span>&gt;</span>
+
+                  <span class="hljs-tag">&lt;<span class="hljs-name">pre</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"configSummary"</span>&gt;</span>{this.state.configSummary}<span class="hljs-tag">&lt;/<span class="hljs-name">pre</span>&gt;</span>
+              <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span></span>
+      );
+  }
+</code></pre>
+<p>Make sure that <strong>make-html-drop-downs.js</strong> has at least the following in it and that all tests pass:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { configure, shallow } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+<span class="hljs-keyword">import</span> Adapter <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme-adapter-react-16'</span>;
+configure({ adapter: <span class="hljs-keyword">new</span> Adapter() });
+<span class="hljs-keyword">import</span> MenuItem <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/MenuItem'</span>;
+<span class="hljs-keyword">import</span> MakeHtmlDropDowns <span class="hljs-keyword">from</span> <span class="hljs-string">'../MakeHtmlDropDowns'</span>;
+<span class="hljs-keyword">import</span> ElfDebugEnzyme <span class="hljs-keyword">from</span> <span class="hljs-string">'../ElfDebugEnzyme'</span>;
+const elfDebugEnzyme = <span class="hljs-keyword">new</span> ElfDebugEnzyme(<span class="hljs-literal">true</span>, <span class="hljs-string">'make-html-drop-downs'</span>);
+
+describe(<span class="hljs-string">'React Home Tests'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    it(<span class="hljs-string">'renders default value of H1 tag'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        const wrapper = shallow(&lt;MakeHtmlDropDowns /&gt;);
+        const h1tag = &lt;h1&gt;Render Markdown <span class="hljs-keyword">as</span> HTML&lt;/h1&gt;;
+        elfDebugEnzyme.getLast(wrapper, <span class="hljs-string">'h1'</span>, <span class="hljs-literal">true</span>);
+        expect(wrapper.contains(h1tag)).toEqual(<span class="hljs-literal">true</span>);
+    });
+
+    it(<span class="hljs-string">'gets drop down value'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        const wrapper = shallow(&lt;MakeHtmlDropDowns /&gt;);
+        <span class="hljs-regexp">//</span>elfDebugEnzyme.getAll(wrapper, <span class="hljs-literal">true</span>);
+        elfDebugEnzyme.getLast(wrapper, <span class="hljs-string">'MenuItem'</span>, <span class="hljs-literal">true</span>);
+        const code = &lt;MenuItem primaryText=<span class="hljs-string">'/home/charlie/Git/CloudNotes/Isit320/'</span>/&gt;;
+        expect(wrapper.containsMatchingElement(code)).toBe(<span class="hljs-literal">true</span>);
+    });
+
+    it(<span class="hljs-string">'renders button click message for last pre tag'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        const wrapper = shallow(&lt;MakeHtmlDropDowns /&gt;);
+        wrapper.find(<span class="hljs-string">'#generate'</span>).simulate(<span class="hljs-string">'click'</span>);
+        elfDebugEnzyme.getLast(wrapper, <span class="hljs-string">'pre'</span>, <span class="hljs-literal">true</span>);
+        const paragraphData = wrapper.find(<span class="hljs-string">'pre'</span>).last().debug();
+        expect(paragraphData).toContain(<span class="hljs-string">'/home/charlie/Git/CloudNotes/tips'</span>);
+    });
+
+});
+</code></pre>
+<p>In particular, the PRE tag, though empty when the test starts, should be modified during the test, and should contain the following:</p>
+<pre><code class="lang-pre"><span class="hljs-params">&lt;pre id="configSummary"&gt;</span>
+      [
+          <span class="hljs-variable">&amp;quot</span>;<span class="hljs-meta-keyword">/home/</span>charlie/Git/CloudNotes<span class="hljs-meta-keyword">/tips/</span>Summary.html<span class="hljs-variable">&amp;quot</span>;,
+          <span class="hljs-variable">&amp;quot</span>;<span class="hljs-meta-keyword">/home/</span>charlie/Git/CloudNotes<span class="hljs-meta-keyword">/tips/</span>master-list.html<span class="hljs-variable">&amp;quot</span>;
+      ]
+<span class="hljs-params">&lt;/pre&gt;</span>
+</code></pre>
+<p>Add a fourth test that proves that the page has a an element that matches this tag:</p>
+<pre><code class="lang-pre">&lt;pre <span class="hljs-built_in">id</span>=<span class="hljs-string">"configSummary"</span> /&gt;
+</code></pre>
+<p>The body of the test should contains four lines, the last two of which would look like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">elfDebugEnzyme</span><span class="hljs-selector-class">.getLast</span>(wrapper, <span class="hljs-string">'pre'</span>, true);
+<span class="hljs-selector-tag">expect</span>(wrapper.containsMatchingElement(code))<span class="hljs-selector-class">.toBe</span>(true);
+</code></pre>
+<p>The test should not include a button click. In other words, we are proving the tag exists before the button is clicked.</p>
+<p>Also, the following programs should the specified number of tests passing.</p>
 <a class="anchor" id="firebase"></a>
 <h2>Firebase</h2>
 <p>Your Firebase app should:</p>
@@ -230,6 +359,7 @@ added 138 packages, removed 17 packages, updated 49 packages and moved 5 package
 <a class="anchor" id="extra-credit"></a>
 <h2>Extra Credit</h2>
 <p>For Presidents in the FirebaseExpress and FirebaseReact apps, display the Presidents on the appropriate page.</p>
+<p>In the testing section of this exam, you saw several examples of how to use the data from MockData file. Add three more tests that involve the MakeImages rather than the MakeHtml page. These tests could be similar to those in <strong>make-html-drop-downs</strong>, but they should involve the images page. You will need to add mock data to the <strong><strong>mocks</strong>/MockData.js</strong> file.</p>
 <a class="anchor" id="long-link-to-ec2"></a>
 <h2>Long Link to EC2</h2>
 <p>This is reminder to send me the long link to your EC2 instance. It might look a bit like this:</p>
