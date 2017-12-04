@@ -72,6 +72,24 @@
 
 <span class="hljs-keyword">let</span> store = createStore(spokesman);
 </code></pre>
+<p>I write this code, which dispatches an action:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">store</span><span class="hljs-selector-class">.dispatch</span>({<span class="hljs-attribute">type</span>:<span class="hljs-string">'ALL'</span>, users });
+</code></pre>
+<p>In your reducer, action.users is the thing you dispatched: <strong>{type: ALL, users}</strong>.</p>
+<p>The usual flow:</p>
+<ul>
+<li>Something is dispatched, as in the code shown above.</li>
+<li>The dispatched code hits the reducer, which converts it into Redux state in the Redux store.</li>
+<li>The dispatched message leaves the reducer and goes to all components that are connected to it. In particular, MapStateToProps gets called. Then you map the data from the Redux store to the properties you want to use in your component.</li>
+<li>Then each connected components render method is called because (or if) its props were changed.</li>
+</ul>
+<p>That&#39;s the end of the flow. Summary</p>
+<ul>
+<li>Event dispatched to reducer</li>
+<li>The reducer tracks the new state sent in the dispatched action</li>
+<li>The components who are registered (connected) are notified of the updated state, which they transform into the components prop.</li>
+<li>The component&#39;s render method is then called and you display the updated props.</li>
+</ul>
 <a class="anchor" id="example"></a>
 <h2>Example</h2>
 <p>In the next few sections we will put together an example.</p>
