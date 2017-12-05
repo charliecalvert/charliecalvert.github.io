@@ -2,6 +2,7 @@
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Isit320Final2017</h1><p>Welcome to Isit320Final2017</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#routes">Routes</a></li>
 <li><a href="#merging-code-into-webcrafts">Merging Code into WebCrafts</a></li>
+<li><a href="#key-steps">Key Steps</a></li>
 <li><a href="#the-config-file">The Config File</a></li>
 <li><a href="#merge-code-you-forked">Merge Code you Forked</a></li>
 <li><a href="#delete-all-old-jquery-code">Delete all old jQuery code</a></li>
@@ -74,6 +75,68 @@
 </ul>
 <p>I think all this implies connection to the Firebase database.</p>
 <p>I&#39;m flexible on all of this. Do what you can. If all you get is the login, that&#39;s better than nothing. If we get the <strong>ShowUsers</strong> but not the database, that&#39;s also better than nothing. Just merge in what you can.</p>
+<a class="anchor" id="key-steps"></a>
+<h2>Key Steps</h2>
+<p>What the <a href="https://youtu.be/iA21zK3Idt8">video</a></p>
+<p>From <strong>Week10-FirebaseReact</strong> I needed these files:</p>
+<ul>
+<li>The Main Files that load the Login Page. In my case:<ul>
+<li>AppMain.js</li>
+<li>FireDataPush.js</li>
+<li>ElvenLogin.js</li>
+</ul>
+</li>
+<li>ShowUsers.js</li>
+<li>ShowUser.js</li>
+<li>fire-reducer.js</li>
+</ul>
+<p>The code from AppMain.js ended up in HomeButtons. And <strong>HomeButtons</strong> had to learn how to support Redux by linking in connect at the top:</p>
+<pre><code><span class="hljs-keyword">import</span> {<span class="hljs-built_in">connect</span>} from <span class="hljs-string">'react-redux'</span>;
+</code></pre><p>And MapStateToProps at the bottom:</p>
+<pre><code class="lang-javascript">const mapStateToProps = (<span class="hljs-keyword">state</span>) =&gt; {
+    return {
+        loggedIn: <span class="hljs-keyword">state</span>.loggedIn,
+        component: <span class="hljs-keyword">state</span>.component,
+        signInLabel: <span class="hljs-keyword">state</span>.signInLabel
+
+    }
+};
+
+HomeButtons = connect(mapStateToProps)(HomeButtons);
+</code></pre>
+<p>Near the bottom of <strong>layout.pug</strong>, I needed to add the code to load Firebase:</p>
+<pre><code>script(<span class="hljs-attribute">defer</span>=<span class="hljs-string">''</span>, <span class="hljs-attribute">src</span>=<span class="hljs-string">'https://www.gstatic.com/firebasejs/4.6.2/firebase-app.js'</span>)
+script(<span class="hljs-attribute">defer</span>=<span class="hljs-string">''</span>, <span class="hljs-attribute">src</span>=<span class="hljs-string">'https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js'</span>)
+script(<span class="hljs-attribute">defer</span>=<span class="hljs-string">''</span>, <span class="hljs-attribute">src</span>=<span class="hljs-string">'https://www.gstatic.com/firebasejs/4.6.2/firebase-database.js'</span>)
+</code></pre><p>We are stripping out all the jQuery, so the main react file now starts like this:</p>
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">try</span> {
+        <span class="hljs-keyword">const</span> root = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'home'</span>);
+        ReactDOM.render(
+
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">HomeButtons</span>/&gt;</span>
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span></span>
+            , root);
+    } <span class="hljs-keyword">catch</span> (e) {
+        <span class="hljs-built_in">console</span>.error(e);
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'load'</span>).innerHTML = <span class="hljs-string">'Error loading the Firebase SDK, check the console.'</span>;
+    }
+<span class="hljs-comment">//     homeDiv = document.getElementById('home');</span>
+<span class="hljs-comment">//     home();</span>
+<span class="hljs-comment">//     $.subscribe('reactMakeHtml', reactMakeHtml);</span>
+<span class="hljs-comment">//     $.subscribe('reactMakeImages', reactMakeImages);</span>
+<span class="hljs-comment">//     $.subscribe('home', reactHome);</span>
+});
+</code></pre>
+<p>The jquery removal:</p>
+<ul>
+<li>Remove the JumboTrons from index.pug and elsewhere.</li>
+</ul>
 <a class="anchor" id="the-config-file"></a>
 <h2>The Config File</h2>
 <p>Place your working <strong>ElvenConfig.json</strong> file in a folder of your repository called <strong>ElvenConfig</strong>. Include a section of the users node called <strong>lastname</strong>, where lastname is your last name. For instance, if your last name is Smith:</p>
