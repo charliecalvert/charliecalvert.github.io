@@ -6,6 +6,7 @@
 <li><a href="#the-reducer">The Reducer</a></li>
 <li><a href="#the-main-component">The Main Component</a></li>
 <li><a href="#the-show-users-page">The Show Users Page</a></li>
+<li><a href="#more-on-showusers">More on ShowUsers</a></li>
 <li><a href="#the-show-user-page">The Show User Page</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
@@ -346,6 +347,35 @@ render() {
 <p>It gets its data (the list of users) from a call to the Firebase database. Look at the <strong>elven-fire-data.js</strong> file for examples of these types of calls that use <strong>firebase.database.ref(...)</strong>.</p>
 <p>When the user&#39;s button is selected, a &#39;SWITCH_COMPONENT&#39; Redux action is dispatched:</p>
 <pre><code class="lang-javascript"><span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.dispatch</span>({<span class="hljs-attribute">type</span>: <span class="hljs-string">'SWITCH_COMPONENT'</span> ...})
+</code></pre>
+<a class="anchor" id="more-on-showusers"></a>
+<h2>More on ShowUsers</h2>
+<p>I get the userNames from the Firebase database like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">firebase</span><span class="hljs-selector-class">.database</span>()
+    <span class="hljs-selector-class">.ref</span>(<span class="hljs-string">'/configuration/users/'</span>)
+    <span class="hljs-selector-class">.once</span>(<span class="hljs-string">'value'</span>)
+    <span class="hljs-selector-class">.then</span>(function(snapshot) { ... }
+</code></pre>
+<p>Put the results in a variable called <strong>userNames</strong>.</p>
+<p>Create an empty array called <strong>users</strong>. Iterate over the users:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">for</span> (const <span class="hljs-keyword">user</span>Name <span class="hljs-keyword">in</span> <span class="hljs-keyword">user</span>Names) { ... }
+</code></pre>
+<p>Push each <strong>userName</strong> into the <strong>users</strong> array.</p>
+<p>Call <strong>setState</strong> with the arrays of users.</p>
+<p><strong>that.setState({ users: users });</strong></p>
+<p>This triggers the render method. Which creates an array of <strong>RaisedButtons</strong>:</p>
+<pre><code>{this.<span class="hljs-keyword">state</span>.users.map((<span class="hljs-keyword">user</span>) =&gt; (
+    <span class="hljs-variable">&lt;RaisedButton
+      // YOUR CODE HERE
+    /&gt;</span>
+))}
+</code></pre><p>The call to <strong>users.map</strong> allows you to transform the array of userNames into some other array. In particular, it takes each user as the <strong>label</strong> for the button.</p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map">MDN on <strong>map</strong></a></li>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Syntax/Functional">JsObjects on <strong>map</strong></a></li>
+</ul>
+<p>React likes to be able to uniquely identify things in an array, therefore, each <strong>RaisedButton</strong> ought to have a unique key property:</p>
+<pre><code class="lang-javascript"><span class="hljs-attr">key</span>={user}
 </code></pre>
 <a class="anchor" id="the-show-user-page"></a>
 <h2>The Show User Page</h2>
