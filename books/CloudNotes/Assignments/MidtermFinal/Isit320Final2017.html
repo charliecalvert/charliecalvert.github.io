@@ -2,8 +2,9 @@
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Isit320Final2017</h1><p>Welcome to Isit320Final2017</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#routes">Routes</a></li>
 <li><a href="#merging-code-into-webcrafts">Merging Code into WebCrafts</a></li>
-<li><a href="#key-steps">Key Steps</a></li>
+<li><a href="#key-steps">The Merging: Key Steps</a></li>
 <li><a href="#the-config-file">The Config File</a></li>
+<li><a href="#config-file-route">Config File Route</a></li>
 <li><a href="#merge-code-you-forked">Merge Code you Forked</a></li>
 <li><a href="#delete-all-old-jquery-code">Delete all old jQuery code</a></li>
 <li><a href="#get-latest-isit-code-and-isit-site-tools">Get latest isit-code and isit-site-tools</a></li>
@@ -76,7 +77,7 @@
 <p>I think all this implies connection to the Firebase database.</p>
 <p>I&#39;m flexible on all of this. Do what you can. If all you get is the login, that&#39;s better than nothing. If we get the <strong>ShowUsers</strong> but not the database, that&#39;s also better than nothing. Just merge in what you can.</p>
 <a class="anchor" id="key-steps"></a>
-<h2>Key Steps</h2>
+<h2>The Merging: Key Steps</h2>
 <p>Watch the <a href="https://youtu.be/iA21zK3Idt8">video</a></p>
 <p>From <strong>Week10-FirebaseReact</strong> I needed these files:</p>
 <ul>
@@ -155,7 +156,32 @@ script(<span class="hljs-attribute">defer</span>=<span class="hljs-string">''</s
 <p>When I run <strong>Week10-FirebaseReact</strong>, turn to the <strong>Show Users</strong> page and click a button, I expect them to be configured to use <strong>/home/ubuntu</strong>.</p>
 <p>Here is how to change all instances of <strong>bcuser</strong> to <strong>ubuntu</strong> inside the <strong>ElvenConfig.json</strong> file:</p>
 <pre><code>sed -<span class="hljs-selector-tag">i</span> <span class="hljs-string">"s/bcuser/ubuntu/g"</span> ElvenConfig.json
-</code></pre><a class="anchor" id="merge-code-you-forked"></a>
+</code></pre><a class="anchor" id="config-file-route"></a>
+<h2>Config File Route</h2>
+<p>To accommodate the new format for ElvenConfig.json we had to change our code. Specifically, when working on <strong>Week10-FirebaseReact</strong> we changed the <strong>get-config</strong> route in <strong>routes/index.js</strong>. Here is the the updated version of the method as found in <strong>Week10-FirebaseReact</strong>:</p>
+<pre><code>router.get(<span class="hljs-string">'/get-config'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{ <span class="hljs-string">'use strict'</span>;
+    <span class="hljs-keyword">try</span> {
+        config.useLocalConfig = <span class="hljs-literal">false</span>;
+        config.loadAsync()
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">configuration</span>) </span>{
+                res.send({ <span class="hljs-attr">configuration</span>: configuration });
+            })
+            .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+                <span class="hljs-keyword">throw</span> err
+            })
+    } <span class="hljs-keyword">catch</span>(e) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(e);
+    }
+});
+</code></pre><p>You should replace the <strong>routes/makers</strong> verison of that method with the code shown in above. Note that we changed the name of the route from <strong>config</strong> to <strong>get-config</strong>. That means you have to change the route you call when you press the <strong>insertConfig</strong> button in <strong>FireDataPush</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">insertConfig</span>() {
+  <span class="hljs-selector-tag">fetch</span>(<span class="hljs-string">'/makers/get-config'</span>)
+    <span class="hljs-selector-class">.then</span>(...)
+    <span class="hljs-selector-class">.then</span>(...)
+    <span class="hljs-selector-class">.catch</span>(...)
+}
+</code></pre>
+<a class="anchor" id="merge-code-you-forked"></a>
 <h2>Merge Code you Forked</h2>
 <p>Be sure to merge in the latest changes from the repositories that you forked. I made changes as recently as November 29, 2017, but may do more.</p>
 <p>If you have things set up correctly, per the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/WebCrafts/WebCraftsUpToDate.html">UpToDate</a> assigment, it should be relatively easy to <strong>fetch</strong> and <strong>pull</strong>.</p>
@@ -168,6 +194,43 @@ script(<span class="hljs-attribute">defer</span>=<span class="hljs-string">''</s
 <pre><code class="lang-javascript">$.getJSON(<span class="hljs-string">'/makers/config'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">configSummary</span>) </span>{ ... })
 </code></pre>
 <p>Then just delete the entire file.</p>
+<p>A simple way to get started is to stop loading <strong>require</strong> in <strong>views/layout.pub</strong>:</p>
+<pre><code>//script(<span class="hljs-name">data-main=</span><span class="hljs-string">"javascripts/main.js"</span> src=<span class="hljs-string">"/bower_components/requirejs/require.js"</span>)
+</code></pre><p>Without <strong>require</strong>, you don&#39;t load jQuery, which means you can no longer use <strong>document.ready</strong> in <strong>react-main</strong>:</p>
+<pre><code>//$(document).ready(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span> { ... }
+</code></pre><p>Replace it with <strong>window.onload</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-built_in">window</span>.onload = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ ... }
+</code></pre>
+<p>At that point you should be able to delete the following directories and files:</p>
+<ul>
+<li><strong>make-html</strong>, <strong>make-image</strong> and <strong>tools</strong></li>
+<li><strong>control.js</strong> and <strong>main.js</strong></li>
+</ul>
+<p>The <strong>public/javascripts</strong> directory before deleting all jQuery related code:</p>
+<pre>$ ll
+total 3228
+drwxrwxr-x 5 charlie charlie    4096 Dec  4 19:38 ./
+drwxrwxr-x 6 charlie charlie    4096 Nov 21 11:31 ../
+-rw-rw-r-- 1 charlie charlie 1498647 Dec  6 07:30 bundle.js
+-rw-rw-r-- 1 charlie charlie 1775651 Dec  6 07:30 bundle.js.map
+-rw-rw-r-- 1 charlie charlie     563 Dec  4 19:36 control.js
+-rw-rw-r-- 1 charlie charlie    1217 Dec  4 19:36 main.js
+drwxrwxr-x 2 charlie charlie    4096 Dec  4 19:36 make-html/
+drwxrwxr-x 2 charlie charlie    4096 Dec  4 19:36 make-image/
+drwxrwxr-x 2 charlie charlie    4096 Dec  4 19:36 tools/
+</pre>
+<p>The commands to delete the jQuery related code, These should be issued in the <strong>public/javascripts</strong> directory:</p>
+<pre>git rm control.js main.js
+git rm -r make-html/ make-image/ tools/
+</pre>
+<p>After issuing the before commands:</p>
+<pre>$ ll
+total 3208
+drwxrwxr-x 2 charlie charlie    4096 Dec  6 07:35 ./
+drwxrwxr-x 6 charlie charlie    4096 Nov 21 11:31 ../
+-rw-rw-r-- 1 charlie charlie 1498647 Dec  6 07:30 bundle.js
+-rw-rw-r-- 1 charlie charlie 1775651 Dec  6 07:30 bundle.js.map
+</pre>
 <a class="anchor" id="get-latest-isit-code-and-isit-site-tools"></a>
 <h2>Get latest isit-code and isit-site-tools</h2>
 <p>Run <strong>npm outdated</strong></p>
