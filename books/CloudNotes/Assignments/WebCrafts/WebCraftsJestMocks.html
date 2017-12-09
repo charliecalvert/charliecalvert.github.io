@@ -7,7 +7,8 @@
 <li><a href="#sample-tests">Sample Tests</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#jest-error">Error: Determining test suites</a></li>
-<li><a href="#dealing-with-redux">Dealing with Redux</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#dealing-with-redux">Dealing with Redux</a></li>
+<li><a href="#mock-redux">Mock Redux</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>Get rid of the <strong>xmlhttprequest</strong> syntax error when running WebCrafts test.</p>
 <a class="anchor" id="create-a-mocks-directory"></a>
@@ -222,4 +223,63 @@ describe(<span class="hljs-string">'WebCrafts Sanity Test'</span>, <span class="
 <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span>, div
 </code></pre>
 <p>This is pretty much what we do in <strong>react-main.js</strong>.</p>
+<a class="anchor" id="mock-redux"></a>
+<h2>Mock Redux</h2>
+<p>Another approach is to mock calls to <strong>dispatch</strong> by putting this at the end of <strong>source/setup-jest.js</strong>:</p>
+<pre><code class="lang-javascript">const thunk = <span class="hljs-function"><span class="hljs-params">({ dispatch, getState })</span> =&gt;</span> <span class="hljs-built_in">next</span> =&gt; action =&gt; {
+    <span class="hljs-keyword">if</span> (typeof action === <span class="hljs-string">'function'</span>) {
+        <span class="hljs-keyword">return</span> action(dispatch, getState)
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">next</span>(action);
+};
+
+<span class="hljs-keyword">export</span> const elfMockRedux = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    const store = {
+        <span class="hljs-name">getState</span>: jest.fn(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> ({})),
+        <span class="hljs-name">dispatch</span>: jest.fn(),
+    };
+    const <span class="hljs-built_in">next</span> = jest.fn();
+
+    const invoke = <span class="hljs-function"><span class="hljs-params">(action)</span> =&gt;</span> thunk(store)(<span class="hljs-built_in">next</span>)(action);
+
+    <span class="hljs-keyword">return</span> {store, <span class="hljs-built_in">next</span>, invoke};
+};
+
+global.elfMockRedux = elfMockRedux;
+</code></pre>
+<p>Then we can ask to get only a named version of the <strong>HomeButtons</strong> components, rather than <strong>connected</strong> HomeButtons. Here is the updated, and now exported, <strong>constructor</strong> for <strong>HomeButtons</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// OTHER IMPORTS</span>
+<span class="hljs-keyword">import</span> {connect} from <span class="hljs-symbol">'react</span>-redux';
+
+export <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HomeButtons</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{ ... }
+
+export <span class="hljs-keyword">default</span> connect()(<span class="hljs-type">HomeButtons</span>);
+</code></pre>
+<p>Note that we continue to export a default <strong>connected</strong> version of <strong>HomeButtons</strong>. But now also have just the component, which is not connected to Redux.</p>
+<p>Since we exported the component by name, we can do this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> {HomeButtons} <span class="hljs-keyword">from</span> <span class="hljs-string">'../HomeButtons'</span>;
+<span class="hljs-keyword">import</span> {configure, shallow} <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+<span class="hljs-keyword">import</span> Adapter <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme-adapter-react-16'</span>;
+configure({<span class="hljs-attr">adapter</span>: <span class="hljs-keyword">new</span> Adapter()});
+
+describe(<span class="hljs-string">'WebCrafts Home Buttons Tests'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+
+    it(<span class="hljs-string">'expects true to be true'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">true</span>);
+    });
+
+    fit(<span class="hljs-string">'publishes clientMakeHtml event after button click'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> { store } = elfMockRedux();
+
+        <span class="hljs-keyword">const</span> wrapper = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">HomeButtons</span> <span class="hljs-attr">dispatch</span>=<span class="hljs-string">{store.dispatch}/</span>&gt;</span>);
+        wrapper.find('#makeHtml').simulate('click');
+        const expected = {'component': 'make-html', 'type': 'SWITCH_COMPONENT'};
+        expect(store.dispatch).toHaveBeenCalledWith(expected);
+    });
+});</span>
+</code></pre>
+<p>Note that we explicitly pass our mocked version of <strong>dispatch</strong> to <strong>HomeButtons</strong>.</p>
 </div></body></html>
