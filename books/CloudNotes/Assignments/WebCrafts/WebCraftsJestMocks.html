@@ -6,7 +6,8 @@
 <li><a href="#define-the-data">Define the Data</a></li>
 <li><a href="#sample-tests">Sample Tests</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
-<li><a href="#jest-error">Error: Determining test suites</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#jest-error">Error: Determining test suites</a></li>
+<li><a href="#dealing-with-redux">Dealing with Redux</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>Get rid of the <strong>xmlhttprequest</strong> syntax error when running WebCrafts test.</p>
 <a class="anchor" id="create-a-mocks-directory"></a>
@@ -134,4 +135,91 @@ whatwgFetch.fetch = fetch;
 <p>I don&#39;t really care about the dependency on a .git directory, though it is weird. But the error message has to be better if they are going to do that.</p>
 <p>Here is an explanation of <strong>watch</strong> vs <strong>watchAll</strong>:</p>
 <p><a href="https://facebook.github.io/jest/docs/en/cli.html#watch">https://facebook.github.io/jest/docs/en/cli.html#watch</a></p>
+<a class="anchor" id="dealing-with-redux"></a>
+<h2>Dealing with Redux</h2>
+<p>Now we&#39;re switching to original, complete objects found in the original WebCrafts. These objects all use Redux. Without some tinkering, you get this error:</p>
+<pre><code>Invariant Violation: Could <span class="hljs-keyword">not</span> <span class="hljs-builtin-name">find</span> <span class="hljs-string">"store"</span> <span class="hljs-keyword">in</span> either the context <span class="hljs-keyword">or</span> props of <span class="hljs-built_in">..</span>.
+</code></pre><p>One [solution][] is to simply wraps the components in your tests in a Provider. Here is the <strong>sanity</strong> test with that option:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> ReactHome <span class="hljs-keyword">from</span> <span class="hljs-string">'../ReactHome'</span>;
+<span class="hljs-keyword">import</span> HomeButtons <span class="hljs-keyword">from</span> <span class="hljs-string">'../HomeButtons'</span>;
+<span class="hljs-keyword">import</span> MakeHtml <span class="hljs-keyword">from</span> <span class="hljs-string">'../MakeHtml'</span>;
+<span class="hljs-keyword">import</span> MakeHtmlDropDowns <span class="hljs-keyword">from</span> <span class="hljs-string">'../MakeHtmlDropDowns'</span>;
+<span class="hljs-keyword">import</span> MakeHtmlHomeButton <span class="hljs-keyword">from</span> <span class="hljs-string">'../MakeHtmlHomeButton'</span>;
+<span class="hljs-keyword">import</span> MakeImage <span class="hljs-keyword">from</span> <span class="hljs-string">'../MakeImage'</span>;
+
+<span class="hljs-keyword">import</span> {Provider} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-redux'</span>;
+<span class="hljs-keyword">import</span> {createStore} <span class="hljs-keyword">from</span> <span class="hljs-string">'redux'</span>;
+<span class="hljs-keyword">import</span> fireReducer <span class="hljs-keyword">from</span> <span class="hljs-string">'../fire-reducer'</span>;
+
+<span class="hljs-keyword">const</span> store = createStore(fireReducer);
+
+describe(<span class="hljs-string">'WebCrafts Sanity Test'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+
+    it(<span class="hljs-string">'expects true to be true'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">true</span>);
+    });
+
+    it(<span class="hljs-string">'renders ReactHome without crashing'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+        ReactDOM.render(
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">ReactHome</span>/&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span></span>, div
+        );
+    });
+
+    it(<span class="hljs-string">'renders HomeButtons without crashing'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+        ReactDOM.render(
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">HomeButtons</span>/&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span></span>, div
+        );
+    });
+
+    it(<span class="hljs-string">'tests if we can load MakeHtml'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+
+        ReactDOM.render(
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">MakeHtml</span>/&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span></span>, div
+        );
+    });
+
+    it(<span class="hljs-string">'tests if we can load MakeHtml DropDowns'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+        ReactDOM.render(
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">MakeHtmlDropDowns</span>/&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span></span>, div);
+    });
+
+    it(<span class="hljs-string">'tests if we can load MakeHtml DropDowns'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+
+        ReactDOM.render(
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">MakeHtmlHomeButton</span>/&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span></span>, div);
+    });
+
+    it(<span class="hljs-string">'tests if we can load MakeHtml'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+        ReactDOM.render(
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">MakeImage</span>/&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span></span>, div);
+    });
+});
+</code></pre>
+<p>The key code is here:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">ReactHome</span>/&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span>, div
+</code></pre>
+<p>This is pretty much what we do in <strong>react-main.js</strong>.</p>
 </div></body></html>
