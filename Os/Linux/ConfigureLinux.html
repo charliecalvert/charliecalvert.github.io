@@ -208,7 +208,7 @@ COLOR_RESET=<span class="hljs-string">"\033[0m"</span>
 <span class="hljs-keyword">function</span> git_color {
   <span class="hljs-built_in">local</span> git_status=<span class="hljs-string">"<span class="hljs-variable">$(git status 2&gt; /dev/null)</span>"</span>
 
-  <span class="hljs-keyword">if</span> [[ ! <span class="hljs-variable">$git_status</span> =~ <span class="hljs-string">"working directory clean"</span> ]]; <span class="hljs-keyword">then</span>
+  <span class="hljs-keyword">if</span> [[ ! <span class="hljs-variable">$git_status</span> =~ <span class="hljs-string">"working tree clean"</span> ]]; <span class="hljs-keyword">then</span>
     <span class="hljs-built_in">echo</span> -e <span class="hljs-variable">$COLOR_RED</span>
   <span class="hljs-keyword">elif</span> [[ <span class="hljs-variable">$git_status</span> =~ <span class="hljs-string">"Your branch is ahead of"</span> ]]; <span class="hljs-keyword">then</span>
     <span class="hljs-built_in">echo</span> -e <span class="hljs-variable">$COLOR_YELLOW</span>
@@ -233,7 +233,19 @@ COLOR_RESET=<span class="hljs-string">"\033[0m"</span>
   <span class="hljs-keyword">fi</span>
 }
 </code></pre>
-<p>Now scroll down to after the place where the PS1 prompt is set up:</p>
+<p>In Git 2.9, the word <strong>directory</strong> was changed to <strong>tree</strong> when reporting that your repo is up to date. As a result, I changed this line in <strong>git_color</strong>:</p>
+<pre><code class="lang-bash"><span class="hljs-keyword">if</span> <span class="hljs-string">[[ ! $git_status =~ "working tree clean" ]]</span>; <span class="hljs-keyword">then</span>
+</code></pre>
+<p>The line used to read:</p>
+<pre><code class="lang-bash"><span class="hljs-keyword">if</span> <span class="hljs-string">[[ ! $git_status =~ "working directory clean" ]]</span>; <span class="hljs-keyword">then</span>
+</code></pre>
+<p>You can check your version of Git by typing:</p>
+<pre><code>git <span class="hljs-comment">--version</span>
+git <span class="hljs-built_in">version</span> <span class="hljs-number">2.7</span><span class="hljs-number">.4</span>
+</code></pre><p>If you get answer like the one above, then use <strong>directory</strong> instead of <strong>tree</strong>. If your version is higher than 2.9.1, for instance, if it is 2.14.1, then use the word <strong>tree</strong> instead, as shown in the code above:     </p>
+<pre><code class="lang-bash"><span class="hljs-keyword">if</span> <span class="hljs-string">[[ ! $git_status =~ "working tree clean" ]]</span>; <span class="hljs-keyword">then</span>
+</code></pre>
+<p>Now scroll down to after the place where the PS1 prompt is set up and enter the following:</p>
 <pre><code class="lang-bash">PS1+=<span class="hljs-string">"\[\$(git_color)\]"</span>
 PS1+=<span class="hljs-string">"\$(git_branch)"</span>                       <span class="hljs-comment"># prints current branch</span>
 PS1+=<span class="hljs-string">"\[$COLOR_BLUE\]\n\$\[$COLOR_RESET\] "</span>   <span class="hljs-comment"># '#' for root, else '$'</span>
