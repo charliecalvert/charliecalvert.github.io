@@ -4,6 +4,7 @@
 <li><a href="#github-api">GitHub API</a></li>
 <li><a href="#sign-in">Sign in</a></li>
 <li><a href="#display-gist-data">Display Gist Data</a></li>
+<li><a href="#testing-notes">Testing Notes</a></li>
 <li><a href="#one-test">Running One Test File or Suite</a></li>
 <li><a href="#getgist-component">GetGist Component</a></li>
 <li><a href="#thinking-about-state">Thinking about State</a></li>
@@ -88,27 +89,24 @@ v7.<span class="hljs-number">9.0</span>
 </code></pre>
 <p>In <strong>index.js</strong> just load <strong>DataMaven</strong>:</p>
 <pre><code class="lang-javascript">ReactDOM.render(
-    &lt;div&gt;
-        &lt;DataMaven/&gt;
-    &lt;/div&gt;,
-    document.getElementById(<span class="hljs-string">'root'</span>)
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">DataMaven</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>,
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
 );
-```https:<span class="hljs-comment">//gist.github.com/charliecalvert/51daef341699943b07c9570c3ad2cbab</span>
-
-## Testing Notes
-
-The tests <span class="hljs-keyword">in</span> **Header.test.js** break after the refactoring explained above. After the refactoring, I was getting this error:
-
-- _Failed context type: The context `router` is marked <span class="hljs-keyword">as</span> required <span class="hljs-keyword">in</span> `Link`, but its value is `undefined`._
-
-This is because the **ElfHeader** could not find the **Router** tag is was expected. The fix is <span class="hljs-keyword">as</span> follows:
-
-```javascript
-<span class="hljs-keyword">import</span> { BrowserRouter <span class="hljs-keyword">as</span> Router } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span>;
+</code></pre>
+<a class="anchor" id="testing-notes"></a>
+<h2>Testing Notes</h2>
+<p>The tests in <strong>Header.test.js</strong> break after the refactoring explained above. After the refactoring, I was getting this error:</p>
+<ul>
+<li><em>Failed context type: The context <code>router</code> is marked as required in <code>Link</code>, but its value is <code>undefined</code>.</em></li>
+</ul>
+<p>This is because the <strong>ElfHeader</strong> could not find the <strong>Router</strong> tag is was expected. The fix is as follows:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { BrowserRouter <span class="hljs-keyword">as</span> Router } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span>;
 
 it(<span class="hljs-string">'renders without crashing'</span>, () =&gt; {
-    const div = document.createElement(<span class="hljs-string">'div'</span>);
-    ReactDOM.render(&lt;Router&gt;&lt;ElfHeader /&gt;&lt;/Router&gt;, div);
+    <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+    ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Router</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span> /&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">Router</span>&gt;</span></span>, div);
 });
 </code></pre>
 <p><a href="https://gist.github.com/charliecalvert/51daef341699943b07c9570c3ad2cbab">https://gist.github.com/charliecalvert/51daef341699943b07c9570c3ad2cbab</a>
@@ -132,7 +130,7 @@ it(<span class="hljs-string">'renders without crashing'</span>, () =&gt; {
 <p>You do not need to display all the fields, at least at first. Two or three would be enough while testing. For the midterm, up this to at least five or six. Be sure to include <strong>Description</strong> and <strong>URL</strong> among the fields you display. If possible, making <strong>URL</strong> clickable so we can see the Gist that you create.</p>
 <p>Add a new item to the menu called <strong>Insert New Gist</strong> or something similar. In <strong>DataMaven</strong>, you will also need to a new <strong>Route</strong> in the <strong>render</strong> method. It should display a component called ShowNewGist At some point the new route will need to pass two pieces of information to the component it calls.</p>
 <p>The new component will have one button that will call the <strong>fetchGist</strong> method from <strong>DataMaven</strong>.</p>
-<p><strong>fetchGist</strong> should retrieve the entirity of the JSON data returned from GitHub. On the client side you should add the data to <strong>DataMaven</strong>&#39;s state. This should cause a call to the <strong>DataMaven</strong> and <strong>ShowNewGist</strong> render methods.</p>
+<p><strong>fetchGist</strong> should retrieve the entirety of the JSON data returned from GitHub. On the client side you should add the data to <strong>DataMaven</strong>&#39;s state. This should cause a call to the <strong>DataMaven</strong> and <strong>ShowNewGist</strong> render methods.</p>
 <a class="anchor" id="thinking-about-state"></a>
 <h2>Thinking about State</h2>
 <p>I&#39;ve been trying to get us to the point where we put all our data in a library called Redux. Redux can be helpful when state starts to get complicated, which it appears to be in our case. So Redux should help us eliminate some of this business and keep things clean. I hope.</p>
@@ -152,13 +150,14 @@ it(<span class="hljs-string">'renders without crashing'</span>, () =&gt; {
 </ul>
 <a class="anchor" id="examples"></a>
 <h2>Examples</h2>
-<p>curl <a href="https://api.github.com/zen">https://api.github.com/zen</a>
- 2009  curl <a href="https://api.github.com/users/charliecalvert">https://api.github.com/users/charliecalvert</a></p>
-<p> 2011  curl -i <a href="https://api.github.com/repos/twbs/bootstrap">https://api.github.com/repos/twbs/bootstrap</a>
- 2012  curl -i <a href="https://api.github.com/repos/charliecalvert/JsObjects">https://api.github.com/repos/charliecalvert/JsObjects</a>
- 2013  curl -i <a href="https://api.github.com/repos/charliecalvert/repos">https://api.github.com/repos/charliecalvert/repos</a>
- 2014  curl -i <a href="https://api.github.com/repos/charliecalvert">https://api.github.com/repos/charliecalvert</a>
- 2015  curl -i <a href="https://api.github.com/users/charliecalvert/repos">https://api.github.com/users/charliecalvert/repos</a></p>
+<pre><code class="lang-bash">curl https:<span class="hljs-comment">//api.github.com/zen</span>
+curl https:<span class="hljs-comment">//api.github.com/users/charliecalvert</span>
+curl -<span class="hljs-selector-tag">i</span> https:<span class="hljs-comment">//api.github.com/repos/twbs/bootstrap</span>
+curl -<span class="hljs-selector-tag">i</span> https:<span class="hljs-comment">//api.github.com/repos/charliecalvert/JsObjects</span>
+curl -<span class="hljs-selector-tag">i</span> https:<span class="hljs-comment">//api.github.com/repos/charliecalvert/repos</span>
+curl -<span class="hljs-selector-tag">i</span> https:<span class="hljs-comment">//api.github.com/repos/charliecalvert</span>
+curl -<span class="hljs-selector-tag">i</span> https:<span class="hljs-comment">//api.github.com/users/charliecalvert/repos</span>
+</code></pre>
 <a class="anchor" id="time-till-renew"></a>
 <h2>Time till Renew</h2>
 <p> curl <a href="https://api.github.com/users/charliecalvert">https://api.github.com/users/charliecalvert</a></p>
