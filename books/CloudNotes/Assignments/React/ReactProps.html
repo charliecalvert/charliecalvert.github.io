@@ -5,7 +5,7 @@
 <li><a href="#images-and-css">Images and CSS</a></li>
 <li><a href="#modularize">Modularize</a></li>
 <li><a href="#props">Props</a></li>
-<li><a href="#num-int">Put NumbersInit in its Own File</a></li>
+<li><a href="#num-int">Put appInit in its Own File</a></li>
 <li><a href="#query-the-github-api">Query the GitHub API</a></li>
 <li><a href="#tests">Tests</a></li>
 <li><a href="#proper-mocking">Proper Mocking</a></li>
@@ -17,6 +17,9 @@
 <li><a href="#bower">Bower</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-props"></a>
 <h1>React Props</h1>
 <p>We will learn a bit about React props by continuing to expand the <strong>week02-rest-basics</strong> program. We will try to understand properties, and to see how they can be passed from one component to another.</p>
+<p>In this assignment we are trying to create something that looks a bit like this:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/ReactPropsUi.png" alt="React Props UI"></p>
+<p>At the top we see some data from our GitHub account. Yours will, of course, differ from what I see in my app. Next we see a call to one or more Micro Servers. Finally, we see the original data retrieved from our <strong>/foo/api</strong> route developed in a previous assignment.</p>
 <a class="anchor" id="tag"></a>
 <h2>Tag</h2>
 <p>Since we are often working on a single project that has multiple phases, let&#39;s create a Git <strong>tag</strong> marking our current status:</p>
@@ -42,7 +45,7 @@ $ git <span class="hljs-keyword">tag</span> <span class="hljs-title">-n1</span>
 </code></pre>
 <a class="anchor" id="images-and-css"></a>
 <h2>Images and CSS</h2>
-<p>I found images here:</p>
+<p>Let&#39;s change the revolving image found at the top of our default <strong>create-react-app</strong> program perhaps called something like <strong>Week02-RestBasics</strong>.  I found images here:</p>
 <ul>
 <li><a href="https://pixabay.com/en/gold-fish-aquarium-goldfish-fins-30831/">https://pixabay.com/en/gold-fish-aquarium-goldfish-fins-30831/</a></li>
 <li><a href="https://pixabay.com/en/goldfish-fins-tropical-animal-47022/">https://pixabay.com/en/goldfish-fins-tropical-animal-47022/</a></li>
@@ -50,13 +53,13 @@ $ git <span class="hljs-keyword">tag</span> <span class="hljs-title">-n1</span>
 <li><a href="https://commons.wikimedia.org/wiki/File:Flower-of-Life-91circles36arcs.svg">https://commons.wikimedia.org/wiki/File:Flower-of-Life-91circles36arcs.svg</a></li>
 <li><a href="https://commons.wikimedia.org/wiki/File:Tree-of-Life_Flower-of-Life_Stage.svg">https://commons.wikimedia.org/wiki/File:Tree-of-Life_Flower-of-Life_Stage.svg</a></li>
 </ul>
-<p>For instance:</p>
+<p>It&#39;s easy to swap in one of the these images for the default spinning &quot;atomic logo&quot;. For instance, employ <strong>wget</strong> like this to help you get the job done:</p>
 <pre><code class="lang-bash">cd src
 mkdir images
 cd images
 wget <span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/upload.wikimedia.org/wikipedia</span><span class="hljs-regexp">/commons/</span><span class="hljs-number">6</span>/<span class="hljs-number">60</span>/Tree-<span class="hljs-keyword">of</span>-Life_Flower-<span class="hljs-keyword">of</span>-Life_Stage.svg
 </code></pre>
-<p>Now modify the line in <strong>App.js</strong> that loads your logo. You should load the image you downloaded instead. Note that I have picked an SVG file which should both be small and should load quickly.</p>
+<p>Now modify the <strong>import</strong> statement in <strong>App.js</strong> that loads your logo. You should load the image you downloaded instead. Note that I have picked an SVG file which should both be small and should load quickly.</p>
 <p>Depending on your tastes and the image you choose to load, you may also want to edit the <strong>background-color</strong> for the <strong>.App-header</strong> in <strong>App.css</strong>.</p>
 <p>To find more images you might like, try this search in Chrome/Chromium:</p>
 <pre><code>http<span class="hljs-variable">s:</span>//www.google.<span class="hljs-keyword">com</span>/<span class="hljs-built_in">search</span>?q=svg+free+small
@@ -70,42 +73,90 @@ wget <span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/upload.w
 <a class="anchor" id="modularize"></a>
 <h2>Modularize</h2>
 <p>The key goal will be to move <strong>App.js</strong> to <strong>components/App.js</strong>. Then break <strong>App.js</strong> into discrete components such as <strong>components/Header.js</strong>, <strong>components/GetFoo.js</strong> and <strong>components/SmallNumbers.js</strong>.</p>
-<p>The simplest way to proceed, I believe, is to copy <strong>App.js</strong> into <strong>SmallNumbers.js</strong>. Now delete everything from <strong>SmallNumbers</strong> that is not related to numbers. Go back to <strong>App.js</strong> and delete everything related to numbers from that file.</p>
+<p>For instance:</p>
+<pre><code class="lang-bash">git mv App<span class="hljs-selector-class">.js</span> components/.
+</code></pre>
+<p>Right now, we are doing, or in the process of doing, two things in <strong>App.js</strong>. We are calling, with fetch, our server with the following routes:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Module</th>
+<th style="text-align:left">Route</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">App.js</td>
+<td style="text-align:left">/api/foo</td>
+<td style="text-align:left">Get file, status, result</td>
+</tr>
+<tr>
+<td style="text-align:left">Micro01.js</td>
+<td style="text-align:left">/bar</td>
+<td style="text-align:left">Call You Rang in Micro Services</td>
+</tr>
+<tr>
+<td style="text-align:left">GitUser.js</td>
+<td style="text-align:left">/user</td>
+<td style="text-align:left">Get user information from GitHub</td>
+</tr>
+</tbody>
+</table>
+<p>Each module will contain</p>
+<ul>
+<li>A React Component with the same name as the file in which they reside</li>
+<li><strong>Constructor</strong></li>
+<li>A method that calls fetch</li>
+<li>A <strong>render</strong> method containing some JSX</li>
+</ul>
+<p>We have not implemented the server side code of the <strong>GitUser</strong> call, but we will do so later in this assignment. So we might as well get started. Just set up a module with the four pieces described above and assume we will define the details later.</p>
+<p>You will need to include code to properly maintain the state of each component. For instance, <strong>App.js</strong> will contain code for maintaining the following properties:</p>
+<ul>
+<li>file</li>
+<li>status</li>
+<li>result</li>
+</ul>
+<p><strong>Micro01</strong>, on the other hand, will only track <strong>state</strong> for one property called <strong>youRang</strong>.</p>
+<p>For now, put all the buttons in the <strong>render</strong> method for <strong>App.js</strong>. Do not include them in the other modules. The buttons should have the following labels:</p>
+<ul>
+<li>Query API (App.js)</li>
+<li>Query Micro</li>
+<li>Query Git API  </li>
+</ul>
+<p>Finally, you will need a module called <strong>components/Header.js</strong> that contains only the header:</p>
 <a class="anchor" id="props"></a>
 <h2>Props</h2>
-<p>In <strong>index.js</strong> pass in some default numbers to <strong>components/smallNumbers.js</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> numbersInit = {
-    <span class="hljs-attr">nine</span>: <span class="hljs-string">'0'</span>,
-    <span class="hljs-attr">eight</span>: <span class="hljs-string">'0'</span>
+<p>In <strong>index.js</strong> pass in some default numbers to <strong>components/App.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> appInit = {
+  <span class="hljs-attr">file</span>: <span class="hljs-string">'File name will be placed here.'</span>,
+  <span class="hljs-attr">status</span>: <span class="hljs-string">'status will go here'</span>,
+  <span class="hljs-attr">result</span>: <span class="hljs-string">'result will go here'</span>,
 };
 
 ReactDOM.render(
   <span class="hljs-comment">// CODE OMITTED HERE</span>
 
-     &lt;SmallNumbers numbers={numbersInit} /&gt;
+     &lt;App appInit={appInit} /&gt;
   <span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>,
   <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
 );
 </code></pre>
-<p>And then use it in <strong>SmallNumbers.js</strong>:</p>
+<p>And then use it in <strong>App.js</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
     super(props);
     this.state = {
-        nine: props.numbers.nine,
-        eight: props.numbers.eight
+            file: props.appInit.file,
+            status: props.appInit.status,
+            result: props.appInit.result
     }</span>
 }</span>
 </code></pre>
 <a class="anchor" id="num-int"></a>
-<h2>Put NumbersInit in its Own File</h2>
-<p>I called mine <strong>numbers-data.js</strong>, and for now, mine happens to be in the <strong>src</strong> directory, but ultimately we might want to refactor and move it elsewhere:</p>
-<pre><code class="lang-javascript"><span class="hljs-selector-tag">export</span> <span class="hljs-selector-tag">default</span> {
-    <span class="hljs-attribute">nine</span>: <span class="hljs-string">'0'</span>,
-    eight: <span class="hljs-string">'0'</span>
-};
-</code></pre>
+<h2>Put appInit in its Own File</h2>
+<p>I called mine <strong>app-init.js</strong>, and for now, mine happens to be in the <strong>src</strong> directory, but ultimately we might want to refactor and move it elsewhere.</p>
 <p>Of course, you will now need to import this data into <strong>index.js</strong> and into your tests:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> numbersInit <span class="hljs-keyword">from</span> <span class="hljs-string">'./numbers-data'</span>;
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> appInit <span class="hljs-keyword">from</span> <span class="hljs-string">'./app-init'</span>;
 </code></pre>
 <a class="anchor" id="query-the-github-api"></a>
 <h2>Query the GitHub API</h2>
