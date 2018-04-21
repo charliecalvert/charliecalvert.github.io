@@ -98,32 +98,44 @@ npm <span class="hljs-keyword">install </span>--save-dev <span class="hljs-keywo
 npm <span class="hljs-keyword">install </span>--save-dev <span class="hljs-keyword">babel-preset-env</span>
 </code></pre>
 <p><strong>npm</strong> is the Node Package Manager, and it can be used to install packages (libraries) and to perform other tasks such as running tiny scripts that start your project. <strong>node</strong> and <strong>npm</strong> and tightly linked tools which depend on one another. When you install node, npm is also installed. It is hard to do much with node without also running the <strong>npm</strong> command at least once.</p>
-<p>After running the <strong>npm install</strong> commands shown above, you will find new content in your <strong>package.json</strong> file. In particular, look for the <strong>dependencies</strong> and <strong>devDependencies sections</strong>:</p>
-<pre><code class="lang-json">$ <span class="hljs-keyword">cat</span> package.json
+<p>After running the <strong>npm install</strong> commands shown above, you will find new content in your <strong>package.json</strong> file. Your file should differ from mine in the details, but should be similar in content. In particular, look for the <strong>dependencies</strong> and <strong>devDependencies sections</strong>:</p>
+<pre><code class="lang-json">$ cat package.json
 {
   <span class="hljs-string">"name"</span>: <span class="hljs-string">"week01-reactbasics"</span>,
   <span class="hljs-string">"version"</span>: <span class="hljs-string">"1.0.0"</span>,
-  <span class="hljs-string">"description"</span>: <span class="hljs-string">"React Basics"</span>,
+  <span class="hljs-string">"description"</span>: <span class="hljs-string">"React from scratch"</span>,
   <span class="hljs-string">"main"</span>: <span class="hljs-string">"index.js"</span>,
   <span class="hljs-string">"scripts"</span>: {
-    <span class="hljs-string">"test"</span>: <span class="hljs-string">"echo \"</span><span class="hljs-keyword">Error</span>: <span class="hljs-keyword">no</span> <span class="hljs-keyword">test</span> specified\<span class="hljs-string">" &amp;&amp; exit 1"</span>
+    <span class="hljs-string">"start"</span>: <span class="hljs-string">"node_modules/.bin/webpack-dev-server --port=30025"</span>,
+    <span class="hljs-string">"build"</span>: <span class="hljs-string">"node_modules/.bin/webpack"</span>,
+    <span class="hljs-string">"test"</span>: <span class="hljs-string">"echo \"</span>Error: no test specified\<span class="hljs-string">" &amp;&amp; exit 1"</span>
+  },
+  <span class="hljs-string">"repository"</span>: {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"git"</span>,
+    <span class="hljs-string">"url"</span>: <span class="hljs-string">"git+https://github.com/charliecalvert/isit322-calvert-2018.git"</span>
   },
   <span class="hljs-string">"keywords"</span>: [
-    <span class="hljs-string">"React"</span>
+    <span class="hljs-string">"react"</span>,
+    <span class="hljs-string">"node"</span>
   ],
   <span class="hljs-string">"author"</span>: <span class="hljs-string">"Charlie Calvert"</span>,
   <span class="hljs-string">"license"</span>: <span class="hljs-string">"MIT"</span>,
+  <span class="hljs-string">"bugs"</span>: {
+    <span class="hljs-string">"url"</span>: <span class="hljs-string">"https://github.com/charliecalvert/isit322-calvert-2018/issues"</span>
+  },
+  <span class="hljs-string">"homepage"</span>: <span class="hljs-string">"https://github.com/charliecalvert/isit322-calvert-2018#readme"</span>,
   <span class="hljs-string">"dependencies"</span>: {
-    <span class="hljs-string">"react"</span>: <span class="hljs-string">"^15.6.1"</span>,
-    <span class="hljs-string">"react-dom"</span>: <span class="hljs-string">"^15.6.1"</span>,
-    <span class="hljs-string">"webpack"</span>: <span class="hljs-string">"^3.6.0"</span>
+    <span class="hljs-string">"react"</span>: <span class="hljs-string">"^16.3.0"</span>,
+    <span class="hljs-string">"react-dom"</span>: <span class="hljs-string">"^16.3.0"</span>,
+    <span class="hljs-string">"webpack"</span>: <span class="hljs-string">"^4.4.1"</span>
   },
   <span class="hljs-string">"devDependencies"</span>: {
     <span class="hljs-string">"babel-core"</span>: <span class="hljs-string">"^6.26.0"</span>,
-    <span class="hljs-string">"babel-loader"</span>: <span class="hljs-string">"^7.1.2"</span>,
-    <span class="hljs-string">"babel-preset-env"</span>: <span class="hljs-string">"^1.6.0"</span>,
+    <span class="hljs-string">"babel-loader"</span>: <span class="hljs-string">"^7.1.4"</span>,
+    <span class="hljs-string">"babel-preset-env"</span>: <span class="hljs-string">"^1.6.1"</span>,
     <span class="hljs-string">"babel-preset-react"</span>: <span class="hljs-string">"^6.24.1"</span>,
-    <span class="hljs-string">"webpack-dev-server"</span>: <span class="hljs-string">"^2.8.2"</span>
+    <span class="hljs-string">"webpack-cli"</span>: <span class="hljs-string">"^2.0.13"</span>,
+    <span class="hljs-string">"webpack-dev-server"</span>: <span class="hljs-string">"^3.1.1"</span>
   }
 }
 </code></pre>
@@ -301,7 +313,9 @@ ReactDOM.render(
                 test: <span class="hljs-regexp">/.js?$/</span>,
                 loader: <span class="hljs-string">'babel-loader'</span>,
                 exclude: <span class="hljs-regexp">/node_modules/</span>,
-                query: {presets: [<span class="hljs-string">'env'</span>, <span class="hljs-string">'react'</span>]}
+                query: {
+                  presets: [<span class="hljs-string">'env'</span>, <span class="hljs-string">'react'</span>]
+                }
             }
         ]
     },
