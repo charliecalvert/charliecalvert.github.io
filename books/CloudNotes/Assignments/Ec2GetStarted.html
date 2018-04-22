@@ -7,6 +7,7 @@
 <li><a href="#step-three">Step 03: Access EC2 Overview</a></li>
 <li><a href="#step-three-a">Step 03a: Load your SSH Key</a></li>
 <li><a href="#step-four">Step 04: Access Your Instance</a></li>
+<li><a href="#unprotected-private-key-file">Unprotected Private Key File</a></li>
 <li><a href="#permission-denied-pubic-key">Permission Denied Pubic Key</a></li>
 <li><a href="#configure">Step 04.01: Configure Your Instance</a></li>
 <li><a href="#ec2-shortcut">Step 04.02: SSH Access EC2 Shortcut</a></li>
@@ -102,7 +103,25 @@ ssh ubuntu@<span class="hljs-number">192.168</span><span class="hljs-number">.1<
 <pre><code>ssh ubuntu@&lt;YOUR<span class="hljs-built_in"> IP </span>PUBLIC<span class="hljs-built_in"> IP </span><span class="hljs-keyword">or</span> ELASTIC<span class="hljs-built_in"> IP </span>ADDRESS&gt;
 </code></pre><p>For instance:</p>
 <pre><code><span class="hljs-selector-tag">ssh</span> <span class="hljs-selector-tag">ubuntu</span>@<span class="hljs-keyword">192</span>.<span class="hljs-keyword">168</span>.<span class="hljs-keyword">1</span>.<span class="hljs-keyword">25</span>
-</code></pre><a class="anchor" id="permission-denied-pubic-key"></a>
+</code></pre><a class="anchor" id="unprotected-private-key-file"></a>
+<h2>Unprotected Private Key File</h2>
+<p>If we get a message like this:</p>
+<pre><code class="lang-bash">$ ssh-add id_rsa
+<span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@
+@</span> WARNING: UNPROTECTED PRIVATE <span class="hljs-built_in">KEY</span> FILE! <span class="hljs-comment">@
+@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span><span class="hljs-comment">@@</span>
+Permissions <span class="hljs-number">0777</span> <span class="hljs-keyword">for</span> 'id_rsa' are too <span class="hljs-keyword">open</span>.
+It is required that your private <span class="hljs-built_in">key</span> files are <span class="hljs-keyword">NOT</span> accessible by others.
+This private <span class="hljs-built_in">key</span> will be ignored.
+</code></pre>
+<p>We fix it like this:</p>
+<pre><code class="lang-bash">$ chmod 400 id_rsa
+charlie@rohan-mintc ~/.ssh
+$ ssh-<span class="hljs-builtin-name">add</span> id_rsa<span class="hljs-built_in">
+Identity </span>added: id_rsa (id_rsa)
+</code></pre>
+<p>Your key might not be named <strong>id_rsa</strong>, but the general solution outlined here will still apply regardless of the name of your key.</p>
+<a class="anchor" id="permission-denied-pubic-key"></a>
 <h2>Permission Denied Pubic Key</h2>
 <p>If you get this:</p>
 <pre><code class="lang-bash">$ git pull  
