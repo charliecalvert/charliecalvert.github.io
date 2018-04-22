@@ -1,0 +1,72 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactPropBasics</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ReactPropBasics</h1><p>Welcome to ReactPropBasics</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#understanding-props">Understanding Props</a></li>
+<li><a href="#do-something-on-your-own">Do Something on Your Own</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Properties are like state, but they are passed down from a component higher in the component hierarchy. Thus we can define a property in one place, but use it in multiple components without having to redeclare it, or having to perform other gymnastics.</p>
+<a class="anchor" id="understanding-props"></a>
+<h2>Understanding Props</h2>
+<p>Let&#39;s see it in action. First create a default React project in the root of your repository where you can muck about with properties:</p>
+<pre><code class="lang-bash"><span class="hljs-built_in">create-react-app</span> <span class="hljs-string">week04-prop-</span><span class="hljs-string">basics</span>
+</code></pre>
+<p>Modify <strong>App.js</strong> to use a property called testProp in the JSX</p>
+<pre><code class="lang-javscript"><span class="hljs-keyword">import</span> React, {Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> logo <span class="hljs-keyword">from</span> <span class="hljs-string">'./logo.svg'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'./App.css'</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+
+    render() {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">header</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-header"</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">{logo}</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-logo"</span> <span class="hljs-attr">alt</span>=<span class="hljs-string">"logo"</span>/&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">h1</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-title"</span>&gt;</span>Welcome to React<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">header</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-intro"</span>&gt;</span>
+                    To get started, edit <span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>src/App.js<span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span> and save to reload.
+                <span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>My prop: {this.props.testProp}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>  <span class="hljs-tag">&lt;<span class="hljs-name">===</span> <span class="hljs-attr">THIS</span> <span class="hljs-attr">LINE</span> ===&lt;
+            &lt;/<span class="hljs-attr">div</span>&gt;</span>
+        );
+    }
+}
+
+export default App;</span>
+</code></pre>
+<p>The only change it <strong>App.js</strong> is to add this one line which uses a property:</p>
+<pre><code class="lang-javscript"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>My prop: </span><span class="hljs-template-variable">{this.props.testProp}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span>
+</code></pre>
+<p>Now let&#39;s define the property in index.js and pass it down to App.js:</p>
+<pre><code class="lang-javscript">ReactDOM.render(
+    <span class="hljs-tag">&lt;<span class="hljs-name">App</span> <span class="hljs-attr">testProp</span>=<span class="hljs-string">{2}</span> /&gt;</span>,
+    document.getElementById('root')
+);
+</code></pre>
+<p>As you can see, we pass a &quot;parameter&quot; or attribute to App. It defines the value of the testProp property we use in App.js.</p>
+<p>We could also do this in index.js:</p>
+<pre><code class="lang-javscript"><span class="hljs-keyword">const</span> myProps = {
+    testProp: <span class="hljs-number">3</span>
+};
+
+ReactDOM.render(
+    &lt;App myProps={myProps} /&gt;,
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
+);
+</code></pre>
+<p>And add this in App.js:</p>
+<pre><code class="lang-javscript">&lt;p&gt;My prop: {this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.myProps</span><span class="hljs-selector-class">.testProp</span>}&lt;/p&gt;
+</code></pre>
+<a class="anchor" id="do-something-on-your-own"></a>
+<h2>Do Something on Your Own</h2>
+<p>The only work you need to is modify <strong>index.js</strong> so that <strong>App</strong> takes two props, so that we display both the values 2 and 3 in the final product.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-props-basics.png" alt="React Props Basics"></p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Push your work specify the follwoing when you turn it in:</p>
+<ul>
+<li>Branch</li>
+<li>Folder</li>
+</ul>
+</div></body></html>
