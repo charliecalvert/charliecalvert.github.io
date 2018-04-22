@@ -23,6 +23,7 @@
 <li><a href="#billing-after">Billing After Quarter Ends</a></li>
 <li><a href="#keep-system-up-to-date">Keep System Up to Date</a></li>
 <li><a href="#ssh-on-windows">SSH on Windows</a></li>
+<li><a href="#CIDR">Security Group Rules from Known Addresses</a></li>
 <li><a href="#details">Details</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>This assignment is designed to help you get started using the AWS service called EC2.</p>
@@ -183,6 +184,7 @@ ssh -i prog270-ec2-2017.pem ubuntu@34.242.67.21
 </ul>
 <p>Our most commonly used Ports are 30025, 30026. I believe you can edit the inbound security rules to reserve a block of ports: 30025 - 30030. This will open 30025 through 30030.</p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/ec2-elven-security-group.png" alt="Ec2 Elven Security Group"></p>
+<p>See also <a href="#CIDR">this section</a> on working with CIDR groups and known  IP addresses rather than 0.0.0.0/0.</p>
 <a class="anchor" id="step-five"></a>
 <h2>Step Five</h2>
 <p>AWS gave us a key pair that we can use to access an instance of our EC2 server. However, we already have an SSH key pair that we use to access our data on GitHub. If we use the GitHub key for accessing our AWS server, then we would only have to load one key. Otherwise we have to load two keys:</p>
@@ -307,7 +309,38 @@ sudo apt-get dist-upgrade
 <ul>
 <li><a href="http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#connecting-to-an-ssh-server-with-putty">http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#connecting-to-an-ssh-server-with-putty</a></li>
 </ul>
-<a class="anchor" id="details"></a>
+<a class="anchor" id="CIDR"></a>
+<h2>Security Group Rules from Known Addresses</h2>
+<p>We might get this error:</p>
+<blockquote>
+<blockquote>
+<p>Rules with source of 0.0.0.0/0 allow all IP addresses to access your instance. We recommend setting security group rules to allow access from known IP addresses only.</p>
+</blockquote>
+</blockquote>
+<p>I use Xfinity/Comcast and have a dynamic IP address. It is not always the same. So I need to specify a range. So I went to WhatIsMyIp website to get my current IP. Then I went to Comcast and learned the CIDR block associated with my current IP address:</p>
+<ul>
+<li><a href="https://postmaster.comcast.net/dynamic-IP-ranges.html">https://postmaster.comcast.net/dynamic-IP-ranges.html</a></li>
+</ul>
+<p>Then I went to AWS and set the source for the SSH address (port 22) in my Security group to the CIDR block from the page linked above. This should mean that only someone with an XFinity account that shares the range of IP addresses that I am assigned could SSH into my EC2 instance, and then only if they had my private key.</p>
+<p>I ran some tests, setting some bad CIDR ranges and I could not SSH into my box. Then I set some good ones, and I could SSH in.</p>
+<p>While doing all this, I found this site useful:</p>
+<ul>
+<li><a href="https://www.ipaddressguide.com/cidr">https://www.ipaddressguide.com/cidr</a></li>
+</ul>
+<p>I have to confess, however, that I simply don&#39;t understand how someone could SSH into a server protected with only an RSA public/private key pair (no password) unless they had a copy of the private key itself. My understanding is that this is impossible or next to impossible. (By which I mean that someone could have created a quantum computer in secret that is more advanced than any computer currently known to exist and decided to use it to hack my EC2 instance. Next to impossible, but not impossible.)</p>
+<p>Consider this CIDR range:</p>
+<pre><code><span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.0</span>/<span class="hljs-number">25</span>
+</code></pre><p>It will allow to consider only the first 25 bits of an IP address. That means that the following addresses will be let through:</p>
+<pre><code>192<span class="hljs-selector-class">.168</span><span class="hljs-selector-class">.2</span><span class="hljs-selector-class">.0</span> <span class="hljs-selector-tag">-</span> 192<span class="hljs-selector-class">.168</span><span class="hljs-selector-class">.2</span><span class="hljs-selector-class">.127</span>
+</code></pre><p>Consider this range:</p>
+<pre><code><span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.0</span>/<span class="hljs-number">26</span>
+</code></pre><p>It will allow these addresses through:</p>
+<pre><code>192<span class="hljs-selector-class">.168</span><span class="hljs-selector-class">.2</span><span class="hljs-selector-class">.0</span> <span class="hljs-selector-tag">-</span> 192<span class="hljs-selector-class">.168</span><span class="hljs-selector-class">.2</span><span class="hljs-selector-class">.63</span>
+</code></pre><p>And here, with 24 bits:</p>
+<pre><code><span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.0</span>/<span class="hljs-number">24</span>
+</code></pre><p>Which allows:</p>
+<pre><code>192<span class="hljs-selector-class">.168</span><span class="hljs-selector-class">.2</span><span class="hljs-selector-class">.0</span> <span class="hljs-selector-tag">-</span> 192<span class="hljs-selector-class">.168</span><span class="hljs-selector-class">.2</span><span class="hljs-selector-class">.63</span>
+</code></pre><a class="anchor" id="details"></a>
 <h2>Details</h2>
 <pre><code> <span class="hljs-comment">---  SSH INTO THE EC2 SERVER ---</span>
 1  sudo apt-get <span class="hljs-keyword">update</span>
