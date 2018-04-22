@@ -7,6 +7,7 @@
 <li><a href="#step-three">Step 03: Access EC2 Overview</a></li>
 <li><a href="#step-three-a">Step 03a: Load your SSH Key</a></li>
 <li><a href="#step-four">Step 04: Access Your Instance</a></li>
+<li><a href="#permission-denied-pubic-key">Permission Denied Pubic Key</a></li>
 <li><a href="#configure">Step 04.01: Configure Your Instance</a></li>
 <li><a href="#ec2-shortcut">Step 04.02: SSH Access EC2 Shortcut</a></li>
 <li><a href="#step-04-03-security-groups">Step 04.03: Security Groups</a></li>
@@ -23,7 +24,7 @@
 <li><a href="#ssh-on-windows">SSH on Windows</a></li>
 <li><a href="#details">Details</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
-<p>This assignment is designed to help you get started using the AWS application called EC2.</p>
+<p>This assignment is designed to help you get started using the AWS service called EC2.</p>
 <ul>
 <li>AWS: <a href="https://aws.amazon.com/documentation/">Amazon Web Services</a></li>
 <li>EC2: <a href="https://aws.amazon.com/documentation/ec2/">Elastic Compute Cloud</a></li>
@@ -63,7 +64,7 @@
 <p>You will be asked to choose an SSH public private key pair. Use an existing one if you have created one before and can locate it. Otherwise create a new one. If you create a new one:</p>
 <ul>
 <li>Download it and put it in your <strong>~/.ssh</strong> folder</li>
-<li>If necessary, rename it to something like <strong>Prog270-Ec2-Calvert.pem</strong><ul>
+<li>If necessary, use the <a href="https://www.thegeekstuff.com/2010/12/mv-command-examples/">mv</a> command rename it to something like <strong>Prog270-Ec2-Calvert.pem</strong><ul>
 <li>Feel free to drop the PEM extension when you rename it: <strong>Prog270-Ec2-Calvert</strong></li>
 </ul>
 </li>
@@ -101,7 +102,25 @@ ssh ubuntu@<span class="hljs-number">192.168</span><span class="hljs-number">.1<
 <pre><code>ssh ubuntu@&lt;YOUR<span class="hljs-built_in"> IP </span>PUBLIC<span class="hljs-built_in"> IP </span><span class="hljs-keyword">or</span> ELASTIC<span class="hljs-built_in"> IP </span>ADDRESS&gt;
 </code></pre><p>For instance:</p>
 <pre><code><span class="hljs-selector-tag">ssh</span> <span class="hljs-selector-tag">ubuntu</span>@<span class="hljs-keyword">192</span>.<span class="hljs-keyword">168</span>.<span class="hljs-keyword">1</span>.<span class="hljs-keyword">25</span>
-</code></pre><a class="anchor" id="configure"></a>
+</code></pre><a class="anchor" id="permission-denied-pubic-key"></a>
+<h2>Permission Denied Pubic Key</h2>
+<p>If you get this:</p>
+<pre><code class="lang-bash">$ git pull  
+Permission denied (publickey).  
+fatal: Could <span class="hljs-keyword">not</span> <span class="hljs-built_in">read</span> <span class="hljs-built_in">from</span> remote repository.  
+
+Please make sure you have <span class="hljs-keyword">the</span> correct access rights  
+<span class="hljs-keyword">and</span> <span class="hljs-keyword">the</span> repository exists.
+</code></pre>
+<p>Then you need to load an SSH key:</p>
+<pre><code class="lang-bash">ssh-<span class="hljs-keyword">add</span><span class="bash"> ~/.ssh/&lt;YOUR-KEY&gt;</span>
+</code></pre>
+<p>In examples like this, when you see something in angle brackets or a similar syntax, then the person who wrote the documentation is using the angle brackets as a place holder. They are saying: put your key in the location of the place-holder. Perhaps something like this:</p>
+<pre><code class="lang-bash">ssh-<span class="hljs-keyword">add</span><span class="bash"> ~/.ssh/prog272-ec2.pem</span>
+</code></pre>
+<p>If you run <strong>ssh-add</strong>, and you still get the error, then you have loaded the wrong key. If you have lost your private key for your EC2 instance, then usually you are out of luck. Your only recourse is to delete the EC2 instance and create a new instance. When creating the new instance, be sure to keep track of the key that you download from AWS. In particular, zip up the private key and put it in the cloud, as described above.</p>
+<p><strong>NOTE</strong>: _You can add keys to a server by placing the public part of a public/private SSH key pair in the <strong>authorized_keys</strong> file for your EC2 server. That process is described elsewhere. The point is that you can add one of your personal SSH keys to the server instead of relying on the key you got from AWS. However, you can&#39;t add the key unless you have used the AWS key at least once to give you access to the <strong>authorized_keys</strong> file on your EC2 instance._</p>
+<a class="anchor" id="configure"></a>
 <h2>Step 04.01: Configure Your Instance</h2>
 <p>You can configure your instance by running a script found in JsObjects called <strong>UbuntuSetup</strong>. Follow the links below to learn how to proceed.</p>
 <ul>
