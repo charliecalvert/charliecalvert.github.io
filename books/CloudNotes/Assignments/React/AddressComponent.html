@@ -11,8 +11,10 @@
 <li><a href="#props-in-address">Consume props</a></li>
 <li><a href="#display-state">Display State</a></li>
 <li><a href="#tests">Tests</a></li>
+<li><a href="#refactor-tests">Refactor Tests</a></li>
 <li><a href="#debug-jest-message">Debug Jest Message</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#simple-test">Simple Test</a></li>
 <li><a href="#props-single-node">Props Singe Node Error</a></li>
 <li><a href="#enospc">ENOSPC Error</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="address-component"></a>
 <h1>Address Component</h1>
@@ -118,7 +120,7 @@ const addresses = [
         firstName: 'Patty',
         lastName: 'Murray',
         address: '<span class="hljs-number">154</span> Russell Senate Office Building',
-        city: 'Washingtone',
+        city: 'Washington',
         <span class="hljs-keyword">state</span>: 'D.C.',
         zip: '<span class="hljs-number">20510</span>',
         phone: '(<span class="hljs-number">202</span>) <span class="hljs-number">224</span>-<span class="hljs-number">2621</span>',
@@ -207,7 +209,7 @@ ReactDOM.render(
 <p>Note that we are violating DRY. There are two chunks of code, one in the constructor, one here, that are identical. How can that be fixed?</p>
 <a class="anchor" id="tests"></a>
 <h2>Tests</h2>
-<p>As you refactor your components, your tests might need to change. For instance, if you move the H2 for your app into <strong>components/Header.js</strong>, you might need to change your tests. Consider this code:</p>
+<p>As you refactor your components, your tests might need to change. For instance, if you move the <strong>H2</strong> for your app into <strong>components/Header.js</strong>, you might need to change your tests. Consider this code:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./App'</span>;
 
 <span class="hljs-comment">// Code omitted here</span>
@@ -229,9 +231,19 @@ it.only(<span class="hljs-string">'renders and reads H1 text'</span>, () =&gt; {
     expect(wrapper.contains(welcome)).toEqual(true);
 });</span>
 </code></pre>
-<p>If you want to start to test the Address component, remember that it expects to passed some props. You already saw how to do this in the main program.</p>
+<p>If you want to start to test the Address component, remember that it expects to be passed some <strong>props</strong>. You already saw how to do this in the main program. Simple import the <strong>address-list.js</strong> file, and then use it when you instantiate an instance of that component.</p>
+<p><strong>NOTE</strong>: <em>I&#39;m intentionally leaving out some detail here to make you did a bit of thinking on your own.</em></p>
+<a class="anchor" id="refactor-tests"></a>
+<h2>Refactor Tests</h2>
+<p>Just as you refactored your components into two modules called <strong>App.js</strong> and <strong>Address.js</strong>, you should also refactor your tests into:</p>
+<ul>
+<li><strong>src/App.test.js</strong>: All tests related to the <strong>App</strong> component</li>
+<li><strong>src/Address.test.js</strong>: All tests related to the <strong>Address</strong> component</li>
+</ul>
+<p>This will require a bit of cut and pasting, but it should not be overly difficult.</p>
 <a class="anchor" id="debug-jest-message"></a>
 <h2>Debug Jest Message</h2>
+<p>As we start writing more complex tests, we want to create some methods that will help us debug them. In particular, we want to use the Enzyme <a href="http://airbnb.io/enzyme/docs/api/ShallowWrapper/debug.html">debug</a>, <a href="http://airbnb.io/enzyme/docs/api/ShallowWrapper/find.html">find</a> and <a href="http://airbnb.io/enzyme/docs/api/ShallowWrapper/childAt.html">childAt</a> methods.</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> getLast = <span class="hljs-function">(<span class="hljs-params">wrapper</span>) =&gt;</span> {
     <span class="hljs-keyword">const</span> ninep = wrapper.find(<span class="hljs-string">'p'</span>).last().debug();
     <span class="hljs-built_in">console</span>.log(ninep);
@@ -241,40 +253,47 @@ it.only(<span class="hljs-string">'renders and reads H1 text'</span>, () =&gt; {
     <span class="hljs-keyword">const</span> ninep = wrapper.find(<span class="hljs-string">'p'</span>).first().debug();
     <span class="hljs-built_in">console</span>.log(ninep);
 };
+
+<span class="hljs-keyword">const</span> getChild = <span class="hljs-function">(<span class="hljs-params">wrapper, element, index</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> lastParagraph = wrapper.find(element).childAt(index).debug();
+    <span class="hljs-built_in">console</span>.log(lastParagraph);
+};
 </code></pre>
 <p>Or like this, if you want something a bit more flexible. The important difference is that it has the <strong>quiet</strong> option, but not that this one goes after h2 instead of <strong>P</strong>:</p>
-<pre><code class="lang-javascript">   var quiet = false;
+<pre><code class="lang-javascript">   <span class="hljs-keyword">var</span> quiet = <span class="hljs-literal">false</span>;
 
-    function getFirst(wrapper) {
-        const eightp = wrapper.find('h2').first().debug();
-        if (!quiet) {
-            console.log(<span class="hljs-string">"HEADER:"</span>, eightp);
-        }
-    }
+   <span class="hljs-keyword">const</span> getLast = <span class="hljs-function">(<span class="hljs-params">wrapper</span>) =&gt;</span> {
+     <span class="hljs-keyword">const</span> lastParagraph = wrapper.find(<span class="hljs-string">'p'</span>).last().debug();
+     <span class="hljs-keyword">if</span> (!quiet) {
+       <span class="hljs-built_in">console</span>.log(lastParagraph);
+     }
+ };
 
-    function getLast(wrapper) {
-        const eightp = wrapper.find('h2').last().debug();
-        if (!quiet) {
-            console.log(<span class="hljs-string">"HEADER:"</span>, eightp);
-        }
-    }
+ <span class="hljs-keyword">const</span> getFirst = <span class="hljs-function">(<span class="hljs-params">wrapper</span>) =&gt;</span> {
+     <span class="hljs-keyword">const</span> firstParagraph = wrapper.find(<span class="hljs-string">'p'</span>).first().debug();
+     <span class="hljs-keyword">if</span> (!quiet) {
+       <span class="hljs-built_in">console</span>.log(firstParagraph);
+     }
+ };
+
+ <span class="hljs-keyword">const</span> getChild = <span class="hljs-function">(<span class="hljs-params">wrapper, element, index</span>) =&gt;</span> {
+     <span class="hljs-keyword">const</span> indexedParagraph = wrapper.find(element).childAt(index).debug();
+     <span class="hljs-keyword">if</span> (!quiet) {
+        <span class="hljs-built_in">console</span>.log(indexedParagraph);
+     }
+ };
+
 </code></pre>
 <p>If want, make the HTML element configurable by passing in two parameters instead of one:</p>
 <pre><code class="lang-javascript">   var quiet = false;
 
     function getFirst(wrapper, element) {
-        const eightp = wrapper.find(element).first().debug();
+        const firstElement = wrapper.find(element).first().debug();
         if (!quiet) {
-            console.log(<span class="hljs-string">"HEADER:"</span>, eightp);
+            console.log(<span class="hljs-string">"HEADER:"</span>, firstElement);
         }
     }
 
-    function getLast(wrapper) {
-        const eightp = wrapper.find(element).last().debug();
-        if (!quiet) {
-            console.log(<span class="hljs-string">"HEADER:"</span>, eightp);
-        }
-    }
 </code></pre>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
@@ -282,6 +301,15 @@ it.only(<span class="hljs-string">'renders and reads H1 text'</span>, () =&gt; {
 <p>As I drew near the end of the assignment, my tests looked, at minimum a bit like this:</p>
 <p>![Final Tests][test-final]</p>
 <p>[test-final]:</p>
+<a class="anchor" id="simple-test"></a>
+<h2>Simple Test</h2>
+<p>Sometimes it seems all my tests are failing and I don&#39;t know if the problem is in the logic of my tests, or in the way I have set up my tests. In cases like that, I want to find a way to ensure that I have at least one test that will definitely pass. If that &quot;unbreakable&quot; test fails, then the problem is not the logic of any particular test, but in the setup or syntax of my tests. Here is my test that &quot;cannot fail&quot;:</p>
+<pre><code class="lang-javascript">fit('proves we can run a test', () =&gt; {
+  expect(<span class="hljs-name">true</span>).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p><strong>true</strong> should always be <strong>true</strong>, so if this test fails, or our tests won&#39;t run at all, the problem is not the logic of the test itself, but the way we have set up our test.</p>
+<p><strong>Note</strong>: <em>I am using <strong>fit</strong> to ensure that only this one test in my current test module is run. After I can confirm that this test passes, then I might change <strong>fit</strong> to <strong>it</strong> or add <strong>fit</strong> to the next test in the module</em>.</p>
 <a class="anchor" id="props-single-node"></a>
 <h2>Props Singe Node Error</h2>
 <p>This is a common error that you should know because it is so hard to diagnose if you get it. Please look here:</p>
