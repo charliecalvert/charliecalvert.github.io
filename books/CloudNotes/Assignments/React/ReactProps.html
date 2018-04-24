@@ -153,14 +153,29 @@ ReactDOM.render(
 );
 </code></pre>
 <p>And then use it in <strong>App.js</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
-    super(props);
-    this.state = {
-            file: props.appInit.file,
-            status: props.appInit.status,
-            result: props.appInit.result
-    }</span>
-}</span>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> <span class="hljs-type">PropTypes</span> from <span class="hljs-symbol">'prop</span>-types';
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+  constructor(props) {
+      <span class="hljs-keyword">super</span>(props);
+      <span class="hljs-keyword">this</span>.state = {
+              file: props.appInit.file,
+              status: props.appInit.status,
+              result: props.appInit.result
+      }
+  }
+  <span class="hljs-comment">// CODE OMITTED Here</span>
+}
+
+<span class="hljs-type">App</span>.propTypes = {
+    appInit: <span class="hljs-type">PropTypes</span>.shape({
+        file: <span class="hljs-type">PropTypes</span>.string,
+        status: <span class="hljs-type">PropTypes</span>.string,
+        result: <span class="hljs-type">PropTypes</span>.string
+    }),
+};
+
+export <span class="hljs-keyword">default</span> <span class="hljs-type">App</span>;
 </code></pre>
 <p>Do something similar for all your modules.</p>
 <a class="anchor" id="num-int"></a>
@@ -219,9 +234,10 @@ it.only(<span class="hljs-string">'renders and reads H1 text'</span>, () =&gt; {
     expect(wrapper.contains(welcome)).toEqual(true);
 });</span>
 </code></pre>
+<p><strong>HINT</strong>: <em>When writing your tests, don&#39;t forget that App now has an attribute/parameter passed to it.</em></p>
 <a class="anchor" id="proper-mocking"></a>
 <h2>Proper Mocking</h2>
-<p>I made some progress on mocking our <strong>whatwg-fetch</strong>  calls with jest. Recall that our goal is to create a mock implementation of fetch that does not make an HTTP REST call over the network. This allows us to run our tests even if our server is not, or cannot, run.</p>
+<p>I made some progress on mocking our <strong>fetch</strong>  calls with jest. Recall that our goal is to create a mock implementation of <strong>fetch</strong> that does not make an HTTP REST call over the network. This allows us to run our tests even if our server is not, or cannot, run.</p>
 <p>This new implementation allows us to use <strong><em>exactly</em></strong> the same code in <strong>App.js</strong> when we are testing and when we are running our app normally. In particular, here are the imports in <strong>App.js</strong>, or wherever we are calling <strong>fetch</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> <span class="hljs-string">'./App.css'</span>;
@@ -249,9 +265,9 @@ fetch(<span class="hljs-string">'/api/user'</span>) &lt;===== THIS IS HOW IT SHO
 <li>Two underscores, the word mocks, two more underscores</li>
 </ul>
 </li>
-<li>Create a file in that directory called <strong>whatwg-fetch.js</strong></li>
+<li>Create a file in that directory called <strong>fetch.js</strong></li>
 </ul>
-<p>First lets create a simple module that contains the data we will use in our mock:</p>
+<p>First lets create a simple module called <strong>default_data.js</strong> that contains the data we will use in our mock:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> getData = <span class="hljs-function">(<span class="hljs-params">url</span>) =&gt;</span> {
     <span class="hljs-keyword">switch</span> (url) {
         <span class="hljs-keyword">case</span> <span class="hljs-string">'/api/foo'</span>:
@@ -277,7 +293,7 @@ fetch(<span class="hljs-string">'/api/user'</span>) &lt;===== THIS IS HOW IT SHO
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> getData;
 </code></pre>
 <p>This code simply creates sets of data that mimic what our server would return given a call to a specific <strong>url</strong>.</p>
-<p>Below is the source code for our new mock for <strong>fetch</strong>. Note in particular the call to <a href="https://facebook.github.io/jest/docs/jest-object.html#jestgenmockfrommodulemodulename">jest.genMockFromModule</a>. That call asks Jest to generate a mock object for the module we want to replace with a mock:</p>
+<p>Below is the source code for our new mock for <strong>fetch</strong>. Put it in a file called <strong>fetch-mock.js</strong>. Note in particular the call to <a href="https://facebook.github.io/jest/docs/jest-object.html#jestgenmockfrommodulemodulename">jest.genMockFromModule</a>. That call asks Jest to generate a mock object for the module we want to replace with a mock:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> getData <span class="hljs-keyword">from</span> <span class="hljs-string">'./mock-data'</span>;
 
 <span class="hljs-meta">'use strict'</span>;
