@@ -250,13 +250,13 @@ it.only(<span class="hljs-string">'renders and reads H1 text'</span>, () =&gt; {
 <a class="anchor" id="debug-jest-message"></a>
 <h2>Debug Jest Message</h2>
 <p>As we start writing more complex tests, we want to create some methods that will help us debug them. In particular, we want to use the Enzyme <a href="http://airbnb.io/enzyme/docs/api/ShallowWrapper/debug.html">debug</a>, <a href="http://airbnb.io/enzyme/docs/api/ShallowWrapper/find.html">find</a> and <a href="http://airbnb.io/enzyme/docs/api/ShallowWrapper/childAt.html">childAt</a> methods.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> getLast = <span class="hljs-function">(<span class="hljs-params">wrapper</span>) =&gt;</span> {
-    <span class="hljs-keyword">const</span> ninep = wrapper.find(<span class="hljs-string">'p'</span>).last().debug();
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> getLast = <span class="hljs-function">(<span class="hljs-params">wrapper, element</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> ninep = wrapper.find(element).last().debug();
     <span class="hljs-built_in">console</span>.log(ninep);
 };
 
-<span class="hljs-keyword">const</span> getFirst = <span class="hljs-function">(<span class="hljs-params">wrapper</span>) =&gt;</span> {
-    <span class="hljs-keyword">const</span> ninep = wrapper.find(<span class="hljs-string">'p'</span>).first().debug();
+<span class="hljs-keyword">const</span> getFirst = <span class="hljs-function">(<span class="hljs-params">wrapper, element</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> ninep = wrapper.find(element).first().debug();
     <span class="hljs-built_in">console</span>.log(ninep);
 };
 
@@ -265,18 +265,26 @@ it.only(<span class="hljs-string">'renders and reads H1 text'</span>, () =&gt; {
     <span class="hljs-built_in">console</span>.log(lastParagraph);
 };
 </code></pre>
+<p>Call it like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-literal">it</span>.only(<span class="hljs-string">'renders and reads H2 text'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> wrapper = shallow(&lt;App /&gt;);
+    getFirst(wrapper, <span class="hljs-string">'h1'</span>);
+    <span class="hljs-keyword">const</span> welcome = &lt;h2&gt;Welcome <span class="hljs-keyword">to</span> React&lt;/h2&gt;;
+    expect(wrapper.contains(welcome)).toEqual(<span class="hljs-literal">true</span>);
+});
+</code></pre>
 <p>Or like this, if you want something a bit more flexible. The important difference is that it has the <strong>quiet</strong> option, but not that this one goes after h2 instead of <strong>P</strong>:</p>
 <pre><code class="lang-javascript">   <span class="hljs-keyword">var</span> quiet = <span class="hljs-literal">false</span>;
 
-   <span class="hljs-keyword">const</span> getLast = <span class="hljs-function">(<span class="hljs-params">wrapper</span>) =&gt;</span> {
-     <span class="hljs-keyword">const</span> lastParagraph = wrapper.find(<span class="hljs-string">'p'</span>).last().debug();
+   <span class="hljs-keyword">const</span> getLast = <span class="hljs-function">(<span class="hljs-params">wrapper, element</span>) =&gt;</span> {
+     <span class="hljs-keyword">const</span> lastParagraph = wrapper.find(element).last().debug();
      <span class="hljs-keyword">if</span> (!quiet) {
        <span class="hljs-built_in">console</span>.log(lastParagraph);
      }
  };
 
- <span class="hljs-keyword">const</span> getFirst = <span class="hljs-function">(<span class="hljs-params">wrapper</span>) =&gt;</span> {
-     <span class="hljs-keyword">const</span> firstParagraph = wrapper.find(<span class="hljs-string">'p'</span>).first().debug();
+ <span class="hljs-keyword">const</span> getFirst = <span class="hljs-function">(<span class="hljs-params">wrapper, element</span>) =&gt;</span> {
+     <span class="hljs-keyword">const</span> firstParagraph = wrapper.find(element).first().debug();
      <span class="hljs-keyword">if</span> (!quiet) {
        <span class="hljs-built_in">console</span>.log(firstParagraph);
      }
@@ -290,17 +298,7 @@ it.only(<span class="hljs-string">'renders and reads H1 text'</span>, () =&gt; {
  };
 
 </code></pre>
-<p>If want, make the HTML element configurable by passing in two parameters instead of one:</p>
-<pre><code class="lang-javascript">   var quiet = false;
-
-    function getFirst(wrapper, element) {
-        const firstElement = wrapper.find(element).first().debug();
-        if (!quiet) {
-            console.log(<span class="hljs-string">"HEADER:"</span>, firstElement);
-        }
-    }
-
-</code></pre>
+<p>Then change <strong>quiet</strong> to true to suppress the strings.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Make sure your code runs and tests work. Commit your work, push. Tell me where to look for program.</p>
