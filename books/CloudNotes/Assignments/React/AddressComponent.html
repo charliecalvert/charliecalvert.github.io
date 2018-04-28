@@ -6,10 +6,12 @@
 <li><a href="#define-address">Define Address</a></li>
 <li><a href="#clean-up-app-js">Clean Up App.js</a></li>
 <li><a href="#add-address">Add Address to our Main File</a></li>
+<li><a href="#clean-up-relative-paths">Clean up Relative Paths</a></li>
 <li><a href="#address-list">Address List</a></li>
 <li><a href="#addresses">Pass addresses to Address</a></li>
 <li><a href="#props-in-address">Consume props</a></li>
 <li><a href="#display-state">Display State</a></li>
+<li><a href="#create-header-component">Create Header Component</a></li>
 <li><a href="#tests">Tests</a></li>
 <li><a href="#refactor-tests">Refactor Tests</a></li>
 <li><a href="#debug-jest-message">Debug Jest Message</a></li>
@@ -80,9 +82,11 @@ class<span class="hljs-built_in"> Address </span>extends Component { <span class
 <p>In <strong>App.js</strong> do the mirror image of what you did in <strong>Address.js</strong>: remove all references to an address from the <strong>constructor</strong> and <strong>render</strong> methods, etc.</p>
 <p>Preserve the header section for now, but remove the default text that begins &quot;To get started, edit...&quot;.</p>
 <p>Move <strong>App.js</strong> into the <strong>components</strong> directory.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/address-components-dir.png" alt="Components Dir in Webstorm"></p>
+<p>This display in Webstorm can be a bit confusing. Note that <strong>App.css</strong>, <strong>App.test.js</strong>, etc are in <strong>src</strong>, not in <strong>src/components</strong>. The only files in the <strong>src/components</strong> directory at this stage are <strong>Address.js</strong> and <strong>App.js</strong>.</p>
 <a class="anchor" id="add-address"></a>
 <h2>Add Address to our Main File</h2>
-<p>The next step is to display our new Address component. There are several ways to achieve this goal. One of the simplest is to render it in <strong>index.js</strong>. To do this, we will need to:</p>
+<p>The next step is to display our new <strong>Address</strong> component. There are several ways to achieve this goal. One of the simplest is to render it in <strong>index.js</strong>. To do this, we will need to:</p>
 <ul>
 <li><strong>import</strong> our <strong>Address</strong> component,</li>
 <li>Add a <strong>DIV</strong> to our <strong>render</strong> method</li>
@@ -103,13 +107,19 @@ ReactDOM.render(
 );
 </code></pre>
 <p>There is one further change you will need to make this file. I don&#39;t spell it explicitly, but I give you a strong hint about where to make the change. It is up to your modify the line and get your code running without error.</p>
-<p>Other changes, such as correcting the path to <strong>App.css</strong> and <strong>logo.svg</strong> are left as an exercise. If you don&#39;t yet understand relative paths, read about them here:</p>
+<a class="anchor" id="clean-up-relative-paths"></a>
+<h2>Clean up Relative Paths</h2>
+<p>Other changes, such as correcting the paths to <strong>App.css</strong> and <strong>logo.svg</strong> in the files moved to the components directory are left as an exercise. If you don&#39;t yet understand relative paths, read about them here:</p>
 <ul>
 <li><a href="https://www.google.com/search?q=relative+paths+javascript">Relative Paths JavaScript</a></li>
 <li><a href="https://www.w3schools.com/html/html_filepaths.asp">Sadly W3Schools provides a simply example</a></li>
 <li><a href="http://desktop.arcgis.com/en/arcmap/10.3/tools/supplement/pathnames-explained-absolute-relative-unc-and-url.htm#GUID-5118AC85-57E4-4027-AC24-FB6E99FADEFF">Relative Paths</a></li>
 </ul>
 <p><strong>NOTE</strong>: <em>Remember to open up the Browser debugger (Developer Tools), usually with F12, to check for any errors.</em></p>
+<p>Here is a sample error you might get if you do not have the relative paths set up correctly:</p>
+<pre><code class="lang-bash">.<span class="hljs-regexp">/src/</span>components/Address.js
+Module not <span class="hljs-string">found:</span> Cannot resolve <span class="hljs-string">'./App.css'</span> <span class="hljs-keyword">in</span> <span class="hljs-string">'/home/charlie/Git/prog272-calvert-2018/AddressComponent/src/components'</span>
+</code></pre>
 <p>Use an HR element at the bottom of the render method for <strong>App.js</strong> to help separate the two components.</p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-address-two-components.png" alt="Address Program at Runtime"></p>
 <a class="anchor" id="address-list"></a>
@@ -217,6 +227,35 @@ ReactDOM.render(
 }<span class="hljs-comment">;</span>
 </code></pre>
 <p>Note that we are violating DRY. There are two chunks of code, one in the constructor, one here, that are identical. How can that be fixed?</p>
+<a class="anchor" id="create-header-component"></a>
+<h2>Create Header Component</h2>
+<p>For extra credit, you can move the <strong>header</strong> element from <strong>App.js</strong> into a new file called <strong>components/Header.js</strong>.</p>
+<ul>
+<li>Create an empty file called <strong>components/Header.js</strong></li>
+<li>Copy the contents of App.js into it.</li>
+<li>Remove everything but the render method and the Header:</li>
+<li>Remove the <strong>header</strong> from App.js</li>
+</ul>
+<p>Here is the complete declaration for the <strong>Header</strong> <strong>class</strong>.</p>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">import</span>...
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Header</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    render() {
+        <span class="hljs-keyword">return</span> (
+            &lt;div className=<span class="hljs-string">"App"</span>&gt;
+                &lt;header className=<span class="hljs-string">"App-header"</span>&gt;
+                    &lt;img src={logo} className=<span class="hljs-string">"App-logo"</span> alt=<span class="hljs-string">"logo"</span>/&gt;
+                    &lt;h2 className=<span class="hljs-string">"App-title"</span>&gt;<span class="hljs-type">Welcome</span> to <span class="hljs-type">React</span>&lt;/h2&gt;
+                &lt;/header&gt;
+            &lt;/div&gt;
+        );
+    }
+}
+
+export...
+</code></pre>
+<p>Now add the Header into <strong>index.js</strong>. This will involve adding a new import and adding a new element into the DIV.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/address-component-header.png" alt="Header in components"></p>
 <a class="anchor" id="tests"></a>
 <h2>Tests</h2>
 <p>As you refactor your components, your tests might need to change. For instance, if you move the <strong>H2</strong> for your app into <strong>components/Header.js</strong>, you might need to change your tests. Consider this code:</p>
