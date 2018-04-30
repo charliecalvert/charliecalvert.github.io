@@ -2,7 +2,8 @@
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Cordova01</h1><p>Welcome to Cordova01</p><ul><!--TOC_Start--><li><a href="#week03-exercises">Week03 Exercises</a></li>
 <li><a href="#cordova-first-exercise">Cordova First Exercise</a></li>
 <li><a href="#second-assignment">Second Assignment</a></li>
-<li><a href="#useful">Useful</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="week03-exercises"></a>
+<li><a href="#useful">Useful</a></li>
+<li><a href="#install-on-device">Install on device</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="week03-exercises"></a>
 <h1>Week03 Exercises</h1>
 <a class="anchor" id="cordova-first-exercise"></a>
 <h2>Cordova First Exercise</h2>
@@ -74,6 +75,14 @@ func. Create meaningful names.</li>
 </ul>
 <a class="anchor" id="useful"></a>
 <h2>Useful</h2>
+<p>Take a snapshot of your virtual machine. Or do whatever to back it up.</p>
+<p>Make sure Java is installed:</p>
+<pre><code><span class="hljs-built_in">which</span> java
+</code></pre><p>If there is none, then:</p>
+<pre><code>sudo apt-<span class="hljs-builtin-name">get</span> install openjdk-8-jre
+sudo apt-<span class="hljs-builtin-name">get</span> install openjdk-8-jdk-headless
+</code></pre><p>Install <a href="https://developer.android.com/studio/">Android Studio</a>:</p>
+<p>Then this:</p>
 <pre><code class="lang-bash">mkdir ~<span class="hljs-string">/Android</span>
 mkdir ~<span class="hljs-string">/Android/Sdk</span>
 mv tools/ ~<span class="hljs-string">/BigDrive/Android/Sdk/.</span>
@@ -88,9 +97,11 @@ java -version
 <pre><code>touch ~<span class="hljs-regexp">/.android/</span><span class="hljs-keyword">repositories</span>.cfg
 </code></pre><p>Gradle is here: <a href="https://gradle.org/install/">https://gradle.org/install/</a></p>
 <p>Then do this, using the version number that you downloaded:</p>
-<pre><code class="lang-bash"><span class="hljs-meta">$</span><span class="bash"> mkdir /opt/gradle</span>
-<span class="hljs-meta">$</span><span class="bash"> unzip -d /opt/gradle gradle-4.7-bin.zip</span>
-<span class="hljs-meta">$</span><span class="bash"> ls /opt/gradle/gradle-4.7</span>
+<pre><code class="lang-bash">sudo mkdir <span class="hljs-string">/opt/gradle</span>
+<span class="hljs-comment"># Uncomment the version of Gradle you downloaded:</span>
+<span class="hljs-comment"># sudo unzip -d /opt/gradle gradle-4.7-bin.zip</span>
+sudo unzip -d <span class="hljs-string">/opt/gradle</span> gradle-4.7-all.zip
+<span class="hljs-keyword">ls</span> <span class="hljs-string">/opt/gradle/gradle-4.7</span>
 </code></pre>
 <p>From .bashrc:</p>
 <pre><code class="lang-bash"><span class="hljs-comment"># Java Path Support</span>
@@ -99,11 +110,60 @@ java -version
 <span class="hljs-string">export </span><span class="hljs-string">JAVA_HOME=</span>/<span class="hljs-string">usr/</span><span class="hljs-string">lib/</span><span class="hljs-string">jvm/</span><span class="hljs-string">default-java
 </span>
 <span class="hljs-comment"># Android Path Support</span>
-<span class="hljs-string">export </span><span class="hljs-string">ANDROID_HOME=</span><span class="hljs-string">"$HOME/BigDrive/Android/Sdk"</span>
-<span class="hljs-string">export </span><span class="hljs-string">ANDROID_PLATFORM_TOOLS=</span><span class="hljs-string">"$HOME/BigDrive/Android/Sdk/platform-tools"</span>
+<span class="hljs-string">export </span><span class="hljs-string">ANDROID_HOME=</span><span class="hljs-string">"$HOME/Android/Sdk"</span>
+<span class="hljs-string">export </span><span class="hljs-string">ANDROID_PLATFORM_TOOLS=</span><span class="hljs-string">"$HOME/Android/Sdk/platform-tools"</span>
 <span class="hljs-built_in">set-system-path</span> <span class="hljs-string">"$ANDROID_HOME/tools:$ANDROID_PLATFORM_TOOLS"</span>
 <span class="hljs-built_in">set-system-path</span> <span class="hljs-string">"/opt/gradle/gradle-4.7/bin"</span>
 </code></pre>
 <p>And AVD (which is no good):</p>
 <p>./avdmanager list | grep pixel</p>
+<a class="anchor" id="install-on-device"></a>
+<h2>Install on device</h2>
+<pre><code>sudo apt-<span class="hljs-builtin-name">get</span> install android-tools-adb
+</code></pre><p>See this:</p>
+<ul>
+<li><a href="https://unix.stackexchange.com/questions/129305/how-can-i-enable-access-to-usb-devices-within-virtualbox-guests">https://unix.stackexchange.com/questions/129305/how-can-i-enable-access-to-usb-devices-within-virtualbox-guests</a></li>
+<li><a href="https://stackoverflow.com/a/12664045/253576">https://stackoverflow.com/a/12664045/253576</a></li>
+</ul>
+<p>Put this in ~/tmp/android-rules:</p>
+<pre><code><span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"0bb4"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"0e79"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"0502"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"0b05"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"413c"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"0489"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"091e"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"18d1"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"0bb4"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"12d1"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"24e3"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"2116"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"0482"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"17ef"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"1004"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"22b8"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"0409"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"2080"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"0955"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"2257"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"10a9"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"1d4d"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"0471"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"04da"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"05c6"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"1f53"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"04e8"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"04dd"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"0fce"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"0930"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"19d2"</span>, MODE=<span class="hljs-string">"0666"</span>
+<span class="hljs-attr">SUBSYSTEM</span>==<span class="hljs-string">"usb"</span>, ATTRS{idVendor}==<span class="hljs-string">"1bbb"</span>, MODE=<span class="hljs-string">"0666"</span>
+</code></pre><p>This script</p>
+<pre><code class="lang-bash">sudo cp ~/tmp/android.rules /etc/udev/rules.d/51-android.rules
+sudo chmod 644   /etc/udev/rules.d/51-android.rules
+sudo chown root. /etc/udev/rules.d/51-android.rules
+sudo<span class="hljs-built_in"> service </span>udev restart
+sudo killall adb
+</code></pre>
+<p>Reboot the VM.</p>
 </div></body></html>
