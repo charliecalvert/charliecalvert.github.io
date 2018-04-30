@@ -9,6 +9,7 @@
 <li><a href="#fix">Fix</a></li>
 <li><a href="#webstorm">WebStorm</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#prettier">Prettier</a></li>
 <li><a href="#beautify-files">Beautify Files</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>We want to lint our code to see if it meets some basic requirements. The most important part is setting up <a href="https://eslint.org/">ESLint</a> at the command line, but we also want it working WebStorm.</p>
@@ -69,9 +70,38 @@ npm i -g babel-eslint
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Just point me at your midterm, final, or current project. When I open it, I&#39;ll expect to see a <strong>.eslintrc.json</strong> file and have most of the files relatively error free in terms of eslint errors.</p>
+<a class="anchor" id="prettier"></a>
+<h2>Prettier</h2>
+<p>For help formatting files, I&#39;m moving from <a href="https://github.com/beautify-web/js-beautify">js-beautify</a> to <a href="https://github.com/prettier/prettier">prettier</a>. The first time we use it, we need to be sure it is installed. Once we have installed it, it stays installed. So we need to run one of these commands only once:</p>
+<pre><code class="lang-bash"><span class="hljs-symbol">yarn</span> <span class="hljs-meta">global</span> <span class="hljs-keyword">add </span>prettier
+<span class="hljs-symbol">npm</span> install --<span class="hljs-meta">global</span> prettier
+</code></pre>
+<p>You can set up a configuration file called .prettierrc in the root of your project or repository:</p>
+<pre><code class="lang-javascript">{
+    <span class="hljs-attr">"tabWidth"</span>: <span class="hljs-number">4</span>,
+    <span class="hljs-attr">"singleQuote"</span>: <span class="hljs-literal">true</span>
+}
+</code></pre>
+<p>We run <a href="https://github.com/prettier/prettier">prettier</a> to clean up the format of our files before we turn in an assignment. We don&#39;t want to run it on all files in our project. For instance, we don&#39;t want to format the files in <strong>node_modules</strong> since we don&#39;t own them.</p>
+<p>To ensure we operate on only the files we want to format, create a script called <strong>prettier</strong> like this:</p>
+<pre><code class="lang-bash"><span class="hljs-meta">#!/bin/bash
+</span>
+find . -iname <span class="hljs-string">"*.js"</span> -not -path <span class="hljs-string">"**/node_modules/**"</span> -not -path <span class="hljs-string">"**/bower_components/**"</span> -not -path <span class="hljs-string">"**bundle.js"</span> -not -path <span class="hljs-string">"registerServiceWorker.js"</span> -<span class="hljs-built_in">exec</span> <span class="hljs-string">"./prettier"</span> --write {} \;
+</code></pre>
+<p>Make it executable:</p>
+<pre><code class="lang-bash">chmod +<span class="hljs-keyword">x</span> prettier
+</code></pre>
+<p>Call it like this:</p>
+<pre><code><span class="hljs-string">./prettier</span>
+</code></pre><p>If you want more, see also <a href="https://github.com/charliecalvert/JsObjects/blob/master/Utilities/Templates/FindScripts/FindNpPrettier">FindNpPrettier</a> in JsObjects. You can install that script with these commands:</p>
+<pre><code class="lang-bash">slb
+<span class="hljs-string">./CreateSymbolicLinks</span>
+</code></pre>
+<p>See the <a href="https://github.com/charliecalvert/JsObjects/blob/master/Utilities/SetupLinuxBox/CreateSymbolicLinks">CreateSymbolicLinks</a> script on GitHub.</p>
 <a class="anchor" id="beautify-files"></a>
 <h2>Beautify Files</h2>
-<p>We want to run js-beautify, but not on all files in a directory. Create a script called <strong>pretty</strong> like this:</p>
+<p>I&#39;m moving from <a href="https://github.com/beautify-web/js-beautify">js-beautify</a> to <a href="https://github.com/prettier/prettier">prettier</a>, but don&#39;t quite want to delete this section yet. Use <strong>prettier</strong> instead of js-beautify because it handles JSX much better.</p>
+<p>Before we had prettier, we used js-beautify, but not on all files in a directory. Create a script called <strong>pretty</strong> like this:</p>
 <pre><code class="lang-bash"><span class="hljs-keyword">find</span> . -iname <span class="hljs-string">'*.js'</span> | <span class="hljs-keyword">grep</span> -vFf skip | xargs js-beautify -r
 </code></pre>
 <p>Where skip is a text file contents like this, which is a list of files or directories that you want to ignore:</p>
