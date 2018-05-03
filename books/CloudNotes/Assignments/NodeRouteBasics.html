@@ -100,20 +100,17 @@ repository or of the project you submitted.</p>
 <a class="anchor" id="pass-data"></a>
 <h2>Hint: Passing Data</h2>
 <p>First, an example showing how to call a route without parameters:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callServerWithoutParms</span>(<span class="hljs-params"></span>) </span>{
+<pre><code class="lang-javascript">function callServerWithoutParms() {
 
-    $.getJSON(<span class="hljs-string">'/walk'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{
-        elf.display.showApacheFiles(result.htmlFilesWritten, result.destinationDir);
-        elf.display.fillDisplayArea(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
-    }).done(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
-            elf.display.showDebug(<span class="hljs-string">'Walk loaded second success'</span>);
-        })
-        .fail(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">jqxhr, textStatus, error</span>) </span>{
-            elf.display.showDebug(<span class="hljs-string">'Walk loaded error: '</span> + jqxhr.status + <span class="hljs-string">' '</span> + textStatus + <span class="hljs-string">' '</span> + error);
-        })
-        .always(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
-            elf.display.showDebug(<span class="hljs-string">'Walk loaded complete'</span>);
-        });
+  fetch(<span class="hljs-string">'/walk'</span>)
+    .<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> response.json())
+    .<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+       elf.display.showApacheFiles(result.htmlFilesWritten, result.destinationDir);
+       elf.display.fillDisplayArea(JSON.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+    })
+    .<span class="hljs-keyword">catch</span>(<span class="hljs-function"><span class="hljs-params">(ex)</span> =&gt;</span> {
+      elf.display.showDebug(<span class="hljs-string">'Walk loaded error: '</span> + ex.status );
+    })
 
 }
 </code></pre>
@@ -165,6 +162,7 @@ repository or of the project you submitted.</p>
 
     <span class="hljs-comment">// Call the server and pass the data as a parameter.</span>
     $.getJSON(<span class="hljs-string">'/walk'</span>, requestQuery, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{ ... });
+
 </code></pre>
 <p>And here is what it looks like on the server. Notice how we
 use the request object to discover the parameters passed
