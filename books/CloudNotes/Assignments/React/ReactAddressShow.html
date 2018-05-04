@@ -2,10 +2,12 @@
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ReactAddressShow</h1><p>Welcome to ReactAddressShow</p><ul><!--TOC_Start--><li><a href="#react-address-show">React Address Show</a></li>
 <li><a href="#divide">Divide</a></li>
 <li><a href="#create-addressshow-project">Create AddressShow Project</a></li>
+<li><a href="#testing-first-steps">Testing First Steps</a></li>
 <li><a href="#rename-the-react-component">Rename the React Component</a></li>
+<li><a href="#properly-refactor-our-components">Properly Refactor Our Components</a></li>
 <li><a href="#data">Data</a></li>
 <li><a href="#props-address-data">AddressShow Receives the Address Data</a></li>
-<li><a href="#quiet-log">Logging: Blessed Quiet</a></li>
+<li><a href="#quiet-log">Logging</a></li>
 <li><a href="#rendering-the-data">Rendering the Data</a></li>
 <li><a href="#understanding-testing-child-components">Understanding Testing Child Components</a></li>
 <li><a href="#writing-child-tests">Writing Tests for Child Components</a></li>
@@ -32,13 +34,27 @@
 </ul>
 <a class="anchor" id="divide"></a>
 <h2>Divide</h2>
-<p>The first step is to split <strong>Address</strong> and <strong>AddressShow</strong> into two distinct components. In particular, we will create a new component called <strong>AddressShow</strong> and put most of <strong>Address</strong> in it. We will then pare down <strong>Address</strong> so that its primary function will be handling data.</p>
+<p>The first step is to split <strong>Address</strong> and <strong>AddressShow</strong> into two distinct components. In particular, we will create a new component called <strong>AddressShow</strong> and put the <strong>render</strong> method of <strong>Address</strong> in it:</p>
+<ul>
+<li><strong>AddressShow</strong> contains only the <strong>render</strong> method from the original <strong>Address</strong> component</li>
+<li><strong>Address</strong> contains the constructor, the <strong>setAddress</strong> method, and a one line <strong>render</strong> method that references <strong><AddressShow/></strong> and passes it props. This render method will be explained later in this assignment.</li>
+</ul>
+<p>The <strong>Address</strong> component will handle our data, <strong>AddressShow</strong> will display the data and the button.</p>
+<a class="anchor" id="create-addressshow-project"></a>
+<h2>Create AddressShow Project</h2>
+<p>To get started, make a copy of Address Components assignment and call it <strong>address-show</strong>. For instance:</p>
+<pre><code>cp -r week03-react-<span class="hljs-built_in">address</span>/ week05-<span class="hljs-built_in">address</span>-show
+</code></pre><p>Or, if you prefer use Pascal case for the new project:</p>
+<pre><code><span class="hljs-symbol">cp</span> -r week03-react-<span class="hljs-keyword">address/ </span>Week05-<span class="hljs-keyword">AddressShow</span>
+</code></pre><p>There are many ways to do the same thing, and it doesn&#39;t really matter which one you prefer.</p>
+<a class="anchor" id="testing-first-steps"></a>
+<h2>Testing First Steps</h2>
 <p>The first step will be set up our (initially) failing tests for <strong>AddressShow</strong> in <strong>AddressShow.test.js</strong>:</p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// GET THE RIGHT IMPORTS</span>
+<pre><code class="lang-javascript"><span class="hljs-comment">// IT'S UP TO YOU TO INCLUDE THE RIGHT IMPORTS</span>
 
 describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
 
-    <span class="hljs-keyword">var</span> quiet = <span class="hljs-keyword">true</span>;
+    <span class="hljs-keyword">const</span> debug = <span class="hljs-keyword">false</span>;
 
     <span class="hljs-comment">/*
      * Display debug information about a DOM node of a component by index
@@ -47,14 +63,21 @@ describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, <span cla
      * <span class="hljs-doctag">@param</span> {boolean} talkToMe - Speak even if quiet is true
      */</span>
     <span class="hljs-keyword">const</span> getIndex = (wrapper, index, talkToMe) =&gt; {
-        <span class="hljs-keyword">if</span> (!quiet || talkToMe) {
-            <span class="hljs-keyword">const</span> ninep = wrapper.find(<span class="hljs-string">'div#addressShowRender'</span>).childAt(index).debug();
+        <span class="hljs-keyword">if</span> (debug || talkToMe) {
+            <span class="hljs-keyword">const</span> ninep = wrapper.find(<span class="hljs-string">'div#addressShow'</span>).childAt(index).debug();
             console.log(<span class="hljs-string">'NINEP:'</span>, ninep);
         }
     };
 
     <span class="hljs-keyword">const</span> defaultFieldTest = (name, index, talkToMe) =&gt; {
-        <span class="hljs-keyword">const</span> wrapper = shallow(&lt;AddressShow address={address}  /&gt;);
+        <span class="hljs-keyword">const</span> wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">0</span>]}  /&gt;);
+        <span class="hljs-keyword">const</span> welcome = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
+        getIndex(wrapper, index, talkToMe);
+        expect(wrapper.contains(welcome)).toEqual(<span class="hljs-keyword">true</span>);
+    };
+
+    <span class="hljs-keyword">const</span> afterClickFieldTest = (name, index, talkToMe) =&gt; {
+        <span class="hljs-keyword">const</span> wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">1</span>]}  /&gt;);
         <span class="hljs-keyword">const</span> welcome = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
         getIndex(wrapper, index, talkToMe);
         expect(wrapper.contains(welcome)).toEqual(<span class="hljs-keyword">true</span>);
@@ -64,19 +87,21 @@ describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, <span cla
         defaultFieldTest(<span class="hljs-string">'firstName: unknown'</span>, <span class="hljs-number">0</span>);
     });
 
-    <span class="hljs-comment">// AND MANY MORE</span>
+    it(<span class="hljs-string">'renders and displays the default first name'</span>, () =&gt; {
+        afterClickFieldTest(<span class="hljs-string">'firstName: Patty'</span>, <span class="hljs-number">0</span>);
+    });
+
+    <span class="hljs-comment">// EVENTUALLY YOU WILL NEED TO WRITE MORE TESTS LIKE THE LAST TWO</span>
+    <span class="hljs-comment">// THE GOAL WILL BE TO TEST ALL THE PROPERTIES OF OUR COMPONENT.</span>
+    <span class="hljs-comment">// AT FIRST, HOWEVER, JUST KEEP THESE TWO TESTS. WHEN THEY START</span>
+    <span class="hljs-comment">// PASSING, THEN ADD TESTS FOR THE OTHER PROPERTIES SUCH AS LASTNAME...</span>
 
 });
 </code></pre>
-<p>Note that we don&#39;t create any tests for button clicks.</p>
-<a class="anchor" id="create-addressshow-project"></a>
-<h2>Create AddressShow Project</h2>
-<p>To get started, make a copy of Address Components assignment and call it <strong>address-show</strong>. For instance:</p>
-<pre><code>cp -r week03-react-<span class="hljs-built_in">address</span>/ week05-<span class="hljs-built_in">address</span>-show
-</code></pre><p>There are many ways to do the same thing, and it doesn&#39;t really matter which one you prefer.</p>
+<p>Our goal now will be to get these tests to pass.</p>
 <a class="anchor" id="rename-the-react-component"></a>
 <h2>Rename the React Component</h2>
-<p>The React component you created maybe in a file called <strong>App.js</strong> or perhaps you have renamed it to <strong>Addresss.js</strong>. In either case, rename both the file and the class inside it to <strong>AddressShow</strong>.</p>
+<p>The React component you created may be in a file called <strong>App.js</strong> or perhaps you have renamed it to <strong>Addresss.js</strong>. In either case, rename both the file and the class inside it to <strong>AddressShow</strong>.</p>
 <p>This is a task the WebStorm can help you complete.</p>
 <ul>
 <li>Right click on the file in the Project pane and choose to copy it.</li>
@@ -91,6 +116,83 @@ describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, <span cla
 <pre><code class="lang-javascript"><span class="hljs-builtin-name">export</span><span class="hljs-built_in"> default Address; </span>     &lt;=== ORIGINAL
 <span class="hljs-builtin-name">export</span><span class="hljs-built_in"> default </span>AddressShow;  &lt;=== EDITED VERSION
 </code></pre>
+<a class="anchor" id="properly-refactor-our-components"></a>
+<h2>Properly Refactor Our Components</h2>
+<p>If you have not done so already, you should now further refactor your components as follows:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Component</th>
+<th style="text-align:left">Task</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Header</td>
+<td style="text-align:left">Display the Header</td>
+</tr>
+<tr>
+<td style="text-align:left">GetFile</td>
+<td style="text-align:left">The simple <strong>state.file</strong>, <strong>getFile</strong>, <strong>render</strong> component from week one or two.</td>
+</tr>
+<tr>
+<td style="text-align:left">Address</td>
+<td style="text-align:left"><strong>constructor</strong>, <strong>setAddress</strong> and simple render method to be explained later.</td>
+</tr>
+<tr>
+<td style="text-align:left">AddressShow</td>
+<td style="text-align:left">Only a relatively lengthy render method to display all the props such as <strong>firstName</strong>, <strong>lastName, etc</strong>.</td>
+</tr>
+<tr>
+<td style="text-align:left">App</td>
+<td style="text-align:left">Only a relatively short render method to instantiate the <strong>Header</strong>, <strong>GetFile</strong>, <strong>Address</strong>, <strong>AddressShow</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">index.js</td>
+<td style="text-align:left">Instantiates <strong>App</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Here is the way it looks in WebStorm:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/address-show-project.png" alt="Webstorm project view"></p>
+<p>Here is our new <strong>index.js</strong>:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'./index.css'</span>;
+<span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/App'</span>;
+
+<span class="hljs-keyword">import</span> registerServiceWorker <span class="hljs-keyword">from</span> <span class="hljs-string">'./registerServiceWorker'</span>;
+
+ReactDOM.render(
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">App</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>,
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
+registerServiceWorker();
+</code></pre>
+<p>Here is our new <strong>components/App.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React, {Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'../App.css'</span>;
+<span class="hljs-keyword">import</span> Address <span class="hljs-keyword">from</span> <span class="hljs-string">'./Address'</span>
+<span class="hljs-keyword">import</span> Header <span class="hljs-keyword">from</span> <span class="hljs-string">'./Header'</span>;
+<span class="hljs-keyword">import</span> GetFile <span class="hljs-keyword">from</span> <span class="hljs-string">'./GetFile'</span>;
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    render() {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">Header</span>/&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">GetFile</span>/&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">Address</span>/&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+        );
+    }
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> App;
+</code></pre>
+<p>We don&#39;t see <strong>AddressShow</strong> in <strong>App</strong> because it will be created by the <strong>Address</strong> component.</p>
 <a class="anchor" id="data"></a>
 <h2>Data</h2>
 <p>We will no longer load <strong>addresses</strong> in <strong>index.js</strong>. Instead, <strong>Address</strong> owns the data. Move the import statement from <strong>index.js</strong> to <strong>Address.js</strong> and straighten out the path:</p>
@@ -104,12 +206,11 @@ describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, <span cla
     constructor(props) {
         <span class="hljs-keyword">super</span>(props);
 
-        <span class="hljs-keyword">this</span>.addressIndex=<span class="hljs-number">0</span>;
-        const address = addresses[<span class="hljs-keyword">this</span>.addressIndex];
+        <span class="hljs-keyword">this</span>.addressIndex=<span class="hljs-number">0</span>;        
         <span class="hljs-keyword">this</span>.state = {
-            address: address  &lt;=== <span class="hljs-type">HERE</span>
+            address: addresses[<span class="hljs-keyword">this</span>.addressIndex]  &lt;=== <span class="hljs-type">HERE</span>
         };
-        <span class="hljs-keyword">this</span>.quiet = <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">this</span>.debug = <span class="hljs-literal">true</span>;
     }
 }
 </code></pre>
@@ -117,7 +218,7 @@ describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, <span cla
 <p><strong>NOTE</strong>: <em>I&#39;m having some doubts here as to whether this is the best way to do this. Certainly it works, but there may be a more elegant solution. I&#39;ll think about it.</em></p>
 <p>We now radically strip down the <strong>render</strong> method for <strong>Address</strong>. Rather than render the address fields here, we will pass <strong>this.state.address</strong> to <strong>AddressShow</strong> and let that component render it:</p>
 <pre><code class="lang-javascript">render() {
-    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.quiet) { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"ADDRESS RENDER"</span>); }
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.debug) { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"ADDRESS RENDER"</span>); }
     <span class="hljs-keyword">return</span> (
         <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
             <span class="hljs-tag">&lt;<span class="hljs-name">AddressShow</span> <span class="hljs-attr">address</span>=<span class="hljs-string">{this.state.address}</span> /&gt;</span>
@@ -130,14 +231,17 @@ describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, <span cla
 <p>The only thing that <strong>AddressShow</strong> really needs to do is display our <strong>Address</strong> record. It turns that at this time, <strong>AddressShow</strong> does not need a constructor, since there is no set up work need to get the object going. However, if it did need one, it might look like this:</p>
 <pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
     super(props);
-    console.log('SHOW ADDRESS CONSTRUCTOR', this.props.address);
-}</span></span>
+    this.debug = true;
+    if (this.debug) {
+      console.log('SHOW ADDRESS CONSTRUCTOR', this.props.address);
+    }</span>
+}</span>
 </code></pre>
 <p>As you can see, the constructor is passed <strong>props</strong>. As you know, <strong>props</strong> is the state passed to the object by its parent, which in this case is <strong>Address</strong>. This means that <strong>this.props.address</strong> in <strong>AddressShow</strong> is &quot;the same thing&quot; as <strong>this.state.address</strong> in the <strong>Address</strong> component. The data is passed from the <strong>Address</strong> render method to the <strong>AddressShow</strong> constructor.</p>
 <p>You can keep the above constructor, but you should strip everything else from <strong>AddressShow</strong> except the <strong>render</strong> method. In the <strong>render</strong> method&#39;s JSX, reference the fields of the <strong>address</strong> object with <strong>props</strong> rather than <strong>state</strong>.</p>
-<p><strong>NOTE</strong>: <em>Since the constructor for <strong>AddressShow</strong> doesn&#39;t do anything, the only thing we really need in <strong>AddressShow</strong> is the render method, but we are keeping the constructor for pedagogical purposes.</em></p>
+<p><strong>NOTE</strong>: <em>Since the constructor for <strong>AddressShow</strong> doesn&#39;t do anything, the only thing we really need in <strong>AddressShow</strong> is the render method, but we are keeping the constructor for pedagogical purposes. Or not, it is up to you. It might be simpler just to open the Developer tools at runtime and put a breakpoint on the <strong>AddressShow</strong> render method to confirm that your props are being passed as expected.</em></p>
 <a class="anchor" id="quiet-log"></a>
-<h2>Logging: Blessed Quiet</h2>
+<h2>Logging</h2>
 <p>Since we don&#39;t really need the <strong>constructor</strong>, and yet we have implemented it anyway to help illustrate a point, we might as well see if we can find a way to complicate the code further.</p>
 <p>As you probably know, <strong>console.log</strong> is both curse and blessing. Let&#39;s try to emphasize the blessing and mitigate the curse by creating a single place where we call the offending method:</p>
 <pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
@@ -154,12 +258,12 @@ describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, <span cla
 </code></pre>
 <p>Now we can toggle a single variable, <strong>this.debug</strong>, whenever we want to turn down the volume. For instance, we might want to log to the console in our render method. In the new system we would do it like this:</p>
 <pre><code class="lang-javascript">render() {
-    <span class="hljs-keyword">this</span>.log(<span class="hljs-string">"SHOW ADDRESS RENDER"</span>);
+    <span class="hljs-keyword">this</span>.log(<span class="hljs-string">"SHOW ADDRESS RENDER"</span>, <span class="hljs-keyword">this</span>.props);
     <span class="hljs-keyword">return</span> ( ... );
 }
 </code></pre>
 <p>Now we can change the <strong>this.debug</strong> property from <strong>true</strong> to <strong>false</strong> to toggle the use of <strong>console.log</strong> throughout the object. There are other solutions, and better loggers, but this is a bit of a start on understanding the subject.</p>
-<p><strong>NOTE</strong>: <em>I state the name of the object in logging message to help me track down where it is coming from. Fancy loggers can give us more information in simpker ways, but we could do this:</em></p>
+<p><strong>NOTE</strong>: <em>I state the name of the object in logging message to help me track down where it is coming from. Fancy loggers can give us more information in simpler ways, but we could do this:</em></p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">constructor</span>(props) {
     <span class="hljs-keyword">super</span>(props);
     <span class="hljs-keyword">this</span>.debug = <span class="hljs-literal">false</span>;
@@ -168,14 +272,14 @@ describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, <span cla
 
 log(message, message2 = <span class="hljs-string">''</span>, message3 = <span class="hljs-string">''</span>) {
 
-    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.debug) {
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.debug) {
         const label = <span class="hljs-keyword">this</span>.<span class="hljs-keyword">constructor</span>.name + <span class="hljs-string">': '</span>;   &lt; === HERE
         console.log(label, message, message2, message3);
     }
 }
 
 render() {
-    <span class="hljs-keyword">this</span>.log(<span class="hljs-string">"RENDER"</span>);
+    <span class="hljs-keyword">this</span>.log(<span class="hljs-string">"RENDER"</span>, <span class="hljs-keyword">this</span>.props);
 }
 </code></pre>
 <p><em>We are using <strong>this.constructor.name</strong> to get the name of our component.</em></p>
@@ -337,25 +441,24 @@ const getIndex = <span class="hljs-keyword">function</span>(wrapper, index, talk
 <h2>AddressShow Modify View with Button Click</h2>
 <p>The next step will be to set up a button click for <strong>AddressShow</strong>. Recall that we deleted all the code except the render method a nominal constructor from <strong>AddressShow</strong>. Thus our button click no longer works, even if the button itself is still there.</p>
 <p>We said earlier that <strong>AddressShow</strong> would display our data, and that <strong>Address</strong> would manipulate, modify and save our data. So our code for handling the button click belongs in Address. It is essentially the same code we had before, but now it is somewhat simpler since we are working on with the piece of data in our state:</p>
-<pre><code class="lang-javascript">onAddressChange = (event) =&gt; {
-    this.addressIndex = 1;
-    const<span class="hljs-built_in"> address </span>= addresses[this.addressIndex];
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">onAddressChange</span> = <span class="hljs-params">(event)</span> =&gt;</span> {
+    <span class="hljs-keyword">this</span>.addressIndex = <span class="hljs-number">1</span>;   
 
-    this.setState({
-        address:<span class="hljs-built_in"> address
-</span>    })
+    <span class="hljs-keyword">this</span>.setState({
+        address: addressList[<span class="hljs-keyword">this</span>.addressIndex]
+    })
 };
 </code></pre>
 <p>So now we have the method for changing our state. But that method is in <strong>Address</strong> and in our button is in <strong>AddressShow</strong>. How do we connect them?</p>
 <p>The solution is to pass the <strong>onAddressChange</strong> function object to <strong>AddressShow</strong> in the render method of <strong>Address</strong>:</p>
 <pre><code class="lang-javascript">&lt;AddressShow
     address={<span class="hljs-keyword">this</span>.state.address}
-    onAddressChange={<span class="hljs-keyword">this</span>.onAddressChange}
+    setAddress={<span class="hljs-keyword">this</span>.setAddress}
 /&gt;
 </code></pre>
 <p>As you can see, we are now passing not one, but two <strong>props</strong> to <strong>AddressShow</strong>.</p>
 <p>And here is all we need to do in <strong>AddressShow</strong>. At the bottom of the render method, modify the button to look like this:</p>
-<pre><code class="lang-javascript">&lt;<span class="hljs-selector-tag">button</span> id=<span class="hljs-string">"showAddressClick"</span> onClick={this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.onAddressChange</span>}&gt;Show Address&lt;/button&gt;
+<pre><code class="lang-javascript">&lt;<span class="hljs-selector-tag">button</span> id=<span class="hljs-string">"showAddressClick"</span> onClick={this<span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.setAddress</span>}&gt;Show Address&lt;/button&gt;
 </code></pre>
 <p>Note that I am both setting the <strong>onclick</strong> method to the function object passed from the <strong>Address</strong> object, and also being sure to create a unique <strong>id</strong> which is a portmanteau derived from the object&#39;s name and the button&#39;s purpose.</p>
 <a class="anchor" id="turn-it-in"></a>
