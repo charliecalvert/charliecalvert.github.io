@@ -5,7 +5,26 @@
 <li><a href="#generic-tests">Writing Generic, Resuable Tests</a></li>
 <li><a href="#understanding-getindex">Understanding getIndex</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="testing-address"></a>
 <h2>Testing Address</h2>
-<p>The address component with Enzyme <strong>shallow</strong> does not provide us much in the way of JSX to test.  </p>
+<p>The address component with Enzyme <strong>shallow</strong> does not provide us much in the way of JSX to test. That means we will have to rewrite <strong>Address.test.js</strong> to work with the new structure we have created.</p>
+<p>As a reminder, here is the JSX for our <strong>Address</strong> component:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">AddressShow</span> <span class="hljs-attr">address</span>=<span class="hljs-string">{this.state.address}</span> <span class="hljs-attr">setAddress</span>=<span class="hljs-string">{this.setAddress}</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<p>We can show the JSX for our <strong>Address</strong> component with this line of enzyme debug code:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">const</span> wrapper = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Address</span>/&gt;</span></span>);
+wrapper.debug()
+</code></pre>
+<p>Here is the enzyme debug output from that command:</p>
+<pre><code class="lang-html">&lt;<span class="hljs-keyword">div</span>&gt;
+  &lt;<span class="hljs-type">AddressShow</span> address={<span class="hljs-meta">{...}</span>} setAddress={[<span class="hljs-type">Function</span>]} /&gt;
+&lt;/<span class="hljs-keyword">div</span>&gt;
+</code></pre>
+<p>As mentioned earlier, it appears there is not much here to debug. But we can get at the properties of <strong>this.state.address</strong> with this line of Enzyme debug code:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">wrapper</span><span class="hljs-selector-class">.find</span>(<span class="hljs-string">'AddressShow'</span>)<span class="hljs-selector-class">.prop</span>(<span class="hljs-string">'address'</span>)
+</code></pre>
+<p>This will return the contents of our <strong>AddressList</strong> in JavaScript code.</p>
+<p>Armed with that knowledge, we can start writing tests that look like this:</p>
 <pre><code class="lang-javascript">describe('Address tests', function () {
 
     const debug = false<span class="hljs-comment">;</span>
