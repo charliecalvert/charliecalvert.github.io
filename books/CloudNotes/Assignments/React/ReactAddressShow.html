@@ -2,7 +2,8 @@
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ReactAddressShow</h1><p>Welcome to ReactAddressShow</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#divide">Divide</a></li>
 <li><a href="#create-addressshow-project">Create AddressShow Project</a></li>
-<li><a href="#testing-first-steps">Testing First Steps</a></li>
+<li><a href="#testing-address-show">Testing Address Show</a></li>
+<li><a href="#testing-address">Testing Address</a></li>
 <li><a href="#rename-the-react-component">Rename the React Component</a></li>
 <li><a href="#properly-refactor-our-components">Properly Refactor Our Components</a></li>
 <li><a href="#data">Data</a></li>
@@ -19,15 +20,12 @@
 <li>Divide the Address Component up into:<ul>
 <li>A component that owns the data: <strong>Address</strong></li>
 <li>A component that displays the data: <strong>AddressShow</strong></li>
+</ul>
+</li>
 <li>Finishing refactoring the other components if we have not done so already</li>
-<li>Update Tests. There will be a <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/ReactAddressShowMountTests.html">separate assignment</a> where we will dig more deeply into how to test the code found in this assignment.</li>
+<li>Update Tests as described in this document. There will be a <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/ReactAddressShowMountTests.html">separate assignment</a> where we will dig more deeply into how to test the code found in this assignment.  </li>
 </ul>
-</li>
-<li>Insure that clicks on the Button work but that <strong>Address</strong> does the real work. <strong>AddressShow</strong> is mostly about the interface and does little real work other than display JSX.<ul>
-<li>Update Tests</li>
-</ul>
-</li>
-</ul>
+<p>We should insure that clicks on the Button work but that <strong>Address</strong> does the real work. <strong>AddressShow</strong> is mostly about the interface and does little real work other than use JSX to create the appropriate HTML to display our interface.</p>
 <a class="anchor" id="divide"></a>
 <h2>Divide</h2>
 <p>The first step is to split <strong>Address</strong> and <strong>AddressShow</strong> into two distinct components. In particular, we will create a new component called <strong>AddressShow</strong> and put the <strong>render</strong> method of <strong>Address</strong> in it:</p>
@@ -43,14 +41,27 @@
 </code></pre><p>Or, if you prefer use Pascal case for the new project:</p>
 <pre><code><span class="hljs-symbol">cp</span> -r week03-react-<span class="hljs-keyword">address/ </span>Week05-<span class="hljs-keyword">AddressShow</span>
 </code></pre><p>There are many ways to do the same thing, and it doesn&#39;t really matter which one you prefer.</p>
-<a class="anchor" id="testing-first-steps"></a>
-<h2>Testing First Steps</h2>
+<a class="anchor" id="testing-address-show"></a>
+<h2>Testing Address Show</h2>
 <p>The first step will be set up our (initially) failing tests for <strong>AddressShow</strong> in <strong>AddressShow.test.js</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// IT'S UP TO YOU TO INCLUDE THE RIGHT IMPORTS</span>
 
-describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
 
     <span class="hljs-keyword">const</span> debug = <span class="hljs-keyword">false</span>;
+
+    <span class="hljs-keyword">const</span> addressTest = {
+        firstName: <span class="hljs-string">'Patty'</span>,
+        lastName: <span class="hljs-string">'Murray'</span>,
+        address: <span class="hljs-string">'154 Russell Senate Office Building'</span>,
+        city: <span class="hljs-string">'Washington'</span>,
+        state: <span class="hljs-string">'D.C.'</span>,
+        zip: <span class="hljs-string">'20510'</span>,
+        phone: <span class="hljs-string">'(202) 224-2621'</span>,
+        fax: <span class="hljs-string">'(202) 224-0238'</span>,
+        tollfree: <span class="hljs-string">'(866) 481-9186'</span>
+    };
+
 
     <span class="hljs-comment">/*
      * Display debug information about a DOM node of a component by index
@@ -66,28 +77,25 @@ describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, <span cla
     };
 
     <span class="hljs-keyword">const</span> defaultFieldTest = (name, index, talkToMe) =&gt; {
-        <span class="hljs-keyword">const</span> wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">0</span>]}  /&gt;);
+        <span class="hljs-keyword">const</span> wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">0</span>]}/&gt;);
         <span class="hljs-keyword">const</span> welcome = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
         getIndex(wrapper, index, talkToMe);
         expect(wrapper.contains(welcome)).toEqual(<span class="hljs-keyword">true</span>);
     };
 
     <span class="hljs-keyword">const</span> afterClickFieldTest = (name, index, talkToMe) =&gt; {
-        <span class="hljs-keyword">const</span> wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">1</span>]}  /&gt;);
+        <span class="hljs-keyword">const</span> wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">1</span>]}/&gt;);
         <span class="hljs-keyword">const</span> welcome = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
         getIndex(wrapper, index, talkToMe);
         expect(wrapper.contains(welcome)).toEqual(<span class="hljs-keyword">true</span>);
     };
 
-    it(<span class="hljs-string">'renders and displays the default first name'</span>, () =&gt; {
-        defaultFieldTest(<span class="hljs-string">'firstName: unknown'</span>, <span class="hljs-number">0</span>);
+    it(<span class="hljs-string">'renders and displays the first name'</span>, () =&gt; {
+        defaultFieldTest(<span class="hljs-string">'First Name: unknown'</span>, <span class="hljs-number">0</span>);
+        afterClickFieldTest(<span class="hljs-string">'First Name: '</span> + addressTest.firstName, <span class="hljs-number">0</span>);
     });
 
-    it(<span class="hljs-string">'renders and displays the default first name'</span>, () =&gt; {
-        afterClickFieldTest(<span class="hljs-string">'firstName: Patty'</span>, <span class="hljs-number">0</span>);
-    });
-
-    <span class="hljs-comment">// EVENTUALLY YOU WILL NEED TO WRITE MORE TESTS LIKE THE LAST TWO</span>
+    <span class="hljs-comment">// EVENTUALLY YOU WILL NEED TO WRITE MORE TESTS LIKE THE FIRST NAME TEST.</span>
     <span class="hljs-comment">// THE GOAL WILL BE TO TEST ALL THE PROPERTIES OF OUR COMPONENT.</span>
     <span class="hljs-comment">// AT FIRST, HOWEVER, JUST KEEP THESE TWO TESTS. WHEN THEY START</span>
     <span class="hljs-comment">// PASSING, THEN ADD TESTS FOR THE OTHER PROPERTIES SUCH AS LASTNAME...</span>
@@ -95,6 +103,65 @@ describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, <span cla
 });
 </code></pre>
 <p>Our goal now will be to get these tests to pass.</p>
+<a class="anchor" id="testing-address"></a>
+<h2>Testing Address</h2>
+<p>The address component with Enzyme <strong>shallow</strong> does not provide us much in the way of JSX to test. That means we will have to rewrite <strong>Address.test.js</strong> to work with the new structure we have created.</p>
+<p>Here is the JSX we will create for our <strong>Address</strong> component:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">AddressShow</span> <span class="hljs-attr">address</span>=<span class="hljs-string">{this.state.address}</span> <span class="hljs-attr">setAddress</span>=<span class="hljs-string">{this.setAddress}</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<p>We can show the JSX for our <strong>Address</strong> component with this line of enzyme debug code:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">const</span> wrapper = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Address</span>/&gt;</span></span>);
+wrapper.debug()
+</code></pre>
+<p>Here is the enzyme debug output from that command:</p>
+<pre><code class="lang-html">&lt;<span class="hljs-keyword">div</span>&gt;
+  &lt;<span class="hljs-type">AddressShow</span> address={<span class="hljs-meta">{...}</span>} setAddress={[<span class="hljs-type">Function</span>]} /&gt;
+&lt;/<span class="hljs-keyword">div</span>&gt;
+</code></pre>
+<p>As mentioned earlier, it appears there is not much here to debug. But we can get at the properties of <strong>this.state.address</strong> with this line of Enzyme debug code:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">wrapper</span><span class="hljs-selector-class">.find</span>(<span class="hljs-string">'AddressShow'</span>)<span class="hljs-selector-class">.prop</span>(<span class="hljs-string">'address'</span>)
+</code></pre>
+<p>This will return the contents of our <strong>AddressList</strong> in JavaScript code.</p>
+<p>Armed with that knowledge, we can start writing tests that look like this:</p>
+<pre><code class="lang-javascript">describe('Address tests', , function() {
+
+    it('renders without crashing', () =&gt; {
+        const div = document.createElement('div')<span class="hljs-comment">;</span>
+        ReactDOM.render(<span class="hljs-name">&lt;Address/&gt;</span>, div)<span class="hljs-comment">;</span>
+        ReactDOM.unmountComponentAtNode(<span class="hljs-name">div</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('renders and displays the default first name', () =&gt; {
+        const wrapper = shallow(<span class="hljs-name">&lt;Address/&gt;</span>)<span class="hljs-comment">;</span>
+        //console.log(<span class="hljs-name">wrapper</span>.find('AddressShow').prop('address'))<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">wrapper</span>.find('AddressShow').prop('address').firstName).toEqual('unknown')<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('renders state of firstName after button click', () =&gt; {
+        const wrapper = shallow(<span class="hljs-name">&lt;Address</span> addressList={addresses}/&gt;)<span class="hljs-comment">;</span>
+        wrapper.instance().setAddress()<span class="hljs-comment">;</span>
+        setImmediate(() =&gt; {
+            wrapper.update()<span class="hljs-comment">;</span>
+            expect(<span class="hljs-name">wrapper</span>.find('AddressShow').prop('address').firstName).toEqual('Patty')<span class="hljs-comment">;</span>
+        })<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    // YOU WRITE TESTS FOR THE OTHER PROPERTIES SUCH AS LASTNAME, CITY, ETC...
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>Our goal will be to get these tests to pass.</p>
+<p><strong>NOTE</strong>: <em>I don&#39;t provide much debug information here. You can however, uncomment the <strong>console.log</strong> statement in the <strong>default first name</strong> test shown above if you need some help crafting your tests. More specifically, here is the line to uncomment:</em></p>
+<pre><code class="lang-javascript">    console.<span class="hljs-built_in">log</span>(wrapper.<span class="hljs-built_in">find</span>(<span class="hljs-string">'AddressShow'</span>).prop(<span class="hljs-string">'address'</span>));
+</code></pre>
+<p><em>Like this:</em></p>
+<pre><code class="lang-javascript">it('renders and displays the default first name', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;Address/&gt;</span>)<span class="hljs-comment">;</span>
+    console.log(<span class="hljs-name">wrapper</span>.find('AddressShow').prop('address'))<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">wrapper</span>.find('AddressShow').prop('address').firstName).toEqual('unknown')<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
 <a class="anchor" id="rename-the-react-component"></a>
 <h2>Rename the React Component</h2>
 <p>The React component you created may be in a file called <strong>App.js</strong> or perhaps you have renamed it to <strong>Addresss.js</strong>. In either case, rename both the file and the class inside it to <strong>AddressShow</strong>.</p>

@@ -1,59 +1,67 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactAddressShowMountTests</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ReactAddressShowMountTests</h1><p>Welcome to ReactAddressShowMountTests</p><ul><!--TOC_Start--><li><a href="#testing-address">Testing Address</a></li>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ReactAddressShowMountTests</h1><p>Welcome to ReactAddressShowMountTests</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#testing-address-show">Testing Address Show</a></li>
 <li><a href="#understanding-testing-child-components">Understanding Testing Child Components</a></li>
 <li><a href="#writing-child-tests">Writing Tests for Child Components</a></li>
 <li><a href="#generic-tests">Writing Generic, Resuable Tests</a></li>
-<li><a href="#understanding-getindex">Understanding getIndex</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="testing-address"></a>
-<h2>Testing Address</h2>
-<p>The address component with Enzyme <strong>shallow</strong> does not provide us much in the way of JSX to test. That means we will have to rewrite <strong>Address.test.js</strong> to work with the new structure we have created.</p>
-<p>As a reminder, here is the JSX for our <strong>Address</strong> component:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">AddressShow</span> <span class="hljs-attr">address</span>=<span class="hljs-string">{this.state.address}</span> <span class="hljs-attr">setAddress</span>=<span class="hljs-string">{this.setAddress}</span> /&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</code></pre>
-<p>We can show the JSX for our <strong>Address</strong> component with this line of enzyme debug code:</p>
-<pre><code class="lang-JavaScript"><span class="hljs-keyword">const</span> wrapper = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Address</span>/&gt;</span></span>);
-wrapper.debug()
-</code></pre>
-<p>Here is the enzyme debug output from that command:</p>
-<pre><code class="lang-html">&lt;<span class="hljs-keyword">div</span>&gt;
-  &lt;<span class="hljs-type">AddressShow</span> address={<span class="hljs-meta">{...}</span>} setAddress={[<span class="hljs-type">Function</span>]} /&gt;
-&lt;/<span class="hljs-keyword">div</span>&gt;
-</code></pre>
-<p>As mentioned earlier, it appears there is not much here to debug. But we can get at the properties of <strong>this.state.address</strong> with this line of Enzyme debug code:</p>
-<pre><code class="lang-javascript"><span class="hljs-selector-tag">wrapper</span><span class="hljs-selector-class">.find</span>(<span class="hljs-string">'AddressShow'</span>)<span class="hljs-selector-class">.prop</span>(<span class="hljs-string">'address'</span>)
-</code></pre>
-<p>This will return the contents of our <strong>AddressList</strong> in JavaScript code.</p>
-<p>Armed with that knowledge, we can start writing tests that look like this:</p>
-<pre><code class="lang-javascript">describe('Address tests', function () {
+<li><a href="#understanding-getindex">Understanding getIndex</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>In this assignment we will get several tests up and running. Before begining this assignment, be sure you have the tests from the <strong>ReactAddressShow</strong> assignment working:</p>
+<ul>
+<li>[]</li>
+</ul>
+<a class="anchor" id="testing-address-show"></a>
+<h2>Testing Address Show</h2>
+<p>describe(&#39;AddressShow Shallow Suite&#39;, function() {</p>
+<pre><code><span class="hljs-keyword">const</span> debug = <span class="hljs-keyword">false</span>;
 
-    const debug = false<span class="hljs-comment">;</span>
+<span class="hljs-keyword">const</span> addressTest = {
+    firstName: <span class="hljs-string">'Patty'</span>,
+    lastName: <span class="hljs-string">'Murray'</span>,
+    address: <span class="hljs-string">'154 Russell Senate Office Building'</span>,
+    city: <span class="hljs-string">'Washington'</span>,
+    state: <span class="hljs-string">'D.C.'</span>,
+    zip: <span class="hljs-string">'20510'</span>,
+    phone: <span class="hljs-string">'(202) 224-2621'</span>,
+    fax: <span class="hljs-string">'(202) 224-0238'</span>,
+    tollfree: <span class="hljs-string">'(866) 481-9186'</span>
+};
 
-    fit('renders without crashing', () =&gt; {
-        const div = document.createElement('div')<span class="hljs-comment">;</span>
-        ReactDOM.render(<span class="hljs-name">&lt;Address/&gt;</span>, div)<span class="hljs-comment">;</span>
-        ReactDOM.unmountComponentAtNode(<span class="hljs-name">div</span>)<span class="hljs-comment">;</span>
-    })<span class="hljs-comment">;</span>
 
-    fit('renders and displays the default first name', () =&gt; {
-        const wrapper = shallow(<span class="hljs-name">&lt;Address/&gt;</span>)<span class="hljs-comment">;</span>
-        const welcome = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;firstName: unknown&lt;/p&gt;<span class="hljs-comment">;</span>
-        if (<span class="hljs-name">debug</span>) {
-            console.log(<span class="hljs-name">wrapper</span>.find('AddressShow').prop('address'))<span class="hljs-comment">;</span>
-        }
-        expect(<span class="hljs-name">wrapper</span>.find('AddressShow').prop('address').firstName).toEqual('unknown')<span class="hljs-comment">;</span>
-    })<span class="hljs-comment">;</span>
+<span class="hljs-comment">/*
+ * Display debug information about a DOM node of a component by index
+ * <span class="hljs-doctag">@param</span> {object} wrapper - The HTML generated by your component
+ * <span class="hljs-doctag">@param</span> {number} index - Index of HTML element you want to see.
+ * <span class="hljs-doctag">@param</span> {boolean} talkToMe - Speak even if quiet is true
+ */</span>
+<span class="hljs-keyword">const</span> getIndex = (wrapper, index, talkToMe) =&gt; {
+    <span class="hljs-keyword">if</span> (debug || talkToMe) {
+        <span class="hljs-keyword">const</span> ninep = wrapper.find(<span class="hljs-string">'div#addressShow'</span>).childAt(index).debug();
+        console.log(<span class="hljs-string">'NINEP:'</span>, ninep);
+    }
+};
 
-    fit('renders state of firstName after button click', () =&gt; {
-        const wrapper = shallow(<span class="hljs-name">&lt;Address</span> addressList={addresses}/&gt;)<span class="hljs-comment">;</span>
-        const nineSign = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;firstName: Patty&lt;/p&gt;<span class="hljs-comment">;</span>
-        wrapper.instance().setAddress()<span class="hljs-comment">;</span>
-        expect(<span class="hljs-name">wrapper</span>.find('AddressShow').prop('address').firstName).toEqual('Patty')<span class="hljs-comment">;</span>
-    })<span class="hljs-comment">;</span>
+<span class="hljs-keyword">const</span> defaultFieldTest = (name, index, talkToMe) =&gt; {
+    <span class="hljs-keyword">const</span> wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">0</span>]}/&gt;);
+    <span class="hljs-keyword">const</span> welcome = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
+    getIndex(wrapper, index, talkToMe);
+    expect(wrapper.contains(welcome)).toEqual(<span class="hljs-keyword">true</span>);
+};
 
-    // MORE TESTS NEEDED FOR OTHER PROERTIES
-})
-</code></pre>
+<span class="hljs-keyword">const</span> afterClickFieldTest = (name, index, talkToMe) =&gt; {
+    <span class="hljs-keyword">const</span> wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">1</span>]}/&gt;);
+    <span class="hljs-keyword">const</span> welcome = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
+    getIndex(wrapper, index, talkToMe);
+    expect(wrapper.contains(welcome)).toEqual(<span class="hljs-keyword">true</span>);
+};
+
+it(<span class="hljs-string">'renders and displays the first name'</span>, () =&gt; {
+    defaultFieldTest(<span class="hljs-string">'First Name: unknown'</span>, <span class="hljs-number">0</span>);
+    afterClickFieldTest(<span class="hljs-string">'First Name: '</span> + addressTest.firstName, <span class="hljs-number">0</span>);
+});
+
+<span class="hljs-comment">// YOU WRITE MORE TESTS NEEDED HERE. ONE FOR EACH PROPERTY</span>
+</code></pre><p>});</p>
 <a class="anchor" id="understanding-testing-child-components"></a>
 <h2>Understanding Testing Child Components</h2>
 <p>Our next step will be to get the button click working. First, we should create tests that fail until we get our code working.</p>
