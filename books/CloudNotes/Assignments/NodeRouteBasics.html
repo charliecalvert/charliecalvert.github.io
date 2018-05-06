@@ -8,6 +8,7 @@
 <li><a href="#server">Step Four: Server</a></li>
 <li><a href="#no-params">Call Server without Parameters</a></li>
 <li><a href="#pass-data">Call Route (endpoint) with Parameters</a></li>
+<li><a href="#post-call">HTTP POST with Parameters</a></li>
 <li><a href="#server-side-parameters">Server Side Parameters</a></li>
 <li><a href="#extra-credit">Extra Credit</a></li>
 <li><a href="#step-five">Step Five</a></li>
@@ -126,6 +127,58 @@ block content
       .<span class="hljs-keyword">catch</span>(ex =&gt; {
           <span class="hljs-built_in">console</span>.log(ex);
       });
+</code></pre>
+<a class="anchor" id="post-call"></a>
+<h2>HTTP POST with Parameters</h2>
+<p>When you POST data to the server you need to pass in a second parameter to <strong>fetch</strong> specifying the options for your call. There are a number of possible options, but in many cases you will use only these three:</p>
+<ul>
+<li>method: Set this to &#39;POST&#39;</li>
+<li>headers: Create the header defining the content type, which in our case will almost always be JSON.</li>
+<li>body: The parameter you want to pass in. In our case, we can just use a JavaScript object literal.</li>
+</ul>
+<p>I find it a bit of a struggle to define the exact format of these options, so I have wrapped them in a little function called get <strong>getPostOptions</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title">getPostOptions</span>(body) {
+    <span class="hljs-keyword">return</span> <span class="hljs-type">{</span>
+        method: <span class="hljs-symbol">'POST</span>',
+        headers: <span class="hljs-keyword">new</span> Headers({
+            <span class="hljs-symbol">'Content</span>-<span class="hljs-keyword">Type</span>': <span class="hljs-symbol">'application</span>/json'
+        }),
+        <span class="hljs-keyword">body</span>: JSON.stringify(<span class="hljs-keyword">body</span>)
+    };
+}
+</code></pre>
+<p>We call this function, passing in the parameters we want to pass to the server endpoint. If we wanted to pass in to parameters of type of string called <strong>param01</strong> and <strong>param02</strong>, then we might call <strong>getPostOptions</strong> like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">getPostOptions</span>({
+  <span class="hljs-attribute">param01</span>: <span class="hljs-string">'foo'</span>,
+  <span class="hljs-attribute">param02</span>: <span class="hljs-string">'bar'</span>
+})
+</code></pre>
+<p>When we call <strong>fetch</strong> usually just pass in one parameter:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">fetch</span><span class="hljs-params">(<span class="hljs-string">'/some-url'</span>)</span></span>
+  <span class="hljs-selector-class">.then</span> etc...
+</code></pre>
+<p>When POSTing data, however, we should pass in two parameters. The first is our URL, and the second the options returned from our utility function:</p>
+<pre><code>fetch('/some-url', getPostOptions(<span class="hljs-meta">{...}</span>));
+</code></pre><p>Here is a more complete example of the type of call you can use to complete <strong>calculateCircumference</strong> portion of this assignment:</p>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callServer</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">const</span> userInput = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'userInput'</span>).value;
+    <span class="hljs-keyword">const</span> query = {<span class="hljs-attr">propForServer</span>: userInput};
+
+    fetch(<span class="hljs-string">'/some-url'</span>, getPostOptions(query))
+        .then(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> response.json())
+        .then(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> {
+            <span class="hljs-keyword">const</span> displayArea = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'displayArea'</span>);
+            displayArea.innerHTML = <span class="hljs-built_in">JSON</span>.stringify(response, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
+        })
+        .catch(<span class="hljs-function">(<span class="hljs-params">ex</span>) =&gt;</span> {
+            <span class="hljs-built_in">console</span>.log(ex);
+        });
+}
+</code></pre><p>On the server side, everything looks the same except that we use <strong>router.post</strong> rather than <strong>router.get</strong> and we use <strong>request.body</strong> rather than <strong>request.query</strong>:</p>
+<pre><code class="lang-javascript">router.post(<span class="hljs-string">'/calculateCircumference'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response)</span> </span>{
+    console.log(request.body);
+    <span class="hljs-comment">// YOU WRITE THE CODE TO SEND BACK THE RESPONSE</span>
+});
 </code></pre>
 <a class="anchor" id="server-side-parameters"></a>
 <h2>Server Side Parameters</h2>
