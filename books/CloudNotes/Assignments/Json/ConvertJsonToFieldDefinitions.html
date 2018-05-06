@@ -5,7 +5,8 @@
 <li><a href="#promises">Promises</a></li>
 <li><a href="#create-output">Create output</a></li>
 <li><a href="#why-output-text">Why output text</a></li>
-<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="convert-json-to-field-definitions"></a>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#scripts">Scripts</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="convert-json-to-field-definitions"></a>
 <h1>Convert JSON to Field Definitions</h1>
 <p>This program can, and probably should, be written in ES5. Put in a directory called <strong>git-convert</strong> that is part of the <strong>GitExplorer</strong> project. In short, you will have three directories in the root of the project:</p>
 <ul>
@@ -29,14 +30,14 @@
 <pre><code class="lang-javascript">var debug = require('debug')('git-convert')<span class="hljs-comment">;</span>
 debug('this is a test')<span class="hljs-comment">;</span>
 </code></pre>
-<p>At the command line, say that you want to see debug messages for <strong>git-convert</strong>:</p>
+<p>At the command line, say that you want to see debug messages for <strong>git-convert</strong>. To do so, type the following into the bash shell where you are currently working:</p>
 <pre><code class="lang-bash"><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">DEBUG</span>=<span class="hljs-string">'git-convert'</span>
 </code></pre>
 <p>Now run your program and you should see: <strong>git-convert this is a test +Xms</strong></p>
 <p>Now at the command line turn logging off:</p>
 <pre><code class="lang-bash"><span class="hljs-builtin-name">export</span> DEBUG=
 </code></pre>
-<p>Which set DEBUG to nothing, which makes our logging statements go away. You can achieve the same effect by setting DEBUG to anything but <strong>git-convert</strong>.</p>
+<p>The command shown above sets DEBUG to an empty string, which makes our logging statements go away. You can achieve the same effect by setting DEBUG to anything but <strong>git-convert</strong>.</p>
 <p>Except at the very end, to output your final result, don&#39;t use <strong>console.log</strong>. Instead, use the debug module in at least 3 places.</p>
 <p>You can read more here, but for now you need go no further than example shown above. You need not turn on any special features.:</p>
 <ul>
@@ -45,7 +46,7 @@ debug('this is a test')<span class="hljs-comment">;</span>
 <p>I&#39;ll accept your assignment with <strong>console.log</strong> instead of <strong>debug</strong>, but it will cost 3 points.</p>
 <a class="anchor" id="promises"></a>
 <h2>Promises</h2>
-<p>If at all possible, use a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">promise</a> when reading the JSON file you created with your call to <strong>curl</strong>:</p>
+<p>If at all possible, use a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises">promise</a> when reading the JSON file you created with your call to <strong>curl</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> fs=<span class="hljs-built_in">require</span>(<span class="hljs-string">"fs"</span>);
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readFile</span>(<span class="hljs-params">fileName</span>) </span>{
@@ -56,9 +57,9 @@ debug('this is a test')<span class="hljs-comment">;</span>
 
 readFile(<span class="hljs-string">'git-user.json'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">text</span>) </span>{
     <span class="hljs-comment">// CODE OMITTED. This is where you solve the core of the assignment.</span>
-});
+});       
 </code></pre>
-<p><strong>NOTE</strong>: <em>Don&#39;t get intimidated by promises. They are really quite easy to use. And I know we have not covered them in any depth this quarter or last, but I want to see if you can figure it out on your own.</em></p>
+<p><strong>NOTE</strong>: <em>You can learn about promises <a href="https://youtu.be/nWV4Ed2gckk">here</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises">here</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">here</a>.</em></p>
 <p>I&#39;ll accept it without the promise, but it will cost 3 points. In other words, if you just call <strong>fs.readFile</strong> with a callback instead of <strong>.then</strong> chained method, that will be okay, sort of.</p>
 <a class="anchor" id="create-output"></a>
 <h2>Create output</h2>
@@ -71,201 +72,82 @@ readFile(<span class="hljs-string">'git-user.json'</span>).then(<span class="hlj
 }
 <span class="hljs-built_in">console</span>.log( <span class="hljs-comment">/* LOG YOUR ARRAY OF OBJECTS */</span>)
 </code></pre>
-<p>You&#39;ll need an array. Create some objects, each shaped like one entry in our <strong>field-definitions</strong> file.  Push the object into the array.</p>
-<p>Sample output might look something like this. Make sure it is valid JSON. (Go to Google or similar and search on &quot;json validator&quot;):</p>
-<pre><code class="lang-javascript">[
+<p>You&#39;ll need an array. I call mine gitUser:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">const gitUser</span> = [];
+</code></pre>
+<p>I then iterate over the JSON returned from GitHub using <a href="https://docs.google.com/presentation/d/1G9plS2DRlSmulapF57vimdXYaTzvbfFAra4sSv42q9s/edit#slide=id.g38903caa5f_0_32">for..in</a>. In the process, I
+create some objects, each shaped like one entry in our <strong>field-definitions</strong> file, an example of which is shown below. As we create each object, we <strong>push</strong> the object into the array.</p>
+<p>Print the output to the console:</p>
+<pre><code class="lang-javascript"><span class="hljs-title">console</span>.log('<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> ' + <span class="hljs-type">JSON</span>.stringify(<span class="hljs-title">gitUser</span>, <span class="hljs-title">null</span>, 4));
+</code></pre>
+<p>Sample output might look something like this. Make sure it is valid JavaScript:</p>
+<pre><code class="lang-javascript">export <span class="hljs-keyword">default</span> [
     {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"login"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"login-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
+        <span class="hljs-string">"id"</span>: <span class="hljs-string">"login"</span>,
+        <span class="hljs-string">"label"</span>: <span class="hljs-string">"login-name"</span>,
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"paragraph"</span>,
+        <span class="hljs-string">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
     },
     {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"id"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"id-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
+        <span class="hljs-string">"id"</span>: <span class="hljs-string">"id"</span>,
+        <span class="hljs-string">"label"</span>: <span class="hljs-string">"id-name"</span>,
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"paragraph"</span>,
+        <span class="hljs-string">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
     },
     {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"avatar_url"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"avatar_url-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
+        <span class="hljs-string">"id"</span>: <span class="hljs-string">"avatar_url"</span>,
+        <span class="hljs-string">"label"</span>: <span class="hljs-string">"avatar_url-name"</span>,
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"paragraph"</span>,
+        <span class="hljs-string">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
     },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"gravatar_id"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"gravatar_id-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"url"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"url-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"html_url"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"html_url-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"followers_url"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"followers_url-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"following_url"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"following_url-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"gists_url"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"gists_url-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"starred_url"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"starred_url-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"subscriptions_url"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"subscriptions_url-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"organizations_url"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"organizations_url-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"repos_url"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"repos_url-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"events_url"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"events_url-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"received_events_url"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"received_events_url-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"type"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"type-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"site_admin"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"site_admin-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"name"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"name-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"company"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"company-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"blog"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"blog-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"location"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"location-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"email"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"email-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"hireable"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"hireable-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"bio"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"bio-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"public_repos"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"public_repos-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"public_gists"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"public_gists-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"followers"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"followers-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"following"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"following-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"created_at"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"created_at-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    },
-    {
-        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"updated_at"</span>,
-        <span class="hljs-attr">"label"</span>: <span class="hljs-string">"updated_at-name"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"paragraph"</span>,
-        <span class="hljs-attr">"sample"</span>: <span class="hljs-string">"login-unknown"</span>
-    }
+    // ETC ...
 ]
 </code></pre>
 <a class="anchor" id="why-output-text"></a>
 <h2>Why output text</h2>
 <p>Why do I have the program output text? Because this is the Linux way of doing things.</p>
-<pre><code class="lang-bash"><span class="hljs-built_in">npm</span> start &gt; <span class="hljs-string">'field-definitions.js'</span>
+<pre><code class="lang-bash"><span class="hljs-keyword">node</span> <span class="hljs-title">git-convert</span> &gt; 'field-definitions.js'
 </code></pre>
-<p>All I really care about at this time is that you create the proper set of fields, as shown above. We can tweak the structure of <strong>field-definitsion.js</strong> to make it usable in our program at a later date.</p>
+<p>All I really care about at this time is that you create the proper set of fields, as shown above.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
-<p>I want to be able to pull your project, navigate to the <strong>GitExplorer/git-convert</strong> folder, and then run the following command:</p>
-<pre><code class="lang-bash"><span class="hljs-built_in">npm</span> start
+<p>I want to be able to pull your project, navigate to the <strong>GitExplorer</strong> folder, and then run the following command:</p>
+<pre><code class="lang-bash">./<span class="hljs-keyword">create</span>-<span class="hljs-keyword">field</span>-definitions
 </code></pre>
-<p>I will expect to see the array of objects shown above or something much like it. For now, all the fields can be of type <strong>paragraph</strong>. Or what have you. Just give me something that looks more or less like the above, and I&#39;ll be happy. I hope.</p>
+<p>I will expect to see the <strong>field-definitions.js</strong> copied into the <strong>src</strong> or <strong>src/assets</strong> directory of your <strong>client</strong>:</p>
+<a class="anchor" id="scripts"></a>
+<h2>Scripts</h2>
+<p>Here is the <strong>git-convert/run-all</strong> script:</p>
+<pre><code class="lang-bash"><span class="hljs-meta">#! /bin/bash
+</span>
+<span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">drawLine</span></span>() {
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"---=======================================---"</span>
+}
+
+<span class="hljs-keyword">if</span> [ ! -f <span class="hljs-string">"<span class="hljs-variable">$HOME</span>/npm/bin/jsonlint"</span> ]; <span class="hljs-keyword">then</span>
+    drawLine
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"Please install jsonlint: npm install -g jsonlint"</span>
+    drawLine
+    <span class="hljs-built_in">exit</span>
+<span class="hljs-keyword">fi</span>
+
+curl https://api.github.com/users/charliecalvert &gt; git-user.json
+node git-convert.js &gt; field-definitions.js
+./prettier
+
+drawLine
+<span class="hljs-built_in">echo</span> -e <span class="hljs-string">"\tCreated field-definitions.js"</span>
+drawLine
+</code></pre>
+<p>The <strong>prettier</strong> script is described in the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/ReactEsLint.html#prettier">eslint</a> assignment.</p>
+<p>Here is the <strong>create-field-definitions</strong> script:</p>
+<pre><code class="lang-bash"><span class="hljs-meta">#! /bin/bash
+</span>
+GIT_CONVERT=git-convert
+
+<span class="hljs-built_in">cd</span> <span class="hljs-variable">$GIT_CONVERT</span>
+./run-all
+<span class="hljs-built_in">cd</span> ..
+cp -v <span class="hljs-variable">$GIT_CONVERT</span>/field-definitions.js client/src/assets/.
+</code></pre>
 </div></body></html>
