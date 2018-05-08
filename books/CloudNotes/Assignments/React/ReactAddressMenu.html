@@ -3,13 +3,14 @@
 <li><a href="#react-router-install">React Router Install</a></li>
 <li><a href="#strategy">Strategy</a></li>
 <li><a href="#define-a-menu">Define a Menu</a></li>
+<li><a href="#create-the-menu">Create the Menu</a></li>
 <li><a href="#browserrouter">BrowserRouter</a></li>
-<li><a href="#hints-and-suggestions">Hints and Suggestions</a></li>
-<li><a href="#turn-it-in">Turn it in</a></li>
-<li><a href="#hint">Hint</a></li>
-<li><a href="#address-changer">Address Changer</a></li>
+<li><a href="#style-the-menu">Style the Menu</a></li>
 <li><a href="#tests">Tests</a></li>
-<li><a href="#the-main-index">The Main Index</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-address-menu"></a>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#the-main-index">The Main Index</a></li>
+<li><a href="#hint">Hint</a></li>
+<li><a href="#hints-and-suggestions">Hints and Suggestions</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-address-menu"></a>
 <h1>React Address Menu</h1>
 <p>The goals of this assignment are:</p>
 <ul>
@@ -40,11 +41,11 @@ npm install --save react-router-dom
 <a class="anchor" id="strategy"></a>
 <h2>Strategy</h2>
 <p>We want to be able to display either the <strong>Address</strong> component, or the <strong>GetFile</strong> component.</p>
-<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-address-menu-01.png" alt="AddressShow"></p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/address-menu-no-style.png" alt="AddressShow"></p>
 <p><strong>IMAGE</strong> <em>AddressShow with paragraph elements</em></p>
-<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-address-menu-02.png" alt="AddressEdit"></p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/address-menu-debug.png" alt="Address Get File"></p>
 <p><strong>IMAGE</strong>: <em>Address Edit with input elements</em></p>
-<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-address-menu-nine.png" alt="SmallNumbers"></p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/address-menu-styled.png" alt="Address Menu Styled"></p>
 <p><strong>IMAGE</strong>: <em>Small Numbers, our hello world.</em></p>
 <p>All this is well and good, but we have a problem. Our current architecture has us showing both the <strong>Address</strong> and the <strong>GetFile</strong> component from the <strong>App</strong> component. In particular, review this bit of code found in our current implementation of <strong>Address</strong>:</p>
 <pre><code class="lang-javascript">render() {
@@ -74,65 +75,84 @@ npm install --save react-router-dom
 </ul>
 <p>Our menu will allow us to switch between the <strong>Address</strong> and <strong>GetFile</strong> views. We will do this in the files called <strong>components/ElfHeader.js</strong> and <strong>components/App.js</strong>.</p>
 <p><strong>NOTE</strong>: <em>I call it <strong>ElfHeader</strong> rather than <strong>Header</strong> in part because the word <strong>Header</strong> is such a common word that it is likely to collide with some other name in our program or in the global name space. In particular, <strong>header</strong> is an element in HTML 5.</em></p>
-<a class="anchor" id="browserrouter"></a>
-<h2>BrowserRouter</h2>
-<p>Start a sparsely populated class that brings in one class from <strong>react router</strong> called Router:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> {
-    <span class="hljs-type">BrowserRouter</span>,
-    <span class="hljs-type">Route</span>,
-    <span class="hljs-type">Link</span>
-} from <span class="hljs-symbol">'react</span>-router-dom'
-
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ElfHeader</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
-
-    render() {
-        <span class="hljs-keyword">return</span> (
-            &lt;<span class="hljs-type">Router</span>&gt;    
-            &lt;/<span class="hljs-type">Router</span>&gt;
-        );
-    }
-}
-
-export <span class="hljs-keyword">default</span> <span class="hljs-type">ElfMenu</span>;
-</code></pre>
-<p>In the above code I&#39;ve imported <strong>React</strong> and the classes I want to display, as well as the <strong>react-router</strong> code. As mentioned above, the <strong><ROUTER></strong> class comes from <strong>react router</strong>.</p>
-<p>We&#39;ll focus only on the <strong>render</strong> method, since the rest of the code in our file stays the same throughout this exercise.</p>
-<p>Let&#39;s write code to display the simple menu shown in the screenshots visible above. Don&#39;t fuss over the fact that the menu looks funky at this point. We can fix that later by adding some CSS. Right now, just focus on getting things working:</p>
-<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+<a class="anchor" id="create-the-menu"></a>
+<h2>Create the Menu</h2>
+<p>Let&#39;s write code in <strong>ElfHeader</strong> to display the simple menu shown in the screenshots visible above. Don&#39;t fuss over the fact that the menu looks funky at this point. We can fix that later by adding some CSS. Right now, just focus on getting things working:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { Link } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span>;
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span>
-          <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">"/"</span>&gt;</span>AddressShow<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
-          <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">"/edit"</span>&gt;</span>AdressEdit<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
-          <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">"/small"</span>&gt;</span>SmallNumbers<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">"/"</span>&gt;</span>Address<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">"/get-file"</span>&gt;</span>Get File<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>          
       <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>                
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
 </code></pre>
 <p>Here we use a class from <strong>react router</strong> called <strong>Link</strong>. It automatically creates links from the elements we pass to it. For instance, it generates something like this:</p>
 <pre><code class="lang-HTML">&lt;li&gt;<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"/edit"</span>&gt;</span>AddressEdit<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span></span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></span>
 </code></pre>
-<p>Next, we define the <strong>Route</strong> itself. Here are the first two, you can create the third:</p>
-<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">exact</span> <span class="hljs-attr">path</span>=<span class="hljs-string">"/"</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{Address}/</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">"/edit"</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{AddressChanger}/</span>&gt;</span>
+<a class="anchor" id="browserrouter"></a>
+<h2>BrowserRouter</h2>
+<p>Modify <strong>App.js</strong> to import two classes from <strong>react router</strong> called <strong>BrowserRouter</strong> and <strong>Route</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// YOUR IMPORTS HERE</span>
+<span class="hljs-keyword">import</span> { <span class="hljs-type">BrowserRouter</span>, <span class="hljs-type">Route</span> } from <span class="hljs-symbol">'react</span>-router-dom'
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    render() {
+        <span class="hljs-keyword">return</span> (
+            &lt;<span class="hljs-type">BrowserRouter</span>&gt;
+                &lt;div className=<span class="hljs-string">"App"</span>&gt;
+                    &lt;<span class="hljs-type">ElfHeader</span> /&gt;
+                    &lt;<span class="hljs-type">Route</span> exact path=<span class="hljs-string">"/"</span> component={<span class="hljs-type">Address</span>}/&gt;
+                    &lt;<span class="hljs-type">Route</span> path=<span class="hljs-string">"/get-file"</span> component={<span class="hljs-type">GetFile</span>}/&gt;
+                &lt;/div&gt;
+            &lt;/<span class="hljs-type">BrowserRouter</span>&gt;
+        );
+    }
+}
+
+<span class="hljs-comment">// ETC ...</span>
 </code></pre>
-<p>Note that the home path has the word <strong>exact</strong> in front of it. This is because other paths, such as <strong>/edit</strong> contain both the <strong>/</strong> and the <strong>/edit</strong> paths. So we say that we want an exact match on <strong>/</strong> not a match on either <strong>/</strong> or <strong>/edit</strong>.</p>
-<a class="anchor" id="hints-and-suggestions"></a>
-<h2>Hints and Suggestions</h2>
-<p>Here are two ways to rename App.js to <strong>SmallNumbers.js</strong>:</p>
-<pre><code>git mv App<span class="hljs-selector-class">.js</span> SmallNumbers<span class="hljs-selector-class">.js</span>
-git mv App<span class="hljs-selector-class">.js</span> components/SmallNumbers.js
-</code></pre><p>The exact command you give depends on:</p>
-<ul>
-<li>Your current directory.</li>
-<li>Whether <strong>App.js</strong> is currently in your <strong>src</strong> directory or the <strong>components</strong> directory.</li>
-</ul>
-<p>If you can&#39;t figure out what to do with these hints, you simply must take time to get a better understanding of the file system and how it works. Beyond these broad hints, my simply giving you the right answer will not help you learn. Unfortunately, going into a tutorial on the file system would be to venture well outside the scope of this course. There are, however, many in depth discussions of this topic on the web and in the library.</p>
-<ul>
-<li><a href="https://www.google.com/search?q=Understanding+File+and+Directory+navigation">https://www.google.com/search?q=Understanding+File+and+Directory+navigation</a></li>
-</ul>
+<p>In the above code I&#39;ve imported <strong>React</strong> and the classes I want to display, as well as the <strong>react-router</strong> code.</p>
+<p>The following excerpt from the code shown above defines the client side routes that will be executed when the user makes selections from the menu:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">exact</span> <span class="hljs-attr">path</span>=<span class="hljs-string">"/"</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{Address}/</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">"/get-file"</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{GetFile}/</span>&gt;</span>
+</code></pre>
+<p>In particular, the home page (<strong>/</strong>) leads to the <strong>Address</strong> component and the <strong>/get-file</strong> route leads to the <strong>GetFile</strong> component.</p>
+<p><strong>Note</strong>: <em>The home path has the word <strong>exact</strong> in front of it. This is because other paths, such as <strong>/get-file</strong> contains the <strong>/</strong> route. So we say that we want an exact match on <strong>/</strong> not a match on either <strong>/</strong> or <strong>/get-file</strong>.</em></p>
+<a class="anchor" id="style-the-menu"></a>
+<h2>Style the Menu</h2>
+<p>Let&#39;s add some styling to our menu to make it look prettier. I&#39;ve also modified <strong>App.css</strong> to chang the color of the Header. Read about it <a href="http://www.elvenware.com/charlie/development/web/JavaScript/JavaScriptReactMenu.html#style-the-menu">here</a>.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/address-menu-styled.png" alt="Address Menu Styled"></p>
+<p><strong>IMAGE</strong>: <em>The styled menu appears at the top in brown. Compare to the non-syled menus shown at the beginning of the assignment which appear as list items.</em></p>
+<p>Note that you can see <strong>/git-file</strong> URL in the address bar:</p>
+<pre><code><span class="hljs-keyword">http</span>://localhost:<span class="hljs-number">30025</span>/<span class="hljs-built_in">get</span>-<span class="hljs-built_in">file</span>
+</code></pre><p>This is one of the benefits of <strong>React Router</strong>. It allows a user to bookmark a particular screen in your application. In this case the URL shown above should always lead to the <strong>GetFile</strong> component shown in the above screenshot.</p>
+<a class="anchor" id="tests"></a>
+<h2>Tests</h2>
+<p>We should now make sure our tests handle the edits we have made.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Add, commit, push, tag and/or branch. When you submit the assignment, let me know what tag and/or branch you used when submitting the assignment.</p>
+<a class="anchor" id="the-main-index"></a>
+<h2>The Main Index</h2>
+<p>Remember that we have fundamentally changed the structure of our program. Our <strong>src/index.js</strong> entry point file should no longer be responsible for showing <strong>Address</strong>, and <strong>GetFile</strong>. Instead, it should show only <strong>App</strong>.</p>
+<p>Here is our modified <strong>index.js</strong> file:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/App'</span>;
+<span class="hljs-keyword">import</span> registerServiceWorker <span class="hljs-keyword">from</span> <span class="hljs-string">'./registerServiceWorker'</span>;
+
+ReactDOM.render(
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">App</span> /&gt;</span>        
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>,
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
+);
+
+registerServiceWorker();
+</code></pre>
+<p><strong>NOTE</strong>: <em>A crucial point, in fact, probably the central point, of this class, is how easy it is for us to move classes and views around when we use the <strong>React</strong> architecture. Yes, it is hard to get up to speed on React, and yes, it is a fairly complex tool. But once you have everything set up, making relatively large changes to our program&#39;s architecture are simple. The small, focused loosely coupled components that we have created give us the flexibility to accept changes in specifications with a minimum of disruption.</em></p>
 <a class="anchor" id="hint"></a>
 <h2>Hint</h2>
 <p>If you needed to pass props to your router, and we don&#39;t, you would do it like this:</p>
@@ -152,49 +172,18 @@ git mv App<span class="hljs-selector-class">.js</span> components/SmallNumbers.j
 /&gt;
 </code></pre>
 <p>This code is not nearly as simple as the code we used when defining our Routes. However, it works, and once written we won&#39;t need to fuss with it very often.</p>
-<a class="anchor" id="address-changer"></a>
-<h2>Address Changer</h2>
-<p>To create <strong>AddresChanger</strong>, first make a copy of <strong>Address</strong>. Have the component extend Address rather than <strong>Component</strong>. Be sure to change the component name and the thing it extends:</p>
-<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AddressChanger</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Address</span> </span>{
-}
-</code></pre>
-<p>Strip out everything except <strong>OnNameChange</strong> and <strong>render</strong>. Edit <strong>render</strong> to look like this:</p>
-<pre><code class="lang-javascript">render() {
-    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.quiet) { console.log(<span class="hljs-string">"ADDRESS RENDER"</span>); }
-    <span class="hljs-keyword">return</span> (
-
-        &lt;div className=<span class="hljs-string">"App"</span>&gt;
-            &lt;AddressEdit
-                address={<span class="hljs-keyword">this</span>.state.address}
-                onAddressChange={<span class="hljs-keyword">this</span>.onAddressChange}
-                onNameChange={<span class="hljs-keyword">this</span>.onNameChange}
-            /&gt;
-
-        &lt;/div&gt;
-    );
-}
-</code></pre>
-<p>As you can see, this is one half of what we had in the <strong>Address</strong> render method.</p>
-<p>Having done this, we can strip <strong>AddressEdit</strong> code from the <strong>Address render</strong> method. I&#39;ll you do that on your own. It only involves deleting existing code, so it is a relatively simple operation.</p>
-<a class="anchor" id="tests"></a>
-<h2>Tests</h2>
-<p>We should now make sure our tests handle the edits we have made.</p>
-<a class="anchor" id="the-main-index"></a>
-<h2>The Main Index</h2>
-<p>We are going to fundamentally change the structure of our program. This means, at least for now, that <strong>index.js</strong> should no longer be responsible for showing <strong>AddressShow</strong>, <strong>AddressEdit</strong> or <strong>SmallNumbers</strong>. Instead, it should show only <strong>ElfHeader</strong> and the class we will use to help us switch between component views. That class will be called <strong>ElfMenu</strong>.</p>
-<p>Here is our modified <strong>index.js</strong> file:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
-<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
-<span class="hljs-keyword">import</span> ElfHeader <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/ElfHeader'</span>;
-<span class="hljs-keyword">import</span> ElfMenu <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/ElfMenu'</span>;
-
-ReactDOM.render(
-    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span> /&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">ElfMenu</span>/&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>,
-    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
-);
-</code></pre>
-<p><strong>NOTE</strong>: <em>A crucial point, in fact, probably the central point, of this class, is how easy it is for us to move classes and views around when we use the <strong>React</strong> architecture. Yes, it is hard to get up to speed on React, and yes, it is a fairly complex tool. But once you have everything set up, making relatively large changes to our program&#39;s architecture are simple. The small, focused loosely coupled components that we have created give us the flexibility to accept changes in specifications with a minimum of disruption.</em></p>
+<a class="anchor" id="hints-and-suggestions"></a>
+<h2>Hints and Suggestions</h2>
+<p>Here are two ways to rename App.js to <strong>GetFile.js</strong>:</p>
+<pre><code>git mv App<span class="hljs-selector-class">.js</span> GetFile<span class="hljs-selector-class">.js</span>
+git mv App<span class="hljs-selector-class">.js</span> components/App.js
+</code></pre><p>The exact command you give depends on:</p>
+<ul>
+<li>Your current directory.</li>
+<li>Whether <strong>App.js</strong> is currently in your <strong>src</strong> directory or the <strong>components</strong> directory.</li>
+</ul>
+<p>If you can&#39;t figure out what to do with these hints, you simply must take time to get a better understanding of the file system and how it works. Beyond these broad hints, my simply giving you the right answer will not help you learn. Unfortunately, going into a tutorial on the file system would be to venture well outside the scope of this course. There are, however, many in depth discussions of this topic on the web and in the library.</p>
+<ul>
+<li><a href="https://www.google.com/search?q=Understanding+File+and+Directory+navigation">https://www.google.com/search?q=Understanding+File+and+Directory+navigation</a></li>
+</ul>
 </div></body></html>
