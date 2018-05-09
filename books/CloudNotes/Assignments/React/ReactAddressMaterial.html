@@ -5,7 +5,11 @@
 <li><a href="#add-roboto-font">Add Roboto Font</a></li>
 <li><a href="#mui-theme">Wrap Everything in MuiThemeProvider</a></li>
 <li><a href="#create-menu">Create Menu</a></li>
-<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#buttons">Buttons</a></li>
+<li><a href="#define-a-fonticon">Define a FontIcon</a></li>
+<li><a href="#add-a-darker-theme">Add a Darker Theme</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#proptypes">PropTypes</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>The Goal is to add <a href="https://www.material-ui.com/#/">Material-UI</a> to our application to gussy up the menu and give our app a more standard appearance.</p>
 <a class="anchor" id="screenshots"></a>
@@ -54,24 +58,6 @@ ReactDOM.render(
 );
 
 </code></pre>
-<p>Right now we are using the default theme, but you can use this as a place to introduce <a href="http://www.material-ui.com/#/customization/themes">Material UI Themes</a></p>
-<p>Like this:</p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// YOUR IMPORTS HERE</span>
-<span class="hljs-keyword">import</span> MuiThemeProvider <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/styles/MuiThemeProvider'</span>;
-<span class="hljs-keyword">import</span> darkBaseTheme <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/styles/baseThemes/darkBaseTheme'</span>;
-<span class="hljs-keyword">import</span> getMuiTheme <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/styles/getMuiTheme'</span>;
-
-ReactDOM.render(
-    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span> <span class="hljs-attr">muiTheme</span>=<span class="hljs-string">{getMuiTheme(darkBaseTheme)}</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">App</span> /&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span></span>,
-    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
-);
-
-registerServiceWorker();
-</code></pre>
-<p>Our new theme is similar to the one shown above, but the colors are a bit muted, a bit darker.</p>
-<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/git-explorer-mui-dark.png" alt="A darker theme"></p>
 <a class="anchor" id="create-menu"></a>
 <h2>Create Menu</h2>
 <p>In <strong>ElfHeader</strong> import <a href="http://www.material-ui.com/#/components/app-bar">AppBar</a> and <a href="http://www.material-ui.com/#/components/drawer">Drawer</a> from the <a href="https://www.material-ui.com/#/">Material-UI</a> package:</p>
@@ -79,12 +65,15 @@ registerServiceWorker();
 <span class="hljs-keyword">import</span> Drawer <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/Drawer'</span>;
 </code></pre>
 <p>In the render method create the AppBar:</p>
-<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">AppBar</span>
-    <span class="hljs-attr">title</span>=<span class="hljs-string">"GitExplorer"</span>
-    <span class="hljs-attr">iconClassNameRight</span>=<span class="hljs-string">"muidocs-icon-navigation-expand-more"</span>
-    <span class="hljs-attr">onLeftIconButtonClick</span>=<span class="hljs-string">{this.handleToggle}</span>
-/&gt;</span>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">AppBar</span>
+        <span class="hljs-attr">title</span>=<span class="hljs-string">"GitExplorer"</span>
+        <span class="hljs-attr">iconClassNameRight</span>=<span class="hljs-string">"muidocs-icon-navigation-expand-more"</span>
+        <span class="hljs-attr">onLeftIconButtonClick</span>=<span class="hljs-string">{this.handleToggle}</span>
+    /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </code></pre>
+<p>You can now delete the default header from the <strong>ElfHeader</strong> render method.</p>
 <p>A method of <strong>ElfHeader</strong> called <strong>handleToggle</strong> will change the state of open. When <strong>open</strong> changes, the <strong>Drawer</strong> in our menu slides open and closed:</p>
 <pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
     super(props);
@@ -110,7 +99,6 @@ handleToggle = () =&gt; this.setState(<span class="hljs-comment">{ open: !this.s
     &gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-name">AppBar</span> <span class="hljs-attr">title</span>=<span class="hljs-string">"Git Explorer"</span>/&gt;</span>
 
-
         <span class="hljs-tag">&lt;<span class="hljs-name">MenuItem</span>
             <span class="hljs-attr">primaryText</span>=<span class="hljs-string">'Git User'</span>
             <span class="hljs-attr">containerElement</span>=<span class="hljs-string">{</span>&lt;<span class="hljs-attr">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">"/"</span>/&gt;</span>}
@@ -120,11 +108,85 @@ handleToggle = () =&gt; this.setState(<span class="hljs-comment">{ open: !this.s
     <span class="hljs-tag">&lt;/<span class="hljs-name">Drawer</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
 </code></pre>
+<a class="anchor" id="buttons"></a>
+<h2>Buttons</h2>
+<pre><code class="lang-javascript"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">RaisedButton</span>
+    <span class="hljs-attr">label</span>=<span class="hljs-string">"Query Git API"</span>
+    <span class="hljs-attr">labelPosition</span>=<span class="hljs-string">"before"</span>
+    <span class="hljs-attr">primary</span>=</span></span><span class="hljs-template-variable">{true}</span><span class="xml"><span class="hljs-tag">
+    <span class="hljs-attr">icon</span>=</span></span><span class="hljs-template-variable">{&lt;ActionAndroid /&gt;}</span><span class="xml"><span class="hljs-tag">
+    <span class="hljs-attr">style</span>=</span></span><span class="hljs-template-variable">{styles.button}</span><span class="xml"><span class="hljs-tag">
+    <span class="hljs-attr">onClick</span>=</span></span><span class="hljs-template-variable">{this.queryGitApi}</span><span class="xml"><span class="hljs-tag">
+/&gt;</span></span>
+</code></pre>
+<p>We need to define our styles in a file called <strong>components/elf-styles.js</strong> which looks like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">const</span> <span class="hljs-string">styles</span> <span class="hljs-string">=</span> <span class="hljs-string">{</span>
+<span class="hljs-attr">    button:</span> <span class="hljs-string">{</span>
+<span class="hljs-attr">        margin:</span> <span class="hljs-number">12</span><span class="hljs-string">,</span>
+    <span class="hljs-string">},</span>
+<span class="hljs-attr">    exampleImageInput:</span> <span class="hljs-string">{</span>
+<span class="hljs-attr">        cursor:</span> <span class="hljs-string">'pointer'</span><span class="hljs-string">,</span>
+<span class="hljs-attr">        position:</span> <span class="hljs-string">'absolute'</span><span class="hljs-string">,</span>
+<span class="hljs-attr">        top:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span>
+<span class="hljs-attr">        bottom:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span>
+<span class="hljs-attr">        right:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span>
+<span class="hljs-attr">        left:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span>
+<span class="hljs-attr">        width:</span> <span class="hljs-string">'100%'</span><span class="hljs-string">,</span>
+<span class="hljs-attr">        opacity:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span>
+    <span class="hljs-string">},</span>
+<span class="hljs-string">};</span>
+
+<span class="hljs-string">export</span> <span class="hljs-string">default</span> <span class="hljs-string">styles;</span>
+</code></pre>
+<a class="anchor" id="define-a-fonticon"></a>
+<h2>Define a FontIcon</h2>
+<p>Here is where you can find a bunch of icons you can use in your application:</p>
+<ul>
+<li><a href="https://material.io/tools/icons/?style=baseline">https://material.io/tools/icons/?style=baseline</a></li>
+</ul>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> FontIcon from <span class="hljs-string">'material-ui/FontIcon'</span>;
+<span class="hljs-keyword">import</span> { red50<span class="hljs-number">0</span> } from <span class="hljs-string">'material-ui/styles/colors'</span>;
+<span class="hljs-keyword">import</span> styles from <span class="hljs-string">'./elf-styles'</span>;
+
+// CODE OMITTED HERE
+
+&lt;RaisedButton
+    label=<span class="hljs-string">"Query Git API"</span>
+    labelPosition=<span class="hljs-string">"before"</span>
+    primary={true}
+    icon={&lt;FontIcon
+        class=<span class="hljs-string">"material-icons"</span>
+        color={red50<span class="hljs-number">0</span>}&gt;rss_feed&lt;/FontIcon&gt;}
+    style={styles.button}
+    onClick={this.queryGitApi}
+/&gt;
+</code></pre>
+<a class="anchor" id="add-a-darker-theme"></a>
+<h2>Add a Darker Theme</h2>
+<p>Right now we are using the default theme, but you can use this as a place to introduce <a href="http://www.material-ui.com/#/customization/themes">Material UI Themes</a></p>
+<p>Like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// YOUR IMPORTS HERE</span>
+<span class="hljs-keyword">import</span> MuiThemeProvider <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/styles/MuiThemeProvider'</span>;
+<span class="hljs-keyword">import</span> darkBaseTheme <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/styles/baseThemes/darkBaseTheme'</span>;
+<span class="hljs-keyword">import</span> getMuiTheme <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/styles/getMuiTheme'</span>;
+
+ReactDOM.render(
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span> <span class="hljs-attr">muiTheme</span>=<span class="hljs-string">{getMuiTheme(darkBaseTheme)}</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">App</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span></span>,
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
+);
+
+registerServiceWorker();
+</code></pre>
+<p>Our new theme is similar to the one shown above, but the colors are a bit muted, a bit darker.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/git-explorer-mui-dark.png" alt="A darker theme"></p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
+<p>Add another menu item for the Micro page.</p>
 <p>All versions of our App are called GitExplorer at this point. So let&#39;s add a tag to designate the place where you added the material theme and pushed this assignment.</p>
 <ul>
-<li>Folder: GitExplorer</li>
+<li>Folder: Week06-AddressShow</li>
 <li>Tag: v6.0.0 - Added Material-UI to GitExplorer</li>
 </ul>
 <p>Some reminders on using Git Tag:</p>
@@ -134,5 +196,8 @@ git <span class="hljs-keyword">tag</span> <span class="hljs-title">-n</span>
 </code></pre>
 <p><a href="https://stackoverflow.com/a/14102299/253576">Here</a> is the <a href="https://git-scm.com/docs/git-tag#git-tag--nltnumgt">documentation</a> on using the <strong>n\&lt;num></strong> flag when displaying git tags: <em>n\&lt;num> specifies how many lines from the annotation, if any, are printed when using -l. The default is not to print any annotation lines. If no number is given to -n, only the first line is printed. If the tag is not annotated, the commit message is displayed instead.</em></p>
 <p>You should also merge your latest <strong>GitExplorer</strong> back into Master.</p>
+<a class="anchor" id="proptypes"></a>
+<h2>PropTypes</h2>
+<p>Make sure you have include PropTypes in [AddressShow][].</p>
 <!-- Elven Links -->
 </div></body></html>
