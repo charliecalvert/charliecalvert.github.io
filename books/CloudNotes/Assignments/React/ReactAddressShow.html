@@ -311,13 +311,24 @@ registerServiceWorker();
 <h2>Logging</h2>
 <p>Since we don&#39;t really need the <strong>constructor</strong>, and yet we have implemented it anyway to help illustrate a point, we might as well see if we can find a way to complicate the code further.</p>
 <p>As you probably know, <strong>console.log</strong> is both curse and blessing. Let&#39;s try to emphasize the blessing and mitigate the curse by creating a single place where we call the offending method:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">constructor</span>(<span class="hljs-params">props</span>) {
-    <span class="hljs-keyword">super</span>(props);
-    <span class="hljs-keyword">this</span>.debug = <span class="hljs-literal">true</span>;
-    <span class="hljs-keyword">this</span>.log(<span class="hljs-string">'ADDRESS SHOW CONSTRUCTOR'</span>, <span class="hljs-keyword">this</span>.props.address);
-}
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
+    super(props);
+    this.debug = true;
+    this.log('ADDRESS SHOW CONSTRUCTOR', this.props.address);
+}</span>
 
-log(message, message2 = <span class="hljs-string">''</span>, message3 = <span class="hljs-string">''</span>) {
+<span class="hljs-title">log</span><span class="hljs-params">(<span class="hljs-keyword">message</span>, message2 = <span class="hljs-string">''</span>, message3 = <span class="hljs-string">''</span>)</span> <span class="hljs-comment">{
+    if (this.debug) {
+        console.log(message, message2, message3);
+    }</span>
+}</span>
+</code></pre>
+<p>Our logger is a bit deficient at this point as it will often fail to display objects correctly. One solution is to transform objects into strings before we send them:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">const</span> ObjectAsString = <span class="hljs-built_in">JSON</span>.stringify(<span class="hljs-keyword">this</span>.props.address, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+<span class="hljs-keyword">this</span>.log(<span class="hljs-string">'ADDRESS SHOW CONSTRUCTOR'</span>, objectAsString);
+</code></pre>
+<p>A second solution is to check the second parameter to see if it is an object and to transform it there:</p>
+<pre><code class="lang-javascript">log(message, message2 = <span class="hljs-string">''</span>, message3 = <span class="hljs-string">''</span>) {
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> message2 === <span class="hljs-string">'object'</span>) {
             message2 = <span class="hljs-built_in">JSON</span>.stringify(message2, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
     }
@@ -326,6 +337,7 @@ log(message, message2 = <span class="hljs-string">''</span>, message3 = <span cl
     }
 }
 </code></pre>
+<p>We should probably do this for all three parameters.</p>
 <p>Now we can toggle a single variable, <strong>this.debug</strong>, whenever we want to turn down the volume. For instance, we might want to log to the console in our render method. In the new system we would do it like this:</p>
 <pre><code class="lang-javascript">render() {
     <span class="hljs-keyword">this</span>.log(<span class="hljs-string">"SHOW ADDRESS RENDER"</span>, <span class="hljs-keyword">this</span>.props);
