@@ -3,6 +3,7 @@
 <li><a href="#video">Video</a></li>
 <li><a href="#project-folder">Project Folder</a></li>
 <li><a href="#install-globally">Install Globally</a></li>
+<li><a href="#yarn-global">Getting Yarn&#39;s Global Bin Directory on your PATH</a></li>
 <li><a href="#rc-file">RC File</a></li>
 <li><a href="#arrow-functions">Arrow Functions</a></li>
 <li><a href="#run-from-command-line">Run from command line</a></li>
@@ -38,6 +39,42 @@ npm i -g eslint-plugin-requirejs
 npm i -g babel-eslint
 </pre>
 <p>Read here <a href="https://www.npmjs.com/package/eslint">for more details</a>.</p>
+<a class="anchor" id="yarn-global"></a>
+<h2>Getting Yarn&#39;s Global Bin Directory on your PATH</h2>
+<p>On Pristine Lubuntu, I long ago made sure that <strong>~/npm/bin</strong> is on the path. Therefore globally installed NPM packages are available to everyone. I have not, however, yet set up <strong>yarn&#39;s</strong> global directory to be on the path.</p>
+<ul>
+<li><a href="https://github.com/yarnpkg/yarn/issues/2049">https://github.com/yarnpkg/yarn/issues/2049</a></li>
+</ul>
+<p>So I guess what we want on the path is the directory I list here:</p>
+<pre><code class="lang-bash">charlie@CedarIsle**:~/.config/yarn/global/node_modules/.bin**  
+$ ll  
+total<span class="hljs-number"> 0 </span> 
+drwxrwxrwx<span class="hljs-number"> 1 </span>charlie charlie<span class="hljs-number"> 512 </span>May<span class="hljs-number"> 10 </span>11:11 ./  
+drwxrwxrwx<span class="hljs-number"> 1 </span>charlie charlie<span class="hljs-number"> 512 </span>May<span class="hljs-number"> 10 </span>11:11 ../  
+lrwxrwxrwx<span class="hljs-number"> 1 </span>charlie charlie<span class="hljs-number"> 18 </span>May<span class="hljs-number"> 10 </span>11:11 bower -&gt; ../bower/bin/bower*  
+lrwxrwxrwx<span class="hljs-number"> 1 </span>charlie charlie<span class="hljs-number"> 28 </span>May<span class="hljs-number"> 10 </span>11:11 create-react-app -&gt; ../create-react-app/index.js*  
+lrwxrwxrwx<span class="hljs-number"> 1 </span>charlie charlie<span class="hljs-number"> 37 </span>May<span class="hljs-number"> 10 </span>11:11 css-beautify -&gt; ../js-beautify/js/bin/css-beautify.js*  
+lrwxrwxrwx<span class="hljs-number"> 1 </span>charlie charlie<span class="hljs-number"> 39 </span>May<span class="hljs-number"> 10 </span>11:11 express -&gt; ../express-generator/bin/express-cli.js*  
+lrwxrwxrwx<span class="hljs-number"> 1 </span>charlie charlie<span class="hljs-number"> 38 </span>May<span class="hljs-number"> 10 </span>11:11 html-beautify -&gt; ../js-beautify/js/bin/html-beautify.js*  
+lrwxrwxrwx<span class="hljs-number"> 1 </span>charlie charlie<span class="hljs-number"> 36 </span>May<span class="hljs-number"> 10 </span>11:11 js-beautify -&gt; ../js-beautify/js/bin/js-beautify.js*  
+lrwxrwxrwx<span class="hljs-number"> 1 </span>charlie charlie<span class="hljs-number"> 25 </span>May<span class="hljs-number"> 10 </span>11:11 nodemon -&gt; ../nodemon/bin/nodemon.js*  
+lrwxrwxrwx<span class="hljs-number"> 1 </span>charlie charlie<span class="hljs-number"> 21 </span>May<span class="hljs-number"> 10 </span>11:11 npm -&gt; ../npm/bin/npm-cli.js*  
+lrwxrwxrwx<span class="hljs-number"> 1 </span>charlie charlie<span class="hljs-number"> 21 </span>May<span class="hljs-number"> 10 </span>11:11 npx -&gt; ../npm/bin/npx-cli.js*
+</code></pre>
+<p>We should, therefore, add this near the bottom of our <strong>~/.bashrc</strong>:</p>
+<pre><code class="lang-bash"><span class="hljs-comment">#Yarn Support</span>
+
+<span class="hljs-built_in">set-system-path</span> <span class="hljs-string">"$HOME/.config/yarn/global/node_modules/.bin"</span>
+</code></pre>
+<p>Here is <strong>set-system-path</strong>, which should already be in your <strong>.bashrc</strong>:</p>
+<pre><code class="lang-bash"><span class="hljs-built_in">set</span>-system-<span class="hljs-function"><span class="hljs-title">path</span></span> () {  
+  <span class="hljs-keyword">if</span> ! <span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$PATH</span>"</span> | /bin/grep -Eq <span class="hljs-string">"(^|:)<span class="hljs-variable">$1</span>($|:)"</span> ; <span class="hljs-keyword">then</span>  
+    <span class="hljs-built_in">export</span> PATH=<span class="hljs-string">"<span class="hljs-variable">$1</span>:<span class="hljs-variable">$PATH</span>"</span>  
+  <span class="hljs-keyword">fi</span>  
+}
+</code></pre>
+<p>That seems to be working for me, so I&#39;ve added it in JsObject for future generations.</p>
+<p><strong>NOTE</strong>: <em>You might be in one of those generations, so perhaps this has already been done for you.</em></p>
 <a class="anchor" id="rc-file"></a>
 <h2>RC File</h2>
 <p>And here is at least a starter <strong>.eslintrc</strong> file:</p>
