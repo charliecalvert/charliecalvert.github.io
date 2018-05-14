@@ -269,7 +269,18 @@ registerServiceWorker();
 /&gt;</span>
 </code></pre>
 <p>Here is the test that proves that it is set correctly to <strong>Address Maven</strong>:</p>
-<pre><code class="lang-javascript">it('renders and reads Title text', () =&gt; {
+<pre><code class="lang-javascript">it('renders without crashing', () =&gt; {
+    const div = document.createElement('div')<span class="hljs-comment">;</span>
+    ReactDOM.render(
+        <span class="hljs-name">&lt;MuiThemeProvider&gt;</span>
+            &lt;BrowserRouter&gt;
+                &lt;ElfHeader /&gt;
+            &lt;/BrowserRouter&gt;
+        &lt;/MuiThemeProvider&gt;, div)<span class="hljs-comment">;</span>
+    ReactDOM.unmountComponentAtNode(<span class="hljs-name">div</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+it('renders and reads Title text', () =&gt; {
     const wrapper = shallow(<span class="hljs-name">&lt;Header</span> /&gt;)<span class="hljs-comment">;        </span>
     const headerText = wrapper.find('AppBar').first().prop('title')<span class="hljs-comment">;</span>
     console.log(<span class="hljs-string">"HeaderTest"</span>, headerText)<span class="hljs-comment">;</span>
@@ -277,6 +288,24 @@ registerServiceWorker();
 })<span class="hljs-comment">;</span>
 </code></pre>
 <p>The key element is the call to <strong>.prop(&#39;title&#39;)</strong> which picks the text off the virtual DOM.</p>
+<p>Here is a test to prove that App.js contains at seem of what you expect it to contain:</p>
+<pre><code class="lang-JavaScript">it('renders state of File paragraph after button click', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;App</span> /&gt;)<span class="hljs-comment">;</span>
+    //console.log(<span class="hljs-name">wrapper</span>.debug())<span class="hljs-comment">;</span>
+    const headerText = wrapper.find('div').childAt(<span class="hljs-number">2</span>).prop('path')<span class="hljs-comment">;        </span>
+    //console.log(<span class="hljs-name">headerText</span>)<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">headerText</span>).toBe('/get-file')<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>If you uncomment the first console.log statement, it renders this:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">BrowserRouter</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">exact</span>=<span class="hljs-string">{true}</span> <span class="hljs-attr">path</span>=<span class="hljs-string">"/"</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{[function]}</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">etc...</span> /&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">BrowserRouter</span>&gt;</span>
+</code></pre>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Add another menu item for the Micro page. If you want extra credit, tell me to check your tests then add a note to that effect when you turn in the assignment.</p>
