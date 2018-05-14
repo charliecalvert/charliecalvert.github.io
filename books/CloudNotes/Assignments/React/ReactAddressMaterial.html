@@ -6,10 +6,12 @@
 <li><a href="#add-roboto-font">Add Roboto Font</a></li>
 <li><a href="#mui-theme">Wrap Everything in MuiThemeProvider</a></li>
 <li><a href="#create-menu">Create Menu</a></li>
+<li><a href="#setting-up-routes">Setting up Routes</a></li>
 <li><a href="#buttons">Buttons</a></li>
 <li><a href="#more-button-icons">More Button Icons</a></li>
 <li><a href="#define-a-fonticon">Define a FontIcon</a></li>
 <li><a href="#darker">Add a Darker Theme</a></li>
+<li><a href="#tests">Tests</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#proptypes">PropTypes</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
@@ -118,6 +120,24 @@ handleToggle = () =&gt; this.setState(<span class="hljs-comment">{ open: !this.s
         </span><span class="hljs-template-tag">{/*<span class="hljs-name">MORE</span> MENU ITEMS HERE*/}</span><span class="xml">
     <span class="hljs-tag">&lt;/<span class="hljs-name">Drawer</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</code></pre>
+<a class="anchor" id="setting-up-routes"></a>
+<h2>Setting up Routes</h2>
+<p>Just as a reminder, recall that in <strong>App.js</strong> we defined our <strong>Route</strong> objects that are paired with the <strong>Link</strong> components from the <strong>ElfHeader</strong>. There is no work for you to do here, but I want to make sure you understand all this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> {<span class="hljs-type">BrowserRouter</span>, <span class="hljs-type">Route</span>} from <span class="hljs-symbol">'react</span>-router-dom'
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    render() {
+        <span class="hljs-keyword">return</span> (
+            &lt;<span class="hljs-type">BrowserRouter</span>&gt;
+                &lt;div&gt;
+                    &lt;<span class="hljs-type">ElfHeader</span>/&gt;
+                    <span class="hljs-comment">// Define your routes here.</span>
+                &lt;/div&gt;
+            &lt;/<span class="hljs-type">BrowserRouter</span>&gt;
+        );
+    }
+}
 </code></pre>
 <a class="anchor" id="buttons"></a>
 <h2>Buttons</h2>
@@ -231,9 +251,35 @@ registerServiceWorker();
 </code></pre>
 <p>Our new theme is similar to the one shown above, but the colors are a bit muted, a bit darker.</p>
 <p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/address-material-darker.png" alt="A darker theme"></p>
+<a class="anchor" id="tests"></a>
+<h2>Tests</h2>
+<p>For extra credit, get these tests to pass.</p>
+<p>In your App.test.js, you will need to wrap the App in <strong>MuiThemeProvider</strong>:</p>
+<pre><code class="lang-javascript">it('renders without crashing', () =&gt; {
+    const div = document.createElement('div')<span class="hljs-comment">;</span>
+    ReactDOM.render(<span class="hljs-name">&lt;MuiThemeProvider&gt;&lt;App</span> /&gt;&lt;/MuiThemeProvider&gt;, div)<span class="hljs-comment">;</span>
+    ReactDOM.unmountComponentAtNode(<span class="hljs-name">div</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>Here is the code from <strong>ElfHeader</strong> that defines our <strong>title</strong> in the AppBar:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">AppBar</span>
+    <span class="hljs-attr">title</span>=<span class="hljs-string">"Address Maven"</span>
+    <span class="hljs-attr">iconClassNameRight</span>=<span class="hljs-string">"muidocs-icon-navigation-expand-more"</span>
+    <span class="hljs-attr">onLeftIconButtonClick</span>=<span class="hljs-string">{this.handleToggle}</span>
+/&gt;</span>
+</code></pre>
+<p>Here is the test that proves that it is set correctly to <strong>Address Maven</strong>:</p>
+<pre><code class="lang-javascript">it('renders and reads Title text', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;Header</span> /&gt;)<span class="hljs-comment">;        </span>
+    const headerText = wrapper.find('AppBar').first().prop('title')<span class="hljs-comment">;</span>
+    console.log(<span class="hljs-string">"HeaderTest"</span>, headerText)<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">headerText</span>).toBe('Address Maven')<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>The key element is the call to <strong>.prop(&#39;title&#39;)</strong> which picks the text off the virtual DOM.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
-<p>Add another menu item for the Micro page.</p>
+<p>Add another menu item for the Micro page. If you want extra credit, tell me to check your tests then add a note to that effect when you turn in the assignment.</p>
 <p>All versions of our App are called GitExplorer at this point. So let&#39;s add a tag to designate the place where you added the material theme and pushed this assignment.</p>
 <ul>
 <li>Folder: Week06-AddressShow</li>
@@ -245,7 +291,7 @@ git push origin v6.<span class="hljs-number">0.1</span>
 git <span class="hljs-keyword">tag</span> <span class="hljs-title">-n</span>
 </code></pre>
 <p><a href="https://stackoverflow.com/a/14102299/253576">Here</a> is the <a href="https://git-scm.com/docs/git-tag#git-tag--nltnumgt">documentation</a> on using the <strong>n\&lt;num></strong> flag when displaying git tags: <em>n\&lt;num> specifies how many lines from the annotation, if any, are printed when using -l. The default is not to print any annotation lines. If no number is given to -n, only the first line is printed. If the tag is not annotated, the commit message is displayed instead.</em></p>
-<p>You should also merge your latest <strong>GitExplorer</strong> back into Master.</p>
+<p>You should also merge your latest <strong>Address Maven</strong> back into Master.</p>
 <a class="anchor" id="proptypes"></a>
 <h2>PropTypes</h2>
 <p>Make sure you have included PropTypes in <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/ReactAddressShow.html#proptypes">AddressShow</a>.</p>
