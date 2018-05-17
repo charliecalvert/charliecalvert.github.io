@@ -3,6 +3,7 @@
 <li><a href="#symbolic-link">Symbolic Link</a></li>
 <li><a href="#systemd">systemd</a></li>
 <li><a href="#upstart">Upstart</a></li>
+<li><a href="#symbolic-links">Symbolic Links</a></li>
 <li><a href="#elastic-ip">Elastic IP</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#hints">Hints</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
@@ -44,6 +45,14 @@ lsb_release -a
 </code></pre>
 <pre><code class="lang-bash">ln -s ~<span class="hljs-regexp">/Git/i</span>sit320-calvert-<span class="hljs-number">2016</span><span class="hljs-regexp">/Week04-ThreeFloor ~/</span>bin<span class="hljs-regexp">/three-floor</span>
 </code></pre>
+<p>or like this:</p>
+<pre><code class="lang-bash">$ ln -s ~<span class="hljs-regexp">/Git/i</span>sit322-calvert-<span class="hljs-number">2016</span><span class="hljs-regexp">/Week10-ElvenImagePicker/</span> ~<span class="hljs-regexp">/bin/</span>elven-site
+</code></pre>
+<p>This symbolic link provides several benefits:</p>
+<ul>
+<li>It shortens your path</li>
+<li>It can be easily changed to point to a new location without forcing you to rewrite your  <strong>upstart</strong> or <strong>systemd</strong> script.</li>
+</ul>
 <a class="anchor" id="systemd"></a>
 <h2>systemd</h2>
 <p>Upstart is being replaced by <strong>systemd</strong>. This caused a huge uproar in the Linux community, but the transition is more or less complete at this stage (Nov, 2016). Fortunately, if you understand Upstart it is not hard to switch to <strong>systemd</strong>. You should switch to <strong>systemd</strong> if running on Ubuntu 15.10 or later, otherwise, stick with <strong>upstart</strong>.</p>
@@ -58,6 +67,7 @@ DISTRIB_DESCRIPTION=<span class="hljs-string">"Ubuntu 15.10"</span>
 <p>A sample <strong>systemd</strong> start up script (aka service file) called <strong>elven-site.service</strong>:</p>
 <pre><code><span class="hljs-section">[Service]</span>
 <span class="hljs-attr">ExecStart</span>=/usr/bin/node /home/bcuser/bin/elven-site/bin/www
+<span class="hljs-attr">WorkingDirectory</span>=/home/bcuser/bin/elven-site
 <span class="hljs-attr">Restart</span>=always
 <span class="hljs-attr">StandardOutput</span>=syslog
 <span class="hljs-attr">StandardError</span>=syslog
@@ -147,9 +157,16 @@ post-start<span class="hljs-built_in"> script
    # /root/bin/hoptoad.sh <span class="hljs-string">"node.js has started!"</span>
 end script
 </code></pre>
+<a class="anchor" id="symbolic-links"></a>
+<h2>Symbolic Links</h2>
 <p>Create a link our project, or whatever project you want to use for your final:</p>
 <pre><code class="lang-bash">$ ln -s ~<span class="hljs-regexp">/Git/i</span>sit322-calvert-<span class="hljs-number">2016</span><span class="hljs-regexp">/Week10-ElvenImagePicker/</span> ~<span class="hljs-regexp">/bin/</span>elven-site
 </code></pre>
+<p>This symbolic link provides several benefits:</p>
+<ul>
+<li>It shortens your path</li>
+<li>It can be easily changed to point to a new location without forcing you to rewrite your  <strong>upstart</strong> or <strong>systemd</strong> script.</li>
+</ul>
 <p>Our upstart script is called <strong>NodeRoutesParams</strong>. If you look inside it, you will see that
 it assumes your copy of NodeRoutesParams is in <strong>~/bin</strong>:</p>
 <pre><code>exec <span class="hljs-regexp">/usr/</span>bin<span class="hljs-regexp">/nodejs $HOME/</span>bin<span class="hljs-regexp">/NodeRoutesParams/</span>bin<span class="hljs-regexp">/www &gt;&gt; /</span>var<span class="hljs-regexp">/log/</span>node.log <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span>
