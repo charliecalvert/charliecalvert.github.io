@@ -46,7 +46,7 @@ lsb_release -a
 <pre><code class="lang-bash">ln -s ~<span class="hljs-regexp">/Git/i</span>sit320-calvert-<span class="hljs-number">2016</span><span class="hljs-regexp">/Week04-ThreeFloor ~/</span>bin<span class="hljs-regexp">/three-floor</span>
 </code></pre>
 <p>or like this:</p>
-<pre><code class="lang-bash">$ ln -s ~<span class="hljs-regexp">/Git/i</span>sit322-calvert-<span class="hljs-number">2016</span><span class="hljs-regexp">/Week10-ElvenImagePicker/</span> ~<span class="hljs-regexp">/bin/</span>elven-site
+<pre><code class="lang-bash">$ ln -s ~<span class="hljs-regexp">/Git/i</span>sit322-calvert-<span class="hljs-number">2016</span><span class="hljs-regexp">/Week10-ElvenImagePicker/</span> ~<span class="hljs-regexp">/bin/</span>nrb
 </code></pre>
 <p>This symbolic link provides several benefits:</p>
 <ul>
@@ -64,17 +64,18 @@ DISTRIB_RELEASE=15.10
 DISTRIB_CODENAME=wily
 DISTRIB_DESCRIPTION=<span class="hljs-string">"Ubuntu 15.10"</span>
 </code></pre>
-<p>A sample <strong>systemd</strong> start up script (aka service file) called <strong>elven-site.service</strong>:</p>
+<p>A sample <strong>systemd</strong> start up script (aka service file) called <strong>nrb.service</strong>:</p>
 <pre><code><span class="hljs-section">[Service]</span>
-<span class="hljs-attr">ExecStart</span>=/usr/bin/node /home/bcuser/bin/elven-site/bin/www
-<span class="hljs-attr">WorkingDirectory</span>=/home/bcuser/bin/elven-site
+<span class="hljs-attr">ExecStart</span>=/usr/bin/node /home/ubuntu/bin/nrb/bin/www
+<span class="hljs-attr">WorkingDirectory</span>=/home/ubuntu/bin/nrb
 <span class="hljs-attr">Restart</span>=always
 <span class="hljs-attr">StandardOutput</span>=syslog
 <span class="hljs-attr">StandardError</span>=syslog
-<span class="hljs-attr">SyslogIdentifier</span>=elven-site
-<span class="hljs-attr">User</span>=bcuser
-<span class="hljs-attr">Group</span>=bcuser
+<span class="hljs-attr">SyslogIdentifier</span>=nrb
+<span class="hljs-attr">User</span>=ubuntu
+<span class="hljs-attr">Group</span>=ubuntu
 <span class="hljs-attr">Environment</span>=NODE_ENV=production
+<span class="hljs-attr">Environment</span>=PORT=<span class="hljs-number">30026</span>
 <span class="hljs-section">
 [Install]</span>
 <span class="hljs-attr">WantedBy</span>=multi-user.target
@@ -87,31 +88,31 @@ DISTRIB_DESCRIPTION=<span class="hljs-string">"Ubuntu 15.10"</span>
 </ul>
 <p>For instance, the <strong>User</strong> and <strong>Group</strong> would be <strong>ubuntu</strong> on EC2 and <strong>bcuser</strong> on most copies of Pristine Lubuntu.</p>
 <p>Deploy the service file:</p>
-<pre><code>sudo cp elven-site.service <span class="hljs-regexp">/etc/</span>systemd<span class="hljs-regexp">/system/</span>.
+<pre><code>sudo cp nrb.service <span class="hljs-regexp">/etc/</span>systemd<span class="hljs-regexp">/system/</span>.
 </code></pre><p>Start the service:</p>
-<pre><code>sudo systemctl <span class="hljs-builtin-name">enable</span> elven-site
-sudo systemctl start elven-site
+<pre><code>sudo systemctl <span class="hljs-builtin-name">enable</span> nrb
+sudo systemctl start nrb
 </code></pre><p>Get the status:</p>
-<pre><code><span class="hljs-attribute">systemctl status elven-site</span>
+<pre><code><span class="hljs-attribute">systemctl status nrb</span>
 </code></pre><p>To reload after a change:</p>
 <pre><code><span class="hljs-attribute">systemctl daemon-reload</span>
 </code></pre><p>Sample output from status request when all is good:</p>
-<pre><code class="lang-bash">$ systemctl status elven-site
-● elven-site.service
-   Loaded: loaded (/etc/systemd/system/elven-site.service; enabled; vendor preset: enabled)
+<pre><code class="lang-bash">$ systemctl status nrb
+● nrb.service
+   Loaded: loaded (/etc/systemd/system/nrb.service; enabled; vendor preset: enabled)
    Active: active (running) since Thu <span class="hljs-number">2015</span>-<span class="hljs-number">12</span>-<span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">01</span> PST; <span class="hljs-number">4s</span> ago
  Main PID: <span class="hljs-number">4102</span> (<span class="hljs-keyword">node</span><span class="hljs-title">)
-   CGroup</span>: /system.slice/elven-site.service
-           └─<span class="hljs-number">4102</span> /usr/bin/<span class="hljs-keyword">node</span> <span class="hljs-title">/home</span>/charlie/bin/elven-site/bin/www
+   CGroup</span>: /system.slice/nrb.service
+           └─<span class="hljs-number">4102</span> /usr/bin/<span class="hljs-keyword">node</span> <span class="hljs-title">/home</span>/charlie/bin/nrb/bin/www
 
-Dec <span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">01</span> forestpath systemd[<span class="hljs-number">1</span>]: <span class="hljs-literal">Started</span> elven-site.service.
+Dec <span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">01</span> forestpath systemd[<span class="hljs-number">1</span>]: <span class="hljs-literal">Started</span> nrb.service.
 Dec <span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">02</span> forestpath <span class="hljs-keyword">node</span><span class="hljs-title">-sample</span>[<span class="hljs-number">4102</span>]: <span class="hljs-keyword">In</span> bin/www the environment is production
 </code></pre>
 <p>To see logs and debug information, try this:</p>
-<pre><code><span class="hljs-attribute">journalctl -u elven-site</span>
+<pre><code><span class="hljs-attribute">journalctl -u nrb</span>
 </code></pre><p>To completely remove a service from a system, I believe we should first stop it, and then disable it:</p>
-<pre><code>systemctl <span class="hljs-keyword">stop</span> elven-site
-systemctl <span class="hljs-keyword">disable</span> elven-site
+<pre><code>systemctl <span class="hljs-keyword">stop</span> nrb
+systemctl <span class="hljs-keyword">disable</span> nrb
 </code></pre><p>I&#39;m not certain about the disable command at this time. I think it tells systemd not to load at boot, but allows us to leave the file in <strong>/etc/systemd/system</strong>. Not sure though.</p>
 <p>The first and second links below will get you up to speed fairly quickly.</p>
 <ul>
@@ -149,7 +150,7 @@ script
 
 <span class="hljs-comment"># The following assumes nodejs is in /usr/bin</span>
 <span class="hljs-comment"># It also assumes that the server is in /home/charlie/ExpressSend</span>
-    exec /usr/bin/nodejs /home/charlie/bin/elven-site/bin/www &gt;&gt; /var/log/node.log 2&gt;&amp;1
+    exec /usr/bin/nodejs /home/charlie/bin/nrb/bin/www &gt;&gt; /var/log/node.log 2&gt;&amp;1
 end<span class="hljs-built_in"> script
 </span>
 post-start<span class="hljs-built_in"> script
@@ -160,7 +161,7 @@ end script
 <a class="anchor" id="symbolic-links"></a>
 <h2>Symbolic Links</h2>
 <p>Create a link our project, or whatever project you want to use for your final:</p>
-<pre><code class="lang-bash">$ ln -s ~<span class="hljs-regexp">/Git/i</span>sit322-calvert-<span class="hljs-number">2016</span><span class="hljs-regexp">/Week10-ElvenImagePicker/</span> ~<span class="hljs-regexp">/bin/</span>elven-site
+<pre><code class="lang-bash">$ ln -s ~<span class="hljs-regexp">/Git/i</span>sit322-calvert-<span class="hljs-number">2016</span><span class="hljs-regexp">/Week10-ElvenImagePicker/</span> ~<span class="hljs-regexp">/bin/</span>nrb
 </code></pre>
 <p>This symbolic link provides several benefits:</p>
 <ul>
@@ -170,17 +171,17 @@ end script
 <p>Our upstart script is called <strong>NodeRoutesParams</strong>. If you look inside it, you will see that
 it assumes your copy of NodeRoutesParams is in <strong>~/bin</strong>:</p>
 <pre><code>exec <span class="hljs-regexp">/usr/</span>bin<span class="hljs-regexp">/nodejs $HOME/</span>bin<span class="hljs-regexp">/NodeRoutesParams/</span>bin<span class="hljs-regexp">/www &gt;&gt; /</span>var<span class="hljs-regexp">/log/</span>node.log <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span>
-exec <span class="hljs-regexp">/usr/</span>bin<span class="hljs-regexp">/nodejs /</span>home<span class="hljs-regexp">/ubuntu/</span>bin<span class="hljs-regexp">/elven-site/</span>bin<span class="hljs-regexp">/www &gt;&gt; /</span>var<span class="hljs-regexp">/log/</span>node.log <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span>
+exec <span class="hljs-regexp">/usr/</span>bin<span class="hljs-regexp">/nodejs /</span>home<span class="hljs-regexp">/ubuntu/</span>bin<span class="hljs-regexp">/nrb/</span>bin<span class="hljs-regexp">/www &gt;&gt; /</span>var<span class="hljs-regexp">/log/</span>node.log <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span>
 </code></pre><p>That is why we created a symbolic link in that folder. That way, regardless of where
 you keep <strong>NodeRoutesParams</strong> on your system, our script can find it.    </p>
 <p>Copy the <strong>NodeRoutesParams</strong> file to the <strong>/etc/init</strong> directory:</p>
-<pre><code>sudo cp elven-site<span class="hljs-selector-class">.conf</span> /etc/init/.
+<pre><code>sudo cp nrb<span class="hljs-selector-class">.conf</span> /etc/init/.
 sudo mkdir /root/<span class="hljs-selector-class">.config</span>
 sudo cp ~/.config/ElvenConfig<span class="hljs-selector-class">.json</span> /root/.config/.
 </code></pre><p>Start the program</p>
-<pre><code>sudo <span class="hljs-literal">start</span> elven-site
+<pre><code>sudo <span class="hljs-literal">start</span> nrb
 </code></pre><p>Stop the program</p>
-<pre><code>sudo <span class="hljs-built_in">stop</span> elven-site
+<pre><code>sudo <span class="hljs-built_in">stop</span> nrb
 </code></pre><p>If you reboot the system, your program will start automatically.</p>
 <p>Error messages and and other output are in: <strong>/var/log/node.log</strong>. That means you can see the debug output with this command:</p>
 <pre><code>cat /var/log/<span class="hljs-keyword">node</span>.<span class="hljs-title">log</span>
@@ -197,12 +198,12 @@ you would do this:</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Submit the <strong>Elastic IP</strong> or <strong>Public DNS</strong> address of your instance running on EC2.</p>
-<p>I&#39;m not checking to see if the program is working correctly, only that it is running at all. I don&#39;t really care, for this assignment, whether I find <strong>elven-site</strong>, <strong>three-floor</strong> or your final running on port 30025 of your EC2 instance. Just show me that you can get something running via <strong>systemd</strong> or <strong>upstart</strong>.  Also, add your config files, such as <strong>elven-site.conf</strong> and/or <strong>elven-site.service</strong> file to the appropriate project directory in your repository.</p>
+<p>I&#39;m not checking to see if the program is working correctly, only that it is running at all. I don&#39;t really care, for this assignment, whether I find <strong>nrb</strong>, <strong>three-floor</strong> or your final running on port 30025 of your EC2 instance. Just show me that you can get something running via <strong>systemd</strong> or <strong>upstart</strong>.  Also, add your config files, such as <strong>nrb.conf</strong> and/or <strong>nrb.service</strong> file to the appropriate project directory in your repository.</p>
 <a class="anchor" id="hints"></a>
 <h2>Hints</h2>
 <p>The below is aimed at upstart users, but it should be obvious how it applies to those who might be using <strong>systemd</strong>. Here are some additional nodes:</p>
 <ul>
-<li>Create a <strong>elven-site.conf</strong> in your final folder.<ul>
+<li>Create a <strong>nrb.conf</strong> in your final folder.<ul>
 <li>Look at the <strong>JsObjects/JavaScript/NodeCode/ExpressSend</strong> project for hints</li>
 <li>In particular, modify the line that begins with the word <strong>exec</strong></li>
 </ul>
@@ -218,18 +219,18 @@ you would do this:</p>
 <li>Open ports 30026, 30027, etc and set the source to <strong>Anywhere.</strong></li>
 </ul>
 </li>
-<li>Copy elven-site.conf to <strong>/etc/init/elven-site.conf</strong><ul>
-<li>sudo cp elven-site.conf /etc/init/.</li>
+<li>Copy nrb.conf to <strong>/etc/init/nrb.conf</strong><ul>
+<li>sudo cp nrb.conf /etc/init/.</li>
 </ul>
 </li>
 <li>Create a link to your final folder from the bin folder:</li>
 </ul>
-<pre><code>ln -s ~<span class="hljs-regexp">/Git/i</span>sit320-lastName-<span class="hljs-number">2015</span><span class="hljs-regexp">/Week10-ElvenImagePicker ~/</span>bin<span class="hljs-regexp">/elven-site;</span>
+<pre><code>ln -s ~<span class="hljs-regexp">/Git/i</span>sit320-lastName-<span class="hljs-number">2015</span><span class="hljs-regexp">/Week10-ElvenImagePicker ~/</span>bin<span class="hljs-regexp">/nrb;</span>
 </code></pre><p>When everything is set up, test your work:</p>
-<pre><code>sudo <span class="hljs-literal">start</span> elven-site
+<pre><code>sudo <span class="hljs-literal">start</span> nrb
 </code></pre><p>Then go to the appropriate URL and see if your application is working correctly. For problems, check the logs:</p>
 <p><strong>cat /var/log/node.conf</strong>.</p>
 <p>Or, on systemd:</p>
-<pre><code><span class="hljs-attribute">systemctl status elven-site</span>
+<pre><code><span class="hljs-attribute">systemctl status nrb</span>
 </code></pre><p><strong>NOTE</strong>: <em>It is often simplest to do your work on your home machine. For instance, do your work on the Mac, in Pristince Lubuntu, or in Cloud 9. Then commit and push your work, and pull it on EC2. If you do decide to work on EC2, make sure you first commit all your work on your home machine, and then pull it on EC2. Then make your changes on EC2, commit and push, and then pull on your home machine.</em></p>
 </div></body></html>

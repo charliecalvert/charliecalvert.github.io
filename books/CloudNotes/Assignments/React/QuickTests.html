@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>QuickTests</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>QuickTests</h1><p>Welcome to QuickTests</p><ul><!--TOC_Start--><li><a href="#video">Video</a></li>
+<li><a href="#overview">Overview</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="video"></a>
+<h2>Video</h2>
+<p>It covers Test Driven Development (TDD) basics with <a href="https://facebook.github.io/jest/">Jest</a> and <a href="https://github.com/airbnb/enzyme">Enzyme</a>. A major theme is how to focus on one component at a time with Enzyme <a href="https://github.com/airbnb/enzyme/blob/master/docs/api/shallow.md">shallow</a>. We also briefly discuss Enzyme <a href="https://github.com/airbnb/enzyme/blob/master/docs/api/mount.md">mount</a>, which allows you to see components that are nested inside one another. <strong>mount</strong> can be useful at times, but in general, the goal of Unit Testing is to work with one component at a time.</p>
+<p>It ends rather abruptly.</p>
+<ul>
+<li><a href="https://youtu.be/4_pZizupR7U">The Jest Enzyme Video</a></li>
+</ul>
+<a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>There are two key themes:</p>
+<ul>
+<li>Test one component at a time<ul>
+<li>Use shallow 98% of the time</li>
+<li>Use mount 2% of the time</li>
+</ul>
+</li>
+<li>Use <strong>dive</strong> when you have non-DOM Components<ul>
+<li>MuiThemeProvider is a non-DOM component</li>
+<li>It&#39;s useful, but it never create HTML for the DOM
+<code>`</code>
+npm install enzyme enzyme-adapter-react-16</li>
+</ul>
+</li>
+</ul>
+<p>or</p>
+<p>yarn add enzyme enzyme-adapter-react-16</p>
+<pre><code>
+</code></pre><p>npm install @material-ui/core
+yarn add @material-ui/core</p>
+<pre><code>
+## Cheat Sheet
+
+```JavaScript
+<span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./App'</span>;
+<span class="hljs-keyword">import</span> Address <span class="hljs-keyword">from</span> <span class="hljs-string">'./Address'</span>;
+<span class="hljs-keyword">import</span> MuiThemeProvider <span class="hljs-keyword">from</span> <span class="hljs-string">"material-ui/styles/MuiThemeProvider"</span>;
+<span class="hljs-keyword">import</span> { configure, shallow, mount } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+<span class="hljs-keyword">import</span> Adapter <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme-adapter-react-16'</span>;
+
+configure({ <span class="hljs-name">adapter</span>: new Adapter() });
+
+
+
+describe(<span class="hljs-string">'App tests'</span>, function() {
+
+    it(<span class="hljs-string">'renders without crashing'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      const div = document.createElement(<span class="hljs-string">'div'</span>);
+      ReactDOM.render(&lt;App /&gt;, div);
+      ReactDOM.unmountComponentAtNode(div);
+    });
+
+    it(<span class="hljs-string">'should find ElfHeader'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        const wrapper = shallow(&lt;App/&gt;);
+        // console.log(wrapper.<span class="hljs-built_in">debug</span>());
+        // console.log(wrapper.find(<span class="hljs-string">'ElfHeader'</span>).<span class="hljs-built_in">debug</span>());
+        expect(wrapper
+            .find(<span class="hljs-string">'ElfHeader'</span>).<span class="hljs-built_in">debug</span>())
+            .toEqual(<span class="hljs-string">'&lt;ElfHeader /&gt;'</span>);
+    });
+
+    it(<span class="hljs-string">'should find Address'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        const wrapper = shallow(&lt;App/&gt;);
+        //console.log(wrapper.<span class="hljs-built_in">debug</span>());
+        //console.log(wrapper.find(<span class="hljs-string">'Address'</span>).<span class="hljs-built_in">debug</span>());
+        expect(wrapper
+            .find(<span class="hljs-string">'Address'</span>).<span class="hljs-built_in">debug</span>())
+            .toEqual(<span class="hljs-string">'&lt;Address /&gt;'</span>);
+    });
+
+    it(<span class="hljs-string">'should find GetFile'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        const wrapper = shallow(
+            &lt;MuiThemeProvider&gt;
+                &lt;App/&gt;
+            &lt;/MuiThemeProvider&gt;
+        );
+        console.log(wrapper.dive().<span class="hljs-built_in">debug</span>());
+        console.log(wrapper.dive().find(<span class="hljs-string">'GetFile'</span>).<span class="hljs-built_in">debug</span>());
+        expect(wrapper.dive()
+            .find(<span class="hljs-string">'GetFile'</span>).<span class="hljs-built_in">debug</span>())
+            .toEqual(<span class="hljs-string">'&lt;GetFile testValue={3} /&gt;'</span>);
+    });
+});
+</code></pre></div></body></html>
