@@ -31,34 +31,24 @@
 <a class="anchor" id="write-utility"></a>
 <h2>Write Utility</h2>
 <p>Then in get-address.js:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> fs=<span class="hljs-built_in">require</span>(<span class="hljs-string">"fs"</span>);
-<span class="hljs-keyword">var</span> debug = <span class="hljs-built_in">require</span>(<span class="hljs-string">'debug'</span>)(<span class="hljs-string">'get-address'</span>);
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> fs=<span class="hljs-built_in">require</span>(<span class="hljs-string">"fs"</span>);
+<span class="hljs-keyword">const</span> debug = <span class="hljs-built_in">require</span>(<span class="hljs-string">'debug'</span>)(<span class="hljs-string">'get-address'</span>);
 
 debug(<span class="hljs-string">'Testing debug'</span>);
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readFile</span>(<span class="hljs-params">fileName, callback</span>) </span>{
 <span class="hljs-meta">    'use strict'</span>;
-    <span class="hljs-keyword">if</span> (!callback) {
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve, reject</span>) </span>{
-            fs.readFile(fileName, <span class="hljs-string">'utf8'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, fileContents</span>) </span>{
-                <span class="hljs-keyword">if</span> (err) {
-                    reject(err);
-                }
-                resolve({
-                    <span class="hljs-string">'result'</span>: fileContents
-                });
-            });
-        });
-    } <span class="hljs-keyword">else</span> {
+
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve, reject</span>) </span>{
         fs.readFile(fileName, <span class="hljs-string">'utf8'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, fileContents</span>) </span>{
             <span class="hljs-keyword">if</span> (err) {
-                <span class="hljs-keyword">throw</span> (err);
+                reject(err);
             }
-            callback({
+            resolve({
                 <span class="hljs-string">'result'</span>: fileContents
             });
         });
-    }
+    });
 }
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getAddress</span>(<span class="hljs-params">value, char</span>) </span>{
@@ -76,40 +66,47 @@ debug(<span class="hljs-string">'Testing debug'</span>);
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getCity</span>(<span class="hljs-params">value, char, len</span>) </span>{
 <span class="hljs-meta">    'use strict'</span>;
-    <span class="hljs-keyword">var</span> start = value.lastIndexOf(char);
+    <span class="hljs-keyword">const</span> start = value.lastIndexOf(char);
     <span class="hljs-keyword">return</span> value.substring(start, start + len);
 }
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">writeIt</span>(<span class="hljs-params">label, value, noComma</span>) </span>{
-    <span class="hljs-keyword">var</span> comma = noComma ? <span class="hljs-string">'"'</span> : <span class="hljs-string">'",'</span>;
+    <span class="hljs-keyword">const</span> comma = noComma ? <span class="hljs-string">'"'</span> : <span class="hljs-string">'",'</span>;
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\t\t'</span> + <span class="hljs-string">'"'</span> + label + <span class="hljs-string">'": '</span> + <span class="hljs-string">'"'</span> + value + comma);
 };
 
-readFile(<span class="hljs-string">'govtrack-address.json'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">objectReturned</span>) </span>{
-    debug(<span class="hljs-string">'Please notice that we don\'t get a string back but an: '</span>, <span class="hljs-keyword">typeof</span> objectReturned);
-    debug(<span class="hljs-string">'The object has a property:'</span>, <span class="hljs-built_in">Object</span>.keys(objectReturned));
-    debug(<span class="hljs-string">'The type of the property is:'</span>, <span class="hljs-keyword">typeof</span> objectReturned.result);
+readFile(<span class="hljs-string">'govtrack-address.json'</span>)
+    .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">objectReturned</span>) </span>{
+        debug(<span class="hljs-string">'We don\'t get a string back but an: '</span>, <span class="hljs-keyword">typeof</span> objectReturned);
+        debug(<span class="hljs-string">'The object has a property:'</span>, <span class="hljs-built_in">Object</span>.keys(objectReturned));
+        debug(<span class="hljs-string">'The type of the property is:'</span>, <span class="hljs-keyword">typeof</span> objectReturned.result);
 
-    <span class="hljs-keyword">var</span> json = <span class="hljs-built_in">JSON</span>.parse(objectReturned.result);
-    debug(<span class="hljs-string">'We were able to parse the JSON.'</span>);
-    debug(<span class="hljs-string">'Total records returned:'</span>, json.meta.limit);
-    debug(<span class="hljs-string">'First person found'</span>, <span class="hljs-built_in">JSON</span>.stringify(json.objects[<span class="hljs-number">0</span>].person.name));
-
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; json.objects.length; i++) {
-        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'{'</span>);
-        writeIt(<span class="hljs-string">'firstName:'</span>, json.objects[i].person.firstname);
-        <span class="hljs-comment">// GET LAST NAME</span>
-        writeIt(<span class="hljs-string">'street:'</span>, getAddress(json.objects[i].extra.address, <span class="hljs-string">'W'</span>));
-        <span class="hljs-comment">// CITY STATE ZIP PHONE WEBSITE</span>
-        writeIt(<span class="hljs-string">'email:'</span>, <span class="hljs-string">''</span>);
-        writeIt(<span class="hljs-string">'contact:'</span>, json.objects[i].extra.contact_form || <span class="hljs-string">''</span>, <span class="hljs-literal">true</span>);
-        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'},'</span>);
-    }
-    <span class="hljs-comment">//console.log('\n\nSTRINGIFY\n\n', JSON.stringify(gitUser, null, 4));</span>
-    debug(<span class="hljs-string">'all done'</span>);
-}).catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
-    <span class="hljs-built_in">console</span>.log(e);
-});
+        <span class="hljs-keyword">var</span> json = <span class="hljs-built_in">JSON</span>.parse(objectReturned.result);
+        debug(<span class="hljs-string">'We were able to parse the JSON.'</span>);
+        debug(<span class="hljs-string">'Total records returned:'</span>, json.meta.limit);
+        debug(<span class="hljs-string">'First person found'</span>, <span class="hljs-built_in">JSON</span>.stringify(json.objects[<span class="hljs-number">0</span>].person.name));
+        <span class="hljs-keyword">const</span> jsonLength = json.objects.length;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; jsonLength; i++) {
+            <span class="hljs-keyword">const</span> open = (i === <span class="hljs-number">0</span>) ? <span class="hljs-string">'[\n\t{'</span> : <span class="hljs-string">'\t{'</span>;
+            <span class="hljs-built_in">console</span>.log(open);
+            writeIt(<span class="hljs-string">'firstName'</span>, json.objects[i].person.firstname);
+            writeIt(<span class="hljs-string">'lastName'</span>, json.objects[i].person.lastname);
+            writeIt(<span class="hljs-string">'street'</span>, getAddress(json.objects[i].extra.address, <span class="hljs-string">'W'</span>));
+            writeIt(<span class="hljs-string">'city'</span>, getCity(json.objects[i].extra.address, <span class="hljs-string">'W'</span>, <span class="hljs-number">13</span>));
+            writeIt(<span class="hljs-string">'state'</span>, json.objects[i].state);
+            writeIt(<span class="hljs-string">'zip'</span>, getZip(json.objects[i].extra.address, <span class="hljs-string">' '</span>));
+            writeIt(<span class="hljs-string">'phone'</span>, json.objects[i].phone);
+            writeIt(<span class="hljs-string">'website'</span>, json.objects[i].website);
+            writeIt(<span class="hljs-string">'email'</span>, <span class="hljs-string">''</span>);
+            writeIt(<span class="hljs-string">'contact'</span>, json.objects[i].extra.contact_form || <span class="hljs-string">''</span>, <span class="hljs-literal">true</span>);
+            <span class="hljs-keyword">const</span> close = i &lt; jsonLength - <span class="hljs-number">1</span> ? <span class="hljs-string">'\t},'</span> : <span class="hljs-string">'\t}\n]'</span>;
+            <span class="hljs-built_in">console</span>.log(close);
+        }
+        debug(<span class="hljs-string">'all done'</span>);
+    })
+    .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(e);
+    });
 </code></pre>
 <p>Note that you won&#39;t see the debug unless you first execute this line at the bash prompt:</p>
 <p>  export DEBUG=&#39;get-address&#39;</p>

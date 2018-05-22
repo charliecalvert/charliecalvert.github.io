@@ -3,9 +3,16 @@
 <li><a href="#step-one">Step One</a></li>
 <li><a href="#step-two">Step Two</a></li>
 <li><a href="#ignore-politicians">Ignore Politicians</a></li>
-<li><a href="#step-three">Step Three</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#step-three">Step Three</a></li>
+<li><a href="#set-the-port">Set the Port</a></li>
+<li><a href="#serve-data">Serve Data</a></li>
+<li><a href="#proxy">Set up a Proxy</a></li>
+<li><a href="#call-server">Call Server</a></li>
+<li><a href="#next-and-previous-buttons">Next and Previous Buttons</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
-<p>Create a server to serve up addresses. Later we will convert this in to MongoDB server.</p>
+<p>Create a server to serve up addresses. Later we will convert this to a MongoDB server. For now, we will just have the server forward the list of addresses we created in the <strong>GetAddress</strong> assignment.</p>
+<p><strong>NOTE</strong>: <em>We could more easily put that JSON file in the public directory of our client, but I want to incrementally move toward the point where we will be serving data from a database. The first step is to set up the server that will eventually serve MongoDB data. For now, however, we will just have it forward the content of the <strong>address-list.json</strong> file in JSON format.</em></p>
 <a class="anchor" id="step-one"></a>
 <h2>Step One</h2>
 <p>Go to JsObjects:</p>
@@ -15,7 +22,10 @@
 <pre><code>CreateExpressProject CongressServer
 <span class="hljs-built_in">cd</span> CongressServer
 npm install
-</code></pre><p>Open the project in WebStorm.</p>
+</code></pre><p>Open the project in WebStorm and make sure your JavaScript settings are configured for ES6.</p>
+<ul>
+<li><strong>File | Settings | Languages &amp; Frameworks | JavaScript</strong></li>
+</ul>
 <a class="anchor" id="step-two"></a>
 <h2>Step Two</h2>
 <p>Set up bower. Your <strong>bower.json</strong> probably already contains Bootstrap, and hence jQuery. But just in case:</p>
@@ -27,14 +37,14 @@ npm install
 </code></pre><p>Now might be a good time to start the project: <strong>npm start</strong></p>
 <a class="anchor" id="ignore-politicians"></a>
 <h2>Ignore Politicians</h2>
-<p>Add a file called <strong>nodemon.json</strong> in the root of your project. Place the following content in it:</p>
+<p>Add or open a file called <strong>nodemon.json</strong> in the root of your project. Be sure the following content can be found in it:</p>
 <pre><code class="lang-javascript">{
   <span class="hljs-attr">"verbose"</span>: <span class="hljs-literal">true</span>,
   <span class="hljs-attr">"ignore"</span>: [<span class="hljs-string">"politicians.json"</span>, <span class="hljs-string">"**/bower-components/**"</span>]
 }
 </code></pre>
 <p>This project may create a file called <strong>politicians.json</strong> each time you insert data into the database. By default, this will cause <strong>nodemon</strong> to restart the project each time we write data to <strong>politicians.json</strong>. This can cause miscellaneous errors on the on the client side, such as a false report for failure for the <strong>insertValidCollection</strong>. The fix is to ask nodemon to ignore <strong>politicians.json</strong>. We should also ask it to ignore our components folder.</p>
-<p>For more on nodemon configuration, see here:</p>
+<p>For more on <strong>nodemon</strong> configuration, see here:</p>
 <ul>
 <li><a href="https://github.com/remy/nodemon">https://github.com/remy/nodemon</a></li>
 <li><a href="https://github.com/remy/nodemon/blob/master/doc/sample-nodemon.md">https://github.com/remy/nodemon/blob/master/doc/sample-nodemon.md</a></li>
@@ -47,13 +57,109 @@ npm install
 </code></pre>
 <a class="anchor" id="step-three"></a>
 <h2>Step Three</h2>
-<p>Let&#39;s practice setting up the <strong>favicon</strong>. Because you used <strong>CreateAllExpress</strong>, you should already have a <strong>favicon.png</strong> file in <strong>public.</strong> But in case you have some reason to do it manually, here is how to get a default favicon on Linux (first example) or on Windows:</p>
+<p>Let&#39;s practice setting up the <strong>favicon</strong>. Because you used <strong>CreateExpressProject</strong>, you should already have a <strong>favicon.png</strong> or <strong>favicon.ico</strong> file in <strong>public.</strong> But in case you have some reason to do it manually, here is how to get a default favicon on Linux (first example) or on Windows:</p>
 <pre><code>cp <span class="hljs-formula">$JSOBJECTS/Data/MongoBootstrap/favicon.png public/.
 copy %USERPROFILE%<span class="hljs-tag">\<span class="hljs-name">Git</span></span><span class="hljs-tag">\<span class="hljs-name">JsObjects</span></span><span class="hljs-tag">\<span class="hljs-name">Data</span></span><span class="hljs-tag">\<span class="hljs-name">MongoBootstrap</span></span><span class="hljs-tag">\<span class="hljs-name">favicon</span></span>.png public<span class="hljs-tag">\<span class="hljs-name">.</span></span></span>
-</code></pre><p>The next step is not done for you automatically by <strong>CreateAllExpress</strong>, so do this by hand:</p>
+</code></pre><p>Or better, get a nice 32X32 PN favicon from the web.</p>
 <ul>
-<li>In an editor, open up <strong>app.js</strong> from the root of your project. (Server side)</li>
-<li>On line 18 uncomment: <strong>app.use(favicon(__dirname + &#39;/public/favicon.ico&#39;));</strong></li>
-<li>Change <strong>favicon.ico</strong> to <strong>favicon.png</strong>.</li>
+<li><a href="https://commons.wikimedia.org/wiki/File:FAVICON_R5.png">Wikimedia</a></li>
+<li><a href="https://commons.wikimedia.org">Wikimedia search for favicon</a></li>
+</ul>
+<p>The next step is to check views/layout.pug and check out the LINK that CreateExpressProject made for you:</p>
+<pre><code>link(<span class="hljs-attribute">rel</span>=<span class="hljs-string">"icon"</span>, <span class="hljs-attribute">type</span>=<span class="hljs-string">"image/png"</span> <span class="hljs-attribute">href</span>=<span class="hljs-string">"favicon.png?v=1"</span>)
+</code></pre><p>For more information, see this documented <a href="https://www.w3.org/2005/10/howto-favicon">on the W3 site</a>.</p>
+<a class="anchor" id="set-the-port"></a>
+<h2>Set the Port</h2>
+<p>Set up the port in <strong>bin/www</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var port</span> = normalizePort(process.env.CONGRESS_SERVER_PORT || <span class="hljs-string">'30026'</span>);
+</code></pre>
+<p>And then a few lines further down let&#39;s tell the developer which port is being used:</p>
+<pre><code class="lang-javascript">server.listen(port, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'listening on port'</span>, port);
+});
+</code></pre>
+<a class="anchor" id="serve-data"></a>
+<h2>Serve Data</h2>
+<p>The first step will be to read in the address-list.json file:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readFile</span>(<span class="hljs-params">fileName</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve, reject</span>) </span>{
+        fs.readFile(fileName, <span class="hljs-string">'utf8'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, fileContents</span>) </span>{
+            <span class="hljs-keyword">if</span> (err) {
+                reject(err);
+            }
+            resolve({
+                <span class="hljs-string">'result'</span>: fileContents
+            });
+        });
+    });
+}
+</code></pre>
+<p>Now you need to send it to the world when they call the <strong>/address-list</strong> route:</p>
+<pre><code class="lang-JavaScript">router.get(<span class="hljs-string">'/address-list'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    readFile(__dirname + <span class="hljs-string">'/address-list.json'</span>)
+        .then(<span class="hljs-function">(<span class="hljs-params">json</span>) =&gt;</span> {
+            res.send(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">YOU</span> <span class="hljs-attr">WRITE</span> <span class="hljs-attr">THIS</span> <span class="hljs-attr">PART</span>&gt;</span>);
+        });    
+});</span>
+</code></pre>
+<p>The data you read in from <strong>address-list.json</strong> will be in text format. It will be a string. You will need to convert it JSON. But note that the data sent back from <strong>readFile</strong> comes in the form of a simple JavaScript object. The object itself is not a string, but only the part that was read from the file.</p>
+<a class="anchor" id="proxy"></a>
+<h2>Set up a Proxy</h2>
+<p>Modify <strong>AddressMaven</strong>, or whatever you are calling it, to read this data.</p>
+<p>Start by setting up a proxy in <strong>package.json</strong>:</p>
+<pre><code class="lang-javascript">{
+    <span class="hljs-string">"name"</span>: <span class="hljs-string">"week03-react-jest"</span>,
+    <span class="hljs-string">"version"</span>: <span class="hljs-string">"0.1.0"</span>,
+    <span class="hljs-string">"private"</span>: <span class="hljs-keyword">true</span>,
+    <span class="hljs-string">"proxy"</span>: <span class="hljs-string">"http://localhost:30026"</span>, &lt;=== HERE
+    <span class="hljs-string">"dependencies"</span>: {
+        <span class="hljs-string">"material-ui"</span>: <span class="hljs-string">"^0.20.0"</span>,
+        <span class="hljs-string">"react"</span>: <span class="hljs-string">"^16.3.2"</span>,
+        // <span class="hljs-keyword">AND</span> SO <span class="hljs-keyword">ON</span>
+     }
+     // <span class="hljs-keyword">AND</span> <span class="hljs-keyword">ON</span>
+}
+</code></pre>
+<p>Now, when we call <strong>fetch</strong>, our requests are proxied to the <strong>CongressAddressServer</strong>.</p>
+<a class="anchor" id="call-server"></a>
+<h2>Call Server</h2>
+<p>Modify the first few lines of <strong>App.js</strong>:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">import</span> tempAddressList from '../address-list';
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Address</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    constructor() {
+        <span class="hljs-keyword">super</span>();
+        <span class="hljs-keyword">this</span>.debug = <span class="hljs-literal">false</span>;
+        <span class="hljs-keyword">this</span>.addressList = <span class="hljs-literal">null</span>;
+        <span class="hljs-keyword">this</span>.state = {
+            address: tempAddressList[<span class="hljs-number">0</span>]
+        };
+        <span class="hljs-keyword">this</span>.getAddressList();
+        <span class="hljs-keyword">this</span>.log(<span class="hljs-symbol">'Temp</span> <span class="hljs-type">Address</span> <span class="hljs-type">List</span>:', tempAddressList);
+    }
+}
+</code></pre>
+<p>You write <strong>getAddressList</strong>. It&#39;s just another call to fetch, this time with the route being <strong>/address-list</strong>. In the method, include a line that sets <strong>this.addressList</strong>. It might look something like this, where <strong>addressListFromServer</strong> is the JSON data you retrieved from the server:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">this</span>.addressList = addressListFromServer;
+</code></pre>
+<a class="anchor" id="next-and-previous-buttons"></a>
+<h2>Next and Previous Buttons</h2>
+<p>The final step is to add two buttons to your project so you can iterate forward and backwards through the address. The buttons should be in the Presentation component, which we are calling <strong>AddressShow</strong> and the logic for iterating over the record should be in a <strong>Address</strong>.</p>
+<p>By splitting up our code into Presentation and Log (sometimes called business rules) we are following <a href="http://www.elvenware.com/charlie/development/web/JavaScript/GettingStarted.html#good-code">good programming practices</a>.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Tag it:</p>
+<pre><code>tag -<span class="hljs-selector-tag">a</span> vX<span class="hljs-selector-class">.X</span><span class="hljs-selector-class">.X</span> -m <span class="hljs-string">"Completed CongressAddressServer"</span>
+</code></pre><p>Tell me:</p>
+<ul>
+<li>Tag</li>
+<li>Directory for AddressMaven</li>
+<li>Directory for AddressServer<ul>
+<li>Also tell me the port if not 30026</li>
+</ul>
+</li>
+<li>Branch if relevant</li>
 </ul>
 </div></body></html>
