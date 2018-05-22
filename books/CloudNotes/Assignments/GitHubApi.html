@@ -3,13 +3,14 @@
 <li><a href="#node-green">Node Support for ES6</a></li>
 <li><a href="#github-api">GitHub API</a></li>
 <li><a href="#sign-in">Sign in</a></li>
+<li><a href="#get-gist-data">Get Gist Data</a></li>
 <li><a href="#display-gist-data">Display Gist Data</a></li>
-<li><a href="#testing-notes">Testing Notes</a></li>
-<li><a href="#one-test">Running One Test File or Suite</a></li>
 <li><a href="#getgist-component">GetGist Component</a></li>
 <li><a href="#thinking-about-state">Thinking about State</a></li>
 <li><a href="#examples">Examples</a></li>
-<li><a href="#time-till-renew">Time till Renew</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="git-hub-api"></a>
+<li><a href="#time-till-renew">Time till Renew</a></li>
+<li><a href="#testing-notes">Testing Notes</a></li>
+<li><a href="#one-test">Running One Test File or Suite</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="git-hub-api"></a>
 <h1>Git Hub API</h1>
 <p>Learn how to call the <a href="https://github.com/github-tools/github">GitHub API</a>.</p>
 <a class="anchor" id="node-green"></a>
@@ -38,7 +39,7 @@ v7.<span class="hljs-number">9.0</span>
 </ul>
 <p>Install the JavaScript GitHub API:</p>
 <pre><code>npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save github-api</span>
-</code></pre><p>Link in the JavaScript GitHub API:</p>
+</code></pre><p>In a file called <strong>routes/gists.js</strong> link in the JavaScript GitHub API:</p>
 <pre><code class="lang-javascript"><span class="hljs-attribute">var GitHub</span> = require(<span class="hljs-string">'github-api'</span>);
 </code></pre>
 <p>Here is an FYI</p>
@@ -47,11 +48,14 @@ v7.<span class="hljs-number">9.0</span>
 </ul>
 <a class="anchor" id="sign-in"></a>
 <h2>Sign in</h2>
-<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> getGitHub = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<p>Since we are going to being modifying data, we should start by signing in.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> token = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./tokens'</span>);
+
+<span class="hljs-keyword">let</span> getGitHub = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">let</span> gh;
     <span class="hljs-keyword">if</span> (<span class="hljs-literal">true</span>) {
-    <span class="hljs-attr">https</span>:<span class="hljs-comment">//gist.github.com/charliecalvert/51daef341699943b07c9570c3ad2cbab    gh = new GitHub({</span>
-            token: token
+    gh = <span class="hljs-keyword">new</span> GitHub({
+            <span class="hljs-attr">token</span>: token
         });
     } <span class="hljs-keyword">else</span> {
         gh = <span class="hljs-keyword">new</span> GitHub({
@@ -62,64 +66,54 @@ v7.<span class="hljs-number">9.0</span>
     <span class="hljs-keyword">return</span> gh;
 };
 </code></pre>
-<a class="anchor" id="display-gist-data"></a>
-<h2>Display Gist Data</h2>
-<p>Create a new components based on GetUserInfo and  call it <strong>DataMaven</strong>.</p>
-<p>In DataMaven block copy fetchUser and paste it, renaming it to fetchGist. Now you have both fetchUser and fetchGist. In fetchGist, the URL should be &#39;/api/gist-test&#39;.</p>
-<p>Your render method for DataMaven should have the routes that were in ElfHeader:</p>
-<pre><code class="lang-javascript">render() {
-    return (
-
-        <span class="hljs-tag">&lt;<span class="hljs-name">Router</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span>/&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">exact</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{GetUserInfo}/</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/get-foo'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{GetFoo}/</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/get-numbers'</span>
-                       <span class="hljs-attr">render</span>=<span class="hljs-string">{(props)</span> =&gt;</span> (
-                           <span class="hljs-tag">&lt;<span class="hljs-name">SmallNumbers</span> {<span class="hljs-attr">...props</span>}
-                                         <span class="hljs-attr">numbers</span>=<span class="hljs-string">{numbersInit}/</span>&gt;</span>
-                       )}
-                /&gt;
-            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-
-        <span class="hljs-tag">&lt;/<span class="hljs-name">Router</span>&gt;</span>
-    );
-}
+<p>Here is <strong>tokens.js</strong>:</p>
+<pre><code class="lang-JavaScript">const tokens = [
+    '3bd10af<span class="hljs-number">220924</span>e317cd3f<span class="hljs-number">7660</span>1a<span class="hljs-number">2923</span>1b507d9a7'
+];
+module.exports = tokens[<span class="hljs-number">0</span>];
 </code></pre>
-<p>In <strong>index.js</strong> just load <strong>DataMaven</strong>:</p>
-<pre><code class="lang-javascript">ReactDOM.render(
-    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">DataMaven</span>/&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>,
-    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
-);
-</code></pre>
-<a class="anchor" id="testing-notes"></a>
-<h2>Testing Notes</h2>
-<p>The tests in <strong>Header.test.js</strong> break after the refactoring explained above. After the refactoring, I was getting this error:</p>
+<p>But you must get your own token from GitHub. It&#39;s in:</p>
 <ul>
-<li><em>Failed context type: The context <code>router</code> is marked as required in <code>Link</code>, but its value is <code>undefined</code>.</em></li>
+<li><strong>Settings | Developer Settings | Personal Acccess Tokens</strong></li>
 </ul>
-<p>This is because the <strong>ElfHeader</strong> could not find the <strong>Router</strong> tag is was expected. The fix is as follows:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { BrowserRouter <span class="hljs-keyword">as</span> Router } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span>;
-
-it(<span class="hljs-string">'renders without crashing'</span>, () =&gt; {
-    <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
-    ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Router</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span> /&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">Router</span>&gt;</span></span>, div);
+<p>Like this:</p>
+<ul>
+<li><a href="https://github.com/settings/tokens">https://github.com/settings/tokens</a></li>
+</ul>
+<a class="anchor" id="get-gist-data"></a>
+<h2>Get Gist Data</h2>
+<pre><code class="lang-JavaScript">router.get(<span class="hljs-string">'/get-basic-list'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+    logger.log(<span class="hljs-string">'GET BASIC LIST CALLED'</span>);
+    <span class="hljs-keyword">let</span> gh = getGitHub();
+    <span class="hljs-keyword">const</span> me = gh.getUser();
+    logger.log(<span class="hljs-string">'ME'</span>, me);
+    me
+        .listGists()
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">{ data }</span>) </span>{
+            logger.log(<span class="hljs-string">'FILES PROMISE'</span>, <span class="hljs-built_in">Object</span>.keys(data[<span class="hljs-number">0</span>].files));
+            <span class="hljs-keyword">const</span> results = data.map(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> ({
+                <span class="hljs-attr">htmlUrl</span>: item.html_url,
+                <span class="hljs-attr">id</span>: item.id,
+                <span class="hljs-attr">gitPullUrl</span>: item.git_pull_url,
+                <span class="hljs-attr">description</span>: item.description,
+                <span class="hljs-attr">ownerLogin</span>: item.owner.login,
+                <span class="hljs-attr">avatarUrl</span>: item.owner.avatar_url,
+                <span class="hljs-attr">files</span>: <span class="hljs-built_in">Object</span>.keys(item.files)
+            }));
+            response.status(<span class="hljs-number">200</span>).send({
+                <span class="hljs-attr">count</span>: results.length,
+                <span class="hljs-attr">result</span>: results
+            });
+        })
+        .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+            logger.log(<span class="hljs-string">'USER Promise Rejected'</span>, err);
+            response.status(<span class="hljs-number">500</span>).send({ <span class="hljs-attr">result</span>: err });
+        });
 });
 </code></pre>
-<p><a href="https://gist.github.com/charliecalvert/51daef341699943b07c9570c3ad2cbab">https://gist.github.com/charliecalvert/51daef341699943b07c9570c3ad2cbab</a>
-<strong>Question</strong>: After making this change, we might want to test to see if <strong>ElfHeader</strong> properly renders an <strong>H2</strong> element. For that test to work, should we now use <strong>shallow</strong> or <strong>mount</strong>?</p>
-<a class="anchor" id="one-test"></a>
-<h2>Running One Test File or Suite</h2>
-<p>We have learned how to use <strong>fit</strong> and <strong>.only</strong>. Also, note the menu:</p>
-<pre><code>Watch Usage
- › Press o <span class="hljs-keyword">to</span> only <span class="hljs-builtin-name">run</span> tests related <span class="hljs-keyword">to</span> changed files.
- › Press p <span class="hljs-keyword">to</span><span class="hljs-built_in"> filter </span>by a filename regex pattern.
- › Press q <span class="hljs-keyword">to</span> quit watch mode.
- › Press Enter <span class="hljs-keyword">to</span> trigger a test run.
-</code></pre><p>Select <strong>p</strong> and enter part of the name of the test file you want to test. For instance, <strong>Header</strong>. Then only <strong>Header.test.js</strong> will run.</p>
+<a class="anchor" id="display-gist-data"></a>
+<h2>Display Gist Data</h2>
+<p>In <strong>App.js</strong> make a copy of the <strong>fetch</strong> code you used to call the <strong>/user</strong> route. For now, use it in <strong>App.js</strong> and call your new method <strong>fetchGistList</strong>. In <strong>fetchGistList</strong>, the URL should be <strong>/gists/get-basic-list</strong>.</p>
 <a class="anchor" id="getgist-component"></a>
 <h2>GetGist Component</h2>
 <p>You&#39;ll need to create a new component called <strong>ShowNewGist</strong> that extends <strong>React.Component</strong>. Its job will be to display the information you get back when you create a gist. This component will take a certain number of props including:</p>
@@ -170,4 +164,29 @@ X-RateLimit-<span class="hljs-string">Reset:</span> <span class="hljs-number">14
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> f = <span class="hljs-function"><span class="hljs-keyword">new</span> <span class="hljs-title">Date</span>(<span class="hljs-number">1492098563</span> * <span class="hljs-number">1000</span>);
 <span class="hljs-title">console</span>.<span class="hljs-title">log</span>(f); =&gt;</span> <span class="hljs-string">"Thu Apr 13 2017 08:49:23 GMT-0700 (PDT)"</span>
 </code></pre>
+<a class="anchor" id="testing-notes"></a>
+<h2>Testing Notes</h2>
+<p>The tests in <strong>Header.test.js</strong> break after the refactoring explained above. After the refactoring, I was getting this error:</p>
+<ul>
+<li><em>Failed context type: The context <code>router</code> is marked as required in <code>Link</code>, but its value is <code>undefined</code>.</em></li>
+</ul>
+<p>This is because the <strong>ElfHeader</strong> could not find the <strong>Router</strong> tag is was expected. The fix is as follows:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { BrowserRouter <span class="hljs-keyword">as</span> Router } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span>;
+
+it(<span class="hljs-string">'renders without crashing'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+    ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Router</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span> /&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">Router</span>&gt;</span></span>, div);
+});
+</code></pre>
+<p><a href="https://gist.github.com/charliecalvert/51daef341699943b07c9570c3ad2cbab">https://gist.github.com/charliecalvert/51daef341699943b07c9570c3ad2cbab</a>
+<strong>Question</strong>: After making this change, we might want to test to see if <strong>ElfHeader</strong> properly renders an <strong>H2</strong> element. For that test to work, should we now use <strong>shallow</strong> or <strong>mount</strong>?</p>
+<a class="anchor" id="one-test"></a>
+<h2>Running One Test File or Suite</h2>
+<p>We have learned how to use <strong>fit</strong> and <strong>.only</strong>. Also, note the menu:</p>
+<pre><code>Watch Usage
+ › Press o <span class="hljs-keyword">to</span> only <span class="hljs-builtin-name">run</span> tests related <span class="hljs-keyword">to</span> changed files.
+ › Press p <span class="hljs-keyword">to</span><span class="hljs-built_in"> filter </span>by a filename regex pattern.
+ › Press q <span class="hljs-keyword">to</span> quit watch mode.
+ › Press Enter <span class="hljs-keyword">to</span> trigger a test run.
+</code></pre><p>Select <strong>p</strong> and enter part of the name of the test file you want to test. For instance, <strong>Header</strong>. Then only <strong>Header.test.js</strong> will run.</p>
 </div></body></html>
