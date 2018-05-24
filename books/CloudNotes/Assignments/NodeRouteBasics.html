@@ -17,6 +17,9 @@
 <li><a href="#more-complex-example">More Complex Example</a></li>
 <li><a href="#interact">Client Server Interactions</a></li>
 <li><a href="#update-out-of-date-packages">Update Out of Date Packages</a></li>
+<li><a href="#setting-up-the-port">Setting up the Port</a></li>
+<li><a href="#routing">Node Express Routing Basics</a></li>
+<li><a href="#node-express-serving-up-static-pages">Node Express Serving up Static Pages</a></li>
 <li><a href="#temp-directory">Temp directory</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p><strong>STATUS</strong>: <em>This assignment needs polishing but should be complete enough to allow students to complete the assignment.</em></p>
@@ -319,6 +322,47 @@ router.get(<span class="hljs-string">'/walk'</span>, <span class="hljs-function"
 <p>See here:</p>
 <ul>
 <li><a href="http://stackoverflow.com/a/22849716">http://stackoverflow.com/a/22849716</a></li>
+</ul>
+<a class="anchor" id="setting-up-the-port"></a>
+<h2>Setting up the Port</h2>
+<p>Let&#39;s allways use the following:</p>
+<pre><code>var <span class="hljs-keyword">port</span> = <span class="hljs-keyword">process</span>.env.<span class="hljs-keyword">PORT</span> || <span class="hljs-number">30025</span>;
+
+// Code omitted here...
+
+app.listen(<span class="hljs-keyword">port</span>);
+console.log(<span class="hljs-symbol">'Listening</span> <span class="hljs-keyword">on</span> <span class="hljs-keyword">port</span> :' + <span class="hljs-keyword">port</span>);  
+</code></pre><p>We want to pick a particular port because in some situations, such as running on
+EC2, we need to open the port ahead of time. By choosing one port, and always
+using it, you won&#39;t have to edit my code before you can run it, and vice versa.</p>
+<a class="anchor" id="routing"></a>
+<h2>Node Express Routing Basics</h2>
+<p>Express offers support for HTTP verbs such as Get, Post, Put, etc.</p>
+<p>The verbs provide a response to specific routes, such as &#39;/&#39;:</p>
+<pre><code>app.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"root request sent"</span>);
+});
+</code></pre><p>Or here is request that uses a wildcards or regular expressions:</p>
+<pre><code>app.get(<span class="hljs-string">'/a*'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req, res)</span> <span class="hljs-comment">{
+    console.log("A request sent that begins with an a");
+}</span>);</span>
+</code></pre><p>Working with numbers:</p>
+<pre><code>app.get(<span class="hljs-string">'/book/:id((d+)'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Only requests that are numbers"</span>);
+});
+</code></pre><a class="anchor" id="node-express-serving-up-static-pages"></a>
+<h2>Node Express Serving up Static Pages</h2>
+<p>Put your static files in a particular directory and tell express about the
+directory:</p>
+<pre><code>app.<span class="hljs-keyword">use</span>(<span class="hljs-string">"/public"</span>, express.<span class="hljs-keyword">static</span>(__dirname + '/<span class="hljs-keyword">public</span>'));
+</code></pre><p>Server them up like this:</p>
+<pre><code>app.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req, res)</span> </span>{
+    <span class="hljs-keyword">var</span> html = fs.readFileSync(<span class="hljs-string">'public/index.html'</span>);
+    res.writeHeader(<span class="hljs-number">200</span>, {<span class="hljs-string">"Content-Type"</span>: <span class="hljs-string">"text/html"</span>});
+    res.end(html);
+});
+</code></pre><ul>
+<li><a href="http://www.senchalabs.org/connect/static.html">http://www.senchalabs.org/connect/static.html</a></li>
 </ul>
 <a class="anchor" id="temp-directory"></a>
 <h2>Temp directory</h2>
