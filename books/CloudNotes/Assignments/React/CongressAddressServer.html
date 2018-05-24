@@ -8,7 +8,9 @@
 <li><a href="#serve-data">Serve Data</a></li>
 <li><a href="#proxy">Set up a Proxy</a></li>
 <li><a href="#call-server">Call Server</a></li>
+<li><a href="#load-after-component-is-mounted">Load after component is mounted</a></li>
 <li><a href="#next-and-previous-buttons">Next and Previous Buttons</a></li>
+<li><a href="#testing-address">Testing Address</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>Create a server to serve up addresses. Later we will convert this to a MongoDB server. For now, we will just have the server forward the list of addresses we created in the <strong>GetAddress</strong> assignment.</p>
@@ -134,18 +136,42 @@ copy %USERPROFILE%<span class="hljs-tag">\<span class="hljs-name">Git</span></sp
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Address</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
     constructor() {
         <span class="hljs-keyword">super</span>();
-        <span class="hljs-keyword">this</span>.debug = <span class="hljs-literal">false</span>;
-        <span class="hljs-keyword">this</span>.addressList = <span class="hljs-literal">null</span>;
-        <span class="hljs-keyword">this</span>.state = {
-            address: tempAddressList[<span class="hljs-number">0</span>]
-        };
-        <span class="hljs-keyword">this</span>.getAddressList();
+        <span class="hljs-keyword">this</span>.debug = <span class="hljs-literal">false</span>;        
+                <span class="hljs-keyword">this</span>.canceled = <span class="hljs-literal">false</span>;
+        <span class="hljs-keyword">this</span>.state = {            
+                        addressIndex: <span class="hljs-number">0</span>,
+                       addressList: [{}],
+                address: tempAddressList[<span class="hljs-number">0</span>]
+        };        
         <span class="hljs-keyword">this</span>.log(<span class="hljs-symbol">'Temp</span> <span class="hljs-type">Address</span> <span class="hljs-type">List</span>:', tempAddressList);
+    }
+
+        componentDidMount() {
+            <span class="hljs-keyword">this</span>.getAddressList();
+        }        
+
+        componentWillUnmount() {
+        <span class="hljs-keyword">this</span>.canceled = <span class="hljs-literal">true</span>;
     }
 }
 </code></pre>
-<p>You write <strong>getAddressList</strong>. It&#39;s just another call to fetch, this time with the route being <strong>/address-list</strong>. In the method, include a line that sets <strong>this.addressList</strong>. It might look something like this, where <strong>addressListFromServer</strong> is the JSON data you retrieved from the server:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">this</span>.addressList = addressListFromServer;
+<p>You write <strong>getAddressList</strong>. It&#39;s just another call to <strong>fetch</strong>, this time with the route being <strong>/address-list</strong>. In the method, include a line that sets <strong>this.state.addressList</strong>. It might look something like this, where <strong>addressListFromServer</strong> is the JSON data you retrieved from the server:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.canceled) {
+    <span class="hljs-keyword">this</span>.setState({addressList: addressListFromServer});
+    <span class="hljs-keyword">this</span>.setState({index: <span class="hljs-number">0</span>});
+}
+</code></pre>
+<p>The key points to note here:</p>
+<ul>
+<li>Don&#39;t call <strong>fetch</strong> from the constructor. Instead, call it from <a href="https://reactjs.org/docs/react-component.html#componentdidmount">componentDidMount</a> which React will automatically call after the component is mounted.</li>
+<li>Don&#39;t call setState if the component is not mounted. If you do, you get the error below.</li>
+</ul>
+<p><strong>ERROR</strong>: <em>You might get this error, especially while testing: Warning: &quot;Can&#39;t call setState (or forceUpdate) on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the <strong>componentWillUnmount</strong> method.&quot; To avoid this error, we create a variable called <strong>this.canceled</strong>.</em></p>
+<a class="anchor" id="load-after-component-is-mounted"></a>
+<h2>Load after component is mounted</h2>
+<pre><code class="lang-javascript">componentDidMount() {
+    <span class="hljs-keyword">this</span>.getAddress();
+}
 </code></pre>
 <a class="anchor" id="next-and-previous-buttons"></a>
 <h2>Next and Previous Buttons</h2>
@@ -164,6 +190,30 @@ copy %USERPROFILE%<span class="hljs-tag">\<span class="hljs-name">Git</span></sp
 </code></pre>
 <p>The code shown here set&#39;s the <strong>offset</strong> parameter of <strong>setAddress</strong> to 1.</p>
 <p><strong>HINT</strong>: <em>You could, if you found it convenient, pass in -1 in some cases.</em></p>
+<a class="anchor" id="testing-address"></a>
+<h2>Testing Address</h2>
+<pre><code class="lang-javascript">const clickButton = <span class="hljs-function"><span class="hljs-params">(wrapper, finder)</span> =&gt;</span> {
+     setImmediate(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+             wrapper.update();
+             wrapper.instance().setAddress(<span class="hljs-number">0</span>);
+             setImmediate(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+                     wrapper.update();
+                     <span class="hljs-keyword">try</span> {
+                             finder();
+                     } <span class="hljs-keyword">catch</span> (e) {
+                             <span class="hljs-built_in">console</span>.log(e);
+                     }
+             });
+     });
+};
+
+it(<span class="hljs-string">'renders state of firstName after button click'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+     const wrapper = shallow(&lt;Address addressList={addresses}/&gt;);
+     clickButton(wrapper, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+             expect(wrapper.find(<span class="hljs-string">'AddressShow'</span>).prop(<span class="hljs-string">'address'</span>).firstName).toEqual(<span class="hljs-string">'Patty'</span>);
+     });
+});
+</code></pre>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Tag it:</p>
