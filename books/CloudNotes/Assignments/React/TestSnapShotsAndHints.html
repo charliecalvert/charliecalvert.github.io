@@ -1,12 +1,16 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>TestSnapShotsAndHints</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>TestSnapShotsAndHints</h1><p>Welcome to TestSnapShotsAndHints</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#watch-tests">Watch Tests</a></li>
 <li><a href="#snapshots">Snapshots</a></li>
 <li><a href="#code-coverage">Code Coverage</a></li>
 <li><a href="#proxy-tests">Proxy Tests</a></li>
 <li><a href="#errors">Errors</a></li>
 <li><a href="#mocking-fetch">Mocking Fetch</a></li>
+<li><a href="#address-and-after-click-field-tests">Address and after Click Field Tests</a></li>
+<li><a href="#addressshow-and-afterclickfieldtest">AddressShow and afterClickFieldTest</a></li>
+<li><a href="#eslint">ESLint</a></li>
 <li><a href="#material-checklist">Material CheckList</a></li>
-<li><a href="#eslint">ESLint</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#native-test">Native Test</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>SnapShot tests do not replace all our standard tests. SnapShot testing is not TDD because you can&#39;t meaningfully write the test first and then get it to pass.</p>
 <p>In all our tests, whether they are SnapShot tests or not, we use <strong>shallow</strong> and don&#39;t use <strong>mount</strong>. There are times when <strong>mount</strong> is useful, but we are not using them on the Midterm.</p>
@@ -14,6 +18,11 @@
 <li><a href="https://facebook.github.io/jest/docs/en/configuration.html">Configuring Jest</a></li>
 <li><a href="https://facebook.github.io/jest/docs/en/snapshot-testing.html">SnapShot Testing</a></li>
 </ul>
+<a class="anchor" id="watch-tests"></a>
+<h2>Watch Tests</h2>
+<p>In <strong>package.json</strong> use the --watch flag:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"test"</span>: <span class="hljs-string">"jest --watch"</span>
+</code></pre>
 <a class="anchor" id="snapshots"></a>
 <h2>Snapshots</h2>
 <p>SnapShots allow you to create a text file that contains the output from your component when it is in a particular state. The snapshot is saved to a file. The next time you run the test, the output from your component is compared to the snapshot from your previous run.</p>
@@ -38,6 +47,7 @@ describe(<span class="hljs-string">'SnapShot Tests'</span>, <span class="hljs-fu
 <p>You should add more tests, one for each snapshot.</p>
 <a class="anchor" id="code-coverage"></a>
 <h2>Code Coverage</h2>
+<p>Jest uses a tool called Istanbul to help us be sure that all the methods in our objects are being tested.</p>
 <p>Add <strong>--coverage</strong> to your <strong>test</strong> property in <strong>package.json</strong> or just run Jest with it:</p>
 <pre><code>jest <span class="hljs-comment">--coverage</span>
 </code></pre><p>Here is an example, showing how much still needs to be done.</p>
@@ -115,6 +125,7 @@ All files         |<span class="hljs-string">    80.43 </span>|<span class="hljs
   GetFile.js      |<span class="hljs-string">    85.71 </span>|<span class="hljs-string">       50 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">    85.71 </span>|<span class="hljs-string">                15 </span>|
 ------------------|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">-------------------</span>|
 </code></pre><p>It is usually not practical to get 100% coverage on all files. Usually 80-90% is considered reasonable.</p>
+<p>If it is not already there, add <strong>coverage</strong> to your <strong>.gitignore</strong> file.</p>
 <a class="anchor" id="proxy-tests"></a>
 <h2>Proxy Tests</h2>
 <pre><code>PASS  src/tests/App.test.js
@@ -186,11 +197,8 @@ Watch Usage: Press w to show more.
 <li>Address.test.js</li>
 </ul>
 <p>I need it in <strong>SnapShots.test.js</strong> and <strong>Address.test.js</strong> because we call <strong>fetch</strong> in <strong>componendDidMount</strong>. This means its gets called when we load <strong>Address.js</strong> whether we want it to be called our not.</p>
-<a class="anchor" id="material-checklist"></a>
-<h2>Material CheckList</h2>
-<ul>
-<li>Are your buttons all Material Buttons?</li>
-</ul>
+<a class="anchor" id="address-and-after-click-field-tests"></a>
+<h2>Address and after Click Field Tests</h2>
 <pre><code class="lang-javascript">beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
    <span class="hljs-built_in">global</span>.fetch = jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
    const promise = <span class="hljs-keyword">new</span> Promise(<span class="hljs-function"><span class="hljs-params">(resolve)</span> =&gt;</span> {
@@ -251,7 +259,8 @@ it(<span class="hljs-string">'renders state of firstName after button click'</sp
 });
 
 </code></pre>
-<p>AddressShowTest</p>
+<a class="anchor" id="addressshow-and-afterclickfieldtest"></a>
+<h2>AddressShow and afterClickFieldTest</h2>
 <pre><code class="lang-javascript">let wrapper = <span class="hljs-literal">null</span>;
 
 const setAddress = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
@@ -310,5 +319,89 @@ it(<span class="hljs-string">'renders and displays the first name'</span>, <span
         <span class="hljs-string">"es6"</span>: <span class="hljs-literal">true</span>
     }
 }
+</code></pre>
+<a class="anchor" id="material-checklist"></a>
+<h2>Material CheckList</h2>
+<ul>
+<li>Are your buttons all Material Buttons?</li>
+</ul>
+<a class="anchor" id="native-test"></a>
+<h2>Native Test</h2>
+<p>Run our <strong>get-gist</strong> utility and select either h or i to get the packages with either <strong>yarn</strong> or <strong>npm</strong> you need to add to your project for testing.</p>
+<p>In your <strong>package.json</strong> file set up Jest:</p>
+<pre><code><span class="hljs-string">"jest"</span>: {
+    <span class="hljs-string">"preset"</span>: <span class="hljs-string">"jest-expo"</span>,
+     <span class="hljs-string">"transformIgnorePatterns"</span>: [
+         <span class="hljs-string">"!node_modules/react-runtime"</span>
+     ],
+    <span class="hljs-string">"snapshotSerializers"</span>: [<span class="hljs-string">"enzyme-to-json/serializer"</span>]
+},
+</code></pre><p>Example tests:</p>
+<pre><code class="lang-javascript">describe('jest test', function() {
+
+    const debug = true<span class="hljs-comment">;</span>
+
+    it('renders without crashing', () =&gt; {
+        const tree = renderer.create(<span class="hljs-name">&lt;App</span> /&gt;).toJSON()<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">tree</span>).toMatchSnapshot()<span class="hljs-comment">;</span>
+
+    })<span class="hljs-comment">;</span>
+
+    it('should find Header', () =&gt; {
+        const wrapper = shallow(<span class="hljs-name">&lt;App</span> /&gt;)<span class="hljs-comment">;</span>
+        if (<span class="hljs-name">debug</span>) {
+            console.log(<span class="hljs-name">wrapper</span>.debug())<span class="hljs-comment">;</span>
+        }
+        const nineSign = &lt;ElfHeader /&gt;<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">nineSign</span>)).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>This test for finding an element before a button test:</p>
+<pre><code class="lang-javascript">it('renders state of File paragraph before button click', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;ApiFoo</span> appInit={appInit} /&gt;)<span class="hljs-comment">;</span>
+    const nineSign = &lt;Text&gt;A status: status will go here&lt;/Text&gt;<span class="hljs-comment">;</span>
+    elfDebugEnzyme.getFirst(<span class="hljs-name">wrapper</span>, 'p')<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">nineSign</span>)).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>And then let&#39;s do a button click test:</p>
+<pre><code class="lang-javascript">it('renders state of status paragraph after button click', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;ApiFoo</span> appInit={appInit} /&gt;)<span class="hljs-comment">;</span>
+    const statusParagraph = (
+        <span class="hljs-name">&lt;Text&gt;A</span> status: status did go here&lt;/Text&gt;
+    )<span class="hljs-comment">;</span>
+    wrapper.find('#queryServer').props().onPress()<span class="hljs-comment">;</span>
+    setImmediate(() =&gt; {
+        wrapper.update()<span class="hljs-comment">;</span>
+        try {
+            expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">statusParagraph</span>)).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+        } catch (<span class="hljs-name">e</span>) {
+            console.log(<span class="hljs-name">e</span>)<span class="hljs-comment">;</span>
+        }
+    })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>Note that we can do a less precise match like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">expect</span><span class="hljs-params">(wrapper.containsMatchingElement(foo)</span></span>).toBe(true)
+</code></pre>
+<p>This will ignore the props (attributes) on a control.</p>
+<p>Notice that there is a difference between selecting a React button and React Native button:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-selector-tag">wrapper</span><span class="hljs-selector-class">.find</span>(<span class="hljs-string">'#queryServer'</span>)<span class="hljs-selector-class">.simulate</span>(<span class="hljs-string">'click'</span>);
+<span class="hljs-selector-tag">wrapper</span><span class="hljs-selector-class">.find</span>(<span class="hljs-string">'#queryServer'</span>)<span class="hljs-selector-class">.props</span>()<span class="hljs-selector-class">.onPress</span>();
+</code></pre>
+<p>In React Native, we want the latter.</p>
+<p>Or Try these tests:</p>
+<pre><code class="lang-JavaScript">it('finds a text element', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;ElfHeader</span> /&gt;)<span class="hljs-comment">;</span>
+    const link = &lt;Text&gt;Home&lt;/Text&gt;<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">wrapper</span>.dive().contains(<span class="hljs-name">link</span>)).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+it('finds a link', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;ElfHeader</span> /&gt;)<span class="hljs-comment">;</span>
+    const link = &lt;Link&gt;&lt;Text&gt;Home&lt;/Text&gt;&lt;/Link&gt;<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">wrapper</span>.dive().containsMatchingElement(<span class="hljs-name">link</span>)).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
 </code></pre>
 </div></body></html>
