@@ -86,7 +86,9 @@ copy %USERPROFILE%<span class="hljs-tag">\<span class="hljs-name">Git</span></sp
 <a class="anchor" id="serve-data"></a>
 <h2>Serve Data</h2>
 <p>The first step will be to read in the address-list.json file:</p>
-<pre><code class="lang-JavaScript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readFile</span>(<span class="hljs-params">fileName</span>) </span>{
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readFile</span>(<span class="hljs-params">fileName</span>) </span>{
 <span class="hljs-meta">    'use strict'</span>;
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve, reject</span>) </span>{
         fs.readFile(fileName, <span class="hljs-string">'utf8'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, fileContents</span>) </span>{
@@ -130,7 +132,7 @@ copy %USERPROFILE%<span class="hljs-tag">\<span class="hljs-name">Git</span></sp
 <p>Now, when we call <strong>fetch</strong>, our requests are proxied to the <strong>CongressAddressServer</strong>.</p>
 <a class="anchor" id="call-server"></a>
 <h2>Call Server</h2>
-<p>Modify the first few lines of <strong>App.js</strong>:</p>
+<p>Modify the first few lines of <strong>Address.js</strong> in <strong>AddressMaven</strong>:</p>
 <pre><code class="lang-JavaScript"><span class="hljs-keyword">import</span> tempAddressList from '../address-list';
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Address</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
@@ -192,7 +194,8 @@ copy %USERPROFILE%<span class="hljs-tag">\<span class="hljs-name">Git</span></sp
 <p><strong>HINT</strong>: <em>You could, if you found it convenient, pass in -1 in some cases.</em></p>
 <a class="anchor" id="testing-address"></a>
 <h2>Testing Address</h2>
-<pre><code class="lang-javascript">const clickButton = <span class="hljs-function"><span class="hljs-params">(wrapper, finder)</span> =&gt;</span> {
+<p>We have to wait for two events to take place. This is one way to do it. You can reuse <strong>afterClickFieldTest</strong> just as reused a method with the same name in <strong>AddressShow.test.js</strong>.</p>
+<pre><code class="lang-javascript">const afterClickFieldTest = <span class="hljs-function"><span class="hljs-params">(wrapper, finder)</span> =&gt;</span> {
      setImmediate(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
              wrapper.update();
              wrapper.instance().setAddress(<span class="hljs-number">0</span>);
@@ -209,7 +212,7 @@ copy %USERPROFILE%<span class="hljs-tag">\<span class="hljs-name">Git</span></sp
 
 it(<span class="hljs-string">'renders state of firstName after button click'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
      const wrapper = shallow(&lt;Address addressList={addresses}/&gt;);
-     clickButton(wrapper, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+     afterClickFieldTest(wrapper, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
              expect(wrapper.find(<span class="hljs-string">'AddressShow'</span>).prop(<span class="hljs-string">'address'</span>).firstName).toEqual(<span class="hljs-string">'Patty'</span>);
      });
 });
