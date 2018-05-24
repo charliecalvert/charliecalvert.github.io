@@ -10,6 +10,7 @@
 <li><a href="#call-server">Call Server</a></li>
 <li><a href="#load-after-component-is-mounted">Load after component is mounted</a></li>
 <li><a href="#next-and-previous-buttons">Next and Previous Buttons</a></li>
+<li><a href="#testing-addressshow">Testing AddressShow</a></li>
 <li><a href="#testing-address">Testing Address</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
@@ -192,6 +193,37 @@ copy %USERPROFILE%<span class="hljs-tag">\<span class="hljs-name">Git</span></sp
 </code></pre>
 <p>The code shown here set&#39;s the <strong>offset</strong> parameter of <strong>setAddress</strong> to 1.</p>
 <p><strong>HINT</strong>: <em>You could, if you found it convenient, pass in -1 in some cases.</em></p>
+<a class="anchor" id="testing-addressshow"></a>
+<h2>Testing AddressShow</h2>
+<p>We can&#39;t use our Address.setAddress because we are using shallow, and will not access methods from address. So we mock it up in the simple two line <strong>setAddress</strong> method shown here. Then we pass it in as props to <strong>AddressShow</strong>.</p>
+<pre><code class="lang-JavaScript">let wrapper = <span class="hljs-literal">null</span>;
+
+const setAddress = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        const address=addresses[<span class="hljs-number">1</span>];
+        wrapper.setProps({ address: address });
+};
+
+const defaultFieldTest = <span class="hljs-function"><span class="hljs-params">(name, index, talkToMe)</span> =&gt;</span> {
+        const wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">0</span>]} /&gt;);
+        const welcome = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
+        getIndex(wrapper, index, talkToMe);
+        expect(wrapper.contains(welcome)).toEqual(<span class="hljs-literal">true</span>);
+};
+
+const afterClickFieldTest = <span class="hljs-function"><span class="hljs-params">(name)</span> =&gt;</span> {
+        wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">0</span>]} setAddress={setAddress}/&gt;);
+        const patty = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
+        wrapper.find(<span class="hljs-string">'#setAddress'</span>).simulate(<span class="hljs-string">'click'</span>);
+        <span class="hljs-regexp">//</span><span class="hljs-built_in">console</span>.log(wrapper.debug());
+        expect(wrapper.contains(patty)).toBe(<span class="hljs-literal">true</span>);
+};
+
+it(<span class="hljs-string">'renders and displays the first name'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        defaultFieldTest(<span class="hljs-string">'First Name: unknown'</span>, <span class="hljs-number">0</span>);
+        afterClickFieldTest(<span class="hljs-string">'First Name: '</span> + addressTest.firstName, <span class="hljs-number">0</span>);
+});
+
+</code></pre>
 <a class="anchor" id="testing-address"></a>
 <h2>Testing Address</h2>
 <p>We have to wait for two events to take place. This is one way to do it. You can reuse <strong>afterClickFieldTest</strong> just as reused a method with the same name in <strong>AddressShow.test.js</strong>.</p>
