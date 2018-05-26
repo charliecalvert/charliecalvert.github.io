@@ -12,7 +12,8 @@
 <li><a href="#next-and-previous-buttons">Next and Previous Buttons</a></li>
 <li><a href="#testing-addressshow">Testing AddressShow</a></li>
 <li><a href="#testing-address">Testing Address</a></li>
-<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#setting-the-port">Setting the port</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>Create a server to serve up addresses. Later we will convert this to a MongoDB server. For now, we will just have the server forward the list of addresses we created in the <strong>GetAddress</strong> assignment.</p>
 <p><strong>NOTE</strong>: <em>We could more easily put that JSON file in the public directory of our client, but I want to incrementally move toward the point where we will be serving data from a database. The first step is to set up the server that will eventually serve MongoDB data. For now, however, we will just have it forward the content of the <strong>address-list.json</strong> file in JSON format.</em></p>
@@ -263,4 +264,17 @@ it(<span class="hljs-string">'renders state of firstName after button click'</sp
 </li>
 <li>Branch if relevant</li>
 </ul>
-</div></body></html>
+<a class="anchor" id="setting-the-port"></a>
+<h2>Setting the port</h2>
+<p>I believe this code is not portable:</p>
+<pre><code>"<span class="hljs-keyword">start</span><span class="hljs-string">": "</span>PORT=<span class="hljs-number">30030</span> nodemon ./<span class="hljs-keyword">bin</span>/www<span class="hljs-string">"</span>
+</code></pre><p>It works in Linux and the Mac but not on Windows.</p>
+<p>So I usually set the environment variable for PORT separately, in a script or in my .bashrc:</p>
+<pre><code><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">PORT</span>=30025
+</code></pre><p>Sometimes I do something like this:</p>
+<pre><code><span class="hljs-attribute">var port</span> = normalizePort(process.env.SERVER_PORT || <span class="hljs-string">'30030'</span>);
+</code></pre><p>Then in my .bashrc or elsewhere I can set the port for specific projects.</p>
+<pre><code><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">SERVER_PORT</span>=30025
+</code></pre><p>When using systemd you can set the port in your configuration file:</p>
+<pre><code><span class="hljs-attr">Environment</span>=SERVER_PORT=<span class="hljs-number">30027</span>
+</code></pre></div></body></html>

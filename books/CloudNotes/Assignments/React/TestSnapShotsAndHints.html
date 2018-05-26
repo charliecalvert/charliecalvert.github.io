@@ -10,7 +10,9 @@
 <li><a href="#addressshow-and-afterclickfieldtest">AddressShow and afterClickFieldTest</a></li>
 <li><a href="#eslint">ESLint</a></li>
 <li><a href="#material-checklist">Material CheckList</a></li>
-<li><a href="#native-test">Native Test</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#native-test">Native Test</a></li>
+<li><a href="#native-mocks">Native Mocks</a></li>
+<li><a href="#dive-for-regular-non-native-react">Dive for Regular, Non-Native React</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>SnapShot tests do not replace all our standard tests. SnapShot testing is not TDD because you can&#39;t meaningfully write the test first and then get it to pass.</p>
 <p>In all our tests, whether they are SnapShot tests or not, we use <strong>shallow</strong> and don&#39;t use <strong>mount</strong>. There are times when <strong>mount</strong> is useful, but we are not using them on the Midterm.</p>
@@ -403,5 +405,55 @@ it('finds a link', () =&gt; {
     const link = &lt;Link&gt;&lt;Text&gt;Home&lt;/Text&gt;&lt;/Link&gt;<span class="hljs-comment">;</span>
     expect(<span class="hljs-name">wrapper</span>.dive().containsMatchingElement(<span class="hljs-name">link</span>)).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
 })<span class="hljs-comment">;</span>
+</code></pre>
+<a class="anchor" id="native-mocks"></a>
+<h2>Native Mocks</h2>
+<p>I found just putting my mock at the top of my test worked in React Native. the <strong>beforeEach</strong> method is called once before each test is run.</p>
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Test Api Foo'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+
+  <span class="hljs-keyword">const</span> debug = <span class="hljs-literal">false</span>;
+
+  beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      global.fetch = jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+          <span class="hljs-keyword">const</span> promise = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+              resolve({
+                  <span class="hljs-attr">ok</span>: <span class="hljs-literal">true</span>,
+                  <span class="hljs-attr">json</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+                      <span class="hljs-keyword">return</span> {
+                          <span class="hljs-attr">file</span>: <span class="hljs-string">'file name did go here.'</span>,
+                          <span class="hljs-attr">status</span>: <span class="hljs-string">'status did go here'</span>,
+                          <span class="hljs-attr">result</span>: <span class="hljs-string">'result did go here'</span>
+                      };
+                  }
+              });
+          });
+          <span class="hljs-keyword">return</span> promise;
+      });
+  });
+
+  <span class="hljs-comment">// YOUR TESTS ARE HERE</span>
+});
+</code></pre>
+<a class="anchor" id="dive-for-regular-non-native-react"></a>
+<h2>Dive for Regular, Non-Native React</h2>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createWrapper</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> shallow(
+        &lt;MuiThemeProvider&gt;
+            &lt;GitUserUI user={userData} /&gt;
+        &lt;/MuiThemeProvider&gt;
+    );
+}
+
+it(<span class="hljs-string">'should take a snapshot'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> elfTree = createWrapper();
+    expect(elfTree).toMatchSnapshot();
+});
+
+it(<span class="hljs-string">'renders GitUserUI'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> wrapper = createWrapper();
+    elfDebugEnzyme.getAllDive(wrapper, <span class="hljs-keyword">false</span>);
+    <span class="hljs-keyword">const</span> nineSign = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;login: unknowns&lt;/p&gt;;
+    expect(wrapper.dive().containsMatchingElement(nineSign)).toBe(<span class="hljs-keyword">true</span>);
+});
 </code></pre>
 </div></body></html>
