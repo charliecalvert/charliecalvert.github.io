@@ -7,10 +7,12 @@
 <li><a href="#errors">Errors</a></li>
 <li><a href="#mocking-fetch">Mocking Fetch</a></li>
 <li><a href="#address-and-after-click-field-tests">Address and after Click Field Tests</a></li>
+<li><a href="#react-spies">React Spies</a></li>
 <li><a href="#addressshow-and-afterclickfieldtest">AddressShow and afterClickFieldTest</a></li>
 <li><a href="#eslint">ESLint</a></li>
 <li><a href="#material-checklist">Material CheckList</a></li>
 <li><a href="#native-test">Native Test</a></li>
+<li><a href="#native-spies">Native Spies</a></li>
 <li><a href="#native-mocks">Native Mocks</a></li>
 <li><a href="#dive-for-regular-non-native-react">Dive for Regular, Non-Native React</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
@@ -20,6 +22,11 @@
 <ul>
 <li><a href="https://facebook.github.io/jest/docs/en/configuration.html">Configuring Jest</a></li>
 <li><a href="https://facebook.github.io/jest/docs/en/snapshot-testing.html">SnapShot Testing</a></li>
+</ul>
+<p>See these demos in JsObjects. (Run git pull first to be sure you have the latest):</p>
+<ul>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/React/ReactFetchTests">Native Fetch Enzyme Tests</a></li>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/React/ReactNativeTesting/EnzymeBasics">Web App Fetch Enzyme Tests</a></li>
 </ul>
 <a class="anchor" id="watch-tests"></a>
 <h2>Watch Tests</h2>
@@ -262,6 +269,35 @@ it(<span class="hljs-string">'renders state of firstName after button click'</sp
 });
 
 </code></pre>
+<a class="anchor" id="react-spies"></a>
+<h2>React Spies</h2>
+<p>Similar tests from the <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/React/ReactFetchTests">ReactFetchTest</a> demo:</p>
+<pre><code class="lang-JavaScript">it('renders state by calling fetchServer directly', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;FetchServer</span> /&gt;)<span class="hljs-comment">;</span>
+    const statusParagraph = (
+        <span class="hljs-name">&lt;p</span> className=<span class="hljs-string">"App-intro"</span>&gt;Result: success&lt;/p&gt;
+    )<span class="hljs-comment">;</span>
+    wrapper.instance().fetchServer()
+        .then(() =&gt; {
+            console.log(<span class="hljs-name">wrapper</span>.debug())<span class="hljs-comment">;</span>
+            wrapper.update()<span class="hljs-comment">;</span>
+            try {
+                expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">statusParagraph</span>)).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+            } catch(<span class="hljs-name">ex</span>) {
+                console.error(<span class="hljs-name">ex</span>)<span class="hljs-comment">;</span>
+            }
+        })<span class="hljs-comment">;</span>
+
+})<span class="hljs-comment">;</span>
+
+it('calls fetchServer button click', () =&gt; {
+    const spy = jest.spyOn(<span class="hljs-name">FetchServer</span>.prototype, 'fetchServer')<span class="hljs-comment">;</span>
+    const wrapper = shallow(<span class="hljs-name">&lt;FetchServer</span> /&gt;)<span class="hljs-comment">;</span>
+    wrapper.find('#fetchServer').simulate('click')<span class="hljs-comment">;</span>
+    console.log(<span class="hljs-name">wrapper</span>.debug())<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">spy</span>).toHaveBeenCalled()<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
 <a class="anchor" id="addressshow-and-afterclickfieldtest"></a>
 <h2>AddressShow and afterClickFieldTest</h2>
 <pre><code class="lang-javascript">let wrapper = <span class="hljs-literal">null</span>;
@@ -405,6 +441,34 @@ it('finds a link', () =&gt; {
     const wrapper = shallow(<span class="hljs-name">&lt;ElfHeader</span> /&gt;)<span class="hljs-comment">;</span>
     const link = &lt;Link&gt;&lt;Text&gt;Home&lt;/Text&gt;&lt;/Link&gt;<span class="hljs-comment">;</span>
     expect(<span class="hljs-name">wrapper</span>.dive().containsMatchingElement(<span class="hljs-name">link</span>)).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<a class="anchor" id="native-spies"></a>
+<h2>Native Spies</h2>
+<p>From the <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/React/ReactNativeTesting/EnzymeBasics">Native Enzyme demo</a> tests:</p>
+<pre><code class="lang-javascript">it('renders state of File paragraph after button click setimeout', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;App</span> /&gt;)<span class="hljs-comment">;</span>
+    const statusParagraph = &lt;Text&gt;You Rang: hello&lt;/Text&gt;<span class="hljs-comment">;</span>
+
+    return wrapper
+        .instance()
+        .fetchMicro()
+        .then(() =&gt; {
+            wrapper.update()<span class="hljs-comment">;</span>
+            console.log(<span class="hljs-name">wrapper</span>.debug())<span class="hljs-comment">;</span>
+            expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">statusParagraph</span>)).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+        })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+it('calls queryServer button click', () =&gt; {
+    const spy = jest.spyOn(<span class="hljs-name">App</span>.prototype, 'fetchMicro')<span class="hljs-comment">;</span>
+    const wrapper = shallow(<span class="hljs-name">&lt;App</span> /&gt;)<span class="hljs-comment">;</span>
+    wrapper
+        .find('#fetchMicro')
+        .props()
+        .onPress()<span class="hljs-comment">;</span>
+    console.log(<span class="hljs-name">wrapper</span>.debug())<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">spy</span>).toHaveBeenCalled()<span class="hljs-comment">;</span>
 })<span class="hljs-comment">;</span>
 </code></pre>
 <a class="anchor" id="native-mocks"></a>
