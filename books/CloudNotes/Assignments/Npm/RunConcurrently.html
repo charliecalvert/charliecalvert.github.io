@@ -1,6 +1,7 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>RunConcurrently</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>RunConcurrently</h1><p>Welcome to RunConcurrently</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#setting-the-port">Setting the Port</a></li>
 <li><a href="#npm-package">NPM Package</a></li>
 <li><a href="#start-the-client">Start the Client</a></li>
 <li><a href="#use-concurrently">Use Concurrently</a></li>
@@ -16,9 +17,18 @@
 </span><span class="hljs-built_in">create-react-app</span> <span class="hljs-string">client</span>
 </code></pre><p>Install concurrently:</p>
 <pre><code>npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save concurrently</span>
-</code></pre><p>Set the port in <strong>server/bin/www</strong> to 30026. One way to do that is like this:</p>
-<pre><code><span class="hljs-attribute">var port</span> = normalizePort(<span class="hljs-string">'30026'</span>);
-</code></pre><p>In the <strong>Week10-Concurrently</strong> directory set up <strong>package.json</strong> and the starter script as described in the next few sections of the project.</p>
+</code></pre><a class="anchor" id="setting-the-port"></a>
+<h2>Setting the Port</h2>
+<p>We don&#39;t want both programs to try to run on the same port. To solve this potential conflict, set the <strong>port</strong> in <strong>server/bin/www</strong> to 30026. One way to do that is like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var port</span> = normalizePort(<span class="hljs-string">'30026'</span>);
+</code></pre>
+<p>A second, more flexible way, looks like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var port</span> = normalizePort(process.env.SERVER_PORT || <span class="hljs-string">'30026'</span>);    
+</code></pre>
+<p>Then in .bashrc, or some other script, set <strong>SERVER_PORT</strong>:</p>
+<pre><code class="lang-bash"><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">SERVER_PORT</span>=30026
+</code></pre>
+<p>In the <strong>Week10-Concurrently</strong> directory set up <strong>package.json</strong> and the starter script as described in the next few sections of the project.</p>
 <a class="anchor" id="npm-package"></a>
 <h2>NPM Package</h2>
 <p>Here is an example <strong>package.json</strong> that shows how to launch our existing <strong>client</strong> and <strong>server</strong> programs with <a href="https://www.npmjs.com/package/concurrently">concurrently</a>.</p>
