@@ -1,0 +1,302 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>MaterialUiUpdate</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>MaterialUiUpdate</h1><p>Welcome to MaterialUiUpdate</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#install">Install</a></li>
+<li><a href="#convert-imports">Convert Imports</a></li>
+<li><a href="#mui-themes">Mui Themes</a></li>
+<li><a href="#add-tiledata-for-elfheader-menu">Add tileData for ElfHeader Menu</a></li>
+<li><a href="#elfheader-itself">ElfHeader itself</a></li>
+<li><a href="#updated-buttons">Updated Buttons</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>In a bit of bad luck, the <strong>material-ui</strong> folks have updated to a new version which they are labeling 1.0.</p>
+<a class="anchor" id="install"></a>
+<h2>Install</h2>
+<pre><code class="lang-bash">yarn <span class="hljs-keyword">add</span><span class="bash"> @material-ui/core
+</span>yarn <span class="hljs-keyword">add</span><span class="bash"> @material-ui/icons
+</span>yarn remove material-ui
+</code></pre>
+<p>or</p>
+<pre><code>npm <span class="hljs-selector-tag">i</span> @material-ui/core
+npm <span class="hljs-selector-tag">i</span> @material-ui/icons
+npm <span class="hljs-selector-tag">i</span> material-ui
+</code></pre><a class="anchor" id="convert-imports"></a>
+<h2>Convert Imports</h2>
+<p>If you have pulled the latest <strong>JsObjects</strong> and run these commands, then a symbolic link to <strong>FindNp</strong> should be in your <strong>~/bin</strong> folder:</p>
+<pre><code class="lang-bash">slb
+git pull
+<span class="hljs-string">./CreateSymbolicLinks</span>
+</code></pre>
+<p>Run the following from the <strong>client/src</strong> folder:</p>
+<pre><code class="lang-bash">FindNp <span class="hljs-string">"*.js"</span> -<span class="hljs-keyword">print</span><span class="hljs-number">0</span> | xargs sed -i <span class="hljs-string">"s/material-ui/@material-ui\/core/"</span>
+FindNp <span class="hljs-string">"*.js"</span> -<span class="hljs-keyword">print</span><span class="hljs-number">0</span> | xargs sed -i <span class="hljs-string">"s/RaisedButton/Button/g"</span>
+</code></pre>
+<p>This will replace the old style import statements with the new style in all your JavaScript files:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> Button <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/Button'</span>;
+</code></pre>
+<p>As you can see, the new style has an @ symbol and the <strong>core</strong> path.</p>
+<a class="anchor" id="mui-themes"></a>
+<h2>Mui Themes</h2>
+<p>The MuiThemeProvider has been significantly updated.</p>
+<p>Here is a minimal <strong>index.js</strong> file that shows how to work with the new code:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'./index.css'</span>;
+<span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/App'</span>;
+<span class="hljs-keyword">import</span> { MuiThemeProvider, createMuiTheme } <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/styles'</span>;
+<span class="hljs-keyword">import</span> registerServiceWorker <span class="hljs-keyword">from</span> <span class="hljs-string">'./registerServiceWorker'</span>;
+
+
+<span class="hljs-keyword">const</span> themeDark = createMuiTheme({
+    <span class="hljs-attr">palette</span>: {
+        <span class="hljs-attr">type</span>: <span class="hljs-string">'dark'</span>
+    }
+});
+
+ReactDOM.render(
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span> <span class="hljs-attr">theme</span>=<span class="hljs-string">{themeDark}</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">App</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span></span>,
+
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
+);
+
+registerServiceWorker();
+</code></pre>
+<p>I think we will eventually get rid of <strong>index.css</strong>, but I&#39;m leaving it in for now, until I get a better understanding of how it works.</p>
+<p>Here is a more complex example that shows various ways to create custom themes:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'./index.css'</span>;
+<span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/App'</span>;
+<span class="hljs-keyword">import</span> { MuiThemeProvider, createMuiTheme } <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/styles'</span>;
+<span class="hljs-keyword">import</span> purple <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/colors/purple'</span>;
+<span class="hljs-keyword">import</span> green <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/colors/green'</span>;
+<span class="hljs-keyword">import</span> blue <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/colors/blue'</span>;
+<span class="hljs-keyword">import</span> registerServiceWorker <span class="hljs-keyword">from</span> <span class="hljs-string">'./registerServiceWorker'</span>;
+
+
+<span class="hljs-keyword">const</span> themeBlue = createMuiTheme({
+    <span class="hljs-attr">palette</span>: {
+        <span class="hljs-attr">primary</span>: blue,
+    },
+});
+
+<span class="hljs-keyword">const</span> themeDark = createMuiTheme({
+    <span class="hljs-attr">palette</span>: {
+        <span class="hljs-attr">type</span>: <span class="hljs-string">'dark'</span>
+    }
+});
+
+
+<span class="hljs-keyword">const</span> themeCustom = createMuiTheme({
+    <span class="hljs-attr">palette</span>: {
+        <span class="hljs-attr">primary</span>: {
+            <span class="hljs-comment">// light: will be calculated from palette.primary.main,</span>
+            main: <span class="hljs-string">'#ff4400'</span>,
+            <span class="hljs-comment">// dark: will be calculated from palette.primary.main,</span>
+            <span class="hljs-comment">// contrastText: will be calculated to contast with palette.primary.main</span>
+        },
+        <span class="hljs-attr">secondary</span>: {
+            <span class="hljs-attr">light</span>: <span class="hljs-string">'#0066ff'</span>,
+            <span class="hljs-attr">main</span>: <span class="hljs-string">'#0044ff'</span>,
+            <span class="hljs-comment">// dark: will be calculated from palette.secondary.main,</span>
+            contrastText: <span class="hljs-string">'#ffcc00'</span>,
+        },
+        <span class="hljs-comment">// error: will use the default color</span>
+    },
+});
+
+
+<span class="hljs-keyword">const</span> themePurple = createMuiTheme({
+    <span class="hljs-attr">palette</span>: {
+        <span class="hljs-attr">primary</span>: {
+            <span class="hljs-attr">light</span>: purple[<span class="hljs-number">300</span>],
+            <span class="hljs-attr">main</span>: purple[<span class="hljs-number">500</span>],
+            <span class="hljs-attr">dark</span>: purple[<span class="hljs-number">700</span>],
+        },
+        <span class="hljs-attr">secondary</span>: {
+            <span class="hljs-attr">light</span>: green[<span class="hljs-number">300</span>],
+            <span class="hljs-attr">main</span>: green[<span class="hljs-number">500</span>],
+            <span class="hljs-attr">dark</span>: green[<span class="hljs-number">700</span>],
+        },
+    },
+});
+
+<span class="hljs-keyword">const</span> themes = [themeDark, themeBlue, themePurple, themeCustom];
+
+ReactDOM.render(
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span> <span class="hljs-attr">theme</span>=<span class="hljs-string">{themes[0]}</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">App</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span></span>,
+
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
+);
+
+registerServiceWorker();
+</code></pre>
+<a class="anchor" id="add-tiledata-for-elfheader-menu"></a>
+<h2>Add tileData for ElfHeader Menu</h2>
+<p>This is not a necessity, but the docs seem to recommend defining our menu items in a separate file that we will call <strong>components/tileData.js</strong>. Oddly, we will not use <strong>MenuItem</strong> objects, but instead <strong>ListItems</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ListItem <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/ListItem'</span>;
+<span class="hljs-keyword">import</span> ListItemIcon <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/ListItemIcon'</span>;
+<span class="hljs-keyword">import</span> ListItemText <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/ListItemText'</span>;
+<span class="hljs-keyword">import</span> InboxIcon <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/icons/MoveToInbox'</span>;
+<span class="hljs-keyword">import</span> DraftsIcon <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/icons/Drafts'</span>;
+<span class="hljs-keyword">import</span> StarIcon <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/icons/Star'</span>;
+<span class="hljs-keyword">import</span> SendIcon <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/icons/Send'</span>;
+<span class="hljs-keyword">import</span> { Link } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> gitItems = (
+    &lt;div&gt;
+        &lt;ListItem
+            button
+            component={Link}
+            <span class="hljs-keyword">to</span>=<span class="hljs-string">"/"</span>&gt;
+            &lt;ListItemIcon&gt;
+                &lt;InboxIcon/&gt;
+            &lt;/ListItemIcon&gt;
+            &lt;ListItemText primary=<span class="hljs-string">"GitUser"</span>/&gt;
+        &lt;/ListItem&gt;
+        &lt;ListItem
+            button
+            component={Link}
+            <span class="hljs-keyword">to</span>=<span class="hljs-string">"/micro"</span>&gt;
+            &lt;ListItemIcon&gt;
+                &lt;StarIcon/&gt;
+            &lt;/ListItemIcon&gt;
+            &lt;ListItemText primary=<span class="hljs-string">"Micros"</span>/&gt;
+        &lt;/ListItem&gt;
+        &lt;ListItem
+            button
+            component={Link}
+            <span class="hljs-keyword">to</span>=<span class="hljs-string">"/gist-lister"</span>&gt;
+            &lt;ListItemIcon&gt;
+                &lt;SendIcon/&gt;
+            &lt;/ListItemIcon&gt;
+            &lt;ListItemText primary=<span class="hljs-string">"Gist Lister"</span>/&gt;
+        &lt;/ListItem&gt;
+    &lt;/div&gt;
+);
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> demoItems = (
+    &lt;div&gt;
+        &lt;ListItem
+            button
+            component={Link}
+            <span class="hljs-keyword">to</span>=<span class="hljs-string">"/api-foo"</span>&gt;
+            &lt;ListItemIcon&gt;
+                &lt;DraftsIcon/&gt;
+            &lt;/ListItemIcon&gt;
+            &lt;ListItemText primary=<span class="hljs-string">"API Foo"</span>/&gt;
+        &lt;/ListItem&gt;
+
+    &lt;/div&gt;
+);
+</code></pre>
+<p>It may be necessary to heavily edit the <strong>ListItems</strong> to create a menu that makes sense for your program. Just use your commonsense to edit the menu items as you deem necessary. I have not chosen the best icons for these <strong>ListItems</strong>.</p>
+<a class="anchor" id="elfheader-itself"></a>
+<h2>ElfHeader itself</h2>
+<p>We will import <strong>tileData.js</strong> into our new <strong>ElfHeader</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+
+<span class="hljs-keyword">import</span> PropTypes <span class="hljs-keyword">from</span> <span class="hljs-string">'prop-types'</span>;
+<span class="hljs-keyword">import</span> { withStyles } <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/styles'</span>;
+<span class="hljs-keyword">import</span> AppBar <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/AppBar'</span>;
+<span class="hljs-keyword">import</span> Drawer <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/Drawer'</span>;
+<span class="hljs-keyword">import</span> IconButton <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/IconButton'</span>;
+<span class="hljs-keyword">import</span> Toolbar <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/Toolbar'</span>;
+<span class="hljs-keyword">import</span> Typography <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/Typography'</span>;
+<span class="hljs-keyword">import</span> MenuIcon <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/icons/Menu'</span>;
+<span class="hljs-keyword">import</span> Divider <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/Divider'</span>;
+<span class="hljs-keyword">import</span> List <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/List'</span>;
+<span class="hljs-keyword">import</span> { gitItems, demoItems } <span class="hljs-keyword">from</span> <span class="hljs-string">'./tileData'</span>;
+
+
+<span class="hljs-keyword">const</span> styles = {
+    <span class="hljs-attr">root</span>: {
+        <span class="hljs-attr">flexGrow</span>: <span class="hljs-number">1</span>
+    },
+    <span class="hljs-attr">flex</span>: {
+        <span class="hljs-attr">flex</span>: <span class="hljs-number">1</span>
+    },
+};
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ElfHeader</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    <span class="hljs-keyword">constructor</span>(props) {
+        <span class="hljs-keyword">super</span>(props);
+        <span class="hljs-keyword">this</span>.state = {
+            <span class="hljs-attr">open</span>: <span class="hljs-literal">false</span>
+        };
+    }
+
+    handleToggle = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">open</span>: !<span class="hljs-keyword">this</span>.state.open });
+
+    render() {
+        <span class="hljs-keyword">const</span> { classes } = <span class="hljs-keyword">this</span>.props;
+        <span class="hljs-keyword">const</span> sideList = (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.list}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">List</span>&gt;</span>{gitItems}<span class="hljs-tag">&lt;/<span class="hljs-name">List</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">Divider</span> /&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">List</span>&gt;</span>{demoItems}<span class="hljs-tag">&lt;/<span class="hljs-name">List</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+        );
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">AppBar</span>
+                    <span class="hljs-attr">position</span>=<span class="hljs-string">"static"</span>
+                &gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">Toolbar</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">IconButton</span>
+                            <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.menuButton}</span>
+                            <span class="hljs-attr">color</span>=<span class="hljs-string">"inherit"</span>
+                            <span class="hljs-attr">aria-label</span>=<span class="hljs-string">"Menu"</span>
+                            <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.handleToggle}</span>
+                        &gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">MenuIcon</span>/&gt;</span>
+                        <span class="hljs-tag">&lt;/<span class="hljs-name">IconButton</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">Typography</span> <span class="hljs-attr">variant</span>=<span class="hljs-string">"title"</span> <span class="hljs-attr">color</span>=<span class="hljs-string">"inherit"</span> <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.flex}</span>&gt;</span>
+                            GitExplorer
+                        <span class="hljs-tag">&lt;/<span class="hljs-name">Typography</span>&gt;</span>
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">Toolbar</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">AppBar</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">Drawer</span> <span class="hljs-attr">open</span>=<span class="hljs-string">{this.state.open}</span> <span class="hljs-attr">onClose</span>=<span class="hljs-string">{this.handleToggle}</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+                        <span class="hljs-attr">role</span>=<span class="hljs-string">"button"</span>
+                        <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.handleToggle}</span>
+                        <span class="hljs-attr">onKeyDown</span>=<span class="hljs-string">{this.handleToggle}</span>
+                    &gt;</span>
+                        {sideList}
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">Drawer</span>&gt;</span>
+
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+        );
+    }
+}
+
+ElfHeader.propTypes = {
+    <span class="hljs-attr">classes</span>: PropTypes.object.isRequired
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> withStyles(styles)(ElfHeader);
+</code></pre>
+<p>The nice thing about this system is that <strong>ElfHeader</strong> becomes boilerplate. There should be no reason ever to modify even when ported to a new project.</p>
+<p><strong>NOTE</strong>: <em>Or perhaps I should put it this way: &quot;It will not be necessary to rewrite to use it in a new project or to add new menu items. If you want to change the appearance of <strong>ElfHeader</strong>, then of course you will have to modify it. I should add the <strong>sideList</strong> may need to be edited in some cases.</em></p>
+<a class="anchor" id="updated-buttons"></a>
+<h2>Updated Buttons</h2>
+<p>Finally, let&#39;s look at the new &quot;raised&quot; buttons:</p>
+<pre><code class="lang-javascript">import <span class="hljs-keyword">Button</span> from <span class="hljs-string">'@material-ui/core/Button'</span><span class="hljs-comment">;</span>
+<span class="hljs-comment">// Lots of code omitted here.</span>
+
+<span class="hljs-comment">// Down in render we define the button</span>
+&lt;<span class="hljs-keyword">Button</span>
+    variant=<span class="hljs-string">"raised"</span>
+    <span class="hljs-keyword">color</span>=<span class="hljs-string">"primary"</span>
+    <span class="hljs-keyword">onClick</span>={this.queryServer}
+    id=<span class="hljs-string">"queryServer"</span>    
+&gt;
+    Query API
+&lt;/<span class="hljs-keyword">Button</span>&gt;
+</code></pre>
+</div></body></html>
