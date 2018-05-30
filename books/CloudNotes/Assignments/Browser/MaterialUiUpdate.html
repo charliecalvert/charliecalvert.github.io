@@ -8,6 +8,7 @@
 <li><a href="#elfheader-itself">ElfHeader itself</a></li>
 <li><a href="#updated-buttons">Updated Buttons</a></li>
 <li><a href="#updated-tests">Updated Tests</a></li>
+<li><a href="#commentary-on-tests">Commentary on tests</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>In a bit of bad luck, the <strong>material-ui</strong> folks have updated to a new version which they are labeling 1.0.</p>
@@ -344,21 +345,51 @@ describe(<span class="hljs-string">'ElfHeader tests'</span>, <span class="hljs-f
         ReactDOM.unmountComponentAtNode(div);
     });
 
-    it(<span class="hljs-string">'renders and reads title text'</span>, () =&gt; {
+    it(<span class="hljs-string">'renders title and tests with containsMatchingElement'</span>, () =&gt; {
         <span class="hljs-keyword">const</span> wrapper = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span> /&gt;</span>);
-        //console.log(wrapper.dive().debug());
-        const headerText = wrapper
-            .dive()
-            .find('WithStyles(Typography)')
-            .first()
-            .html();
-
-        console.log("HeaderTest", headerText);
-        expect(headerText).toContain('Address Maven');
+        const target = <span class="hljs-tag">&lt;<span class="hljs-name">Typography</span>&gt;</span>Address Maven<span class="hljs-tag">&lt;/<span class="hljs-name">Typography</span>&gt;</span>;
+        expect(wrapper.dive().containsMatchingElement(target)).toBe(true);    
     });
 });</span>
 </code></pre>
-<p>The most important change was to <strong>MuiThemeProvider</strong>. Finding a way to get the header title was bizarre at best.</p>
+<p>The most important change was to <strong>MuiThemeProvider</strong>. Finding a way to get the header title was simple once I saw how to do it with dive().</p>
+<p>Here is the code from <strong>ElfHeader.js</strong> we are trying to match in the <strong>title with containsMatchingElement</strong> test:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">Typography</span> <span class="hljs-attr">variant</span>=<span class="hljs-string">"title"</span> <span class="hljs-attr">color</span>=<span class="hljs-string">"inherit"</span> <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.flex}</span>&gt;</span>
+    Address Maven
+<span class="hljs-tag">&lt;/<span class="hljs-name">Typography</span>&gt;</span>
+</code></pre>
+<p>Make sure you copy of <strong>ElfHeader.js</strong> contains that string, or <strong>GitExplorer</strong>, or whatever is appropriate. Use your common sense to match the text found in <strong>ElfHeader</strong> in your <strong>ElfHeader.test</strong> file.</p>
+<p>There are some notes on testing with material-ui, but at least at the time of this writing I don&#39;t see what they bring to the party.</p>
+<ul>
+<li><a href="https://material-ui.com/guides/testing/">MUI Testing</a></li>
+</ul>
+<a class="anchor" id="commentary-on-tests"></a>
+<h2>Commentary on tests</h2>
+<p>I found that material-ui was not breaking my tests even when using <strong>withStyles</strong> and that this worked just fine using plain old enzyme:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { configure, shallow } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+<span class="hljs-keyword">import</span> Adapter <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme-adapter-react-16'</span>;
+configure({ <span class="hljs-attr">adapter</span>: <span class="hljs-keyword">new</span> Adapter() });
+
+<span class="hljs-comment">// CODE OMITTED HERE</span>
+
+it(<span class="hljs-string">'renders title matches it with containsMatchingElement'</span>, () =&gt; {
+     <span class="hljs-keyword">const</span> wrapper = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span> /&gt;</span>);
+     const target = <span class="hljs-tag">&lt;<span class="hljs-name">Typography</span>&gt;</span>Address Maven<span class="hljs-tag">&lt;/<span class="hljs-name">Typography</span>&gt;</span>;
+     expect(wrapper.dive().containsMatchingElement(target)).toBe(true);
+});</span>
+</code></pre>
+<p>Here was the JSX I wanted to match:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">Typography</span> <span class="hljs-attr">variant</span>=<span class="hljs-string">"title"</span> <span class="hljs-attr">color</span>=<span class="hljs-string">"inherit"</span> <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.flex}</span>&gt;</span>
+    Address Maven
+<span class="hljs-tag">&lt;/<span class="hljs-name">Typography</span>&gt;</span>
+</code></pre>
+<p>And here was the messy code material-ui produced:</p>
+<pre><code class="lang-html">&lt;WithStyles(<span class="hljs-name">Typography</span>) variant=<span class="hljs-string">"title"</span> color=<span class="hljs-string">"inherit"</span> className=<span class="hljs-string">"ElfHeader-flex-100"</span>&gt;
+       Address Maven
+&lt;/WithStyles(<span class="hljs-name">Typography</span>)&gt;
+</code></pre>
+<p>Nevertheless, my test passed.</p>
+<p>I say this only because want to reassure others that this type of test should pass even when using <strong>withStyles</strong>.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Save and push your work. Tell me:</p>
