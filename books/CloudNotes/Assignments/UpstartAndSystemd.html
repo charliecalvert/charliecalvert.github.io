@@ -1,9 +1,14 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>UpstartAndSystemd</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>UpstartAndSystemd</h1><p>Welcome to UpstartAndSystemd</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
-<li><a href="#symbolic-link">Symbolic Link</a></li>
-<li><a href="#systemd">systemd</a></li>
+<li><a href="#symbolic-links-in-systemd">Symbolic Links in systemd</a></li>
+<li><a href="#unit-configuraton-file">Unit Configuraton File</a></li>
+<li><a href="#symbolic-link-role">Symbolic Link Role</a></li>
+<li><a href="#deploy-configuration-file">Deploy Configuration File</a></li>
+<li><a href="#manage-your-program">Manage your Program</a></li>
+<li><a href="#links">Links</a></li>
 <li><a href="#upstart">Upstart</a></li>
-<li><a href="#symbolic-links">Symbolic Links</a></li>
+<li><a href="#copy-the-file">Copy the File</a></li>
+<li><a href="#symbolic-links-in-upstart">Symbolic Links in Upstart</a></li>
 <li><a href="#elastic-ip">Elastic IP</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#hints">Hints</a></li>
@@ -39,34 +44,28 @@ lsb_release -a
 <ul>
 <li><a href="https://unix.stackexchange.com/a/164092/91728">https://unix.stackexchange.com/a/164092/91728</a></li>
 </ul>
-<a class="anchor" id="symbolic-link"></a>
-<h2>Symbolic Link</h2>
-<p>You are also going to need to create a symbolic link to your program in the <strong>~/bin</strong> directory. Something like this. First, be sure you have a bin directory:</p>
+<a class="anchor" id="symbolic-links-in-systemd"></a>
+<h2>Symbolic Links in systemd</h2>
+<p>We should create a symbolic link to our project. First, be sure you have a bin directory:</p>
 <pre><code class="lang-bash"><span class="hljs-built_in">mkdir</span> ~/bin
 </code></pre>
-<pre><code class="lang-bash">ln -s ~<span class="hljs-regexp">/Git/i</span>sit320-calvert-<span class="hljs-number">2016</span><span class="hljs-regexp">/Week04-ThreeFloor ~/</span>bin<span class="hljs-regexp">/three-floor</span>
-</code></pre>
-<p>or like this:</p>
-<pre><code class="lang-bash">$ ln -s ~<span class="hljs-regexp">/Git/i</span>sit322-calvert-<span class="hljs-number">2016</span><span class="hljs-regexp">/Week10-ElvenImagePicker/</span> ~<span class="hljs-regexp">/bin/</span>nrb
+<p>Then create the link:</p>
+<pre><code class="lang-bash">$ ln -s ~<span class="hljs-regexp">/Git/</span>prog272-lastname-<span class="hljs-number">2018</span><span class="hljs-regexp">/NodeRouteBasics/</span> ~<span class="hljs-regexp">/bin/</span>nrb
 </code></pre>
 <p>This symbolic link provides several benefits:</p>
 <ul>
 <li>It shortens your path</li>
 <li>It can be easily changed to point to a new location without forcing you to rewrite your  <strong>upstart</strong> or <strong>systemd</strong> script.</li>
 </ul>
-<a class="anchor" id="systemd"></a>
-<h2>systemd</h2>
-<p>Upstart is being replaced by <strong>systemd</strong>. This caused a huge uproar in the Linux community, but the transition is more or less complete at this stage (Nov, 2016). Fortunately, if you understand Upstart it is not hard to switch to <strong>systemd</strong>. You should switch to <strong>systemd</strong> if running on Ubuntu 15.10 or later, otherwise, stick with <strong>upstart</strong>.</p>
-<p>If you are uncertain, here is how to find out which version of ubuntu you are running:</p>
-<pre><code class="lang-bash">cat /etc/lsb-release
-$ELF_UTILS/SetupLinuxBox/UbuntuReleaseNumber.sh
-DISTRIB_ID=Ubuntu
-DISTRIB_RELEASE=15.10
-DISTRIB_CODENAME=wily
-DISTRIB_DESCRIPTION=<span class="hljs-string">"Ubuntu 15.10"</span>
-</code></pre>
-<p>A sample <strong>systemd</strong> start up script (aka service file) called <strong>nrb.service</strong>:</p>
-<pre><code><span class="hljs-section">[Service]</span>
+<p>We will use the link when composing our systemd configuration file.</p>
+<a class="anchor" id="unit-configuraton-file"></a>
+<h2>Unit Configuraton File</h2>
+<p>Create a <strong>systemd</strong> service file called <strong>nrb.service</strong>:</p>
+<pre><code><span class="hljs-section">[Unit]</span>
+<span class="hljs-attr">Description</span>=Run NodeRouteBasics
+<span class="hljs-attr">After</span>=network.target
+<span class="hljs-section">
+[Service]</span>
 <span class="hljs-attr">ExecStart</span>=/home/bcuser/npm/bin/npm start
 <span class="hljs-attr">WorkingDirectory</span>=/home/ubuntu/bin/nrb
 <span class="hljs-attr">Restart</span>=always
@@ -82,12 +81,22 @@ DISTRIB_DESCRIPTION=<span class="hljs-string">"Ubuntu 15.10"</span>
 <span class="hljs-attr">WantedBy</span>=multi-user.target
 </code></pre><p>When examining the above, check carefully, looking for changes that you will need to make:</p>
 <ul>
-<li>ExecStart path to your <strong>bin/www</strong> file</li>
+<li>ExecStart</li>
+<li>WorkingDirectory</li>
 <li>SyslogIdentifier</li>
 <li>User</li>
 <li>Group</li>
+<li>Environment PORT</li>
 </ul>
 <p>For instance, the <strong>User</strong> and <strong>Group</strong> would be <strong>ubuntu</strong> on EC2 and <strong>bcuser</strong> on most copies of Pristine Lubuntu.</p>
+<a class="anchor" id="symbolic-link-role"></a>
+<h2>Symbolic Link Role</h2>
+<p>Our systemd script is called <strong>nrb.service</strong>. If you look inside it, you will see that it assumes your copy of <strong>NodeRouteBasics</strong> can be accessed via a symbolic link called <strong>nrb</strong> that is found in the <strong>~/bin</strong> directory:</p>
+<pre><code>ExecStart=<span class="hljs-regexp">/home/charlie</span><span class="hljs-regexp">/npm/bin</span><span class="hljs-regexp">/npm start
+WorkingDirectory=/home</span><span class="hljs-regexp">/charlie/bin</span><span class="hljs-regexp">/nrp</span>
+</code></pre><p>Regardless of where you keep <strong>NodeRouteBasics</strong> on your system, our script can find it. If you move the program, you don&#39;t have to update your configuration file, just update the symbolic link.    </p>
+<a class="anchor" id="deploy-configuration-file"></a>
+<h2>Deploy Configuration File</h2>
 <p>Deploy the service file:</p>
 <pre><code>sudo cp nrb.service <span class="hljs-regexp">/etc/</span>systemd<span class="hljs-regexp">/system/</span>.
 </code></pre><p>Start the service:</p>
@@ -109,6 +118,8 @@ sudo systemctl start nrb
 Dec <span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">01</span> forestpath systemd[<span class="hljs-number">1</span>]: <span class="hljs-literal">Started</span> nrb.service.
 Dec <span class="hljs-number">03</span> <span class="hljs-number">08</span>:<span class="hljs-number">59</span>:<span class="hljs-number">02</span> forestpath <span class="hljs-keyword">node</span><span class="hljs-title">-sample</span>[<span class="hljs-number">4102</span>]: <span class="hljs-keyword">In</span> bin/www the environment is production
 </code></pre>
+<a class="anchor" id="manage-your-program"></a>
+<h2>Manage your Program</h2>
 <p>To see logs and debug information, try this:</p>
 <pre><code><span class="hljs-attribute">journalctl -u nrb</span>
 </code></pre><p>To completely remove a service from a system, I believe we should first stop it, and then disable it:</p>
@@ -116,6 +127,8 @@ Dec <span class="hljs-number">03</span> <span class="hljs-number">08</span>:<spa
 systemctl <span class="hljs-keyword">disable</span> nrb
 </code></pre><p>I&#39;m not certain about the disable command at this time. I think it tells systemd not to load at boot, but allows us to leave the file in <strong>/etc/systemd/system</strong>. Not sure though.</p>
 <p>The first and second links below will get you up to speed fairly quickly.</p>
+<a class="anchor" id="links"></a>
+<h2>Links</h2>
 <ul>
 <li><a href="https://www.digitalocean.com/community/tutorials/how-to-deploy-node-js-applications-using-systemd-and-nginx">Sysdemd for Node Developers</a></li>
 <li><a href="http://patrakov.blogspot.com/2011/01/writing-systemd-service-files.html">Systemd get started</a></li>
@@ -159,8 +172,27 @@ post-start<span class="hljs-built_in"> script
    # /root/bin/hoptoad.sh <span class="hljs-string">"node.js has started!"</span>
 end script
 </code></pre>
-<a class="anchor" id="symbolic-links"></a>
-<h2>Symbolic Links</h2>
+<a class="anchor" id="copy-the-file"></a>
+<h2>Copy the File</h2>
+<p>Copy the <strong>NodeRoutesParams</strong> file to the <strong>/etc/init</strong> directory:</p>
+<pre><code>sudo cp nrb<span class="hljs-selector-class">.conf</span> /etc/init/.
+sudo mkdir /root/<span class="hljs-selector-class">.config</span>
+sudo cp ~/.config/ElvenConfig<span class="hljs-selector-class">.json</span> /root/.config/.
+</code></pre><p>Start the program</p>
+<pre><code>sudo <span class="hljs-literal">start</span> nrb
+</code></pre><p>Stop the program</p>
+<pre><code>sudo <span class="hljs-built_in">stop</span> nrb
+</code></pre><p>If you reboot the system, your program will start automatically.</p>
+<p>Error messages and and other output are in: <strong>/var/log/node.log</strong>. That means you can see the debug output with this command:</p>
+<pre><code>cat /var/log/<span class="hljs-keyword">node</span>.<span class="hljs-title">log</span>
+</code></pre><p>That is the case because of this bit from our conf file: <strong>&gt;&gt; /var/log/node.log 2&gt;&amp;1</strong></p>
+<p>Browse to your instance:</p>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">elasticIp</span>&gt;</span>:30025/
+</code></pre><p>If you were testing all this out on your copy of Lubunutu,
+you would do this:</p>
+<pre><code><span class="hljs-number">127.0</span><span class="hljs-meta">.0</span><span class="hljs-meta">.1</span>:<span class="hljs-number">30025</span>/
+</code></pre><a class="anchor" id="symbolic-links-in-upstart"></a>
+<h2>Symbolic Links in Upstart</h2>
 <p>Create a link our project, or whatever project you want to use for your final:</p>
 <pre><code class="lang-bash">$ ln -s ~<span class="hljs-regexp">/Git/i</span>sit322-calvert-<span class="hljs-number">2016</span><span class="hljs-regexp">/Week10-ElvenImagePicker/</span> ~<span class="hljs-regexp">/bin/</span>nrb
 </code></pre>
@@ -191,7 +223,7 @@ sudo cp ~/.config/ElvenConfig<span class="hljs-selector-class">.json</span> /roo
 <pre><code><span class="hljs-tag">&lt;<span class="hljs-name">elasticIp</span>&gt;</span>:30025/
 </code></pre><p>If you were testing all this out on your copy of Lubunutu,
 you would do this:</p>
-<pre><code><span class="hljs-number">127.0</span><span class="hljs-meta">.0</span><span class="hljs-meta">.1</span>:<span class="hljs-number">30025</span>/
+<pre><code><span class="hljs-number">127.0</span><span class="hljs-meta">.0</span><span class="hljs-meta">.1</span>:<span class="hljs-number">30025</span>/    
 </code></pre><a class="anchor" id="elastic-ip"></a>
 <h2>Elastic IP</h2>
 <p>Be sure that you create, properly associate and submit an <strong>Elastic IP</strong> for your instance running on EC2. In order to confirm that your project is running on EC2, I must be able to reach it, and I can&#39;t do that if you only have a <strong>Public IP</strong>. The <strong>Public IP</strong> addresses automatically associated with your instance on EC2 is not necessarily permanent. To create a permenant IP address, you need an <strong>Elastic IP</strong>, as explained <a href="http://www.elvenware.com/charlie/development/cloud/WebServices.html#elastic">here</a>.</p>
