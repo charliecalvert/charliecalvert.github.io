@@ -7,6 +7,7 @@
 <li><a href="#add-tiledata-for-elfheader-menu">Add tileData for ElfHeader Menu</a></li>
 <li><a href="#elfheader-itself">ElfHeader itself</a></li>
 <li><a href="#updated-buttons">Updated Buttons</a></li>
+<li><a href="#updated-tests">Updated Tests</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>In a bit of bad luck, the <strong>material-ui</strong> folks have updated to a new version which they are labeling 1.0.</p>
@@ -308,6 +309,56 @@ ElfHeader.propTypes = {
     Query API
 &lt;/<span class="hljs-keyword">Button</span>&gt;
 </code></pre>
+<a class="anchor" id="updated-tests"></a>
+<h2>Updated Tests</h2>
+<p>I&#39;ll just give you at least part of my ElfHeader tests:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> ElfHeader <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/ElfHeader'</span>;
+<span class="hljs-keyword">import</span> { configure, shallow } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+<span class="hljs-keyword">import</span> Adapter <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme-adapter-react-16'</span>;
+<span class="hljs-keyword">import</span> MuiThemeProvider <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/styles/MuiThemeProvider'</span>;
+<span class="hljs-keyword">import</span> { BrowserRouter } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span>;
+<span class="hljs-keyword">import</span> {createMuiTheme} <span class="hljs-keyword">from</span> <span class="hljs-string">"@material-ui/core/styles/index"</span>;
+
+configure({ <span class="hljs-attr">adapter</span>: <span class="hljs-keyword">new</span> Adapter() });
+
+describe(<span class="hljs-string">'ElfHeader tests'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+
+    <span class="hljs-keyword">const</span> themeDark = createMuiTheme({
+        <span class="hljs-attr">palette</span>: {
+            <span class="hljs-attr">type</span>: <span class="hljs-string">'dark'</span>
+        }
+    });
+
+    it(<span class="hljs-string">'renders without crashing'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+        ReactDOM.render(
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span> <span class="hljs-attr">theme</span>=<span class="hljs-string">{themeDark}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">BrowserRouter</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span> /&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">BrowserRouter</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span></span>,
+            div
+        );
+        ReactDOM.unmountComponentAtNode(div);
+    });
+
+    it(<span class="hljs-string">'renders and reads title text'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> wrapper = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span> /&gt;</span>);
+        //console.log(wrapper.dive().debug());
+        const headerText = wrapper
+            .dive()
+            .find('WithStyles(Typography)')
+            .first()
+            .html();
+
+        console.log("HeaderTest", headerText);
+        expect(headerText).toContain('Address Maven');
+    });
+});</span>
+</code></pre>
+<p>The most important change was to <strong>MuiThemeProvider</strong>. Finding a way to get the header title was bizarre at best.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Save and push your work. Tell me:</p>
