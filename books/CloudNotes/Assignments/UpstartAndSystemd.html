@@ -5,6 +5,8 @@
 <li><a href="#symbolic-link-role">Symbolic Link Role</a></li>
 <li><a href="#deploy-configuration-file">Deploy Configuration File</a></li>
 <li><a href="#manage-your-program">Manage your Program</a></li>
+<li><a href="#useful-scripts">Useful Scripts</a></li>
+<li><a href="#execstart">ExecStart</a></li>
 <li><a href="#links">Links</a></li>
 <li><a href="#upstart">Upstart</a></li>
 <li><a href="#copy-the-file">Copy the File</a></li>
@@ -66,7 +68,7 @@ lsb_release -a
 <span class="hljs-attr">After</span>=network.target
 <span class="hljs-section">
 [Service]</span>
-<span class="hljs-attr">ExecStart</span>=/home/bcuser/npm/bin/npm start
+<span class="hljs-attr">ExecStart</span>=/usr/bin/node ./bin/www
 <span class="hljs-attr">WorkingDirectory</span>=/home/ubuntu/bin/nrb
 <span class="hljs-attr">Restart</span>=always
 <span class="hljs-attr">StandardOutput</span>=syslog
@@ -75,7 +77,7 @@ lsb_release -a
 <span class="hljs-attr">User</span>=ubuntu
 <span class="hljs-attr">Group</span>=ubuntu
 <span class="hljs-attr">Environment</span>=NODE_ENV=production
-<span class="hljs-attr">Environment</span>=PORT=<span class="hljs-number">30026</span>
+<span class="hljs-attr">Environment</span>=NRB_PORT=<span class="hljs-number">30029</span>
 <span class="hljs-section">
 [Install]</span>
 <span class="hljs-attr">WantedBy</span>=multi-user.target
@@ -89,6 +91,9 @@ lsb_release -a
 <li>Environment PORT</li>
 </ul>
 <p>For instance, the <strong>User</strong> and <strong>Group</strong> would be <strong>ubuntu</strong> on EC2 and <strong>bcuser</strong> on most copies of Pristine Lubuntu.</p>
+<p>Make sure the PORT matches the code in your <strong>/bin/www</strong> file:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var port</span> = normalizePort(process.env.NRB_PORT || <span class="hljs-string">'30025'</span>);
+</code></pre>
 <a class="anchor" id="symbolic-link-role"></a>
 <h2>Symbolic Link Role</h2>
 <p>Our systemd script is called <strong>nrb.service</strong>. If you look inside it, you will see that it assumes your copy of <strong>NodeRouteBasics</strong> can be accessed via a symbolic link called <strong>nrb</strong> that is found in the <strong>~/bin</strong> directory:</p>
@@ -127,7 +132,50 @@ Dec <span class="hljs-number">03</span> <span class="hljs-number">08</span>:<spa
 systemctl <span class="hljs-keyword">disable</span> nrb
 </code></pre><p>I&#39;m not certain about the disable command at this time. I think it tells systemd not to load at boot, but allows us to leave the file in <strong>/etc/systemd/system</strong>. Not sure though.</p>
 <p>The first and second links below will get you up to speed fairly quickly.</p>
-<a class="anchor" id="links"></a>
+<a class="anchor" id="useful-scripts"></a>
+<h2>Useful Scripts</h2>
+<p>No matter how simple the commands, it is almost always worth taking a moment to create some bash scripts to automate the process. Here are three that I find useful:</p>
+<p>copy-nrb:</p>
+<pre><code class="lang-bash">sudo cp nrb-charlie<span class="hljs-selector-class">.service</span> /etc/systemd/system/nrb<span class="hljs-selector-class">.service</span>
+sudo systemctl enable nrb
+sudo systemctl start nrb
+systemctl status nrb
+</code></pre>
+<p>startService:</p>
+<pre><code class="lang-bash"><span class="hljs-meta">#!/bin/bash
+</span>
+sudo systemctl <span class="hljs-built_in">enable</span> nrb.service
+sudo systemctl start nrb.service
+
+
+stopService:
+
+```bash
+<span class="hljs-meta">#!/bin/bash
+</span>
+sudo systemctl stop nrb.service
+sudo systemctl <span class="hljs-built_in">disable</span> nrb.service
+</code></pre>
+<a class="anchor" id="execstart"></a>
+<h2>ExecStart</h2>
+<p>We have a lot of options:</p>
+<pre><code><span class="hljs-attribute">ExecStart</span>=/home/bcuser/npm/bin/npm start
+<span class="hljs-attribute">ExecStart</span>=/usr/bin/node ./bin/www
+<span class="hljs-attribute">ExecStart</span>=/home/charlie/npm/bin/npm <span class="hljs-builtin-name">run</span> node-start
+<span class="hljs-attribute">WorkingDirectory</span>=/home/ubuntu/bin/nrb
+</code></pre><p>I&#39;m including the <strong>WorkingDirectory</strong> because none of the options will work if that is not setup correctly.</p>
+<p>The first option may not work correctly because it often uses <strong>nodemon</strong> which may not be installed for the root user.</p>
+<p>The second option should always work if the program is set up correctly, that is, if it runs under normal conditions when not using systemd. It is my preferred solution.</p>
+<p>The third option assumes you have set up something like this in <strong>package.json</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"scripts"</span>: {
+    <span class="hljs-string">"test"</span>: <span class="hljs-string">"node jasmine-runner.js"</span>,
+    <span class="hljs-string">"start"</span>: <span class="hljs-string">"nodemon ./bin/www"</span>,
+    <span class="hljs-string">"node-start"</span>: <span class="hljs-string">"node ./bin/www"</span>
+  },
+</code></pre>
+<p>Again, the option I think is simplest to use is this one:</p>
+<pre><code><span class="hljs-attr">ExecStart=</span>/usr/bin/<span class="hljs-keyword">node</span> <span class="hljs-title">./bin</span>/www
+</code></pre><a class="anchor" id="links"></a>
 <h2>Links</h2>
 <ul>
 <li><a href="https://www.digitalocean.com/community/tutorials/how-to-deploy-node-js-applications-using-systemd-and-nginx">Sysdemd for Node Developers</a></li>
