@@ -11,7 +11,8 @@
 <li><a href="#update-a-record">Update a Record</a></li>
 <li><a href="#add-cors-to-couchdb">Add CORS to CouchDb</a></li>
 <li><a href="#connect-to-couchdb">Connect to CouchDb</a></li>
-<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#upgrade-to-latest-couchdb">Upgrade to Latest CouchDb</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>Read the PouchDb GetStarted App. It is similar to what we will build.</p>
 <ul>
@@ -226,6 +227,13 @@ import FormControl from '@material-ui/core/FormControl';
 </span>add-cors-to-couchdb http://192.168.2.25:5984
 </code></pre><a class="anchor" id="connect-to-couchdb"></a>
 <h2>Connect to CouchDb</h2>
+<p>You need to add this to the body of your index.html:</p>
+<pre><code class="lang-javascript">&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">id</span>=<span class="hljs-string">"sync-wrapper"</span>&gt;
+  &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">id</span>=<span class="hljs-string">"sync-success"</span>&gt;Currently syncing&lt;/<span class="hljs-keyword">div</span>&gt;
+  &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">id</span>=<span class="hljs-string">"sync-error"</span>&gt;There was a problem syncing&lt;/<span class="hljs-keyword">div</span>&gt;
+&lt;/<span class="hljs-keyword">div</span>&gt;
+</code></pre>
+<p>Then add these methods just above your render method:</p>
 <pre><code>syncError = () =&gt; {
     <span class="hljs-keyword">this</span>.syncDom.setAttribute(<span class="hljs-string">'data-sync-state'</span>, <span class="hljs-string">'error'</span>);
 };
@@ -240,4 +248,18 @@ sync = () =&gt; {
 <h2>Turn it in</h2>
 <p>Turn in working code. Tag it, specify folder. Add the branch name if you are using one.</p>
 <p>Include a screenshot of the CouchDb fouton view of the database showing that you inserted data into the addresses table.</p>
-</div></body></html>
+<a class="anchor" id="upgrade-to-latest-couchdb"></a>
+<h2>Upgrade to Latest CouchDb</h2>
+<p>Delete the old version:</p>
+<pre><code>sudo apt-<span class="hljs-builtin-name">get</span> <span class="hljs-builtin-name">remove</span> --auto-<span class="hljs-builtin-name">remove</span> couchdb
+</code></pre><p>Since we have not done much with CouchDb, we can simply remove all the data and configuration files as well:</p>
+<pre><code>sudo apt-<span class="hljs-builtin-name">get</span> purge --auto-<span class="hljs-builtin-name">remove</span> couchdb
+</code></pre><p>Now install 2.1.1:</p>
+<pre><code><span class="hljs-keyword">echo</span> <span class="hljs-string">"deb https://apache.bintray.com/couchdb-deb xenial main"</span> \
+    | sudo tee -<span class="hljs-keyword">a</span> /etc/apt/sources.<span class="hljs-keyword">list</span>
+
+curl -L http<span class="hljs-variable">s:</span>//couchdb.apache.org/repo/bintray-pubkey.asc \
+    | sudo apt-key <span class="hljs-built_in">add</span> -
+
+sudo apt-<span class="hljs-built_in">get</span> <span class="hljs-keyword">update</span> &amp;&amp; sudo apt-<span class="hljs-built_in">get</span> install couchdb
+</code></pre></div></body></html>
