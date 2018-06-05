@@ -1,0 +1,499 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>CouchSmallAddress</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>CouchSmallAddress</h1><p>Welcome to CouchSmallAddress</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#update-to-latest-couchdb">Update to Latest CouchDb</a></li>
+<li><a href="#get-template-tool">Get Template Tool</a></li>
+<li><a href="#install-packages">Install Packages</a></li>
+<li><a href="#design">Design</a></li>
+<li><a href="#screenshots">Screenshots</a></li>
+<li><a href="#home">Home</a></li>
+<li><a href="#menu">Menu</a></li>
+<li><a href="#initializedatabase">InitializeDatabase</a></li>
+<li><a href="#address">Address</a></li>
+<li><a href="#functionality">Functionality</a></li>
+<li><a href="#set-up-proxy">Set up Proxy</a></li>
+<li><a href="#create-app">Create App</a></li>
+<li><a href="#header">Header</a></li>
+<li><a href="#basic-html">Basic HTML</a></li>
+<li><a href="#create-home">Create Home</a></li>
+<li><a href="#clean-up-app-js">Clean up App.js</a></li>
+<li><a href="#create-the-menu">Create the Menu</a></li>
+<li><a href="#clean-up-address-js">Clean up Address.js</a></li>
+<li><a href="#pouchdbmanager">PouchDbManager</a></li>
+<li><a href="#get-initializedatabase">Get InitializeDatabase</a></li>
+<li><a href="#refactor-address-js">Refactor Address.js</a></li>
+<li><a href="#refactor-addressshow">Refactor AddressShow</a></li>
+<li><a href="#enable-the-menu">Enable the Menu</a></li>
+<li><a href="#set-up-the-database">Set Up the Database</a></li>
+<li><a href="#show-address-methods">Show Address methods</a></li>
+<li><a href="#methods-for-address">Methods for Address</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Refactor Pouch Starter and add support for live syncing.</p>
+<a class="anchor" id="update-to-latest-couchdb"></a>
+<h2>Update to Latest CouchDb</h2>
+<p>Details are <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/CouchDb/PouchStarter.html#upgrade-to-latest-couchdb">here</a>.</p>
+<a class="anchor" id="get-template-tool"></a>
+<h2>Get Template Tool</h2>
+<ol>
+<li>Go to JsObjects: <strong>jo</strong></li>
+<li>Pull the latest: <strong>git pull</strong></li>
+<li>Go to SetupLinuxBox: <strong>slb</strong></li>
+<li>Run CreateSymbolicLinks: <strong>./CreateSymbolicLinks</strong></li>
+</ol>
+<p>Now you can get a template by typing <strong>get-template</strong> and choosing the template you want from the menu.</p>
+<a class="anchor" id="install-packages"></a>
+<h2>Install Packages</h2>
+<p>Install <strong>react-router-dom</strong>:</p>
+<pre><code>npm i react-router-dom
+yarn <span class="hljs-keyword">add</span><span class="bash"> react-router-dom</span>
+</code></pre><p>And a some <a href="https://pouchdb.com/guides/mango-queries.html">query tools</a>:</p>
+<pre><code>yarn <span class="hljs-builtin-name">add</span> pouchdb-<span class="hljs-builtin-name">find</span>
+npm i pouchdb-find
+</code></pre><a class="anchor" id="design"></a>
+<h2>Design</h2>
+<p>We have the following:</p>
+<ul>
+<li>App<ul>
+<li><strong>ElfHeader</strong> and <strong>tileData</strong></li>
+<li><strong>Home</strong> page</li>
+<li><strong>Address</strong> and <strong>AddressShow</strong></li>
+<li><strong>AddressEdit</strong> and <strong>AddressEditFields</strong></li>
+<li><strong>InitializeDatabase</strong></li>
+<li><strong>PouchDbManager</strong></li>
+</ul>
+</li>
+</ul>
+<a class="anchor" id="screenshots"></a>
+<h2>Screenshots</h2>
+<p>Some screenshots.</p>
+<a class="anchor" id="home"></a>
+<h3>Home</h3>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/small-address-master-home.png" alt="Home"></p>
+<a class="anchor" id="menu"></a>
+<h3>Menu</h3>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/small-address-master-menu.png" alt="Menu"></p>
+<a class="anchor" id="initializedatabase"></a>
+<h3>InitializeDatabase</h3>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/small-address-master-tools.png" alt="InitializeDatabase"></p>
+<a class="anchor" id="address"></a>
+<h3>Address</h3>
+<p>Sync mode was turned on when I took this screenshot which accounts for much of the data in the Console of the Developer Tools.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/small-address-master-address.png" alt="Address"></p>
+<a class="anchor" id="functionality"></a>
+<h2>Functionality</h2>
+<ul>
+<li>Display records originally loaded from <strong>CongressAddress</strong> server.</li>
+<li>CRUD (We create only during initialization.)</li>
+<li>Work offline</li>
+<li>Sync to CouchDB</li>
+<li>Sync between browser instances</li>
+</ul>
+<a class="anchor" id="set-up-proxy"></a>
+<h2>Set up Proxy</h2>
+<p>We need to be able to query our server during the init phase so that we can get our initialize list of Congress people.</p>
+<p>In <strong>package.json</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"proxy"</span>: <span class="hljs-string">"http://localhost:30026"</span>,
+</code></pre>
+<a class="anchor" id="create-app"></a>
+<h2>Create App</h2>
+<p>Copy recursively (cp -r) the contents of <strong>Week09-SmallAddressMaster</strong> into <strong>Week10-SmallAddressMaster</strong>.</p>
+<a class="anchor" id="header"></a>
+<h2>Header</h2>
+<p>Our first chore is to begin refactoring. This is standard procedure. Many of us begin by getting code to work, then we start refactoring, looking for a maintainable design that follows basic <a href="http://www.elvenware.com/charlie/development/web/JavaScript/GettingStarted.html#good-code">design principles</a>.</p>
+<p>Start your application so you can follow your progress as you walk through the steps.</p>
+<p>Create a <strong>src/components</strong> folder.</p>
+<ul>
+<li>Copy the <strong>ElfHeader</strong> and <strong>tileData</strong> from your latest Address Maven into the <strong>components</strong> directory.</li>
+<li>Move <strong>App.js</strong> into the <strong>components</strong> directory.</li>
+<li>Copy <strong>App.js</strong> to <strong>Address.js</strong>.</li>
+</ul>
+<p>Also copy in <strong>address-list.json</strong> from your best Address Maven into your <strong>src</strong> directory. This is the short list of addresses used to initialize state in our constructors. It might look something like this:</p>
+<pre><code class="lang-JavaScript">cp ..<span class="hljs-regexp">/../</span>AddressProxy<span class="hljs-regexp">/src/</span>address-list.js .
+</code></pre>
+<p>In <strong>Address.js</strong>, rename <strong>App</strong> to <strong>Address</strong>.</p>
+<p>Resolve any errors you are getting and ensure that your program continues to run.</p>
+<a class="anchor" id="basic-html"></a>
+<h2>Basic HTML</h2>
+<p>We aren&#39;t going to use this bit of HTML, so remove it from <strong>public/index.html</strong> if it exists:</p>
+<pre><code class="lang-html">&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">id</span>=<span class="hljs-string">"sync-wrapper"</span>&gt;
+    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">id</span>=<span class="hljs-string">"sync-success"</span>&gt;Currently syncing&lt;/<span class="hljs-keyword">div</span>&gt;
+    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">id</span>=<span class="hljs-string">"sync-error"</span>&gt;There was a problem syncing&lt;/<span class="hljs-keyword">div</span>&gt;
+&lt;/<span class="hljs-keyword">div</span>&gt;
+</code></pre>
+<a class="anchor" id="create-home"></a>
+<h2>Create Home</h2>
+<p>Just a default component that you can modify as you wish for the final:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { withStyles } <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/styles'</span>;
+
+<span class="hljs-keyword">const</span> styles = {};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Home</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    render() {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Home<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+        );
+    }
+}
+
+<span class="hljs-comment">//export default Home;</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> withStyles(styles)(Home);
+</code></pre>
+<a class="anchor" id="clean-up-app-js"></a>
+<h2>Clean up App.js</h2>
+<p>Replace styles with a simple styles declaration with a container:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">const</span> styles = <span class="hljs-function"><span class="hljs-params">theme</span> =&gt;</span> ({
+    <span class="hljs-attr">container</span>: {
+      <span class="hljs-attr">flexGrow</span>: <span class="hljs-number">1</span>
+    }
+});
+</code></pre>
+<p>Make sure your JSX uses it:</p>
+<pre><code class="lang-javascript">render() {
+        <span class="hljs-keyword">const</span> {classes} = <span class="hljs-keyword">this</span>.props;
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.container}</span>&gt;</span>
+               // CODE OMITTED HERE
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+        );
+    }
+</code></pre>
+<p>Delete the contents of <strong>componentDidMount</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">componentDidMount</span><span class="hljs-params">()</span></span> {
+}
+</code></pre>
+<p>Delete the <strong>constructor</strong> and all other methods except <strong>render</strong>. In <strong>render</strong>, delete all the JSX and replace it with code to load the <strong>Address</strong> component.</p>
+<p>Contents of the components folder at this stage:</p>
+<ul>
+<li>App.js</li>
+<li>Address.js</li>
+<li>ElfHeader.js</li>
+<li>tileData.js</li>
+</ul>
+<p>At this stage, my <strong>App.js</strong> is about 35 lines long.</p>
+<a class="anchor" id="create-the-menu"></a>
+<h2>Create the Menu</h2>
+<p>Add <strong>ElfHeader</strong> to the <strong>App.js</strong> JSX just above where you declare <strong>Address</strong>.</p>
+<p>Modify <strong>tileData</strong> so that it contains three <strong>ListItems</strong>:</p>
+<ul>
+<li><strong>Home</strong>: &#39;/&#39;</li>
+<li><strong>Address</strong>: &#39;/address&#39;</li>
+<li><strong>InitializeDatabase</strong>: &#39;./init-db&#39;</li>
+</ul>
+<p>Above, separated by a colon, I show:</p>
+<ul>
+<li>The <strong>primary</strong> attribute of the <strong>ListItemText</strong></li>
+<li>The <strong>to</strong> attribute of the <strong>ListItem</strong>.</li>
+</ul>
+<a class="anchor" id="clean-up-address-js"></a>
+<h2>Clean up Address.js</h2>
+<p>Remove the <strong>header</strong> code from the JSX.</p>
+<p>Remove the <strong>FormControls</strong> and the <strong>div</strong> that wraps them. Remove the <strong>addAddressReal</strong> method and the <strong>Button</strong> associated with it.</p>
+<p>Remove the <strong>Add Address (FooBar)</strong> button but keep the method it calls.</p>
+<p>Make a copy of <strong>Address.js</strong> called <strong>AddressShow.js</strong></p>
+<p>From <strong>Address.js</strong> delete these methods if they exist:</p>
+<ul>
+<li><strong>addAddress</strong></li>
+<li><strong>update</strong></li>
+<li><strong>handleFirst</strong></li>
+<li><strong>handleLast</strong></li>
+<li><strong>sync</strong></li>
+<li><strong>syncError</strong></li>
+<li><strong>showIndex</strong></li>
+</ul>
+<p>From <strong>AddressShow.js</strong>:</p>
+<ul>
+<li>Keep the <strong>constructor</strong> and <strong>render</strong>.</li>
+<li>Delete all the other methods.</li>
+</ul>
+<a class="anchor" id="pouchdbmanager"></a>
+<h2>PouchDbManager</h2>
+<p>Create a directory called <strong>src/tools</strong>.</p>
+<p>From the command prompt, navigate to the tools directory. We now need to copy the <strong>PouchDbManager.js</strong> from <strong>JsObjects</strong> to our project.</p>
+<ul>
+<li>Issue this command: <strong>get-template</strong></li>
+<li>Select <strong>A</strong> to copy <strong>PouchDbManager</strong> into the current directory.</li>
+<li>Exit <strong>get-template</strong> and return to the IDE.</li>
+</ul>
+<a class="anchor" id="get-initializedatabase"></a>
+<h2>Get InitializeDatabase</h2>
+<p>Navigate to the components directory in the Bash shell.</p>
+<p>Run <strong>get-template</strong></p>
+<p>Choose option b, to get <strong>InitializeDatabase.js</strong>.</p>
+<a class="anchor" id="refactor-address-js"></a>
+<h2>Refactor Address.js</h2>
+<p>Here is our new constructor:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
+    super(props);
+    this.canceled = false;
+    this.state = {
+        editOpen: false,
+        namesIndex: 0,
+        names: [{
+              _id: 'unknown',
+              firstName: 'unknown',
+              lastName: 'unknown'
+        }</span>]
+    };</span>
+}
+</code></pre>
+<p>Delete all the JSX and replace it with code that loads <strong>AddressShow</strong> and passes in  a <strong>name</strong> object as a parameter. Pass in four methods, only one of which exists at this time:</p>
+<pre><code class="lang-JavaScript">render() {
+    const {classes} = <span class="hljs-keyword">this</span>.props;
+    <span class="hljs-keyword">return</span> (
+        &lt;AddressShow
+            name={<span class="hljs-keyword">this</span>.state.names[<span class="hljs-keyword">this</span>.state.namesIndex]}
+            showAddress={<span class="hljs-keyword">this</span>.showAddress}
+            setAddress={<span class="hljs-keyword">this</span>.setAddress}
+            save={<span class="hljs-keyword">this</span>.save}
+            delete={<span class="hljs-keyword">this</span>.delete}
+        /&gt;
+    );
+}
+</code></pre>
+<p>Block out the missing methods:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">setAddress</span> = <span class="hljs-params">()</span> =&gt;</span> {};
+<span class="hljs-function"><span class="hljs-title">save</span> = <span class="hljs-params">()</span> =&gt;</span> {};
+<span class="hljs-function"><span class="hljs-title">delete</span> = <span class="hljs-params">()</span> =&gt;</span> {};
+</code></pre>
+<a class="anchor" id="refactor-addressshow"></a>
+<h2>Refactor AddressShow</h2>
+<p>Add the following styles at the top of the file above the component declaration and replacing any existing styles:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">const</span> <span class="hljs-string">styles</span> <span class="hljs-string">=</span> <span class="hljs-string">theme</span> <span class="hljs-string">=&gt;</span> <span class="hljs-string">({</span>
+<span class="hljs-attr">    button:</span> <span class="hljs-string">{</span>
+<span class="hljs-attr">        margin:</span> <span class="hljs-string">theme.spacing.unit</span>
+    <span class="hljs-string">},</span>
+<span class="hljs-attr">    container:</span> <span class="hljs-string">{</span>
+<span class="hljs-attr">        flexGrow:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span>
+<span class="hljs-attr">        textAlign:</span> <span class="hljs-string">'center'</span>
+    <span class="hljs-string">},</span>
+<span class="hljs-attr">    rootBar:</span> <span class="hljs-string">theme.mixins.gutters({</span>
+<span class="hljs-attr">        paddingTop:</span> <span class="hljs-number">16</span><span class="hljs-string">,</span>
+<span class="hljs-attr">        paddingBottom:</span> <span class="hljs-number">16</span><span class="hljs-string">,</span>
+<span class="hljs-attr">        paddingLeft:</span> <span class="hljs-number">8</span><span class="hljs-string">,</span>
+<span class="hljs-attr">        paddingRight:</span> <span class="hljs-number">8</span><span class="hljs-string">,</span>
+<span class="hljs-attr">        marginTop:</span> <span class="hljs-string">theme.spacing.unit</span> <span class="hljs-string">*</span> <span class="hljs-number">3</span><span class="hljs-string">,</span>
+<span class="hljs-attr">        marginLeft:</span> <span class="hljs-string">theme.spacing.unit</span> <span class="hljs-string">*</span> <span class="hljs-number">3</span><span class="hljs-string">,</span>
+<span class="hljs-attr">        marginRight:</span> <span class="hljs-string">theme.spacing.unit</span> <span class="hljs-string">*</span> <span class="hljs-number">3</span>
+    <span class="hljs-string">}),</span>
+<span class="hljs-string">});</span>
+</code></pre>
+<p>Replace <strong>state</strong> in the constructor:</p>
+<pre><code class="lang-javascript">this.<span class="hljs-keyword">state</span> = {
+    editOpen: false,
+    edits: {
+        _id: '<span class="hljs-literal">unknown</span>',
+        firstName: '<span class="hljs-literal">unknown</span>',
+        lastName: '<span class="hljs-literal">unknown</span>'
+    }
+};
+</code></pre>
+<p>Replace the existing render method with this one:</p>
+<pre><code class="lang-javascript">render() {
+  <span class="hljs-keyword">const</span> {classes} = <span class="hljs-keyword">this</span>.props;
+
+  <span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.container}</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">Paper</span> <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.rootBar}</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{this.props.name.firstName}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{this.props.name.lastName}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Button</span>
+          <span class="hljs-attr">color</span>=<span class="hljs-string">"secondary"</span>
+          <span class="hljs-attr">variant</span>=<span class="hljs-string">"raised"</span>
+          <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.props.showAddress}</span>
+        &gt;</span>
+          Show
+        <span class="hljs-tag">&lt;/<span class="hljs-name">Button</span>&gt;</span>
+
+        <span class="hljs-tag">&lt;<span class="hljs-name">Button</span>
+          <span class="hljs-attr">color</span>=<span class="hljs-string">"secondary"</span>
+          <span class="hljs-attr">variant</span>=<span class="hljs-string">"raised"</span>
+          <span class="hljs-attr">onClick</span>=<span class="hljs-string">{event</span> =&gt;</span> this.props.setAddress(-1, event)}
+        &gt;
+          Back
+        <span class="hljs-tag">&lt;/<span class="hljs-name">Button</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Button</span>
+          <span class="hljs-attr">color</span>=<span class="hljs-string">"secondary"</span>
+          <span class="hljs-attr">variant</span>=<span class="hljs-string">"raised"</span>
+          <span class="hljs-attr">onClick</span>=<span class="hljs-string">{event</span> =&gt;</span> this.props.setAddress(1, event)}
+        &gt;
+          Forward
+        <span class="hljs-tag">&lt;/<span class="hljs-name">Button</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">Button</span>
+            <span class="hljs-attr">color</span>=<span class="hljs-string">"secondary"</span>
+            <span class="hljs-attr">variant</span>=<span class="hljs-string">"raised"</span>
+            <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> this.setState({editOpen: true})}
+          &gt;
+            Edit
+          <span class="hljs-tag">&lt;/<span class="hljs-name">Button</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">Button</span>
+            <span class="hljs-attr">color</span>=<span class="hljs-string">"secondary"</span>
+            <span class="hljs-attr">variant</span>=<span class="hljs-string">"raised"</span>
+            <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.save}</span>
+          &gt;</span>
+            Save
+          <span class="hljs-tag">&lt;/<span class="hljs-name">Button</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">Button</span>
+            <span class="hljs-attr">color</span>=<span class="hljs-string">"secondary"</span>
+            <span class="hljs-attr">variant</span>=<span class="hljs-string">"raised"</span>
+            <span class="hljs-attr">onClick</span>=<span class="hljs-string">{event</span> =&gt;</span>
+              this.props.delete(this.props.name, event)
+            }
+          &gt;
+            Delete
+          <span class="hljs-tag">&lt;/<span class="hljs-name">Button</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">Paper</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+  );
+}
+</code></pre>
+<a class="anchor" id="enable-the-menu"></a>
+<h2>Enable the Menu</h2>
+<p>At the top of <strong>App.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { BrowserRouter, Route } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span>;
+<span class="hljs-keyword">import</span> dataManager <span class="hljs-keyword">from</span> <span class="hljs-string">'../tools/PouchDbManager'</span>;
+</code></pre>
+<p>Replace the JSX with this:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">BrowserRouter</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"home"</span> <span class="hljs-attr">exact</span> <span class="hljs-attr">path</span>=<span class="hljs-string">"/"</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{Home}</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Route</span>
+            <span class="hljs-attr">id</span>=<span class="hljs-string">"address"</span>
+            <span class="hljs-attr">path</span>=<span class="hljs-string">"/address"</span>
+            <span class="hljs-attr">render</span>=<span class="hljs-string">{props</span> =&gt;</span> (
+                <span class="hljs-tag">&lt;<span class="hljs-name">Address</span> {<span class="hljs-attr">...props</span>} <span class="hljs-attr">dataManager</span>=<span class="hljs-string">{dataManager}</span> /&gt;</span>
+            )}
+        /&gt;
+        <span class="hljs-tag">&lt;<span class="hljs-name">Route</span>
+            <span class="hljs-attr">id</span>=<span class="hljs-string">"initDb"</span>
+            <span class="hljs-attr">path</span>=<span class="hljs-string">"/init-db"</span>
+            <span class="hljs-attr">render</span>=<span class="hljs-string">{props</span> =&gt;</span> (
+                <span class="hljs-tag">&lt;<span class="hljs-name">InitializeDatabase</span>
+                    {<span class="hljs-attr">...props</span>}
+                    <span class="hljs-attr">dataManager</span>=<span class="hljs-string">{dataManager}</span>
+                /&gt;</span>
+            )}
+        /&gt;
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">BrowserRouter</span>&gt;</span>
+</code></pre>
+<p>Add in the three missing import statements.</p>
+<p>While we are at it, add in code for <strong>componentDidMount</strong> that will initialize PouchDB:</p>
+<pre><code class="lang-javascript">componentDidMount() {
+    <span class="hljs-keyword">this</span>.db = dataManager.init();
+}
+</code></pre>
+<a class="anchor" id="set-up-the-database"></a>
+<h2>Set Up the Database</h2>
+<p>In this application, we are not trying to create an enduser app, but to learn how to initialize Pouch Db. In the running app. In the app, try the following:</p>
+<ul>
+<li>Go to <strong>InitializeDatabase</strong></li>
+<li>Run <strong>Get Address List</strong></li>
+<li>Run <strong>ConvertAddress</strong></li>
+<li>Run <strong>CreateIndex</strong></li>
+<li>Run <strong>Sync</strong> to enter sync mode.</li>
+</ul>
+<p>All should run without error. Lots of output in the console though.</p>
+<a class="anchor" id="show-address-methods"></a>
+<h2>Show Address methods</h2>
+<pre><code>setEdits = (name, event) =&gt; {
+    <span class="hljs-keyword">var</span> <span class="hljs-keyword">data</span> = <span class="hljs-keyword">this</span>.props.name;
+    <span class="hljs-keyword">data</span>[name] = event.target.value;
+    <span class="hljs-keyword">this</span>.setState({edits: <span class="hljs-keyword">data</span>});
+};
+
+addressEdit = address =&gt; {
+    console.log(address);
+
+    <span class="hljs-keyword">if</span> (!address) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.setState({editOpen: <span class="hljs-literal">false</span>});
+    }
+
+    <span class="hljs-keyword">this</span>.setState({
+        edits: address,
+        editOpen: <span class="hljs-literal">false</span>
+    });
+};
+
+save = () =&gt; {
+    <span class="hljs-keyword">this</span>.props.save(<span class="hljs-keyword">this</span>.state.edits);
+};
+</code></pre><a class="anchor" id="methods-for-address"></a>
+<h2>Methods for Address</h2>
+<p>Don&#39;t have the Address component loaded in the running program while you do this:</p>
+<pre><code class="lang-javascript">componentDidMount() {
+    <span class="hljs-keyword">this</span>.props.dataManager.watchChanges(<span class="hljs-keyword">this</span>.watcher);
+}
+
+componentWillUnmount() {
+    <span class="hljs-keyword">this</span>.canceled = <span class="hljs-literal">true</span>;
+}
+
+watcher = <span class="hljs-function"><span class="hljs-params">event</span> =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Watch Change'</span>, event);
+    <span class="hljs-keyword">this</span>.showAddress();
+};
+
+showAddress = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">return</span> that.props.dataManager.db
+        .find({
+            <span class="hljs-attr">selector</span>: { <span class="hljs-attr">lastName</span>: { <span class="hljs-attr">$gt</span>: <span class="hljs-literal">null</span> } },
+            <span class="hljs-attr">sort</span>: [<span class="hljs-string">'lastName'</span>]
+        })
+        .then(<span class="hljs-function"><span class="hljs-params">response</span> =&gt;</span> {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'RECORD COUNT:'</span>, response.docs.length);
+            <span class="hljs-keyword">const</span> names = response.docs.map(<span class="hljs-function"><span class="hljs-params">address</span> =&gt;</span> {
+                <span class="hljs-keyword">return</span> {
+                    <span class="hljs-attr">_id</span>: address._id,
+                    <span class="hljs-attr">_rev</span>: address._rev,
+                    <span class="hljs-attr">firstName</span>: address.firstName,
+                    <span class="hljs-attr">lastName</span>: address.lastName
+                };
+            });
+            <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.canceled) {
+                that.setState({ <span class="hljs-attr">names</span>: names });
+            }
+        });
+};
+
+setAddress = <span class="hljs-function">(<span class="hljs-params">offset</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> value = <span class="hljs-keyword">this</span>.state.namesIndex + offset;
+    <span class="hljs-keyword">if</span> (value &gt;= <span class="hljs-number">0</span> &amp;&amp; value &lt;= <span class="hljs-keyword">this</span>.state.names.length - <span class="hljs-number">1</span>) {
+        <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">namesIndex</span>: value, <span class="hljs-attr">open</span>: <span class="hljs-keyword">this</span>.state.editOpen });
+    }
+};
+
+save = <span class="hljs-function">(<span class="hljs-params">name</span>) =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(name);
+    <span class="hljs-keyword">this</span>.props.dataManager
+        .save(name)
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(response);
+        })
+        .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(err);
+        });
+};
+
+<span class="hljs-keyword">delete</span> = <span class="hljs-function">(<span class="hljs-params">name</span>) =&gt;</span> {
+    <span class="hljs-keyword">this</span>.props.dataManager
+        .delete(name._id)
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'BAR'</span>, result);
+        })
+        .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(err);
+        });
+};
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Push Your work. Tag it. Submit the assignment.</p>
+<p>We will add the edit functionality on Thursday.</p>
+</div></body></html>
