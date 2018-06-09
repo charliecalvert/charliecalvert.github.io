@@ -27,7 +27,8 @@
 <li><a href="#show-address-methods">Show Address methods</a></li>
 <li><a href="#methods-for-address">Methods for Address</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
-<li><a href="#data-cycle">Data Cycle</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#data-cycle">Data Cycle</a></li>
+<li><a href="#what-doc">Where does the DOC come From</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>Refactor Pouch Starter and add support for live syncing.</p>
 <a class="anchor" id="update-to-latest-couchdb"></a>
@@ -512,4 +513,19 @@ save = <span class="hljs-function">(<span class="hljs-params">name</span>) =&gt;
 <a class="anchor" id="data-cycle"></a>
 <h2>Data Cycle</h2>
 <p>Read about the PouchDb, IndexedDB and CouchDB <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/ReactAddressEditDialog.html#data-cycle">Data Cycle</a>.</p>
+<a class="anchor" id="what-doc"></a>
+<h2>Where does the DOC come From</h2>
+<p>In this code from <strong>PouchDbManager.js</strong>, where does the &quot;doc&quot; parameter come from?   </p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">delete</span> = <span class="hljs-function"><span class="hljs-params">id</span> =&gt;</span> {
+     <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+     <span class="hljs-keyword">return</span> that.db.get(id).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>) </span>{
+         <span class="hljs-keyword">return</span> that.db.remove(doc);
+     });
+};
+</code></pre>
+<p>The <strong>doc</strong> is sent back from the database. We want to delete a particular document ( in traditional relational databases it would be called a record). We look it up by ID. The database sends the document (record) back to us, and then we use it in the call that actually removes the document. More details are here and at the top of this same page:</p>
+<ul>
+<li><a href="https://pouchdb.com/guides/updating-deleting.html#deleting-documents">PouchDb Delete</a></li>
+</ul>
+<p>In other words, you might want to read the <a href="https://pouchdb.com/guides/updating-deleting.html#why-must-we-dance-this-dance">section on dancing</a> from the document pointed to above. It will help you better understand the code for deleting a document.</p>
 </div></body></html>
