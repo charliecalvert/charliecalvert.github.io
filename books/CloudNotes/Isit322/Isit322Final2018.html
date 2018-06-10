@@ -5,6 +5,7 @@
 <li><a href="#address-native">Address Native</a></li>
 <li><a href="#testing">Testing</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#data-details">Data Details</a></li>
 <li><a href="#links">Links</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="database-steps"></a>
 <h2>Database Steps</h2>
 <p>I&#39;ll do something like this:</p>
@@ -77,6 +78,22 @@
 <li>Folder: GitExplorer</li>
 <li>Tag: vX.X.X</li>
 </ul>
+<a class="anchor" id="data-details"></a>
+<h2>Data Details</h2>
+<p>I want you to be able to do offline and online editing of some data that you pull from GitHub. We should be able to edit records found in <strong>IndexedDb</strong> and in <strong>CouchDB</strong>. We are not, however going to try to push this data back to GitHub.</p>
+<p>For now, I suggest that we just just download the data we get when we ask for information on Gists. This would be the fields we see in routes/gists.js:</p>
+<pre><code class="lang-javascript">const results = data.map(item =&gt; ({
+    <span class="hljs-attribute">htmlUrl</span>: item<span class="hljs-variable">.html_url</span>,
+    id: item<span class="hljs-variable">.id</span>,
+    gitPullUrl: item<span class="hljs-variable">.git_pull_url</span>,
+    description: item<span class="hljs-variable">.description</span>,
+    ownerLogin: item<span class="hljs-variable">.owner</span><span class="hljs-variable">.login</span>,
+    avatarUrl: item<span class="hljs-variable">.owner</span><span class="hljs-variable">.avatar_url</span>,
+    files: Object<span class="hljs-variable">.keys</span>(item<span class="hljs-variable">.files</span>)
+}));
+</code></pre>
+<p>We can store all those fields in the CouchDB database and in IndexDB. We can also edit, delete and refresh them.</p>
+<p>The most difficult one would be files if we were storing more than one file in a gist. But I am not in any of my examples and I would settle for the first file if you have gists with more than one file.</p>
 <a class="anchor" id="links"></a>
 <h2>Links</h2>
 <p>Read about the PouchDb, IndexedDB and CouchDB <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/React/ReactAddressEditDialog.html#data-cycle">Data Cycle</a>.</p>
