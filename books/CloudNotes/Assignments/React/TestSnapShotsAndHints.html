@@ -8,7 +8,7 @@
 <li><a href="#mocking-fetch">Mocking Fetch</a></li>
 <li><a href="#address-and-after-click-field-tests">Address and after Click Field Tests</a></li>
 <li><a href="#react-spies">React Spies</a></li>
-<li><a href="#addressshow-and-afterclickfieldtest">AddressShow and afterClickFieldTest</a></li>
+<li><a href="#testing-addressshow">Testing AddressShow</a></li>
 <li><a href="#eslint">ESLint</a></li>
 <li><a href="#material-checklist">Material CheckList</a></li>
 <li><a href="#native-test">Native Test</a></li>
@@ -240,7 +240,7 @@ describe(<span class="hljs-string">'Address tests'</span>, <span class="hljs-fun
       expect(wrapper.state().address.firstName).toEqual(<span class="hljs-string">'Robert'</span>);
   });
 
-}
+});
 </code></pre>
 <a class="anchor" id="react-spies"></a>
 <h2>React Spies</h2>
@@ -271,28 +271,59 @@ it('calls fetchServer button click', () =&gt; {
     expect(<span class="hljs-name">spy</span>).toHaveBeenCalled()<span class="hljs-comment">;</span>
 })<span class="hljs-comment">;</span>
 </code></pre>
-<a class="anchor" id="addressshow-and-afterclickfieldtest"></a>
-<h2>AddressShow and afterClickFieldTest</h2>
-<pre><code class="lang-javascript">let wrapper = <span class="hljs-literal">null</span>;
+<a class="anchor" id="testing-addressshow"></a>
+<h2>Testing AddressShow</h2>
+<p>This is the old style, before we needed to call <strong>dive()</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> addresses <span class="hljs-keyword">from</span> <span class="hljs-string">'../address-list'</span>;
 
-const setAddress = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-    const address=addresses[<span class="hljs-number">1</span>];
-    wrapper.setProps({ address: address });
+describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, function() {
+  let wrapper = <span class="hljs-literal">null</span>;
+
+  const setAddress = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      const address=addresses[<span class="hljs-number">1</span>];
+      wrapper.setProps({ address: address });
+  };
+
+  const afterClickFieldTest = <span class="hljs-function"><span class="hljs-params">(name)</span> =&gt;</span> {
+      wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">0</span>]} setAddress={setAddress}/&gt;);
+      const patty = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
+      wrapper.find(<span class="hljs-string">'#setAddress'</span>).simulate(<span class="hljs-string">'click'</span>);
+      <span class="hljs-regexp">//</span><span class="hljs-built_in">console</span>.log(wrapper.debug());
+      expect(wrapper.contains(patty)).toBe(<span class="hljs-literal">true</span>);
+  };
+
+  it(<span class="hljs-string">'renders and displays the first name'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      defaultFieldTest(<span class="hljs-string">'First Name: unknown'</span>, <span class="hljs-number">0</span>);
+      afterClickFieldTest(<span class="hljs-string">'First Name: '</span> + addressTest.firstName, <span class="hljs-number">0</span>);
+  });
+
+});
+</code></pre>
+<p>Once we add in WithStyles we need to call <strong>dive()</strong>:</p>
+<pre><code class="lang-JavaScript">const getIndex = <span class="hljs-function"><span class="hljs-params">(wrapper, index, talkToMe)</span> =&gt;</span> {
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">debug</span> || talkToMe) {
+        const ninep = wrapper
+            .find(<span class="hljs-string">'div#addressShow'</span>)
+            .childAt(index)
+            .<span class="hljs-built_in">debug</span>();
+        console.log(<span class="hljs-string">'NINEP:'</span>, ninep);
+    }
+};
+
+const defaultFieldTest = <span class="hljs-function"><span class="hljs-params">(name, index, talkToMe)</span> =&gt;</span> {
+    const wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">0</span>]} /&gt;);
+    const welcome = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
+    getIndex(wrapper, index, talkToMe);
+    expect(wrapper.dive().contains(welcome)).toEqual(<span class="hljs-literal">true</span>);
 };
 
 const afterClickFieldTest = <span class="hljs-function"><span class="hljs-params">(name)</span> =&gt;</span> {
-    wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">0</span>]} setAddress={setAddress}/&gt;);
-    const patty = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
-    wrapper.find(<span class="hljs-string">'#setAddress'</span>).simulate(<span class="hljs-string">'click'</span>);
-    <span class="hljs-regexp">//</span><span class="hljs-built_in">console</span>.log(wrapper.debug());
-    expect(wrapper.contains(patty)).toBe(<span class="hljs-literal">true</span>);
+  wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">0</span>]} setAddress={setAddress}/&gt;);
+  const patty = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
+  wrapper.dive().find(<span class="hljs-string">'#setAddress'</span>).simulate(<span class="hljs-string">'click'</span>);
+  //console.log(wrapper.<span class="hljs-built_in">debug</span>());
+  expect(wrapper.dive().contains(patty)).toBe(<span class="hljs-literal">true</span>);
 };
-
-it(<span class="hljs-string">'renders and displays the first name'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-    defaultFieldTest(<span class="hljs-string">'First Name: unknown'</span>, <span class="hljs-number">0</span>);
-    afterClickFieldTest(<span class="hljs-string">'First Name: '</span> + addressTest.firstName, <span class="hljs-number">0</span>);
-});
-
 </code></pre>
 <a class="anchor" id="eslint"></a>
 <h2>ESLint</h2>
@@ -500,5 +531,5 @@ it(<span class="hljs-string">'renders GitUserUI'</span>, () =&gt; {
 <p>Add to your AddressMaven project at least one test that uses SnapShots. Push your work. When I look at your projects, I should find a <strong>__snapshots__</strong> directory. For instance, I have one here:</p>
 <pre><code>AddressProxy<span class="hljs-regexp">/src/</span>tests<span class="hljs-regexp">/__snapshots__</span>
 </code></pre><p>Please specify where I should look for your <strong>__snapshots__</strong> directory. Give at least the name of the project.</p>
-<p>[fdm]: </p>
+<p>[fdm]:</p>
 </div></body></html>
