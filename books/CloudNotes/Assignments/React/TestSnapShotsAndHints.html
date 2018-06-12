@@ -209,65 +209,38 @@ Watch Usage: Press w to show more.
 <p>I need it in <strong>SnapShots.test.js</strong> and <strong>Address.test.js</strong> because we call <strong>fetch</strong> in <strong>componendDidMount</strong>. This means its gets called when we load <strong>Address.js</strong> whether we want it to be called our not.</p>
 <a class="anchor" id="address-and-after-click-field-tests"></a>
 <h2>Address and after Click Field Tests</h2>
-<pre><code class="lang-javascript">beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-   <span class="hljs-built_in">global</span>.fetch = jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-   const promise = <span class="hljs-keyword">new</span> Promise(<span class="hljs-function"><span class="hljs-params">(resolve)</span> =&gt;</span> {
-      resolve({
-         ok: <span class="hljs-literal">true</span>,
-         json: function() {
-            <span class="hljs-keyword">return</span> [{
-               firstName: <span class="hljs-string">'Patty'</span>,
-               lastName: <span class="hljs-string">'Murray'</span>,
-               address: <span class="hljs-string">'154 Russell Senate Office Building'</span>,
-               city: <span class="hljs-string">'Washington'</span>,
-               state: <span class="hljs-string">'D.C.'</span>,
-               zip: <span class="hljs-string">'20510'</span>,
-               phone: <span class="hljs-string">'(202) 224-2621'</span>,
-               fax: <span class="hljs-string">'(202) 224-0238'</span>,
-               tollfree: <span class="hljs-string">'(866) 481-9186'</span>
-            }];
-         }
-      });
-   });
-   <span class="hljs-keyword">return</span> promise;
-   });
-});
+<p>How can we test the address component? It much fussing, the solution turned out to be simple. We want to call <strong>setAddress</strong> and pass in an index, and ensure that this gets us new data.</p>
+<ul>
+<li>[FakeDataManager][fdm]</li>
+</ul>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> addresses <span class="hljs-keyword">from</span> <span class="hljs-string">'../address-list'</span>;
+<span class="hljs-keyword">import</span> dataManager <span class="hljs-keyword">from</span> <span class="hljs-string">'../assets/FakeDataManager'</span>;
 
-const setAddress = <span class="hljs-function"><span class="hljs-params">(wrapper)</span> =&gt;</span> {
-        wrapper.instance().getAddress();
-        setImmediate(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-                wrapper.update();
-        });
-};
+describe(<span class="hljs-string">'Address tests'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">let</span> wrapper = <span class="hljs-literal">null</span>;
 
-it(<span class="hljs-string">'renders without crashing'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-    const div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
-    ReactDOM.render(&lt;MuiThemeProvider&gt;&lt;Address/&gt;&lt;/MuiThemeProvider&gt;, div);
-    ReactDOM.unmountComponentAtNode(div);
-});
+  beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      wrapper = shallow(&lt;Address
+          dataManager={dataManager}
+          addressList={addresses}/&gt;);
+  });
 
-const afterClickFieldTest = <span class="hljs-function"><span class="hljs-params">(wrapper, finder)</span> =&gt;</span> {
-    setImmediate(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-        wrapper.update();
-        wrapper.instance().setAddress(<span class="hljs-number">0</span>);
-        setImmediate(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-            wrapper.update();
-            <span class="hljs-keyword">try</span> {
-                    finder();
-            } <span class="hljs-keyword">catch</span> (e) {
-                    <span class="hljs-built_in">console</span>.log(e);
-            }
-        });
-    });
-};
+  <span class="hljs-keyword">const</span> addressProp = <span class="hljs-function"><span class="hljs-params">wrapper</span> =&gt;</span> wrapper.find(<span class="hljs-string">'WithStyles(AddressShow)'</span>).prop(<span class="hljs-string">'address'</span>);
 
-it(<span class="hljs-string">'renders state of firstName after button click'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-        const wrapper = shallow(&lt;Address addressList={addresses}/&gt;);
-        afterClickFieldTest(wrapper, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-                expect(wrapper.find(<span class="hljs-string">'AddressShow'</span>).prop(<span class="hljs-string">'address'</span>).firstName).toEqual(<span class="hljs-string">'Patty'</span>);
-        });
-});
+  it(<span class="hljs-string">'renders and displays the default first name from props'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      expect(addressProp(wrapper).firstName).toEqual(<span class="hljs-string">'unknown'</span>);
+  });
 
+  it(<span class="hljs-string">'renders and displays the default first name from FakeData'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      expect(wrapper.state().address.firstName).toEqual(<span class="hljs-string">'Patty'</span>);
+  });
+
+  it(<span class="hljs-string">'renders state of firstName after button click'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      wrapper.instance().setAddress(<span class="hljs-number">1</span>);
+      expect(wrapper.state().address.firstName).toEqual(<span class="hljs-string">'Robert'</span>);
+  });
+
+}
 </code></pre>
 <a class="anchor" id="react-spies"></a>
 <h2>React Spies</h2>
@@ -527,4 +500,5 @@ it(<span class="hljs-string">'renders GitUserUI'</span>, () =&gt; {
 <p>Add to your AddressMaven project at least one test that uses SnapShots. Push your work. When I look at your projects, I should find a <strong>__snapshots__</strong> directory. For instance, I have one here:</p>
 <pre><code>AddressProxy<span class="hljs-regexp">/src/</span>tests<span class="hljs-regexp">/__snapshots__</span>
 </code></pre><p>Please specify where I should look for your <strong>__snapshots__</strong> directory. Give at least the name of the project.</p>
+<p>[fdm]: </p>
 </div></body></html>
