@@ -1,0 +1,90 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>GitUserTesting</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>GitUserTesting</h1><p>Welcome to GitUserTesting</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#testing-gituser">Testing GitUser</a></li>
+<li><a href="#testing-gituser-ui">Testing GitUser UI</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Hints on testing GitUser and GitUser-UI after we have moved to Material-UI v1.1.1 or later.</p>
+<a class="anchor" id="testing-gituser"></a>
+<h2>Testing GitUser</h2>
+<p>Here is the test to see if we can find a property of the JSX tag for a React component.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> GitUser <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/GitUser'</span>;
+<span class="hljs-keyword">import</span> { configure, shallow } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+<span class="hljs-keyword">import</span> Adapter <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme-adapter-react-16'</span>;
+<span class="hljs-keyword">import</span> { MuiThemeProvider, createMuiTheme } <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/styles'</span>;
+<span class="hljs-keyword">import</span> ElfDebugEnzyme <span class="hljs-keyword">from</span> <span class="hljs-string">'../ElfDebugEnzyme'</span>;
+
+<span class="hljs-keyword">const</span> elfDebugEnzyme = <span class="hljs-keyword">new</span> ElfDebugEnzyme(<span class="hljs-literal">false</span>, <span class="hljs-string">'App.test.js'</span>);
+configure({ <span class="hljs-attr">adapter</span>: <span class="hljs-keyword">new</span> Adapter() });
+
+describe(<span class="hljs-string">'Git User Simple Test'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">const</span> themeDark = createMuiTheme({
+        <span class="hljs-attr">palette</span>: {
+            <span class="hljs-attr">type</span>: <span class="hljs-string">'dark'</span>
+        }
+    });
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createWrapper</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> shallow(
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span> <span class="hljs-attr">theme</span>=<span class="hljs-string">{themeDark}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">GitUser</span> /&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span></span>
+        );
+    }
+
+    it(<span class="hljs-string">'GitUserUI is passed props of user with login  set to unknowns'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> wrapper = createWrapper();
+        elfDebugEnzyme.getAllDive(wrapper, <span class="hljs-literal">false</span>);
+        <span class="hljs-keyword">const</span> user = wrapper
+            .dive()
+            .find(<span class="hljs-string">'GitUserUI'</span>)
+            .prop(<span class="hljs-string">'user'</span>);
+        expect(user.login).toBe(<span class="hljs-string">'unknowns'</span>);
+    });
+});
+</code></pre>
+<p>You should also be able to write a test to find if a wrapper contains a matching element for this statement:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">const nineSign</span> = &lt;GitUserUI /&gt;;
+</code></pre>
+<p>You might need to make frequent reference to the <a href="http://airbnb.io/enzyme/docs/api/shallow.html">Enzyme documentation</a>.</p>
+<a class="anchor" id="testing-gituser-ui"></a>
+<h2>Testing GitUser UI</h2>
+<p>Stripped down click test for <strong>GitUser-ui.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> GitUserUI <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/GitUser.ui'</span>;
+<span class="hljs-keyword">import</span> { configure, shallow } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+<span class="hljs-keyword">import</span> Adapter <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme-adapter-react-16'</span>;
+<span class="hljs-keyword">import</span> Typography <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/Typography'</span>;
+<span class="hljs-keyword">import</span> userData <span class="hljs-keyword">from</span> <span class="hljs-string">'../user-data'</span>;
+
+configure({ <span class="hljs-attr">adapter</span>: <span class="hljs-keyword">new</span> Adapter() });
+
+describe(<span class="hljs-string">'Git User Ui Simple Tests'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">let</span> wrapper = <span class="hljs-literal">null</span>;
+
+    <span class="hljs-keyword">const</span>  queryGitApi = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        wrapper.setProps({
+            <span class="hljs-attr">user</span>: {
+                <span class="hljs-attr">login</span>: <span class="hljs-string">'sam'</span>,
+                <span class="hljs-attr">location</span>: <span class="hljs-string">'here'</span>,
+                <span class="hljs-attr">bio</span>: <span class="hljs-string">'exists'</span>
+
+            }
+        });
+    };
+
+    it(<span class="hljs-string">'checks that we can display the user login'</span>, () =&gt; {
+        wrapper = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">GitUserUI</span> <span class="hljs-attr">user</span>=<span class="hljs-string">{userData}</span> <span class="hljs-attr">queryGitApi</span>=<span class="hljs-string">{queryGitApi}/</span>&gt;</span>);
+        const nineSign = <span class="hljs-tag">&lt;<span class="hljs-name">Typography</span>&gt;</span>login: sam<span class="hljs-tag">&lt;/<span class="hljs-name">Typography</span>&gt;</span>;
+        wrapper.find('#queryGitUser').simulate('click');
+        expect(wrapper.containsMatchingElement(nineSign)).toBe(true);
+    });
+
+});</span>
+</code></pre>
+<p>Once you have the test working it should be relatively simple to create tests that check the state before the button click and to test the state of other fields beside <strong>login</strong>.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>At this time, this is not an assignment. It is just supplemental material to help you through the final and other assignments.</p>
+</div></body></html>

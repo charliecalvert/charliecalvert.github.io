@@ -276,28 +276,40 @@ it('calls fetchServer button click', () =&gt; {
 <p>This is the old style, before we needed to call <strong>dive()</strong>:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">import</span> addresses <span class="hljs-keyword">from</span> <span class="hljs-string">'../address-list'</span>;
 
-describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, function() {
-  let wrapper = <span class="hljs-literal">null</span>;
+describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">let</span> wrapper = <span class="hljs-literal">null</span>;
 
-  const setAddress = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-      const address=addresses[<span class="hljs-number">1</span>];
-      wrapper.setProps({ address: address });
+  <span class="hljs-keyword">const</span> addressTest = {
+        <span class="hljs-attr">firstName</span>: <span class="hljs-string">'Patty'</span>,
+        <span class="hljs-attr">lastName</span>: <span class="hljs-string">'Murray'</span>,
+        <span class="hljs-attr">street</span>: <span class="hljs-string">'154 Russell Senate Office Building'</span>,
+        <span class="hljs-attr">city</span>: <span class="hljs-string">'Washington'</span>,
+        <span class="hljs-attr">state</span>: <span class="hljs-string">'D.C.'</span>,
+        <span class="hljs-attr">zip</span>: <span class="hljs-string">'20510'</span>,
+        <span class="hljs-attr">phone</span>: <span class="hljs-string">'(202) 224-2621'</span>,
+        <span class="hljs-attr">fax</span>: <span class="hljs-string">'(202) 224-0238'</span>,
+        <span class="hljs-attr">tollfree</span>: <span class="hljs-string">'(866) 481-9186'</span>
+    };
+
+  <span class="hljs-keyword">const</span> setAddress = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-keyword">const</span> address=addresses[<span class="hljs-number">1</span>];
+      wrapper.setProps({ <span class="hljs-attr">address</span>: address });
   };
 
-  const afterClickFieldTest = <span class="hljs-function"><span class="hljs-params">(name)</span> =&gt;</span> {
-      wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">0</span>]} setAddress={setAddress}/&gt;);
-      const patty = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
-      wrapper.find(<span class="hljs-string">'#setAddress'</span>).simulate(<span class="hljs-string">'click'</span>);
-      <span class="hljs-regexp">//</span><span class="hljs-built_in">console</span>.log(wrapper.debug());
-      expect(wrapper.contains(patty)).toBe(<span class="hljs-literal">true</span>);
+  <span class="hljs-keyword">const</span> afterClickFieldTest = <span class="hljs-function">(<span class="hljs-params">name</span>) =&gt;</span> {
+      wrapper = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">AddressShow</span> <span class="hljs-attr">address</span>=<span class="hljs-string">{addresses[0]}</span> <span class="hljs-attr">setAddress</span>=<span class="hljs-string">{setAddress}/</span>&gt;</span>);
+      const patty = <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-intro"</span>&gt;</span>{name}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>;
+      wrapper.find('#setAddress').simulate('click');
+      //console.log(wrapper.debug());
+      expect(wrapper.contains(patty)).toBe(true);
   };
 
-  it(<span class="hljs-string">'renders and displays the first name'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-      defaultFieldTest(<span class="hljs-string">'First Name: unknown'</span>, <span class="hljs-number">0</span>);
-      afterClickFieldTest(<span class="hljs-string">'First Name: '</span> + addressTest.firstName, <span class="hljs-number">0</span>);
+  it('renders and displays the first name', () =&gt; {
+      defaultFieldTest('First Name: unknown', 0);
+      afterClickFieldTest('First Name: ' + addressTest.firstName, 0);
   });
 
-});
+});</span>
 </code></pre>
 <p>Once we add in WithStyles we need to call <strong>dive()</strong>:</p>
 <pre><code class="lang-JavaScript">const getIndex = <span class="hljs-function"><span class="hljs-params">(wrapper, index, talkToMe)</span> =&gt;</span> {
