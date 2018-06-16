@@ -83,15 +83,21 @@ registerServiceWorker();
         lastName: 'unknown',         
         ids: []
     }</span>
-}</span>
+    <span class="hljs-title">this</span>.<span class="hljs-title">init</span><span class="hljs-params">()</span>;</span>
+}
 </code></pre>
 <p>Now initial the database:</p>
-<pre><code class="lang-javascript">componentDidMount() {
-    <span class="hljs-keyword">this</span>.db = <span class="hljs-keyword">new</span> PouchDB(<span class="hljs-string">'addresses'</span>);
-    <span class="hljs-regexp">//</span><span class="hljs-keyword">this</span>.remoteCouch = <span class="hljs-string">'http://192.168.2.25:5984/addresses'</span>;
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">init</span> = <span class="hljs-params">()</span> =&gt;</span> {
+    const DB_NAME=<span class="hljs-string">'address-charlie-nine'</span>;
+    <span class="hljs-keyword">this</span>.db = <span class="hljs-keyword">new</span> PouchDB(DB_NAME);
+    <span class="hljs-regexp">//</span><span class="hljs-keyword">this</span>.remoteCouch = <span class="hljs-string">'http://192.168.2.40:5984/'</span> + DB_NAME;
     <span class="hljs-keyword">this</span>.remoteCouch = <span class="hljs-literal">false</span>;
     <span class="hljs-keyword">this</span>.syncDom = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'sync-wrapper'</span>);
-}
+    <span class="hljs-keyword">this</span>.db.changes({
+        since: <span class="hljs-string">'now'</span>,
+        live: <span class="hljs-literal">true</span>
+    }).<span class="hljs-literal">on</span>(<span class="hljs-string">'change'</span>, <span class="hljs-keyword">this</span>.showAddress);
+};
 </code></pre>
 <a class="anchor" id="add-an-address"></a>
 <h2>Add an Address</h2>
