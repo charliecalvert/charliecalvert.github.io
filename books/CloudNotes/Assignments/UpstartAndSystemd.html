@@ -8,6 +8,10 @@
 <li><a href="#deploy-configuration-file">Deploy Configuration File</a></li>
 <li><a href="#manage-your-program">Manage your Program</a></li>
 <li><a href="#useful-scripts">Useful Scripts</a></li>
+<li><a href="#modify-service-directory">modify-service-directory</a></li>
+<li><a href="#setup-service">setup-service</a></li>
+<li><a href="#start-service">start-service</a></li>
+<li><a href="#stop-service">stop-service</a></li>
 <li><a href="#execstart">ExecStart</a></li>
 <li><a href="#links">Links</a></li>
 <li><a href="#upstart">Upstart</a></li>
@@ -72,13 +76,21 @@ lsb_release -a
 <p>We will use the link when composing our systemd configuration file.</p>
 <a class="anchor" id="unit-configuraton-file"></a>
 <h2>Unit Configuraton File</h2>
+<p>In package.json, add a script like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"scripts"</span>: {
+  <span class="hljs-string">"start"</span>: <span class="hljs-string">"nodemon ./bin/www"</span>,
+  <span class="hljs-string">"start-service"</span>: <span class="hljs-string">"node ./bin/www"</span>,
+},
+</code></pre>
+<p>The issue here is that <strong>nodemon</strong> is not on the global path. Root will run your service, and root does not know about <strong>nodemon</strong>. Yet you want <strong>nodemon</strong> during development. So create another script script called <strong>start-service</strong> that uses <strong>node</strong> rather than <strong>nodemon</strong>. This is arguably better than putting a refernce to node in the service file, as you don&#39;t want to have to edit the service file if you change the way you start the program. It is easier to edit <strong>package.json</strong> than it is to edit your service file.</p>
 <p>Create a <strong>systemd</strong> service file called <strong>nrb.service</strong>:</p>
 <pre><code><span class="hljs-section">[Unit]</span>
 <span class="hljs-attr">Description</span>=Run NodeRouteBasics
 <span class="hljs-attr">After</span>=network.target
 <span class="hljs-section">
 [Service]</span>
-<span class="hljs-attr">ExecStart</span>=/usr/bin/node ./bin/www
+<span class="hljs-comment"># ExecStart=/usr/bin/node ./bin/www</span>
+<span class="hljs-attr">ExecStart</span>=/home/ubuntu/npm/bin/npm run start-service
 <span class="hljs-attr">WorkingDirectory</span>=/home/ubuntu/bin/nrb
 <span class="hljs-attr">Restart</span>=always
 <span class="hljs-attr">StandardOutput</span>=syslog
@@ -103,6 +115,9 @@ lsb_release -a
 <p>For instance, the <strong>User</strong> and <strong>Group</strong> would be <strong>ubuntu</strong> on EC2 and <strong>bcuser</strong> on most copies of Pristine Lubuntu.</p>
 <p>Make sure the PORT matches the code in your <strong>/bin/www</strong> file:</p>
 <pre><code class="lang-javascript"><span class="hljs-attribute">var port</span> = normalizePort(process.env.NRB_PORT || <span class="hljs-string">'30025'</span>);
+</code></pre>
+<p><strong>NOTE</strong> <em>If you don&#39;t like the <strong>start-service</strong> solution, do this instead in your service file</em>:</p>
+<pre><code class="lang-javascript"><span class="hljs-attr">ExecStart=</span>/usr/bin/<span class="hljs-keyword">node</span> <span class="hljs-title">./bin</span>/www
 </code></pre>
 <a class="anchor" id="symbolic-link-role"></a>
 <h2>Symbolic Link Role</h2>
@@ -144,20 +159,47 @@ systemctl <span class="hljs-keyword">disable</span> nrb
 <p>The first and second links below will get you up to speed fairly quickly.</p>
 <a class="anchor" id="useful-scripts"></a>
 <h2>Useful Scripts</h2>
-<p>No matter how simple the commands, it is almost always worth taking a moment to create some bash scripts to automate the process. Here are three that I find useful:</p>
-<p>copy-nrb:</p>
-<pre><code class="lang-bash">sudo cp nrb-charlie<span class="hljs-selector-class">.service</span> /etc/systemd/system/nrb<span class="hljs-selector-class">.service</span>
-sudo systemctl enable nrb
-sudo systemctl start nrb
-systemctl status nrb
+<p>No matter how simple the commands, it is almost always worth taking a moment to create some bash scripts to automate the process. Here are three and half scripts that I find useful. They take a moment to setup, but they are very useful:</p>
+<a class="anchor" id="modify-service-directory"></a>
+<h3>modify-service-directory</h3>
+<p>This script can change the name of the directory in your service file. For instance, if you want to change references to <strong>bcuser</strong> to reference <strong>ubuntu</strong> then use this script. This script will be called automatically by <strong>setup-service</strong>.</p>
+<pre><code class="lang-bash"><span class="hljs-meta">#! /bin/bash
+</span>
+<span class="hljs-keyword">if</span> [[ -z <span class="hljs-variable">$1</span> ]]; <span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"You must pass in your home directory"</span>
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"for instance:"</span>
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"  ./modService bcuser"</span>
+    <span class="hljs-built_in">exit</span> 1
+<span class="hljs-keyword">fi</span>
+
+sed -i <span class="hljs-string">"s/home\/\([^/]*\)/home\/<span class="hljs-variable">$1</span>/g"</span> eip.service
 </code></pre>
-<p>startService:</p>
+<a class="anchor" id="setup-service"></a>
+<h3>setup-service</h3>
+<p>This script calls <strong>mod-service</strong>. If that call succeeds, it sets up your service.</p>
+<pre><code class="lang-bash"><span class="hljs-meta">#! /bin/bash
+</span>
+<span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">copyService</span></span>() {
+    ln -s <span class="hljs-variable">$HOME</span>/Git/writings/Tech/Markdown/ElvenImagePicker <span class="hljs-variable">$HOME</span>/bin/eip
+    sudo cp -v eip.service /etc/systemd/system/.
+    sudo systemctl <span class="hljs-built_in">enable</span> eip.service
+    sudo systemctl start eip.service
+}
+
+./modService <span class="hljs-variable">$1</span> &amp;&amp; copyService
+</code></pre>
+<p>Once you have set up your service, you can use these scripts to enable and start the service, or stop and disable the service.</p>
+<a class="anchor" id="start-service"></a>
+<h2>start-service</h2>
+<p>Start the service.</p>
 <pre><code class="lang-bash"><span class="hljs-meta">#!/bin/bash
 </span>
 sudo systemctl <span class="hljs-built_in">enable</span> nrb.service
 sudo systemctl start nrb.service
 </code></pre>
-<p>stopService:</p>
+<a class="anchor" id="stop-service"></a>
+<h2>stop-service</h2>
+<p>Stop the service.</p>
 <pre><code class="lang-bash"><span class="hljs-meta">#!/bin/bash
 </span>
 sudo systemctl stop nrb.service
