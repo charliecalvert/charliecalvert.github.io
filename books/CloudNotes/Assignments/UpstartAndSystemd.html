@@ -8,10 +8,6 @@
 <li><a href="#deploy-configuration-file">Deploy Configuration File</a></li>
 <li><a href="#manage-your-program">Manage your Program</a></li>
 <li><a href="#useful-scripts">Useful Scripts</a></li>
-<li><a href="#modify-service-directory">modify-service-directory</a></li>
-<li><a href="#setup-service">setup-service</a></li>
-<li><a href="#start-service">start-service</a></li>
-<li><a href="#stop-service">stop-service</a></li>
 <li><a href="#execstart">ExecStart</a></li>
 <li><a href="#links">Links</a></li>
 <li><a href="#upstart">Upstart</a></li>
@@ -159,52 +155,13 @@ systemctl <span class="hljs-keyword">disable</span> nrb
 <p>The first and second links below will get you up to speed fairly quickly.</p>
 <a class="anchor" id="useful-scripts"></a>
 <h2>Useful Scripts</h2>
-<p>No matter how simple the commands, it is almost always worth taking a moment to create some bash scripts to automate the process. Here are three and half scripts that I find useful. They take a moment to setup, but they are very useful:</p>
-<a class="anchor" id="modify-service-directory"></a>
-<h3>modify-service-directory</h3>
-<p>This script can change the name of the directory in your service file. For instance, if you want to change references to <strong>bcuser</strong> to reference <strong>ubuntu</strong> then use this script. This script will be called automatically by <strong>setup-service</strong>.</p>
-<pre><code class="lang-bash"><span class="hljs-meta">#! /bin/bash
-</span>
-<span class="hljs-keyword">if</span> [[ -z <span class="hljs-variable">$1</span> ]]; <span class="hljs-keyword">then</span>
-    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"You must pass in your home directory"</span>
-    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"for instance:"</span>
-    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"  ./modService bcuser"</span>
-    <span class="hljs-built_in">exit</span> 1
-<span class="hljs-keyword">fi</span>
-
-sed -i <span class="hljs-string">"s/home\/\([^/]*\)/home\/<span class="hljs-variable">$1</span>/g"</span> eip.service
-</code></pre>
-<a class="anchor" id="setup-service"></a>
-<h3>setup-service</h3>
-<p>This script calls <strong>mod-service</strong>. If that call succeeds, it sets up your service.</p>
-<pre><code class="lang-bash"><span class="hljs-meta">#! /bin/bash
-</span>
-<span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">copyService</span></span>() {
-    ln -s <span class="hljs-variable">$HOME</span>/Git/writings/Tech/Markdown/ElvenImagePicker <span class="hljs-variable">$HOME</span>/bin/eip
-    sudo cp -v eip.service /etc/systemd/system/.
-    sudo systemctl <span class="hljs-built_in">enable</span> eip.service
-    sudo systemctl start eip.service
-}
-
-./modService <span class="hljs-variable">$1</span> &amp;&amp; copyService
-</code></pre>
-<p>Once you have set up your service, you can use these scripts to enable and start the service, or stop and disable the service.</p>
-<a class="anchor" id="start-service"></a>
-<h2>start-service</h2>
-<p>Start the service.</p>
-<pre><code class="lang-bash"><span class="hljs-meta">#!/bin/bash
-</span>
-sudo systemctl <span class="hljs-built_in">enable</span> nrb.service
-sudo systemctl start nrb.service
-</code></pre>
-<a class="anchor" id="stop-service"></a>
-<h2>stop-service</h2>
-<p>Stop the service.</p>
-<pre><code class="lang-bash"><span class="hljs-meta">#!/bin/bash
-</span>
-sudo systemctl stop nrb.service
-sudo systemctl <span class="hljs-built_in">disable</span> nrb.service
-</code></pre>
+<p>No matter how simple the commands, it is almost always worth taking a moment to create some bash scripts to automate the process. Here are three and half scripts that I find useful. They take a moment to setup, but they are very useful.</p>
+<p><strong>NOTE</strong>: To simplify the process, I maintain copies of these scripts here:</p>
+<ul>
+<li>[elven-systemd-tools README][est-rm]</li>
+<li><a href="https://github.com/charliecalvert/elven-systemd-tools">elven-systemd-tools directory</a></li>
+</ul>
+<p>[est-rm]: </p>
 <a class="anchor" id="execstart"></a>
 <h2>ExecStart</h2>
 <p>We have a lot of options:</p>
