@@ -1,8 +1,11 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Ec2Provision</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Ec2Provision</h1><p>Welcome to Ec2Provision</p><ul><!--TOC_Start--><li><a href="#description">Description</a></li>
 <li><a href="#updated-and-partially-automated">Updated and Partially Automated</a></li>
+<li><a href="#github-part-i">GitHub Part I</a></li>
+<li><a href="#get-started">Get Started</a></li>
 <li><a href="#create-ssh-config">Create ~/.ssh/config</a></li>
 <li><a href="#jsobjects-provision">JsObjects Provision</a></li>
+<li><a href="#github-part-ii">GitHub Part II</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#begin-old-provision-ec2-assignment">Begin Old Provision EC2 Assignment</a></li>
 <li><a href="#videos">Videos</a></li>
@@ -25,6 +28,11 @@
 <p>This assignment is still under construction, but there should be enough here to get you going.</p>
 <p><strong>NOTE</strong>: <em>Running the code described here creates EC2 instances. After you create them, terminate them or you will be charged beaucoup bucks. The steps described here also work with regular EC2 accounts (non-AWS-EDUCATE) but in that case I put credentials in a <strong>~/.aws/config.json</strong> file. See commented out line of code and line that sets region.</em></p>
 <p><strong>NOTE</strong>: <em>This should all work on Cloud 9, but I have not tested it there. If possible, work on Pristine Lubuntu.</em></p>
+<a class="anchor" id="github-part-i"></a>
+<h2>GitHub Part I</h2>
+<p>The code here does not yet automate setting up GitHub access. All you really need is your the private key associated with the public key you put in your GitHub account Settings GUI. Before beginning this assignment, make sure you have that key.</p>
+<a class="anchor" id="get-started"></a>
+<h2>Get Started</h2>
 <p>Create a folder called <strong>week04-aws-setup</strong>. In it run <strong>npm init</strong>.</p>
 <p>Install aws:</p>
 <pre><code>npm <span class="hljs-keyword">install</span> aws-sdk
@@ -146,6 +154,18 @@ git pull
 <p>Your instance should now be completely configured and ready to use.</p>
 <p><strong>NOTE</strong>: <em>Don&#39;t do any more of this assignment. Stop here.</em></p>
 <p><strong>NOTE</strong>: <em>Don&#39;t forget to terminate instances you aren&#39;t using. You should have only one at a time unless I specifically ask you to do more.</em></p>
+<a class="anchor" id="github-part-ii"></a>
+<h2>GitHub Part II</h2>
+<p>This is not automated yet. For now you need to manually copy your key to your EC2 instance:</p>
+<pre><code>scp &lt;MyKey&gt; ec2-<span class="hljs-string">bc:</span><span class="hljs-regexp">/home/</span>ubuntu<span class="hljs-regexp">/.ssh/</span>.
+</code></pre><p>Create an SSH config file in your EC2 instances ~/.ssh directory. Put this in it:</p>
+<pre><code>Host github.com
+    HostName github.com
+   <span class="hljs-built_in"> Port </span>22
+   <span class="hljs-built_in"> User </span>git
+    IdentityFile ~/.ssh/&lt;YOUR GITHUB KEY&gt;
+</code></pre><p>Now you should, I think, be able to clone, pull and push your repo.</p>
+<p>For extra credit, you automate all this in a script called <strong>load-my-repo-on-ec2</strong>. Copy it to EC2 and run it. Look at <strong>Provision</strong> to see how it is done.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>There is another, outdated, Turn it in section below. Use this one.</p>
