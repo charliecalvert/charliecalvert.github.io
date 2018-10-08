@@ -1,6 +1,17 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Ec2Provision</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Ec2Provision</h1><p>Welcome to Ec2Provision</p><ul><!--TOC_Start--><li><a href="#description">Description</a></li>
-<li><a href="#provision-ec2">Provision EC2</a></li>
+<li><a href="#updated-and-partially-automated">Updated and Partially Automated</a></li>
+<li><a href="#github-part-i">GitHub Part I</a></li>
+<li><a href="#get-started">Get Started</a></li>
+<li><a href="#aws-sdk-educate">AWS SDK and AWS Educate</a></li>
+<li><a href="#aws-sdk-regular">The AWS SDK for AWS Regular Accounts</a></li>
+<li><a href="#create-your-instance">Create Your Instance</a></li>
+<li><a href="#create-ssh-config">Create ~/.ssh/config</a></li>
+<li><a href="#jsobjects-provision">JsObjects Provision</a></li>
+<li><a href="#github-part-ii">GitHub Part II</a></li>
+<li><a href="#a-few-tips">A Few Tips</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#begin-old-provision-ec2-assignment">Begin Old Provision EC2 Assignment</a></li>
 <li><a href="#videos">Videos</a></li>
 <li><a href="#update-server">Update Server</a></li>
 <li><a href="#-bashrc">.bashrc</a></li>
@@ -11,13 +22,193 @@
 <li><a href="#notes-on-node-install">Notes on Node Install</a></li>
 <li><a href="#git">Git</a></li>
 <li><a href="#lamp">Lamp</a></li>
-<li><a href="#turn-it-in">Turn it In</a></li>
+<li><a href="#old-turn-it-in">Old Turn it In</a></li>
 <li><a href="#more-information">More Information</a></li>
 <li><a href="#history">History</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="description"></a>
 <h2>Description</h2>
-<p>Create and provision an EC2 instance suitable for node development or running at least running node applications.</p>
-<a class="anchor" id="provision-ec2"></a>
-<h2>Provision EC2</h2>
+<p>Create and provision an EC2 instance suitable for node development or at least running node applications.</p>
+<a class="anchor" id="updated-and-partially-automated"></a>
+<h2>Updated and Partially Automated</h2>
+<p>This assignment is still under construction, but there should be enough here to get you going.</p>
+<p><strong>NOTE</strong>: <em>Running the code described here creates EC2 instances. After you create them, terminate them or you will be charged beaucoup bucks. The steps described here also work with regular EC2 accounts (non-AWS-EDUCATE) but in that case I put credentials in a <strong>~/.aws/config.json</strong> file. See commented out line of code and line that sets region.</em></p>
+<p><strong>NOTE</strong>: <em>This should all work on Cloud 9, but I have not tested it there. If possible, work on Pristine Lubuntu.</em></p>
+<a class="anchor" id="github-part-i"></a>
+<h2>GitHub Part I</h2>
+<p>The code here does not yet automate setting up GitHub access. All you really need is your the private key associated with the public key you put in your GitHub account Settings GUI. Before beginning this assignment, make sure you have that key.</p>
+<a class="anchor" id="get-started"></a>
+<h2>Get Started</h2>
+<p>Create a folder called <strong>week04-aws-setup</strong>. In it run <strong>npm init</strong>.</p>
+<p>Install aws:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> aws-sdk
+</code></pre><p>We are using the AWS SDK to create instances. You will need to create some files described below. But them in a directory of Pristine Lubuntu called <strong>~/.aws</strong>:</p>
+<pre><code class="lang-bash">mkdir ~<span class="hljs-string">/.aws</span> &amp;&amp; <span class="hljs-keyword">cd</span> ~<span class="hljs-string">/.aws</span>
+</code></pre>
+<p>As mentioned above, this should also work on Cloud9, I just haven&#39;t tried it there yet. I suppose it would also work on EC2 itself, but I have not tried that either.</p>
+<a class="anchor" id="aws-sdk-educate"></a>
+<h2>AWS SDK and AWS Educate</h2>
+<p>If you are using AWS Educate create a file called <strong>credentials</strong> in <strong>~/.aws</strong>:</p>
+<pre><code><span class="hljs-section">[default]</span>
+<span class="hljs-attr">aws_access_key_id</span>=&lt;YOUR KEY&gt;
+<span class="hljs-attr">aws_secret_access_key</span>=&lt;YOUR SECRET&gt;
+<span class="hljs-attr">aws_session_token</span>=&lt;WE ALSO NEED THIS <span class="hljs-literal">ON</span>E&gt;
+</code></pre><p>Aws Educate students get their keys by selecting &quot;Account Details&quot; on the AWS Educate site. This button is found on the same page where you see <strong>remaining credits</strong> and <strong>session time</strong>. It&#39;s right after you select the classroom. Unfortunately, these keys expire over time, so you will have to recreate the file when your time runs out in Aws Educate. This is not true if you have a regular account.</p>
+<p>Your AWS Educate region will be <strong>us-east-1</strong>.</p>
+<a class="anchor" id="aws-sdk-regular"></a>
+<h2>The AWS SDK for AWS Regular Accounts</h2>
+<p>If you are trying to use a regular account, not an AWS Educate account, create <strong>~/.aws/config.json</strong>. You can leave <strong>~/.aws/credentials</strong>, I think:</p>
+<pre><code>{
+    <span class="hljs-attr">"region"</span>:<span class="hljs-string">"us-west-2"</span>,
+    <span class="hljs-attr">"accessKeyId"</span>:<span class="hljs-string">"YOUR KEY"</span>,
+    <span class="hljs-attr">"secretAccessKey"</span>: <span class="hljs-string">"YOUR SECRET"</span>
+}
+</code></pre><p>You can also put the variables in the environment:</p>
+<pre><code><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">AWS_DEFAULT_REGION</span>=us-west-2
+<span class="hljs-builtin-name">export</span> <span class="hljs-attribute">AWS_ACCESS_KEY_ID</span>=&lt;YOUR KEY&gt;
+<span class="hljs-builtin-name">export</span> <span class="hljs-attribute">AWS_SECRET_ACCESS_KEY</span>=&lt;SECRET&gt;
+</code></pre><p>These will override anything you put in <strong>~/.aws/config.json</strong>.</p>
+<a class="anchor" id="create-your-instance"></a>
+<h2>Create Your Instance</h2>
+<p>Create this file and call it <strong>run.js</strong>:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">var</span> AWS = <span class="hljs-built_in">require</span>(<span class="hljs-string">'aws-sdk'</span>);
+
+AWS.config.credentials.get(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> accessKeyId = AWS.config.credentials.accessKeyId;
+    <span class="hljs-keyword">var</span> secretAccessKey = AWS.config.credentials.secretAccessKey;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Access Key:"</span>, AWS.config.credentials.accessKeyId);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Secret Access Key:"</span>, AWS.config.credentials.secretAccessKey);
+});
+
+<span class="hljs-comment">//AWS.config.loadFromPath(process.env.HOME + '/.aws/config-aws.json');</span>
+AWS.config.update({<span class="hljs-attribute">region</span>:<span class="hljs-string">'us-east-1'</span>});
+
+<span class="hljs-built_in">console</span>.log(AWS.config);
+
+<span class="hljs-comment">// Create EC2 service object</span>
+<span class="hljs-keyword">var</span> ec2 = <span class="hljs-keyword">new</span> AWS.EC2({<span class="hljs-attribute">apiVersion</span>: <span class="hljs-string">'2016-11-15'</span>});
+
+<span class="hljs-comment">// AMI is amzn-ami-2011.09.1.x86_64-ebs</span>
+<span class="hljs-keyword">var</span> instanceParams = {
+    <span class="hljs-attribute">BlockDeviceMappings</span>: [
+        {
+            <span class="hljs-attribute">DeviceName</span>: <span class="hljs-string">"/dev/sda1"</span>,
+            <span class="hljs-attribute">Ebs</span>: {
+                <span class="hljs-attribute">VolumeSize</span>: <span class="hljs-number">16</span>,
+                <span class="hljs-attribute">VolumeType</span>: <span class="hljs-string">'gp2'</span>
+            }
+        }
+    ],
+    <span class="hljs-attribute">ImageId</span>: <span class="hljs-string">'ami-0ac019f4fcb7cb7e6'</span>,
+    <span class="hljs-attribute">InstanceType</span>: <span class="hljs-string">'t2.micro'</span>,
+    <span class="hljs-attribute">KeyName</span>: <span class="hljs-string">'ec2-320-inclass'</span>,
+    <span class="hljs-attribute">SecurityGroupIds</span>: [<span class="hljs-string">'sg-0343e3be157db8175'</span>],
+    <span class="hljs-attribute">MinCount</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attribute">MaxCount</span>: <span class="hljs-number">1</span>
+};
+
+<span class="hljs-comment">// Create a promise on an EC2 service object</span>
+<span class="hljs-keyword">var</span> instancePromise = <span class="hljs-keyword">new</span> AWS.EC2({<span class="hljs-attribute">apiVersion</span>: <span class="hljs-string">'2016-11-15'</span>}).runInstances(instanceParams).promise();
+
+<span class="hljs-comment">// Handle promise's fulfilled/rejected states</span>
+instancePromise.then(
+    <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(data);
+        <span class="hljs-keyword">var</span> instanceId = data.Instances[<span class="hljs-number">0</span>].InstanceId;
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Created instance"</span>, instanceId);
+        <span class="hljs-comment">// Add tags to the instance</span>
+        <span class="hljs-keyword">var</span> <span class="hljs-built_in">date</span> = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().toISOString();
+        tagParams = {
+            <span class="hljs-attribute">Resources</span>: [instanceId], <span class="hljs-attribute">Tags</span>: [
+                {
+                    <span class="hljs-attribute">Key</span>: <span class="hljs-string">'Name'</span>,
+                    <span class="hljs-attribute">Value</span>: <span class="hljs-string">'isit320-'</span> + <span class="hljs-built_in">date</span>
+                }
+            ]
+        };
+        <span class="hljs-comment">// Create a promise on an EC2 service object</span>
+        <span class="hljs-keyword">var</span> tagPromise = <span class="hljs-keyword">new</span> AWS.EC2({<span class="hljs-attribute">apiVersion</span>: <span class="hljs-string">'2016-11-15'</span>}).createTags(tagParams).promise();
+        <span class="hljs-comment">// Handle promise's fulfilled/rejected states</span>
+        tagPromise.then(
+            <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Instance tagged"</span>);
+            }).catch(
+            <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+                <span class="hljs-built_in">console</span>.error(err, err.stack);
+            });
+    }).catch(
+    <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+        <span class="hljs-built_in">console</span>.error(err, err.stack);
+    });
+</code></pre>
+<p>You will have to tweak:</p>
+<ul>
+<li>KeyName</li>
+<li>SecurityGroupIds</li>
+<li>Maybe other?</li>
+</ul>
+<p>When ready, run the file: <strong>node run.js</strong>. If you get errors, explore the output and see if you can find the problem. The code should work if you have the details filled in correctly.</p>
+<a class="anchor" id="create-ssh-config"></a>
+<h2>Create ~/.ssh/config</h2>
+<p>It should contain something like this:</p>
+<pre><code>Host ec2-bc
+    HostName &lt;YOUR ELASTIC<span class="hljs-built_in"> IP </span><span class="hljs-keyword">or</span> PUBLIC<span class="hljs-built_in"> IP </span><span class="hljs-keyword">from</span> Aws Educate EC2 instance&gt;
+   <span class="hljs-built_in"> Port </span>22
+   <span class="hljs-built_in"> User </span>ubuntu
+    IdentityFile ~/.ssh/&lt;YOUR EC2 KEY&gt;
+</code></pre><a class="anchor" id="jsobjects-provision"></a>
+<h2>JsObjects Provision</h2>
+<p>Do this:</p>
+<pre><code class="lang-bash">slb
+git pull
+<span class="hljs-string">./CreateSymbolicLinks</span>
+</code></pre>
+<p>Now the new Provision script should be on your path. Run it:</p>
+<pre><code class="lang-bash"><span class="hljs-attribute">Provision</span>
+</code></pre>
+<p>It will copy scripts to your instance</p>
+<p>Pick A, B and C in turn from the menu.</p>
+<ul>
+<li>Pick A and read it.</li>
+<li>Pick B and wait until it completes. It ends up rebooting your instance. Give the instance time to restart. About 2 minutes, but you can check the AWS console Instances page.</li>
+<li>Pick C. It runs UbuntuSetup from an instance of JsObjects that was automatically installed on your EC2 instance by the Provision script.</li>
+</ul>
+<p>Your instance should now be completely configured and ready to use.</p>
+<p><strong>NOTE</strong>: <em>Don&#39;t do any more of this assignment. Stop here.</em></p>
+<p><strong>NOTE</strong>: <em>Don&#39;t forget to terminate instances you aren&#39;t using. You should have only one at a time unless I specifically ask you to do more.</em></p>
+<a class="anchor" id="github-part-ii"></a>
+<h2>GitHub Part II</h2>
+<p>This is not automated yet. For now you need to manually copy your key to your EC2 instance:</p>
+<pre><code>scp &lt;MyKey&gt; ec2-<span class="hljs-string">bc:</span><span class="hljs-regexp">/home/</span>ubuntu<span class="hljs-regexp">/.ssh/</span>.
+</code></pre><p>Create an SSH config file in your EC2 instances ~/.ssh directory. Put this in it:</p>
+<pre><code>Host github.com
+    HostName github.com
+   <span class="hljs-built_in"> Port </span>22
+   <span class="hljs-built_in"> User </span>git
+    IdentityFile ~/.ssh/&lt;YOUR GITHUB KEY&gt;
+</code></pre><p>Now you should, I think, be able to clone, pull and push your repo.</p>
+<p>For extra credit, you automate all this in a script called <strong>load-my-repo-on-ec2</strong>. Copy it to EC2 and run it. Look at <strong>Provision</strong> to see how it is done.</p>
+<a class="anchor" id="a-few-tips"></a>
+<h2>A Few Tips</h2>
+<p>If you can get <strong>run.js</strong> to execute properly, then it should create a new EC2 instance of Ubuntu Server on AWS or AWS Educate.</p>
+<p>Provision should install <strong>JsObjects</strong>, <strong>NodeJs</strong> and our global NPM packages in our EC2 instance. The NPM packages should be in <strong>~/npm/bin</strong> and other subdirectories of <strong>~/npm</strong>.</p>
+<p>Because you have the <strong>config</strong> file in the <strong>~/.ssh</strong> directory, you should be able to reach your EC2 instance with this command:</p>
+<pre><code><span class="hljs-attribute">ssh</span> ec2-bc
+</code></pre><p>Be careful not to create a bunch of instances on EC2. After you create them and play with them for a bit, go to the AWS EC2 console and terminate them! Probably best not to create more than two at a time. Don&#39;t leave more than one running on EC2 for more than an hour. You can leave one running for as long as you want, but don&#39;t leave two running for more than a few minutes.</p>
+<ul>
+<li><a href="https://aws.amazon.com/premiumsupport/knowledge-center/ec2-instance-hour-billing/">EC2 Billing Rules</a></li>
+</ul>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>There is another, outdated, Turn it in section below. Use this one.</p>
+<p>Delete all your EC2 instances related to this class. On AWS Educate, that means all instances. Create and provision three instances with 20 minutes. Take a screen shot of the EC2 console showing all three instances running. Attach it to the assignment.</p>
+<p>I&#39;m looking for:</p>
+<ul>
+<li>Branch</li>
+<li>Folder</li>
+<li>A second screen shot of the AWS Console showing that you have only one instance running and it was created after Oct 4. (That&#39;s Oct 5 or later.)</li>
+</ul>
+<a class="anchor" id="begin-old-provision-ec2-assignment"></a>
+<h2>Begin Old Provision EC2 Assignment</h2>
+<p><strong>NOTE</strong>: <em>Don&#39;t do this part of the assignment, or any parts after this. This is here as a reference, but it is outdated due to the new Provision script.</em></p>
 <p>This assignment is perhaps not entirely complete, but here is enough to get you started. Perform the following tasks:</p>
 <ul>
 <li>Update your server (sudo apt-get update etc...)</li>
@@ -127,7 +318,7 @@ the <strong>source</strong> command:</p>
 </code></pre><a class="anchor" id="install-node"></a>
 <h2>Install Node</h2>
 <p>See [this section][node-elf] on Elvenware.</p>
-<p>[node-elf]: </p>
+<p>[node-elf]:</p>
 <a class="anchor" id="notes-on-node-install"></a>
 <h2>Notes on Node Install</h2>
 <p>If we try to install npm or any other global npm packages, by default they go into places owned globally by the entire system. This means you need to use sudo to install or change them. I don&#39;t like that. So instead, I tell the system to put npm and all global packages in my home directory where I can have the rights to do what I want with them. In particular, I put them in $HOME/npm. This is why we modify our path in the <strong>.bashrc</strong> file:</p>
@@ -148,8 +339,9 @@ the <strong>source</strong> command:</p>
 <p>We are interested in Apache, which is a web server running on Port 80. Details on setting up LAMP are <a href="http://www.elvenware.com/charlie/development/database/mysql/MySql.html#installOnLinux">here</a>.</p>
 <p>The <strong>Public IP</strong> addresses assigned to you by default on EC2 are not permanent. Since I want a link to your Apache2 running on EC2, I need a permanent link that will not go away. To do this, you need to create an <strong>Elastic IP</strong> and assogiciate it with your running instance. Details are <a href="http://www.elvenware.com/charlie/development/cloud/WebServices.html#elastic">here</a>.</p>
 <p><strong>NOTE</strong>: <em>Once you create an Elastic IP address, your Elastic IP and Public IP address are usually the same. At that point, your Public IP address should be permanent, but only because you have created an Elastic IP address and associated it with your instance.</em></p>
-<a class="anchor" id="turn-it-in"></a>
-<h2>Turn it In</h2>
+<a class="anchor" id="old-turn-it-in"></a>
+<h2>Old Turn it In</h2>
+<p>Ignore this.</p>
 <p>To turn in the assignment, you should provide a screen shot showing:</p>
 <ul>
 <li>A listing of your Git folder (ls -la ~/Git). A sample screen shot is shown below, but it has more directories in it than your&#39;s will have. I want to see both JsObjects and your repository.</li>
