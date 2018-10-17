@@ -1,0 +1,134 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Ec2CopyFile</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Ec2CopyFile</h1><p>Welcome to Ec2CopyFile</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#jsobjects-update">JsObjects Update</a></li>
+<li><a href="#working-directory">Working Directory</a></li>
+<li><a href="#start-applications">Start applications</a></li>
+<li><a href="#client-button">Client Button</a></li>
+<li><a href="#server-side">Server Side</a></li>
+<li><a href="#test-server-method">Test Server Method</a></li>
+<li><a href="#copy-file-to-ec2">Copy file to EC2</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Learn how to copy a file to remote location from a React application.</p>
+<p><strong>Updates</strong>: <em>On the school machines, ignore the updates to VirtualBox, but get the update on your laptops and home machines. On the 18th, Lubuntu and Ubuntu Server will release version 18.10. For now, ignore these updates. We&#39;ll get to them, but not yet.</em></p>
+<a class="anchor" id="jsobjects-update"></a>
+<h2>JsObjects Update</h2>
+<p>Make sure you have pulled the latest from JsObjects:</p>
+<pre><code>slb
+git pull
+<span class="hljs-string">./CreateSymbolicLinks</span>
+</code></pre><a class="anchor" id="working-directory"></a>
+<h2>Working Directory</h2>
+<p>From the root of your repository:</p>
+<pre><code>mkdir week05-ec2-<span class="hljs-keyword">copy</span><span class="bash">-file
+</span>cd week05-ec2-<span class="hljs-keyword">copy</span><span class="bash">-file/
+</span>CreateExpressProject server
+</code></pre><p>From the menu, choose <strong>s</strong> for <strong>server</strong>.</p>
+<p>Now create the client:</p>
+<pre><code><span class="hljs-built_in">create-react-app</span> <span class="hljs-string">client</span>
+</code></pre><p>Open the week05-ec2-copy-file directory in WebStorm. Add the proxy statement to <strong>client/package.json</strong> just above the <strong>dependencies</strong> object:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"proxy"</span>: <span class="hljs-string">"http://localhost:30026"</span>,
+</code></pre>
+<a class="anchor" id="start-applications"></a>
+<h2>Start applications</h2>
+<p>In one tab of the terminal, in the <strong>server</strong> directory:</p>
+<pre><code><span class="hljs-built_in">npm</span> start
+</code></pre><p>Create a secon tab. In the <strong>client</strong> directory:</p>
+<pre><code><span class="hljs-built_in">npm</span> start
+</code></pre><a class="anchor" id="client-button"></a>
+<h2>Client Button</h2>
+<p>In <strong>client/src/App.js</strong> create a method called <strong>copyScript.</strong> Put our standard <strong>fetch</strong> statement in it with the following route:</p>
+<ul>
+<li>/script-pusher/copy-script</li>
+</ul>
+<p>In the second <strong>then</strong> statement, include, for now, only a simple console log of the JSON sent from the server.</p>
+<p>Create a button in <strong>client/src/App.js</strong>.</p>
+<ul>
+<li>Label: Copy Script</li>
+<li>Method: this.copyScript</li>
+<li>CopyScript fetch URL: /script-pusher/copy-script</li>
+</ul>
+<p>The structure of your JSX should be clean, like this:</p>
+<pre><code class="lang-html"><span class="hljs-params">&lt;div className="App"&gt;</span>
+    <span class="hljs-params">&lt;header&gt;</span>
+        <span class="hljs-params">&lt;h1&gt;</span>Copy File<span class="hljs-params">&lt;/h1&gt;</span>
+    <span class="hljs-params">&lt;/header&gt;</span>
+    <span class="hljs-params">&lt;main&gt;</span>
+        <span class="hljs-comment">// Get the button syntax from your previous code.</span>
+    <span class="hljs-params">&lt;/main&gt;</span>
+<span class="hljs-params">&lt;/div&gt;</span>
+</code></pre>
+<a class="anchor" id="server-side"></a>
+<h2>Server Side</h2>
+<p>Create <strong>server/routes/script-pusher.js</strong>. Copy the contents of <strong>routes/index.js</strong> into it. Delete the home page route from <strong>script-pusher.js</strong>. In <strong>server/app.js</strong> link in <strong>script-pusher.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">const scriptPusher</span> = require(<span class="hljs-string">'./routes/script-pusher'</span>);
+</code></pre>
+<p>There is also <strong>app.use</strong> line needed. You have seen it before when we linked in <strong>api.js</strong>.</p>
+<a class="anchor" id="test-server-method"></a>
+<h2>Test Server Method</h2>
+<p>Test that you can call the route:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/copy-script'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response)</span> </span>{ <span class="hljs-string">'use strict'</span>;
+    response.send({ result: <span class="hljs-string">'success'</span> });
+});
+</code></pre>
+<p>Confirm that it works by checking the output in the console after you push the button in the client. You should see the following in the console:</p>
+<pre><code class="lang-javascript">{ <span class="hljs-attribute">result</span>: <span class="hljs-string">'success'</span> }
+</code></pre>
+<a class="anchor" id="copy-file-to-ec2"></a>
+<h2>Copy file to EC2</h2>
+<p>Add the following code above our <strong>/copy-file</strong> endpoint in <strong>script-pusher.js</strong>:</p>
+<pre><code class="lang-JavaScript">const spawn = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>).spawn;
+
+let allData = <span class="hljs-string">""</span>;
+
+const copyFile = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Promise(function (resolve, reject) {
+
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Copy to EC2"</span>, process.env.SETUP_LINUXBOX);
+
+        const pushScript = spawn(<span class="hljs-string">'scp'</span>, [process.env.SETUP_LINUXBOX + <span class="hljs-string">'/CpuInfo'</span>, <span class="hljs-string">'ec2-bc:/home/ubuntu'</span>]);
+
+        pushScript.stdout.<span class="hljs-literal">on</span>(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-params">(data)</span> =&gt;</span> {
+            <span class="hljs-built_in">console</span>.log(`<span class="javascript">child stdout:\n${data}</span>`);
+            allData += <span class="hljs-string">'PUSH-SCRIPT: '</span> + data;
+            <span class="hljs-regexp">//</span><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'PUSH'</span>, data);
+        });
+
+        pushScript.stderr.<span class="hljs-literal">on</span>(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-params">(data)</span> =&gt;</span> {
+            <span class="hljs-built_in">console</span>.log(`<span class="javascript">child stderr:\n${data}</span>`);
+            allData += <span class="hljs-string">'PUSH-SCRIPT: '</span> + data;
+            <span class="hljs-regexp">//</span><span class="hljs-built_in">console</span>.error(<span class="hljs-string">'PUSH'</span>, data);
+        });
+
+        pushScript.<span class="hljs-literal">on</span>(<span class="hljs-string">'close'</span>, <span class="hljs-function"><span class="hljs-params">(code)</span> =&gt;</span> {
+            resolve({
+                result: <span class="hljs-string">'success'</span>,
+                code: code
+            });
+        });
+
+        pushScript.<span class="hljs-literal">on</span>(<span class="hljs-string">'error'</span>, <span class="hljs-function"><span class="hljs-params">(code)</span> =&gt;</span> {
+            reject({
+                result: <span class="hljs-string">'error'</span>,
+                code: code
+            });
+        });
+    });
+};
+</code></pre>
+<p>Modify our server side <strong>copyFile</strong> endpoint to look like this:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/copy-script'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    copyFile()
+        .then(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+            response.send(result);
+        })
+        .catch(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {
+            <span class="hljs-built_in">console</span>.log(err);
+            response.send(err);
+        })
+
+});
+</code></pre>
+</div></body></html>
