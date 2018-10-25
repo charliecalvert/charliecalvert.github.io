@@ -6,7 +6,9 @@
 <li><a href="#ct02">Commit and Tag Part II</a></li>
 <li><a href="#install-eslint">Install EsLint</a></li>
 <li><a href="#setup-script-running">Setup Script Running</a></li>
-<li><a href="#call-the-server-from-the-client">Call the Server from the Client</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#call-the-server-from-the-client">Call the Server from the Client</a></li>
+<li><a href="#setting-up-the-service">Setting up the Service</a></li>
+<li><a href="#move-to-ec2-or-elsewhere">Move to EC2 or Elsewhere</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>Create a program that will allow us to check various system services by running scripts.</p>
 <p>This program should be setup as a systemd service running on port 30033.</p>
@@ -78,4 +80,26 @@ script-pusher.js file from that assignment and put it in the <strong>server/rout
 <a class="anchor" id="call-the-server-from-the-client"></a>
 <h2>Call the Server from the Client</h2>
 <p>Get the Copy File button and <strong>copyFile</strong> method from the Copy File program and paste them into <strong>client/App.js</strong>.</p>
+<a class="anchor" id="setting-up-the-service"></a>
+<h2>Setting up the Service</h2>
+<p>We need to tell the service the value <strong>SETUP_LINUXBOX</strong> environment variable. In <strong>server/systemcheck.service</strong> add this line or something like it just after the place we set the <strong>SERVER_PORT</strong>:</p>
+<pre><code>    Environment=SETUP_LINUXBOX=<span class="hljs-regexp">/home/</span>bcuser<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>SetupLinuxBox
+</code></pre><p>If the server is running as a service, navigate to the <strong>server</strong> directory stop it with our script:</p>
+<pre><code>    ./<span class="hljs-built_in">stop</span>-service
+</code></pre><p>Navigate to the root of the <strong>client</strong> directory. Deploy the client to run on top of the server:</p>
+<pre><code>    npm run <span class="hljs-keyword">build
+</span>    <span class="hljs-meta">cp</span> -r <span class="hljs-keyword">build/* </span>../server/public/.
+</code></pre><p>Go back to the server directory and restart the server:</p>
+<pre><code>    ./<span class="hljs-literal">start</span>-service
+</code></pre><p>Now the whole program, both server and client, should be running on port 30033.</p>
+<a class="anchor" id="move-to-ec2-or-elsewhere"></a>
+<h2>Move to EC2 or Elsewhere</h2>
+<p>At this stage, our <strong>systemcheck.service</strong> file is geared to run on our local machine. For most students, that means the user information in <strong>systemcheck.service</strong> is set to bcuser:</p>
+<pre><code>    <span class="hljs-attribute">User</span>=bcuser
+    <span class="hljs-attribute">Group</span>=bcuser
+</code></pre><p>There are in fact multiple places in <strong>systemcheck.service</strong> where the word <strong>bcuser</strong> occurs. If we have moved to EC2, we want to change all these instances to <strong>ubuntu</strong> because the default user on EC2 is <strong>ubuntu</strong>. This seems like a search and replace task, but <strong>mode-service</strong> will fix it up for us automatically. That means that when you move to a new platform, such as EC2, you can just run <strong>run-setup-service</strong> and the service will automatically be deployed with the right user.</p>
+<p>Whether you want to check in the change or not is up to you. When you move back to Pristine Lubuntu, you are going to want to have the user set to <strong>bcuser</strong>. If you did check in the service file with ubuntu as the user, then on Pristine Lubuntu, you can just stop the service and redeploy with <strong>run-setup-service</strong>.</p>
+<p><strong>NOTE</strong>: <em>Check the security-group for your EC2 instance. I believe we set the range Port Range to 30025-30030. We should change that to 30025-30035.</em></p>
+<p>Turn it in        </p>
+<p>Tell me branch, folder and tags. Give me a link to your service running on EC2.</p>
 </div></body></html>
