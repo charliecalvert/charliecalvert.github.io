@@ -1,0 +1,127 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ScriptMasterTags</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ScriptMasterTags</h1><p>Welcome to ScriptMasterTags</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#prime-the-pump">Prime the Pump</a></li>
+<li><a href="#parameters">Parameters</a></li>
+<li><a href="#get-branch-name">Get Branch Name</a></li>
+<li><a href="#increment-version">Increment Version</a></li>
+<li><a href="#push-and-tag">Push and Tag</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Our goal is to make it simple to commit and push our work, providing:</p>
+<ul>
+<li>A string for our commit message</li>
+<li>A string for our tag message</li>
+<li>A version number for our tag that is autoincremented with each commit.</li>
+<li>A reference to the current branch in both the commit and tag message.</li>
+</ul>
+<a class="anchor" id="prime-the-pump"></a>
+<h2>Prime the Pump</h2>
+<p>Our script will not work if there are no tags. In other words, you have to create the first tag yourself with code like this:</p>
+<pre><code>git tag -a v0<span class="hljs-meta">.0</span><span class="hljs-meta">.1</span> -m <span class="hljs-string">"Tagging the initial commit"</span>
+git <span class="hljs-keyword">push</span> origin v0<span class="hljs-meta">.0</span><span class="hljs-meta">.1</span>
+</code></pre><p>Our script assumes that version numbers take this form:</p>
+<pre><code>vX<span class="hljs-selector-class">.Y</span><span class="hljs-selector-class">.Z</span>
+</code></pre><p>In other words, they start with a V.</p>
+<p>We also assume that they are ascending numbers. We assume the first tag has a version number lower than the second, and so on.</p>
+<p>This is not very robust, but it meets our purposes.    </p>
+<a class="anchor" id="parameters"></a>
+<h2>Parameters</h2>
+<p>Our script will be passed two parameters:</p>
+<ul>
+<li>The first is the commit message.</li>
+<li>The second is the name of the project you are working on.</li>
+</ul>
+<p>For instance:</p>
+<pre><code>elf-tagger "This is my <span class="hljs-keyword">commit</span> message<span class="hljs-string">" "</span>week01-my-<span class="hljs-keyword">project</span><span class="hljs-string">"</span>
+</code></pre><p>Here the commit message is &quot;This is my commit message.&quot; The project is &quot;week01-my-project&quot;.</p>
+<p>Our script might blow up if we do not have both of these parameters. Here is how to detect if you have one parameter:</p>
+<pre><code class="lang-bash"><span class="hljs-keyword">if</span> [[ -z <span class="hljs-variable">$1</span> ]]; then
+    echo -e <span class="hljs-string">"You must pass in one parameter"</span>
+    <span class="hljs-keyword">exit</span>
+fi
+</code></pre>
+<p>The <strong>-z</strong> option asks if the length of a string is zero. Type <strong>man test</strong> at the bash prompt to look this up.</p>
+<p>In this case, the <strong>$1</strong> code is the first parameter to passed to our script.</p>
+<p>The call to <strong>exit</strong> tells the script to bail, to terminate immediately.</p>
+<p>So here is how to test if the user passed in two parameters:</p>
+<pre><code class="lang-bash"><span class="hljs-keyword">if</span> [[ -z <span class="hljs-variable">$2</span> ]]; then
+    echo -e <span class="hljs-string">"You must pass in a commit message and the project name"</span>
+    <span class="hljs-keyword">exit</span>
+fi
+</code></pre>
+<p>It is not likely the user will pass in three parameters, but it is likely they will forget to put quotes around the strings the pass in. This will make it appear that they meant to pass in more than two parameters. Here is one way to test that the user passed in more than two parameters:</p>
+<pre><code class="lang-bash"><span class="hljs-keyword">if</span> [[ ! -z <span class="hljs-variable">$3</span> ]]; then
+    echo -e <span class="hljs-string">"Too many parameters"</span>
+    <span class="hljs-keyword">exit</span>
+fi
+</code></pre>
+<p>The bang (!) here negates the statement. So we are saying, in effect, if the third parameter exists, that is, if it has more than zero characters, then terminate the script.</p>
+<p>With these two tests out of the way, we are ready to begin writing our script.</p>
+<a class="anchor" id="get-branch-name"></a>
+<h2>Get Branch Name</h2>
+<p>Just use this method. It is quite advanced and you don&#39;t need to understand it:</p>
+<pre><code class="lang-bash"><span class="hljs-comment"># IFS is the default separator of white space</span>
+<span class="hljs-comment"># BASH_REMATCH gets the first Regular Express match</span>
+<span class="hljs-keyword">function</span> git_branch {
+  <span class="hljs-built_in">local</span> git_status=<span class="hljs-string">"<span class="hljs-variable">$(git status 2&gt; /dev/null)</span>"</span>  
+  <span class="hljs-built_in">local</span> on_branch=<span class="hljs-string">"On branch ([^<span class="hljs-variable">${IFS}</span>]*)"</span>  
+  <span class="hljs-built_in">local</span> on_commit=<span class="hljs-string">"HEAD detached at ([^<span class="hljs-variable">${IFS}</span>]*)"</span>
+
+  <span class="hljs-keyword">if</span> [[ <span class="hljs-variable">$git_status</span> =~ <span class="hljs-variable">$on_branch</span> ]]; <span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">local</span> branch=<span class="hljs-variable">${BASH_REMATCH[1]}</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$branch</span>"</span>
+  <span class="hljs-keyword">elif</span> [[ <span class="hljs-variable">$git_status</span> =~ <span class="hljs-variable">$on_commit</span> ]]; <span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">local</span> commit=<span class="hljs-variable">${BASH_REMATCH[1]}</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$commit</span>"</span>
+  <span class="hljs-keyword">fi</span>
+}
+</code></pre>
+<p>When you call the method, it will return the name of your current branch. You need, of course, to be in your repository when you make the call. The script does not need to be kept in your repository, but your current working directory when you call the script should be inside your repository.</p>
+<a class="anchor" id="increment-version"></a>
+<h2>Increment Version</h2>
+<p>Here is how to get a list of tags:</p>
+<pre><code>git <span class="hljs-keyword">tag</span>
+</code></pre><p>Here is how to get the last item from the list:</p>
+<pre><code>git <span class="hljs-keyword">tag</span> <span class="hljs-title">| tail</span> -<span class="hljs-number">1</span>
+</code></pre><p>And here is how to strip off the v from version numbers such as v1.0.0</p>
+<pre><code>git <span class="hljs-keyword">tag</span> <span class="hljs-title">| tail</span> -<span class="hljs-number">1</span> |  sed -En <span class="hljs-string">"s/v(.*)/\1/p</span>
+</code></pre><p>We use said to find the values after the v, and then we return that value. In effect, we are saying this:</p>
+<pre><code><span class="hljs-attribute">sed</span> <span class="hljs-string">"s/v(1.0.0)/\1/p"</span>
+</code></pre><p>The \1 means to get the value in parenthesis. All this is regex and I&#39;m not going to explain it here.</p>
+<p>So we get the current largest tag version like this:</p>
+<pre><code><span class="hljs-attr">OLD_TAG_VERSION=</span>`git <span class="hljs-keyword">tag</span> <span class="hljs-title">| tail</span> -<span class="hljs-number">1</span> |  sed -En <span class="hljs-string">"s/v(.*)/\1/p"</span>`
+</code></pre><p>Then we use the <strong>semver-inc</strong> script from the latest JsObjects (git pull) to increment the patch value of the tag:</p>
+<pre><code><span class="hljs-attr">TAG_VERSION</span>=v`semver-inc -p <span class="hljs-variable">$OLD_TAG_VERSION</span>`
+</code></pre><p>Now we get the branch:</p>
+<pre><code>BRANCH%3D%60git_branch%60
+</code></pre><p>And put it altogether to see the message we are going to use on our commit and tag:</p>
+<pre><code>TAG_STRING=<span class="hljs-string">"<span class="hljs-variable">$1</span> for <span class="hljs-variable">$2</span> on branch `git_branch` with tag <span class="hljs-variable">${TAG_VERSION}</span>."</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">$TAG_STRING</span>
+</code></pre><p>We echo it out as a sanity check.</p>
+<a class="anchor" id="push-and-tag"></a>
+<h2>Push and Tag</h2>
+<p>At this point, we have everything we need to do our actual work. The last step is to write a bash function that calls:</p>
+<ul>
+<li>git add</li>
+<li>git commit</li>
+<li>git push</li>
+</ul>
+<p>Then we call git tag, passing in -a and -m as we have done multiple times.</p>
+<pre><code class="lang-bash"><span class="hljs-attribute">function</span> push_tag() {
+  <span class="hljs-attribute">git</span> status
+  <span class="hljs-comment"># You call git add, commit and push. Push is the tricky one.</span>
+
+  git tag -a <span class="hljs-string">"<span class="hljs-variable">${TAG_VERSION}</span>"</span> -m <span class="hljs-string">"<span class="hljs-variable">${TAG_STRING}</span>"</span>
+  git push origin <span class="hljs-string">"<span class="hljs-variable">${&lt;WHAT GOES IN HERE TO GET THE TAG VERSION?&gt;}</span>"</span>
+}
+
+push_tag
+</code></pre>
+<p>And that is the end of our script.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>In your repository, create a directory called <strong>scripts</strong>. Save the script your created as <strong>elf-tagger</strong> and put it in your scripts folder. Create a symbolic link from the bin directory to your script.</p>
+<p>Use the script to add, commit and push your work, and then tag it.</p>
+<p>The command should be:</p>
+<pre><code>elf-tagger <span class="hljs-string">"Finished elf-tagger"</span> <span class="hljs-string">"scripts"</span>
+</code></pre></div></body></html>
