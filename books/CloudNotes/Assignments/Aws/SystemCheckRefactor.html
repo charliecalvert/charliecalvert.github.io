@@ -2,14 +2,24 @@
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>SystemCheckRefactor</h1><p>Welcome to SystemCheckRefactor</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#get-started">Get Started</a></li>
 <li><a href="#eslint-and-prettier">Eslint and Prettier</a></li>
-<li><a href="#systemd">systemd</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<li><a href="#systemd">systemd</a></li>
+<li><a href="#push-and-tag">Push and Tag</a></li>
+<li><a href="#setup">Setup</a></li>
+<li><a href="#radio-buttons">Radio Buttons</a></li>
+<li><a href="#modify-render">Modify render</a></li>
+<li><a href="#refactor">Refactor</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>Learn to refactor React components.</p>
 <a class="anchor" id="get-started"></a>
 <h2>Get Started</h2>
 <p>Let&#39;s start from the beginning again.</p>
 <ul>
-<li>Update JsObjects</li>
+<li>Update JsObjects<ul>
+<li>slb</li>
+<li>./CreateSynbolicLinks (needed for semver-inc)</li>
+</ul>
+</li>
 <li>Navigate back to your repository</li>
 <li>Branch: <strong>week07</strong></li>
 <li>Folder: <strong>week07-system-check-refactor</strong></li>
@@ -33,5 +43,93 @@
 <ul>
 <li>cd server</li>
 <li>get-gist and run <strong>Elven Node systemd Tools</strong></li>
+<li>Open <strong>setup-environment-service</strong> in WebStorm.</li>
+</ul>
+<p>Here are the settings:</p>
+<pre><code><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">SYSTEMD_PROJECT_NAME</span>=scref
+<span class="hljs-builtin-name">export</span> <span class="hljs-attribute">SYSTEMD_DESCRIPTION</span>=<span class="hljs-string">"SystemCheck Refactor Service"</span>
+<span class="hljs-builtin-name">export</span> <span class="hljs-attribute">SYSTEMD_PORT</span>=<span class="hljs-string">"ELF-SCREF_PORT=30030"</span>
+</code></pre><p>Add <strong>ELF_SCREF_PORT</strong> to both <strong>.bashrc</strong> and <strong>/bin/www</strong>. You need to export it from <strong>.bashrc</strong>.</p>
+<pre><code class="lang-JavaScript"><span class="hljs-attribute">var port</span> = normalizePort(process.env.ELF_SCREF_PORT || <span class="hljs-string">'30030'</span>);
+</code></pre>
+<p><strong>NOTE</strong>: _Ultimately, we may want to put these exports in <strong>.my_bash_aliases</strong>._</p>
+<p>Execute <strong>run-setup-service</strong> and confirm that it works. Use the <strong>q</strong> key to exit.</p>
+<a class="anchor" id="push-and-tag"></a>
+<h2>Push and Tag</h2>
+<p>At this point, you should check that you have completed the [Script Master Push and Tag] assignment.</p>
+<p>Push and tag:</p>
+<pre><code>elf-tagger <span class="hljs-string">"Completed setup phase"</span> <span class="hljs-string">"week07-system-check-refactor"</span>
+</code></pre><a class="anchor" id="setup"></a>
+<h2>Setup</h2>
+<p>Use <strong>meld</strong> to copy the key files from SystemCheck into this project.</p>
+<ul>
+<li>server/app.js</li>
+<li>server/routes/script-pusher.js</li>
+<li>client/src/App.js</li>
+</ul>
+<a class="anchor" id="radio-buttons"></a>
+<h2>Radio Buttons</h2>
+<p>Add radios to render put this before the return statement in render:</p>
+<pre><code class="lang-javascript">const radioWeb =  (
+      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"container"</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">onSubmit</span>=<span class="hljs-string">{this.handleSubmit}</span> &gt;</span>
+
+              <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"elf-form-field"</span> &gt;</span>
+                  <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"app-choice"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"CpuInfo"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"elf-radio-cpu"</span> <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.handleChange}/</span>&gt;</span>
+                  <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">htmlFor</span>=<span class="hljs-string">"elf-radio-cpu"</span>&gt;</span>CpuInfo<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+
+                  <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"app-choice"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"VersionCheck"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"elf-radio-version"</span> <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.handleChange}/</span>&gt;</span>
+                  <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">htmlFor</span>=<span class="hljs-string">"elf-radio-version"</span>&gt;</span>Version Info<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+              <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+              <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"form-group"</span>&gt;</span>
+                  <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"submit"</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"btn btn-primary"</span>&gt;</span>Run System Script<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+              <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  );
+</code></pre>
+<a class="anchor" id="modify-render"></a>
+<h2>Modify render</h2>
+<p>Put this in the <strong>render</strong> method:</p>
+<pre><code class="lang-html"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">main</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">section</span>&gt;</span>
+        </span><span class="hljs-template-variable">{radioWeb}</span><span class="xml">
+    <span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">section</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">pre</span>&gt;</span></span><span class="hljs-template-variable">{this.state.allData}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">pre</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=</span></span><span class="hljs-template-variable">{this.runFoo}</span><span class="xml"><span class="hljs-tag">&gt;</span>Run Foo<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span></span>
+</code></pre>
+<p>The key point is the JavaScript JSX expression {radioWeb}.</p>
+<p>And we handle it like this:</p>
+<pre><code class="lang-javascript">handleChange = (event) =&gt; {
+    const selectedValue = event.target.value;
+    console.<span class="hljs-keyword">log</span>('HANDLE CHANGE', selectedValue);
+    this.<span class="hljs-built_in">set</span>State({
+        ...this.<span class="hljs-keyword">state</span>,
+        selectedValue: selectedValue
+    });
+
+};
+
+handleSubmit= (event) =&gt; {
+    this.<span class="hljs-built_in">set</span>State({<span class="hljs-literal">all</span>Data: ''});
+    console.<span class="hljs-keyword">log</span>('A name was submitted: ' , this.<span class="hljs-keyword">state</span>);
+    //if (this.<span class="hljs-keyword">state</span>.selectedValue === 'cpu') {
+    this.runCpuInfo(this.<span class="hljs-keyword">state</span>.selectedValue);
+    //}
+    event.preventDefault();
+};
+</code></pre>
+<a class="anchor" id="refactor"></a>
+<h2>Refactor</h2>
+<p>I&#39;ll talk you through the refactor.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Tag and push with script:</p>
+<ul>
+<li>elf-tagger &quot;Completed system check refactor&quot; &quot;week06-system-check-refactor&quot;</li>
 </ul>
 </div></body></html>
