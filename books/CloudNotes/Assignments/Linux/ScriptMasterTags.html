@@ -93,7 +93,7 @@ fi
 <pre><code><span class="hljs-attribute">sed</span> <span class="hljs-string">"s/v(1.0.0)/\1/p"</span>
 </code></pre><p>The \1 means to get the value in parenthesis. All this is regex and I&#39;m not going to explain it here.</p>
 <p>So we get the current largest tag version like this:</p>
-<pre><code><span class="hljs-attr">OLD_TAG_VERSION=</span>`git <span class="hljs-keyword">tag</span> <span class="hljs-title">| tail</span> -<span class="hljs-number">1</span> |  sed -En <span class="hljs-string">"s/v(.*)/\1/p"</span>`
+<pre><code><span class="hljs-attribute">OLD_TAG_VERSION</span>=`git tag <span class="hljs-attribute">--sort</span>=taggerdate | tail -1 |  sed -En <span class="hljs-string">"s/v(.*)/\1/p"</span>`
 </code></pre><p>Then we use the <strong>semver-inc</strong> script from the latest JsObjects (git pull) to increment the patch value of the tag:</p>
 <pre><code><span class="hljs-attr">TAG_VERSION</span>=v`semver-inc -p <span class="hljs-variable">$OLD_TAG_VERSION</span>`
 </code></pre><p>Now we get the branch:</p>
@@ -112,9 +112,11 @@ fi
 <li>git push</li>
 </ul>
 <p>Then we call git tag, passing in -a and -m as we have done multiple times.</p>
-<pre><code class="lang-bash"><span class="hljs-attribute">function</span> push_tag() {
-  <span class="hljs-attribute">git</span> status
-  <span class="hljs-comment"># You call git add, commit and push. Push is the tricky one.</span>
+<pre><code class="lang-bash"><span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">push_tag</span></span>() {
+  git status
+  <span class="hljs-comment"># You call git add and commit. Commit is the tricky one.</span>
+  <span class="hljs-comment"># Here is push:</span>
+  git push --<span class="hljs-built_in">set</span>-upstream origin <span class="hljs-variable">${BRANCH}</span>
 
   git tag -a <span class="hljs-string">"<span class="hljs-variable">${TAG_VERSION}</span>"</span> -m <span class="hljs-string">"<span class="hljs-variable">${TAG_STRING}</span>"</span>
   git push origin <span class="hljs-string">"<span class="hljs-variable">${&lt;WHAT GOES IN HERE TO GET THE TAG VERSION?&gt;}</span>"</span>
