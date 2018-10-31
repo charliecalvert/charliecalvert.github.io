@@ -1,0 +1,279 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Isit320Midterm2018</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Isit320Midterm2018</h1><p>Welcome to Isit320Midterm2018</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#get-started">Get Started</a></li>
+<li><a href="#eslint-and-prettier">Eslint and Prettier</a></li>
+<li><a href="#systemd">systemd</a></li>
+<li><a href="#push-and-tag">Push and Tag</a></li>
+<li><a href="#setup">Setup</a></li>
+<li><a href="#radio-buttons">Radio Buttons</a></li>
+<li><a href="#modify-render">Modify render</a></li>
+<li><a href="#middleware-whitelist">Middleware Whitelist</a></li>
+<li><a href="#refactor">Refactor</a></li>
+<li><a href="#deploy">Deploy</a></li>
+<li><a href="#the-build-script">The Build Script</a></li>
+<li><a href="#the-gitignore-for-the-server">The .gitignore for the Server</a></li>
+<li><a href="#changing-branches">Changing Branches</a></li>
+<li><a href="#add-ssh">Add SSH</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Learn to refactor React components.</p>
+<a class="anchor" id="get-started"></a>
+<h2>Get Started</h2>
+<p>Let&#39;s start from the beginning again.</p>
+<ul>
+<li>Update JsObjects<ul>
+<li>slb</li>
+<li>./CreateSynbolicLinks (needed for semver-inc)</li>
+</ul>
+</li>
+<li>Navigate back to your repository</li>
+<li>Branch: <strong>week07</strong></li>
+<li>Folder: <strong>week07-system-check-refactor</strong></li>
+<li>Navigate into folder<ul>
+<li><strong>get-gist</strong> and choose <strong>Elven Create Concurrently</strong></li>
+<li>Run <strong>elf-concur</strong>, choose s for server</li>
+</ul>
+</li>
+</ul>
+<a class="anchor" id="eslint-and-prettier"></a>
+<h2>Eslint and Prettier</h2>
+<p>Install eslint and prettier</p>
+<ul>
+<li>get-gist and choose <strong>Run ESLintRc and Prettier</strong></li>
+<li>echo &#39;build&#39; &gt; .prettierignore</li>
+<li>Run prettier, and it should clean both <strong>client</strong> and <strong>server</strong>.</li>
+</ul>
+<p>We set up <strong>.prettierignore</strong> because we need to avoid trying to run prettier on our <strong>client/build</strong> directory.</p>
+<a class="anchor" id="systemd"></a>
+<h2>systemd</h2>
+<ul>
+<li>cd server</li>
+<li>get-gist and run <strong>Elven Node systemd Tools</strong></li>
+<li>Open <strong>setup-environment-service</strong> in WebStorm.</li>
+</ul>
+<p>Here are the settings:</p>
+<pre><code><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">SYSTEMD_PROJECT_NAME</span>=scref
+<span class="hljs-builtin-name">export</span> <span class="hljs-attribute">SYSTEMD_DESCRIPTION</span>=<span class="hljs-string">"SystemCheck Refactor Service"</span>
+<span class="hljs-builtin-name">export</span> <span class="hljs-attribute">SYSTEMD_PORT</span>=<span class="hljs-string">"ELF_SCREF_PORT=30030"</span>
+</code></pre><p>Add <strong>ELF_SCREF_PORT</strong> to both <strong>.bashrc</strong> and <strong>/bin/www</strong>. You need to export it from <strong>.bashrc</strong>.</p>
+<pre><code class="lang-JavaScript"><span class="hljs-attribute">var port</span> = normalizePort(process.env.ELF_SCREF_PORT || <span class="hljs-string">'30030'</span>);
+</code></pre>
+<p><strong>NOTE</strong>: _Ultimately, we may want to put these exports in <strong>.my_bash_aliases</strong>._</p>
+<p>Execute <strong>run-setup-service</strong> and confirm that it works. Use the <strong>q</strong> key to exit.</p>
+<a class="anchor" id="push-and-tag"></a>
+<h2>Push and Tag</h2>
+<p>At this point, you should check that you have completed the [Script Master Push and Tag] assignment.</p>
+<p>Push and tag:</p>
+<pre><code>elf-tagger <span class="hljs-string">"Completed setup phase"</span> <span class="hljs-string">"week07-system-check-refactor"</span>
+</code></pre><a class="anchor" id="setup"></a>
+<h2>Setup</h2>
+<p>Use <strong>meld</strong> to copy the key files from SystemCheck into this project.</p>
+<ul>
+<li>server/app.js</li>
+<li>server/routes/script-pusher.js</li>
+<li>client/src/App.js</li>
+</ul>
+<a class="anchor" id="radio-buttons"></a>
+<h2>Radio Buttons</h2>
+<p>Add radios to render put this before the return statement in render:</p>
+<pre><code class="lang-javascript">const radioWeb = (
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"container"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">onSubmit</span>=<span class="hljs-string">{this.handleSubmit}</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">fieldset</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"elf-form-field"</span>&gt;</span>
+
+                    <span class="hljs-tag">&lt;<span class="hljs-name">legend</span>&gt;</span>Services<span class="hljs-tag">&lt;/<span class="hljs-name">legend</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">input</span>
+                        <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span>
+                        <span class="hljs-attr">name</span>=<span class="hljs-string">"app-choice"</span>
+                        <span class="hljs-attr">data-endpoint</span>=<span class="hljs-string">"0"</span>
+                        <span class="hljs-attr">value</span>=<span class="hljs-string">"CpuInfo"</span>
+                        <span class="hljs-attr">id</span>=<span class="hljs-string">"elf-radio-cpu"</span>
+                        <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.handleChange}</span>
+                    /&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">htmlFor</span>=<span class="hljs-string">"elf-radio-cpu"</span>&gt;</span>CpuInfo<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+
+                    <span class="hljs-tag">&lt;<span class="hljs-name">input</span>
+                        <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span>
+                        <span class="hljs-attr">name</span>=<span class="hljs-string">"app-choice"</span>
+                        <span class="hljs-attr">data-endpoint</span>=<span class="hljs-string">"0"</span>
+                        <span class="hljs-attr">value</span>=<span class="hljs-string">"VersionCheck"</span>
+                        <span class="hljs-attr">id</span>=<span class="hljs-string">"elf-radio-version"</span>
+                        <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.handleChange}</span>
+                    /&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">htmlFor</span>=<span class="hljs-string">"elf-radio-version"</span>&gt;</span>Version Info<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+
+                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"form-group"</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"submit"</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"btn btn-primary"</span>&gt;</span>Run System Script<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">fieldset</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+);
+</code></pre>
+<p>The <strong>fieldset</strong> and it&#39;s <strong>legend</strong> visually bind together the form elements by putting a box and title around them. Each <strong>radio input</strong> control is bound to a <strong>label</strong> because the label&#39;s <strong>for</strong> and the input control&#39;s <strong>id</strong> values match. Because <strong>for</strong> is a reserved word in JavaScript, JSX uses <strong>htmlFor</strong> rather than <strong>for</strong>. But at runtime it is rendered as <strong>for</strong>, which is proper HTML.</p>
+<p>The <strong>value</strong> of each <strong>input</strong> control is where you put the code that executes on the <strong>server</strong>. In other words, if you set <strong>value</strong> to <strong>CpuInfo</strong> then the <strong>CpuInfo</strong> script will be executed on the <strong>server</strong> side. The server uses a whitelist to ensure that only safe calls can be made from the client.</p>
+<a class="anchor" id="modify-render"></a>
+<h2>Modify render</h2>
+<p>Put this in the <strong>render</strong> method:</p>
+<pre><code class="lang-html"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">main</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">section</span>&gt;</span>
+        </span><span class="hljs-template-variable">{radioWeb}</span><span class="xml">
+    <span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">section</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">pre</span>&gt;</span></span><span class="hljs-template-variable">{this.state.allData}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">pre</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=</span></span><span class="hljs-template-variable">{this.runFoo}</span><span class="xml"><span class="hljs-tag">&gt;</span>Run Foo<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span></span>
+</code></pre>
+<p>The key point is the JavaScript JSX expression {radioWeb}.</p>
+<p>And we handle it like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">constructor</span>(props) {
+    <span class="hljs-keyword">super</span>(props);
+    <span class="hljs-keyword">this</span>.dataEndPoints = [<span class="hljs-string">'/script-pusher/run-script?script='</span>, <span class="hljs-string">'/script-pusher/run-system-tool?script='</span>];
+    <span class="hljs-keyword">this</span>.state = {
+        <span class="hljs-attr">allData</span>: <span class="hljs-string">''</span>,
+        <span class="hljs-attr">selectedValue</span>: <span class="hljs-string">''</span>,
+        <span class="hljs-attr">endPointIndex</span>: <span class="hljs-number">0</span>
+    };
+}
+
+runScript = <span class="hljs-function">(<span class="hljs-params">path, script</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">if</span> (!script) {
+        <span class="hljs-keyword">return</span>;
+    }
+    fetch(path + script)
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">response</span>) </span>{
+            <span class="hljs-keyword">return</span> response.json();
+        })
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">json</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'allData'</span>, json.allData);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'result'</span>, json.result);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'code'</span>, json.code);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'error'</span>, json.error);
+            <span class="hljs-keyword">let</span> info = <span class="hljs-string">''</span>;
+            <span class="hljs-keyword">if</span> (json.result === <span class="hljs-string">'error'</span>) {
+                info = json.error;
+            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (script === <span class="hljs-string">'CpuInfo'</span>) {
+                <span class="hljs-keyword">var</span> regex1 = <span class="hljs-built_in">RegExp</span>(<span class="hljs-string">'model name.*'</span>, <span class="hljs-string">'g'</span>);
+                <span class="hljs-keyword">let</span> array1 = regex1.exec(json.allData);
+                <span class="hljs-keyword">while</span> (array1 !== <span class="hljs-literal">null</span>) {
+                    info += array1[<span class="hljs-number">0</span>] + <span class="hljs-string">'\n'</span>;
+                    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Found <span class="hljs-subst">${array1[<span class="hljs-number">0</span>]}</span>.`</span>);
+                    array1 = regex1.exec(json.allData);
+                }
+            } <span class="hljs-keyword">else</span> {
+                info = json.allData;
+            }
+            that.setState({<span class="hljs-attr">allData</span>: info});
+        })
+        .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ex</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsing failed, URL bad, network down, or similar'</span>, ex);
+        });
+};
+
+handleChange = <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> selectedValue = event.target.value;
+    <span class="hljs-keyword">const</span> endPointIndex = event.target.getAttribute(<span class="hljs-string">'data-endpoint'</span>);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'HANDLE CHANGE'</span>, selectedValue);
+    <span class="hljs-keyword">this</span>.setState({
+        ...this.state,
+        <span class="hljs-attr">selectedValue</span>: selectedValue,
+        <span class="hljs-attr">endPointIndex</span>: endPointIndex
+    });
+
+};
+
+handleSubmit = <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+    <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">allData</span>: <span class="hljs-string">''</span>});
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'A name was submitted: '</span>, <span class="hljs-keyword">this</span>.state);
+    <span class="hljs-keyword">this</span>.runScript(<span class="hljs-keyword">this</span>.dataEndPoints[<span class="hljs-keyword">this</span>.state.endPointIndex], <span class="hljs-keyword">this</span>.state.selectedValue);
+    event.preventDefault();
+};
+
+</code></pre>
+<a class="anchor" id="middleware-whitelist"></a>
+<h2>Middleware Whitelist</h2>
+<p>Put this code near the top of script-pusher. It defines middleware that will be executed before any of the other routes in <strong>script-push</strong>. Always set up this middleware first, before defining any other router methods. It sets up a whitelist of <strong>validOptions</strong>. You must add calls to this whitelist of <strong>validOptions</strong> before trying to execute them from the client. Otherwise, hackers could execute malicious code. The point is the only the calls <strong>CpuInfo</strong>, <strong>VersionCheck</strong>, and <strong>uptime</strong> will be allowed to execute. For instance, a call to &quot;formate drive c:&quot; would be rejected as an invalid option.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> check = (request, response, <span class="hljs-keyword">next</span>) =&gt; {
+    console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'REQUEST CHECK CALLED'</span>, request.query)<span class="hljs-comment">;</span>
+    <span class="hljs-keyword">const</span> validOptions = [<span class="hljs-string">'CpuInfo'</span>, <span class="hljs-string">'VersionCheck'</span>, <span class="hljs-string">'uptime'</span>]<span class="hljs-comment">;</span>
+    <span class="hljs-keyword">if</span> (request.query.script) {
+        console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'INSIDE REQUEST SCRIPT'</span>)<span class="hljs-comment">;</span>
+        <span class="hljs-keyword">if</span> (!validOptions.includes(request.query.script)) {
+            console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'INSIDE REQUEST INVALID OPTION'</span>)<span class="hljs-comment">;</span>
+            response.<span class="hljs-built_in">send</span>({result: <span class="hljs-string">'error'</span>, error: <span class="hljs-string">'Invalid Option: '</span> + request.query.script, script: request.query.script})<span class="hljs-comment">;</span>
+            <span class="hljs-keyword">return</span><span class="hljs-comment">;</span>
+        }
+    }
+    <span class="hljs-keyword">next</span>()<span class="hljs-comment">;</span>
+}<span class="hljs-comment">;</span>
+
+router.use(check)<span class="hljs-comment">;</span>
+</code></pre>
+<p>Notice the call to <strong>next()</strong>. If that line is not reached, then none of the other routes in the module will ever execute. Notice also the call the <strong>router.use(check)</strong>. This is when we insert our whitelist check into the list of calls that <strong>Express</strong> will execute before it tries to call any other route defined in this module.</p>
+<p>Think of it this way. The client sends a request to execute <strong>/script-pusher/cpu-info</strong>. Before that calls is routed to its intended destination, the <strong>check</strong> method is called. If it passes, then the <strong>/script-pusher/cpu-info</strong> route is called, otherwise, an error is returned and the <strong>/script-pusher/cpu-info</strong> route is never called.</p>
+<ul>
+<li><a href="https://expressjs.com/en/guide/writing-middleware.html">Reference</a></li>
+</ul>
+<a class="anchor" id="refactor"></a>
+<h2>Refactor</h2>
+<p>I&#39;ll talk you through the refactor.</p>
+<a class="anchor" id="deploy"></a>
+<h2>Deploy</h2>
+<p>Other than systemd reated issues, I think I see three issues that are central to deployment.</p>
+<ol>
+<li>Create a script to automate running the build step in the client.</li>
+<li>Create a <strong>.gitignore</strong> file for the server</li>
+<li>Handle the case where we change branches on a deployed app.</li>
+</ol>
+<a class="anchor" id="the-build-script"></a>
+<h2>The Build Script</h2>
+<p>This script is designed to be run from the <strong>client</strong> directory. It begins as usual with:</p>
+<pre><code class="lang-bash"><span class="hljs-meta">#! /usr/bin/env bash</span>
+</code></pre>
+<p>Declare a variable called <strong>SERVER_DIR</strong> that points at the <strong>public</strong> directory in the server folder. This will be a relative link that starts one directory closer to the root than the <strong>client</strong> directory : <strong>../<THE PATH></strong></p>
+<p>Now run the build:</p>
+<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> build</span>
+</code></pre><p>The next three lines will all use the <strong>SERVER_DIR</strong> variable. They:</p>
+<ul>
+<li>Delete the file called <strong>precache-manifest*.js</strong> from <strong>server/public</strong><ul>
+<li>The part where I place the wildcard (*) will differ every time we build.</li>
+</ul>
+</li>
+<li>Delete the <strong>static</strong> directory from the <strong>server/public</strong></li>
+<li>Recursively copy the contents of the build directory into <strong>server/public</strong></li>
+</ul>
+<p><strong>NOTE</strong>: _Only write the words <strong>server/public</strong> once: in the declaration for <strong>SERVER_DIR</strong>. The rest of the time, when you need to refer to that directory, use <strong>$SERVER_DIR</strong>. And once again, you will probably want to use a relative path in the definition of <strong>SERVER_DIR</strong>._</p>
+<p>When you are done, you should be able to run the script to perform a build, delete the old files from the <strong>SERVER_DIR</strong>, and copy in the new ones. It&#39;s not that these steps are hard to do without the script, but that the script makes the task simpler, and saves us from making a typo that might cause trouble when deleting or copying files.</p>
+<a class="anchor" id="the-gitignore-for-the-server"></a>
+<h2>The .gitignore for the Server</h2>
+<p>A <strong>.gitignore</strong> file belongs in the <strong>server</strong> directory. I think this covers it:</p>
+<pre><code><span class="hljs-keyword">public</span>/<span class="hljs-keyword">static</span>
+<span class="hljs-keyword">public</span>/precache-manifest.*.js
+<span class="hljs-keyword">public</span>/asset-manifest.json
+<span class="hljs-keyword">public</span>/<span class="hljs-keyword">index</span>.html
+<span class="hljs-keyword">public</span>/service-worker.js
+</code></pre><a class="anchor" id="changing-branches"></a>
+<h2>Changing Branches</h2>
+<p>Once we start a <strong>systemd</strong> service running, problems can occur if we switch branches in our repository. For things to work smoothly, each branch would need to contain more less identical code for a the directory hosting the service. This is not likely to be the case.</p>
+<p>I can think of two solutions:</p>
+<ol>
+<li>Copy the code for the program out of the repository and point symbolic link in the <strong>~/bin</strong> directory to the copy.</li>
+<li>Have two copies of your repository on your hard drive: one in your <strong>~/Git</strong> folder in which you do your work, and one in a <strong>~/Deploy</strong> folder which contains the code for your services. Always having working code in the <strong>master</strong> branch and always have the code in <strong>~/Deploy</strong> pointing at <strong>master</strong>.</li>
+</ol>
+<p>Of these two solutions, the second seems less likely to cause problems and simplest to maintain. The only draw back is that it takes up more disk space.</p>
+<a class="anchor" id="add-ssh"></a>
+<h2>Add SSH</h2>
+<pre><code>npm <span class="hljs-keyword">install</span> ssh2
+</code></pre><p>Now bring over <strong>ssh-runner</strong> and call <strong>uptime</strong> on the remote server.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Tag and push with script:</p>
+<ul>
+<li>elf-tagger &quot;Completed system check refactor&quot; &quot;week06-system-check-refactor&quot;</li>
+</ul>
+</div></body></html>

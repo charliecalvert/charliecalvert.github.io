@@ -8,6 +8,10 @@
 <li><a href="#radio-buttons">Radio Buttons</a></li>
 <li><a href="#modify-render">Modify render</a></li>
 <li><a href="#refactor">Refactor</a></li>
+<li><a href="#deploy">Deploy</a></li>
+<li><a href="#the-build-script">The Build Script</a></li>
+<li><a href="#the-gitignore-for-the-server">The .gitignore for the Server</a></li>
+<li><a href="#changing-branches">Changing Branches</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>Learn to refactor React components.</p>
@@ -126,6 +130,50 @@ handleSubmit= (event) =&gt; {
 <a class="anchor" id="refactor"></a>
 <h2>Refactor</h2>
 <p>I&#39;ll talk you through the refactor.</p>
+<a class="anchor" id="deploy"></a>
+<h2>Deploy</h2>
+<p>Other than systemd reated issues, I think I see three issues that are central to deployment.</p>
+<ol>
+<li>Create a script to automate running the build step in the client.</li>
+<li>Create a <strong>.gitignore</strong> file for the server</li>
+<li>Handle the case where we change branches on a deployed app.</li>
+</ol>
+<a class="anchor" id="the-build-script"></a>
+<h2>The Build Script</h2>
+<p>This script is designed to be run from the <strong>client</strong> directory. It begins as usual with:</p>
+<pre><code class="lang-bash"><span class="hljs-meta">#! /usr/bin/env bash</span>
+</code></pre>
+<p>Declare a variable called <strong>SERVER_DIR</strong> that points at the <strong>public</strong> directory in the server folder. This will be a relative link that starts one directory closer to the root than the <strong>client</strong> directory : <strong>../<THE PATH></strong></p>
+<p>Now run the build:</p>
+<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> build</span>
+</code></pre><p>The next three lines will all use the <strong>SERVER_DIR</strong> variable. They:</p>
+<ul>
+<li>Delete the file called <strong>precache-manifest*.js</strong> from <strong>server/public</strong><ul>
+<li>The part where I place the wildcard (*) will differ every time we build.</li>
+</ul>
+</li>
+<li>Delete the <strong>static</strong> directory from the <strong>server/public</strong></li>
+<li>Recursively copy the contents of the build directory into <strong>server/public</strong></li>
+</ul>
+<p><strong>NOTE</strong>: _Only write the words <strong>server/public</strong> once: in the declaration for <strong>SERVER_DIR</strong>. The rest of the time, when you need to refer to that directory, use <strong>$SERVER_DIR</strong>. And once again, you will probably want to use a relative path in the definition of <strong>SERVER_DIR</strong>._</p>
+<p>When you are done, you should be able to run the script to perform a build, delete the old files from the <strong>SERVER_DIR</strong>, and copy in the new ones. It&#39;s not that these steps are hard to do without the script, but that the script makes the task simpler, and saves us from making a type that might caues trouble when deleting or copying files.</p>
+<a class="anchor" id="the-gitignore-for-the-server"></a>
+<h2>The .gitignore for the Server</h2>
+<p>A <strong>.gitignore</strong> file belongs in the <strong>server</strong> directory. I think this covers it:</p>
+<pre><code><span class="hljs-keyword">public</span>/<span class="hljs-keyword">static</span>
+<span class="hljs-keyword">public</span>/precache-manifest.*.js
+<span class="hljs-keyword">public</span>/asset-manifest.json
+<span class="hljs-keyword">public</span>/<span class="hljs-keyword">index</span>.html
+<span class="hljs-keyword">public</span>/service-worker.js
+</code></pre><a class="anchor" id="changing-branches"></a>
+<h2>Changing Branches</h2>
+<p>Once we start a <strong>systemd</strong> service running, problems can occur if we switch branches in our repository. For things to work smoothly, each branch would need to contain more less identical code for a the directory hosting the service. This is not likely to be the case.</p>
+<p>I can think of two solutions:</p>
+<ol>
+<li>Copy the code for the program out of the repository and point symbolic link in the <strong>~/bin</strong> directory to the copy.</li>
+<li>Have two copies of your repository on your hard drive: one in your <strong>~/Git</strong> folder in which you do your work, and one in a <strong>~/Deploy</strong> folder which contains the code for your services. Always having working code in the <strong>master</strong> branch and always have the code in <strong>~/Deploy</strong> pointing at <strong>master</strong>.</li>
+</ol>
+<p>Of these two solutions, the second seems less likely to cause problems and simplest to maintain. The only draw back is that it takes up more disk space.</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Tag and push with script:</p>
