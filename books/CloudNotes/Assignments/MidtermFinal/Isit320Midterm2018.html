@@ -7,7 +7,8 @@
 <li><a href="#setup">Setup</a></li>
 <li><a href="#radio-buttons">Radio Buttons</a></li>
 <li><a href="#modify-render">Modify render</a></li>
-<li><a href="#middleware-whitelist">Middleware Whitelist</a></li>
+<li><a href="#handle-ui">Handle User Interactions</a></li>
+<li><a href="#whitelist">Middleware Whitelist</a></li>
 <li><a href="#refactor">Refactor</a></li>
 <li><a href="#deploy">Deploy</a></li>
 <li><a href="#the-build-script">The Build Script</a></li>
@@ -83,7 +84,7 @@
 <p>I&#39;ll leave it up to you how to edit <strong>app.js</strong>. The act of requiring new files from the <strong>routes</strong> directory should be fairly easy for you by this time.</p>
 <a class="anchor" id="radio-buttons"></a>
 <h2>Radio Buttons</h2>
-<p>We want to create an interface that will allow us to query both the status of the current system, and a system running on EC2.</p>
+<p>We want to create an interface that will allow us to query both the status of the current system, and a system running on EC2. See the screenshot at the beginning of this document for some hints as to what I want.</p>
 <p>Add or modify the radio buttons in your <strong>src/App.js</strong> to render put this before the return statement in render:</p>
 <pre><code class="lang-javascript">const radioWeb = (
     <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"container"</span>&gt;</span>
@@ -122,8 +123,20 @@
     <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 );
 </code></pre>
-<p>The <strong>fieldset</strong> and it&#39;s <strong>legend</strong> visually bind together the form elements by putting a box and title around them. Each <strong>radio input</strong> control is bound to a <strong>label</strong> because the label&#39;s <strong>for</strong> and the input control&#39;s <strong>id</strong> values match. Because <strong>for</strong> is a reserved word in JavaScript, JSX uses <strong>htmlFor</strong> rather than <strong>for</strong>. But at runtime it is rendered as <strong>for</strong>, which is proper HTML.</p>
-<p>The <strong>value</strong> of each <strong>input</strong> control is where you put the code that executes on the <strong>server</strong>. In other words, if you set <strong>value</strong> to <strong>CpuInfo</strong> then the <strong>CpuInfo</strong> script will be executed on the <strong>server</strong> side. The server uses a whitelist to ensure that only safe calls can be made from the client.</p>
+<p>The <strong>fieldset</strong> and it&#39;s <strong>legend</strong> visually bind together the form elements by putting a box and title around them. Each <strong>radio input</strong> control is bound to a <strong>label</strong>. The binding occurs because the label&#39;s <strong>for</strong> and the input control&#39;s <strong>id</strong> values match. Because <strong>for</strong> is a reserved word in JavaScript, JSX uses <strong>htmlFor</strong> rather than <strong>for</strong>. But at runtime it is rendered as <strong>for</strong>, which is proper HTML. Here is the generated runtime code for one of the labels:</p>
+<pre><code class="lang-html">&lt;<span class="hljs-keyword">label</span><span class="bash"> <span class="hljs-keyword">for</span>=<span class="hljs-string">"elf-radio-uptime"</span>&gt;Uptime&lt;/label&gt;</span>
+</code></pre>
+<p>I have to decided to create a convention for this about that the <strong>value</strong> of each <strong>input</strong> control is where you put the code that executes on the <strong>server</strong>. This is not magic, and it would not work this way in another program, but it works here because we make it work. Here is the attribute in context when we declare it:</p>
+<pre><code><span class="hljs-attr">value</span>=<span class="hljs-string">"CpuInfo"</span>,
+</code></pre><p>In the <strong>handleChange</strong> method shown <a href="#handle-ui">a bit later</a> in this program you will find the code that picks up on this property and saves it to our React Component&#39;s <strong>state</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> selectedValue = <span class="hljs-keyword">event</span>.target.<span class="hljs-keyword">value</span>;
+</code></pre>
+<p>In other words, if you set <strong>value</strong> attribute of the radio button to <strong>CpuInfo</strong> then we:</p>
+<ul>
+<li>Save it to our state when the user selects the radio button</li>
+<li>Pass it to our server if the user submits our form.</li>
+</ul>
+<p>The <strong>CpuInfo</strong> script will be executed on the <strong>server</strong> side. The server uses a whitelist to ensure that only safe calls can be made from the client. We will discuss how to set up this whitelist <a href="#whitelist">later</a> in this document.</p>
 <a class="anchor" id="modify-render"></a>
 <h2>Modify render</h2>
 <p>Put this in the <strong>render</strong> method:</p>
@@ -137,8 +150,10 @@
     <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=</span></span><span class="hljs-template-variable">{this.runFoo}</span><span class="xml"><span class="hljs-tag">&gt;</span>Run Foo<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span></span>
 </code></pre>
-<p>The key point is the JavaScript JSX expression {radioWeb}.</p>
-<p>And we handle it like this:</p>
+<p>The key point is the JavaScript JSX expression {radioWeb}. We declared this variable in the previous section of this document.</p>
+<a class="anchor" id="handle-ui"></a>
+<h2>Handle User Interactions</h2>
+<p>Here is the code we use to handle the user&#39;s clicks on radio and submit buttons:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">constructor</span>(props) {
     <span class="hljs-keyword">super</span>(props);
     <span class="hljs-keyword">this</span>.dataEndPoints = [<span class="hljs-string">'/script-pusher/run-script?script='</span>, <span class="hljs-string">'/script-pusher/run-system-tool?script='</span>];
@@ -204,8 +219,22 @@ handleSubmit = <span class="hljs-function">(<span class="hljs-params">event</spa
 };
 
 </code></pre>
-<a class="anchor" id="middleware-whitelist"></a>
+<p>We want to perform two different types of actions on the server side:</p>
+<ul>
+<li>Run local scripts that we put in JsObjects or in our own repositories</li>
+<li>Run system code that is usually located in the <strong>/bin</strong> directory.<ul>
+<li>This is the system wide bin directory, not the <strong>~/bin</strong> found in our home directory.</li>
+</ul>
+</li>
+</ul>
+<p>The point is that programs we want to run in order to get updates on the system status will be located in different. So we need a system to differentiate between custom scripts in places like JsObjects, and system code found in the <strong>/bin</strong> directory.</p>
+<p>Here is the code I&#39;m using to help sort this out:</p>
+<pre><code class="lang-javascript">this.dataEndPoints = ['/<span class="hljs-keyword">script</span>-pusher/<span class="hljs-built_in">run</span>-<span class="hljs-keyword">script</span>?<span class="hljs-keyword">script</span>=', '/<span class="hljs-keyword">script</span>-pusher/<span class="hljs-built_in">run</span>-system-tool?<span class="hljs-keyword">script</span>='];
+</code></pre>
+<p>Calls to <strong>/script-pusher/run-script</strong> run code from JsObjects. Calls to <strong>/script-pusher/run-system-tool</strong> run system utilities. It&#39;s up to you to see how this simple array is used in the program to help sort out this problem.</p>
+<a class="anchor" id="whitelist"></a>
 <h2>Middleware Whitelist</h2>
+<p>Let&#39;s turn now to setting up the whitelist on the server that insures that we do not let a malicious user run some arbitrary script.</p>
 <p>Put this code near the top of script-pusher. It defines middleware that will be executed before any of the other routes in <strong>script-push</strong>. Always set up this middleware first, before defining any other router methods. It sets up a whitelist of <strong>validOptions</strong>. You must add calls to this whitelist of <strong>validOptions</strong> before trying to execute them from the client. Otherwise, hackers could execute malicious code. The point is the only the calls <strong>CpuInfo</strong>, <strong>VersionCheck</strong>, and <strong>uptime</strong> will be allowed to execute. For instance, a call to &quot;formate drive c:&quot; would be rejected as an invalid option.</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> check = (request, response, <span class="hljs-keyword">next</span>) =&gt; {
     console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'REQUEST CHECK CALLED'</span>, request.query)<span class="hljs-comment">;</span>
