@@ -1,0 +1,45 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>BuildCopy</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>BuildCopy</h1><p>Welcome to BuildCopy</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#single-vs-double-quotes">Single vs Double Quotes</a></li>
+<li><a href="#when-do-you-need-curly-braces-">When do you Need Curly Braces?</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Let&#39;s formalize the <strong>build-copy</strong> script we worked on in class.</p>
+<p>I&#39;m going to start with two clarifications on the issues that causes us to rathole on minor issues for far too long in class on Monday. The issues are:</p>
+<ul>
+<li>Quotes in strings</li>
+<li>Curly braces</li>
+</ul>
+<a class="anchor" id="single-vs-double-quotes"></a>
+<h2>Single vs Double Quotes</h2>
+<p>The general wisdom on the web is that we should quote the strings and variables we use in bash scripts. However, there is a difference between single quotes and double quotes. Single quotes cause the string to be interpreted literally, as we were finding in class. Double quotes allow interpolation to occur. <a href="https://en.wikipedia.org/wiki/String_interpolation">Interpolation</a> is when variables in a string are expanded.</p>
+<p> Consider this code:</p>
+<pre><code><span class="hljs-keyword">echo</span> '${SERVER_DIR}<span class="hljs-string">/precache-manifest</span>*<span class="hljs-string">.js</span>'
+</code></pre><p>It produces this output:</p>
+<pre><code>${SERVER_DIR}<span class="hljs-string">/precache-manifest</span>*<span class="hljs-string">.js</span>
+</code></pre><p>Now look at this example:</p>
+<pre><code><span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">${SERVER_DIR}</span>/precache-manifest*.js"</span>
+</code></pre><p>It does what we expect, and produces this output:</p>
+<pre><code>../<span class="hljs-keyword">server</span>/<span class="hljs-keyword">public</span>/precache-manifest*.js    
+</code></pre><p>Thus, this code does what we expect:</p>
+<pre><code><span class="hljs-attribute">ls</span> <span class="hljs-string">"<span class="hljs-variable">${SERVER_DIR}</span>/precache-manifest."</span>\*<span class="hljs-string">".js"</span>
+</code></pre><p>It produces this output:</p>
+<pre><code>../<span class="hljs-keyword">server</span>/<span class="hljs-keyword">public</span>/precache-manifest<span class="hljs-number">.2</span>efd1de520c30948b299e17d59c75fef.js    
+</code></pre><a class="anchor" id="when-do-you-need-curly-braces-"></a>
+<h2>When do you Need Curly Braces?</h2>
+<p>I mentioned that it is a good idea to use Curly Braces in variable expansion. Both <a href="https://stackoverflow.com/a/8748880/253576">This Stack Overflow answer</a> and <a href="https://unix.stackexchange.com/questions/4899/var-vs-var-and-to-quote-or-not-to-quote">this Unix and Linux Stack Overflow discussion</a> helped me understand the subject perhaps a bit better. Consider this example where we want to concatenate the word <strong>Foo</strong> on the value held in the variable <strong>BAR</strong>:</p>
+<pre><code><span class="hljs-attribute">BAR</span>=<span class="hljs-string">'bar'</span>
+<span class="hljs-attribute">FOO</span>=<span class="hljs-variable">$BARFoo</span>
+echo <span class="hljs-variable">$FOO</span>
+</code></pre><p>It outputs an empty string because bash looks for a variable <strong>BARFoo</strong> rather than <strong>$BAR+Foo</strong>. But if we write this, we get the expected output of <strong>barFoo</strong>:</p>
+<pre><code><span class="hljs-attribute">BAR</span>=<span class="hljs-string">'bar'</span>
+<span class="hljs-attribute">FOO</span>=<span class="hljs-variable">${BAR}</span>Foo
+echo <span class="hljs-variable">$FOO</span>
+</code></pre><p>There are other things you can do with curly braces. However, in our case, we want to use them in places like this where they can help to clarify our intention to either bash itself, or to readers of the code.</p>
+<p>In our case, the curly braces are optional because our code would be clear to both bash and to readers without them:</p>
+<pre><code>SERVER_DIR='<span class="hljs-string">../server/public</span>'
+<span class="hljs-keyword">echo</span> ${SERVER_DIR}<span class="hljs-string">/precache-manifest</span>*<span class="hljs-string">.js</span>
+<span class="hljs-keyword">echo</span> $SERVER_DIR/precache-manifest*<span class="hljs-string">.js</span>
+</code></pre><p>Here lines two and three produce the same output. However, I think it is arguable that the second line is easier to read:</p>
+<pre><code><span class="hljs-keyword">echo</span> ${SERVER_DIR}<span class="hljs-string">/precache-manifest</span>*<span class="hljs-string">.js</span>
+</code></pre><p>Or perhaps it isn&#39;t, depending on your tastes. However, it does seem to me that making a practice of including curly braces would be a good best practice as it could ensure that ambiguous code is never written. I&#39;m not sure I&#39;m ready to make it a rule that we must follow.    </p>
+</div></body></html>
