@@ -234,16 +234,25 @@ handleSubmit = <span class="hljs-function">(<span class="hljs-params">event</spa
 <p>We want to perform two different types of actions on the server side:</p>
 <ul>
 <li>Run local scripts that we put in JsObjects or in our own repositories</li>
-<li>Run system code that is usually located in the <strong>/bin</strong> directory.<ul>
+<li>Run system code that is usually located in the <strong>/usr/bin</strong> directory.<ul>
 <li>This is the system wide bin directory, not the <strong>~/bin</strong> found in our home directory.</li>
 </ul>
 </li>
 </ul>
-<p>The point is that programs we want to run in order to get updates on the system status will be located in different. So we need a system to differentiate between custom scripts in places like JsObjects, and system code found in the <strong>/bin</strong> directory.</p>
+<p>The point is that programs we want to run in order to get updates on the system status will be located in different places. So we need a system to differentiate between custom scripts in places like JsObjects, and system code found in the <strong>/usr/bin</strong> directory.</p>
 <p>Here is the code I&#39;m using to help sort this out:</p>
 <pre><code class="lang-javascript">this.dataEndPoints = ['/<span class="hljs-keyword">script</span>-pusher/<span class="hljs-built_in">run</span>-<span class="hljs-keyword">script</span>?<span class="hljs-keyword">script</span>=', '/<span class="hljs-keyword">script</span>-pusher/<span class="hljs-built_in">run</span>-system-tool?<span class="hljs-keyword">script</span>='];
 </code></pre>
 <p>Calls to <strong>/script-pusher/run-script</strong> run code from JsObjects. Calls to <strong>/script-pusher/run-system-tool</strong> run system utilities. It&#39;s up to you to see how this simple array is used in the program to help sort out this problem.</p>
+<p>Here is a different way to think about it. In <strong>script-pusher.js</strong> we have multiple endpoints that looks something like this:</p>
+<pre><code class="lang-javascript">router.get('/run-script', (request, response) =&gt; <span class="hljs-meta">{...}</span>);
+router.get('/run-system-tool', (request, response) =&gt; <span class="hljs-meta">{...}</span>);
+</code></pre>
+<p>One is designed to help us run scripts found in the SLB directory:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> pushScript = spawn(<span class="hljs-built_in">process</span>.env.SETUP_LINUXBOX + <span class="hljs-string">'/'</span> + script);
+</code></pre>
+<p>The other to run scripts found in the <strong>/usr/bin</strong> directory. (Type <strong>which uptime</strong> at the bash prompt to see how I found that directory.</p>
+<p><strong>dataEndPoints</strong> is an array of strings that contains the path to those two endpoints on our server side code. I give you the <strong>handleSubmit</strong> and <strong>handleChange</strong> methods which together ensure that the right endpoint is passed to the runScript method (which I also give you.) By creatomg the <strong>dataEndPoints</strong> array I&#39;m just trying to give you a single place in the code where you can list these, and other other endpoints we use, so that we can look them up, and modify them - if necessary - in a single place.</p>
 <a class="anchor" id="whitelist"></a>
 <h2>Middleware Whitelist</h2>
 <p>Let&#39;s turn now to setting up the whitelist on the server that insures that we do not let a malicious user run some arbitrary script.</p>
