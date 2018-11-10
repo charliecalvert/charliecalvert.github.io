@@ -425,51 +425,62 @@ called Decorate to the built-in JavaScript String class:</p>
 <p>JavaScript considers functions to be first class citizens of the language. This means that you can easily assign them to variables, and pass them around to other functions. Other languages usually provide support for function pointers of function objects, but the syntax is often awkward or challenging to use. In JavaScript, you can simply treat a function like any other type, such as a <strong>Number</strong>, <strong>String</strong> or <strong>Boolean</strong>.</p>
 <p><strong>NOTE</strong>: <em>Because functions in JavaScript are so flexible, many consider JavaScript to be a <a href="http://en.wikipedia.org/wiki/Functional_programming">functional</a> programming language. Functional programming is enormously powerful, and also quite different from the type of <a href="http://en.wikipedia.org/wiki/Imperative_programming">imperative</a> programming done in Java and C#. Ultimately, the flexibility of JavaScript functions will enable you to write your code in a <strong>functional</strong> style that is quite different from what you write when using more traditional languages. This is not the place to explore this topic in depth, but you should at least be aware of the power of functions in JavaScript, and the way that they shape our approach to the language. Functional programming is a type of <a href="http://en.wikipedia.org/wiki/Declarative_programming">declarative programming</a>.</em></p>
 <p>Here is an example of how to use callbacks in JavaScript:</p>
-<pre><code><span class="hljs-comment">/**
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
  * @author Charlie
  */</span>
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">hello</span>(<span class="hljs-params">func</span>) </span>{
-    $(<span class="hljs-string">"#test02"</span>).html(<span class="hljs-string">"It works! "</span>);
-    func();
-}
+ <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">hello</span>(<span class="hljs-params">func</span>) </span>{
+     <span class="hljs-keyword">const</span> test02 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'test02'</span>);
+     test02.textContent = <span class="hljs-string">"It works!"</span>;
+     func();
+ }
 
-$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-<span class="hljs-meta">  "use strict"</span>;
+ <span class="hljs-built_in">window</span>.onload = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+   <span class="hljs-string">"use strict"</span>;
 
+   <span class="hljs-keyword">const</span> test01 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'test01'</span>);
+   test01.textContent = <span class="hljs-string">"Document Read called"</span>;
 
-  $(<span class="hljs-string">"#test01"</span>).html(<span class="hljs-string">"Document Read called"</span>);
+   hello(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+       <span class="hljs-keyword">const</span> test03 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'test03'</span>);
+       test03.textContent = <span class="hljs-string">"It's a nine!"</span>;
+   });
 
-  hello(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-      $(<span class="hljs-string">"#test03"</span>).html(<span class="hljs-string">"It's a nine!"</span>);
-  });
-
-});
-</code></pre><p>The complete example is here:</p>
+ };
+</code></pre>
+<p>The complete example is here:</p>
 <ul>
 <li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Objects/ObjectFunctionBasics02">JsObjects Objects ObjectFunctionBasics02</a></li>
 </ul>
 <p>In this example, we pass an anonymous function to the method <strong>hello</strong>. As you can see, <strong>hello</strong> takes a single parameter called func:</p>
 <pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">hello</span><span class="hljs-params">(func)</span> </span>{
 </code></pre><p>When we call <strong>hello</strong> we pass in an anonymous function, a bit like this:</p>
-<pre><code>    <span class="hljs-keyword">var</span> helloParameter = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-          $(<span class="hljs-string">"#test03"</span>).html(<span class="hljs-string">"It's a nine!"</span>);
+<pre><code class="lang-javascript">    <span class="hljs-keyword">var</span> helloParameter = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">const</span> test03 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'test03'</span>);
+        test03.textContent = <span class="hljs-string">"It's a nine!"</span>;          
     }
 
     hello(helloParameter);
-</code></pre><p>But in JavaScript we get a special dispensation, as it were, and don&#39;t even have to declare the variable that points at our function. Instead, we can just pass it in directly as an anonymous function:</p>
-<pre><code>    hello(<span class="hljs-name">function</span>() {
-        $(<span class="hljs-string">"#test03"</span>).html(<span class="hljs-string">"It's a nine!"</span>)<span class="hljs-comment">;</span>
-    })<span class="hljs-comment">;</span>
-</code></pre><p>We call the function <strong>anonymous</strong> because it has no name:</p>
-<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-    $(<span class="hljs-string">"#test03"</span>).html(<span class="hljs-string">"It's a nine!"</span>);
+</code></pre>
+<p>But in JavaScript we get a special dispensation, as it were, and don&#39;t even have to declare the variable that points at our function. Instead, we can just pass it in directly as an anonymous function:</p>
+<pre><code class="lang-javascript">    hello(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">const</span> test03 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'test03'</span>);
+        test03.textContent = <span class="hljs-string">"It's a nine!"</span>;        
+    });
+</code></pre>
+<p>We call the function <strong>anonymous</strong> because it has no name:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">const</span> test03 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'test03'</span>);
+    test03.textContent = <span class="hljs-string">"It's a nine!"</span>;        
 }
-</code></pre><p>Compare the above to a standard function with a name:</p>
-<pre><code>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">writeNine</span>(<span class="hljs-params"></span>) </span>{
-        $(<span class="hljs-string">"#test03"</span>).html(<span class="hljs-string">"It's a nine!"</span>);
-    }
-</code></pre><p>If callbacks and anonymous functions are unclear, think about them some more. If these subjects are still unclear, get up, take a 1 minute walk, then come back and think about it all again. Download the example and step through it. Come to terms with this syntax. You will never really understand JavaScript until you understand code of this type.</p>
+</code></pre>
+<p>Compare the above to a standard function with a name:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">writeNine</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">const</span> test03 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'test03'</span>);
+    test03.textContent = <span class="hljs-string">"It's a nine!"</span>;        
+}
+</code></pre>
+<p>If callbacks and anonymous functions are unclear, think about them some more. If these subjects are still unclear, get up, take a 1 minute walk, then come back and think about it all again. Download the example and step through it. Come to terms with this syntax. You will never really understand JavaScript until you understand code of this type.</p>
 <p><strong>Aside</strong>: <em>Do JavaScript programmers dream callbacks? Of course!</em></p>
 <p>Here is another example designed to drive home the points outlined above:</p>
 <pre><code><span class="hljs-comment">/**
