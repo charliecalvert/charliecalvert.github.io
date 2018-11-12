@@ -6,12 +6,13 @@
 <li><a href="#ct02">Commit and Tag Part II</a></li>
 <li><a href="#install-eslint">Install EsLint</a></li>
 <li><a href="#setup-script-running">Setup Script Running</a></li>
+<li><a href="#call-cpuinfo">Call CpuInfo</a></li>
 <li><a href="#call-the-server-from-the-client">Call the Server from the Client</a></li>
 <li><a href="#setting-up-the-service">Setting up the Service</a></li>
 <li><a href="#move-to-ec2-or-elsewhere">Move to EC2 or Elsewhere</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
-<p>Create a program that will allow us to check various system services by running scripts.</p>
+<p>Create a program that will allow us to check various system services by running scripts. For instance, it should run <strong>CpuInfo</strong> on the local machine.</p>
 <p>This program should be setup as a systemd service running on port 30033.</p>
 <a class="anchor" id="get-started"></a>
 <h2>Get Started</h2>
@@ -70,8 +71,7 @@
 <p>Eslint will help catch errors, including formatting errors, in your JavaScript code.</p>
 <a class="anchor" id="setup-script-running"></a>
 <h2>Setup Script Running</h2>
-<p>Last week we created an assignment called EC2 Copy File. Get the
-<strong>script-pusher.js</strong> file from that assignment and put it in the <strong>server/routes</strong> folder.</p>
+<p>Last week we created an assignment called EC2 Copy File. Get the <strong>script-pusher.js</strong> file from the <strong>CopyFile</strong> assignment and put it in the <strong>server/routes</strong> folder.</p>
 <p>Now link it into your server application. You&#39;ve done this before, so use the Copy File code as a guide. As a review, here are the steps involved in making <strong>script-pusher</strong> a part of your server side code. Open up <strong>server/app.js</strong> and <strong>require</strong> your <strong>routes/script-pusher.js</strong> file:</p>
 <pre><code class="lang-javascript"><span class="hljs-attribute">const scriptPusher</span> = require(<span class="hljs-string">"WHAT GOES HERE?"</span>);
 </code></pre>
@@ -84,9 +84,15 @@
 <span class="hljs-attribute">var app</span> = express();
 </code></pre>
 <p><strong>NOTE</strong>: <em>If the people who first taught and auto-generated this code had called the variable <strong>express</strong> rather than app, then I think a lot of confusion could have been avoided.</em></p>
+<a class="anchor" id="call-cpuinfo"></a>
+<h2>Call CpuInfo</h2>
+<p>Inside <strong>script-pusher</strong>, call <strong>CpuInfo</strong> on the local machine. This is simpler than in <strong>CopyFile</strong>, because you don&#39;t have to pass any parameters to the script. You just need to know the path to the script, and then name of the script:</p>
+<pre><code class="lang-javascript">const pushScript = spawn(<span class="hljs-tag">&lt;<span class="hljs-name">PATH</span> <span class="hljs-attr">GOES</span> <span class="hljs-attr">HERE</span>&gt;</span> + '/' + <span class="hljs-tag">&lt;<span class="hljs-name">SCRIPT</span> <span class="hljs-attr">GOES</span> <span class="hljs-attr">HERE</span>&gt;</span><span class="undefined">);</span>
+</code></pre>
+<p>The path we can get from the environment, just as we did in <strong>CopyFile</strong>. The name of the script should be obvious.</p>
 <a class="anchor" id="call-the-server-from-the-client"></a>
 <h2>Call the Server from the Client</h2>
-<p>Get the Copy File button and <strong>copyFile</strong> method from the Copy File program and paste them into <strong>client/App.js</strong>. Change the names of the methods as necessary, using your common sense.</p>
+<p>Get the Copy File button and <strong>copyFile</strong> method from the Copy File program and paste them into <strong>client/App.js</strong>. Change the names of the methods as necessary, using your common sense. The button, for instance, should say <strong>Run CpuInfo</strong></p>
 <a class="anchor" id="setting-up-the-service"></a>
 <h2>Setting up the Service</h2>
 <p>We need to tell the service the value <strong>SETUP_LINUXBOX</strong> environment variable. In <strong>server/systemcheck.service</strong> add this line or something like it just after the place we set the <strong>SERVER_PORT</strong>:</p>
