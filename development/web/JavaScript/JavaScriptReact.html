@@ -327,7 +327,7 @@ whatwgFetch.fetch = fetch;
         <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
             <span class="hljs-tag">&lt;<span class="hljs-name">section</span>&gt;</span>                
                 {bookRadios}                
-                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Checked radio: {this.state.checkedRadioButton}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Selected radio button: {this.state.checkedRadioButton}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
             <span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span>
         <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
     );
@@ -345,7 +345,48 @@ handleRadioChange = (event) =&gt; <span class="hljs-comment">{
     this.setState({checkedRadioButton: event.target.value}</span>);
 };
 </code></pre>
-<p>At this stage you are all set. If you added a button, and the user clicked on it, you couold read <strong>this.state.checkedRadioButton</strong> to determine which button was selected. There is a <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/React/simple-radio-buttons">working example</a> in JsObjects.</p>
+<p>At this stage you are all set. If you added a button, and the user clicked on it, you couold read <strong>this.state.checkedRadioButton</strong> to determine which button was selected. For instance, add the button in render:</p>
+<pre><code class="lang-javascript">render() {
+    var bookRadios = ( ... );
+
+    return (
+        <span class="hljs-variable">&lt;div className="App"&gt;</span>
+            <span class="hljs-variable">&lt;section&gt;</span>
+                <span class="hljs-variable">&lt;hr/&gt;</span>
+                {bookRadios}
+                <span class="hljs-variable">&lt;hr/&gt;</span>
+                <span class="hljs-variable">&lt;p&gt;</span>Selected radio button: {this.<span class="hljs-keyword">state</span>.checkedRadioButton}&lt;/p&gt;
+                <span class="hljs-variable">&lt;p&gt;</span>Message: {this.<span class="hljs-keyword">state</span>.message}&lt;/p&gt;
+                <span class="hljs-variable">&lt;button type="button" onClick={this.useRadioButtonSelection}&gt;</span>Use Radio Button <span class="hljs-keyword">to</span> <span class="hljs-built_in">set</span> the message&lt;/button&gt;
+            &lt;/section&gt;
+        &lt;/div&gt;
+    );
+}
+</code></pre>
+<p>Then add a new property called <strong>message</strong> and set the property when the user clicks the button:</p>
+<pre><code class="lang-javascript">constructor(props) {
+    super(props);
+    this.<span class="hljs-keyword">state</span> = {
+        checkedRadioButton: '<span class="hljs-keyword">none</span>',
+        message: '<span class="hljs-keyword">none</span>'
+    };
+}
+
+handleRadioChange = (event) =&gt; {
+    this.<span class="hljs-built_in">set</span>State({checkedRadioButton: event.target.value});
+};
+
+useRadioButtonSelection = (event) =&gt; {
+    this.<span class="hljs-built_in">set</span>State({message: <span class="hljs-string">"You've chosen "</span> + this.<span class="hljs-keyword">state</span>.checkedRadioButton})
+};
+</code></pre>
+<p>The most likely source of confusion is that there are two event handlers you need to set up:</p>
+<ul>
+<li>One for handling radio button events</li>
+<li>The other for handling a button click</li>
+</ul>
+<p>The first just records the user&#39;s choice when they click a button, the second does something with that choice.</p>
+<p>There is a <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/React/simple-radio-buttons">working example</a> in JsObjects.</p>
 <a class="anchor" id="enospc"></a>
 <h2>ENOSPC Error</h2>
 <p>While testing, If you get an <strong>ENOSPC</strong> error, do this:</p>
