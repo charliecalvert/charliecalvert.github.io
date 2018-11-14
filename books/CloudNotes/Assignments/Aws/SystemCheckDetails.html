@@ -1,7 +1,9 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>SystemCheckDetails</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>SystemCheckDetails</h1><p>Welcome to SystemCheckDetails</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#elfheader">ElfHeader</a></li>
-<li><a href="#radioweb-aka-radiolocal">RadioWeb aka RadioLocal</a></li>
+<li><a href="#radiolocal">RadioLocal</a></li>
+<li><a href="#radioremote">RadioRemote</a></li>
+<li><a href="#app-js">App.js</a></li>
 <li><a href="#hint">Hint</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
 <p>We want to refactor App.js into:</p>
@@ -38,16 +40,68 @@
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> ElfHeader;
 </code></pre>
 <p>This is a nice example component, because it is stripped down to its bare bones. It is not the simplest component possible, but it is pretty darn simple.</p>
-<a class="anchor" id="radioweb-aka-radiolocal"></a>
-<h2>RadioWeb aka RadioLocal</h2>
-<p>This is a terrible name and needs to be refactored. It should be, as minimum step toward fixing it, <strong>RadioLocal</strong>.</p>
-<p>It should contain all the code from App.js that has to do with making calls to <strong>source/routes/script-pusher.js</strong>. These are the calls the query the local system.</p>
+<a class="anchor" id="radiolocal"></a>
+<h2>RadioLocal</h2>
+<p>This component should contain all the code from <strong>App.js</strong> that has to do with making calls to <strong>source/routes/script-pusher.js</strong>. These are the calls the query the local system.</p>
+<ul>
+<li><strong>constructor</strong> to set state</li>
+<li><strong>runScript</strong> for <strong>fetch</strong> call</li>
+<li><strong>handleChange</strong> for when user clicks on radio buttons</li>
+<li><strong>handleSubmit</strong> for when user clicks the button to send the command to the server</li>
+<li><strong>render</strong></li>
+</ul>
+<p>It&#39;s essentially the same code as in <strong>App.js</strong> but with everything taken out that does not have to do with calling local system queries.</p>
+<p>We still have the radio buttons, of course, but other than that rather lengthy bit of code, here is what is left in render:</p>
+<pre><code class="lang-javascript"><span class="xml">return (
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+
+        <span class="hljs-tag">&lt;<span class="hljs-name">main</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">section</span>&gt;</span></span><span class="hljs-template-variable">{radioWeb}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">section</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">pre</span>&gt;</span></span><span class="hljs-template-variable">{this.state.allData}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">pre</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span>
+
+        <span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+);</span>
+</code></pre>
+<p>That tells you quite a bit about what needs to be in state.</p>
+<a class="anchor" id="radioremote"></a>
+<h2>RadioRemote</h2>
+<p>Again, this is the code from App.js that has only to do with calling into ssh-runner.js. This is the code for querying a remote system.</p>
+<ul>
+<li><strong>constructor</strong> with <strong>state</strong></li>
+<li><strong>runScript</strong> with <strong>fetch</strong></li>
+<li><strong>handleChange</strong> for when user clicks on radio buttons</li>
+<li><strong>handleSubmit</strong> for when user clicks the button to send the command to the server</li>
+<li><strong>render</strong></li>
+</ul>
+<a class="anchor" id="app-js"></a>
+<h2>App.js</h2>
+<p>We have now taken most of the code out of App.js. To give you some sense of what I&#39;m looking for, here is what is left in <strong>render</strong>:</p>
+<pre><code class="lang-html">render() {                                                    
+    <span class="hljs-keyword">return</span> (                                                  
+        <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>                                 
+            <span class="hljs-tag">&lt;<span class="hljs-name">ElfHeader</span> /&gt;</span>                                     
+            <span class="hljs-tag">&lt;<span class="hljs-name">main</span>&gt;</span>                                            
+                <span class="hljs-tag">&lt;<span class="hljs-name">section</span>&gt;</span>                                     
+                    <span class="hljs-tag">&lt;<span class="hljs-name">RadioWeb</span> /&gt;</span>                              
+                    <span class="hljs-tag">&lt;<span class="hljs-name">RadioRemote</span>/&gt;</span>                            
+                <span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span>                                    
+                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.runFoo}</span>&gt;</span>Run Foo<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Foo: {this.state.foo}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>                  
+            <span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span>                                           
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>                                                
+    );                                                        
+}                                                             
+</code></pre>
+<p>I like leaving foo in there because it can act as a sanity check. We will remove it eventually, of course.</p>
 <a class="anchor" id="hint"></a>
 <h2>Hint</h2>
 <p>Don&#39;t forget when running code as SYSTEMD, that we have to explicitly set SETUP_LINUXBOX in our service file:</p>
-<p>User=charlie
-Group=charlie
-Environment=NODE_ENV=production
-Environment=ELF_SYSTEM_CHECK_PORT=30034
-Environment=SETUP_LINUXBOX=/home/charlie/Git/JsObjects/Utilities/SetupLinuxBox</p>
-</div></body></html>
+<pre><code><span class="hljs-attr">User</span>=charlie
+<span class="hljs-attr">Group</span>=charlie
+<span class="hljs-attr">Environment</span>=NODE_ENV=production
+<span class="hljs-attr">Environment</span>=ELF_SYSTEM_CHECK_PORT=<span class="hljs-number">30034</span>
+<span class="hljs-attr">Environment</span>=SETUP_LINUXBOX=/home/charlie/Git/JsObjects/Utilities/SetupLinuxBox
+</code></pre></div></body></html>
