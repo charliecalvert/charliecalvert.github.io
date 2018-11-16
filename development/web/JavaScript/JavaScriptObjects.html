@@ -21,7 +21,9 @@
 <li><a href="#sorting">Sorting</a></li>
 <li><a href="#properties-and-constants">Properties and Constants</a></li>
 <li><a href="#dictionaries">Dictionaries</a></li>
-<li><a href="#classes">Classes</a></li>
+<li><a href="#class-basics">Class Basics</a></li>
+<li><a href="#class-method-declaration">Classes and Method Declarations</a></li>
+<li><a href="#other-bits-about-objects-and-constructors">Other Bits about Objects and Constructors</a></li>
 <li><a href="#links">Links</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="javascript-objects"></a>
 <h1>JavaScript Objects</h1>
 <p>In this chapter we will start with a quick overview of the some built in JavaScript Objects such as Arrays. After covering the basics about these topics we will move on to our main subject, which is creating custom JavaScript Objects.</p>
@@ -45,7 +47,7 @@
   firstName: <span class="hljs-string">'Suzie'</span>
 };
 </code></pre>
-<p>The object shown above has is called <strong>person</strong>. It has one property called <strong>firstName</strong> of type string.</p>
+<p>The object shown above is called <strong>person</strong>. It has one property called <strong>firstName</strong> of type string.</p>
 <p>Here is a second way to declare the same object. First we create the object using object literal syntax, then we use dot notation to create the name property:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> person = {};
 person.firstName = <span class="hljs-string">'Suzie'</span>;
@@ -721,12 +723,75 @@ ELF.own.ShowPlayer = (<span class="hljs-function"><span class="hljs-keyword">fun
         <span class="hljs-keyword">return</span> <span class="hljs-number">3</span>;
     }
 };
-</code></pre><a class="anchor" id="classes"></a>
-<h2>Classes</h2>
-<p>Before ES6, where was no such thing as a JavaScript class. Instead, JavaScript had objects. It is only a quite recent development that has allowed us to declare classes for our JavaScript object.</p>
+</code></pre><a class="anchor" id="class-basics"></a>
+<h2>Class Basics</h2>
+<p>Before ES6, where was no such thing as a JavaScript class. Instead, JavaScript had objects. It is only a quite recently development that has allowed us to declare classes for our JavaScript object.</p>
+<pre><code class="lang-JavaScript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> </span>{
+
+    <span class="hljs-keyword">constructor</span>(firstName, lastName) {
+        <span class="hljs-keyword">this</span>.firstName = firstName;
+        <span class="hljs-keyword">this</span>.lastName = lastName;
+    }
+
+    getName() {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.firstName + <span class="hljs-string">' '</span> + <span class="hljs-keyword">this</span>.lastName;
+    }
+
+    sayName() {
+        console.log(<span class="hljs-string">'SAY NAME:'</span>, <span class="hljs-keyword">this</span>.firstName, <span class="hljs-keyword">this</span>.lastName);
+    }
+
+}
+
+const person = new Person(<span class="hljs-string">'George'</span>, <span class="hljs-string">'Washington'</span>);
+console.log(<span class="hljs-string">'GET NAME:'</span>, person.getName());
+person.sayName();
+</code></pre>
+<p>Here we declare a constructor and pass in two parameters to it:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(firstName, lastName)</span> <span class="hljs-comment">{
+    this.firstName = firstName;
+    this.lastName = lastName;
+}</span></span>
+</code></pre>
+<p>We then create two properties of the object:</p>
+<ol>
+<li>this.firstName</li>
+<li>this.lastName</li>
+</ol>
+<p>And we assign them to the parameters that are passed in:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">this</span>.firstName = firstName;
+<span class="hljs-keyword">this</span>.lastName = lastName;
+</code></pre>
+<p>The compiler has no trouble distinguishing the parameters (firstName) from the properties of the object (this.firstName).</p>
+<p>We pass in the arguments to the constructor when we instantiate an instance of the class:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">const</span> person = <span class="hljs-keyword">new</span> Person(<span class="hljs-string">'George'</span>, <span class="hljs-string">'Washington'</span>);
+</code></pre>
+<p>In the <strong>constructor</strong>, <strong>George</strong> becomes <strong>firstName</strong>, and <strong>Washington</strong> becomes <strong>lastName</strong>.</p>
 <p>Before ES6, to the degree that we could talk coherently about classes in JavaScript, we did so by focusing on their prototype. All the members of a JavaScript object can share the same prototype. If two objects have the same prototype, then they are members of the same &quot;class&quot;.</p>
+<p>By convention, <strong>classes</strong> and <strong>functions</strong> that need to be called with the <strong>new</strong> operator begin with a capital letter, while methods and functions begin with lower case letters if we don&#39;t need to call them with <strong>new</strong>.</p>
+<a class="anchor" id="class-method-declaration"></a>
+<h2>Classes and Method Declarations</h2>
+<p><strong>getName</strong> and <strong>sayName</strong> are simple enough to understand. But note that we declare a method in a class:</p>
+<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyClass</span> </span>{
+    myMethod() { }
+}
+
+<span class="hljs-keyword">const</span> myClass = <span class="hljs-keyword">new</span> MyClass();
+</code></pre>
+<p>This code doesn&#39;t do anything, I&#39;m just trying to strip the syntax down to the barest of bare bones so you can see how to declare a method in a class.</p>
+<p>Here is slightly more complex example:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GetNumbers</span> </span>{
+    getOne() { <span class="hljs-keyword">return</span> <span class="hljs-number">1</span> }
+    getTwo() { <span class="hljs-keyword">return</span> <span class="hljs-number">2</span> }
+}
+
+<span class="hljs-keyword">const</span> getNumbers = <span class="hljs-keyword">new</span> GetNumbers();
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'getOne + getTwo = '</span>, getNumbers.getOne() + getNumbers.getTwo());
+</code></pre>
+<p>Again, it doesn&#39;t do anything terribly interesting, but it shows how elegant and terse JavaScript classes can be.</p>
+<a class="anchor" id="other-bits-about-objects-and-constructors"></a>
+<h2>Other Bits about Objects and Constructors</h2>
 <p>Two constructors with quite different contents are nonetheless members of the same class if they have the same prototype. (Example needed. Did I lose it, I thought I had one?)</p>
-<p>By convention, objects and functions that need to be called with the <strong>new</strong> operator begin with a capital letter, while methods and functions begin with lower case letters.</p>
 <a class="anchor" id="links"></a>
 <h2>Links</h2>
 <p>A surprising amount of my work is making sure that I am teaching you things that matter, that are used widely and are likely to be used widely in the future. Once you start digging into this world, you will find that things like git, express, node, WebStorm, the bash shell, Jade (or at least various forms of HTML templates), are all used a lot. They are mainstream technologies in the web world.</p>
