@@ -9,6 +9,7 @@
 <p>Track the status of the programs you run.</p>
 <a class="anchor" id="the-script"></a>
 <h2>The Script</h2>
+<p>In your scripts directory create a file <strong>system-service-control</strong>.</p>
 <pre><code class="lang-bash"><span class="hljs-meta">#!/bin/bash
 </span>
 <span class="hljs-keyword">function</span> banner {
@@ -23,9 +24,35 @@
     sudo systemctl show -p ActiveState -p SubState -p Environment <span class="hljs-variable">$2</span>
 }
 
-show <span class="hljs-string">'Micro 01'</span> micro01.service
-show <span class="hljs-string">'ElvenImagePicker (EIP)'</span> eip.service
-show <span class="hljs-string">'Git Explorer'</span> git-explorer.service
+<span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">showSystemCheck</span></span>() {
+    show <span class="hljs-string">'SystemCheck'</span> systemcheck.service
+}
+
+
+<span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">checkPorts</span></span>() {
+    sudo nmap -p 30025-30035 192.168.2.13
+}
+
+message <span class="hljs-string">'System Service Control'</span>
+T
+<span class="hljs-built_in">echo</span> <span class="hljs-string">'Learn about Systemd and other running services.'</span>
+
+<span class="hljs-keyword">while</span> <span class="hljs-literal">true</span>; <span class="hljs-keyword">do</span>
+    message <span class="hljs-string">"Menu"</span>    
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"<span class="hljs-variable">$LIGHT_GREEN</span>  a) Check Ports 30025-30040"</span>
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"<span class="hljs-variable">$LIGHT_GREEN</span>  b) Only Build"</span>
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"<span class="hljs-variable">$LIGHT_GREEN</span>  c) Only Delete"</span>
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"<span class="hljs-variable">$LIGHT_RED</span>  x) Exit"</span>
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"\n<span class="hljs-variable">$NC</span>"</span>
+    <span class="hljs-built_in">read</span> -p <span class="hljs-string">"Please make a selection: "</span> userInput
+    <span class="hljs-keyword">case</span> <span class="hljs-variable">$userInput</span> <span class="hljs-keyword">in</span>
+        [Aa]* ) checkPorts <span class="hljs-literal">false</span>; <span class="hljs-built_in">continue</span>;;
+        [Bb]* ) showSystemCheck; <span class="hljs-built_in">continue</span>;;
+        [Cc]* ) deleteOld; <span class="hljs-built_in">continue</span>;;
+        [XxQq]* ) <span class="hljs-built_in">break</span>;;
+        *) <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"\n<span class="hljs-variable">$NC</span>"</span> + <span class="hljs-string">"Please answer with a, b, c, or x."</span>;;
+    <span class="hljs-keyword">esac</span>
+<span class="hljs-keyword">done</span>
 </code></pre>
 <p>The output:</p>
 <pre><code class="lang-bash">$ ./serviceActive
@@ -33,23 +60,23 @@ show <span class="hljs-string">'Git Explorer'</span> git-explorer.service
 ===============================
 --- Micro 01 ---
 ===============================
-Environment=NODE<span class="hljs-emphasis">_ENV=production PORT=30027
-ActiveState=active
-SubState=running
-
-</span>===============================
+<span class="hljs-attribute">Environment</span>=NODE_ENV=production <span class="hljs-attribute">PORT</span>=30027
+<span class="hljs-attribute">ActiveState</span>=active
+<span class="hljs-attribute">SubState</span>=running
+sudo nmap -p 30025-30035 192.168.2.13
+===============================
 --- ElvenImagePicker (EIP) ---
 ===============================
-Environment=NODE<span class="hljs-emphasis">_ENV=production PORT=30200
-ActiveState=active
-SubState=running
+<span class="hljs-attribute">Environment</span>=NODE_ENV=production <span class="hljs-attribute">PORT</span>=30200
+<span class="hljs-attribute">ActiveState</span>=active
+<span class="hljs-attribute">SubState</span>=running
 
-</span>===============================
---- Git Explorer ---
 ===============================
-Environment=NODE<span class="hljs-emphasis">_ENV=production PORT=30031 GEX_</span>SERVER<span class="hljs-emphasis">_PORT=30026
-ActiveState=active
-SubState=running</span>
+--- Git Explorer ---sudo nmap -p 30025-30035 192.168.2.13
+===============================
+<span class="hljs-attribute">Environment</span>=NODE_ENV=production <span class="hljs-attribute">PORT</span>=30031 <span class="hljs-attribute">GEX_SERVER_PORT</span>=30026
+<span class="hljs-attribute">ActiveState</span>=active
+<span class="hljs-attribute">SubState</span>=running
 </code></pre>
 <a class="anchor" id="setting-ports"></a>
 <h2>Setting Ports</h2>
@@ -64,7 +91,8 @@ SubState=running</span>
 <a class="anchor" id="port-scanning"></a>
 <h2>Port Scanning</h2>
 <p>Install <strong>nmap</strong>:</p>
-<p>Scan for open ports on a specific machine:</p>
+<pre><code>    sudo apt <span class="hljs-keyword">install</span> nmap
+</code></pre><p>Scan for open ports on a specific machine:</p>
 <pre><code><span class="hljs-selector-tag">sudo</span> <span class="hljs-selector-tag">nmap</span> <span class="hljs-selector-tag">-p-</span> 192<span class="hljs-selector-class">.168</span><span class="hljs-selector-class">.2</span><span class="hljs-selector-class">.13</span>
 </code></pre><p>Scan for the ports that we use that might be open:</p>
 <pre><code>sudo nmap -p <span class="hljs-number">30000</span><span class="hljs-number">-30050</span> <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.13</span>
