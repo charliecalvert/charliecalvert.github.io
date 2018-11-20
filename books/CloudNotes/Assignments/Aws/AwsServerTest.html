@@ -1,5 +1,162 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>AwsServerTest</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>AwsServerTest</h1><p>Welcome to AwsServerTest</p><ul><!--TOC_Start--><!--TOC_End--></ul></div><div class="container"><p>npm install --save-dev supertest
-mkdir test
-touch test/apiTest.js</p>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>AwsServerTest</h1><p>Welcome to AwsServerTest</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#install">Install</a></li>
+<li><a href="#module-to-test">Module to Test</a></li>
+<li><a href="#the-test">The Test</a></li>
+<li><a href="#run-it">Run it</a></li>
+<li><a href="#test-script-pusher">Test Script Pusher</a></li>
+<li><a href="#test-version-info">Test Version Info</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Everytime we can break hard problems down into simpler problems, we win. One hard problem can be ensuring that our routes are fulfilled. We have learned how to write simple tests to check our client without having to involve the server. But how can we check out the server without involving the client?</p>
+<p>One answer involves using a tool called <a href="https://github.com/visionmedia/supertest">supertest</a>.</p>
+<a class="anchor" id="install"></a>
+<h2>Install</h2>
+<p>I think the midterm would be likely place to put these tests. I made a mistake by asking you to create a folder called midterm on a branch called midterm. This can cause confusion. Rename the folder to <strong>midterm-code</strong>:</p>
+<pre><code><span class="hljs-symbol">git</span> mv midterm midterm-<span class="hljs-meta">code</span>
+</code></pre><p>You could also run these tests on SystemCheckRefacter (Details) if that is simpler for you.    </p>
+<p>Install supertest in the midterm <strong>server</strong> directory:</p>
+<pre><code>npm install --<span class="hljs-built_in">save</span>-<span class="hljs-built_in">dev</span> supertest
+</code></pre><p>Create a test file in the <strong>server</strong> directory:</p>
+<pre><code><span class="hljs-keyword">mkdir</span> <span class="hljs-keyword">test</span>
+touch <span class="hljs-keyword">test</span>/index-<span class="hljs-keyword">test</span>.js
+</code></pre><p>In the <strong>scripts</strong> section of <strong>package.json</strong>:</p>
+<pre><code><span class="hljs-string">"test"</span>: <span class="hljs-string">"mocha 'test/index-test.js'"</span>
+</code></pre><a class="anchor" id="module-to-test"></a>
+<h2>Module to Test</h2>
+<p>Let&#39;s assume that <strong>server/routes/index.js</strong> has at least the following code in it:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> router = express.Router();
+
+<span class="hljs-comment">/* GET home page. */</span>
+router.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    res.render(<span class="hljs-string">'index'</span>, { <span class="hljs-attr">title</span>: <span class="hljs-string">'server'</span> });
+});
+
+router.get(<span class="hljs-string">'/foo'</span>, (request, response) =&gt; {
+    <span class="hljs-string">'use strict'</span>;
+    response.send({ <span class="hljs-attr">file</span>: <span class="hljs-string">'api.js'</span>,  <span class="hljs-attr">result</span>: <span class="hljs-string">'success'</span>, <span class="hljs-attr">status</span>: <span class="hljs-string">'bar'</span> });
+});
+
+<span class="hljs-built_in">module</span>.exports = router;
+</code></pre>
+<a class="anchor" id="the-test"></a>
+<h2>The Test</h2>
+<p>Then our test might look like this:</p>
+<pre><code class="lang-JavaScript">const request = require('supertest')<span class="hljs-comment">;</span>
+
+const app = require('../app')<span class="hljs-comment">; //reference to you app.js file</span>
+
+describe('Test index.js', function() {
+
+    it('should call foo route', function(<span class="hljs-name">done</span>) {
+        request(<span class="hljs-name">app</span>)
+            .get('/foo')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(<span class="hljs-number">200</span>, done)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('should check foo route', function(<span class="hljs-name">done</span>) {
+        request(<span class="hljs-name">app</span>)
+            .get('/foo')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(<span class="hljs-number">200</span>, done)
+            .expect({ file: 'api.js', result: 'success', 'status': 'bar' })<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+})<span class="hljs-comment">;</span>
+</code></pre>
+<a class="anchor" id="run-it"></a>
+<h2>Run it</h2>
+<p>Type <strong>npm test</strong> in the server directory:</p>
+<pre><code>npm test
+
+&gt; server@<span class="hljs-number">0.1</span><span class="hljs-number">.0</span> test /media/charlie/elfdisk/Git/isit320-calvert<span class="hljs-number">-2018</span>/week07-system-check-refactor/server
+&gt; mocha 'test/index-test.js'
+
+
+
+  Test index.js
+GET /foo <span class="hljs-number">200</span> <span class="hljs-number">3.515</span> ms - <span class="hljs-number">51</span>
+    ✓ should call foo route
+GET /foo <span class="hljs-number">200</span> <span class="hljs-number">0.326</span> ms - <span class="hljs-number">51</span>
+    ✓ should check foo route
+
+
+  <span class="hljs-number">2</span> passing (<span class="hljs-number">29</span>ms)
+</code></pre><a class="anchor" id="test-script-pusher"></a>
+<h2>Test Script Pusher</h2>
+<p>Ensure that <strong>routes/script-pusher.js</strong> contains at least this code:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/foo'</span>, <span class="hljs-function"><span class="hljs-params">(request, response)</span> =&gt;</span> {
+    <span class="hljs-string">'use strict'</span>;
+    response.send({
+        file: <span class="hljs-string">'script-pusher.js'</span>,
+        result: <span class="hljs-string">'success'</span>,
+        status: <span class="hljs-string">'script-pusher works'</span>
+    });
+});
+</code></pre>
+<p>Create a file called <strong>server/test/script-pusher-test.js</strong>. Broaden our test script in <strong>package.json</strong>:</p>
+<pre><code><span class="hljs-string">"test"</span>: <span class="hljs-string">"mocha 'test/*test.js'"</span>
+</code></pre><p>Write a test or two for it:</p>
+<pre><code class="lang-javascript">const request = require('supertest')<span class="hljs-comment">;</span>
+
+const app = require('../app')<span class="hljs-comment">; //reference to you app.js file</span>
+
+describe('Test script-pusher.js', function() {
+
+    it('should call script-pusher/foo route', function(<span class="hljs-name">done</span>) {
+        request(<span class="hljs-name">app</span>)
+            .get('/script-pusher/foo')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(<span class="hljs-number">200</span>, done)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+    it('should check script-pusher/foo route', function(<span class="hljs-name">done</span>) {
+        request(<span class="hljs-name">app</span>)
+            .get('/script-pusher/foo')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(<span class="hljs-number">200</span>, done)
+            .expect({
+                file: 'script-pusher.js',
+                result: 'success',
+                status: 'script-pusher works'
+            })<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+})<span class="hljs-comment">;</span>
+</code></pre>
+<a class="anchor" id="test-version-info"></a>
+<h2>Test Version Info</h2>
+<p>Finally, let&#39;s test one of our real routes:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// At the top of the file:</span>
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">assert</span> = require(<span class="hljs-string">'assert'</span>);
+
+<span class="hljs-comment">// At the bottom of our describe call:</span>
+it(<span class="hljs-string">'should check script-pusher/run-script Version Check'</span>, function(done) {
+    request(app)
+        .<span class="hljs-keyword">get</span>(<span class="hljs-string">'/script-pusher/run-script?script=VersionCheck'</span>)
+        .<span class="hljs-keyword">set</span>(<span class="hljs-string">'Accept'</span>, <span class="hljs-string">'application/json'</span>)
+        .expect(<span class="hljs-string">'Content-Type'</span>, /json/)
+        .expect(<span class="hljs-number">200</span>)
+        .then((result) =&gt; {
+            <span class="hljs-keyword">this</span>.timeout(<span class="hljs-number">3000</span>);
+            <span class="hljs-keyword">assert</span>.equal(result.body.result, <span class="hljs-string">'success'</span>);
+            <span class="hljs-keyword">assert</span>.equal(result.body.code, <span class="hljs-string">'1'</span>);
+            <span class="hljs-keyword">const</span> present = result.body.allData.includes(<span class="hljs-string">'Ubuntu'</span>);
+            <span class="hljs-keyword">assert</span>.ok(present);
+            done();
+        });
+});
+</code></pre>
+<p>Note that I&#39;ve set a long timeout. That&#39;s because VersionCheck can be slow. On my system 1500 would probably work, but I&#39;m being very conservative. You might be able to omit the call altogether, but I include it in case you are getting time outs on valid calls.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>elf-tagger &quot;completed supertest&quot;, &#39;midterm-code&#39;</p>
+<p>Please also tell me both branch and folder.</p>
 </div></body></html>
