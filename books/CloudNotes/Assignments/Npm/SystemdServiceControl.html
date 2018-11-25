@@ -4,6 +4,7 @@
 <li><a href="#the-script">The Script</a></li>
 <li><a href="#setting-ports">Setting Ports</a></li>
 <li><a href="#port-scanning">Port Scanning</a></li>
+<li><a href="#get-your-ip">Get Your IP</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#hints">hints</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
@@ -126,7 +127,48 @@ PORT      STATE  SERVICE
 <span class="hljs-number">30033</span>/tcp closed <span class="hljs-keyword">unknown</span>
 <span class="hljs-number">30034</span>/tcp closed <span class="hljs-keyword">unknown</span>
 <span class="hljs-number">30035</span>/tcp closed <span class="hljs-keyword">unknown</span>
-</code></pre><a class="anchor" id="turn-it-in"></a>
+</code></pre><a class="anchor" id="get-your-ip"></a>
+<h2>Get Your IP</h2>
+<p>Using NMAP to retrieve services on your local PC is easier if you can automatically get the local IP. Then you will not have to first get the IP, and only then call nmap. The lazier, and hence better, solution is to have a single way to get both the IP and the output from nmap. Below is an outline of such a technique.</p>
+<p>This <a href="https://stackoverflow.com/a/8440736/253576">Stack Overflow solution</a> is perhaps reasonably robust, though there might be trouble if you have a single interface with two IP addresses. Our script expects this small app to return a single IP address, but in some cases it might return two. So far I have not found a machine that has two IP addresses for a single interface, so I don&#39;t know what will happen in that case or how to work around it. Here is the SO code, only slightly modified:</p>
+<pre><code class="lang-javascript"><span class="hljs-meta">#!/usr/bin/env node</span>
+
+<span class="hljs-keyword">var</span> os = <span class="hljs-built_in">require</span>(<span class="hljs-string">'os'</span>);
+<span class="hljs-keyword">var</span> ifaces = os.networkInterfaces();
+
+<span class="hljs-comment">// Based on something found here: https://stackoverflow.com/a/8440736/253576</span>
+<span class="hljs-built_in">Object</span>.keys(ifaces).forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ifname</span>) </span>{
+<span class="hljs-meta">  'use strict'</span>;
+  <span class="hljs-keyword">var</span> alias = <span class="hljs-number">0</span>;
+  ifaces[ifname].forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">iface</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-string">'IPv4'</span> !== iface.family || iface.internal !== <span class="hljs-literal">false</span>) {
+      <span class="hljs-comment">// skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses</span>
+      <span class="hljs-keyword">return</span>;
+    }
+
+    <span class="hljs-keyword">if</span> (alias &gt;= <span class="hljs-number">1</span>) {
+      <span class="hljs-comment">// this single interface has multiple ipv4 addresses</span>
+      <span class="hljs-built_in">console</span>.log(ifname + <span class="hljs-string">':'</span> + alias, iface.address);
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-comment">// this interface has only one ipv4 adress</span>
+      <span class="hljs-built_in">console</span>.log(iface.address);
+    }
+    ++alias;
+  });
+});
+</code></pre>
+<p>Save the above JavaScript in a file in your <strong>scripts</strong> directory called <strong>get-ip.js</strong>. Then in your <strong>system-service-control</strong> script, do this:</p>
+<pre><code class="lang-bash"><span class="hljs-symbol">LOCAL_IP</span>=$(./<span class="hljs-meta">get</span>-<span class="hljs-built_in">ip</span>.js)
+</code></pre>
+<p>Now you can do this in your script:</p>
+<pre><code class="lang-bash"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">checkPorts</span><span class="hljs-params">()</span> </span>{
+    sudo nmap -p <span class="hljs-number">30025</span><span class="hljs-number">-30235</span> ${LOCAL_IP}
+}
+</code></pre>
+<p><strong>NOTE</strong>: <em>This might work in bash as a way to get your IP, but I haven&#39;t quite finished it:</em></p>
+<pre><code class="lang-bash">ip addr | grep -o <span class="hljs-string">"inet\s<span class="hljs-subst">[[:digit:]</span>]*.<span class="hljs-subst">[[:digit:]</span>]*.<span class="hljs-subst">[[:digit:]</span>]*.<span class="hljs-subst">[[:digit:]</span>]*.<span class="hljs-subst">[[:digit:]</span>]*\sbrd"</span>
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <p>Write a similar script that will track the services you are running. Save it as systemdServices in your <strong>scripts</strong> directory. Make sure all your services can be configured through their service files to run on a particular port.</p>
 <a class="anchor" id="hints"></a>
