@@ -1,13 +1,18 @@
 window.onload = () => {
 
     const appearanceButton = document.getElementById('appearanceAction');
+    const appearanceButton2 = document.getElementById('appearanceAction2');
+    const defaults = document.getElementById('default');
+    const basic = document.getElementById('basic');
 
     appearanceButton.onclick = () => {
-        const defaults = document.getElementById('default');
-        const basic = document.getElementById('basic');
-
         disableStylesheet(defaults);
         enableStylesheet(basic);
+    }
+
+    appearanceButton2.onclick = () => {
+        disableStylesheet(basic);
+        enableStylesheet(defaults);
     }
 
 }
