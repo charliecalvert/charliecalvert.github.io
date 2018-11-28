@@ -2,13 +2,18 @@
 <!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Isit320Final2018</h1><p>Welcome to Isit320Final2018</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
 <li><a href="#getting-started">Getting Started</a></li>
 <li><a href="#provision-repository">Provision Repository</a></li>
+<li><a href="#bumps-in-the-road">Bumps in the Road</a></li>
 <li><a href="#details">Details</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
 <h2>Overview</h2>
-<p>You have two major goals:</p>
+<p>You have three major goals:</p>
 <ul>
 <li>To complete the <a href="https://www.elvenware.com/teach/assignments/Npm/SystemdServiceComplete.html">systemd Service Complete</a> assignment</li>
 <li>To complete the <a href="https://www.elvenware.com/teach/assignments/Aws/Ec2ProvisionRepo.html">EC2 Provision Repo</a> assignment</li>
+<li>Get some application running on AWS and send me a link to it.<ul>
+<li>I&#39;ll give more thought as to which app to install and get back to you.</li>
+</ul>
+</li>
 </ul>
 <p>As subset of the second goal, you should write your own script that will clown your repository to the remote instance.</p>
 <p>The Service Complete assignment is self-explanatory, but the EC2 Provision Repo needs some comment, which is provided below.</p>
@@ -19,22 +24,155 @@
 <li>Create a final branch and do your work in it.</li>
 <li>As you start: <strong>elf-tagger &quot;starting final&quot; &quot;aws-provision&quot;</strong></li>
 </ul>
-<a class="anchor" id="provision-repository"></a>
+<p>My tag looks like this:</p>
+<pre><code>v1.<span class="hljs-number">1.24</span>  starting <span class="hljs-keyword">final</span> <span class="hljs-keyword">for</span> aws-provision <span class="hljs-keyword">on</span> branch <span class="hljs-keyword">final</span> <span class="hljs-keyword">with</span> tag v1.<span class="hljs-number">1.24</span>.
+</code></pre><a class="anchor" id="provision-repository"></a>
 <h2>Provision Repository</h2>
 <p>The EC2 Provision Repo assignment asked you to create a series of buttons and make sure that each one had an endpoint on the server. The goal for the final is to make the sure the endpoints actually perform the expected operations. This will involve using calls that we have covered multiple times in this class. In particular, you will need to:</p>
 <ul>
 <li>Copy script files from the local machine to the EC2 instance</li>
 <li>Run the scripts on the remote machine</li>
+<li>Use the AWS api to perform a few tasks such as:<ul>
+<li>Create the instance</li>
+<li>Link the Elastic IP to the instance</li>
 </ul>
-<p>At the time of this writing, this process will not go smoothly under even the best of circumstances. For instance, I will ask you to copy the JsObjects SLB script GetStarted to the server and then run it. Among other things, this script runs the following commands in a non-interactive manner:</p>
+</li>
+</ul>
+<p>Be sure that the code in <strong>App.js</strong> is refactored into an appropriate set of React components.</p>
+<p>Create or maintain at least five unit tests.</p>
+<a class="anchor" id="bumps-in-the-road"></a>
+<h2>Bumps in the Road</h2>
+<p>At the time of this writing, the process of running even a correctly implemented <strong>aws-provision</strong> application will not go smoothly even under even the best of circumstances. For instance, the application should copy the JsObjects SLB script <strong>GetStarted</strong> to the server and then run it. Among other things, this script runs the following commands in a non-interactive manner:</p>
 <pre><code>sudo apt update
 sudo apt<span class="hljs-built_in"> upgrade
 </span>sudo apt dist-upgrade
 sudo apt autoremove
-</code></pre><p>All this takes considerable time, and there is no good way at this stage to get feedback to the user. Once the GetStarted script is complete, it then reboots the system, which again takes time. By watching the command prompt, you can see the progress, so you, as a technical person, are not in the dark about what is happening. But clearly this is a less than optimal situation. Nevertheless, it does work.</p>
-<p>For me, the whole process takes something like five minutes to complete. It is pretty nice to be able to complete provision an EC2 instance in five minutes without having to do anything more than select a few buttons. I want to improve the app, but at least this is a start.</p>
+</code></pre><p>All this takes considerable time, and there is no good way at this stage to get feedback to the user. Once the <strong>GetStarted</strong> script is complete, it then reboots the system, which again takes time. By watching the command prompt, you can see the progress, so you, as a technical person, are not in the dark about what is happening. But clearly this is a less than optimal situation. Nevertheless, it does work, and improving the situation will have to wait till a later date, as we out of time this quarter.</p>
+<p>For me, the whole process takes something like five minutes to complete. It is pretty nice to be able to completely provision an EC2 instance in five minutes without having to do anything more than select a few buttons. So the experience has its upside. I definitely want to improve the app, but at least this is a start.</p>
 <a class="anchor" id="details"></a>
 <h2>Details</h2>
+<p>The <strong>routes/ssh-runner.js</strong> file must get its HostAddress (the Elastic IP of the server) and Private Key identity file from <strong>~/.ssh/config</strong> via the technique explained in the <a href="https://www.elvenware.com/teach/assignments/Linux/GetSshIpAndPrivateKey.html">Get SSH and Private IP</a> assignment. This is an important part of the assignment, as filling in the information by hand is among the time consuming parts of grading your assignment. Having to do it manually would definitely be a bumpy stretch in the process of grading any assignment.</p>
+<p>Get rid of the <strong>queryServer</strong> call to the endpoint <strong>/foo</strong>. We don&#39;t want that anymore.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Method</th>
+<th style="text-align:left">Button Content (Text)</th>
+<th style="text-align:left">Route to Endpoint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">/create-educate</td>
+<td style="text-align:left">Use the <strong>AwsPromise</strong> code I gave you.</td>
+</tr>
+<tr>
+<td style="text-align:left">/create-standard</td>
+<td style="text-align:left">Use the <strong>AwsPromise</strong> code I gave you</td>
+</tr>
+<tr>
+<td style="text-align:left">/associate-elastic-ip</td>
+<td style="text-align:left">Use the AwsPromise code I gave you</td>
+</tr>
+<tr>
+<td style="text-align:left">/script-pusher/copy-get-started</td>
+<td style="text-align:left">Use the Node JS spawn API and scp</td>
+</tr>
+<tr>
+<td style="text-align:left">/ssh-runner/run-get-started</td>
+<td style="text-align:left">Use the SSH2 Package</td>
+</tr>
+<tr>
+<td style="text-align:left">this.removeKnownHost</td>
+<td style="text-align:left">Remove from KnownHost</td>
+<td style="text-align:left">/script-pusher/remove-known-host</td>
+</tr>
+</tbody>
+</table>
+<p>One of the trickiest parts of this process is getting the instanceId of a newly created instance and using it to bind an elastic IP to an instance.</p>
+<p>You need two pieces of information to link an Elastic IP and instance:</p>
+<ul>
+<li>The allocationId of the Elastic IP</li>
+<li>The instanceId of the instance you want to connect to</li>
+</ul>
+<p>Your milage may differ, but I maintain the <strong>allocationIds</strong> for both my standard and my educate account on the client side:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">const allocationIds</span> = {
+    standard: <span class="hljs-string">'eipalloc-0f6a026c08de655a2'</span>,
+    educate: <span class="hljs-string">'eipalloc-0e6db228b0e914bf1'</span>
+};
+
+<span class="hljs-attribute">const regions</span> = { standard: <span class="hljs-string">'us-west-2'</span>, educate: <span class="hljs-string">'us-east-1'</span> };
+</code></pre>
+<p>Note that I also track the region I use on both accounts. (Most of you will only use your educate account, but I show you how I track both pieces of data, since I want my code to work in both places. That is definitely not a requirement for the final, if you can get either educate or standard to work, then that is more than enough to do well on the final.)</p>
+<p>In <strong>routes/aws/AwsPromise.js</strong>, around line 35, you find this code:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-selector-tag">resolve</span>({
+    <span class="hljs-attribute">result</span>: <span class="hljs-string">'success'</span>,
+    instanceData: data.Instances[<span class="hljs-number">0</span>],
+    instanceTagged: tagData
+});
+</code></pre>
+<p>The <strong>instanceData</strong> property contains the information about the created instance that is sent to us by AWS. Among the data sent is the <strong>instanceId</strong> of the new instance. On the client side, in the fetch call that starts off the process of creating a new instance, I write this code:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">that</span><span class="hljs-selector-class">.setState</span>({
+    <span class="hljs-attribute">result</span>: json.result,
+    instanceData: json.instanceData,
+    allocationId: allocationIds.educate,
+    region: regions.educate
+});
+</code></pre>
+<p>Then in my constructor, I track the data send from the server:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">constructor</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">super</span>();
+    <span class="hljs-keyword">this</span>.state = {
+        result: <span class="hljs-string">'unknown'</span>,
+        allocationId: allocationIds.standard,
+        region: regions.standard,
+        instanceData: {
+            Architecture: <span class="hljs-string">''</span>,
+            ClientToken: <span class="hljs-string">''</span>,
+            ImageId: <span class="hljs-string">''</span>,
+            InstanceId: <span class="hljs-string">'i-0b37f98105dd1a72c'</span>,
+            InstanceType: <span class="hljs-string">''</span>,
+            KeyName: <span class="hljs-string">''</span>,
+            LaunchTime: <span class="hljs-string">''</span>,
+            PrivateDnsName: <span class="hljs-string">''</span>,
+            PrivateIpAddress: <span class="hljs-string">''</span>,
+            PublicDnsName: <span class="hljs-string">''</span>,
+            Hypervisor: <span class="hljs-string">''</span>,
+            RootDeviceName: <span class="hljs-string">''</span>,
+            RootDeviceType: <span class="hljs-string">''</span>
+        }
+    };
+}
+</code></pre>
+<p>Note that I provide default values for several fields, but this is just to keep the program from faulting before I have chance to fill them in with real data. In other words, this default values are all replaced after I get the instance data for an instance from the server.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/aws-provision-instanceid.png" alt="Some random version of my app just after instance is created"></p>
+<p><strong>Caption</strong>: <em>Some random version of my app just after an EC2 instance is created. Note that the <strong>instanceId</strong> is displayed.</em></p>
+<p>Now that we have the instanceId of the newly created instance, we can use it to associate our Elastic IP with the instance:</p>
+<pre><code class="lang-JavaScript">associateElasticIp = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-comment">//const that = this;</span>
+    fetch(
+        <span class="hljs-string">'/associate-elastic-ip?instanceId='</span> +
+            <span class="hljs-keyword">this</span>.state.instanceData.InstanceId +
+            <span class="hljs-string">'&amp;allocationId='</span> +
+            <span class="hljs-keyword">this</span>.state.allocationId +
+            <span class="hljs-string">'&amp;region='</span> +
+            <span class="hljs-keyword">this</span>.state.region
+    )
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+            <span class="hljs-keyword">return</span> response.json();
+        })
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsed json'</span>, json);  
+        })
+        .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ex</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(
+                <span class="hljs-string">'parsing failed, URL bad, network down, or similar'</span>,
+                ex
+            );
+        });
+};
+</code></pre>
+<p>Ultimately, it would probably make sense to automatically call associateElasticIp when we get the <strong>instanceId</strong> from the server, but I do yet do that. At this time, I want to complete each step separately so I can be sure it is working. Getting things to run more smoothly is work left for a later date. (Perhaps we&#39;ll do it this spring in Isit322?)</p>
 <a class="anchor" id="turn-it-in"></a>
 <h2>Turn it in</h2>
 <ul>
