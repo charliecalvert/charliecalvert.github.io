@@ -3,6 +3,7 @@
 <li><a href="#getting-started">Getting Started</a></li>
 <li><a href="#provision-repository">Provision Repository</a></li>
 <li><a href="#bumps-in-the-road">Bumps in the Road</a></li>
+<li><a href="#endpoints">EndPoints</a></li>
 <li><a href="#details">Details</a></li>
 <li><a href="#refactor">Refactor</a></li>
 <li><a href="#associate">Associate</a></li>
@@ -51,6 +52,30 @@ sudo apt<span class="hljs-built_in"> upgrade
 sudo apt autoremove
 </code></pre><p>All this takes considerable time, and there is no good way at this stage to get feedback to the user. Once the <strong>GetStarted</strong> script is complete, it then reboots the system, which again takes time. By watching the command prompt, you can see the progress, so you, as a technical person, are not in the dark about what is happening. But clearly this is a less than optimal situation. Nevertheless, it does work, and improving the situation will have to wait till a later date, as we out of time this quarter.</p>
 <p>For me, the whole process takes something like five minutes to complete. It is pretty nice to be able to completely provision an EC2 instance in five minutes without having to do anything more than select a few buttons. So the experience has its upside. I definitely want to improve the app, but at least this is a start.</p>
+<a class="anchor" id="endpoints"></a>
+<h2>EndPoints</h2>
+<p>Here is a list of all the endpoints I&#39;m using at this time and the file in the <strong>server/routes</strong> directory in which they are found:</p>
+<ul>
+<li>index.js (all use AWS api)<ul>
+<li>/associate-elastic-ip</li>
+<li>/create-educate</li>
+<li>/create-standard</li>
+<li>/get-instance-status</li>
+<li>/reboot-instance</li>
+</ul>
+</li>
+<li>ssh-runner.js (all use ssh2)<ul>
+<li>/run-get-started</li>
+<li>/run-ubuntu-setup</li>
+</ul>
+</li>
+<li>script-pusher (all use spawn)<ul>
+<li>/copy-get-started</li>
+<li>/remove-known-host</li>
+</ul>
+</li>
+</ul>
+<p>On the client end, I have my code refactored into a similar, but not identical, pattern.</p>
 <a class="anchor" id="details"></a>
 <h2>Details</h2>
 <p>The <strong>routes/ssh-runner.js</strong> file must get its HostAddress (the Elastic IP of the server) and Private Key identity file from <strong>~/.ssh/config</strong> via the technique explained in the <a href="https://www.elvenware.com/teach/assignments/Linux/GetSshIpAndPrivateKey.html">Get SSH and Private IP</a> assignment. This is an important part of the assignment, as filling in the information by hand is among the time consuming parts of grading your assignment. Having to do it manually would definitely be a bumpy stretch in the process of grading any assignment.</p>
@@ -95,13 +120,39 @@ sudo apt autoremove
 <h2>Refactor</h2>
 <p>The following classes should exist:</p>
 <ul>
-<li>App.js</li>
-<li>CreateAssociate.js: The code for creating instances and associating the IP with the instance.<ul>
-<li>Much or all of your state will be maintained in this file.</li>
+<li>App.js<ul>
+<li>Links together the modules listed below in its render method</li>
+<li>It does nothing else</li>
 </ul>
 </li>
-<li>Others, TBD.</li>
+<li>ElfHeader<ul>
+<li>Show the Title and your name</li>
 </ul>
+</li>
+<li>CreateAssociate.js: Creating instances, associate Elastic IP<ul>
+<li>Much or all of your state will be maintained in this file.</li>
+<li>/create-standard</li>
+<li>/create-educate</li>
+<li>/associate-elastic-ip</li>
+</ul>
+</li>
+<li>Tools<ul>
+<li>/get-instance-status</li>
+<li>/reboot-instance</li>
+<li>/remove-known-hosts</li>
+</ul>
+</li>
+<li>RunLocal<ul>
+<li>/copy-get-started</li>
+</ul>
+</li>
+<li>RunRemote<ul>
+<li>/run-get-started</li>
+<li>/run-ubuntu-setup</li>
+</ul>
+</li>
+</ul>
+<p>The URLs shown above, are not necessarily complete. I&#39;m just giving  you enough information so you can see which URL goes in which file.</p>
 <a class="anchor" id="associate"></a>
 <h2>Associate</h2>
 <p>One of the trickiest parts of this process is getting the instanceId of a newly created instance and using it to bind an elastic IP to an instance.</p>
