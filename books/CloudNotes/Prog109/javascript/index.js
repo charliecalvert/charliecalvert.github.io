@@ -9,6 +9,7 @@ window.onload = () => {
         disableStylesheet(defaults);
         enableStylesheet(basic);
     }
+
 }
 
 function enableStylesheet (node) {
@@ -18,3 +19,4 @@ function enableStylesheet (node) {
 function disableStylesheet (node) {
     node.rel = 'alternate stylesheet';
 }
+
