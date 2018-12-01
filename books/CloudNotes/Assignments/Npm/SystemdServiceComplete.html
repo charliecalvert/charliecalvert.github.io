@@ -78,52 +78,7 @@ cd <span class="hljs-built_in">../client
 <p><strong>NOTE</strong>: <em>The above script runs a checkout on the client and server directories, so it will overwrite any changes to files in those directories unless you have committed them! Read that again!</em></p>
 <a class="anchor" id="repo-run"></a>
 <h2>Run any Project from Repo Root</h2>
-<p>Save this file as <strong>run-all</strong> in the root of your repository.</p>
-<pre><code class="lang-bash"><span class="hljs-meta">#! /usr/bin/env bash
-</span>
-<span class="hljs-keyword">if</span> [[ -z <span class="hljs-variable">$2</span> ]]; <span class="hljs-keyword">then</span>
-    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"=========================================================="</span>
-    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"Pass in a project directory and a parameter of a, b, or c."</span>
-    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">" a) Run Client Server"</span>
-    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">" b) Run Server"</span>
-    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">" c) Start Service"</span>
-    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"For Run Server, you also need to pass in a port."</span>
-    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"=========================================================="</span>
-    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"Examples: "</span>
-    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"   ./run-all week06-system-check a"</span>
-    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"   ./run-all week06-system-check b 30026"</span>
-    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"   ./run-all week06-system-check c"</span>
-    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"=========================================================="</span>
-    <span class="hljs-built_in">exit</span>
-<span class="hljs-keyword">fi</span>
-
-<span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">runClientServer</span></span>() {
-    <span class="hljs-built_in">cd</span> <span class="hljs-variable">$1</span>
-    try-run-both build
-    <span class="hljs-built_in">cd</span> ..
-}
-
-<span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">runServer</span></span>() {
-    <span class="hljs-built_in">cd</span> <span class="hljs-variable">$1</span>/client
-    <span class="hljs-built_in">pwd</span>
-    ./build-copy-worker a
-    <span class="hljs-built_in">cd</span> ../server
-    nohup node bin/www &amp;
-    firefox http://localhost:<span class="hljs-variable">${2}</span>
-}
-
-<span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">startService</span></span>() {
-    <span class="hljs-built_in">cd</span> <span class="hljs-variable">$1</span>/server
-    <span class="hljs-built_in">pwd</span>
-    ./run-setup-service
-}
-
-<span class="hljs-keyword">case</span> <span class="hljs-variable">$2</span> <span class="hljs-keyword">in</span>
-    [Aa]* ) runClientServer <span class="hljs-variable">${1}</span>; <span class="hljs-built_in">shift</span>;;
-    [Bb]* ) runServer <span class="hljs-variable">${1}</span> <span class="hljs-variable">${3}</span>; <span class="hljs-built_in">shift</span>;;
-    [Cc]* ) startService <span class="hljs-variable">${1}</span>; <span class="hljs-built_in">shift</span>;;
-<span class="hljs-keyword">esac</span>
-</code></pre>
+<p>I&#39;ve saved the <a href="https://gist.github.com/charliecalvert/f927c792ac248f2069a629b46ce6ada8">run-all</a> script as a gist. Click the link and save the file as <strong>run-all</strong> in the root of your repository.</p>
 <p>Run it like this:</p>
 <pre><code class="lang-bash">./<span class="hljs-keyword">run</span><span class="bash">-all week06-system-check b <span class="hljs-variable">$ELF_SYSTEM_CHECK_PORT</span></span>
 </code></pre>
