@@ -1,0 +1,397 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>NodeRouteBasics</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>NodeRouteBasics</h1><p>Welcome to NodeRouteBasics</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#the-http-protocol">The HTTP Protocol</a></li>
+<li><a href="#elven-assignments">Step One: Pull Elven Assignments</a></li>
+<li><a href="#step-two-copy-project">Step Two: Copy Project</a></li>
+<li><a href="#interface">Step Three: Client Interface</a></li>
+<li><a href="#step-threea">Step ThreeA: Buttons, Jade and Clicks</a></li>
+<li><a href="#server">Step Four: Server</a></li>
+<li><a href="#no-params">Call Server without Parameters</a></li>
+<li><a href="#pass-data">Call Route (endpoint) with Parameters</a></li>
+<li><a href="#server-side-get">Server Side HTTP GET Parameters</a></li>
+<li><a href="#post-call">Server Side HTTP POST Parameters</a></li>
+<li><a href="#extra-credit">Extra Credit</a></li>
+<li><a href="#step-five">Step Five</a></li>
+<li><a href="#turn-it-in">Turn It In</a></li>
+<li><a href="#lastpass">LastPass</a></li>
+<li><a href="#more-complex-example">More Complex Example</a></li>
+<li><a href="#interact">Client Server Interactions</a></li>
+<li><a href="#update-out-of-date-packages">Update Out of Date Packages</a></li>
+<li><a href="#setting-up-the-port">Setting up the Port</a></li>
+<li><a href="#routing">Node Express Routing Basics</a></li>
+<li><a href="#node-express-serving-up-static-pages">Node Express Serving up Static Pages</a></li>
+<li><a href="#temp-directory">Temp directory</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p><strong>STATUS</strong>: <em>This assignment needs polishing but should be complete enough to allow students to complete the assignment.</em></p>
+<p>The Node Route Basics assignment gives you practice creating NodeJs Express routes and calling them with <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a>. There is still at least one reference to <a href="http://api.jquery.com/jquery.getjson/">$.getJSON</a>, but by and large, I have tried to strip jQuery code out of the assignment.</p>
+<p>If you need help with this this assignment, study the NodeRoutes
+examples in JsObjects.</p>
+<ul>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/NodeCode/NodeRoutes01">NodeRoutes01</a></li>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/NodeCode/NodeRoutes02">NodeRoutes02</a></li>
+</ul>
+<a class="anchor" id="the-http-protocol"></a>
+<h2>The HTTP Protocol</h2>
+<p>We are sending a message from the client to the server, and then getting a response:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/http.png" alt="http"></p>
+<p>The client (web browser) uses HTTP to make a request for HTML, CSS, JavaScript or an image. The request might be triggered when we click on a link, type in the address bar or call an <strong>ajax</strong> function such as <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a> or jQuery&#39;s <strong>getJSON</strong>.</p>
+<p>TCP/IP is used to send the request via the network to the server. The server, which in our case is a NodeJs express web server, reads the HTTP request and we create a custom route in <strong>routes/index.js</strong> that sends a response back. The response is typically an HTML file, some JSON, or some other artifact sent via the HTTP protocol.</p>
+<p>On the client, the browser unpacks the request. If it an HTML file the user requested, it parses the HTML, and displays the results to the user. If it is an ajax request, then we typically parse the JSON and display the result to the user in some HTML element.</p>
+<a class="anchor" id="elven-assignments"></a>
+<h2>Step One: Pull Elven Assignments</h2>
+<p>I have renamed the <strong>Prog270-Assignments</strong> repository to <strong>elven-assignments</strong>. If you don&#39;t have the repo, then do this:</p>
+<pre><code>git <span class="hljs-keyword">clone</span> <span class="hljs-title">http</span>://github.com/charliecalvert/elven-assignments.git
+</code></pre><a class="anchor" id="step-two-copy-project"></a>
+<h2>Step Two: Copy Project</h2>
+<p>Copy the node express program called <strong>NodeRouteBasics</strong> from my repo to yours:</p>
+<pre><code>cp -r ~<span class="hljs-regexp">/Git/</span>elven-assignments<span class="hljs-regexp">/NodeRouteBasics ~/</span>Git<span class="hljs-regexp">/prog272-lastname-2016/</span>Week04-NodeRouteBasics
+</code></pre><a class="anchor" id="interface"></a>
+<h2>Step Three: Client Interface</h2>
+<p>It should include the following:</p>
+<ul>
+<li>Various buttons and input controls.</li>
+<li>When the user clicks on one button, return the number of feet in a mile.</li>
+<li>When the user clicks on another button, calculate the number of feet
+in X miles, where X is supplied by the user in an HTML <strong>input</strong> element.</li>
+<li>Also provide the circumference of a circle given a radius supplied
+by the user.</li>
+</ul>
+<p>You interface will probably consist of three buttons:</p>
+<ul>
+<li>Get Feet in Mile</li>
+<li>Calculate Feet from Miles</li>
+<li>Calculate Circumference</li>
+<li>One input control for entering number used by the last two butttons  </li>
+</ul>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/node-route-basics-ui.png" alt="Node Route Basics UI"></p>
+<a class="anchor" id="step-threea"></a>
+<h2>Step ThreeA: Buttons, Jade and Clicks</h2>
+<p>Put this in <strong>views/index.jade</strong> or <strong>views/index.pug</strong>:</p>
+<pre><code>button#<span class="hljs-built_in">search</span> <span class="hljs-built_in">Search</span>
+</code></pre><p><strong>NOTE</strong>: <em>Jade has been renamed to <a href="https://pugjs.org/api/getting-started.html">Pug</a>. At this stage, it doesn&#39;t matter whether we are using Jade (<strong>index.jade</strong>) or Pug (<strong>index.pug</strong>). Though both behave the same way in nearly all cases.</em></p>
+<p>To detect a click on this button, write something like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">search</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">// YOUR CODE HERE</span>
+};
+
+<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'search'</span>).onclick = search;
+</code></pre>
+<a class="anchor" id="server"></a>
+<h2>Step Four: Server</h2>
+<p>All the calculations should be performed on the server side, in a
+module, per the <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/NodeCode/NodeRoutes02">NodeRoutes02</a> example in JsObjects.</p>
+<p>The return values should be a simple JavaScript literal (JSON) that contains at minimum, a property called <strong>result</strong> that contains the result of the calculation. For instance, our <strong>getNine</strong> method would set result to the number 9: <strong>{result: 9}</strong>. Like this:</p>
+<pre><code class="lang-JavaScript">router.get(<span class="hljs-string">'/getNine'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;  
+    response.send({<span class="hljs-string">"result"</span>: <span class="hljs-number">9</span>});
+});
+</code></pre>
+<a class="anchor" id="no-params"></a>
+<h2>Call Server without Parameters</h2>
+<p>First, an example showing how to call a route (endpoint) without parameters:</p>
+<pre><code class="lang-javascript">function callServerWithoutParms() {
+
+  fetch(<span class="hljs-string">'/search'</span>)
+    .<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-params">(response)</span> =&gt;</span> response.json())
+    .<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-params">(response)</span> =&gt;</span> {
+        const displayArea = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'displayArea'</span>);
+        displayArea.innerHTML = JSON.stringify(response, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
+     })
+    .<span class="hljs-keyword">catch</span>(<span class="hljs-function"><span class="hljs-params">(ex)</span> =&gt;</span> {
+       <span class="hljs-built_in">console</span>.log(ex);
+     });
+}
+</code></pre>
+<a class="anchor" id="pass-data"></a>
+<h2>Call Route (endpoint) with Parameters</h2>
+<p>Sometimes we need to not just call a route on the server, but call the route and also pass in parameters. Suppose we want to calculate the number of feet in X miles, which X is supplied by the user in a <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/text">text INPUT</a> or <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/number">numeric INPUT</a> control.</p>
+<p>First, define the input control in our Jade/Pug file:</p>
+<pre><code>extends layout
+
+block content
+  h1= <span class="hljs-keyword">title</span>
+  p Welcome to <span class="hljs-meta">#{title}</span>
+
+  <span class="hljs-keyword">input</span><span class="hljs-meta">#userInput(type=<span class="hljs-meta-string">"number"</span>)  &lt;=== HERE</span>
+
+  div    
+    <span class="hljs-keyword">button</span><span class="hljs-meta">#calculateFeetFromMiles Calculate Feet from Miles    </span>
+
+  div
+    pre<span class="hljs-meta">#displayArea</span>
+</code></pre><p>Here is the client side code that calls that module:</p>
+<pre><code class="lang-javascript">const userMiles = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'userInput'</span>).value;
+  fetch(<span class="hljs-string">'/calculateFeetFromMiles'</span> + <span class="hljs-string">'?miles='</span> + userMiles)
+      .<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-params">(response)</span> =&gt;</span> response.json())
+      .<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-params">(response)</span> =&gt;</span> {
+          const displayArea = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'displayArea'</span>);
+          displayArea.innerHTML = JSON.stringify(response, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
+      })
+      .<span class="hljs-keyword">catch</span>(ex =&gt; {
+          <span class="hljs-built_in">console</span>.log(ex);
+      });
+</code></pre>
+<a class="anchor" id="server-side-get"></a>
+<h2>Server Side HTTP GET Parameters</h2>
+<p>Define server side code that accepts a parameter:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/calculateFeetFromMiles'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response)</span> </span>{
+    response.send({result: request.query.miles * <span class="hljs-number">5280</span>});
+});
+</code></pre>
+<p>The <strong>request</strong> (<strong>req</strong>) parameter has a property called <strong>query</strong>. Use it to access the parameters you passed to the server: <strong>request.query.miles</strong>.</p>
+<a class="anchor" id="post-call"></a>
+<h2>Server Side HTTP POST Parameters</h2>
+<p>When you <strong>POST</strong> data to the server you need to pass in a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types#Object_literals">JavaScript object literal</a> as a second parameter to <strong>fetch</strong>. This second parameter is used to specify <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Making_fetch_requests">the options</a> for your call. For instance, you can specify whether you want to make a <strong>GET</strong> or a <strong>POST</strong> call. By default, <strong>fetch</strong> uses <strong>GET</strong>. There are a number of possible options, but in many cases you will use only these three:</p>
+<ul>
+<li><strong>method</strong>: Set this to &#39;POST&#39;</li>
+<li><strong>headers</strong>: Create the header defining the content type, which in our case will almost always be JSON.</li>
+<li><strong>body</strong>: The parameters you want to pass in. In our case, we can just use a JavaScript object literal.</li>
+</ul>
+<p>I find it a bit of a struggle to define the exact format of these options, so I have wrapped them in a little function called get <strong>getPostOptions</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title">getPostOptions</span>(body) {
+    <span class="hljs-keyword">return</span> <span class="hljs-type">{</span>
+        method: <span class="hljs-symbol">'POST</span>',
+        headers: <span class="hljs-keyword">new</span> Headers({
+            <span class="hljs-symbol">'Content</span>-<span class="hljs-keyword">Type</span>': <span class="hljs-symbol">'application</span>/json'
+        }),
+        <span class="hljs-keyword">body</span>: JSON.stringify(<span class="hljs-keyword">body</span>)
+    };
+}
+</code></pre>
+<p>We call this function, passing in the parameters we want to pass to the server endpoint. If we wanted to pass in to parameters of type of string called <strong>param01</strong> and <strong>param02</strong>, then we might call <strong>getPostOptions</strong> like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">getPostOptions</span>({
+  <span class="hljs-attribute">param01</span>: <span class="hljs-string">'foo'</span>,
+  <span class="hljs-attribute">param02</span>: <span class="hljs-string">'bar'</span>
+})
+</code></pre>
+<p>When we call <strong>fetch</strong> usually just pass in one parameter:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">fetch</span><span class="hljs-params">(<span class="hljs-string">'/some-url'</span>)</span></span>
+  <span class="hljs-selector-class">.then</span> etc...
+</code></pre>
+<p>When POSTing data, however, we should pass in two parameters. The first is our URL, and the second the options returned from our utility function:</p>
+<pre><code>fetch('/some-url', getPostOptions(<span class="hljs-meta">{...}</span>));
+</code></pre><p>Here is a more complete example of the type of call you can use to complete <strong>calculateCircumference</strong> portion of this assignment:</p>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callServer</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">const</span> userInput = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'userInput'</span>).value;
+    <span class="hljs-keyword">const</span> query = {<span class="hljs-attr">propForServer</span>: userInput};
+
+    fetch(<span class="hljs-string">'/some-url'</span>, getPostOptions(query))
+        .then(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> response.json())
+        .then(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> {
+            <span class="hljs-keyword">const</span> displayArea = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'displayArea'</span>);
+            displayArea.innerHTML = <span class="hljs-built_in">JSON</span>.stringify(response, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
+        })
+        .catch(<span class="hljs-function">(<span class="hljs-params">ex</span>) =&gt;</span> {
+            <span class="hljs-built_in">console</span>.log(ex);
+        });
+}
+</code></pre><p>On the server side, everything looks the same except that we use <strong>router.post</strong> rather than <strong>router.get</strong> and we use <strong>request.body</strong> rather than <strong>request.query</strong>:</p>
+<pre><code class="lang-javascript">router.post(<span class="hljs-string">'/calculateCircumference'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response)</span> </span>{
+    console.log(request.body);
+    <span class="hljs-comment">// YOU WRITE THE CODE TO SEND BACK THE RESPONSE</span>
+});
+</code></pre>
+<a class="anchor" id="extra-credit"></a>
+<h2>Extra Credit</h2>
+<p>For three points extra credit, implement <strong>getFeetInMile</strong> and <strong>calculateFeetFromMiles</strong> using HTTP GET calls, and use POST for <strong>calculateCircumference</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-built_in">var</span> express = <span class="hljs-keyword">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-built_in">var</span> router = express.Router();
+
+router.get(<span class="hljs-params">...</span>)
+router.post(<span class="hljs-params">...</span>)
+</code></pre>
+<p>If you are going for extra-credit, please add a note to that effect when you submit the assignment.</p>
+<p>The formula for calculating the circumference of a circle given its radius looks like this:</p>
+<pre><code class="lang-javascript">const    circumference = 2 *<span class="hljs-built_in"> radius </span>* Math.PI;
+</code></pre>
+<p>The parameter for <strong>calculateFeetFromMiles</strong>: <strong>miles</strong></p>
+<p>The parameter for <strong>calculateCircumference</strong>: <strong>radius</strong></p>
+<p>Recall that with <strong>GET</strong> methods we use frequently use <strong>request.query</strong> to find parameters, but with <strong>POST</strong> methods we use <strong>request.body</strong>.</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/NodeJs.html#working-with-post">Elvenware on POST and GET in Express</a></li>
+<li><a href="http://expressjs.com/en/4x/api.html#req.body">Docs on req.body</a></li>
+<li><a href="http://expressjs.com/en/4x/api.html#req.query">Docs on req.query</a></li>
+<li><a href="http://stackoverflow.com/a/12008719">Interesting Discussion</a></li>
+</ul>
+<a class="anchor" id="step-five"></a>
+<h2>Step Five</h2>
+<p>Put a <strong>calculateCircumference</strong> method in a file called <strong>routes/utils.js</strong>. In that file create a simple object literal:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">module</span>.<span class="hljs-keyword">exports</span> = {
+    <span class="hljs-comment">// YOUR METHOD HERE</span>
+}
+</code></pre>
+<p>Now <strong>require</strong> your <strong>utils.js</strong> file in <strong>routes/index.js</strong> and use it in the appropriate route on your server. The method should take one parameter called <strong>radius</strong> and it should return the calculated circumference.</p>
+<p><strong>NOTE</strong>: <em>If we are building our own NPM packages, then put this object and method in the package instead. Otherwise just use the technique outlined above. In either case, our goal is to learn how to create reusable code that we can plug into an project on the server side.</em></p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn It In</h2>
+<p>Check your code into your Git repository and submit the URL of your
+repository or of the project you submitted.</p>
+<a class="anchor" id="lastpass"></a>
+<h2>LastPass</h2>
+<p>I use LastPass. It puts an icon in many input controls. To turn that off, add an attribute to your input controls called <strong>data_lpignore</strong>:</p>
+<p>For instance, in your Pug file do this:</p>
+<pre><code>input<span class="hljs-function"><span class="hljs-keyword">#</span><span class="hljs-title">userInput</span><span class="hljs-params">(<span class="hljs-variable">type</span>=<span class="hljs-string">"number"</span>, <span class="hljs-variable">data_lpignore</span>=<span class="hljs-string">"true"</span>)</span></span>
+</code></pre><p>To turn it off for all INPUT controls on your page, add this near the top of <strong>control.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> elements = <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">"INPUT"</span>);
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> element <span class="hljs-keyword">of</span> elements) {
+    element.setAttribute(<span class="hljs-string">"data_lpignore"</span>, <span class="hljs-string">"true"</span>);
+}
+</code></pre>
+<p>To turn it off in a specific control, one could write something like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">document</span><span class="hljs-selector-class">.getElementById</span>(<span class="hljs-string">'userInput'</span>)<span class="hljs-selector-class">.setAttribute</span>(<span class="hljs-string">"data_lpignore"</span>, <span class="hljs-string">"true"</span>);****
+</code></pre>
+<p>Or, you can do it by class name:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> elements = <span class="hljs-built_in">document</span>.getElementsByClassName(<span class="hljs-string">'no-last-pass'</span>);
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> element <span class="hljs-keyword">of</span> elements) {
+    element.setAttribute(<span class="hljs-string">"data_lpignore"</span>, <span class="hljs-string">"true"</span>);
+}
+</code></pre>
+<a class="anchor" id="more-complex-example"></a>
+<h2>More Complex Example</h2>
+<p>This does not directly relate to the current assignment, but I&#39;m leaving it here for now. It still has jQuery code in it.</p>
+<p>Now an example showing how to call a route with parameters:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callServerWithParms</span>(<span class="hljs-params"></span>) </span>{
+
+    <span class="hljs-comment">// Get Data We Want to Pass to the Server</span>
+    <span class="hljs-keyword">var</span> dirsToWalk = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'dirsToWalk'</span>);
+    <span class="hljs-keyword">var</span> directory = dirsToWalk.options[sourceIndex].value;
+    <span class="hljs-keyword">var</span> destinationDirs = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'destinationDirs'</span>);
+    <span class="hljs-keyword">var</span> destinationDir = destinationDirs.options[destinationIndex].value;
+
+    <span class="hljs-keyword">var</span> highlight = $(<span class="hljs-string">'#highlight'</span>).prop(<span class="hljs-string">'checked'</span>);
+
+    <span class="hljs-comment">// Put that data in JavaScript Object</span>
+    <span class="hljs-keyword">var</span> requestQuery = {
+        <span class="hljs-attr">directoryToWalk</span>: directory,
+        <span class="hljs-attr">destinationDir</span>: destinationDir,
+        <span class="hljs-attr">highlight</span>: highlight,
+    };
+
+    <span class="hljs-comment">// Call the server and pass the data as a parameter.</span>
+    $.getJSON(<span class="hljs-string">'/walk'</span>, requestQuery, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{
+        elf.display.showApacheFiles(result.htmlFilesWritten, result.destinationDir);
+        elf.display.fillDisplayArea(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+    }).done(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            elf.display.showDebug(<span class="hljs-string">'Walk loaded second success'</span>);
+        })
+        .fail(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">jqxhr, textStatus, error</span>) </span>{
+            elf.display.showDebug(<span class="hljs-string">'Walk loaded error: '</span> + jqxhr.status + <span class="hljs-string">' '</span> + textStatus + <span class="hljs-string">' '</span> + error);
+        })
+        .always(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            elf.display.showDebug(<span class="hljs-string">'Walk loaded complete'</span>);
+        });
+
+}
+</code></pre>
+<p>Below, in the next section, we look more closely at passing parameters.</p>
+<a class="anchor" id="interact"></a>
+<h3>Client Server Interactions</h3>
+<p>Look at these code excerpts from the code shown above. We look specifically at the call to the server:</p>
+<pre><code class="lang-javascript">
+    <span class="hljs-comment">// Put that data in JavaScript Object</span>
+    <span class="hljs-keyword">var</span> requestQuery = {
+        <span class="hljs-attr">directoryToWalk</span>: directory,
+        <span class="hljs-attr">destinationDir</span>: destinationDir,
+        <span class="hljs-attr">highlight</span>: highlight,
+    };
+
+    <span class="hljs-comment">// Call the server and pass the data as a parameter.</span>
+    $.getJSON(<span class="hljs-string">'/walk'</span>, requestQuery, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{ ... });
+
+</code></pre>
+<p>And here is what it looks like on the server. Notice how we
+use the request object to discover the parameters passed
+by the client:</p>
+<pre><code class="lang-javascript">
+router.get(<span class="hljs-string">'/walk'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'In walk'</span>, request.query);
+    <span class="hljs-keyword">var</span> directoryToWalk = request.query.directoryToWalk;
+    <span class="hljs-keyword">var</span> destinationDir = request.query.destinationDir;
+    <span class="hljs-keyword">var</span> highlight = request.query.highlight;
+    etc
+});
+</code></pre>
+<a class="anchor" id="update-out-of-date-packages"></a>
+<h2>Update Out of Date Packages</h2>
+<pre><code><span class="hljs-meta">$</span><span class="bash"> npm install -g npm-check-updates</span>
+<span class="hljs-meta">$</span><span class="bash"> npm-check-updates -u</span>
+<span class="hljs-meta">$</span><span class="bash"> npm install</span>
+</code></pre><p>If it is still not up to date, do: <strong>ncu -a</strong></p>
+<p>Also, be sure to remove <strong>phantomjs</strong> from <strong>packages.json</strong>.</p>
+<p>See here:</p>
+<ul>
+<li><a href="http://stackoverflow.com/a/22849716">http://stackoverflow.com/a/22849716</a></li>
+</ul>
+<a class="anchor" id="setting-up-the-port"></a>
+<h2>Setting up the Port</h2>
+<p>Let&#39;s allways use the following:</p>
+<pre><code>var <span class="hljs-keyword">port</span> = <span class="hljs-keyword">process</span>.env.<span class="hljs-keyword">PORT</span> || <span class="hljs-number">30025</span>;
+
+// Code omitted here...
+
+app.listen(<span class="hljs-keyword">port</span>);
+console.log(<span class="hljs-symbol">'Listening</span> <span class="hljs-keyword">on</span> <span class="hljs-keyword">port</span> :' + <span class="hljs-keyword">port</span>);  
+</code></pre><p>We want to pick a particular port because in some situations, such as running on
+EC2, we need to open the port ahead of time. By choosing one port, and always
+using it, you won&#39;t have to edit my code before you can run it, and vice versa.</p>
+<a class="anchor" id="routing"></a>
+<h2>Node Express Routing Basics</h2>
+<p>Express offers support for HTTP verbs such as Get, Post, Put, etc.</p>
+<p>The verbs provide a response to specific routes, such as &#39;/&#39;:</p>
+<pre><code>app.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"root request sent"</span>);
+});
+</code></pre><p>Or here is request that uses a wildcards or regular expressions:</p>
+<pre><code>app.get(<span class="hljs-string">'/a*'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req, res)</span> <span class="hljs-comment">{
+    console.log("A request sent that begins with an a");
+}</span>);</span>
+</code></pre><p>Working with numbers:</p>
+<pre><code>app.get(<span class="hljs-string">'/book/:id((d+)'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Only requests that are numbers"</span>);
+});
+</code></pre><a class="anchor" id="node-express-serving-up-static-pages"></a>
+<h2>Node Express Serving up Static Pages</h2>
+<p>Put your static files in a particular directory and tell express about the
+directory:</p>
+<pre><code>app.<span class="hljs-keyword">use</span>(<span class="hljs-string">"/public"</span>, express.<span class="hljs-keyword">static</span>(__dirname + '/<span class="hljs-keyword">public</span>'));
+</code></pre><p>Server them up like this:</p>
+<pre><code>app.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req, res)</span> </span>{
+    <span class="hljs-keyword">var</span> html = fs.readFileSync(<span class="hljs-string">'public/index.html'</span>);
+    res.writeHeader(<span class="hljs-number">200</span>, {<span class="hljs-string">"Content-Type"</span>: <span class="hljs-string">"text/html"</span>});
+    res.end(html);
+});
+</code></pre><ul>
+<li><a href="http://www.senchalabs.org/connect/static.html">http://www.senchalabs.org/connect/static.html</a></li>
+</ul>
+<a class="anchor" id="temp-directory"></a>
+<h2>Temp directory</h2>
+<p>This is optional. Skip if you are not interested.</p>
+<p>Instead of running <strong>npm install</strong> and <strong>bower install</strong>, do this:</p>
+<ul>
+<li>Copy a reasonably up to date version of <strong>node_modules</strong> from one of your projects to <strong>~/tmp</strong>.</li>
+<li>Copy a reasonably up to date version of <strong>public/components</strong> from one of your projects to <strong>~/tmp</strong>.</li>
+</ul>
+<p>For instance</p>
+<pre><code>mkdir ~/tmp
+cp <span class="hljs-regexp">~/Git/</span>isit322-lastname<span class="hljs-number">-2016</span><span class="hljs-regexp">/Week04-Middleware/</span>node_modules ~/tmp
+cp <span class="hljs-regexp">~/Git/</span>isit322-lastname<span class="hljs-number">-2016</span><span class="hljs-regexp">/Week04-Middleware/</span><span class="hljs-keyword">public</span><span class="hljs-regexp">/components ~/</span>tmp
+</code></pre><p>You might want to also copy the <strong>package.json</strong> and <strong>bower.json</strong> files to tmp. As needed, update your files to the latest:</p>
+<pre><code><span class="hljs-keyword">cd</span> ~<span class="hljs-string">/tmp</span>
+npm outdated <span class="hljs-params">--depth=0</span>
+</code></pre><p>And then get the latest of everything as needed.</p>
+<p>Now go back to your project and create symbolic links to these packages. The best way to do this is to use</p>
+<ul>
+<li>the run alias from <strong>~/.bash_aliases</strong></li>
+<li>or the <strong>nm</strong> and <strong>component</strong> aliases from <strong>~/.bash_aliases</strong>.</li>
+</ul>
+<p>Just as an <strong>fyi</strong>, here they are:</p>
+<pre><code><span class="hljs-keyword">alias</span> <span class="hljs-title">run</span>=<span class="hljs-string">"nm &amp;&amp; components &amp;&amp; npm start"</span>
+<span class="hljs-keyword">alias</span> <span class="hljs-title">nm</span>=<span class="hljs-string">"ln -s ~/tmp/node_modules/"</span>
+<span class="hljs-keyword">alias</span> <span class="hljs-title">components</span>=<span class="hljs-string">"ln -s ~/tmp/components/ public/components"</span>
+</code></pre><p>For this project, do the following in <strong>~/tmp</strong>, or, if you have completed the above, in your project:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> supertest <span class="hljs-comment">--save-dev</span>
+npm <span class="hljs-keyword">install</span> jasmine <span class="hljs-comment">--save-dev</span>
+npm <span class="hljs-keyword">install</span> -g jasmine
+</code></pre><p><strong>NOTE</strong>: <em>The point of setting up this ~/tmp directory is to put an end to long <strong>npm installs</strong> during class. Talk to Adam, he knows all about this.</em></p>
+</div></body></html>
