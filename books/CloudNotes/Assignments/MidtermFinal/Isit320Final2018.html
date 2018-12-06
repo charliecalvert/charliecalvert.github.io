@@ -6,6 +6,7 @@
 <li><a href="#host-address-and-private-key-file">Host Address and Private Key File</a></li>
 <li><a href="#refactor">Refactor</a></li>
 <li><a href="#supertest">SuperTest</a></li>
+<li><a href="#super-special">SuperTest Special Routes</a></li>
 <li><a href="#environment-variables">Environment Variables</a></li>
 <li><a href="#turn-it-in">Turn it in</a></li>
 <li><a href="#extra-credit">Extra Credit</a></li>
@@ -19,7 +20,11 @@
 <p>You have a few major goals:</p>
 <ul>
 <li>To complete the <a href="https://www.elvenware.com/teach/assignments/Npm/SystemdServiceComplete.html">systemd Service Complete</a> assignment</li>
-<li>To complete a modified version of the <a href="https://www.elvenware.com/teach/assignments/Aws/Ec2ProvisionRepo.html">EC2 Provision Repo</a> assignment</li>
+<li>To complete a modified version of the <a href="https://www.elvenware.com/teach/assignments/Aws/Ec2ProvisionRepo.html">EC2 Provision Repo</a> assignment<ul>
+<li>The modified version doesn&#39;t do anything</li>
+<li>The server only returns JSON as sepecified <a href="#endpoints">here</a> and [here].</li>
+</ul>
+</li>
 <li>Get two applications running on AWS and turn in links to them.<ul>
 <li>The custom aws-provision app described in this document.</li>
 <li>A version of SystemCheck also described in this document.</li>
@@ -250,15 +255,35 @@ GET /script-pusher/qux <span class="hljs-number">200</span> <span class="hljs-nu
 });
 </code></pre>
 <p><strong>NOTE</strong>: <em>If by some chance you don&#39;t know how to get the parameter passed to an endpoint, then head over to the discussion area and start asking questions. No one will give you the exact code, but they will tell you where to look for it.</em></p>
+<a class="anchor" id="super-special"></a>
+<h2>SuperTest Special Routes</h2>
 <p>At this writing, I can think of three routes that take parameters:</p>
-<ul>
-<li>/remove-known-host: ec2Ip</li>
-<li>/associate-elastic-ip: InstanceId, allocationId, region</li>
-<li>/get-instance-status: InstanceId</li>
-</ul>
-<p>You don&#39;t need to know real values for this exercise, but your route should take these parameters and pass them back in its response.</p>
-<p>Don&#39;t forget that <strong>/create-standard</strong> and <strong>create-educate</strong> each return the values described above. Your tests need to take these into account.</p>
-<p>If the test complains that it is getting HTML rather than JSON then that probably means that you are using the wrong URL or throwing some kind of exception in your endpoint. Here is a trick:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Route</th>
+<th style="text-align:left">Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">/remove-known-host</td>
+<td style="text-align:left">ec2Ip</td>
+</tr>
+<tr>
+<td style="text-align:left">/associate-elastic-ip</td>
+<td style="text-align:left">InstanceId, allocationId, region</td>
+</tr>
+<tr>
+<td style="text-align:left">/get-instance-status</td>
+<td style="text-align:left">InstanceId</td>
+</tr>
+</tbody>
+</table>
+<p>For instance, the list above shows that remove-known-host should take a parameter called <strong>ec2Ip</strong>. The second one takes three parameters, and the third takes one called InstanceId. Remember that on the server you can check request.query when looking for these parameters.</p>
+<p>You don&#39;t need to know real values for these variables for this exercise, but your route should take these parameters and pass them back in its <strong>response</strong>.</p>
+<p>Don&#39;t forget that <strong>/create-standard</strong> and <strong>create-educate</strong> each return the values <a href="#endpoints">described above</a>. Your tests need to take these into account.</p>
+<p>If the test complains that it is getting HTML rather than JSON then that probably means that you are using the wrong URL or throwing some kind of exception in your endpoint. Here is a trick you can use to help you debug your program by showing all or part of the JSON sent by the server:</p>
 <pre><code class="lang-javascript">
 <span class="hljs-selector-tag">request</span>(app)
     <span class="hljs-selector-class">.get</span>(<span class="hljs-string">'/qux'</span>)
@@ -272,7 +297,7 @@ GET /script-pusher/qux <span class="hljs-number">200</span> <span class="hljs-nu
     <span class="hljs-selector-class">.expect</span>(<span class="hljs-number">200</span>, done);
 });
 </code></pre>
-<p>We check to response to see what info we got. If the test executed properly, then response.res.statusMessage will be <strong>OK</strong>. If you get <strong>NOT FOUND</strong> then perhaps the URL of route is wrong.</p>
+<p>We check the <strong>response</strong> to see what info we got. In this case, if the test executed properly, then <strong>response.res.statusMessage</strong> will be <strong>OK</strong>. If you get <strong>NOT FOUND</strong> then perhaps the URL of route is wrong.</p>
 <a class="anchor" id="environment-variables"></a>
 <h2>Environment Variables</h2>
 <p>Rather late in the game I&#39;ve decided that I should have asked you to include the block of Environment Variables that you <a href="https://www.elvenware.com/teach/assignments/Npm/SystemdServiceControl.html#official-ports">define and export</a> in your <strong>.bashrc</strong>. This can&#39;t be an official part of the exam, as it is too late for me to add anything now (Sunday evening), but if you can include it, that would be very helpful. A way to get it to me would be to submit the assignment using the Text option in Canvas, and paste them in the Text page. Another good way would be to put in a file and attach that file to Canvas when you turn in the assignment.</p>
