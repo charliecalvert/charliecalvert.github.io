@@ -1,0 +1,387 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Isit320Final2016</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Isit320Final2016</h1><p>Welcome to Isit320Final2016</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#basics">Basics</a></li>
+<li><a href="#smoke-test">Smoke Test</a></li>
+<li><a href="#login">Logging In</a></li>
+<li><a href="#auth-callback">Auth Callback Urls</a></li>
+<li><a href="#referer">Getting the Referer</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#merging-and-checkout">Merging and Checkout</a></li>
+<li><a href="#hint">Hint</a></li>
+<li><a href="#facebook-client-id">Facebook ID</a></li>
+<li><a href="#setclientid">SetClientId</a></li>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#session-notes">Session Notes</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>This document is a description of the final for Isit320, Fall, 2016.</p>
+<a class="anchor" id="basics"></a>
+<h2>Basics</h2>
+<ul>
+<li>Bring <strong>DataMaster</strong> to the furthest point you can without including known bugs.</li>
+<li>Bring <strong>DataHunter</strong> (the game) to the furthest point you can without including known bugs</li>
+<li>Run both programs on EC2 with <strong>systemd</strong> (or Upstart) so that they stay up after you close the SSH connection.<ul>
+<li>Run <strong>DataMaster</strong> on port 30026</li>
+<li>Run <strong>DataHunter</strong> on port 30025</li>
+</ul>
+</li>
+</ul>
+<p>Or vice-versa. The best plan is to submit the URL for both <strong>DataMaster</strong> and <strong>DataHunter</strong>.</p>
+<a class="anchor" id="smoke-test"></a>
+<h2>Smoke Test</h2>
+<p>Here is the final smoketest:</p>
+<pre><code class="lang-bash"><span class="hljs-comment">#! /bin/bash</span>
+
+RED='\033[0;31m'
+<span class="hljs-class">LIGHT_RED='\033[1;</span>31m'
+<span class="hljs-class">LIGHT_GREEN='\033[1;</span>32m'
+YE<span class="hljs-class">LLOW='\033[1;</span>33m'
+B<span class="hljs-class">LUE='\033[1;</span>36m'
+NC='\033[0m' <span class="hljs-comment"># No Color</span>
+
+<span class="hljs-comment"># Use set -e to exit on error</span>
+set -e
+
+function check() {
+ <span class="hljs-built_in"> if </span>[ -d $1 ]; then
+    cd $1
+  else
+    echo <span class="hljs-string">"Directory $1 does not exist."</span>
+    echo <span class="hljs-string">"Please fix the problem and try again."</span>
+    exit
+  fi
+
+  pwd
+
+ <span class="hljs-built_in"> if </span>[ ! -d node_modules ]; then
+     <span class="hljs-comment"># npm install</span>
+     ln -s ~/tmp/node_modules node_modules
+  fi
+
+  grunt<span class="hljs-built_in"> check
+</span>
+  cd ..
+}
+
+A1=Week02-BasicTypes
+A2=Week02-BasicTypesExpress
+BASIC_TYPES=<span class="hljs-string">"$A1 $A2"</span>
+A_OK=false
+
+function basicTypes() {
+    for i in $BASIC_TYPES
+    do
+        <span class="hljs-built_in"> if </span>[ -d $i ]; then
+            echo -e $LIGHT_GREEN<span class="hljs-string">"Directory $BLUE$i$LIGHT_GREEN exists$NC"</span>
+            A_OK=true
+           <span class="hljs-built_in"> check </span><span class="hljs-string">"$i"</span>
+         else
+            echo -e $LIGHT_RED<span class="hljs-string">"Directory $BLUE$i$LIGHT_RED does not exist$NC"</span>
+         fi
+    done
+   <span class="hljs-built_in"> if </span>$A_OK ; then
+        echo -e $LIGHT_GREEN<span class="hljs-string">"BasicTypes has at least one good directory.$NC"</span>
+    else
+        echo -e $LIGHT_RED<span class="hljs-string">"Basic Types is not good$NC"</span>
+        exit 1
+    fi
+}
+
+function fancy() {
+   <span class="hljs-built_in"> if </span>[ -d $A1 ]; then
+        echo <span class="hljs-string">"Directory $A1 exists"</span>
+    else
+       <span class="hljs-built_in"> if </span>[ -d $A2 ]; then
+            echo <span class="hljs-string">"Directory $A2 exists"</span>
+        else
+            echo <span class="hljs-string">"Neither Directory $A1 or $A2 exists"</span>
+        fi
+    fi
+}
+
+function Weeks01To04() {
+   <span class="hljs-built_in"> check </span>Week01-ExpressBasics/
+    basicTypes
+   <span class="hljs-built_in"> check </span>Week02-GetNumbers/
+   <span class="hljs-built_in"> check </span>Week02-JavaScriptObjects/
+   <span class="hljs-built_in"> check </span>Week02-ObjectBasicsJasmine/
+   <span class="hljs-built_in"> check </span>Week03-CouchDbDemo/
+   <span class="hljs-built_in"> check </span>Week03-CouchDbViews/
+   <span class="hljs-built_in"> check </span>Week03-ExpressJQuery/
+   <span class="hljs-built_in"> check </span>Week03-ExpressRoutes/
+   <span class="hljs-built_in"> check </span>Week04-PointerLock/
+   <span class="hljs-built_in"> check </span>Week04-ThreeFloor/
+   <span class="hljs-built_in"> check </span>Week04-ThreeJsBasics/
+}
+
+function Weeks05To07 {
+   <span class="hljs-built_in"> check </span>Week05-MazeBuilder/
+   <span class="hljs-built_in"> check </span>Week06-MazeDataReader/
+   <span class="hljs-built_in"> check </span>Week07-Midterm/
+}
+
+function Weeks08To09() {
+   <span class="hljs-built_in"> check </span>Week08-Facebook/
+    <span class="hljs-comment">#check Week08-Google/</span>
+   <span class="hljs-built_in"> check </span>Week08-Passport/
+   <span class="hljs-built_in"> check </span>Week09-SessionBasics/
+   <span class="hljs-built_in"> check </span>Week09-SessionCouch/
+}
+
+function Weeks10ToFinal() {
+   <span class="hljs-built_in"> check </span>Week10-JadeMixinBasics
+   <span class="hljs-built_in"> check </span>Week10-SessionMaster
+   <span class="hljs-built_in"> check </span>DataHunter
+   <span class="hljs-built_in"> check </span>DataMaster
+}
+
+Weeks01To04
+Weeks05To07
+Weeks08To09
+Weeks10ToFinal
+</code></pre>
+<p>I&#39;ve commented out Week08-Google as I can&#39;t remember whether or not that was ever included as a necessary part of our Passport assignments.</p>
+<a class="anchor" id="login"></a>
+<h2>Logging In</h2>
+<p>I expect log in to work on EC2 for at least two our of three of these authorities:</p>
+<ul>
+<li>Google</li>
+<li>Facebook</li>
+<li>Twitter</li>
+</ul>
+<p>Provide some means of &quot;proving&quot; to me that you are logged in. For instance, at minimum, your app should provide a menu choice that shows me your session object, and you should ensure that the session object contains details of the currently logged in client. I should be able to log in, log out, and switch authorities (from say Google to Facebook) and see those actions reflected in the object you display:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/datamaster-session-login.png" alt="Screenshot of session object with information on logged in user clearly visible"></p>
+<p>The part I&#39;m looking for begins with the word passport and contains my name, the auth provider (google), etc:</p>
+<a class="anchor" id="auth-callback"></a>
+<h2>Auth Callback Urls</h2>
+<p>You are able to have more than one callback URL, at least in most cases. For instance, on Google, I have 5 redirect URLs and two authorized JavaScript origins. On the Facebook login settings page, you can also set multiple URIs. Apparently, Twitter does not support this. So, for now, I suggest we do this:</p>
+<ul>
+<li>Everyone should have sign in working on EC2 for at least two authorities, and I must be able to see that you are logged in or logged out by choosing some menu option that shows me at least some recognizable part of your session object.</li>
+<li>For <strong>extra credit</strong>, see if you can find out the URL on the client side by looking at the Express <strong>request.header.referer</strong> property. This should be the URL seen in the address bar of the client who makes a request. Use this information to craft the appropriate callback URL for Google and Facebook. In other words, automagically use one callback URL when on EC2 and another callback URL when on localhost. Because twitter does not support multiple callback URLs, I don&#39;t think that will work for Twitter unless I started playing with my hosts file.</li>
+</ul>
+<p>So that I can easily grade your homework, please add these URIs:</p>
+<ul>
+<li><a href="http://localhost:30026/etc">http://localhost:30026/etc</a></li>
+<li>For instance: <a href="http://localhost:30026/facebook/login/return">http://localhost:30026/facebook/login/return</a></li>
+</ul>
+<p>This screenshot might be helpful, but remember that your callback URLs might be slightly different, and you might need more than this to get your code working. The key point is that it provides callback URLs for both localhost on 30025 and on 30026.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/redirect-url-google.png" alt="Google Redirects from the Developer Console Page"></p>
+<p>When taking the above screen shot, I was in the Google Developer console, somewhere near here:</p>
+<ul>
+<li><a href="https://console.developers.google.com/apis/credentials/">https://console.developers.google.com/apis/credentials/</a></li>
+</ul>
+<a class="anchor" id="referer"></a>
+<h2>Getting the Referer</h2>
+<p>To get the server side code to get the host name (referer) for the client, that is the URL seen in the address bar of the browser when making a request, try looking at</p>
+<p>  request.headers.referer</p>
+<p>Here, for instance, is the <strong>request.headers</strong> object on my current machine:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">headers</span>:
+   { <span class="hljs-attribute">host</span>: <span class="hljs-string">'localhost:30026'</span>,
+     <span class="hljs-attribute">connection</span>: <span class="hljs-string">'keep-alive'</span>,
+     <span class="hljs-attribute">accept</span>: <span class="hljs-string">'application/json, text/javascript, */*; q=0.01'</span>,
+     <span class="hljs-string">'if-none-match'</span>: <span class="hljs-string">'W/"1f4-dNg/QpSgqXCMzwXceYM7Ag"'</span>,
+     <span class="hljs-string">'x-requested-with'</span>: <span class="hljs-string">'XMLHttpRequest'</span>,
+     <span class="hljs-string">'user-agent'</span>: <span class="hljs-string">'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/53.0.2785.143 Chrome/53.0.2785.143 Safari/537.36'</span>,
+     <span class="hljs-attribute">referer</span>: <span class="hljs-string">'http://localhost:30026/'</span>,
+     <span class="hljs-string">'accept-encoding'</span>: <span class="hljs-string">'gzip, deflate, sdch'</span>,
+     <span class="hljs-string">'accept-language'</span>: <span class="hljs-string">'en-US,en;q=0.8'</span>,
+     <span class="hljs-attribute">cookie</span>: <span class="hljs-string">'connect.sid= SOME ENDLESS STRING'</span> },
+</code></pre>
+<p>Note the <strong>referer</strong> and <strong>host</strong> properties of this object. You might also want to look at <strong>request.originalUrl</strong>. Try mirroring these values back to you when you ask for hte session object.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<ul>
+<li>About 70% percent of your grade will involve creating bug free programs at mid-term level or higher.</li>
+<li>The remaining 30% of your grade involve implementing the features outlined in the FinalPrep assignments, and in other assignments we have done this quarter.</li>
+</ul>
+<p>In short, if you can turn in something that works, that includes what we covered through the midterm, then you will probably pass the course. To get a good grade, you need to complete all the features that we have outlined throughout the assignments in this course. I am particularly interested in seeing that you have followed the following programs:</p>
+<ul>
+<li>DRY: Don&#39;t repeat yourself</li>
+<li>SRP: Single Responsibility Principle</li>
+<li>Open/Closed Principle: Open to Extension, closed to modification</li>
+</ul>
+<p>I will grade on a curve that is based on the degree of experience that developers brought into the course. It will be easier for developers with less experience to do well in the course. A straight A, however, is reserved for those with experience who have mastered the topics in the course, and particularly the three principles outlined above.</p>
+<p>I&#39;ll be expecting your final code to be in your repository, on the <strong>master</strong> branch, in two folders:</p>
+<ul>
+<li><strong>DataMaster</strong></li>
+<li><strong>DataHunter</strong></li>
+</ul>
+<p>You can tell me about other versions of your code on other branches that may be more advanced, but buggier. Remember, however, when looking at your final code, I&#39;m looking for bug free programs. In this final, at least, fewer features and fewer bugs is better than more features and more bugs. But the more bug free features you can create the better.</p>
+<p><strong>NOTE</strong>: <em>I&#39;m not looking for release quality software. I won&#39;t be trying to break your program. When I say bug free, I mean that I can choose a menu item or hyperlinker, be taken to a feature, and have it work correctly at least the first time I select it.</em></p>
+<p>If there can be any doubt about what code you want me to look at, or even if there can&#39;t be any doubt, do something like this when you submit:</p>
+<ul>
+<li>Branch: master</li>
+<li>Database: DataMaster</li>
+<li>Game: DataHunter</li>
+</ul>
+<p>Just spell it out so there can be no confusion. Thanks.</p>
+<a class="anchor" id="merging-and-checkout"></a>
+<h2>Merging and Checkout</h2>
+<p>To get <strong>DataMaster</strong>, or changes to <strong>DataMaster</strong>, into the master branch, you should be able to just checkout the <strong>Week11/DataMaster</strong> code into master. Something like this:</p>
+<pre><code class="lang-bash">git checkout <span class="hljs-keyword">master</span>
+<span class="hljs-title">git</span> checkout Week11 -- DataMaster
+</code></pre>
+<p>This should put the DataMaster project from the Week11 branch in master. It does not, however, commit the changes, which means you have a chance to review everything and make sure it worked. After poking around for a bit, if all looks well, you can commit and push.</p>
+<p>You can also view the difference between two commits like this:</p>
+<p>  git difftool master Week11 -- DataMaster</p>
+<p>The checkout will replace any existing files and will add new files, but it will not delete files that are no longer needed. The <strong>difftool</strong> command, however, will catch cases where a file was deleted from branch <strong>Week11</strong> and should therefore be deleted from <strong>master</strong>.</p>
+<p>Note that this will compare only files that are committed, not the difference between files that have been modified or added. See also:</p>
+<ul>
+<li><a href="http://stackoverflow.com/a/1355990/253576">http://stackoverflow.com/a/1355990/253576</a></li>
+</ul>
+<a class="anchor" id="hint"></a>
+<h2>Hint</h2>
+<p>Set up CouchDb</p>
+<p>Run the <strong>CouchDb</strong> script in <strong>~/Git/JsObjects/Utilities/NodeInstall</strong></p>
+<p>Then edit the <strong>/etc/couchdb/local.ini</strong> file:</p>
+<p>  sudo nano /etc/couchdb/local.ini</p>
+<p>Set the <strong>bindaddress</strong> to <strong>0.0.0.0</strong>. In the <strong>local.ini</strong> file, a semi-colon is a comment, so you will need to delete the comment.</p>
+<p>Be sure to see the details here which describe restarting couchdb:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/database/NoSql/CouchDb.html#couchdb-linux-install">CouchDb on Elvenware</a></li>
+</ul>
+<a class="anchor" id="facebook-client-id"></a>
+<h2>Facebook ID</h2>
+<p>We have to set up the Facebook ClientId as mentioned here:</p>
+<ul>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/ExpressSessionMaster.html#facebook-client-id">FaceBook ClientId</a></li>
+</ul>
+<p>In your <strong>data-master.service</strong> file, set environment variables in this line:</p>
+<p>Environment=NODE_ENV=production FACEBOOK_CLIENT_ID=&lt;YOUR_CLIENT_ID&gt; FACEBOOK_CLIENT_SECRET=&lt;YOUR_SECRET_KEY&gt;</p>
+<p>So it looks something like this, but your folder, user name and group are different, and these are fake, and much too short, FACEBOOK IDs:</p>
+<pre><code class="lang-bash">[Service]
+<span class="hljs-attribute">ExecStart</span>=/usr/bin/node /home/charlie/bin/data-master/bin/www
+<span class="hljs-attribute">Restart</span>=always
+<span class="hljs-attribute">StandardOutput</span>=syslog
+<span class="hljs-attribute">StandardError</span>=syslog
+<span class="hljs-attribute">SyslogIdentifier</span>=data-master
+<span class="hljs-attribute">User</span>=charlie
+<span class="hljs-attribute">Group</span>=charlie
+<span class="hljs-attribute">Environment</span>=NODE_ENV=production <span class="hljs-attribute">FACEBOOK_CLIENT_ID</span>=11234 <span class="hljs-attribute">FACEBOOK_CLIENT_SECRET</span>=abc123
+
+[Install]
+<span class="hljs-attribute">WantedBy</span>=multi-user.target
+</code></pre>
+<a class="anchor" id="setclientid"></a>
+<h2>SetClientId</h2>
+<p>In your <strong>package.json</strong> file, this works:</p>
+<pre><code class="lang-javascript">"<span class="hljs-keyword">start</span><span class="hljs-string">": "</span>. ../setClientId &amp;&amp; nodemon ./<span class="hljs-keyword">bin</span>/www<span class="hljs-string">",</span>
+</code></pre>
+<p>This way, when you type npm start, you <strong>source setClientId</strong> and then start your app. In particular, this code means <strong>source</strong> the <strong>setClientId</strong> file in the directory one level closer to the root from your current directory:</p>
+<ul>
+<li>. ../setClientId</li>
+</ul>
+<p>This means you want to add a second activity to the <strong>npm start</strong> property:</p>
+<ul>
+<li>&amp;&amp;</li>
+</ul>
+<p>And this, of course, is the code to start your application with nodemon:</p>
+<ul>
+<li>nodemon ./bin/www</li>
+</ul>
+<a class="anchor" id="examples"></a>
+<h2>Examples</h2>
+<p>If you are having trouble with <strong>.when</strong> and routes and <strong>queryControllers</strong> and CouchDb, be sure to study these examples:</p>
+<ul>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/DataMasterRefactor.html#examples">http://www.ccalvert.net/books/CloudNotes/Assignments/DataMasterRefactor.html#examples</a></li>
+</ul>
+<p>Be sure to run a git pull before trying to find these files in your copy of JsObjects.
+Search entries or author</p>
+<a class="anchor" id="session-notes"></a>
+<h2>Session Notes</h2>
+<p>Geting the session data to work in DataMaster is proving a challenge to many people. So lets simplify as CouchDB can easily bare the load in our case.</p>
+<p>Though it would be best to have two databases, I think it is simpler to view and store Sesssion code in DataMaster if we use only one database. I don&#39;t think we have to do this, but it might be simpler for most of us to implement things this way.</p>
+<p>In my own code, I have extended <strong>set-server.js</strong> to include the dbName:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> servers = [<span class="hljs-string">'http://127.0.0.1:5984'</span>,
+    <span class="hljs-string">'http://192.168.2.20:5984'</span>,
+    <span class="hljs-string">'http://192.168.2.27:5984'</span>,
+    <span class="hljs-string">'http://168.156.47.57:5984'</span>
+];
+<span class="hljs-keyword">var</span> serverIndex = <span class="hljs-number">1</span>;
+<span class="hljs-keyword">var</span> serverUrl = servers[serverIndex];
+<span class="hljs-keyword">var</span> dbName = <span class="hljs-string">'game_data_LASTNAME'</span>; &lt;=== REPLACE LAST NAME
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Middleware attaching to database on: '</span>, serverUrl);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Using Databasse:'</span>, dbName);
+
+<span class="hljs-built_in">module</span>.exports.serverUrl = serverUrl;
+<span class="hljs-built_in">module</span>.exports.dbName = dbName;
+</code></pre>
+<p>I have used it in two files. Here it is in <strong>Couch.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// Couch.js</span>
+<span class="hljs-keyword">var</span> setServer = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./set-server'</span>);
+<span class="hljs-keyword">var</span> nano = <span class="hljs-built_in">require</span>(<span class="hljs-string">'nano'</span>)(setServer.serverUrl);
+<span class="hljs-keyword">var</span> dbName = setServer.dbName;   <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">====</span> <span class="hljs-attr">HERE</span>
+</span></span>
+</code></pre>
+<p>And here in <strong>middleware.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// Middleware</span>
+<span class="hljs-keyword">var</span> sessionStore = sessionstore.createSessionStore({
+    <span class="hljs-attr">type</span>: <span class="hljs-string">'couchdb'</span>,
+    <span class="hljs-attr">host</span>: setServer.serverUrl,
+    <span class="hljs-attr">port</span>: <span class="hljs-number">5984</span>,
+    <span class="hljs-attr">dbName</span>: setServer.dbName,   &lt;=== HERE
+    collectionName: <span class="hljs-string">'sessions'</span>,
+    <span class="hljs-attr">timeout</span>: <span class="hljs-number">10000</span>
+}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'sessionStore callback'</span>, data);
+});
+</code></pre>
+<p>Now I am able to get both my game data and my session store data from same database. This meant I had to change my design doc slightly:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfSessions = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">doc</span>) </span>{
+    <span class="hljs-keyword">if</span> (doc.collectionName === <span class="hljs-string">'sessions'</span>) {
+        emit(doc._id, doc);
+    }
+};
+
+<span class="hljs-comment">// CODE OMMITTED: npcsBulk and npcsOneDoc DEFINED HERE</span>
+
+router.get(<span class="hljs-string">'/designDoc'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Design Doc Called'</span>);
+
+    <span class="hljs-keyword">var</span> designName = <span class="hljs-string">'_design/game'</span>;
+    <span class="hljs-keyword">var</span> designDocument = {
+        <span class="hljs-string">'views'</span>: {
+            <span class="hljs-string">'npcsBulk'</span>: {
+                <span class="hljs-string">'map'</span>: npcsBulk
+            },
+            <span class="hljs-string">'npcsOneDoc'</span>: {
+                <span class="hljs-string">'map'</span>: npcsOneDoc
+            },
+            <span class="hljs-string">'elf-sessions'</span>: {
+                <span class="hljs-string">'map'</span>: elfSessions
+            }
+        }
+    };
+
+    createDesignDocument(designDocument, designName, response);
+});
+</code></pre>
+<p>And then make sure <strong>CouchViews.js</strong> has this:</p>
+<pre><code class="lang-javascript">router.<span class="hljs-built_in">get</span>('/viewSessions', function(request, response) {
+    console.<span class="hljs-built_in">log</span>('/viewSessions called', request.<span class="hljs-keyword">query</span>, dbName);
+    <span class="hljs-keyword">var</span> nanoDb = nano.<span class="hljs-keyword">db</span>.<span class="hljs-keyword">use</span>(dbName);
+    nanoDb.<span class="hljs-keyword">view</span>(request.<span class="hljs-keyword">query</span>.designDoc, request.<span class="hljs-keyword">query</span>.<span class="hljs-keyword">view</span>, function(<span class="hljs-keyword">err</span>, body) {
+        <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">err</span>) {
+            console.<span class="hljs-built_in">log</span>(body);
+            <span class="hljs-comment">//var data = body.rows[0].value.map(function(a) {</span>
+            <span class="hljs-comment">//    return a;</span>
+            <span class="hljs-comment">//});</span>
+            response.send({
+                'name': 'viewSessions',
+                docs: body
+            });
+        } <span class="hljs-keyword">else</span> {
+            console.<span class="hljs-built_in">log</span>(<span class="hljs-keyword">err</span>);
+            response.status(<span class="hljs-keyword">err</span>.statusCode).send(<span class="hljs-keyword">err</span>);
+        }
+    });
+});
+</code></pre>
+<p>And be sure you call it now not with elf-session but with game:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">runQuery</span><span class="hljs-params">(<span class="hljs-string">'/viewSessions?designDoc=game&amp;view=elf-sessions'</span>, $q)</span></span>;
+</code></pre>
+<p>Also make sure you are using elf-sessionstore and not sessionstore.</p>
+<pre><code>npm <span class="hljs-keyword">uninstall</span> sessionstore <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> elf-sessionstore <span class="hljs-comment">--save</span>
+</code></pre><p>And then, in middleware, require elf-sessionstore, not sessionstore.</p>
+</div></body></html>

@@ -1,0 +1,514 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>NaoExplorer</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>NaoExplorer</h1><p>Welcome to NaoExplorer</p><ul><!--TOC_Start--><li><a href="#nao-explorer">Nao Explorer</a></li>
+<li><a href="#fixtureready">FixtureReady</a></li>
+<li><a href="#latest-check-karma">Latest Check Karma</a></li>
+<li><a href="#copy-unit-tests">Copy Unit Tests</a></li>
+<li><a href="#files-to-create">Files to Create</a></li>
+<li><a href="#error-handler">Error Handler</a></li>
+<li><a href="#unit-test-for-buttons">Unit Test for Buttons</a></li>
+<li><a href="#logging">Logging</a></li>
+<li><a href="#sample-data-from-nao">Sample Data from Nao</a></li>
+<li><a href="#parse-behaviors">Parse Behaviors</a></li>
+<li><a href="#the-robot">The Robot</a></li>
+<li><a href="#launcher-and-control">Launcher and Control</a></li>
+<li><a href="#display">Display</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#hint">Hint</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="nao-explorer"></a>
+<h2>Nao Explorer</h2>
+<p>Start with this command:</p>
+<pre><code><span class="hljs-attribute">CreateExpressProject</span> Week10-NaoExplorer
+</code></pre><p>Then navigate into that directory and run:</p>
+<pre><code><span class="hljs-attribute">TestReady</span>
+</code></pre><p>Then open your project in WebStorm.</p>
+<p>If you don&#39;t have TestReady:</p>
+<p>cp $JSOBJECTS/Utilities/NodeInstall/TestReady ~/bin/.</p>
+<p>Download a <a href="https://drive.google.com/file/d/0B25UTAlOfPRGZzg3NkQtV2h3U3c/view?usp=sharing">copy of the source</a> from Google Drive.</p>
+<a class="anchor" id="fixtureready"></a>
+<h2>FixtureReady</h2>
+<p>I have created a new script called <strong>FixtureReady</strong>. It is designed to automate the process of moving a project from the state that <strong>TestReady</strong> creates to the point where it can handle working with Fixtures. In particular, it does the following tasks.</p>
+<ul>
+<li>Insert necessary <strong>loadNpmTasks</strong> and <strong>registerTasks</strong> into Gruntfile.js</li>
+<li>Insert preprocessor object into <strong>karma.conf.js</strong></li>
+<li>Insert code to load jasmine-jquery</li>
+<li>Insert code to load any HTML files in the spec directories</li>
+<li>Install <strong>grunt-exec</strong>, <strong>grunt-contrib-jade</strong>, and <strong>jasmine-jquery</strong> NPM packages</li>
+</ul>
+<p>You may have already done these tasks, in which case you should not run <strong>FixtureReady</strong>. But if you are having trouble getting Fixtures to work, this tool can help you get started.</p>
+<p>To get <strong>FixtureReady</strong>, first run <strong>git pull</strong> on <strong>JsObjects</strong> and then run this command:</p>
+<pre><code class="lang-bash">ln -s <span class="hljs-variable">$ELF_TEMPLATES</span><span class="hljs-regexp">/UnitTest/</span>FixtureReady ~<span class="hljs-regexp">/bin/</span>.
+</code></pre>
+<a class="anchor" id="latest-check-karma"></a>
+<h2>Latest Check Karma</h2>
+<p>Whether you used <strong>FixtureReady</strong> or not, you should run <strong>check-karma-grunt-config</strong> to ensure that your project is set up correctly. In particular, run <strong>git pull</strong> on JsObjects and then run this command to ensure you have the latest code:</p>
+<pre><code>diff <span class="hljs-variable">$JSOBJECTS</span><span class="hljs-regexp">/Utilities/</span>NodeInstall<span class="hljs-regexp">/check-karma-grunt-config ~/</span>bin<span class="hljs-regexp">/check-karma-grunt-config</span>
+</code></pre><p>If it does not come back clean, then do this:</p>
+<pre><code>cp <span class="hljs-variable">$JSOBJECTS</span><span class="hljs-regexp">/Utilities/</span>NodeInstall<span class="hljs-regexp">/check-karma-grunt-config ~/</span>bin<span class="hljs-regexp">/.</span>
+</code></pre><p>Now <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/GruntCheck03.html">set up</a> <strong>karma.conf.js</strong> and <strong>Gruntfile.js</strong>.</p>
+<p>Don&#39;t forget:</p>
+<ul>
+<li>npm install grunt-contrib-jade --save-dev</li>
+<li>npm install grunt-exec --save-dev</li>
+</ul>
+<a class="anchor" id="copy-unit-tests"></a>
+<h2>Copy Unit Tests</h2>
+<p>Copy in the unit tests for this project:</p>
+<p>cp $ELF_TEMPLATES/UnitTest/NaoExplorer/* spec/.</p>
+<a class="anchor" id="files-to-create"></a>
+<h2>Files to Create</h2>
+<ul>
+<li>control.js</li>
+<li>display.js</li>
+<li>robot.js</li>
+<li>launcher.js</li>
+<li>responses.js</li>
+<li>behaviors.js</li>
+<li>arms.js</li>
+</ul>
+<p>Be sure these are referenced in <strong>layout.jade</strong>.</p>
+<p>The first three should contain an object with <strong>elf</strong> prepended to its name:</p>
+<ul>
+<li>elfControl</li>
+<li>elfDisplay</li>
+<li>elfRobot</li>
+</ul>
+<a class="anchor" id="error-handler"></a>
+<h2>Error Handler</h2>
+<p>Update error handler in <strong>app.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (app.get(<span class="hljs-string">'env'</span>) === <span class="hljs-string">'development'</span>) {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Using Development error handler"</span>);
+    app.use(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, req, res, next</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Development error handler called"</span>);
+        res.status(err.status || <span class="hljs-number">500</span>);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"About to render error"</span>, err);
+        res.render(<span class="hljs-string">'error'</span>, {
+            <span class="hljs-attr">message</span>: err.message,
+            <span class="hljs-attr">error</span>: err
+        });
+    });
+}
+</code></pre>
+<a class="anchor" id="unit-test-for-buttons"></a>
+<h2>Unit Test for Buttons</h2>
+<p>We want to be sure you are declaring the buttons properly in <strong>index.jade</strong>. The unit tests for this are here:</p>
+<pre><code class="lang-bash"><span class="hljs-meta">$</span><span class="bash">ELF_TEMPLATES/UnitTest/NaoExplorer/<span class="hljs-built_in">test</span>-fixture.js  </span>
+</code></pre>
+<p>You first need to run <strong>grunt fixture</strong>. That creates <strong>spec/fixtures/fixture.html</strong>. Then the code in <strong>test-fixture.js</strong> should now (hopefully) confirm that you have declared four buttons with the proper ID and CAPTION. You can start with the following jade:</p>
+<pre><code class="lang-jade"><span class="hljs-selector-tag">button</span>
+<span class="hljs-selector-tag">button</span>
+<span class="hljs-selector-tag">button</span>
+button
+</code></pre>
+<p>Then run <strong>grunt fixture</strong> and see if your Jade is valid and if it satisfies the tests. Then just keep tweaking your Jade and running <strong>grunt fixture</strong> until the tests pass.</p>
+<p>Note that there are two ways to get the HTML elements.</p>
+<ul>
+<li>With JavaScript</li>
+<li>With JQuery</li>
+</ul>
+<p>Check for caption using pure JavaScript:</p>
+<pre><code class="lang-javascript">    it(<span class="hljs-string">'expects a button with a caption of Left Arm'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> button = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'leftArm'</span>);
+        <span class="hljs-keyword">var</span> caption = button.innerHTML
+        expect(caption).toBe(<span class="hljs-string">'Left Arm'</span>);
+    });
+</code></pre>
+<p>Check for caption using jQuery: </p>
+<pre><code class="lang-javascript">    it('expects a button with an caption of Get Behaviors', function() {
+        var button = $('#behaviors')<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">button</span>[<span class="hljs-number">0</span>].innerHTML).toBe('Get Behaviors')<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+</code></pre>
+<p>Note that with jQuery we have to index into the result: <strong>button[0]</strong>. You should feel comfortable with either technique.</p>
+<a class="anchor" id="logging"></a>
+<h2>Logging</h2>
+<p>In <strong>elf-log.js</strong>:</p>
+<pre><code class="lang-javascript">(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">
+    'use strict'</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">ElfLog</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">this</span>.debugLevel = <span class="hljs-keyword">this</span>.logLevelWarn;
+    }
+
+    <span class="hljs-comment">//var levels = ['error', 'warn', 'info', 'silent'];</span>
+    <span class="hljs-keyword">var</span> that;
+
+
+    ElfLog.prototype.logLevelError = <span class="hljs-number">0</span>;
+    ElfLog.prototype.logLevelWarn = <span class="hljs-number">1</span>;
+    ElfLog.prototype.logLevelDetails = <span class="hljs-number">2</span>;
+    ElfLog.prototype.logLevelInfo = <span class="hljs-number">3</span>;
+    ElfLog.prototype.logLevelSilent = <span class="hljs-number">4</span>;
+
+    ElfLog.prototype.debugLevel = <span class="hljs-literal">undefined</span>;
+
+    ElfLog.prototype.setLevel = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">level</span>) </span>{
+        <span class="hljs-keyword">this</span>.debugLevel = level;
+    };
+
+    ElfLog.prototype.log = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">level, message</span>) </span>{
+        <span class="hljs-comment">// console.log("Level:", level, 'debugLevel: ', this.debugLevel);</span>
+        <span class="hljs-keyword">if</span> (level &gt;= <span class="hljs-keyword">this</span>.debugLevel) {
+            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> message !== <span class="hljs-string">'string'</span>) {
+                message = <span class="hljs-built_in">JSON</span>.stringify(message);
+            }
+            <span class="hljs-built_in">console</span>.log(level+<span class="hljs-string">': '</span>+message);
+        }
+    };
+
+    that = <span class="hljs-keyword">new</span> ElfLog();
+    <span class="hljs-built_in">window</span>.elfLog = that;
+})();
+</code></pre>
+<a class="anchor" id="sample-data-from-nao"></a>
+<h2>Sample Data from Nao</h2>
+<p>I saved this as <strong>responses.js</strong>:</p>
+<pre><code class="lang-javascripts">var responses = {
+    network: {
+        'status': <span class="hljs-number">200</span>,
+        'result': [
+            '[I] <span class="hljs-number">1022</span>2 qimessaging.session: Session listener created on tcp://0.0.0.0:0',
+            '[I] <span class="hljs-number">1022</span>2 qimessaging.transportserver: TransportServer will listen on: tcp://192.168.2.13:<span class="hljs-number">3888</span>4',
+            '[I] <span class="hljs-number">1022</span>2 qimessaging.transportserver: TransportServer will listen on: tcp://127.0.0.1:<span class="hljs-number">3888</span>4',
+            '[I] <span class="hljs-number">1022</span>2 qimessaging.transportserver: TransportServer will listen on: tcp://192.168.42.16:<span class="hljs-number">3888</span>4',
+            'network state: online',
+            'elfap wifi_bc307d<span class="hljs-number">749827</span>_656c<span class="hljs-number">666170</span>_managed_psk',
+            'ElvenKnight wifi_bc307d<span class="hljs-number">749827</span>_456c<span class="hljs-number">7665</span>6e4b6e<span class="hljs-number">69676874</span>_managed_psk',
+            'xfinitywifi wifi_bc307d<span class="hljs-number">749827</span>_<span class="hljs-number">786669</span>6e<span class="hljs-number">69747977696669</span>_managed_none',
+            'HOME-D902 wifi_bc307d<span class="hljs-number">749827</span>_484f4d452d<span class="hljs-number">44393032</span>_managed_psk',
+            'ElvenBishop wifi_bc307d<span class="hljs-number">749827</span>_456c<span class="hljs-number">7665</span>6e<span class="hljs-number">42697368</span>6f70_managed_psk',
+            'DIRECT-DA-HP Officejet <span class="hljs-number">5740</span> wifi_bc307d<span class="hljs-number">749827</span>_<span class="hljs-number">444952454356</span>a<span class="hljs-number">65742035373430</span>_managed_psk'
+        ]
+    },
+
+    transportResult01: {
+        'status': <span class="hljs-number">200</span>,
+        'result': [
+            '[I] <span class="hljs-number">8901</span> qimessaging.session: Session listener created on tcp://0.0.0.0:0',
+            '[I] <span class="hljs-number">8901</span> qimessaging.transportserver: TransportServer will listen on: tcp://192.168.2.13:<span class="hljs-number">4374</span>9',
+            '[I] <span class="hljs-number">8901</span> qimessaging.transportserver: TransportServer will listen on: tcp://127.0.0.1:<span class="hljs-number">4374</span>9',
+            '[I] <span class="hljs-number">8901</span> qimessaging.transportserver: TransportServer will listen on: tcp://192.168.42.16:<span class="hljs-number">4374</span>9'
+        ]
+    },
+
+    transportResult02: {
+        'status': <span class="hljs-number">200</span>,
+        'result': [
+            '[I] <span class="hljs-number">1029</span>9 qimessaging.session: Session listener created on tcp://0.0.0.0:0',
+            '[I] <span class="hljs-number">1029</span>9 qimessaging.transportserver: TransportServer will listen on: tcp://127.0.0.1:<span class="hljs-number">4548</span>1',
+            '[I] <span class="hljs-number">1029</span>9 qimessaging.transportserver: TransportServer will listen on: tcp://192.168.42.11:<span class="hljs-number">4548</span>1'
+        ]
+    }
+};
+</code></pre>
+<a class="anchor" id="parse-behaviors"></a>
+<h2>Parse Behaviors</h2>
+<p>This is <strong>parse-behavior.js</strong>:</p>
+<pre><code class="lang-javascript">var ElfParseBehaviors = (<span class="hljs-name">function</span>() {
+
+    'use strict'<span class="hljs-comment">;</span>
+
+    var behaviors<span class="hljs-comment">;</span>
+    var that<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.infoCount = <span class="hljs-number">0</span><span class="hljs-comment">;</span>
+
+    function ParseBehaviors(<span class="hljs-name">behaviorsInit</span>) {
+        behaviors = behaviorsInit<span class="hljs-comment">;</span>
+        that = this<span class="hljs-comment">;</span>
+    }
+
+    var getInfoCount = function() {
+        elfLog.log(<span class="hljs-name">elfLog</span>.logLevelDetails, 'ParseBehaviors.getInfoCount called')<span class="hljs-comment">;</span>
+        var count = <span class="hljs-number">0</span><span class="hljs-comment">;</span>
+        $.each(<span class="hljs-name">behaviors</span>.result, function(<span class="hljs-name">index</span>, item) {
+            // console.log(<span class="hljs-name">typeof</span> item)<span class="hljs-comment">;</span>
+            if (<span class="hljs-name">item</span>.indexOf('[I]') !== <span class="hljs-number">-1</span>) {
+                count++<span class="hljs-comment">;</span>
+            }
+        })<span class="hljs-comment">;</span>
+        that.infoCount = count<span class="hljs-comment">;</span>
+        return count<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.getBehaviors = function() {
+        elfLog.log(<span class="hljs-name">elfLog</span>.logLevelDetails, 'ParseBehaviors.getBehaviors called')<span class="hljs-comment">;</span>
+        var infoCount = getInfoCount(<span class="hljs-name">behaviors</span>.result)<span class="hljs-comment">;</span>
+        return JSON.parse(<span class="hljs-name">elfBehaviors</span>.result[infoCount])<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.getBehaviorsAsArray = function() {
+        elfLog.log(<span class="hljs-name">elfLog</span>.logLevelDetails, 'ParseBehaviors.getBehaviorAsArray called')<span class="hljs-comment">;</span>
+        var b = this.getBehaviors()<span class="hljs-comment">;</span>
+        var arrayOfBehaviorArrays = []<span class="hljs-comment">;</span>
+        $.each(<span class="hljs-name">b</span>, function(<span class="hljs-name">index</span>, value) {
+            var behaviorArray = value.split('/')<span class="hljs-comment">;</span>
+            arrayOfBehaviorArrays.push(<span class="hljs-name">behaviorArray</span>)<span class="hljs-comment">;</span>
+        })<span class="hljs-comment">;</span>
+        return arrayOfBehaviorArrays<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    function isNotInArray(<span class="hljs-name">value</span>, valueArray) {
+        return (<span class="hljs-name">valueArray</span>.indexOf(<span class="hljs-name">value</span>) === <span class="hljs-number">-1</span>)<span class="hljs-comment">;</span>
+    }
+
+    ParseBehaviors.prototype.getAnimationTypes = function() {
+        elfLog.log(<span class="hljs-name">elfLog</span>.logLevelDetails, 'ParseBehaviors.getAnimationTypes called')<span class="hljs-comment">;</span>
+        var b = this.getBehaviorsAsArray()<span class="hljs-comment">;</span>
+        var animationTypes = []<span class="hljs-comment">;</span>
+        $.each(<span class="hljs-name">b</span>, function(<span class="hljs-name">index</span>, valueArray) {
+            var value = valueArray[<span class="hljs-number">1</span>]<span class="hljs-comment">;</span>
+            if (<span class="hljs-name">valueArray</span>[<span class="hljs-number">0</span>] === 'animations' <span class="hljs-symbol">&amp;&amp;</span> isNotInArray(<span class="hljs-name">value</span>, animationTypes)) {
+                animationTypes.push(<span class="hljs-name">value</span>)<span class="hljs-comment">;</span>
+            }
+        })<span class="hljs-comment">;</span>
+        return animationTypes<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    /* ParseBehaviors.prototype.getAnimationTypes = function() {
+        var b = this.getBehaviorsAsArray()<span class="hljs-comment">;</span>
+        var animationTypes = []<span class="hljs-comment">;</span>
+        $.each(<span class="hljs-name">b</span>, function (<span class="hljs-name">index</span>, valueArray) {
+            var value = valueArray[<span class="hljs-number">1</span>]<span class="hljs-comment">;</span>
+            if (<span class="hljs-name">valueArray</span>[<span class="hljs-number">0</span>] === 'animations' <span class="hljs-symbol">&amp;&amp;</span> isNotInArray(<span class="hljs-name">value</span>, animationTypes)) {
+                animationTypes.push(<span class="hljs-name">value</span>)<span class="hljs-comment">;</span>
+            }
+        })<span class="hljs-comment">;</span>
+        return animationTypes<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">; */</span>
+
+    ParseBehaviors.prototype.getAnimationCategoryFromType = function(<span class="hljs-name">type</span>) {
+        elfLog.log(<span class="hljs-name">elfLog</span>.logLevelDetails, 'ParseBehaviors.getAnimationCategoryFromType called')<span class="hljs-comment">;</span>
+        var b = this.getBehaviorsAsArray()<span class="hljs-comment">;</span>
+        var animationCategories = []<span class="hljs-comment">;</span>
+        $.each(<span class="hljs-name">b</span>, function(<span class="hljs-name">index</span>, valueArray) {
+            var value = valueArray[<span class="hljs-number">2</span>]<span class="hljs-comment">;</span>
+            if (<span class="hljs-name">valueArray</span>[<span class="hljs-number">0</span>] === 'animations' <span class="hljs-symbol">&amp;&amp;</span> valueArray[<span class="hljs-number">1</span>] === type <span class="hljs-symbol">&amp;&amp;</span> isNotInArray(<span class="hljs-name">value</span>, animationCategories)) {
+                animationCategories.push(<span class="hljs-name">value</span>)<span class="hljs-comment">;</span>
+            }
+        })<span class="hljs-comment">;</span>
+        return animationCategories<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.getAnimationActions = function(<span class="hljs-name">type</span>, category) {
+        elfLog.log(<span class="hljs-name">elfLog</span>.logLevelDetails, 'ParseBehaviors.getAnimationActions called')<span class="hljs-comment">;</span>
+        var b = this.getBehaviorsAsArray()<span class="hljs-comment">;</span>
+        var animationActions = []<span class="hljs-comment">;</span>
+        $.each(<span class="hljs-name">b</span>, function(<span class="hljs-name">index</span>, valueArray) {
+            var value = valueArray[<span class="hljs-number">3</span>]<span class="hljs-comment">;</span>
+            if (<span class="hljs-name">valueArray</span>[<span class="hljs-number">0</span>] === 'animations' <span class="hljs-symbol">&amp;&amp;</span>
+                valueArray[<span class="hljs-number">1</span>] === type <span class="hljs-symbol">&amp;&amp;</span>
+                valueArray[<span class="hljs-number">2</span>] === category <span class="hljs-symbol">&amp;&amp;</span>
+                isNotInArray(<span class="hljs-name">value</span>, animationActions)) {
+                animationActions.push(<span class="hljs-name">value</span>)<span class="hljs-comment">;</span>
+            }
+        })<span class="hljs-comment">;</span>
+        return animationActions<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.getAnimations = function() {
+        elfLog.log(<span class="hljs-name">elfLog</span>.logLevelDetails, 'ParseBehaviors.getAnimations called')<span class="hljs-comment">;</span>
+        var b = this.getBehaviors()<span class="hljs-comment">;</span>
+        var singleBehavior<span class="hljs-comment">;</span>
+        $.each(<span class="hljs-name">b</span>, function(<span class="hljs-name">index</span>, value) {
+            // singleBehavior = index + ': ' + value.split('/') + '\n'<span class="hljs-comment">;</span>
+            singleBehavior = index + ': [' + value.split('/') + ']\n'<span class="hljs-comment">;</span>
+            console.log(<span class="hljs-name">singleBehavior</span>)<span class="hljs-comment">;</span>
+            $('#robotResult').append(<span class="hljs-name">singleBehavior</span>)<span class="hljs-comment">;</span>
+        })<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    return ParseBehaviors<span class="hljs-comment">;</span>
+
+})()<span class="hljs-comment">;</span>
+</code></pre>
+<a class="anchor" id="the-robot"></a>
+<h2>The Robot</h2>
+<pre><code class="lang-javascript">
+var ElfParseBehaviors = (<span class="hljs-name">function</span>() {
+
+    'use strict'<span class="hljs-comment">;</span>
+
+    var behaviors<span class="hljs-comment">;</span>
+    var that<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.infoCount = <span class="hljs-number">0</span><span class="hljs-comment">;</span>
+
+    function ParseBehaviors(<span class="hljs-name">behaviorsInit</span>) {
+        behaviors = behaviorsInit<span class="hljs-comment">;</span>
+        that = this<span class="hljs-comment">;</span>
+    }
+
+    var getInfoCount = function() {
+        elfLog.log(<span class="hljs-name">elfLog</span>.logLevelDetails, 'ParseBehaviors.getInfoCount called')<span class="hljs-comment">;</span>
+        var count = <span class="hljs-number">0</span><span class="hljs-comment">;</span>
+        $.each(<span class="hljs-name">behaviors</span>.result, function(<span class="hljs-name">index</span>, item) {
+            // console.log(<span class="hljs-name">typeof</span> item)<span class="hljs-comment">;</span>
+            if (<span class="hljs-name">item</span>.indexOf('[I]') !== <span class="hljs-number">-1</span>) {
+                count++<span class="hljs-comment">;</span>
+            }
+        })<span class="hljs-comment">;</span>
+        that.infoCount = count<span class="hljs-comment">;</span>
+        return count<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.getBehaviors = function() {
+        elfLog.log(<span class="hljs-name">elfLog</span>.logLevelDetails, 'ParseBehaviors.getBehaviors called')<span class="hljs-comment">;</span>
+        var infoCount = getInfoCount(<span class="hljs-name">behaviors</span>.result)<span class="hljs-comment">;</span>
+        return JSON.parse(<span class="hljs-name">elfBehaviors</span>.result[infoCount])<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.getBehaviorsAsArray = function() {
+        elfLog.log(<span class="hljs-name">elfLog</span>.logLevelDetails, 'ParseBehaviors.getBehaviorAsArray called')<span class="hljs-comment">;</span>
+        var b = this.getBehaviors()<span class="hljs-comment">;</span>
+        var arrayOfBehaviorArrays = []<span class="hljs-comment">;</span>
+        $.each(<span class="hljs-name">b</span>, function(<span class="hljs-name">index</span>, value) {
+            var behaviorArray = value.split('/')<span class="hljs-comment">;</span>
+            arrayOfBehaviorArrays.push(<span class="hljs-name">behaviorArray</span>)<span class="hljs-comment">;</span>
+        })<span class="hljs-comment">;</span>
+        return arrayOfBehaviorArrays<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    function isNotInArray(<span class="hljs-name">value</span>, valueArray) {
+        return (<span class="hljs-name">valueArray</span>.indexOf(<span class="hljs-name">value</span>) === <span class="hljs-number">-1</span>)<span class="hljs-comment">;</span>
+    }
+
+    ParseBehaviors.prototype.getAnimationTypes = function() {
+        elfLog.log(<span class="hljs-name">elfLog</span>.logLevelDetails, 'ParseBehaviors.getAnimationTypes called')<span class="hljs-comment">;</span>
+        var b = this.getBehaviorsAsArray()<span class="hljs-comment">;</span>
+        var animationTypes = []<span class="hljs-comment">;</span>
+        $.each(<span class="hljs-name">b</span>, function(<span class="hljs-name">index</span>, valueArray) {
+            var value = valueArray[<span class="hljs-number">1</span>]<span class="hljs-comment">;</span>
+            if (<span class="hljs-name">valueArray</span>[<span class="hljs-number">0</span>] === 'animations' <span class="hljs-symbol">&amp;&amp;</span> isNotInArray(<span class="hljs-name">value</span>, animationTypes)) {
+                animationTypes.push(<span class="hljs-name">value</span>)<span class="hljs-comment">;</span>
+            }
+        })<span class="hljs-comment">;</span>
+        return animationTypes<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    /* ParseBehaviors.prototype.getAnimationTypes = function() {
+        var b = this.getBehaviorsAsArray()<span class="hljs-comment">;</span>
+        var animationTypes = []<span class="hljs-comment">;</span>
+        $.each(<span class="hljs-name">b</span>, function (<span class="hljs-name">index</span>, valueArray) {
+            var value = valueArray[<span class="hljs-number">1</span>]<span class="hljs-comment">;</span>
+            if (<span class="hljs-name">valueArray</span>[<span class="hljs-number">0</span>] === 'animations' <span class="hljs-symbol">&amp;&amp;</span> isNotInArray(<span class="hljs-name">value</span>, animationTypes)) {
+                animationTypes.push(<span class="hljs-name">value</span>)<span class="hljs-comment">;</span>
+            }
+        })<span class="hljs-comment">;</span>
+        return animationTypes<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">; */</span>
+
+    ParseBehaviors.prototype.getAnimationCategoryFromType = function(<span class="hljs-name">type</span>) {
+        elfLog.log(<span class="hljs-name">elfLog</span>.logLevelDetails, 'ParseBehaviors.getAnimationCategoryFromType called')<span class="hljs-comment">;</span>
+        var b = this.getBehaviorsAsArray()<span class="hljs-comment">;</span>
+        var animationCategories = []<span class="hljs-comment">;</span>
+        $.each(<span class="hljs-name">b</span>, function(<span class="hljs-name">index</span>, valueArray) {
+            var value = valueArray[<span class="hljs-number">2</span>]<span class="hljs-comment">;</span>
+            if (<span class="hljs-name">valueArray</span>[<span class="hljs-number">0</span>] === 'animations' <span class="hljs-symbol">&amp;&amp;</span> valueArray[<span class="hljs-number">1</span>] === type <span class="hljs-symbol">&amp;&amp;</span> isNotInArray(<span class="hljs-name">value</span>, animationCategories)) {
+                animationCategories.push(<span class="hljs-name">value</span>)<span class="hljs-comment">;</span>
+            }
+        })<span class="hljs-comment">;</span>
+        return animationCategories<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.getAnimationActions = function(<span class="hljs-name">type</span>, category) {
+        elfLog.log(<span class="hljs-name">elfLog</span>.logLevelDetails, 'ParseBehaviors.getAnimationActions called')<span class="hljs-comment">;</span>
+        var b = this.getBehaviorsAsArray()<span class="hljs-comment">;</span>
+        var animationActions = []<span class="hljs-comment">;</span>
+        $.each(<span class="hljs-name">b</span>, function(<span class="hljs-name">index</span>, valueArray) {
+            var value = valueArray[<span class="hljs-number">3</span>]<span class="hljs-comment">;</span>
+            if (<span class="hljs-name">valueArray</span>[<span class="hljs-number">0</span>] === 'animations' <span class="hljs-symbol">&amp;&amp;</span>
+                valueArray[<span class="hljs-number">1</span>] === type <span class="hljs-symbol">&amp;&amp;</span>
+                valueArray[<span class="hljs-number">2</span>] === category <span class="hljs-symbol">&amp;&amp;</span>
+                isNotInArray(<span class="hljs-name">value</span>, animationActions)) {
+                animationActions.push(<span class="hljs-name">value</span>)<span class="hljs-comment">;</span>
+            }
+        })<span class="hljs-comment">;</span>
+        return animationActions<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    ParseBehaviors.prototype.getAnimations = function() {
+        elfLog.log(<span class="hljs-name">elfLog</span>.logLevelDetails, 'ParseBehaviors.getAnimations called')<span class="hljs-comment">;</span>
+        var b = this.getBehaviors()<span class="hljs-comment">;</span>
+        var singleBehavior<span class="hljs-comment">;</span>
+        $.each(<span class="hljs-name">b</span>, function(<span class="hljs-name">index</span>, value) {
+            // singleBehavior = index + ': ' + value.split('/') + '\n'<span class="hljs-comment">;</span>
+            singleBehavior = index + ': [' + value.split('/') + ']\n'<span class="hljs-comment">;</span>
+            console.log(<span class="hljs-name">singleBehavior</span>)<span class="hljs-comment">;</span>
+            $('#robotResult').append(<span class="hljs-name">singleBehavior</span>)<span class="hljs-comment">;</span>
+        })<span class="hljs-comment">;</span>
+    }<span class="hljs-comment">;</span>
+
+    return ParseBehaviors<span class="hljs-comment">;</span>
+
+})()<span class="hljs-comment">;</span>
+</code></pre>
+<a class="anchor" id="launcher-and-control"></a>
+<h2>Launcher and Control</h2>
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    elfControl.initialize();
+});
+</code></pre>
+<p>And control:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfControl = {
+    <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+
+        elfLog.setLevel(elfLog.logLevelDetails);
+
+        $(<span class="hljs-string">'#leftArm'</span>).click(elfArm.armServerCall);
+
+        $(<span class="hljs-string">'#behaviors'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+            elfRobot.callingRobot();
+            $.getJSON(<span class="hljs-string">'/behaviors'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result, status, details</span>) </span>{
+                elfDisplay.clear();
+                elfDisplay.appendRobotResult(<span class="hljs-built_in">JSON</span>.stringify(result, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+            }).fail(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'error'</span>);
+            });
+        });
+
+        $(<span class="hljs-string">'#parse'</span>).click(elfRobot.parseBehaviors);
+        $(<span class="hljs-string">'#getAnimationCount'</span>).click(elfRobot.getAnimationCount);
+        $(<span class="hljs-string">'#showAllObjects'</span>).click(elfRobot.showAllObjects);
+        $(<span class="hljs-string">'#getAnimationTypes'</span>).click(elfRobot.getAnimationTypes);
+        $(<span class="hljs-string">'#getAnimationCategoryFromType'</span>).click(elfRobot.getAnimationCategoryFromType);
+        $(<span class="hljs-string">'#getAnimationActions'</span>).click(elfRobot.getAnimationActions);
+        $(<span class="hljs-string">'#network'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+            elfRobot.callingRobot();
+            elfRobot.basicServerCall(<span class="hljs-string">'/network'</span>);
+        });
+    }
+};
+</code></pre>
+<a class="anchor" id="display"></a>
+<h2>Display</h2>
+<p>In <strong>display.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfDisplay = {
+
+    <span class="hljs-attr">appendRobotResult</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        $(<span class="hljs-string">'#robotResult'</span>).append(value + <span class="hljs-string">'\n'</span>);
+    },
+
+    <span class="hljs-attr">clear</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        $(<span class="hljs-string">'#robotResult'</span>).empty();
+    }
+};
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>For now, just make sure that you have:</p>
+<ul>
+<li>Created the files described above</li>
+<li>Gotten all the tests in test_fixture.js to work</li>
+</ul>
+<p>We will work more on this project, and more on updating the midterm, during class on Tuesday and Thursday.</p>
+<p>As always, make sure everything comes back clean when you run <strong>grunt check</strong>.</p>
+<a class="anchor" id="hint"></a>
+<h2>Hint</h2>
+<p>The main goal here is to get the Jade right. My thought was that these tests give you enough of a hint as to what the jade needed to look like that you should be able to figure the jade out, to reverse engineer it, as it were.</p>
+</div></body></html>

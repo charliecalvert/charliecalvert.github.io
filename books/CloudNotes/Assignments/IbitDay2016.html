@@ -1,0 +1,483 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>IbitDay2016</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>IbitDay2016</h1><p>Welcome to IbitDay2016</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#accounts">Accounts</a></li>
+<li><a href="#create-workspace">Create Workspace</a></li>
+<li><a href="#setup">Setup</a></li>
+<li><a href="#build">Build</a></li>
+<li><a href="#javascript-start">JavaScript Start</a></li>
+<li><a href="#jade-start">Jade Start</a></li>
+<li><a href="#jade-pages">Jade Pages</a></li>
+<li><a href="#main-index-page">Main Index Page</a></li>
+<li><a href="#menu">Menu</a></li>
+<li><a href="#simple-directive-">Simple Directive:</a></li>
+<li><a href="#loading-data">Loading Data</a></li>
+<li><a href="#testing">Testing</a></li>
+<li><a href="#test-fixture">Test Fixture</a></li>
+<li><a href="#test-directive">Test Directive</a></li>
+<li><a href="#heroku">Heroku</a></li>
+<li><a href="#git-hints">Git Hints</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Build an Angular SPA (Single Page App) and deploy it to Heroku. In the app, load and display some JSON.</p>
+<a class="anchor" id="accounts"></a>
+<h2>Accounts</h2>
+<p>Create a GitHub account if you don&#39;t have one already.</p>
+<p><strong>NOTE</strong>: <em>You want employers, friends and family to be able to find your git hub account. These decisions are up to you, but naming your account something like <strong>a49ZZZxx32##9@</strong> makes your code hard to find, which is probably not what you want when job hunting or trying to share information with friends. If you can, just use your last name.</em></p>
+<p>Go to Cloud 9. Create an account and sign in with GitHub.</p>
+<p>This may set up your SSH key automatically. If not, find you SSH key:</p>
+<ul>
+<li>In the Cloud 9 Dashboard click the Gear menu (Setup)</li>
+<li>Select SSH Keys</li>
+<li>Block copy the key in gray box that begins with something like <strong>ssh-rsa AAAetc...</strong></li>
+<li>Go to GitHub and open the settings on the far top right.</li>
+<li>Select Settings and go to Add SSH key</li>
+<li>Choose New SSH Key and paste it in.</li>
+</ul>
+<p>Create a repository called ibit-day-lastname:</p>
+<ul>
+<li>Add a node .gitigore file</li>
+<li>Add the MIT license</li>
+</ul>
+<p>Get the url by selecting the green <strong>Clone or download</strong> button. The URL might look something like this, but with your name instead of foo:</p>
+<ul>
+<li><a href="mailto:**git@github.com">**git@github.com</a>:foo/ibit-day-foo.git**</li>
+</ul>
+<p><strong>NOTE</strong>: <em>If you see a URL that begins with <strong>https</strong>, then something is wrong. Go back and make sure you have your Cloud 9 SSH key set up in GitHub as described above. Don&#39;t go further until you get this straightened out. If necessary, just delete your repository and start over in GitHub. See if this time the repository has a URL that begins with <strong>git</strong> instead of <strong>https</strong>.</em></p>
+<a class="anchor" id="create-workspace"></a>
+<h2>Create Workspace</h2>
+<p>Create a new NodeJs workspace.</p>
+<ul>
+<li>Name: ibit-day</li>
+<li>Repository: Use the repository you created in the previous step.</li>
+</ul>
+<a class="anchor" id="setup"></a>
+<h2>Setup</h2>
+<p>Read the cloud nine setup from here:</p>
+<ul>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/Cloud9Intro.html#auto-setup">Cloud Nine Setup Description (AutoSetup)</a></li>
+<li><a href="https://github.com/charliecalvert/JsObjects/blob/master/Utilities/SetupLinuxBox/CloudNineSetup">Cloud Nine Setup Script</a></li>
+</ul>
+<a class="anchor" id="build"></a>
+<h2>Build</h2>
+<p>Lets create and launch a default express application. We&#39;ll give ourselves the ability to use Angular, but we won&#39;t yet add any Angular code to our application:</p>
+<pre>
+CreateAllExpress ibit01
+cd ibit01
+npm install && bower install
+bower install bootstrap angular angular-route --save
+npm start
+</pre>
+
+<p><strong>CreateAllExpress</strong> is a custom script. It does much to help you set up the tools and configuration that I find useful when developing applications.</p>
+<a class="anchor" id="javascript-start"></a>
+<h2>JavaScript Start</h2>
+<p>Open <strong>control.js</strong> and put the following code in it:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> myModule = angular.module(<span class="hljs-string">'elfApp'</span>, [<span class="hljs-string">'ngRoute'</span>]);
+
+myModule.config(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$routeProvider, $locationProvider</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+
+    $routeProvider.when(<span class="hljs-string">'/'</span>, {
+        <span class="hljs-attr">templateUrl</span>: <span class="hljs-string">'home-page'</span>,
+        <span class="hljs-attr">controller</span>: <span class="hljs-string">'HomeController'</span>
+    }).when(<span class="hljs-string">'/first'</span>, {
+        <span class="hljs-attr">templateUrl</span>: <span class="hljs-string">'first-page'</span>,
+        <span class="hljs-attr">controller</span>: <span class="hljs-string">'FirstController'</span>
+    }).when(<span class="hljs-string">'/about'</span>, {
+        <span class="hljs-attr">templateUrl</span>: <span class="hljs-string">'about-page'</span>,
+        <span class="hljs-attr">controller</span>: <span class="hljs-string">'AboutController'</span>
+    }).otherwise({
+        <span class="hljs-attr">redirectTo</span>: <span class="hljs-string">'/'</span>
+    });
+});
+
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    $(<span class="hljs-string">'.navbar-nav li.trigger-collapse a'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+        $(<span class="hljs-string">'.navbar-collapse'</span>).collapse(<span class="hljs-string">'hide'</span>);
+    });
+});
+</code></pre>
+<p>Then three very similar Controllers. I will give you the first. Save it as <strong>public/javascripts/home.js</strong></p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfApp = angular.module(<span class="hljs-string">'elfApp'</span>);
+
+elfApp.controller(<span class="hljs-string">'HomeController'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$scope</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+
+    $scope.description = <span class="hljs-string">'HomeController Data'</span>;
+
+});
+</code></pre>
+<p>Create two more pages:</p>
+<ul>
+<li>about.js</li>
+<li>first.js</li>
+</ul>
+<p>Block copy the contents of <strong>home.js</strong> for the other two, but change the Controller name and description. For instance, for the <strong>about</strong> page, rename the <strong>HomeController</strong> to <strong>AboutController</strong>.</p>
+<a class="anchor" id="jade-start"></a>
+<h2>Jade Start</h2>
+<p>Open up <strong>views/layout.jade</strong> and add in support for angular. These two lines should come just after the code that loads <strong>jquery</strong>:</p>
+<pre>
+script(src="components/angular/angular.js")
+script(src="components/angular-route/angular-route.js")
+</pre>
+
+<p><strong>layout.jade</strong> will also be the place where we provide a name for our primary angular module. We will place all the code for this application in this single module. Declare it like this:</p>
+<div>
+body(data-ng-app=&quot;elfApp&quot;)
+</div>
+
+<p>Go back to <strong>control.js</strong> and note how we instantiate an instance of this module. Notice that we use the module in our other files.</p>
+<p>Continuing our work in <strong>layout.jade</strong>, add in <strong>script</strong> tags to load each of the JavaScript files we created in the previous section. For instance, copy the line that loads <strong>control.js</strong> and use it as template for loading <strong>about.js</strong>, <strong>first.js</strong> and <strong>home.js</strong>. Load <strong>control.js</strong> after you load <strong>angular</strong>, <strong>jQuery</strong> and <strong>bootstrap</strong> but before you load the other files we created in the previous section.</p>
+<a class="anchor" id="jade-pages"></a>
+<h2>Jade Pages</h2>
+<p>Now create a page called <strong>views/home-page.jade</strong>. Using Jade syntax, put in a single HTML H1 element and a custom angular directive called <strong>home-description</strong>:</p>
+<pre>
+h1 Home
+
+elf-home-description
+</pre>
+
+<p>We will explain what to do with the custom directive in a bit.</p>
+<p>Create two other pages in the same directory:</p>
+<ul>
+<li>about-page.jade</li>
+<li>first-page.jade</li>
+</ul>
+<p>Change the H1 element to refect the page contents. In other words, they should have similar, but not identical contents. For instance, change the word <strong>Home</strong> to <strong>First</strong> and <strong>About</strong> as appropriate.</p>
+<p>We will also need to add a new route to <strong>routes/index.js</strong>:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/:id'</span>, <span class="hljs-keyword">function</span>(req, res, <span class="hljs-keyword">next</span>) { <span class="hljs-string">'use strict'</span>;
+  res.render(req.params.id, { title: <span class="hljs-string">'ibitday'</span> });
+});
+</code></pre>
+<a class="anchor" id="main-index-page"></a>
+<h2>Main Index Page</h2>
+<p>This is a SPA. As a result, our main page is always loaded. We need to have a location in that page where we load in content for our other &quot;pages&quot;. The end result is that the top few lines of our main page are static. As the user selects items from the menu, the area below this main section morphs to reflect the content of the user&#39;s selection. Thus we have one main page that morphs into other &quot;pages&quot; as the user requests.</p>
+<p>To create a place on the main page where new &quot;pages&quot; can be loaded, add the angular <strong>ng-view</strong> directive to your main page:</p>
+<pre><code class="lang-javascript">extends layout
+
+block <span class="hljs-attribute">content</span>
+  <span class="hljs-selector-class">.container</span>
+    h1= title
+    <span class="hljs-selector-tag">p</span> Welcome to #{title}
+    <span class="hljs-selector-tag">p</span> Author #{author}
+
+    div(data-ng-view=<span class="hljs-string">""</span>)
+</code></pre>
+<p>As stated above, we are building a SPA. As a result, the H1 and two paragraph elements shown above are relatively static. The new &quot;pages&quot; loaded when the user makes menu selections are placed inside the <strong>ng-view</strong>.</p>
+<a class="anchor" id="menu"></a>
+<h2>Menu</h2>
+<pre><code class="lang-javascript">extends layout
+
+block <span class="hljs-attribute">content</span>
+  <span class="hljs-selector-tag">header</span><span class="hljs-selector-class">.navbar</span><span class="hljs-selector-class">.navbar-inverse</span><span class="hljs-selector-class">.navbar-fixed-top</span><span class="hljs-selector-class">.bs-docs-nav</span>(role=<span class="hljs-string">'banner'</span>)
+    <span class="hljs-selector-class">.container</span>
+      <span class="hljs-selector-class">.navbar-header</span>
+        <span class="hljs-selector-tag">button</span>.navbar-toggle(type=<span class="hljs-string">'button'</span>, data-toggle=<span class="hljs-string">'collapse'</span>, data-target=<span class="hljs-string">'.bs-navbar-collapse'</span>)
+          <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.sr-only</span> Toggle navigation
+          <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.icon-bar</span>
+          <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.icon-bar</span>
+          <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.icon-bar</span>
+        <span class="hljs-selector-tag">a</span>.navbar-brand(href=<span class="hljs-string">'.#/'</span>) Solar Explorer
+      <span class="hljs-selector-tag">nav</span><span class="hljs-selector-class">.collapse</span><span class="hljs-selector-class">.navbar-collapse</span><span class="hljs-selector-class">.bs-navbar-collapse</span>(role=<span class="hljs-string">"navigation"</span>)
+        <span class="hljs-selector-tag">ul</span><span class="hljs-selector-class">.nav</span><span class="hljs-selector-class">.navbar-nav</span>
+          <span class="hljs-selector-tag">li</span>.trigger-collapse(ng-class=<span class="hljs-string">"{ active: isActive('/')}"</span>)
+            a(ng-href=<span class="hljs-string">'#/'</span>) Home
+          <span class="hljs-selector-tag">li</span>.trigger-collapse(ng-class=<span class="hljs-string">"{ active: isActive('/first')}"</span>)
+            a(ng-href=<span class="hljs-string">'#/first'</span>) First
+          <span class="hljs-selector-tag">li</span>.trigger-collapse(ng-class=<span class="hljs-string">"{ active: isActive('/about')}"</span>)
+            a(ng-href=<span class="hljs-string">'#/about'</span>) About
+  <span class="hljs-selector-class">.container</span>
+    h1= title
+    <span class="hljs-selector-tag">p</span> Welcome to #{title}
+    <span class="hljs-selector-tag">p</span> Author #{author}
+
+    div(data-ng-view=<span class="hljs-string">""</span>)
+
+</code></pre>
+<a class="anchor" id="simple-directive-"></a>
+<h2>Simple Directive:</h2>
+<p>Let&#39;s create a directive. An angular directive allows us to create custom HTML element. Examples of angular directives that we have used already are <strong>ng-app</strong> or <strong>ng-view</strong>. We can use these elements in our HTML files, yet they are not part of HTML5. They are custom elements created by the angular team.</p>
+<p>We will call our directive <strong>elfFirstDescription</strong>. Recall that we already referenced it in our <strong>first-page.jade</strong> file:</p>
+<pre>
+h1 First
+
+elf-first-description
+</pre>
+
+<p>To create the directive, add this code to <strong>first.js</strong>:</p>
+<pre><code class="lang-javascript">elfApp.directive(<span class="hljs-string">'elfFirstDescription'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">controller</span>: <span class="hljs-string">'FirstController'</span>,
+        <span class="hljs-attr">templateUrl</span>: <span class="hljs-string">'first-controller'</span>
+    };
+});
+</code></pre>
+<p>We need to add the Jade that defines our <strong>templateUrl</strong> to a new file called <strong>view/first-controller.jade</strong>:</p>
+<pre>
+.panel.panel-default
+    .panel-heading Renewable Data
+    .panel-body
+        div {{description}}
+</pre>
+
+<p>This is standard bootstrap code with a an angular expression in it. The expression is set off with double curly braces. The word description in the expression forms a link to the variable <strong>$scope.description</strong> found in our controller from <strong>first.js</strong>.</p>
+<p>At some point, see if you can add similar directives to <strong>home.js</strong> and <strong>about.js</strong></p>
+<a class="anchor" id="loading-data"></a>
+<h2>Loading Data</h2>
+<p>Here is a JSON file. Save it in <strong>public/Presidents.json</strong>:</p>
+<pre><code class="lang-json">[
+    {
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"George"</span>, <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Washington"</span>, <span class="hljs-attr">"address"</span>: <span class="hljs-string">"101 June Street"</span>, <span class="hljs-attr">"city"</span>: <span class="hljs-string">"Bellevue"</span>, <span class="hljs-attr">"state"</span>: <span class="hljs-string">"WA"</span>
+    },
+    {
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"John"</span>, <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Adams"</span>, <span class="hljs-attr">"address"</span>:  <span class="hljs-string">"101 June Street"</span>, <span class="hljs-attr">"city"</span>: <span class="hljs-string">"Bellevue"</span>, <span class="hljs-attr">"state"</span>: <span class="hljs-string">"WA"</span>
+    },
+    {
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Thomas"</span>, <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Jefferson"</span>, <span class="hljs-attr">"address"</span>:  <span class="hljs-string">"101 June Street"</span>, <span class="hljs-attr">"city"</span>: <span class="hljs-string">"Bellevue"</span>, <span class="hljs-attr">"state"</span>: <span class="hljs-string">"WA"</span>
+    },
+    {
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"James"</span>, <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Madison"</span>, <span class="hljs-attr">"address"</span>:  <span class="hljs-string">"101 June Street"</span>, <span class="hljs-attr">"city"</span>: <span class="hljs-string">"Bellevue"</span>, <span class="hljs-attr">"state"</span>: <span class="hljs-string">"WA"</span>
+    }
+]
+</code></pre>
+<p>Here is code to load it. As you can see we put it in the <strong>FirstController</strong>:</p>
+<pre><code class="lang-javascript">elfApp.controller(<span class="hljs-string">'FirstController'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$scope, $http</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+
+    $scope.description = <span class="hljs-string">'First Controller Description'</span>;
+
+    $scope.loadData = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $http.get(<span class="hljs-string">'Presidents.json'</span>)
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">presidents</span>) </span>{
+                $scope.presidents = <span class="hljs-built_in">JSON</span>.stringify(presidents, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
+            })
+    };
+
+    $scope.loadData();
+});
+</code></pre>
+<p>Here is the directive to display the data:</p>
+<pre><code class="lang-javascript">elfApp.directive(<span class="hljs-string">'elfFirstData'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">controller</span>: <span class="hljs-string">'FirstController'</span>,
+        <span class="hljs-attr">templateUrl</span>: <span class="hljs-string">'first-data'</span>
+    };
+});
+</code></pre>
+<p>Here is <strong>views/first-data.jade</strong>. This is where our list of presidents from the <strong>Presidents.json</strong> file will be loaded:</p>
+<pre>
+.panel.panel-default
+    .panel-heading Renewable Data
+    .panel-body
+        pre {{presidents}}
+</pre>
+
+<a class="anchor" id="testing"></a>
+<h2>Testing</h2>
+<p>We need to install angular-mocks to support testing:</p>
+<pre>
+bower install angular-mocks --save-dev
+npm install jasmine-jquery --save-dev
+</pre>
+
+<p>In <strong>karma.conf.js</strong> let&#39;s make sure that we:</p>
+<ul>
+<li>load angular.js</li>
+<li>load angular-route.js</li>
+<li>load angular-mocks.js</li>
+<li>load <strong>public/javascripts/control.js</strong> before we load the other files in <strong>public/javascripts</strong>.</li>
+</ul>
+<p>Here is the updated <strong>files</strong> section from <strong>karma.conf.js</strong>:</p>
+<pre><code class="lang-javascript">files: [
+    <span class="hljs-symbol">'public</span>/components/jquery/dist/jquery.min.js',
+    <span class="hljs-symbol">'public</span>/components/angular/angular.js',             &lt;=== <span class="hljs-type">HERE</span>
+    <span class="hljs-symbol">'public</span>/components/angular-mocks/angular-mocks.js', &lt;=== <span class="hljs-type">HERE</span>
+    <span class="hljs-symbol">'public</span>/components/angular-route/angular-route.js', &lt;=== <span class="hljs-type">HERE</span>
+    <span class="hljs-symbol">'node_modules</span>/jasmine-jquery/lib/*.js',
+    <span class="hljs-symbol">'public</span>/javascripts/control.js',                    &lt;=== <span class="hljs-type">HERE</span>
+    <span class="hljs-symbol">'public</span>/javascripts/*.js',
+    <span class="hljs-symbol">'spec</span>/**/*.html',
+    <span class="hljs-symbol">'spec</span>/test*.js'
+],
+</code></pre>
+<p>In <strong>Gruntfile.js</strong>, ensure that we build our HTML to use in our tests:</p>
+<pre><code class="lang-javascript">jade: {
+    compile: {
+        options: {
+            pretty: <span class="hljs-literal">true</span>,
+            data: {
+                debug: <span class="hljs-literal">false</span>
+            }
+        },
+        files: {
+            <span class="hljs-symbol">'spec</span>/fixtures/home-page.html': [<span class="hljs-symbol">'views</span>/home-page.jade'],
+            <span class="hljs-symbol">'spec</span>/fixtures/first-page.html': [<span class="hljs-symbol">'views</span>/first-page.jade'],
+            <span class="hljs-symbol">'spec</span>/fixtures/about-page.html': [<span class="hljs-symbol">'views</span>/about-page.jade']
+        }
+    }
+},
+</code></pre>
+<p>And a small modification at the bottom of the page where we add Jade to test task:</p>
+<pre><code class="lang-javascript">    <span class="hljs-selector-tag">grunt</span><span class="hljs-selector-class">.registerTask</span>(<span class="hljs-string">'test'</span>, [<span class="hljs-string">'jshint'</span>, <span class="hljs-string">'jade'</span>, <span class="hljs-string">'karma'</span>]);
+</code></pre>
+<p>Finally, let&#39;s modify <strong>spec/test-basic.js</strong>:</p>
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Elvenware Simple Plain Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">
+    'use strict'</span>;
+
+    <span class="hljs-keyword">var</span> scope;
+
+    beforeEach(<span class="hljs-built_in">module</span>(<span class="hljs-string">'elfApp'</span>));
+
+    <span class="hljs-comment">/*
+     * instantiate the controller without the directive
+     */</span>
+    beforeEach(inject(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">_$rootScope_, _$controller_</span>) </span>{
+        scope = _$rootScope_.$<span class="hljs-keyword">new</span>();
+        _$controller_(<span class="hljs-string">'HomeController'</span>, {
+            <span class="hljs-attr">$scope</span>: scope
+        });
+    }));
+
+    it(<span class="hljs-string">'expects true to be true'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">true</span>);
+    });
+
+    it(<span class="hljs-string">'should find the description'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        expect(scope.description).toBe(<span class="hljs-string">'HomeController Data'</span>);
+    });
+
+});
+</code></pre>
+<p>Now run <strong>grunt test</strong>.</p>
+<a class="anchor" id="test-fixture"></a>
+<h2>Test Fixture</h2>
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Elvenware Test Fixture Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+
+    <span class="hljs-string">'use strict'</span>;
+
+    <span class="hljs-keyword">var</span> scope;
+    <span class="hljs-keyword">var</span> $templateCache;
+    <span class="hljs-keyword">var</span> $compile;
+
+    beforeEach(module(<span class="hljs-string">'elfApp'</span>));
+
+    <span class="hljs-comment">/*
+     * instantiate the controller without the directive
+     * Get the Angular compiler and templateCache for processing Angular templates
+     */</span>
+    beforeEach(inject(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(_$compile_, _$rootScope_, _$templateCache_, _$controller_)</span> </span>{
+        scope = _$rootScope_.$new();
+        $compile = _$compile_;
+        $templateCache = _$templateCache_;
+
+        _$controller_(<span class="hljs-string">'HomeController'</span>, {
+            $scope: scope
+        });
+    }));
+
+    beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+        jasmine.getFixtures().fixturesPath = <span class="hljs-string">'base/spec/fixtures/'</span>;
+        loadFixtures(<span class="hljs-string">'home-page.html'</span>);
+    });
+
+    it(<span class="hljs-string">'expects true to be true'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+        expect(<span class="hljs-keyword">true</span>).toBe(<span class="hljs-keyword">true</span>);
+    });
+
+    it(<span class="hljs-string">'should be possible to access the fixture'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">var</span> spanElement = document.getElementsByTagName(<span class="hljs-string">'h1'</span>);
+        expect(spanElement[<span class="hljs-number">0</span>].innerHTML).toBe(<span class="hljs-string">'Home'</span>);
+    });
+});
+</code></pre>
+<a class="anchor" id="test-directive"></a>
+<h2>Test Directive</h2>
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Elvenware Home Directive Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+
+    <span class="hljs-string">'use strict'</span>;
+
+    <span class="hljs-keyword">var</span> scope;
+    <span class="hljs-keyword">var</span> $templateCache;
+    <span class="hljs-keyword">var</span> $compile;
+
+    beforeEach(module(<span class="hljs-string">'elfApp'</span>));
+
+    <span class="hljs-comment">/*
+     * instantiate the controller without the directive
+     * Get the Angular compiler and templateCache for processing Angular templates
+     */</span>
+    beforeEach(inject(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(_$compile_, _$rootScope_, _$templateCache_, _$controller_)</span> </span>{
+        scope = _$rootScope_.$new();
+        $compile = _$compile_;
+        $templateCache = _$templateCache_;
+
+        _$controller_(<span class="hljs-string">'HomeController'</span>, {
+            $scope: scope
+        });
+    }));
+
+    beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+        jasmine.getFixtures().fixturesPath = <span class="hljs-string">'base/spec/fixtures/'</span>;
+        loadFixtures(<span class="hljs-string">'home-description.html'</span>);
+    });
+
+    it(<span class="hljs-string">'expects true to be true'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+        expect(<span class="hljs-keyword">true</span>).toBe(<span class="hljs-keyword">true</span>);
+    });
+
+    it(<span class="hljs-string">'should be possible to access the fixture'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">var</span> spanElement = document.getElementById(<span class="hljs-string">'homeDescription'</span>);
+        <span class="hljs-comment">//console.log(spanElement);</span>
+        expect(spanElement.innerHTML).toContain(<span class="hljs-string">'{{desc'</span>);
+    });
+
+    it(<span class="hljs-string">'should be able to see the fixture content'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">var</span> el = document.getElementById(<span class="hljs-string">'homeDescription'</span>);
+        <span class="hljs-comment">//console.log(el);</span>
+        $templateCache.put(<span class="hljs-string">'home-description'</span>, el);
+        <span class="hljs-keyword">var</span> element = $compile(<span class="hljs-string">'&lt;elf-home-description&gt;&lt;/elf-home-description&gt;'</span>)(scope);
+        scope.$digest();
+        <span class="hljs-comment">//console.log(element);</span>
+        expect(element.text()).toContain(<span class="hljs-string">'HomeController Data'</span>);
+    });
+});
+</code></pre>
+<p>If all the tests are working, the output should look something like this:</p>
+<pre>
+Elvenware Simple Plain Suite
+  ✓ expects true to be true
+  ✓ should find the description
+
+Elvenware Test Fixture Suite
+  ✓ expects true to be true
+  ✓ should be possible to access the fixture
+
+Elvenware Home Directive Suite
+  ✓ expects true to be true
+  ✓ should be possible to access the fixture
+  ✓ should be able to see the directive content
+
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 7 of 7 SUCCESS (0.038 secs / 0.025 secs)
+TOTAL: 7 SUCCESS
+</pre>
+
+<a class="anchor" id="heroku"></a>
+<h2>Heroku</h2>
+<p>Read the Heroku Setup from here:</p>
+<ul>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/HerokuStarter.html">Heroku Starter</a></li>
+</ul>
+<a class="anchor" id="git-hints"></a>
+<h2>Git Hints</h2>
+<p>You probably won&#39;t need this, but just in case you need to reset the url for your repository:</p>
+<p>git remote set-url origin <a href="mailto:git@github.com">git@github.com</a>:charliecalvert/Prog272-Calvert.git</p>
+<p>Here is how to pull from an existing repository on GitHub into an empty directory. The code assumes you are in the directory:</p>
+<pre>
+git init
+git remote add origin git@github.com:charliecalvert/Prog272-Calvert.git
+git pull origin master
+</pre>
+</div></body></html>

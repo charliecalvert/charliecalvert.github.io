@@ -1,0 +1,138 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Ec2Checklist</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Ec2Checklist</h1><p>Welcome to Ec2Checklist</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#ssh">SSH</a></li>
+<li><a href="#system-check">System Check</a></li>
+<li><a href="#update">Update</a></li>
+<li><a href="#basic-system-check">Basic System Check</a></li>
+<li><a href="#lamp">Lamp</a></li>
+<li><a href="#node">Node</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#hint">Hint</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>The EC2 In Class Checklist is designed to help ensure that you have EC2 set up correctly. Don&#39;t be too obsessive, but try to get the tests I describe here to pass.</p>
+<p><strong>NOTE</strong>: <em>Throughout this assignment, I will use the PNG extension in examples of bitmap file names. This is just for convenience when typing the assignment. The file type you use can be either PNG or JPG.</em></p>
+<p>Our goals include checking to see if we:</p>
+<ul>
+<li>Use SSH keys rather than passwords (Show connection)<ul>
+<li>Access git with a public/private key pair</li>
+</ul>
+</li>
+<li>Regularly update our machine</li>
+<li>Know how to copy files to EC2 from Pristine Lubuntu</li>
+<li>Have <strong>~./bashrc</strong> and <strong>~.bash_aliases</strong> set up correctly</li>
+<li>Have Node Setup correctly</li>
+<li>Have Lamp installed</li>
+</ul>
+<p><strong>NOTE</strong>: <em>I assume you already have JsObjects <a href="https://github.com/charliecalvert/JsObjects/blob/master/README.md">installed</a>. If not, please <a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html#jsobjects">install it</a> now. If you already have it installed, be sure to run <strong>git pull</strong> in JsObjects before beginning this assignment.</em></p>
+<p>Related Assignments or Documents include:</p>
+<ul>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/Ec2GetStarted.html">EC2 Get Started</a></li>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/Ec2Provision.html">EC2 Provision</a></li>
+<li><a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html">Configure Linux</a></li>
+<li><a href="http://www.elvenware.com/charlie/os/linux/LinuxFiles.html">Linux Files</a></li>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/GitNewRepo.html">Git New Repo</a></li>
+</ul>
+<p><strong>NOTE</strong>: <em>At several points in this assignment I talk about a utility called <strong>SystemCheck</strong>. When using that utility, don&#39;t run the sections of it that check Common things such as Java and Chrome, or the part that checks PhoneGap.</em></p>
+<a class="anchor" id="ssh"></a>
+<h2>SSH</h2>
+<p>For those of you in a class that uses AWS, or a local instance of Ubuntu Server, do the following. Otherwise just skip down to the text on running <strong>SystemCheck</strong>.</p>
+<p>What I&#39;m looking for here is evidence that your using SSH, not a password, to access your server. If you are using a local Ubuntu Server, I want to make sure you have run <strong>ssh-copy-id</strong> or the equivalent to put your public key in the server&#39;s <strong>authorized_keys</strong> file. I want you to proceed as you normally would, using SSH with a public private key pair to connect to EC2. This time, however, pass in the -v key to get debug information:</p>
+<pre><code><span class="hljs-selector-tag">ssh</span> <span class="hljs-selector-tag">-v</span> <span class="hljs-selector-tag">ubuntu</span>@<span class="hljs-keyword">XX</span>.<span class="hljs-keyword">XX</span>.<span class="hljs-keyword">XX</span>.<span class="hljs-keyword">XX</span>
+</code></pre><p>If you scroll up a bit, you will see a lot of text. Find the line that begins and ends like this:</p>
+<pre><code><span class="hljs-string">debug1:</span> Authentications that can <span class="hljs-keyword">continue</span>
+<span class="hljs-comment">// LOTS OF TEXT HERE. ABOUT 9 OR 10 LINES.</span>
+<span class="hljs-string">debug1:</span> Entering interactive session.
+</code></pre><p>Take a screen shot of all the lines between the first and last inclusive. That is take a screen shot that includes the first and last lines shown above, as well as all the lines between them. Call it <strong>ssh-authentication.png</strong>.</p>
+<a class="anchor" id="system-check"></a>
+<h2>System Check</h2>
+<p>Run this command from your home directory:</p>
+<pre><code>.<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>SetupLinuxBox<span class="hljs-regexp">/SystemCheck</span>
+</code></pre><p><strong>NOTE</strong>: <em>If the above command fails, then you probably have not installed JsObjects yet. Details on that process are found <a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html#jsobjects">here</a> and <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/Ec2Provision.html#jsobjects">here</a>, and also <a href="https://github.com/charliecalvert/JsObjects/blob/master/README.md">here</a>.</em></p>
+<p>Select <strong>S</strong> or <strong>s</strong> for SSH. You should see the words <strong>SSH Setup</strong> followed by four lines that begin <strong>OK:</strong>. Take a screen shot of the results and call it <strong>ssh-systemcheck.png</strong>.</p>
+<p><strong>NOTE</strong>: <em>Remember, don&#39;t run the sections of SystemCheck that check <strong>Common</strong> things such as Java and Chrome, or the part that checks <strong>PhoneGap</strong>. It&#39;s not an error to run those options, it just is not helpful in terms of completing this assignment.</em></p>
+<p>If you are having problems, go to the Git New Repo assignment, and read the section on setting up SSH.</p>
+<p>Take a screenshot showing that the SystemCheck | SSH command works on your system.</p>
+<p>All of the tests should run smoothly out of the box, with the possible exception of the check for your ssh <strong>main-key</strong>.</p>
+<a class="anchor" id="update"></a>
+<h2>Update</h2>
+<p>Update your machine as explained in the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/Ec2Provision.html#update-server">EC2 Provision Update Section</a></p>
+<p>After updating the server, type <strong>sudo apt-get upgrade</strong> a second time. Create a screen shot and call it <strong>server-update.png</strong>. I&#39;m looking for evidence that there was nothing left to upgrade. The output should look something like this, though I want a screen shot, not just block copied text:</p>
+<pre><code>charlie@elf-rover:~$ sudo apt-<span class="hljs-builtin-name">get</span><span class="hljs-built_in"> upgrade
+</span>Reading package lists<span class="hljs-built_in">..</span>. Done
+Building dependency tree       
+Reading state information<span class="hljs-built_in">..</span>. Done
+Calculating upgrade<span class="hljs-built_in">..</span>. Done
+0 upgraded, 0 newly installed, 0 <span class="hljs-keyword">to</span> <span class="hljs-builtin-name">remove</span> <span class="hljs-keyword">and</span> 0 <span class="hljs-keyword">not</span> upgraded.
+</code></pre><a class="anchor" id="basic-system-check"></a>
+<h2>Basic System Check</h2>
+<p>Run this command:</p>
+<pre><code>.<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>SetupLinuxBox<span class="hljs-regexp">/SystemCheck</span>
+</code></pre><p>Select <strong>B</strong> or <strong>b</strong> for <strong>Basic System Check</strong>. You should see at least to Directory entries and at least one file entry. Each of these lines should begin with <strong>OK:</strong>. Take a screen shot and call it <strong>basic-system-check.png</strong>.</p>
+<p>Especially if you are in one of my programming courses, compare the code at the end of your <strong>~/.bashrc</strong> file with the output from this command:</p>
+<pre><code class="lang-bash">cat ~<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>SetupLinuxBox<span class="hljs-regexp">/BashrcExtras</span>
+</code></pre>
+<p>On EC2, there is no Chrome browser. So you don&#39;t want to select <strong>c</strong> for Common. See below for notes on how to set this section up on Pristine Lubuntu, and how to install Java on either Pristine or EC2.</p>
+<a class="anchor" id="lamp"></a>
+<h2>Lamp</h2>
+<p>Make sure LAMP is installed:</p>
+<ul>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/Ec2Provision.html#lamp">LAMP</a></li>
+</ul>
+<p>Run this command:</p>
+<pre><code>.<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>SetupLinuxBox<span class="hljs-regexp">/SystemCheck</span>
+</code></pre><p>Select <strong>L</strong> or <strong>l</strong> for <strong>LAMP</strong>. You should see the words <strong>Lamp Setup</strong> followed by at least 6 entries. Each of these lines should begin with <strong>OK:</strong>. Take a screen shot and call it <strong>lamp-setup.png</strong>.</p>
+<a class="anchor" id="node"></a>
+<h2>Node</h2>
+<p>Make sure <a href="https://nodejs.org/">NodeJs</a> is installed:</p>
+<ul>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/Ec2Provision.html#install-node">NodeJs</a></li>
+<li><a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html#install-node">Configure Linux</a></li>
+<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/NodeJs.html#node">Node on Elvenware</a></li>
+</ul>
+<p>Run this command:</p>
+<pre><code>.<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>SetupLinuxBox<span class="hljs-regexp">/SystemCheck</span>
+</code></pre><p>Select <strong>Node</strong>. Take a screen shot. Call it <strong>node-check.png</strong>.</p>
+<p>Type the following commands:</p>
+<pre><code class="lang-bash"><span class="hljs-keyword">node</span> <span class="hljs-title">--version</span>
+npm --<span class="hljs-keyword">version</span>
+jade --<span class="hljs-keyword">version</span>
+</code></pre>
+<p>Take a screen shot of the output generated by the commands. Call the bitmap <strong>node-check-versions.png</strong>.</p>
+<p>Each command should create a single line of text showing the program version number. I&#39;m somewhat interested in the version number, but mostly just checking to make sure each is installed. In other words, I&#39;ll accept a range of versions, but not all versions, but I definitely want to see a version number for each program. I fear I&#39;ll just create confusion if I start talking about specific version numbers, so just submit whatever you have. The only wrong answer is an error rather than a version number.</p>
+<p>If <strong>jade --version</strong> does not work, try this:</p>
+<pre><code><span class="hljs-built_in">which</span> jade
+</code></pre><p>If it does not come back with an answer similar to this, try un-installing jade and then reinstalling with <strong>npm install -g jade</strong>:</p>
+<pre><code><span class="hljs-regexp">/home/</span>bcuser<span class="hljs-regexp">/npm/</span>bin<span class="hljs-regexp">/jade</span>
+</code></pre><p>The following may or may not work. If Jade complained when you tried to get the version, you may have the wrong verison of Jade installed. To uninstall:</p>
+<pre><code>sudo apt-<span class="hljs-builtin-name">get</span> <span class="hljs-builtin-name">remove</span> jade &amp;&amp; sudo apt-<span class="hljs-builtin-name">get</span> autoremove
+</code></pre><p>If that works, then you can try <strong>npm install -g jade</strong>.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Turn in your assignment and attach (upload) your images directly to the assignment or place them all in a folder on Google Drive called <strong>Ec2Checklist</strong>. and include a note about and link to the folder.</p>
+<ol>
+<li>ssh-authentication.png</li>
+<li>ssh-systemcheck.png</li>
+<li>server-update.png</li>
+<li>basic-system-check.png</li>
+<li>lamp-setup.png</li>
+<li>node-check.png</li>
+<li>node-check-versions.png</li>
+</ol>
+<a class="anchor" id="hint"></a>
+<h2>Hint</h2>
+<p>Developers will want to set up the programmer utilities in the ~/bin directory. It should have been run automatically. If your <strong>~/bin</strong> directory contains these files, then you are all set:</p>
+<pre><code>charlie@elf-rover:~$ ls ~/bin<span class="hljs-built_in">
+check-karma-grunt-config
+</span>CreateAllExpress
+CreateExpressProject
+elfgrepcomps
+FixtureReady
+InsertJadeExecGrunt.py
+ShowPath
+StartPythonWebServer
+strip-triple-spaces
+TestCheck
+TestReady
+</code></pre><p> The file that creates these links is here:</p>
+<pre><code>~<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>SetupLinuxBox<span class="hljs-regexp">/CreateSymbolicLinks</span>
+</code></pre></div></body></html>

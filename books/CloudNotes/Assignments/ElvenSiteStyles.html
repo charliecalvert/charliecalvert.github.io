@@ -1,0 +1,64 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ElvenSiteStyles</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ElvenSiteStyles</h1><p>Welcome to ElvenSiteStyles</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#client-side">Client Side</a></li>
+<li><a href="#server-side">Server Side</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#hints">Hints</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>When using your <em>Elven Site</em> web site creator the user should be able to select the <a href="https://bootswatch.com/">bootswatch</a> theme for the created site. In short, I want you to add Bootswatch to your latest Elven Sites code. That is the goal of the <strong>Elven Site Styles</strong> assignment.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/elven-site-styles01.png" alt="picker"></p>
+<p>Do your work in <strong>Week10-ElvenImagePicker</strong> in a branch called FinalPrep which should be based on your midterm branch or some branch you created after midterm.</p>
+<a class="anchor" id="client-side"></a>
+<h2>Client Side</h2>
+<p>Allow the user to select from a drop down list (HTML SELECT control) of these styles:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var themes</span> = [<span class="hljs-string">'cerulean'</span>, <span class="hljs-string">'cosmo'</span>, <span class="hljs-string">'cyborg'</span>,
+            <span class="hljs-string">'darkly'</span>, <span class="hljs-string">'flatly'</span>, <span class="hljs-string">'journal'</span>, <span class="hljs-string">'lumen'</span>, <span class="hljs-string">'sandstone'</span>, <span class="hljs-string">'slate'</span>,
+            <span class="hljs-string">'spacelab'</span>, <span class="hljs-string">'superhero'</span>, <span class="hljs-string">'united'</span>, <span class="hljs-string">'yeti'</span>];
+</code></pre>
+<p>When we press the walk button, pass the selected style back to the server:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> requestQuery = {
+    <span class="hljs-attr">directoryToWalk</span>: directory,
+    <span class="hljs-attr">destinationDir</span>: destinationDir,
+    <span class="hljs-attr">highlight</span>: highlight,
+    <span class="hljs-attr">bootswatch</span>: selectedBootswatchTheme          
+};
+
+$.getJSON(<span class="hljs-string">'/walk'</span>, requestQuery, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{ etc
+});
+</code></pre>
+<p>To make this work, you will need:</p>
+<ul>
+<li>A new HTML SELECT element in your jade code</li>
+<li>Code to insert the themes array content into the SELECT element<ul>
+<li>You&#39;ve done several many times before. Hint it involves <strong>append</strong></li>
+</ul>
+</li>
+<li>Code to get the selected theme from the SELECT control.<ul>
+<li>You&#39;ve done this several times before as well.</li>
+</ul>
+</li>
+</ul>
+<a class="anchor" id="server-side"></a>
+<h2>Server Side</h2>
+<p>On the server side, make sure you are using <a href="mailto:**elven-site-tools@4.0.0">**elven-site-tools@4.0.0</a>** or newer. The settings should now contain your new field:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">var</span> <span class="hljs-string">settings</span> <span class="hljs-string">=</span> <span class="hljs-string">{</span>
+<span class="hljs-attr">    report:</span> <span class="hljs-string">report,</span>
+<span class="hljs-attr">    directoryToWalk:</span> <span class="hljs-string">directoryToWalk,</span>
+<span class="hljs-attr">    destinationDir:</span> <span class="hljs-string">destinationDir,</span>
+<span class="hljs-attr">    directories:</span> <span class="hljs-string">directories,</span>
+<span class="hljs-attr">    highlight:</span> <span class="hljs-string">highlight</span> <span class="hljs-string">===</span> <span class="hljs-string">'true'</span> <span class="hljs-string">?</span> <span class="hljs-literal">true</span> <span class="hljs-string">:</span> <span class="hljs-literal">false</span><span class="hljs-string">,</span>
+<span class="hljs-attr">    testRun:</span> <span class="hljs-literal">false</span><span class="hljs-string">,</span>
+<span class="hljs-attr">    bootswatch:</span> <span class="hljs-string">bootswatchTheme</span>
+<span class="hljs-string">};</span>
+<span class="hljs-string">try</span> <span class="hljs-string">{</span>
+    <span class="hljs-string">walker.makePage(settings,</span> <span class="hljs-string">function(masterListOfNames,</span> <span class="hljs-string">htmlFilesWritten)</span> <span class="hljs-string">{</span>
+    <span class="hljs-string">etc...</span>
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>When you turn in the assignment, include the branch and folder name where I should look for yur work.</p>
+<a class="anchor" id="hints"></a>
+<h2>Hints</h2>
+<p>By now, you should definitely be using your own utilities from your <strong>isit322-lastname</strong> package. But just in case you are stil, at your own peril, using my package, loading the utilities now looks like this:</p>
+<pre><code><span class="hljs-attribute">var utils</span> = require(<span class="hljs-string">'isit322-calvert'</span>).elfUtils;
+</code></pre></div></body></html>

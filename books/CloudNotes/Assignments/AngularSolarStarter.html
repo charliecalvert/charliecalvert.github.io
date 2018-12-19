@@ -1,0 +1,206 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>AngularSolarStarter</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>AngularSolarStarter</h1><p>Welcome to AngularSolarStarter</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#step-one">Step One</a></li>
+<li><a href="#tests">Step Two: Tests</a></li>
+<li><a href="#step-three">Step Three</a></li>
+<li><a href="#data">Step Four: Get the data</a></li>
+<li><a href="#main-jade">Step Five: Main Jade</a></li>
+<li><a href="#step-six">Step Six</a></li>
+<li><a href="#directive">Step Seven: Directive</a></li>
+<li><a href="#testing">Testing</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Angular Solar Starter</p>
+<p><strong>NOTE</strong>: <em>I decided that using <strong>controller as</strong> was too difficult when it came to testing. So for now, I have stripped it out of my own code and of this assignment. This means that if you created a version of this code that uses controller as, you will have to strip it out completely. That can be tricky, but I have done so in my code, and hopefully I have done so in the code now found in these instructions. The pith instruction: If you see <strong>mainController</strong> with a small em in your code, then remove it. For instance, <strong>mainController.index</strong> becomes <strong>index</strong> in your HTML and <strong>$scope.index</strong> in your <strong>MainController</strong>. If you want to keep the <strong>controller as</strong> syntax and feel you can get the tests to work while doing so, then do so. But at least for now, I do not recommend that for anyone in the class. It gets tricky when loading templates and we are not ready for that yet.</em></p>
+<p>The goal of this assignment is to load a file called <strong>Renewable.json</strong> and iterate over its contents. This JSON file contains an array of objects. We will use a number control to iterate through the array and a directive to display the objects.</p>
+<p>Our goal, at this stage, is to get a proof of concept app running. This will be the first of multiple iterations.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/angular-solar-explorer-01.png" alt="Angular Solar Starter"></p>
+<p>To ensure our code works, we will take the first steps toward writing tests with HTML fixtures loaded from disk.</p>
+<p>To get rid of locale error in Cloud 9: LC_ALL=C</p>
+<a class="anchor" id="step-one"></a>
+<h2>Step One</h2>
+<p>From the root of your repository, copy the <strong>AngularDirectiveTesting</strong> project to a new project call <strong>SolarExplorer</strong>. Then navigate to your new project folder:</p>
+<pre>
+cp -r Week04-AngularDirectiveTesting/ Week05-SolarExplorer
+cd Week05-SolarExplorer
+</pre>
+
+<p>If necessary, install your packages: <strong>npm install &amp;&amp; bower install</strong>.</p>
+<p>In <strong>routes/index.js</strong> change the <strong>title</strong> to <strong>AngularSolarExplorer lastname</strong>, where <strong>lastname</strong> is your last name. Make similar changes in <strong>bin/www</strong> and <strong>package.json</strong>.</p>
+<p>Run <strong>karma start</strong> to confirm all is working.</p>
+<a class="anchor" id="tests"></a>
+<h2>Step Two: Tests</h2>
+<p>In the files section of <strong>karma.conf.js</strong> make sure <strong>app.js</strong> is loaded first and that you are loading <strong>ng-route</strong>:</p>
+<pre><code class="lang-javascript">'public/components/jquery/dist/jquery.min.js',
+'public/components/angular/angular.js',
+'public/components/angular-mocks/angular-mocks.js',
+'public/components/angular-route/angular-route.js', &lt;&lt; == HERE
+'node_modules/jasmine-jquery/lib/*.js',
+'public/javascripts/app.js',      &lt;&lt; ==== HERE
+'public/javascripts/*.js',
+<span class="hljs-comment">// CODE OMITTED HERE</span>
+</code></pre>
+<p>In <strong>test-basic</strong>, let&#39;s start by declaring a variable and method that we will want to create. We will mark this as <strong>fit</strong> to see that we want to get those tests to pass first. Put them right after the <strong>beforeEach</strong> methods. Anticipating where we will be going, also modify the code that tests if we loaded a fixture:</p>
+<pre><code class="lang-javascript">it('should be possible to access the renewable fixture', function() {
+    var spanElement = document.getElementById('renewable')<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">spanElement</span>).toBeDefined()<span class="hljs-comment">;</span>
+    console.log(<span class="hljs-name">spanElement</span>)<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">spanElement</span>.innerHTML).toContain('First')<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">spanElement</span>.innerHTML).toContain('Btu')<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">spanElement</span>.innerHTML).toContain('quadrillion')<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+fit('should find the index', function() {
+    expect( <span class="hljs-name">scope</span>.index).toBe(<span class="hljs-number">0</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+fit('should have a getRenewable method ', function() {
+    expect(<span class="hljs-name">scope</span>.getRenewable).toBeDefined()<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+it('should be possible to access the fixture', function() {
+    var spanElement = document.getElementById('renewable')<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">spanElement</span>).toBeDefined()<span class="hljs-comment">;        </span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>The first two tests may not pass yet, but they should by the time we done.</p>
+<a class="anchor" id="step-three"></a>
+<h2>Step Three</h2>
+<p>Let&#39;s build in Angular Routing right from the start by copying in the relevant files from <strong>AngularRoutes</strong>:</p>
+<pre>
+cp ../Week03-AngularRoutes/views/main.jade views/.
+cp ../Week03-AngularRoutes/views/about.jade views/.
+cp ../Week03-AngularRoutes/public/javascripts/about.js public/javascripts/.
+cp ../Week03-AngularRoutes/public/javascripts/main.js public/javascripts/.
+cp ../Week03-AngularRoutes/public/javascripts/app.js public/javascripts/.
+</pre>
+
+<p>In <strong>layout.jade</strong>, make sure you are loading:</p>
+<ul>
+<li>angular-route.js</li>
+<li>app.js</li>
+<li>main.js</li>
+<li>about.js</li>
+</ul>
+<p>Use <strong>bower install</strong> to ensure that <strong>angular-route</strong> is available and that it is &quot;saved&quot; to <strong>bower.json</strong>.</p>
+<p><strong>NOTE</strong>: <em>I&#39;m intentionally being a little vague here. If you need a reminder on how to set up <strong>layout.jade</strong> or <strong>bower.json</strong>, see the Angular Routes assignment.</em></p>
+<p>Stop loading <strong>control.js</strong>, but don&#39;t delete it yet.</p>
+<p>In <strong>index.jade</strong>, set up your menu as in <strong>AngularRoutes</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">nav</span><span class="hljs-selector-class">.navbar-inverse</span><span class="hljs-selector-class">.navbar-fixed-top</span>
+  <span class="hljs-selector-class">.container</span>
+    navbar-<span class="hljs-selector-tag">header</span>
+      <span class="hljs-selector-tag">ul</span><span class="hljs-selector-class">.nav</span><span class="hljs-selector-class">.nav-pills</span>
+        li(ng-class=<span class="hljs-string">"{ active: isActive('/')}"</span>)
+          a(ng-href=<span class="hljs-string">'#/'</span>) Home
+        li(ng-class=<span class="hljs-string">"{ active: isActive('/about')}"</span>)
+          a(ng-href=<span class="hljs-string">'#/about'</span>) About
+</code></pre>
+<p>Beneath this, and at the same level as the nav, create a second container, as in <strong>Angular Routes</strong>. Include a <strong>DIV</strong> with <strong>data-ng-view</strong> in this second <strong>.container</strong>. For instance, the second container, the one not in the <strong>nav</strong>, might look like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-class">.container</span>
+  h1= title
+  <span class="hljs-selector-tag">p</span> Welcome to #{title}
+
+  div(data-ng-view=<span class="hljs-string">""</span>)
+</code></pre>
+<a class="anchor" id="data"></a>
+<h2>Step Four: Get the data</h2>
+<p>Create a folder called <strong>public/data</strong>. Download three files I created based on public data provided by the government. Put them in your data directory. The simplest way to get them is shown below. Just block copy the lines, navigate to the root of your project, and paste them in:</p>
+<pre>
+cd public
+mkdir data
+cd data
+wget https://s3.amazonaws.com/bucket01.elvenware.com/downloads/Renewable.json
+wget https://s3.amazonaws.com/bucket01.elvenware.com/downloads/EnergyTypes.json
+wget https://s3.amazonaws.com/bucket01.elvenware.com/downloads/RenewableTypes.json
+</pre>
+
+<p>Alternatively, you can download them and save them to disk:</p>
+<ul>
+<li><a href="https://s3.amazonaws.com/bucket01.elvenware.com/downloads/Renewable.json">Renewable</a></li>
+<li><a href="https://s3.amazonaws.com/bucket01.elvenware.com/downloads/EnergyTypes.json">EnergyTypes</a></li>
+<li><a href="https://s3.amazonaws.com/bucket01.elvenware.com/downloads/RenewableTypes.json">RenewableTypes</a></li>
+</ul>
+<a class="anchor" id="main-jade"></a>
+<h2>Step Five: Main Jade</h2>
+<p>Add a button and a number control to <strong>main.jade</strong>:</p>
+<pre><code>button.btn.btn-primary(<span class="hljs-attribute">ng-click</span>=<span class="hljs-string">"getRenewable()"</span>) Energy Renewable
+
+div
+    label
+        | Number:
+        input(<span class="hljs-attribute">type</span>=<span class="hljs-string">'number'</span>, <span class="hljs-attribute">name</span>=<span class="hljs-string">'input'</span>, <span class="hljs-attribute">ng-model</span>=<span class="hljs-string">'index'</span>, <span class="hljs-attribute">min</span>=<span class="hljs-string">'0'</span>, <span class="hljs-attribute">max</span>=<span class="hljs-string">'10'</span>, <span class="hljs-attribute">required</span>=<span class="hljs-string">''</span>)
+
+hr
+</code></pre><p>When the button is clicked, a method on your controller called <strong>getRenwewable</strong> will be called. When the input control is incremented or decremented, a value on your controller called <strong>index</strong> is modified. In particular, <strong>index</strong> will contain the same value as the input control.</p>
+<a class="anchor" id="step-six"></a>
+<h2>Step Six</h2>
+<p>Set up <strong>main.js</strong> and use dependency injection to pass in <strong>$http</strong> as the sole parameter to the anonymous callback for your <strong>MainController</strong>:</p>
+<pre><code class="lang-javascript">  elfApp.controller(<span class="hljs-string">'MainController'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($scope, $http)</span> </span>{
+     <span class="hljs-comment">// CODE OMITTED HERE</span>
+  });
+</code></pre>
+<p>Inside the controller add a method to load your JSON and store it in a variable called <strong>renawable</strong>. In particular, we are, at this stage, loading only the <strong>Renewable.json</strong> file:</p>
+<pre><code class="lang-javascript">$scope.getRenewable = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span> {
+    console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'getRenewable'</span>);
+    $http.get(<span class="hljs-string">'data/Renewable.json'</span>)
+        .<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(res)</span></span>{
+            console.<span class="hljs-built_in">log</span>(res.<span class="hljs-keyword">data</span>[<span class="hljs-number">0</span>]);
+            $scope.renewable = res.<span class="hljs-keyword">data</span>;
+        });
+}
+</code></pre>
+<p>We also add our <strong>index</strong> for tracking the data in the <strong>INPUT</strong> control:</p>
+<pre><code class="lang-javascript">$<span class="hljs-keyword">scope.mainData </span>= <span class="hljs-string">"Main Data"</span><span class="hljs-comment">;</span>
+$<span class="hljs-keyword">scope.index </span>= <span class="hljs-number">0</span><span class="hljs-comment">;</span>
+</code></pre>
+<a class="anchor" id="directive"></a>
+<h2>Step Seven: Directive</h2>
+<p>Create a directive and display all eight fields of the JSON:</p>
+<pre><code class="lang-javascript">elfApp.directive(<span class="hljs-string">'elfRenewable'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">controller</span>: <span class="hljs-string">'MainController'</span>,
+        <span class="hljs-attr">template</span>: <span class="hljs-string">'First: {{renewable[index].Year}} '</span> +
+        <span class="hljs-string">'&lt;br&gt;Solar: {{renewable[index]["Solar (quadrillion Btu)"]}}'</span> +
+        <span class="hljs-string">'&lt;br&gt;Geothermal: {{renewable[index]["Geothermal (quadrillion Btu)"]}}'</span> +
+        <span class="hljs-comment">// CODE OMITTED HERE...</span>
+    };
+});
+</code></pre>
+<p>Recall that in JavaScript the following are identical:</p>
+<pre><code class="lang-javascript">myObject.foo = <span class="hljs-number">1</span>;
+myObject['foo'] = <span class="hljs-number">1</span>;
+</code></pre>
+<p>After you complete the template in the code above, you should convert the directive to work with a <strong>templateUrl</strong> rather than a template:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">controller:</span> <span class="hljs-string">'MainController'</span>,
+<span class="hljs-string">templateUrl:</span> <span class="hljs-string">'renewable'</span>
+</code></pre>
+<p>This is probably the simplest path to being able to complete the tests, so it is a step most developers would take while ensuring their code is testable. Remember that you can use one of the <a href="http://html2jade.org/">html to jade</a> utilities to help with the process.</p>
+<a class="anchor" id="testing"></a>
+<h2>Testing</h2>
+<p>Convert your &quot;marie&quot; tests to work with the renewable data and directive. These tests are already written, but they work with the <strong>marie</strong> directive. Change them so they work with the new <strong>renewable</strong> directive and <strong>renewable</strong> fixture. For instance, you will need to use our global jade npm package to convert your <strong>renewable.jade</strong> file to a <strong>renewable.html</strong> fixture and load it in your tests. The steps involved were all described in the previous assignment on Angular Directives.</p>
+<p>For instance, this test passes for me:</p>
+<pre><code class="lang-javascript">it(<span class="hljs-string">'tests scope variable access in template loaded through fixture'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">// Get element from fixture</span>
+    scope.renewable = [{
+        <span class="hljs-string">"Year"</span>: <span class="hljs-string">"2017"</span>,
+        <span class="hljs-string">"Solar (quadrillion Btu)"</span>: <span class="hljs-string">"0.8045307"</span>,
+        <span class="hljs-string">"Geothermal (quadrillion Btu)"</span>: <span class="hljs-string">"0.2349284"</span>,
+        <span class="hljs-string">"Other biomass (quadrillion Btu)"</span>: <span class="hljs-string">"0.50916"</span>,
+        <span class="hljs-string">"Wind power (quadrillion Btu)"</span>: <span class="hljs-string">"2.202328"</span>,
+        <span class="hljs-string">"Liquid biofuels (quadrillion Btu)"</span>: <span class="hljs-string">"1.2329197"</span>,
+        <span class="hljs-string">"Wood biomass (quadrillion Btu)"</span>: <span class="hljs-string">"1.9860924"</span>,
+        <span class="hljs-string">"Hydropower (quadrillion Btu)"</span>: <span class="hljs-string">"2.5859957"</span>
+    }];
+
+    <span class="hljs-keyword">var</span> el = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'renewable'</span>);
+
+    <span class="hljs-comment">// ETC. The rest of the code is nearly, but not exactly identical to the marie code.</span>
+});
+</code></pre>
+<p>We will see a better way to mock scope.renewable on Monday.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Push, and if necessary, specify the folder your work is in.</p>
+<p><strong>NOTE</strong>: <em>No nested project folders!</em></p>
+</div></body></html>

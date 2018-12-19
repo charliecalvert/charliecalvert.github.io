@@ -1,0 +1,211 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ExpressSessionMaster</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ExpressSessionMaster</h1><p>Welcome to ExpressSessionMaster</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#background">Background</a></li>
+<li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#facebook-client-id">Facebook ClientId</a></li>
+<li><a href="#passport-generic-code">Passport Generic Code</a></li>
+<li><a href="#sessionstore">SessionStore</a></li>
+<li><a href="#read-session-data">Read Session Data</a></li>
+<li><a href="#sessionstore-fix-hack">SessionStore Fix/Hack</a></li>
+<li><a href="#ui-issues">UI Issues</a></li>
+<li><a href="#ui-menus">UI Menus</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#moving-to-pug-">Moving to PUG?</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>The goal of this assignment is to combine Sessions and Sign-In. It allows you to track who is signed into which session and something of what they did while they werer in the session.</p>
+<a class="anchor" id="background"></a>
+<h2>Background</h2>
+<p>There are several ways to track what the user is doing while using a program. On the client side, the following three options are available:</p>
+<ul>
+<li>Cookies</li>
+<li>LocalStorage</li>
+<li>sessionStorage</li>
+</ul>
+<p>On the server, the following are commonly available:</p>
+<ul>
+<li>Database</li>
+<li>Text file containing XML, JSON, CSV or the like</li>
+</ul>
+<p>There are several advantages to saving on the server side:</p>
+<ul>
+<li>The data is saver there. A hacker can get a cookie or LocalStorage, but they will have a hard time reaching the server.</li>
+<li>The data is more resiliant. Data stored in a database will not disappear if a session is disrupted.</li>
+</ul>
+<a class="anchor" id="getting-started"></a>
+<h2>Getting Started</h2>
+<p>Begin by copying your SessionCouch program to SessionMaster.</p>
+<pre><code class="lang-bash"><span class="hljs-keyword">cp</span> -r Week09-SessionCouch/ Week10-SessionMaster
+<span class="hljs-keyword">cd</span> Week10-SessionMaster/
+</code></pre>
+<p>There are several packages which need to be installed:</p>
+<pre><code class="lang-bash">npm <span class="hljs-keyword">install</span> passport <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> passport-facebook <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> passport-google-oauth20 <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> passport-twitter <span class="hljs-comment">--save</span>
+</code></pre>
+<p>You will also want to copy in the code for handling passport sign-in:</p>
+<pre><code class="lang-bash">cd routes/
+<span class="hljs-function"><span class="hljs-title">cp</span></span> ../../Week08-Passport/routes/twitter-login.js .
+<span class="hljs-function"><span class="hljs-title">cp</span></span> ../../Week08-Passport/routes/google-auth.js .
+<span class="hljs-function"><span class="hljs-title">cp</span></span> ../../Week08-Passport/routes/facebook.js .
+<span class="hljs-function"><span class="hljs-title">cd</span></span> ..
+</code></pre>
+<pre><code class="lang-bash">cd views/
+<span class="hljs-number">2129</span>  cp ../../Week08-Passport/views/profile-facebook<span class="hljs-selector-class">.jade</span> .
+<span class="hljs-number">2130</span>  cp ../../Week08-Passport/views/profile-twitter<span class="hljs-selector-class">.jade</span> .
+<span class="hljs-number">2131</span>  cp ../../Week08-Passport/views/account<span class="hljs-selector-class">.jade</span> profile-google<span class="hljs-selector-class">.jade</span>
+cd ..
+</code></pre>
+<a class="anchor" id="facebook-client-id"></a>
+<h2>Facebook ClientId</h2>
+<p>Create a script called <strong>setClientId</strong> which you can source in order to load FACEBOOK_CLIENT_ID. The contents of <strong>setClientID</strong> should look a bit like this:</p>
+<pre><code class="lang-bash"><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">FACEBOOK_CLIENT_ID</span>=&lt;YOUR_CLIENT_ID&gt;
+<span class="hljs-builtin-name">export</span> <span class="hljs-attribute">FACEBOOK_CLIENT_SECRET</span>=&lt;YOUR_CLIENT_SECRET&gt;
+</code></pre>
+<p>To use it: <strong>source setClientId</strong>.</p>
+<p>Check that it worked:</p>
+<pre><code class="lang-bash"><span class="hljs-built_in">echo</span> <span class="hljs-variable">$FACEBOOK_CLIENT_ID</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">$FACEBOOK_CLIENT_SECRET</span>
+</code></pre>
+<a class="anchor" id="passport-generic-code"></a>
+<h2>Passport Generic Code</h2>
+<p>Copy the code from Week08-Passport <strong>index.js</strong> that is Passport specific:</p>
+<ul>
+<li><a href="http://www.ccalvert.net/books/CloudNotes/Assignments/Passport.html#generic-code">http://www.ccalvert.net/books/CloudNotes/Assignments/Passport.html#generic-code</a></li>
+</ul>
+<a class="anchor" id="sessionstore"></a>
+<h2>SessionStore</h2>
+<p>We will use an object called session store to copy the session data into the database.</p>
+<p>Use sessionStore to presist your session state. In <strong>Middleware.js</strong> write this code to iniitialize <strong>sessionStore</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> sessionStore = sessionstore.createSessionStore({
+    <span class="hljs-attr">type</span>: <span class="hljs-string">'couchdb'</span>,
+    <span class="hljs-attr">host</span>: <span class="hljs-string">'http://192.168.2.27'</span>, <span class="hljs-comment">// optional</span>
+    port: <span class="hljs-number">5984</span>, <span class="hljs-comment">// optional</span>
+    dbName: <span class="hljs-string">'sessionstore-calvert'</span>, <span class="hljs-comment">// optional</span>
+    collectionName: <span class="hljs-string">'sessions'</span>, <span class="hljs-comment">// optional</span>
+    timeout: <span class="hljs-number">10000</span> <span class="hljs-comment">// optional</span>
+}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'sessionStore callback'</span>, data);
+});
+</code></pre>
+<p>Now modify our session middleware to use the <strong>sessionStore</strong> package as a <strong>store</strong>:</p>
+<pre><code class="lang-javascript">router.use(session({
+    <span class="hljs-attr">genid</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'id generated'</span>);
+        <span class="hljs-keyword">return</span> uuid.v4(); <span class="hljs-comment">// use UUIDs for session IDs</span>
+    },
+    <span class="hljs-attr">key</span>: <span class="hljs-string">'app.sess'</span>,
+    <span class="hljs-attr">secret</span>: process.env.SESSION_SECRET || <span class="hljs-string">'keyboard cat'</span>,
+    <span class="hljs-attr">resave</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">saveUninitialized</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">store</span>: sessionStore
+}));
+</code></pre>
+<a class="anchor" id="read-session-data"></a>
+<h2>Read Session Data</h2>
+<p>Using our CouchXXX.js files from the <strong>DataMaster</strong>, write code that will allow the user to read from the <strong>sessionStore</strong> database.</p>
+<p>This means you will have to add the following views to <strong>couchDesignDocs.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfSessionStore = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(doc)</span> </span>{
+  <span class="hljs-comment">// if the doc **collectionName** property equals **'sessions'** then emit the **doc._id** and the **doc** itself.</span>
+};
+
+<span class="hljs-keyword">var</span> elfSessionExpires = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(doc)</span> </span>{
+  <span class="hljs-comment">// if the doc **collectionName** property equals **'sessions'** and **doc.expires exists** then emit the **doc.expires**.</span>
+};
+</code></pre>
+<p>Now be sure you can get the views by calling a route in <strong>CouchView.js</strong>.</p>
+<a class="anchor" id="sessionstore-fix-hack"></a>
+<h2>SessionStore Fix/Hack</h2>
+<p>In the source for it, open up lib/databases/couchdb and do this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">set</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">hash, sess, callback</span>) </span>{
+  sess.collectionName = <span class="hljs-keyword">this</span>.collectionName;
+  <span class="hljs-keyword">if</span> (sess &amp;&amp; sess.cookie &amp;&amp; sess.cookie.expires) {
+    sess.expires = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(sess.cookie.expires);
+  } <span class="hljs-keyword">else</span> {
+    sess.expires = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(<span class="hljs-built_in">Date</span>.now() + <span class="hljs-keyword">this</span>.options.ttl * <span class="hljs-number">1000</span>);
+  }
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'couchStore'</span>, sess);        &lt;===== HERE
+  <span class="hljs-keyword">if</span> (sess.elfStoreData === <span class="hljs-literal">false</span>) {      &lt;===== HERE
+      callback(<span class="hljs-literal">null</span>)                      &lt;===== HERE
+      <span class="hljs-keyword">return</span>;                             &lt;===== HERE
+  }                                       &lt;===== HERE
+  <span class="hljs-keyword">this</span>.db.save(hash, sess._rev, sess, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'actually saved'</span>);    
+    <span class="hljs-keyword">if</span> (err &amp;&amp; err.error === <span class="hljs-string">'conflict'</span> &amp;&amp; err.reason.indexOf(<span class="hljs-string">'update conflict'</span>) &gt;= <span class="hljs-number">0</span>) {
+      <span class="hljs-keyword">return</span> callback(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'ConcurrencyError: Session was updated by someone else!'</span>));
+    }
+    callback(err);
+  });
+},
+
+</code></pre>
+<a class="anchor" id="ui-issues"></a>
+<h2>UI Issues</h2>
+<p>We have too many buttons and controls on the main page. Use jQuery to hide and expose DIVs so that you can focus on one area at a time. I created the following IDs:</p>
+<ul>
+<li>.panel.panel-default#basics-page</li>
+<li>.panel.panel-default#database-page</li>
+<li>.panel.panel-default#authentication-page</li>
+</ul>
+<p>The user should be able to toggle these properties at will.</p>
+<p>Here we are showing only the basics options:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/express-session-master-basics.png" alt="basics"></p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/express-session-master-database.png" alt="database"></p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/express-session-master-authentication.png" alt="authentication"></p>
+<a class="anchor" id="ui-menus"></a>
+<h2>UI Menus</h2>
+<p>First learn about mixins by completing the mixins assignment. Then, using mixins, add menus to your app.</p>
+<p>Also, change the behavior of the pages so that if you select one menu item, the UI for that feature is visible but the UI for the other features is hidden. For instance, if you select Basics, then the Databases and Authentication pages disappear.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/express-session-master-menu.png" alt="menu"></p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/express-session-master-mobile.png" alt="mobile"></p>
+<p>The following mixin can be used:</p>
+<pre><code class="lang-jade"><span class="hljs-selector-tag">mixin</span> <span class="hljs-selector-tag">littleMenu</span>
+    <span class="hljs-selector-tag">nav</span><span class="hljs-selector-class">.navbar</span><span class="hljs-selector-class">.navbar-default</span><span class="hljs-selector-class">.navbar-fixed-top</span>
+        <span class="hljs-selector-class">.container-fluid</span>
+            <span class="hljs-comment">// Brand</span>
+            <span class="hljs-selector-class">.navbar-header</span>
+                <span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.navbar-toggle</span><span class="hljs-selector-class">.collapsed</span>(type=<span class="hljs-string">'button'</span>,
+                        data-toggle=<span class="hljs-string">'collapse'</span>,
+                        data-target=<span class="hljs-string">'#bs-example-navbar-collapse-1'</span>,
+                        aria-expanded=<span class="hljs-string">'false'</span>)
+                    <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.sr-only</span> <span class="hljs-selector-tag">Toggle</span> <span class="hljs-selector-tag">navigation</span>
+                    <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.icon-bar</span>
+                    <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.icon-bar</span>
+                    <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.icon-bar</span>
+
+                <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.navbar-brand</span>(href=<span class="hljs-string">'/'</span>)
+                    <span class="hljs-selector-tag">img</span>(alt=<span class="hljs-string">'Elvenware'</span>, src=<span class="hljs-string">'favicon.png'</span>)
+            <span class="hljs-comment">// Nav Links</span>
+            <span class="hljs-selector-id">#bs-example-navbar-collapse-1</span><span class="hljs-selector-class">.collapse</span><span class="hljs-selector-class">.navbar-collapse</span>
+                <span class="hljs-selector-tag">ul</span><span class="hljs-selector-class">.nav</span><span class="hljs-selector-class">.navbar-nav</span>
+                    <span class="hljs-selector-tag">li</span><span class="hljs-selector-id">#basics-menu</span>
+                        <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.togglePageClick</span>(href=<span class="hljs-string">'/basics-page'</span>)
+                            | <span class="hljs-selector-tag">Basics</span>
+                            <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.sr-only</span> (current)
+                    <span class="hljs-selector-tag">li</span><span class="hljs-selector-id">#database-menu</span>
+                        <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.togglePageClick</span>(href=<span class="hljs-string">"/database-page"</span>) <span class="hljs-selector-tag">Database</span>
+                    <span class="hljs-selector-tag">li</span><span class="hljs-selector-id">#authentication-menu</span>
+                        <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.togglePageClick</span>(href=<span class="hljs-string">"/authentication-page"</span>) <span class="hljs-selector-tag">Authentication</span>
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Push your work and submit your assignment.</p>
+<a class="anchor" id="moving-to-pug-"></a>
+<h2>Moving to PUG?</h2>
+<p>If you want to move from Jade to Pug, here are the steps:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> pug <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">uninstall</span> jade <span class="hljs-comment">--save</span>
+</code></pre><p>In <strong>app.js</strong> change the single instance of the word <strong>jade</strong> to <strong>pug</strong>.</p>
+<p>In the <strong>views</strong> directory, change all files with the extensions <strong>jade</strong> to have the extension <strong>pug</strong>. This script should do the work for you:</p>
+<pre><code class="lang-bash"><span class="hljs-meta">#! /bin/bash
+</span>
+<span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> *.jade
+<span class="hljs-keyword">do</span>
+  git mv <span class="hljs-string">"<span class="hljs-variable">$file</span>"</span> <span class="hljs-string">"<span class="hljs-variable">${file%.jade}</span>.pug"</span>
+<span class="hljs-keyword">done</span>
+</code></pre>
+<p>Or this:</p>
+<pre><code>ln -s ~<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>NodeInstall<span class="hljs-regexp">/JadeToPug ~/</span>bin<span class="hljs-regexp">/JadeToPug</span>
+</code></pre><p>Then run <strong>JadeToPub</strong> in your <strong>views directory</strong>.</p>
+</div></body></html>

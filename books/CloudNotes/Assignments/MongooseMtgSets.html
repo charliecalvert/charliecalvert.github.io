@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>MongooseMtgSets</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>MongooseMtgSets</h1><p>Welcome to MongooseMtgSets</p><ul><!--TOC_Start--><li><a href="#description">Description</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#turn-it-in">Turn It In</a></li>
+<li><a href="#thoughts">Thoughts</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="description"></a>
+<h2>Description</h2>
+<p>Mongoose and MTG sets takes a slightly different tack than the two other applications we have seen in this serious. The other two apps can be described like this:</p>
+<ul>
+<li><strong>ParseMagic</strong>: Read <strong>AllSets.json</strong> and use Mongoose to load the meta-data about each  set into a MongoDb collection called <strong>magic-sets</strong>.</li>
+<li><strong>WriteCards</strong>: Read <strong>AllSets.json</strong> and use Mongoose to load the information about each card in a set into a collection. That program just loads the cards from one set called <strong>LEA</strong>.</li>
+</ul>
+<p>The goal of this app is to:</p>
+<ul>
+<li>Read the data from <strong>AllSets.json</strong> and use Mongoose to load the each set and its accompanying cards into a single collection called <strong>all-magic-sets</strong>. The user can then retrieve each of the 178 sets from the collection with a single call. After retrieving one of the sets, the data returned from MongoDb will contain both the meta-data for the set and all the cards for that one set. </li>
+</ul>
+<p>Again, just to make clear what is happening:</p>
+<ul>
+<li>We read and parse <strong>AllSets.json</strong></li>
+<li>We find the set and all its cards and place it as a single document in the <strong>all-magic.sets</strong> MongoDb collection.</li>
+<li>We then find the next set and push it and all its cards into a single document in <strong>all-magic-sets</strong>.</li>
+<li>By the time we are done, there will be 178 documents in <strong>all-magic-sets</strong>. Each document will contain, as a series of sub-documents, all the cards in that particular set. Sometimes there may be only a few cards, at other times there may be over a hundred. Regardless of how many cards are in the set, each set is treated as a single document with a series of sub-documents.</li>
+</ul>
+<a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>The code:</p>
+<ul>
+<li>First ensures that the MongoDb <strong>all-magic-sets</strong> collection, if it exists, is empty<ul>
+<li>It is not an error to try to empty a collection that does not exist.</li>
+</ul>
+</li>
+<li>Then it opens <strong>AllSets.json</strong></li>
+<li>In <strong>writeSetToFile</strong> it writes each set to disk as a JSON file</li>
+<li>In <strong>insertSet</strong> it inserts each set into <strong>all-magic-sets</strong>.<ul>
+<li>The cards are shown as sub-documents of the set</li>
+</ul>
+</li>
+<li>Then in <strong>Search</strong> it retrieves one set and displays one card.</li>
+</ul>
+<p>Each call is made in the callback to the previous call</p>
+<ul>
+<li>The code to empty the set, when complete, kicks of the process of reading <strong>AllSets.json</strong>.</li>
+<li>The code that inserts the sets, after it has inserted <strong>all</strong> the sets, calls the code to <strong>Search</strong> for a set.</li>
+</ul>
+<p>For instance, here is how the code to empty the collection, once it is finished, calls the code to insertData:</p>
+<pre><code class="lang-javascript">MagicSet.remove({}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span> </span>{
+    <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">throw</span>(err);
+    insertData()
+});
+</code></pre>
+<p>Here is how the code to insert a set, when it has finished inserting all the sets, calls <strong>Search</strong>: </p>
+<pre><code class="lang-javascript">set.save(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span> {</span>
+    console.<span class="hljs-built_in">log</span>(<span class="hljs-string">'saved: '</span>, set.name);
+    totalSetsSaved++;
+    <span class="hljs-keyword">if</span> (totalSetsSaved === setNames.<span class="hljs-built_in">length</span>) {
+        console.<span class="hljs-built_in">log</span>(setNames.<span class="hljs-built_in">length</span>);
+        search();
+    }
+});
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn It In</h2>
+<p>Run the <strong>ParseSets.js</strong> file. Take the following screenshots:</p>
+<ul>
+<li>Your mongolab main database page before you insert <strong>all-magic-sets</strong>.</li>
+<li>Your mongolab main database page after you insert <strong>all-magic-sets</strong>.</li>
+<li>A view of the data from <strong>all-magic-sets</strong> on MongoLab. Show the default view of the collection when you view it on MongoLab.</li>
+<li>A screen shot of the command line on your system after you finish running this command:<ul>
+<li><strong>node ParseSets.js</strong> </li>
+</ul>
+</li>
+</ul>
+<a class="anchor" id="thoughts"></a>
+<h2>Thoughts</h2>
+<p>NOSQL databases are not for everyone. However, if one were to make an argument for NOSQL databases that did not involve big data and vast numbers of irregularly shaped documents, then the kind of data found in MTG would seem to be a good example of a task better suited to NOSQL database than to a SQL database. I find it easier to think of cards as sub-documents rather than as a table bound to another table through a foreign key. It&#39;s not that relational databases can&#39;t handle this kind of data, but only that there is an awful lot of machinery required to abstractly handle concepts that make obvious, concrete sense when placed in a NOSQL database.</p>
+<p>NOSQL databases can handle rapid transactional requests with reasonable accuracy. However, it is arguable that in some cases the years of experience behind databases like MySQL or PostgreSql make them better choices for some databases that have to handle thousands of users simultaneously pounding on a database with multiple CRUD operations. The MTG, database, is not that kind of database. We need to insert the data once, and after that we simply query it. Why introduce a lot of machinery designed to ensure save transactions when they are not going to be any transactions? </p>
+<p>SQL databases are highly optimized. It is hard to believe, however, that any degree of optimization is going to make a SQL database that must perform a join between two tables called <strong>sets</strong> and <strong>cards</strong> faster than a NOSQL database that simply retrieves a single document from a btree file. Again, why introduce all the overhead and complexity of a SQL database in order to perform a relatively simple task like retrieve one of 178 documents from single file?</p>
+<p>SQL databases are built around mathematical principles. They are faster, elegant, cleanly designed. But not everyone thinks in purely mathematical terms. For many people, it will always be easier to think about documents than about tables, sets and keys. It is not that one is better than the other, it is that they serve different tasks.</p>
+<p>Summary:</p>
+<ul>
+<li>Clearly defined tables, lots of complex relations between the tables, lots of simultaneous transactions? Consider SQL databases</li>
+<li>Data more amorphous, simple relations between documents, few simultaneous transactions? Consider NOSQL.</li>
+<li>Stuffing millions of documents with varying structures into a database in a short period of time? Consider NOSQL.</li>
+</ul>
+</div></body></html>

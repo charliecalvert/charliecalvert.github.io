@@ -1,0 +1,112 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>GruntSmokeTest02</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>GruntSmokeTest02</h1><p>Welcome to GruntSmokeTest02</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#new-script">New Script</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>This is the same as <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/GruntSmokeTest.html">GruntSmokeTest</a>, but there is a new script.</p>
+<a class="anchor" id="new-script"></a>
+<h2>New Script</h2>
+<p>Here is the new script:</p>
+<pre><code class="lang-bash"><span class="hljs-comment">#! /bin/bash</span>
+
+RED='\033[0;31m'
+<span class="hljs-class">LIGHT_RED='\033[1;</span>31m'
+<span class="hljs-class">LIGHT_GREEN='\033[1;</span>32m'
+YE<span class="hljs-class">LLOW='\033[1;</span>33m'
+B<span class="hljs-class">LUE='\033[1;</span>36m'
+NC='\033[0m' <span class="hljs-comment"># No Color</span>
+
+<span class="hljs-comment"># Use set -e to exit on error</span>
+set -e
+
+function check() {
+ <span class="hljs-built_in"> if </span>[ -d $1 ]; then
+    cd $1
+  else
+    echo <span class="hljs-string">"Directory $1 does not exist."</span>
+    echo <span class="hljs-string">"Please fix the problem and try again."</span>
+    exit
+  fi
+
+  pwd
+
+ <span class="hljs-built_in"> if </span>[ ! -d node_modules ]; then
+     <span class="hljs-comment"># npm install</span>
+     ln -s ~/tmp/node_modules node_modules
+  fi   
+
+  grunt<span class="hljs-built_in"> check
+</span>
+  cd ..
+}
+
+A1=Week02-BasicTypes
+A2=Week02-BasicTypesExpress
+BASIC_TYPES=<span class="hljs-string">"$A1 $A2"</span>
+A_OK=false
+
+function basicTypes() {
+    for i in $BASIC_TYPES
+    do
+        <span class="hljs-built_in"> if </span>[ -d $i ]; then
+            echo -e $LIGHT_GREEN<span class="hljs-string">"Directory $BLUE$i$LIGHT_GREEN exists$NC"</span>
+            A_OK=true
+           <span class="hljs-built_in"> check </span><span class="hljs-string">"$i"</span>
+         else
+            echo -e $LIGHT_RED<span class="hljs-string">"Directory $BLUE$i$LIGHT_RED does not exist$NC"</span>
+         fi
+    done
+   <span class="hljs-built_in"> if </span>$A_OK ; then
+        echo -e $LIGHT_GREEN<span class="hljs-string">"BasicTypes has at least one good directory.$NC"</span>
+    else
+        echo -e $LIGHT_RED<span class="hljs-string">"Basic Types is not good$NC"</span>
+        exit 1
+    fi
+}
+
+function fancy() {
+   <span class="hljs-built_in"> if </span>[ -d $A1 ]; then
+        echo <span class="hljs-string">"Directory $A1 exists"</span>
+    else
+       <span class="hljs-built_in"> if </span>[ -d $A2 ]; then
+            echo <span class="hljs-string">"Directory $A2 exists"</span>
+        else
+            echo <span class="hljs-string">"Neither Directory $A1 or $A2 exists"</span>
+        fi
+    fi
+}
+
+function Weeks01To04() {
+   <span class="hljs-built_in"> check </span>Week01-ExpressBasics/  
+    basicTypes
+   <span class="hljs-built_in"> check </span>Week02-GetNumbers/
+   <span class="hljs-built_in"> check </span>Week02-JavaScriptObjects/
+   <span class="hljs-built_in"> check </span>Week02-ObjectBasicsJasmine/
+   <span class="hljs-built_in"> check </span>Week03-CouchDbDemo/
+   <span class="hljs-built_in"> check </span>Week03-CouchDbViews/
+   <span class="hljs-built_in"> check </span>Week03-ExpressJQuery/
+   <span class="hljs-built_in"> check </span>Week03-ExpressRoutes/
+   <span class="hljs-built_in"> check </span>Week04-PointerLock/
+   <span class="hljs-built_in"> check </span>Week04-ThreeFloor/
+   <span class="hljs-built_in"> check </span>Week04-ThreeJsBasics/
+}
+
+function Weeks05To07 {
+   <span class="hljs-built_in"> check </span>Week05-MazeBuilder/
+   <span class="hljs-built_in"> check </span>Week06-MazeDataReader/
+   <span class="hljs-built_in"> check </span>Week07-Midterm/
+}
+
+Weeks01To04
+Weeks05To07
+</code></pre>
+<p>All the tests should pass. Note that you can temporally comment out one of the last two lines with the hash tag to focus only on certain tests:</p>
+<pre><code class="lang-bash"><span class="hljs-attr"># Weeks01</span>T<span class="hljs-meta">o04</span>
+Weeks<span class="hljs-number">05</span>T<span class="hljs-meta">o07</span>
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>When you are done, simply submit your assignment and leave a brief message reporting on your status.</p>
+<p>Make sure you are running against the master branch.</p>
+<p>More details are in <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/GruntSmokeTest.html#turn-it-in">the Turn It In</a> section of the <a href="http://www.ccalvert.net/books/CloudNotes/Assignments/GruntSmokeTest.html">first assignment</a>.</p>
+</div></body></html>

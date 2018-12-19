@@ -1,0 +1,152 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>BowerNpm</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>BowerNpm</h1><p>Welcome to BowerNpm</p><ul><!--TOC_Start--><li><a href="#npm-and-bower">NPM and Bower</a></li>
+<li><a href="#references">References</a></li>
+<li><a href="#install">Step 01: Install</a></li>
+<li><a href="#create">Step02: Create Application</a></li>
+<li><a href="#step03-bower">Step03: Bower</a></li>
+<li><a href="#install-packages">Step04: Install Packages</a></li>
+<li><a href="#load">Step05: Load Bootstrap and jQuery</a></li>
+<li><a href="#run">Step06: Run Your Project</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#suggestion-one">Suggestion One</a></li>
+<li><a href="#suggestion-two">Suggestion Two</a></li>
+<li><a href="#new-bash-aliases">Get the Most Recent Copy of .bash_aliases</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="npm-and-bower"></a>
+<h1>NPM and Bower</h1>
+<p>The goal of this exercise is to make sure you know how to use our front end and server side package managers.</p>
+<a class="anchor" id="references"></a>
+<h2>References</h2>
+<p>There are two decks that should prove helpful:</p>
+<ul>
+<li><a href="http://bit.ly/elf-npm">NPM</a></li>
+<li><a href="http://bit.ly/elf-bower">Bower</a></li>
+</ul>
+<p>And this rough text from Elvenware:</p>
+<ul>
+<li><a href="http://bit.ly/node-packages">Node Packages</a></li>
+</ul>
+<p>Also potentially useful:</p>
+<ul>
+<li><a href="http://bit.ly/angular-yeoman">Angular and Yeoman</a></li>
+</ul>
+<p>NPM on Elvenware</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/NodeJs.html#npm-global-packages">NPM on Elvenware</a></li>
+</ul>
+<a class="anchor" id="install"></a>
+<h2>Step 01: Install</h2>
+<p>Confirm that NPM and node are installed and on relatively recent versions:</p>
+<pre><code>$ npm --<span class="hljs-keyword">version</span>
+<span class="hljs-number">3.3</span>.<span class="hljs-number">4</span>
+$ <span class="hljs-keyword">node</span> <span class="hljs-title">--version</span>
+v4.<span class="hljs-number">1.1</span>
+</code></pre><p>If your version of node is older than 4.0.0, or your version of NPM is older than 3.0.0 then you should read this document on Elvenware:</p>
+<ul>
+<li><a href="http://bit.ly/elven-node-install">Node Install</a></li>
+</ul>
+<p>In particular, check the sections on updating node and updating packages.</p>
+<p>I have decided that the node version manager (nvm) is more trouble than it is worth. These two lines of code can be used to turn off the node version manager, or at least to ensure that we use the primary version of node installed on a system:</p>
+<pre><code>nvm use<span class="hljs-built_in"> system
+</span>nvm alias<span class="hljs-built_in"> default </span>system
+</code></pre><p>You may need to restart your bash shell after issuing these commands.</p>
+<a class="anchor" id="create"></a>
+<h2>Step02: Create Application</h2>
+<p>In the bash shell, navigate to your Git folder. Create a nodejs express project called Week02-NpmBower:</p>
+<pre><code>express Week02-NpmBower
+<span class="hljs-built_in">cd</span> Week02-NpmBower
+npm install
+</code></pre><p>The first steps creates our projects. In the second step we navigate into the project folder. In the third step we install the packages on which our default express project relies. The packages get installed into a folder called <strong>node_modules</strong>.</p>
+<p>In general, you only need to run <strong>npm install</strong> once per project. The main exceptions to this rule are as follows:</p>
+<ul>
+<li>You may need to run <strong>npm install</strong> if you update the packages on which your project relies.</li>
+<li>Run it again if you pull from git begin development on a new machine or in a new directory. We   </li>
+</ul>
+<p>To better understand the third step, beging by opening your project in WebStorm. Open <strong>package.json</strong> and inspect the dependencies:</p>
+<pre><code><span class="hljs-string">"dependencies"</span>: {
+    <span class="hljs-string">"body-parser"</span>: <span class="hljs-string">"~1.13.2"</span>,
+    <span class="hljs-string">"cookie-parser"</span>: <span class="hljs-string">"~1.3.5"</span>,
+    <span class="hljs-string">"debug"</span>: <span class="hljs-string">"~2.2.0"</span>,
+    <span class="hljs-string">"express"</span>: <span class="hljs-string">"~4.13.1"</span>,
+    <span class="hljs-string">"jade"</span>: <span class="hljs-string">"~1.11.0"</span>,
+    <span class="hljs-string">"morgan"</span>: <span class="hljs-string">"~1.6.1"</span>,
+    <span class="hljs-string">"serve-favicon"</span>: <span class="hljs-string">"~2.3.0"</span>
+  }
+</code></pre><p>This is the standard set of packages installed for an express project. For now you need only concern yourself with two of these libraries:</p>
+<ul>
+<li>express: Use this to set up your web server and handle requests from the client.</li>
+<li>jade: Use this to generate the HTML for your application</li>
+</ul>
+<p>Among our goals over the next weeks will be to understand these libraries. You don&#39;t, however, need to understand them yet. Perhaps the take-away at this point is simply: &quot;Whenever I hear anything about express or jade I ought to pay strict attention, as these are subjects I&#39;m expected to understand.&quot;</p>
+<a class="anchor" id="step03-bower"></a>
+<h2>Step03: Bower</h2>
+<p>The <strong>CreateExpressProject</strong> script automates the setup of Bower. To read more about exactly what it does, see this section from the Elvenware site:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/NodePackages.html#bower">Bower on Elvenware</a></li>
+</ul>
+<a class="anchor" id="install-packages"></a>
+<h2>Step04: Install Packages</h2>
+<p>Use NPM to install grunt:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> grunt <span class="hljs-comment">--save</span>
+</code></pre><p>We&#39;ll learn about grunt later. For now, just install it.</p>
+<p>Use bower to install jquery and boostrap:</p>
+<pre><code><span class="hljs-keyword">bower </span><span class="hljs-keyword">install </span><span class="hljs-keyword">bootstrap </span>--save
+</code></pre><p>This single command will install both jquery and bootstrap. If you wanted to install jquery without installing bootstrap, then issue this command:</p>
+<pre><code><span class="hljs-keyword">bower </span><span class="hljs-keyword">install </span><span class="hljs-keyword">jquery </span>--save
+</code></pre><a class="anchor" id="load"></a>
+<h2>Step05: Load Bootstrap and jQuery</h2>
+<p>In WebStorm, open up <strong>views/layout.jade</strong>. Jade is sensitive to indentation. As a result, you should be very careful not to disturb the indentation in your file.</p>
+<p>Modify the jade code to load both jQuery and Bootstrap:</p>
+<pre><code>doctype html
+html
+  head
+    title= title
+    link(<span class="hljs-attribute">rel</span>=<span class="hljs-string">'stylesheet'</span>, <span class="hljs-attribute">href</span>=<span class="hljs-string">'/stylesheets/style.css'</span>)
+    link(<span class="hljs-attribute">rel</span>=<span class="hljs-string">'stylesheet'</span>, <span class="hljs-attribute">href</span>=<span class="hljs-string">'/components/bootstrap/dist/css/bootstrap.css'</span>)
+    script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"components/jquery/dist/jquery.js"</span>)
+    script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"components/bootstrap/dist/js/bootstrap.js"</span>)
+  body
+    block content
+</code></pre><a class="anchor" id="run"></a>
+<h2>Step06: Run Your Project</h2>
+<p>Modify <strong>bin/www</strong> so that your project runs on port 30025:</p>
+<pre><code><span class="hljs-attribute">var port</span> = normalizePort(process.env.PORT || <span class="hljs-string">'30025'</span>);
+</code></pre><p>Modify <strong>package.json</strong> to start your project with <strong>nodemon</strong> instead of <strong>node</strong>:</p>
+<pre><code><span class="hljs-string">"scripts"</span>: {
+    <span class="hljs-string">"start"</span>: <span class="hljs-string">"nodemon ./bin/www"</span>
+},
+</code></pre><p><strong>nodemon</strong> will automatically restart your project whenever your modify a JavaScript file that is part of your project. This saves you from having to constantly restart your project when you want to see your updates.</p>
+<p>To run your project, type the following in the root of your project</p>
+<pre><code><span class="hljs-built_in">npm</span> start
+</code></pre><p>Now you need to confirm that your work in <strong>layout.jade</strong> did in fact create code that loads <strong>jquery</strong> and <strong>bootstrap</strong>. Open up Chromium or Chrome. Press F12 to load the developer tools. Turn to the <strong>network</strong> page. Make sure that you can see that both <strong>jquery</strong> and <strong>bootstrap</strong> loaded.</p>
+<p>There should be no red text on the page. Red text is usually reserved for errors. If you see errors, modify your <strong>layout.jade</strong> file to correct them.</p>
+<p>You should also change the title in <strong>routes/index.js</strong>:</p>
+<pre><code class="lang-javascript">router.<span class="hljs-keyword">get</span>(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span></span>(req, res, next) {
+  res.render(<span class="hljs-string">'index'</span>, { title: <span class="hljs-type"></span>'PUT YOUR TITLE HERE<span class="hljs-string">''</span> });
+});
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Check your project into Git. Push it to BitBucket or GitHub. When you submit the project in Canvas, include the URL of your Git repository.</p>
+<a class="anchor" id="suggestion-one"></a>
+<h2>Suggestion One</h2>
+<p>Read this section from Elvenware:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/NodePackages.html#module-missing">Module Missing</a></li>
+</ul>
+<a class="anchor" id="suggestion-two"></a>
+<h2>Suggestion Two</h2>
+<p>Perhaps the following is written with tongue in cheek, but sometimes the truth is said in jest.</p>
+<p>Once you have completed the project successfully, move to your <strong>Source</strong> directory or to a <strong>temp</strong> directory.</p>
+<p>Redo the whole assignment.</p>
+<p>Multiple times.</p>
+<p>Keep redoing it until you have it memorized. You should be able to do everything in this assignment in your sleep. We will do it over and over again in this class, so it is best to become completely familiar with these steps as soon as possible.</p>
+<p>Even if it is hard to take that request seriously, you should nonetheless strive to become familiar with the basics of NPM and Bower. These tools are an essential part of node development as practiced in this class. Indeed, most node developers use NPM, and many of them use Bower. Understanding how to work with <strong>bower.json</strong> and <strong>package.json</strong> files, and how to install packages with NPM and Bower are very useful and important skills.  </p>
+<a class="anchor" id="new-bash-aliases"></a>
+<h2>Get the Most Recent Copy of .bash_aliases</h2>
+<p>The first step is to get the most recent copy of JsObjects. Navigate to the JsObjects folder and pull down the most recent content:</p>
+<pre><code><span class="hljs-keyword">cd</span> ~<span class="hljs-string">/Git/JsObjects/</span>
+git pull
+</code></pre><p>Now navigate to the Utilities folder and copy my updated version of <strong>.bash_aliases</strong> to the root of your home folder:</p>
+<pre><code>cp ~<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>SetupLinuxBox<span class="hljs-regexp">/.bash_aliases ~/</span>.bash_aliases
+<span class="hljs-keyword">source</span> ~<span class="hljs-regexp">/.bash_aliases</span>
+</code></pre><p>The last command shown above loads the updated <strong>.bash_aliases</strong> file into memory. You could do the same thing by restarting the bash shell.</p>
+</div></body></html>
