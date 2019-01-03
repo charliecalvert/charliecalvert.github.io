@@ -22,4 +22,17 @@ $(document).ready(function() {
     'use strict';
     console.log('Document ready called');
     new elf.Control();
+
+    const getTestAction = document.getElementById('getTest');
+    const root = document.getElementById('root');
+    const title = document.getElementsByTagName('title');
+
+    getTestAction.onclick = () => {
+        fetch('/test01')
+            .then(response => response.text())
+            .then(result => {
+                title[0].textContent = 'bar';
+                root.innerHTML = result;
+            })
+    }
 });
