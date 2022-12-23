@@ -1,0 +1,277 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>HyperlinkExplorer</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>HyperlinkExplorer</h1><p>Welcome to HyperlinkExplorer</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#hyperlink-explorer">Hyperlink Explorer</a></li>
+<li><a href="#updates">Updates</a></li>
+<li><a href="#data-directory">Create a Spec Data Directory</a></li>
+<li><a href="#test-your-work">Test your work</a></li>
+<li><a href="#delicious-utils">Delicious Utils</a></li>
+<li><a href="#the-logger">The logger</a></li>
+<li><a href="#movement-tests">Movement Tests</a></li>
+<li><a href="#delicious-tests">Delicious Tests</a></li>
+<li><a href="#other-tests">Other Tests</a></li>
+<li><a href="#favicon">Favicon</a></li>
+<li><a href="#tests-clean">Tests Clean</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>We further refine the midterm, getting ready for the final.</p>
+<a class="anchor" id="hyperlink-explorer"></a>
+<h2>Hyperlink Explorer</h2>
+<p>It&#39;s time to give our project a name. We&#39;ll call it the Hyperlink Explorer.</p>
+<p>Copy your midterm into a new folder:</p>
+<pre><code><span class="hljs-keyword">cp</span> -r Week08-Midterm Week10-HyperExplorer
+</code></pre><p>Open the project in WebStorm or your editor of choice.</p>
+<p>Make the necessary changes regarding names.</p>
+<p>Change the name of the class called elfMidterm to <strong>elfHyperExplorer</strong>. As a result of this change you will probably also need to make a change to your <strong>document.ready</strong> function.</p>
+<a class="anchor" id="updates"></a>
+<h2>Updates</h2>
+<p>Copy in the most recent tests from the templates directory:</p>
+<pre><code class="lang-bash">cp <span class="hljs-variable">$ELF_TEMPLATES</span><span class="hljs-regexp">/UnitTest/</span>HyperExplorer<span class="hljs-regexp">/test*.js spec/</span>.
+</code></pre>
+<p>Unless you have made your own modifications to these files, simply copy in the most recent mixins:</p>
+<pre><code class="lang-bash"><span class="hljs-attribute">cp</span> <span class="hljs-variable">$ELF_TEMPLATES</span>/JadeMixins/mixin<span class="hljs-regexp">*.jade</span> views/.
+</code></pre>
+<p>If you did modify them, then do a diff or meld to update the files, being sure that the left and right iteration buttons have ID&#39;s of <strong>leftButton</strong> and <strong>rightButton</strong>.</p>
+<a class="anchor" id="data-directory"></a>
+<h2>Create a Spec Data Directory</h2>
+<p>Something like this:</p>
+<pre><code class="lang-bash"><span class="hljs-title">mkdir</span> spec/<span class="hljs-class"><span class="hljs-keyword">data</span></span>
+<span class="hljs-title">git</span> mv spec/bitly-links.js spec/<span class="hljs-class"><span class="hljs-keyword">data</span>/.</span>
+</code></pre>
+<p>Copy your <strong>delicious-javascript-links.js</strong> file from the DelicousQuery project into <strong>spec/data</strong>.</p>
+<a class="anchor" id="test-your-work"></a>
+<h2>Test your work</h2>
+<p>My callDelicious method looks like this:</p>
+<pre><code class="lang-javascript">callDelicious: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">subject</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-keyword">var</span> feedUrl = <span class="hljs-string">'http://feeds.delicious.com/v2/json/charliecalvert/'</span> + subject;
+        $.ajax({
+            <span class="hljs-attr">url</span>: feedUrl,
+
+            <span class="hljs-attr">dataType</span>: <span class="hljs-string">'jsonp'</span>,
+
+            <span class="hljs-attr">success</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+                elfDelicious.deliciousLinks = data;
+                $(<span class="hljs-string">'#urlDelicious'</span>).empty();
+                $.each(elfDelicious.deliciousLinks, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index, deliciousLink</span>) </span>{
+                    elfDelicious.appendUrl(index, deliciousLink);
+                });
+                $(<span class="hljs-string">'#deliciousDetails'</span>).html(<span class="hljs-built_in">JSON</span>.stringify(elfDelicious.deliciousLinks, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+            }
+        });
+    },
+</code></pre>
+<p>Copy in the delicious test suite:</p>
+<pre><code>cp <span class="hljs-variable">$ELF_TEMPLATES</span><span class="hljs-regexp">/UnitTest/</span>HyperExplorer<span class="hljs-regexp">/test-delicious.js spec/</span>.
+</code></pre><p>Make sure they all pass.</p>
+<a class="anchor" id="delicious-utils"></a>
+<h2>Delicious Utils</h2>
+<p>Move the following functions from DeliciousQuery to an object called <strong>elfDeliciousUtils</strong>:</p>
+<ul>
+<li>&#39;filter&#39;</li>
+<li>&#39;getAllUrls&#39;</li>
+<li>&#39;getDescriptionTag&#39;</li>
+<li>&#39;getMap&#39;</li>
+<li>&#39;getMapBig&#39;</li>
+<li>&#39;getMapMidSize&#39;</li>
+<li>&#39;getOwnerNameMap&#39;</li>
+</ul>
+<p>Something like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elfDeliciousUtils = {
+
+    <span class="hljs-attr">getAllUrls</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-comment">// AND SO ON...</span>
+    },
+
+    <span class="hljs-attr">getMap</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ ...
+
+    <span class="hljs-comment">// LOTS OF CODE OMITTED HERE</span>
+};
+</code></pre>
+<p>To see if you have construcuted it correctly, see the tests in <strong>charlie-test-delicious-analysis.js</strong>. To get the test to load, be sure something like this is in the file object in <strong>karma.conf.js</strong></p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">files</span>: [
+    <span class="hljs-comment">// CODE OMITTED HERE</span>
+    <span class="hljs-string">'spec/test*.js'</span>,
+    <span class="hljs-string">'spec/opt-test*.js'</span>,
+    <span class="hljs-string">'spec/charlie-test*.js'</span>,
+    <span class="hljs-comment">// CODE OMITTED HERE</span>
+],
+</code></pre>
+<a class="anchor" id="the-logger"></a>
+<h2>The logger</h2>
+<p>In <strong>elf-log.js</strong></p>
+<pre><code class="lang-javascript">(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">
+    'use strict'</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">ElfLog</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">this</span>.debugLevel = <span class="hljs-keyword">this</span>.logLevelWarn;
+    }
+
+    <span class="hljs-comment">//var levels = ['error', 'warn', 'info', 'silent'];</span>
+    <span class="hljs-keyword">var</span> that;
+
+    ElfLog.prototype.logLevelError = <span class="hljs-number">0</span>;
+    ElfLog.prototype.logLevelWarn = <span class="hljs-number">1</span>;
+    ElfLog.prototype.logLevelDetails = <span class="hljs-number">2</span>;
+    ElfLog.prototype.logLevelInfo = <span class="hljs-number">3</span>;
+    ElfLog.prototype.logLevelSilent = <span class="hljs-number">4</span>;
+
+    ElfLog.prototype.debugLevel = <span class="hljs-literal">undefined</span>;
+
+    ElfLog.prototype.setLevel = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">level</span>) </span>{
+        <span class="hljs-keyword">this</span>.debugLevel = level;
+    };
+
+    ElfLog.prototype.log = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">level, message</span>) </span>{
+        <span class="hljs-comment">// console.log("Level:", level, 'debugLevel: ', this.debugLevel);</span>
+        <span class="hljs-keyword">if</span> (level &gt;= <span class="hljs-keyword">this</span>.debugLevel) {
+            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> message !== <span class="hljs-string">'string'</span>) {
+                message = <span class="hljs-built_in">JSON</span>.stringify(message);
+            }
+            <span class="hljs-built_in">console</span>.log(level+<span class="hljs-string">': '</span>+message);
+        }
+    };
+
+    that = <span class="hljs-keyword">new</span> ElfLog();
+    <span class="hljs-built_in">window</span>.elfLog = that;
+})();
+</code></pre>
+<p>Use it like this:</p>
+<pre><code class="lang-javascript">elfLog.<span class="hljs-built_in">set</span>Level(elfLog.<span class="hljs-keyword">log</span>LevelDetails); // Done <span class="hljs-keyword">once</span> per application
+elfLog.<span class="hljs-keyword">log</span>(elfLog.<span class="hljs-keyword">log</span>LevelDetails, 'ElfDisplay.Render index: ' + index);
+</code></pre>
+<a class="anchor" id="movement-tests"></a>
+<h2>Movement Tests</h2>
+<p>Make sure you have created spec/fixtures/bitly.html:</p>
+<pre><code>jade views/bitly<span class="hljs-selector-class">.jade</span> --out spec/fixtures/
+</code></pre><p>Copy over <strong>test-movement</strong> and make sure all the tests pass:</p>
+<pre><code class="lang-bash">cp <span class="hljs-variable">$ELF_TEMPLATES</span><span class="hljs-regexp">/UnitTest/</span>HyperExplorer<span class="hljs-regexp">/test-movement.js spec/</span>.
+</code></pre>
+<p>Key Points:</p>
+<ul>
+<li>If you spy on function, it is not really called. We can just check if it is called.<ul>
+<li>Therefore, don&#39;t check methods down stream of it to see if they are called</li>
+</ul>
+</li>
+<li>We need to click the right button before we can expect the left button to do anything</li>
+</ul>
+<p>The output we want:</p>
+<pre><code>Test Movement
+    ✓ expects a button <span class="hljs-keyword">with</span> an id <span class="hljs-keyword">of</span> <span class="hljs-comment">#leftButton</span>
+    ✓ expects a button <span class="hljs-keyword">with</span> an id <span class="hljs-keyword">of</span> <span class="hljs-comment">#rightButton</span>
+    ✓ shows <span class="hljs-literal">that</span> elfMovement.left <span class="hljs-keyword">is</span> called <span class="hljs-keyword">when</span> selecting left button
+    ✓ shows <span class="hljs-literal">that</span> elfMovement.right <span class="hljs-keyword">is</span> called <span class="hljs-keyword">when</span> selecting right button
+    ✓ shows <span class="hljs-literal">that</span> elfDisplay.render <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> called <span class="hljs-keyword">when</span> selecting only left button
+    ✓ shows <span class="hljs-literal">that</span> elfDisplay.render <span class="hljs-keyword">is</span> called <span class="hljs-keyword">when</span> selecting right <span class="hljs-keyword">then</span> left button
+    ✓ shows <span class="hljs-literal">that</span> elfDisplay.render <span class="hljs-keyword">is</span> called <span class="hljs-keyword">when</span> selecting right button
+    ✓ shows <span class="hljs-literal">that</span> elfDisplay.showRecord <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> called <span class="hljs-keyword">when</span> selecting only left button
+    ✓ shows <span class="hljs-literal">that</span> elfDisplay.showRecord <span class="hljs-keyword">is</span> called <span class="hljs-keyword">when</span> selecting right <span class="hljs-keyword">then</span> left button
+    ✓ shows <span class="hljs-literal">that</span> elfDisplay.showRecord <span class="hljs-keyword">is</span> called <span class="hljs-keyword">when</span> selecting right button
+    ✓ shows <span class="hljs-literal">that</span> elfDisplay.showRecord gets valid data
+    ✓ shows <span class="hljs-literal">that</span> movement.right called even <span class="hljs-keyword">if</span> we click many times past end <span class="hljs-keyword">of</span> array
+    ✓ shows <span class="hljs-literal">that</span> the right boundary condition <span class="hljs-keyword">is</span> checked
+    ✓ shows <span class="hljs-literal">that</span> the right boundary condition gets valid data
+</code></pre><a class="anchor" id="delicious-tests"></a>
+<h2>Delicious Tests</h2>
+<p>Make sure you have created spec/fixtures/delicious.html:</p>
+<pre><code>jade views/delicious<span class="hljs-selector-class">.jade</span> --out spec/fixtures/
+</code></pre><p>Make sure that there is no checkbox selected by default.</p>
+<pre><code class="lang-jade">div.panel.panel-default
+    div.panel-heading Select one <span class="hljs-keyword">or</span> more CheckBoxes <span class="hljs-keyword">to</span> search Delicious
+    div.panel-body
+        div
+            input#chJavaScript(<span class="hljs-attribute">type</span>=<span class="hljs-string">'checkbox'</span>, <span class="hljs-attribute">name</span>=<span class="hljs-string">'deliciousCheckBox'</span>, <span class="hljs-attribute">value</span>=<span class="hljs-string">'JavaScript'</span>)
+            label(<span class="hljs-attribute">for</span>=<span class="hljs-string">'chJavaScript'</span>) JavaScript
+        div
+            input#chBootstrap(<span class="hljs-attribute">type</span>=<span class="hljs-string">'checkbox'</span>, <span class="hljs-attribute">name</span>=<span class="hljs-string">'deliciousCheckBox'</span>, <span class="hljs-attribute">value</span>=<span class="hljs-string">'Bootstrap'</span>)
+            label(<span class="hljs-attribute">for</span>=<span class="hljs-string">'chBootstrap'</span>)  Bootstrap
+        div
+            input#chNodeJs(<span class="hljs-attribute">type</span>=<span class="hljs-string">'checkbox'</span>, <span class="hljs-attribute">name</span>=<span class="hljs-string">'deliciousCheckBox'</span>, <span class="hljs-attribute">value</span>=<span class="hljs-string">'Node'</span>)
+            label(<span class="hljs-attribute">for</span>=<span class="hljs-string">'chNodeJs'</span>)  NodeJs
+</code></pre>
+<p>Copy in <strong>text-delicious-fixtures.js</strong>:</p>
+<pre><code class="lang-bash">cp <span class="hljs-variable">$ELF_TEMPLATES</span><span class="hljs-regexp">/UnitTest/</span>HyperExplorer<span class="hljs-regexp">/test-delicious-fixture.js spec/</span>.
+</code></pre>
+<p>Note that if we are spying on a method that has an onclick event, we need to initialize the event after we have spied on the method:</p>
+<pre><code class="lang-javascript">it('expects selecting #chBootstrap to cause displayCheckBoxSelection to have been called', function() {
+    var checkBox = document.getElementById('chBootstrap')<span class="hljs-comment">;</span>
+    spyOn(<span class="hljs-name">elfDelicious</span>, 'displayCheckboxSelection')<span class="hljs-comment">;</span>
+    elfDelicious.deliciousSetup()<span class="hljs-comment">;</span>
+    $(<span class="hljs-name">checkBox</span>).trigger('click')<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">elfDelicious</span>.displayCheckboxSelection).toHaveBeenCalled()<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<a class="anchor" id="other-tests"></a>
+<h2>Other Tests</h2>
+<p>Ignore these for now.</p>
+<pre><code class="lang-javascript">it('checks that elfBitly.getLinks calls elfDisplay.renderTable', function() {
+    spyOn(<span class="hljs-name">elfDisplay</span>, 'renderTable')<span class="hljs-comment">;</span>
+    elfBitly.getLinks(<span class="hljs-name">elfDownloads</span>.dataTypes.dtBitly)<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">elfDisplay</span>.renderTable).toHaveBeenCalled()<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+it('checks elfBitly.getLinks calls elfDisplay.render', function() {
+    spyOn(<span class="hljs-name">elfDisplay</span>, 'render')<span class="hljs-comment">;</span>
+    elfBitly.getLinks(<span class="hljs-name">elfDownloads</span>.dataTypes.dtBitly)<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">elfDisplay</span>.render).toHaveBeenCalled()<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+it('checks elfBitly.getLinks calls elfBitly.getUrl', function() {
+    spyOn(<span class="hljs-name">elfBitly</span>, 'getUrl')<span class="hljs-comment">;</span>
+    elfBitly.getLinks(<span class="hljs-name">elfDownloads</span>.dataTypes.dtBitly)<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">elfBitly</span>.getUrl).toHaveBeenCalled()<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+it('shows we can call getLinkHistoryArray', function() {
+    elfBitly.getLinks(<span class="hljs-name">elfDownloads</span>.dataTypes.dtBitly)<span class="hljs-comment">;</span>
+    var historyArray = elfBitly.getLinkHistoryArray()<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">historyArray</span>.length).toBe(<span class="hljs-number">50</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+it('shows getLinkHistoryItem sets elfBitly.linkIndex', function() {
+    elfBitly.getLinks(<span class="hljs-name">elfDownloads</span>.dataTypes.dtBitly)<span class="hljs-comment">;</span>
+    var historyArray = elfBitly.getLinkHistoryItem(<span class="hljs-number">12</span>, true)<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">elfBitly</span>.linkIndex).toBe(<span class="hljs-number">12</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>Here are some results:</p>
+<pre><code>Test Delicous Fixture
+    ✓ expects <span class="hljs-selector-tag">a</span> checkbox with an id of <span class="hljs-selector-id">#chJavaScript</span>
+    ✓ expects <span class="hljs-selector-tag">a</span> checkbox with an id of <span class="hljs-selector-id">#chJavaScript</span> to be <span class="hljs-selector-tag">a</span> checkbox
+    ✓ expects <span class="hljs-selector-tag">a</span> checkbox with an id of <span class="hljs-selector-id">#chBootstrap</span>
+    ✓ expects <span class="hljs-selector-tag">a</span> checkbox with an id of <span class="hljs-selector-id">#chBootstrap</span> to be <span class="hljs-selector-tag">a</span> checkbox
+    ✓ expects <span class="hljs-selector-tag">a</span> checkbox with an id of <span class="hljs-selector-id">#chNodeJs</span>
+    ✓ expects <span class="hljs-selector-tag">a</span> checkbox with an id of <span class="hljs-selector-id">#chNodeJs</span> to be <span class="hljs-selector-tag">a</span> checkbox
+    ✓ expects selecting <span class="hljs-selector-id">#chBootstrap</span> to cause displayCheckBoxSelection to have been called
+    ✓ expects selecting <span class="hljs-selector-id">#chBootstrap</span> to cause callDelicious to be called
+    ✓ expects selecting <span class="hljs-selector-id">#chBootstrap</span> to cause callDelicious to be called with bootstrap
+    ✓ expects selecting <span class="hljs-selector-id">#chJavaScript</span> to cause callDelicious to be called with javascript
+    ✓ expects selecting <span class="hljs-selector-id">#chNodeJs</span> to cause callDelicious to be called with nodejs
+    ✓ selecting <span class="hljs-selector-id">#chNodeJs</span> &amp; <span class="hljs-selector-id">#chJavaScript</span> to cause callDelicious to be called with javascript+nodejs
+</code></pre><a class="anchor" id="favicon"></a>
+<h2>Favicon</h2>
+<p>Be sure your favicon is set up correctly in <strong>app.js</strong> around line 18. The correct code will probably look like this:</p>
+<pre><code class="lang-javascript">app.use(favicon(path.<span class="hljs-built_in">join</span>(<span class="hljs-variable">__dirname</span>, <span class="hljs-string">'public'</span>, <span class="hljs-string">'favicon.png'</span>)));
+</code></pre>
+<a class="anchor" id="tests-clean"></a>
+<h2>Tests Clean</h2>
+<p>The following should all come back clean and work:</p>
+<ul>
+<li>grunt jscs</li>
+<li>grunt jshint</li>
+<li>grunt check</li>
+<li>grunt fixture</li>
+<li>grunt test</li>
+<li>karma start</li>
+<li>npm start</li>
+<li>npm test</li>
+</ul>
+<p>There are some exceptions. In the <strong>spec/data</strong> directory you should have one or more files with names like <strong>bitly-links.js</strong> and <strong>delicious-links.js</strong>. In <strong>Gruntfile.js</strong> you can exclude these files from your <strong>jscs</strong> checks:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">jscs</span>: {
+    <span class="hljs-attribute">src</span>: [<span class="hljs-string">'**/*.js'</span>, <span class="hljs-string">'!spec/data/*.js'</span>],
+    options: {
+        config: <span class="hljs-string">'.jscsrc'</span>
+    }
+},
+</code></pre>
+</div></body></html>

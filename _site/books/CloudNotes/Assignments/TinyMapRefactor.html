@@ -1,0 +1,158 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>TinyMapRefactor</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>TinyMapRefactor</h1><p>Welcome to TinyMapRefactor</p><ul><!--TOC_Start--><li><a href="#tiny-map-refactor">Tiny Map Refactor</a></li>
+<li><a href="#game-to-grid-coordinates">Game to Grid Coordinates</a></li>
+<li><a href="#message-div-setup">Message Div Setup</a></li>
+<li><a href="#create-core-js">Create Core.js</a></li>
+<li><a href="#properties">Properties</a></li>
+<li><a href="#removing-objects">Removing Objects</a></li>
+<li><a href="#using-patterns">Using Patterns</a></li>
+<li><a href="#publish-and-subscribe">Publish and Subscribe</a></li>
+<li><a href="#singleton">Singleton</a></li>
+<li><a href="#uml">Uml</a></li>
+<li><a href="#other-unrelated">Other Unrelated</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="tiny-map-refactor"></a>
+<h1>Tiny Map Refactor</h1>
+<p>Goals for this assignment:</p>
+<ul>
+<li>Create a Core class that holds scene, camera, renderer, and grids for Maze and NPCs.</li>
+<li>Implement Singleton pattern for the Core class</li>
+<li>When the player passes an NPC, have the NPC disappear</li>
+<li>Implement  a miniature map that shows:<ul>
+<li>Maze</li>
+<li>Npcs</li>
+<li>Position of player</li>
+</ul>
+</li>
+<li>Update the miniature map<ul>
+<li>When the player moves to a new &quot;square&quot;</li>
+<li>When an NPC is discovered. That is, make the NPC disappear from the miniature map</li>
+</ul>
+</li>
+<li>Use the Publish Subscribe pattern to trigger the drawing and redrawing of the miniature map</li>
+</ul>
+<p>Other:</p>
+<ul>
+<li>Implement fog of war</li>
+<li>Toggle tiny map on and off</li>
+</ul>
+<p>##Drawing the Tiny Map</p>
+<p>You need to add a Canvas element to <strong>index.jade</strong>:</p>
+<pre><code>div
+    canvas<span class="hljs-function"><span class="hljs-keyword">#</span><span class="hljs-title">myCanvas</span><span class="hljs-params">(<span class="hljs-variable">width</span>='192', <span class="hljs-variable">height</span>='192', <span class="hljs-variable">style</span>='<span class="hljs-variable">border</span>:1<span class="hljs-variable">px</span> <span class="hljs-variable">solid</span> #000000;')</span></span>
+</code></pre><p>Then you can draw rectangles in the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">Canvas</a> like this:</p>
+<pre><code>var canvas = document.getElementById(<span class="hljs-string">"myCanvas"</span>)<span class="hljs-comment">;</span>
+var <span class="hljs-built_in">context</span> = canvas.getContext(<span class="hljs-string">"2d"</span>)<span class="hljs-comment">;</span>
+var <span class="hljs-keyword">blockSize </span>= utility.tinyMapBlockSize<span class="hljs-comment">;</span>
+<span class="hljs-built_in">context</span>.fillStyle = <span class="hljs-string">"#555555"</span><span class="hljs-comment">;</span>
+<span class="hljs-built_in">context</span>.fillRect(x * <span class="hljs-keyword">blockSize, </span>y * <span class="hljs-keyword">blockSize, </span><span class="hljs-keyword">blockSize, </span><span class="hljs-keyword">blockSize);</span>
+</code></pre><p>See the MDN <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">Canvas</a> entry for more details. You can do a lot with a canvas, but we are just getting a few basics.</p>
+<a class="anchor" id="game-to-grid-coordinates"></a>
+<h2>Game to Grid Coordinates</h2>
+<p>One of the key steps you must take in order to draw the tiny map is to translate game coordinates to grid coordinates. You get game coordinates like this:</p>
+<pre><code><span class="hljs-meta">$</span><span class="bash">(<span class="hljs-string">'#cameraX'</span>).html(position.x);</span>
+<span class="hljs-meta">$</span><span class="bash">(<span class="hljs-string">'#cameraY'</span>).html(position.y);</span>
+<span class="hljs-meta">$</span><span class="bash">(<span class="hljs-string">'#cameraZ'</span>).html(position.z);</span>
+</code></pre><p>To convert game coordinates to grid coordinates, do something like this:</p>
+<pre><code><span class="hljs-attribute">npcX</span> = Math.round(position.x / boxSize)<span class="hljs-comment">;</span>
+<span class="hljs-attribute">npcZ</span> = Math.round(position.z / boxSize)<span class="hljs-comment">;</span>
+</code></pre><p>Show the coordinates to the user in the message area:</p>
+<pre><code><span class="hljs-meta">$</span><span class="bash">(<span class="hljs-string">'#npcX'</span>).html(npcX);</span>
+<span class="hljs-meta">$</span><span class="bash">(<span class="hljs-string">'#npcZ'</span>).html(npcZ);</span>
+</code></pre><p>Now you know where the camera is in the grid. That will help you draw the current position of the main character in the tiny map.</p>
+<a class="anchor" id="message-div-setup"></a>
+<h2>Message Div Setup</h2>
+<p>The indentation for your Jade code in <strong>index.js</strong> is very important. Some folks are finding that the debug area where they are going to draw the map disappears when they start playing the game. That is an indentation issue. Look at this Jade code:</p>
+<pre><code>extends layout
+
+block <span class="hljs-attribute">content</span>
+
+  div#blocker(style=<span class="hljs-string">'display: -webkit-box;'</span>)
+    div#instructions(style=<span class="hljs-string">''</span>)
+      span(style=<span class="hljs-string">'font-size:40px'</span>) Click to play
+      <span class="hljs-selector-tag">p</span> (W, A, S, D = Move, SPACE = Jump, MOUSE = Look around)
+
+  div<span class="hljs-selector-id">#message</span>
+      <span class="hljs-selector-tag">p</span>
+        <span class="hljs-selector-tag">strong</span> Camera X: 
+          span<span class="hljs-selector-id">#cameraX</span> Foo
+
+</code></pre><p>The <strong>#blocker div</strong> disappears altogether when the game starts. That is the section with the instructions in it, and that bit of code is hidden when the game starts, when you click in the map. If you message section is indented in such a ways to be &quot;inside&quot; your blocker section, then it will also disappear when the game starts. The fix is shown above:  put the <strong>#message div</strong> on the same indentation level as the blocker, and then it is not hidden when the game starts.</p>
+<p>##Turn it in</p>
+<p>When you are finished, check your work into BitBucket in a folder called Week05_TinyMapRefactor</p>
+<p>Update your GenMyModel UML model and submit the bitmap showing your work</p>
+<a class="anchor" id="create-core-js"></a>
+<h2>Create Core.js</h2>
+<p>Use this file to hold variables such as <strong>scene</strong> that several classes need to access. My copy has the following simple properties and no methods:</p>
+<ul>
+<li>Camera</li>
+<li>Scene</li>
+<li>GridMaze (The 2D array)</li>
+<li>NpcMaze (The 2D array)</li>
+<li>Renderer (Is this really needed?)</li>
+</ul>
+<p>You could just have a simple object with only those properties in it. You might consider using Object.defineProperty or this.propertyName to make the properties public. Then you can use the core class to access items you need when you need them:</p>
+<pre><code>shapes.addNumber(core.Scene, core.Camera, <span class="hljs-literal">false</span>, x, z);
+$.publish(<span class="hljs-string">'drawMap'</span>, { <span class="hljs-string">type:</span> <span class="hljs-string">'maze'</span>, <span class="hljs-string">grid:</span> core.GridMaze});
+</code></pre><a class="anchor" id="properties"></a>
+<h2>Properties</h2>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/JavaScriptObjects.html#defineproperty">Define Property</a></li>
+</ul>
+<a class="anchor" id="removing-objects"></a>
+<h2>Removing Objects</h2>
+<p>Give each particle cloud and start object a unique name using a method like this:</p>
+<pre><code><span class="hljs-keyword">var</span> particleBaseName = <span class="hljs-string">'particle'</span>;
+<span class="hljs-keyword">var</span> starBaseName = <span class="hljs-string">'star'</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getName</span><span class="hljs-params">(baseName, x, z)</span> </span>{
+    <span class="hljs-keyword">return</span> baseName + x + z;
+}
+
+<span class="hljs-keyword">var</span> starName = getName(starBaseName, x, z);
+</code></pre><p>Then when the user passes over a particular location, find the name of the object at that location, ask the scene to retrieve it, call <strong>scene.remove</strong> to remove it from the scene:</p>
+<pre><code> <span class="hljs-built_in">var</span> objectName = getName(particleBaseName, x, z);
+ <span class="hljs-built_in">var</span> selectedObject = <span class="hljs-built_in">scene</span>.getObjectByName(objectName);
+ <span class="hljs-built_in">scene</span>.<span class="hljs-built_in">remove</span>(selectedObject);
+</code></pre><p>Don&#39;t forget that the location on the screen is not the same as the location in the grid, because we use different coordinate systems. But you can translate a screen location to a grid location just by dividing by <strong>size</strong>.</p>
+<p>Useful methods:</p>
+<ul>
+<li>Is there an NPC at position X, Y? <ul>
+<li>isNpc(x, y)?</li>
+</ul>
+</li>
+<li>Change the grid when an NPC needs to disappear <ul>
+<li>vaporizeNpc(x, y, value). </li>
+</ul>
+</li>
+</ul>
+<p>Vaporize might look something like this: </p>
+<pre><code>grid[<span class="hljs-string">z</span>][<span class="hljs-symbol">x</span>] = value;
+var objectName = getName(particleBaseName, x, z);
+var selectedObject = scene.getObjectByName(objectName);
+scene.remove(selectedObject);
+</code></pre><a class="anchor" id="using-patterns"></a>
+<h2>Using Patterns</h2>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/JavaScriptPatterns.html#overview">Patterns on Elvenware</a></li>
+</ul>
+<a class="anchor" id="publish-and-subscribe"></a>
+<h2>Publish and Subscribe</h2>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/JavaScriptPatterns.html#publish-and-subscribe">Publish and Subscribe on Elvenware</a> </li>
+<li><a href="https://github.com/charliecalvert/JsObjects/blob/master/JavaScript/Design/PubSubTopic04/public/javascripts/TinyPubSub.js">TinyPubSub</a> On JsObjects</li>
+</ul>
+<a class="anchor" id="singleton"></a>
+<h2>Singleton</h2>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/JavaScriptPatterns.html#singleton">Singleton on Elvenware</a></li>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Design/Singleton">JsObjects/JavaScript/Design/Singleton</a></li>
+</ul>
+<a class="anchor" id="uml"></a>
+<h2>Uml</h2>
+<p>Getting closer to having something useful.</p>
+<a class="anchor" id="other-unrelated"></a>
+<h2>Other Unrelated</h2>
+<ul>
+<li><a href="https://developers.google.com/web/fundamentals/">Web Fundamentals</a></li>
+<li><a href="https://developers.google.com/web/fundamentals/layouts/rwd-fundamentals/">One</a></li>
+</ul>
+</div></body></html>

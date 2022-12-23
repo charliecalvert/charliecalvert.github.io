@@ -1,0 +1,234 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>git-basics</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>git-basics</h1><p>Welcome to git-basics</p><ul><!--TOC_Start--><li><a href="#git-basics">Git Basics</a></li>
+<li><a href="#git-files">Working with Files in a Repository</a></li>
+<li><a href="#typical">A Typical Git Session</a></li>
+<li><a href="#create-a-new-repository">Create a New Repository</a></li>
+<li><a href="#running-git-on-windows">Running Git on Windows</a></li>
+<li><a href="#don-t-nest-repositories">Don&#39;t Nest Repositories</a></li>
+<li><a href="#terminal-is-not-fully-functional">Terminal is Not Fully Functional</a></li>
+<li><a href="#clone-a-local-repository">Clone a Local Repository</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="git-basics"></a>
+<h1>Git Basics</h1>
+<p>In this chapter you will learn to use Git from the command line.</p>
+<p>There are many GUI interfaces to Git. Why not use one of them? There are several reasons:</p>
+<ul>
+<li>There is no single GUI interface that is always available on all platforms in all circumstances.</li>
+<li>Each GUI interface is unique in its own way, but the command line interface is always the same. Once you know how to use it in one place, then, with very minor variations, you know how to use it everywhere.</li>
+<li>If you know how to use the command line interface, then most experienced computer users can quickly learn how to use most GUI interfaces.</li>
+<li>The command line interface is more flexible than most GUI interfaces</li>
+<li>And finally, the command line interface is not difficult to use for anyone who has a basic familiarity with the command line or shell for their platform.</li>
+</ul>
+<p>Assumed:</p>
+<ul>
+<li><p>That you have a working repository. If you don&#39;t, then read</p>
+<ul>
+<li><a href="git-install.html">Installing Git</a></li>
+</ul>
+</li>
+</ul>
+<a class="anchor" id="git-files"></a>
+<h2>Working with Files in a Repository</h2>
+<p>Suppose you have a file called <strong>users.html</strong> that you have either recently created or recently edited. You now need to tell Git to check in your changes; this means that you want to add your new or updated file to the repository. Whether the file is new or updated, here is how to check in the <strong>users.html</strong> file:</p>
+<pre><code>git <span class="hljs-keyword">add</span><span class="bash"> users.html
+</span>git commit -m <span class="hljs-string">"This is my message about the way I updated users.html"</span>
+</code></pre><p>Now you have everything checked into your local copy of the Git repository. To
+push these changes to your GitHub, Bitbucket or other remote copy of the
+repository, issue this command:</p>
+<pre><code>git <span class="hljs-keyword">push</span>
+</code></pre><p>Now, lets add a folder named temp and a file named foo.txt to the repository:</p>
+<pre><code><span class="hljs-built_in">mkdir</span> temp
+<span class="hljs-built_in">cd</span> temp
+<span class="hljs-built_in">echo</span> foo &gt; foo.txt
+<span class="hljs-built_in">cd</span> ..
+</code></pre><p>The above commands create a new folder called <strong>temp</strong>. The second line
+shows how to navigate into the folder. The third line creates a new file
+called <strong>foo.txt</strong> with the contents being the single world <em>foo</em>. Finally
+we navigate back to the original directory where we were before we created
+the <strong>temp</strong> directory.</p>
+<p>Now add the changes and commit the work to the repository:</p>
+<pre><code>git <span class="hljs-keyword">add</span><span class="bash"> temp
+</span>git commit -m <span class="hljs-string">"adding temp"</span>
+</code></pre><p>After issuing the last command, you will see several lines of feedback from Git.
+Now it is time to push your changes up to GitHub (or to wherever your
+repository is stored).</p>
+<pre><code>git <span class="hljs-keyword">push</span>
+</code></pre><p>If you do not have an SSH key and repository set up, you will now be asked for
+your username and password.</p>
+<p>Sometimes you will have conflicts between what is on the server and what
+you have on your machine. In that case, do a merge. This will create a
+local copy of your files with both sets of text in it. Open your file in a
+text editor, find the places where the conflicts exist, fix them manually,
+and then go through another add/commit/push cycle.</p>
+<a class="anchor" id="typical"></a>
+<h2>A Typical Git Session</h2>
+<p>Suppose you run git status and get this result:</p>
+<pre><code><span class="hljs-meta">&gt;</span><span class="bash">git status</span>
+<span class="hljs-meta">#</span><span class="bash"> On branch master</span>
+<span class="hljs-meta">#</span><span class="bash"> Changes to be committed:</span>
+<span class="hljs-meta">#</span><span class="bash">   (use <span class="hljs-string">"git reset HEAD &lt;file&gt;..."</span> to unstage)</span>
+<span class="hljs-meta">#</span><span class="bash"></span>
+<span class="hljs-meta">#</span><span class="bash">       modified:   Cordova/CordovaInput/assets/www/index.html</span>
+<span class="hljs-meta">#</span><span class="bash"></span>
+<span class="hljs-meta">#</span><span class="bash"> Untracked files:</span>
+<span class="hljs-meta">#</span><span class="bash">   (use <span class="hljs-string">"git add &lt;file&gt;..."</span> to include <span class="hljs-keyword">in</span> what will be committed)</span>
+<span class="hljs-meta">#</span><span class="bash"></span>
+<span class="hljs-meta">#</span><span class="bash">       foobar.txt</span>
+</code></pre><p>Here you can see that one file, <strong>index.html</strong>, has been modified. Another file, called <strong>foobar.txt</strong>, has been created. To commit them both, do this:</p>
+<pre><code>git <span class="hljs-keyword">add</span><span class="bash"> .</span>
+</code></pre><p>That&#39;s <strong>git add</strong> followed by a period. The period is a wild card saying: &quot;Add everything that has been changed.&quot; Now check your status:</p>
+<pre><code><span class="hljs-meta">&gt;</span><span class="bash">git status</span>
+<span class="hljs-meta">#</span><span class="bash"> On branch master</span>
+<span class="hljs-meta">#</span><span class="bash"> Changes to be committed:</span>
+<span class="hljs-meta">#</span><span class="bash">   (use <span class="hljs-string">"git reset HEAD &lt;file&gt;..."</span> to unstage)</span>
+<span class="hljs-meta">#</span><span class="bash"></span>
+<span class="hljs-meta">#</span><span class="bash">       modified:   Cordova/CordovaInput/assets/www/index.html</span>
+<span class="hljs-meta">#</span><span class="bash">       new file:   foobar.txt</span>
+<span class="hljs-meta">#</span><span class="bash"></span>
+</code></pre><p>As you can see, there are now two files waiting to be committed. You can commit them like this:</p>
+<pre><code>&gt;git commit -<span class="hljs-keyword">m</span> <span class="hljs-string">"Update index.html to support tiger attacks, add foobar.txt to ward off pollen smears."</span>
+[master c91d5fc] Update <span class="hljs-built_in">index</span>.html <span class="hljs-keyword">to</span> support tiger attacks, <span class="hljs-built_in">add</span> foobar.txt <span class="hljs-keyword">to</span> ward off pollen smears.
+ <span class="hljs-number">2</span> <span class="hljs-keyword">files</span> changed, <span class="hljs-number">2</span> insertions(+), <span class="hljs-number">1</span> deletion(-)
+ create <span class="hljs-keyword">mode</span> <span class="hljs-number">100644</span> foobar.txt
+</code></pre><p>Now push them to the repository:</p>
+<pre><code>&gt;git push
+<span class="hljs-type">Counting</span> objects: <span class="hljs-number">14</span>, <span class="hljs-keyword">done</span>.
+<span class="hljs-type">Delta</span> compression using up <span class="hljs-keyword">to</span> <span class="hljs-number">8</span> threads.
+<span class="hljs-type">Compressing</span> objects: <span class="hljs-number">100</span>% (<span class="hljs-number">6</span>/<span class="hljs-number">6</span>), <span class="hljs-keyword">done</span>.
+<span class="hljs-type">Writing</span> objects: <span class="hljs-number">100</span>% (<span class="hljs-number">8</span>/<span class="hljs-number">8</span>), <span class="hljs-number">633</span> <span class="hljs-built_in">bytes</span> | <span class="hljs-number">0</span> <span class="hljs-built_in">bytes</span>/s, <span class="hljs-keyword">done</span>.
+<span class="hljs-type">Total</span> <span class="hljs-number">8</span> (delta <span class="hljs-number">5</span>), reused <span class="hljs-number">0</span> (delta <span class="hljs-number">0</span>)
+<span class="hljs-type">To</span> git@github.com:charliecalvert/<span class="hljs-type">Simple02</span>.git
+   <span class="hljs-number">16e7</span>d40..c91d5fc  master -&gt; master
+</code></pre><p>If you type <strong>git reset</strong> then you can undo an add. When you issue a <strong>git add</strong> command you move one or more modified files to the staging area. If you type <strong>git reset</strong> you move them back out of the staging area. You undo the add.</p>
+<a class="anchor" id="create-a-new-repository"></a>
+<h2>Create a New Repository</h2>
+<p>Suppose you want to create a new repository. Typically you would start by creating the repository on a remote service such as Bitbucket or Github.  After signing into your Bitbucket or GitHub account, you will see a button for creating the repository. Push the button and create an empty repository. Don&#39;t put anything in the repository, not even a README.md file. Just leave it empty.</p>
+<p>Next, make sure <a href="http://www.elvenware.com/charlie/development/cloud/SshFtpsPutty.html#sshKeys">you have an SSH private key and public key pair</a> on your client machine, and store the public key portion in Bitbucket or GitHub, depending on the service you are using. To do this, first open the public key (id_rsa.pub) in an editor such as <strong>geany</strong>, <strong>nano</strong> or <strong>notepad++</strong>. Block copy it, then paste it into the appropriate field on the GitHub or Bitbucket web site. In particular, on Bitbucket, choose <strong>Bitbucket settings</strong> from the icon in the upper right portion of the Bitbucket site, and then select <strong>SSH keys</strong> from the menu on the left. On GitHub, choose the <strong>Profile picture</strong> icon at the top right of the site, and then select <strong>Settings</strong> and then <strong>SSH and GPG keys</strong> from the menu on the left.</p>
+<p>Don&#39;t forget to call ssh-add on your private (id_rsa) key, as described at the link shown above. Typing ssh-add at your command line will prepare your client machine to connect to GitHub or Bitbucket and will take care of authentication for you.</p>
+<p>Setting up SSH may seem a little complicated the first time you do it, but it will save you a lot of aggravation over time. The great advantage of using Git is that you can do your work in a variety of places, on a variety of machines. You will save your work to one repository on GitHub or Bitbucket, but you can clone that repository to as many machines as you want. As long as you remember to push your work to the repository on GitHub or Bitbucket, and then pull it back down onto the machine you are using, you will be all set to do your work. Both pushing from your client machine to the main repository on GitHub or Bitbucket and pulling updated work from the main repository down to your local client machine can be very easy with SSH. All the authentication happens in the background and pushing and pulling from the repository is nearly effortless. Without SSH, you will find that typing your password over and over is not much fun.</p>
+<p>Now that you have SSH set up, go to the directory you want to use as the basis for your repository. If you don&#39;t have such a repository, then start from scratch:</p>
+<pre><code><span class="hljs-built_in">mkdir</span> MyRepo
+<span class="hljs-built_in">cd</span> MyRepo
+</code></pre><p>Now initialize Git by typing typing <strong>git init</strong>.  This converts an ordinary directory into a Git repository. In particular, it creates a hidden directory called <strong>.git</strong>. That directory stores all the files necessary to configure and maintain your repository.</p>
+<p>Then get the command from Bitbucket or GitHub that is used to designate where your remote repository resides. The command might look like this, though the exact url at the end will likely differ in your case:</p>
+<pre><code>git remote <span class="hljs-keyword">add</span> origin ssh://git@bitbucket<span class="hljs-meta">.org</span>/lucia/myrepo.git
+</code></pre><p>Then add some content to your repository and add and commit your content:</p>
+<pre><code>echo MyReadMe &gt; README<span class="hljs-selector-class">.md</span>
+git add README<span class="hljs-selector-class">.md</span>
+git commit -m <span class="hljs-string">"Adding a readme to my new repo"</span>
+</code></pre><p>If you have multiple changes that you want to add and commit at one time, then use a period in your call to <strong>git add</strong>:</p>
+<pre><code>git <span class="hljs-keyword">add</span><span class="bash"> .
+</span>git commit -m <span class="hljs-string">"Initial commit"</span>
+</code></pre><p>In the first example, we added just a README.md file to the repository. In the second example, we added any new or updated files to your repository.</p>
+<p>Finally, add the following command to push your repo to Bitbucket:</p>
+<pre><code>git <span class="hljs-built_in">push</span> -u <span class="hljs-built_in">origin</span> --all
+</code></pre><p>After this first time, you will be able to push like this:</p>
+<pre><code>git <span class="hljs-keyword">push</span>
+</code></pre><p>It&#39;s only the first time you need to add <strong>-u origin --all</strong>.</p>
+<p>To sum up, if you have an existing repository, and you want to push it from the shell do something like this, where the exact URL for your repository will of course be different from the one shown here:</p>
+<pre><code>git remote <span class="hljs-keyword">add</span><span class="bash"> origin git@github.com:charliecalvert/DeleteMeNow.git
+</span>// <span class="hljs-keyword">Add</span><span class="bash"> some content
+</span>git push -u origin master
+</code></pre><p>Sometimes you will have a session that looks like this:</p>
+<pre><code>G:\Src\Git\foo&gt;git push -u origin <span class="hljs-comment">--all</span>
+No refs <span class="hljs-keyword">in</span> common <span class="hljs-keyword">and</span> <span class="hljs-literal">none</span> specified; doing nothing.
+Perhaps you should specify <span class="hljs-keyword">a</span> branch such <span class="hljs-keyword">as</span> <span class="hljs-string">'master'</span>.
+fatal: The remote <span class="hljs-function"><span class="hljs-keyword">end</span> <span class="hljs-title">hung</span> <span class="hljs-title">up</span> <span class="hljs-title">unexpectedly</span></span>
+Everything up-<span class="hljs-built_in">to</span>-<span class="hljs-built_in">date</span>
+</code></pre><p>If you get an error like that, it means you forgot to run git add and git
+commit.</p>
+<p>Here is a summary of the steps:</p>
+<ul>
+<li>If you are using Windows, load your SSH private key in Pageant and ensure your public key is stored on Bitbucket. If you are on a Linux machine, type ssh-add at the command line and be sure your public key is stored on Bitbucket.</li>
+<li>Go to the directory you want to export and type: <strong>git init</strong></li>
+<li>Use the <strong>git add</strong> and <strong>git commit</strong> commands to commit your files into your new repository.</li>
+<li>Then type: git remote add origin ssh:<a href="mailto://git@bitbucket.org">//git@bitbucket.org</a>/lucia/myrepo.git</li>
+<li>Then type: git push -u origin --all</li>
+</ul>
+<p>Here are the instructions from GitHub, which are just a variation on what I write above:</p>
+<pre><code>echo <span class="hljs-string">"Some Text"</span> &gt;&gt; README<span class="hljs-selector-class">.md</span>
+git init
+git add README<span class="hljs-selector-class">.md</span>
+git commit -m <span class="hljs-string">"first commit"</span>
+git remote add origin git@github<span class="hljs-selector-class">.com</span>:charliecalvert/DeleteMeNow<span class="hljs-selector-class">.git</span>
+git push -u origin master
+</code></pre><p>Here are the instructions from Bitbucket, which are also just another variation on what I say above:</p>
+<pre><code><span class="hljs-built_in">mkdir</span> /path/<span class="hljs-keyword">to</span>/your/project
+<span class="hljs-keyword">cd</span> /path/<span class="hljs-keyword">to</span>/your/project
+git init
+git remote <span class="hljs-built_in">add</span> origin git@bitbucket.<span class="hljs-built_in">or</span><span class="hljs-variable">g:ccalvert</span>/deletemenow3.git
+
+<span class="hljs-keyword">echo</span> <span class="hljs-string">"Charlie Calvert"</span> &gt;&gt; contributors.txt
+git <span class="hljs-built_in">add</span> contributors.txt
+git commit -<span class="hljs-keyword">m</span> <span class="hljs-string">'Initial commit with contributors'</span>
+git push -<span class="hljs-keyword">u</span> origin master
+</code></pre><a class="anchor" id="running-git-on-windows"></a>
+<h2>Running Git on Windows</h2>
+<p>If you use PuTTY, it will probably be simplest for you if you use Git with
+Plink, which is part of PuTTY. During the Git SCM install, you have the
+chance to set this up, as shown in the screenshot below:</p>
+<p><img class="small" src="http://elvenware.com/charlie/development/cloud/images/GitScm01.png" alt="Use plink"></p>
+<pre><code>![<span class="hljs-string">Use plink</span>](<span class="hljs-link">http://elvenware.com/charlie/development/cloud/images/GitScm01.png</span>)
+</code></pre><p>If you have already installed Git, don&#39;t despair! All the option above does is
+set an environment variable named GIT_SSH. If you chose the option shown in the
+screenshot, then when you type SET at the command line, you should find something
+like the following value for GIT_SSH:</p>
+<pre><code>GIT_SSH=C:<span class="hljs-symbol">\P</span>rogram Files (x86)<span class="hljs-symbol">\P</span>uTTY<span class="hljs-symbol">\p</span>link.exe
+</code></pre><p>Since you have a deep knowledge of environment variables, you know how to modify
+this variable using the Environment Variables dialog.</p>
+<p><img class="small" src="http://elvenware.com/charlie/development/cloud/images/GitScm02.png" alt="Set GIT_SSH env variable"></p>
+<pre><code>![<span class="hljs-string">Set GIT_SSH env variable</span>](<span class="hljs-link">http://elvenware.com/charlie/development/cloud/images/GitScm02.png</span>)
+</code></pre><p>Here is an example of how to configure the variable:</p>
+<p><img class="small" src="http://elvenware.com/charlie/development/cloud/images/Git07.png" alt="Set the GIT_SSH environment variable"></p>
+<pre><code>![<span class="hljs-string">Set the GIT_SSH environment variable</span>](<span class="hljs-link">http://elvenware.com/charlie/development/cloud/images/Git07.png</span>)
+</code></pre><p>If you have been living a sheltered life, you can learn about about
+environment variables here:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/os/windows/faq.html#environment">EnvVars</a></li>
+</ul>
+<p>A related issue is the &quot;Host Key is not Cached&quot; error, which is discussed
+elsewhere in this document.</p>
+<a class="anchor" id="don-t-nest-repositories"></a>
+<h2>Don&#39;t Nest Repositories</h2>
+<p>You should always have a mental image of the directory tree in which you do
+your work. This can be important when you are creating a new repository. One
+mistake that newcomers often make is to nest one Git repository
+inside another. For instance, suppose you have a repository here:</p>
+<pre><code>d:<span class="hljs-symbol">\s</span>rc<span class="hljs-symbol">\g</span>it<span class="hljs-symbol">\R</span>epo01
+</code></pre><p>In most cases, you don&#39;t want to add another repository inside this existing repository:</p>
+<pre><code>d:<span class="hljs-symbol">\s</span>rc<span class="hljs-symbol">\g</span>it<span class="hljs-symbol">\R</span>epo01<span class="hljs-symbol">\R</span>epo02
+</code></pre><p>It is not illegal to do this, but it is not likely that you did it on
+purpose, and once you have made the mistake it is hard to undo.</p>
+<p>You can fix this error, but you don&#39;t want to face this problem.
+Either keep a clear mental image of your file directory structure, or use
+the Windows Explorer to review your file structure before you create a new
+repository. In general, a good plan is to create a folder called Git or
+GitHub, and then create all your repositories as children of this folder:</p>
+<pre><code>c:<span class="hljs-symbol">\g</span>it<span class="hljs-symbol">\R</span>epo1
+c:<span class="hljs-symbol">\g</span>it<span class="hljs-symbol">\R</span>epo2
+</code></pre><p>Alternatively:</p>
+<pre><code>c:<span class="hljs-symbol">\u</span>sers<span class="hljs-symbol">\m</span>e<span class="hljs-symbol">\d</span>ocuments<span class="hljs-symbol">\g</span>it<span class="hljs-symbol">\R</span>epo01
+c:<span class="hljs-symbol">\u</span>sers<span class="hljs-symbol">\m</span>e<span class="hljs-symbol">\d</span>ocuments<span class="hljs-symbol">\g</span>it<span class="hljs-symbol">\R</span>epo01
+</code></pre><p>It is, of course, okay to use complex directory structures inside any one
+repository. The mistake is not nesting directories, but nesting repositories.
+For instance, the following is fine:</p>
+<pre><code>C:<span class="hljs-symbol">\g</span>it<span class="hljs-symbol">\R</span>epo1
+c:<span class="hljs-symbol">\g</span>it<span class="hljs-symbol">\R</span>epo1<span class="hljs-symbol">\D</span>ir01
+c:<span class="hljs-symbol">\g</span>it<span class="hljs-symbol">\R</span>epo2
+c:<span class="hljs-symbol">\g</span>it<span class="hljs-symbol">\R</span>epo2<span class="hljs-symbol">\D</span>ir01
+c:<span class="hljs-symbol">\g</span>it<span class="hljs-symbol">\R</span>epo2<span class="hljs-symbol">\D</span>ir02
+</code></pre><a class="anchor" id="terminal-is-not-fully-functional"></a>
+<h2>Terminal is Not Fully Functional</h2>
+<p>You can get rid of this warning by defining an environment variable called <strong>TERM</strong> and setting it to <strong>msys</strong>.</p>
+<p>On Windows, you can type:</p>
+<pre><code><span class="hljs-builtin-name">set</span> <span class="hljs-attribute">TERM</span>=msys
+</code></pre><p>Or edit the Environment Variables for your Account and create a new variable
+called <strong>TERM</strong> set to the <strong>msys</strong>.</p>
+<p>On Linux, you export TERM = msys</p>
+<pre><code><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">TERM</span>=msys
+</code></pre><a class="anchor" id="clone-a-local-repository"></a>
+<h2>Clone a Local Repository</h2>
+<p>With Bitbucket and GitHub so readily available, one might suppose that the origin for our repository should always be in the cloud. This need not necessarily be the case. Instead, we can have a local repository that is shared between multiple users on a single machine, or between users on a local area network. Here are some examples of how to clone a local repository:</p>
+<pre><code>    git <span class="hljs-keyword">clone</span> <span class="hljs-title">file</span>:////home/charlie/git/myrepo
+
+  git <span class="hljs-keyword">clone</span> <span class="hljs-title">file</span>:////\$HOME/git/myrepo
+</code></pre><p>Copyright &copy; 2017 by Charles Calvert</p>
+</div></body></html>

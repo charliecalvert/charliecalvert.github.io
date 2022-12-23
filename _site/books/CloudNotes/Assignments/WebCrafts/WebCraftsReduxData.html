@@ -1,0 +1,274 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>WebCraftsReduxData</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>WebCraftsReduxData</h1><p>Welcome to WebCraftsReduxData</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#client-and-server">Client and Server</a></li>
+<li><a href="#concurrently">Concurrently</a></li>
+<li><a href="#load-the-config-file">Load the config File</a></li>
+<li><a href="#client-actions">Client Actions</a></li>
+<li><a href="#the-client">The Client Code</a></li>
+<li><a href="#redux">Redux</a></li>
+<li><a href="#config-reducer">Config Reducer</a></li>
+<li><a href="#dialogs">Dialogs</a></li>
+<li><a href="#error-on-prepare-styles">Error on Prepare styles</a></li>
+<li><a href="#why-two-projects-">Why Two Projects?</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>We start working with our <strong>ElvenConfig.json</strong> file via Redux.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/redux-data-view.png" alt="Redux Data View"></p>
+<a class="anchor" id="client-and-server"></a>
+<h2>Client and Server</h2>
+<p>You know the drill:</p>
+<pre><code><span class="hljs-string">mkdir </span><span class="hljs-string">Week09-ReduxData
+</span><span class="hljs-string">cd </span><span class="hljs-string">Week09-ReduxData
+</span><span class="hljs-built_in">create-react-app</span> <span class="hljs-string">client
+</span><span class="hljs-string">CreateExpressProject </span><span class="hljs-string">server</span>
+</code></pre><a class="anchor" id="concurrently"></a>
+<h2>Concurrently</h2>
+<p>Do the <a href="https://www.ccalvert.net/books/CloudNotes/Assignments/Npm/RunConcurrently.html">concurrently</a> assignment.</p>
+<a class="anchor" id="load-the-config-file"></a>
+<h2>Load the config File</h2>
+<p>On the server, in <strong>routes/index.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> config = <span class="hljs-keyword">require</span>(<span class="hljs-string">'isit-code-lastname'</span>).elfConfig;
+
+---
+
+router.get(<span class="hljs-string">'/getConfig'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req, res, next)</span> </span>{ <span class="hljs-string">'use strict'</span>;
+    config.loadAsync()
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(configuration)</span> </span>{
+            <span class="hljs-comment">// WRITE CODE TO SEND THE CONFIGURATION</span>
+            <span class="hljs-comment">// VIA HTTP</span>
+        })
+        .<span class="hljs-keyword">catch</span>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span> </span>{
+            <span class="hljs-keyword">throw</span> err
+        })
+});
+</code></pre>
+<p>To call this route, you would do something like this in a file called <strong>src/get-config.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> () =&gt; {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">resolve, reject</span>) </span>{
+        fetch(<span class="hljs-string">'/get-config'</span>)
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">response</span>) </span>{
+                <span class="hljs-keyword">return</span> response.json();
+            })
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">configuration</span>) </span>{
+                resolve(configuration.configuration.users)
+            })
+            .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ex</span>) </span>{
+                reject(ex);
+            });
+    });
+};
+</code></pre>
+<a class="anchor" id="client-actions"></a>
+<h2>Client Actions</h2>
+<ul>
+<li>ALL</li>
+<li>BOOTSWATCH</li>
+<li>SITE_DIRS</li>
+<li>DESTINATION_DIRS</li>
+</ul>
+<a class="anchor" id="the-client"></a>
+<h2>The Client Code</h2>
+<p>Install Material UI</p>
+<pre><code>npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save material-ui</span>
+npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save redux</span>
+npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save react-redux</span>
+</code></pre><p>Use <strong>RaisedButton</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> RaisedButton <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/RaisedButton'</span>;
+</code></pre>
+<p>Put in Redux:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> {connect} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-redux'</span>;
+
+let App = <span class="hljs-function"><span class="hljs-params">({put, the, dispatched, functions, here})</span> =&gt;</span> {
+
+    <span class="hljs-keyword">return</span> (
+      &lt;div className=<span class="hljs-string">"App"</span>&gt;
+        &lt;header className=<span class="hljs-string">"App-header"</span>&gt;
+          &lt;img src={logo} className=<span class="hljs-string">"App-logo"</span> alt=<span class="hljs-string">"logo"</span> /&gt;
+          &lt;h1 className=<span class="hljs-string">"App-title"</span>&gt;Welcome to React&lt;/h1&gt;
+        &lt;/header&gt;
+        &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;
+          App Reducer
+        &lt;/p&gt;
+        <span class="hljs-regexp">//</span> YOUR JSX HERE WITH RaisedButton HERE.
+      &lt;/div&gt;
+    );
+
+};
+
+const mapStateToProps = <span class="hljs-function"><span class="hljs-params">(state)</span> =&gt;</span> {
+  <span class="hljs-regexp">//</span> YOUR CODE HERE
+};
+
+const mapDispatchToProps = <span class="hljs-function"><span class="hljs-params">(dispatch)</span> =&gt;</span> {
+    siteDirsClick: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        dispatch({type: <span class="hljs-string">'SITE_DIRS'</span>})
+    },
+    destinationDirsClick: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-regexp">//</span> YOU DO IT
+    },
+    bootswatchClick: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-regexp">//</span> YOU DO IT
+    }
+};
+
+App = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(App);
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> App;
+</code></pre>
+<p>When filling the dispatched functions, review the actions outlined above.</p>
+<a class="anchor" id="redux"></a>
+<h2>Redux</h2>
+<p>In <strong>index.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'./index.css'</span>;
+<span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./App'</span>;
+<span class="hljs-keyword">import</span> configReducer <span class="hljs-keyword">from</span> <span class="hljs-string">'./config-reducer'</span>;
+<span class="hljs-keyword">import</span> {Provider} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-redux'</span>;
+<span class="hljs-keyword">import</span> {createStore} <span class="hljs-keyword">from</span> <span class="hljs-string">'redux'</span>;
+<span class="hljs-keyword">import</span> registerServiceWorker <span class="hljs-keyword">from</span> <span class="hljs-string">'./registerServiceWorker'</span>;
+
+<span class="hljs-keyword">let</span> store = createStore(configReducer);
+<span class="hljs-keyword">const</span> root = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>);
+
+ReactDOM.render(
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">App</span> /&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span>, root);
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+);
+registerServiceWorker();
+</code></pre>
+<a class="anchor" id="config-reducer"></a>
+<h2>Config Reducer</h2>
+<p>Basing your work on Spokesman from our Redux Starter assignment, create a reducer. Only this time, also create a promise in get-config that loads <strong>ElvenConfig.json</strong>.</p>
+<p>The actions we respond to in the reducer:</p>
+<ul>
+<li>ALL</li>
+<li>BOOTSWATCH</li>
+<li>SITE_DIRS</li>
+<li>DESTINATION_DIRS</li>
+</ul>
+<pre><code class="lang-javascript">let <span class="hljs-keyword">state</span>Init = {
+    baseDir: '<span class="hljs-literal">unknown</span>',
+    bootswatch:'<span class="hljs-literal">unknown</span>',
+    siteDirs: ['<span class="hljs-literal">unknown</span>'],
+    destinationDirs: ['<span class="hljs-literal">unknown</span>']
+};
+
+const configReducer = (<span class="hljs-keyword">state</span> = <span class="hljs-keyword">state</span>Init, action) =&gt; {
+    switch (action.type) {
+        case 'ALL':
+            const <span class="hljs-keyword">user</span> = action.users.calvert;
+            return {
+                ...<span class="hljs-keyword">user</span>,
+                baseDir: <span class="hljs-keyword">user</span>['base-dir'],
+                bootswatch: <span class="hljs-keyword">user</span>.bootswatch,
+                siteDirs: // YOU DO IT,
+                destinationDirs: // YOU DO IT
+            };
+        case 'BOOTSWATCH':
+            return {
+                ...<span class="hljs-keyword">state</span>,
+                bootswatch: 'foo'
+            };
+        case 'SITE_DIRS':
+            return {
+                // YOU DO IT
+            };
+        case 'DESTINATION_DIRS':
+            return {
+                // YOU DO IT
+            };
+        <span class="hljs-keyword">default</span>:
+            return <span class="hljs-keyword">state</span>;
+    }
+};
+
+export <span class="hljs-keyword">default</span> configReducer;
+</code></pre>
+<a class="anchor" id="dialogs"></a>
+<h2>Dialogs</h2>
+<p>Invoke the dialog like this in your JSX:</p>
+<pre><code class="lang-XML"><span class="hljs-tag">&lt;<span class="hljs-name">ScrollableDialog</span> <span class="hljs-attr">dirs</span>=<span class="hljs-string">{siteDirs}</span> <span class="hljs-attr">title</span>=<span class="hljs-string">"Site Dirs"</span>/&gt;</span>
+</code></pre>
+<p>The code passes two parameters to <strong>ScrollableDialog</strong> which turn up in the props of the dialog itself:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
+    super(props);  &lt;&lt; THE PARAMETERS ARE IN HERE
+    ...
+}</span></span>
+</code></pre>
+<p>And here is the dialog in its entirety:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> Dialog <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/Dialog'</span>;
+<span class="hljs-keyword">import</span> FlatButton <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/FlatButton'</span>;
+<span class="hljs-keyword">import</span> RaisedButton <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/RaisedButton'</span>;
+<span class="hljs-keyword">import</span> {List, ListItem} <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/List'</span>;
+<span class="hljs-keyword">import</span> FileFolder <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/svg-icons/file/folder'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DialogExampleScrollable</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> {</span>
+    constructor(props) {
+        <span class="hljs-keyword">super</span>(props);
+        <span class="hljs-keyword">this</span>.state = {
+            open: <span class="hljs-literal">false</span>,
+        };
+
+    }
+<span class="hljs-function">
+    <span class="hljs-title">handleOpen</span> = <span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-keyword">this</span>.setState({open: <span class="hljs-literal">true</span>});
+    };
+<span class="hljs-function">
+    <span class="hljs-title">handleClose</span> = <span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-keyword">this</span>.setState({open: <span class="hljs-literal">false</span>});
+    };
+
+    render() {
+        const actions = [
+            &lt;FlatButton
+                label=<span class="hljs-string">"OK"</span>
+                primary={<span class="hljs-literal">true</span>}
+                onClick={<span class="hljs-keyword">this</span>.handleClose}
+            /&gt;
+        ];
+
+        <span class="hljs-keyword">return</span> (
+            &lt;div&gt;
+                &lt;RaisedButton label={<span class="hljs-keyword">this</span>.props.title} onClick={<span class="hljs-keyword">this</span>.handleOpen} /&gt;
+                &lt;Dialog
+                    title={<span class="hljs-keyword">this</span>.props.title}
+                    actions={actions}
+                    modal={<span class="hljs-literal">false</span>}
+                    open={<span class="hljs-keyword">this</span>.state.open}
+                    onRequestClose={<span class="hljs-keyword">this</span>.handleClose}
+                    autoScrollBodyContent={<span class="hljs-literal">true</span>}
+                &gt;
+                    &lt;List&gt;
+                    {<span class="hljs-keyword">this</span>.props.dirs.map(<span class="hljs-function"><span class="hljs-params">(dir)</span> =&gt;</span> (
+                        &lt;ListItem key={dir} primaryText={dir} leftIcon={&lt;FileFolder <span class="hljs-regexp">/&gt;} /</span>&gt;
+                    ))}
+                    &lt;/List&gt;
+                &lt;/Dialog&gt;
+            &lt;/div&gt;
+        );
+    }
+}
+</code></pre>
+<a class="anchor" id="error-on-prepare-styles"></a>
+<h2>Error on Prepare styles</h2>
+<p>Error: <strong>Cannot read property &#39;prepareStyles&#39; of undefined</strong></p>
+<p>Don&#39;t forget the MuiThemeProvider!</p>
+<a class="anchor" id="why-two-projects-"></a>
+<h2>Why Two Projects?</h2>
+<p>Ultimately, we will have only one app and it will be the server. The <strong>create-react-app</strong> <strong>client</strong> will be abandoned at release time.</p>
+<p>In particular, we will choose <strong>npm build</strong> on the <strong>client</strong>, then copy the build output to the public directory of our <strong>server</strong>, and thus combine the front end and the back end into one app. But during development, it is simpler to have two apps, I think. That is assuming you like the benefits of <strong>create-react-app</strong>. In particular, the way it refreshes the web page automatically and handles other painful webpack chores for us.</p>
+<p>The main reason we do things this way is to fit in comfortably with the applications created with <strong>create-react-app</strong>. They are set up very nicely to help with development and debugging of the front end, but they are not designed to have an Express back end during development. They are designed to have only the front end until we deploy them on top of a <strong>server</strong>.</p>
+<ul>
+<li><a href="https://daveceddia.com/create-react-app-express-backend/">https://daveceddia.com/create-react-app-express-backend/</a></li>
+</ul>
+<p>This is a fast-moving world, and things may change over time. But that is what I know now.</p>
+<p>And I think, whether we wanted to make a call to our <strong>server</strong> or not, we are often going to want to build a backend for the output from <strong>create-react-app</strong> when we deploy. The thing we are doing differently than the default backend is to support REST calls, which we are shoehorning in with the <strong>proxy</strong> calls to the <strong>server</strong> until the release time when we combine both apps into the <strong>server</strong> via the <strong>build</strong> step.</p>
+</div></body></html>

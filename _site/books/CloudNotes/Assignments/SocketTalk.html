@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>SocketTalk</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>SocketTalk</h1><p>Welcome to SocketTalk</p><ul><!--TOC_Start--><li><a href="#socket-talk">Socket Talk</a></li>
+<li><a href="#create-app-js">Create App.js</a></li>
+<li><a href="#control-js">Control.js</a></li>
+<li><a href="#the-html">The HTML</a></li>
+<li><a href="#the-css">The CSS</a></li>
+<li><a href="#turn-it-in">Turn it In</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="socket-talk"></a>
+<h1>Socket Talk</h1>
+<p>Let&#39;s create a simple chat application.</p>
+<a class="anchor" id="create-app-js"></a>
+<h2>Create App.js</h2>
+<p>This is the most stripped down Express server I could create and still support the tools we need to create a socket application with a reasonable architecture:</p>
+<pre><code><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> app = express();
+<span class="hljs-keyword">var</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>).Server(app);
+<span class="hljs-keyword">var</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
+<span class="hljs-keyword">var</span> io = <span class="hljs-built_in">require</span>(<span class="hljs-string">'socket.io'</span>)(http);
+
+app.use(express.static(path.join(__dirname, <span class="hljs-string">'public'</span>)));
+
+app.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>)</span>{
+  res.sendFile(__dirname + <span class="hljs-string">'/index.html'</span>);
+});
+
+io.on(<span class="hljs-string">'connection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">socket</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'connection called'</span>);    
+    socket.on(<span class="hljs-string">'chatMessage'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">msg</span>)</span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Chat socket message: '</span>, msg);        
+        <span class="hljs-keyword">if</span> (msg === <span class="hljs-string">""</span>) {
+            msg=<span class="hljs-string">"Empty message sent."</span>;
+        }
+        io.sockets.emit(<span class="hljs-string">'chatMessage'</span>, msg);
+    });
+});
+
+http.listen(<span class="hljs-number">30025</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'listening on *:30025'</span>);
+});
+</code></pre><p>Notice this line:</p>
+<pre><code>app.use(express.<span class="hljs-keyword">static</span>(path.<span class="hljs-keyword">join</span>(__dirname, <span class="hljs-string">'public'</span>)));
+</code></pre><p>It gives us the ability to serve pages out of a directory called <strong>public</strong>. This folder is a subdirectory of the project root. If the project is in <strong>/src</strong> then public is in <strong>/src/public</strong>.</p>
+<a class="anchor" id="control-js"></a>
+<h2>Control.js</h2>
+<p>We need code to accept </p>
+<pre><code>socket = io(<span class="hljs-string">'localhost'</span>);
+socket.on(<span class="hljs-string">'chatMessage'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">msg</span>)</span>{
+     $(<span class="hljs-string">'#info'</span>).prepend($(<span class="hljs-string">'&lt;li&gt;'</span>).text(msg));
+});
+</code></pre><p>And here is how we send messages:</p>
+<pre><code>socket.<span class="hljs-keyword">emit</span>(<span class="hljs-string">'chatMessage'</span>, $(<span class="hljs-string">'#myInput'</span>).val());
+</code></pre><a class="anchor" id="the-html"></a>
+<h2>The HTML</h2>
+<p>I&#39;m placing both the HTML and app.js in the root. Here is the HTML:</p>
+<pre><code><span class="hljs-meta">&lt;!doctype html&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Socket.IO chat<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"css/Style.css"</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"stylesheet"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/css"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://cdn.socket.io/socket.io-1.2.0.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"http://code.jquery.com/jquery-1.11.1.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"Control.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"data"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"myInput"</span> <span class="hljs-attr">autocomplete</span>=<span class="hljs-string">"off"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"chatButton"</span>&gt;</span>Chat<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">'messageDiv'</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">ul</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"info"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>Start<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>   
+
+  <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+</code></pre><a class="anchor" id="the-css"></a>
+<h2>The CSS</h2>
+<p>I put the CSS in a file called Styles.css and placed it in the <strong>public/css</strong> folder. It looks like this:</p>
+<pre><code>
+* { 
+    <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>; 
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">0</span>; 
+    <span class="hljs-attribute">box-sizing</span>: border-box; 
+}
+
+<span class="hljs-selector-tag">body</span> { 
+    <span class="hljs-attribute">font</span>: <span class="hljs-number">21px</span> sans; 
+}
+
+<span class="hljs-selector-class">.data</span> { 
+    <span class="hljs-attribute">background</span>: <span class="hljs-number">#ABA</span>; 
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">3px</span>; 
+    <span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>; 
+    <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">12px</span>;
+}
+
+<span class="hljs-selector-class">.data</span> <span class="hljs-selector-tag">input</span> { 
+    <span class="hljs-attribute">border</span>: <span class="hljs-number">0</span>;    
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">10px</span>; 
+    <span class="hljs-attribute">padding-top</span>: <span class="hljs-number">12px</span>; 
+    <span class="hljs-attribute">width</span>: <span class="hljs-number">90%</span>; 
+    <span class="hljs-attribute">margin-right</span>: .<span class="hljs-number">5%</span>; 
+    <span class="hljs-attribute">margin-left</span>: .<span class="hljs-number">5%</span>; 
+}
+
+<span class="hljs-selector-id">#chatButton</span> { 
+    <span class="hljs-attribute">width</span>: <span class="hljs-number">8.1%</span>; 
+    <span class="hljs-attribute">background</span>: <span class="hljs-number">#787</span>; 
+    <span class="hljs-attribute">border</span>: none; 
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">5px</span>; 
+    <span class="hljs-attribute">color</span>: white;
+    <span class="hljs-attribute">font</span>: <span class="hljs-number">21px</span> sans; 
+}
+
+<span class="hljs-selector-id">#messageDiv</span> {
+    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#bdb</span>;
+    <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">12px</span>;
+}
+
+<span class="hljs-selector-id">#info</span> { 
+    <span class="hljs-attribute">list-style-type</span>: none; 
+    <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>; 
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">1</span>;
+}
+
+<span class="hljs-selector-id">#info</span> <span class="hljs-selector-tag">li</span> { 
+    <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">12px</span>;
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">5px</span> <span class="hljs-number">10px</span>; 
+}
+
+<span class="hljs-selector-id">#info</span> <span class="hljs-selector-tag">li</span><span class="hljs-selector-pseudo">:nth-child(odd)</span> { 
+    <span class="hljs-attribute">background</span>: <span class="hljs-number">#bcb</span>; 
+} 
+</code></pre><a class="anchor" id="turn-it-in"></a>
+<h2>Turn it In</h2>
+<p>Create a Control.js file that works.</p>
+<p>It should look something like this:</p>
+<p><img src="https://drive.google.com/uc?export=view&amp;id=0B25UTAlOfPRGMDM3T3lCUkg0Z00" alt="look"> </p>
+<p>We will also integrate chat into the final. At this stage, enter text can be only done in the GameListener.</p>
+</div></body></html>

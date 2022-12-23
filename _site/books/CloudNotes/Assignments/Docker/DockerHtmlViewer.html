@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>DockerHtmlViewer</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>DockerHtmlViewer</h1><p>Welcome to DockerHtmlViewer</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#related-assignments">Related Assignments</a></li>
+<li><a href="#video-simple-docker">Video Simple Docker</a></li>
+<li><a href="#video-apache-control">Video Apache Control</a></li>
+<li><a href="#copy-files">Copy files</a></li>
+<li><a href="#stop-and-start-container">Stop and Start Container</a></li>
+<li><a href="#link-directory">Link Directory</a></li>
+<li><a href="#more-flexibility">More flexibility</a></li>
+<li><a href="#save-a-container-as-an-image">Save a Container as an Image</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#apache-control">Apache Control</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>There are two different ways to get files from a host OS into a Docker container:</p>
+<ul>
+<li>Copy the files from the host to the container</li>
+<li>Link a directory from the host to the container.</li>
+</ul>
+<p>This assignment has enough in it to get you going. I&#39;ll try to clarify it over the next little bit.</p>
+<a class="anchor" id="related-assignments"></a>
+<h2>Related Assignments</h2>
+<ul>
+<li><a href="https://www.ccalvert.net/books/CloudNotes/Assignments/Docker/DockerStarter.html">Docker Starter</a></li>
+<li><a href="https://www.ccalvert.net/books/CloudNotes/Assignments/Docker/DockerFile.html">Docker Files</a></li>
+</ul>
+<a class="anchor" id="video-simple-docker"></a>
+<h2>Video Simple Docker</h2>
+<div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/bYy19vDMRRs?ecver=2" width="640" height="360" frameborder="0" gesture="media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
+
+<a class="anchor" id="video-apache-control"></a>
+<h2>Video Apache Control</h2>
+<div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/mDY0dZ_78jE?ecver=2" width="640" height="360" frameborder="0" gesture="media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
+
+<a class="anchor" id="copy-files"></a>
+<h2>Copy files</h2>
+<p>The advantage of this solution is that it provides a container that will act in a defined and reliable manner wherever it is installed.</p>
+<p>This is simple to do, but place the <strong>Dockerfile</strong> for this part of the assignment it in its own directory:</p>
+<pre><code>DockerCode/HtmlViewer
+</code></pre><p>For instance:</p>
+<pre><code><span class="hljs-built_in">mkdir</span> ~/DockerCode/HtmlViewer    
+</code></pre><p>You will need to put at least one file in that directory. In particular, you will need a <strong>Dockerfile</strong>.</p>
+<p>The one catch here is that the <strong>html</strong> directory must be in the <strong>context</strong> (HtmlViewer) directory. We can&#39;t copy the files directly from a location like <strong>/var/www/html</strong>. First copy them from <strong>/var/www/html</strong> to the directory that contains your <strong>Dockerfile</strong>. This is the context directory. For instance execute this command from the EC2 instance (not from inside a container):</p>
+<pre><code>cp -rv <span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html ~/</span>DockerCode<span class="hljs-regexp">/HtmlViewer/</span>.
+</code></pre><p>Or this should also work:</p>
+<pre><code>cp -ruvp <span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html ~/</span>DockerCode<span class="hljs-regexp">/HtmlViewer/</span>.
+</code></pre><p>Docker says this is necessary so that we can create a reproducable environment. I feel this going to far. But there it is.</p>
+<p>The Docker <strong>COPY</strong> command, when placed in a <strong>Dockerfile</strong>, is simple to use:</p>
+<pre><code><span class="hljs-keyword">FROM</span> charliecalvert/apache
+<span class="hljs-keyword">COPY</span><span class="bash"> html /var/www/html</span>
+</code></pre><p>This will copy the files from the <strong>html</strong> directory on the host to the <strong>/var/www/html</strong> directory in the container. Note that I am building directly on top of our <strong>apache</strong> container.</p>
+<p>You should probably also write a little script called <strong>build</strong> containing the code to build this Image:</p>
+<pre><code><span class="hljs-meta">#!/bin/bash
+</span>
+docker build -t charliecalvert/html-viewer .
+docker run --name html-viewer-container --restart unless-stopped -d -p 80:80 charliecalvert/html-viewer    
+</code></pre><p>Only, you should put your own name in script and not mine. For instance:</p>
+<pre><code><span class="hljs-symbol">docker</span> <span class="hljs-keyword">build </span>-t &lt;YOUR NAME&gt;/html-viewer .
+</code></pre><p>And to <strong>stop</strong> all and delete what we created:</p>
+<pre><code><span class="hljs-meta">#!/bin/bash
+</span>
+docker stop html-viewer-container
+docker rm html-viewer-container
+docker rmi charliecalvert/html-viewer
+</code></pre><p>To be clear, we still have our <strong>MakeHtml</strong> directory. We will work on it more later. But in this directory we have a much simple Docker file. We have removed from the MakeHtml <strong>Dockerfile</strong> all the code that recreated the <strong>bcuser</strong> user, JsObjects and a node environment. The plan is now to build the html files on the host and then copy them to the container.</p>
+<ul>
+<li><a href="https://docs.docker.com/engine/admin/start-containers-automatically/#use-a-restart-policy">Docker Restart Automatically Docs</a></li>
+</ul>
+<a class="anchor" id="stop-and-start-container"></a>
+<h2>Stop and Start Container</h2>
+<p>Suppose you have a running container and want to stop it:</p>
+<pre><code>docker <span class="hljs-keyword">stop</span> html-viewer-<span class="hljs-keyword">container</span>
+</code></pre><p>Then you can start it again like this:</p>
+<pre><code>docker <span class="hljs-keyword">start</span> html-viewer-<span class="hljs-keyword">container</span>
+</code></pre><a class="anchor" id="link-directory"></a>
+<h2>Link Directory</h2>
+<p>It is also possible to link a directory on the host to a directory in the container. The catch is that you have to do this when you start the container. You can hardcode the link into the container. Again, Docker says it won&#39;t let you hardcode the link because it is not guaranteed to be reproducable in all environments.</p>
+<pre><code>docker run --name maker-elf -v /var/www/<span class="hljs-selector-tag">html</span>:/var/www/<span class="hljs-selector-tag">html</span> -d -<span class="hljs-selector-tag">p</span> <span class="hljs-number">80</span>:<span class="hljs-number">80</span> charliecalvert/apache
+</code></pre><p>Note that in this case we don&#39;t create a third image at all. We just use our existing <strong>apache</strong> image.</p>
+<a class="anchor" id="more-flexibility"></a>
+<h2>More flexibility</h2>
+<p>Though you don&#39;t have to do it at this time, it seems to me that we could:</p>
+<ul>
+<li>Build MakeHtml as we did in the original MakeHtml assignment. That is, get JsObjects, set up node and npm, the whole deal.</li>
+<li>Run the container  with -v option mapping our <strong>~/ssh</strong> directory to the same location in container.</li>
+<li>Then use the mapped ~/ssh directory to load our key and set up our repository.</li>
+<li>Run MakeHtml in the container.</li>
+<li>Exit the container and <strong>commit</strong> the container to an image.</li>
+</ul>
+<p>That way we would have an automatically set up container that we could work in and develop as outlined throughout much of the first half of this course.</p>
+<p>For now I think the first of the options, the Copy option, is the simplest way to get us up and running and let me grade the midterm. Doing the steps outlined above in this section of this text is probably going to be part of another assignment.</p>
+<a class="anchor" id="save-a-container-as-an-image"></a>
+<h2>Save a Container as an Image</h2>
+<pre><code>docker <span class="hljs-keyword">commit</span> maker-elf maker-<span class="hljs-keyword">go</span>  
+</code></pre><p>That is:</p>
+<pre><code>docker commit <span class="hljs-tag">&lt;<span class="hljs-name">EXISTING_CONTAINER</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">NEW_IMAGE_NAME</span>&gt;</span>
+</code></pre><a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>For now, do the Copy and Link steps and take screenshots showing that it works. Turn in the screenshots, and turn in a link to your EC2 instance that works. Given the information above, you should be able to give me an EC2 instance that contains your midterm and all your homework related to running EC2 instances.</p>
+<p>If that is impossible, stop any running containers and start apache. Set things up so I can grade your midterm and any other assignments that depend on EC2 and apache.</p>
+<p>In short, get that EC2 image working one way or another. To pass this assignment, you need the container, but if you can&#39;t get it running, the set things up with Apache running in the host.</p>
+<a class="anchor" id="apache-control"></a>
+<h2>Apache Control</h2>
+<p>Start Apache:</p>
+<pre><code class="lang-bash"><span class="hljs-comment">#!/bin/bash</span>
+
+sudo systemctl <span class="hljs-builtin-name">enable</span> apache2
+sudo<span class="hljs-built_in"> service </span>apache2 start
+</code></pre>
+<p>Stop Apache script:</p>
+<pre><code class="lang-bash"><span class="hljs-comment">#!/bin/bash</span>
+
+sudo<span class="hljs-built_in"> service </span>apache2 stop
+sudo systemctl <span class="hljs-builtin-name">disable</span> apache2
+</code></pre>
+<p>Apache status:</p>
+<pre><code class="lang-bash"><span class="hljs-comment">#!/bin/bash</span>
+
+sudo<span class="hljs-built_in"> service </span>apache2 status
+</code></pre>
+<p>Or, perhaps you would prefer the <strong>ApacheControl</strong> program from JsObjects:</p>
+<pre><code><span class="hljs-attribute">cp</span> <span class="hljs-variable">$SETUP_LINUXBOX</span>/ApacheControl .
+</code></pre><p>Then just run the script and use the menu. The program looks like this:</p>
+<pre><code class="lang-bash"><span class="hljs-comment">#!/bin/bash</span>
+
+<span class="hljs-attribute">RED</span>=<span class="hljs-string">'\033[0;31m'</span>
+<span class="hljs-attribute">LIGHT_RED</span>=<span class="hljs-string">'\033[1;31m'</span>
+<span class="hljs-attribute">LIGHT_GREEN</span>=<span class="hljs-string">'\033[1;32m'</span>
+<span class="hljs-attribute">YELLOW</span>=<span class="hljs-string">'\033[1;33m'</span>
+<span class="hljs-attribute">BLUE</span>=<span class="hljs-string">'\033[1;36m'</span>
+<span class="hljs-attribute">NC</span>=<span class="hljs-string">'\033[0m'</span> # <span class="hljs-literal">No</span> Color
+
+function start() {
+    sudo systemctl <span class="hljs-builtin-name">enable</span> apache2
+    sudo<span class="hljs-built_in"> service </span>apache2 start
+}
+
+function stop() {
+    sudo<span class="hljs-built_in"> service </span>apache2 stop
+    sudo systemctl <span class="hljs-builtin-name">disable</span> apache2
+}
+
+function status() {
+    sudo<span class="hljs-built_in"> service </span>apache2 status
+}
+
+<span class="hljs-keyword">while</span> <span class="hljs-literal">true</span>; <span class="hljs-keyword">do</span>
+    message <span class="hljs-string">"Menu"</span>
+    echo -e <span class="hljs-string">"<span class="hljs-variable">$LIGHT_GREEN</span>  a) Start and Enable Apache"</span>
+    echo -e <span class="hljs-string">"<span class="hljs-variable">$LIGHT_GREEN</span>  b) Stop and Disable Apache"</span>
+    echo -e <span class="hljs-string">"<span class="hljs-variable">$LIGHT_GREEN</span>  c) Apache Status"</span>
+    echo -e <span class="hljs-string">"<span class="hljs-variable">$LIGHT_RED</span>  x) Exit"</span>
+    echo -e <span class="hljs-string">"\n<span class="hljs-variable">$NC</span>"</span>
+    read -p <span class="hljs-string">"Please make a selection: "</span> eotuyx
+    case <span class="hljs-variable">$eotuyx</span> <span class="hljs-keyword">in</span>
+        [Aa]* ) start <span class="hljs-literal">false</span>; continue;;
+        [Bb]* ) stop <span class="hljs-literal">false</span>; continue;;
+        [Cc]* ) status <span class="hljs-literal">true</span>; continue;;
+        [XxQq]* ) break;;
+        * )  -e <span class="hljs-string">"\n<span class="hljs-variable">$NC</span>"</span> + <span class="hljs-string">"Please answer with c, r or x."</span>;;
+    esac
+done
+</code></pre>
+<!--- Links --->
+</div></body></html>

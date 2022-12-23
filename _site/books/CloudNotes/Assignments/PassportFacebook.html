@@ -1,0 +1,117 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>PassportFacebook</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>PassportFacebook</h1><p>Welcome to PassportFacebook</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#setup-facebook">Setup Facebook</a></li>
+<li><a href="#facebook-specific-code">Facebook Specific Code</a></li>
+<li><a href="#make-public">Make Public</a></li>
+<li><a href="#turn-it-in">Turn It In</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Passport Facebook exercise.</p>
+<p>Use <a href="http://passportjs.org/">Passport</a> &quot;sign in with Facebook&quot;. This assignment builds on the <a href="https://www.ccalvert.net/books/CloudNotes/Assignments/Passport.html">Passport Assignment</a> which explained how to sign in Google.</p>
+<p>Your goal is to get your passport app (and eventually your DataMaster app and DataHunter game) supporting sign in with Facebook. In fact, the user should be able to sign in with Twitter, and either Facebook or Google. But for this exercise, you only need to add support for Facebook to the Passport program.</p>
+<p>Go to this page to turn on and off which apps have permission to use your information. In other words, to deactivate the app you built so that it can sign on again from the beginning, go to this page:</p>
+<ul>
+<li><a href="https://www.facebook.com/settings?tab=applications">https://www.facebook.com/settings?tab=applications</a></li>
+<li><a href="https://www.facebook.com/help/792552774106866">https://www.facebook.com/help/792552774106866</a></li>
+</ul>
+<a class="anchor" id="setup-facebook"></a>
+<h2>Setup Facebook</h2>
+<p>Go to the Facebook developers site: <a href="https://developers.facebook.com/">https://developers.facebook.com/</a>. Note at the bottom the link to the Login API.</p>
+<p>Visit the Facebook Login for Developers Page: <a href="https://developers.facebook.com/products/login/">https://developers.facebook.com/products/login/</a>. Check out the page you see from the Get Started button.</p>
+<p>After getting oriented, look at the top right, and select the option to create a <strong>New App</strong>.</p>
+<ul>
+<li>Display Name: Isit320-Lastname</li>
+<li>Category: Education</li>
+</ul>
+<p>A possible alternative page for creating your app is here:</p>
+<ul>
+<li><a href="https://developers.facebook.com/apps/">https://developers.facebook.com/apps/</a></li>
+</ul>
+<p>Click okay, fill in the capcha, and choose <strong>Facebook Login</strong> as Product and <strong>www</strong> as login.</p>
+<ul>
+<li>Site URL: <a href="http://localhost:30025">http://localhost:30025</a></li>
+<li>Get your App ID and Secret</li>
+<li>Client token on advanced page</li>
+<li>The Valid OAuth redirect APIs: <a href="http://localhost:30025/facebook/login">http://localhost:30025/facebook/login</a></li>
+</ul>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/passport-facebook-oauth.png" alt="OAuth Facebook"></p>
+<a class="anchor" id="facebook-specific-code"></a>
+<h2>Facebook Specific Code</h2>
+<p>Save the Facebook specific code in <strong>routes/login-facebook.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 11/5/16.
+ */</span>
+
+<span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> router = express.Router();
+<span class="hljs-keyword">var</span> passport = <span class="hljs-built_in">require</span>(<span class="hljs-string">'passport'</span>);
+<span class="hljs-keyword">var</span> FacebookStrategy = <span class="hljs-built_in">require</span>(<span class="hljs-string">'passport-facebook'</span>).Strategy;
+
+<span class="hljs-comment">/**************************************
+ *  Facebook
+ **************************************/</span>
+
+router.get(<span class="hljs-string">'/profile'</span>, <span class="hljs-built_in">require</span>(<span class="hljs-string">'connect-ensure-login'</span>).ensureLoggedIn(),
+    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-built_in">console</span>.log(req.user);
+        res.render(<span class="hljs-string">'profile-facebook'</span>, {
+            <span class="hljs-attr">title</span>: <span class="hljs-string">'Facebook Profile'</span>,
+            <span class="hljs-attr">user</span>: req.user
+        });
+    });
+
+passport.use(<span class="hljs-keyword">new</span> FacebookStrategy({
+        <span class="hljs-attr">clientID</span>: process.env.CLIENT_ID,
+        <span class="hljs-attr">clientSecret</span>: process.env.CLIENT_SECRET,
+        <span class="hljs-attr">callbackURL</span>: <span class="hljs-string">'http://localhost:30025/facebook/login/callback'</span>
+    },
+    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">accessToken, refreshToken, profile, done</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-keyword">return</span> done(<span class="hljs-literal">null</span>, profile);
+    }));
+
+router.get(<span class="hljs-string">'/login'</span>,
+    passport.authenticate(<span class="hljs-string">'facebook'</span>));
+
+router.get(<span class="hljs-string">'/login/callback'</span>,
+    passport.authenticate(<span class="hljs-string">'facebook'</span>, {
+        <span class="hljs-attr">failureRedirect</span>: <span class="hljs-string">'/login'</span>
+    }),
+    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        res.redirect(<span class="hljs-string">'/'</span>);
+    });
+
+<span class="hljs-built_in">module</span>.exports = router;
+
+</code></pre>
+<p>Here is a way to use the <strong>profileFields</strong> property to alter the Facebook Strategy so you can get more information about the user:</p>
+<pre><code class="lang-javascript">passport.use(<span class="hljs-keyword">new</span> FacebookStrategy({
+        <span class="hljs-attr">clientID</span>: process.env.CLIENT_ID,
+        <span class="hljs-attr">clientSecret</span>: process.env.CLIENT_SECRET,
+        <span class="hljs-attr">callbackURL</span>: <span class="hljs-string">'http://localhost:30025/facebook/login/return'</span>,
+        <span class="hljs-attr">profileFields</span>: [<span class="hljs-string">'id'</span>, <span class="hljs-string">'displayName'</span>, <span class="hljs-string">'photos'</span>, <span class="hljs-string">'email'</span>]
+    },
+    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">accessToken, refreshToken, profile, done</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'accessToken'</span>, accessToken);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'refreshToken'</span>, refreshToken);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'profile'</span>, profile);
+        <span class="hljs-keyword">return</span> done(<span class="hljs-literal">null</span>, profile);
+    }));
+</code></pre>
+<a class="anchor" id="make-public"></a>
+<h2>Make Public</h2>
+<p>You need to make your app public if it is going to be used by more than one person. Since both you and I need to access the app, you should make it public.</p>
+<ul>
+<li>Go to <a href="https://developers.facebook.com/">https://developers.facebook.com/</a> (Links to an external site.) and be sure you are signed in.</li>
+<li>At the top right, you can select your app from a drop down.</li>
+<li>You are taken to a page focused on your app. Select the App Review menu item on the far left.</li>
+<li>Set the <strong>Make <app-name> Public</strong> toggle to yes.</li>
+</ul>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/passport-facebook-public.png" alt="Make Facebook app Public"></p>
+<p>I think some kinds of apps need to be reviewed, but just using the Login API does not require review. So you can simply toggle Make Public from no to yes. If we wanted to be more cautious, we probably could have added me as co-developer, or some such, which would also be a good exercise. But just toggle the Make Public option for now.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn It In</h2>
+<p>We are working in the <strong>Week08-Passport</strong> folder in your repository. Place your work in that folder, if it is not there already. Run <strong>grunt check</strong>. Submit your assignment.</p>
+</div></body></html>

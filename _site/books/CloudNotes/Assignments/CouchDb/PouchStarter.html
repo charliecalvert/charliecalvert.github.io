@@ -1,0 +1,287 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>PouchStarter</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>PouchStarter</h1><p>Welcome to PouchStarter</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#server">Server</a></li>
+<li><a href="#create-application">Create Application</a></li>
+<li><a href="#material-ui">Material UI</a></li>
+<li><a href="#add-pouch-to-app-js">Add Pouch to App.js</a></li>
+<li><a href="#add-an-address">Add an Address</a></li>
+<li><a href="#show-an-address">Show an Address</a></li>
+<li><a href="#auto-refresh-data">Auto Refresh Data</a></li>
+<li><a href="#input-data">Input Data</a></li>
+<li><a href="#update-a-record">Update a Record</a></li>
+<li><a href="#add-cors-to-couchdb">Add CORS to CouchDb</a></li>
+<li><a href="#connect-to-couchdb">Connect to CouchDb</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#upgrade-to-latest-couchdb">Upgrade to Latest CouchDb</a></li>
+<li><a href="#data-cycle">Data Cycle</a></li>
+<li><a href="#read-about-storage-tools">Read about Storage Tools</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Read the PouchDb GetStarted App. It is similar to what we will build.</p>
+<ul>
+<li><a href="https://pouchdb.com/">PouchDb</a></li>
+<li><a href="https://pouchdb.com/getting-started.html">PouchDb Get Started</a></li>
+</ul>
+<a class="anchor" id="server"></a>
+<h2>Server</h2>
+<p>Download Ubuntu Server</p>
+<ul>
+<li><a href="http://bit.ly/pristine-ubuntu-server-16-10">http://bit.ly/pristine-ubuntu-server-16-10</a></li>
+</ul>
+<a class="anchor" id="create-application"></a>
+<h2>Create Application</h2>
+<pre><code><span class="hljs-built_in">create-react-app</span> <span class="hljs-string">Week09-SmallAddressCouch</span>
+</code></pre><a class="anchor" id="material-ui"></a>
+<h2>Material UI</h2>
+<pre><code>yarn <span class="hljs-keyword">add</span><span class="bash"> pouchdb
+</span>yarn <span class="hljs-keyword">add</span><span class="bash"> @material-ui/icons
+</span>yarn <span class="hljs-keyword">add</span><span class="bash"> @material-ui/core</span>
+</code></pre><p>Here is <strong>index.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'./index.css'</span>;
+<span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./App'</span>;
+<span class="hljs-keyword">import</span> { MuiThemeProvider, createMuiTheme } <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/styles'</span>;
+<span class="hljs-keyword">import</span> registerServiceWorker <span class="hljs-keyword">from</span> <span class="hljs-string">'./registerServiceWorker'</span>;
+<span class="hljs-keyword">import</span> purple <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/colors/purple'</span>;
+<span class="hljs-keyword">import</span> green <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/colors/green'</span>;
+
+<span class="hljs-keyword">const</span> themePurple = createMuiTheme({
+    <span class="hljs-attr">palette</span>: {
+        <span class="hljs-attr">primary</span>: {
+            <span class="hljs-attr">light</span>: purple[<span class="hljs-number">300</span>],
+            <span class="hljs-attr">main</span>: purple[<span class="hljs-number">500</span>],
+            <span class="hljs-attr">dark</span>: purple[<span class="hljs-number">700</span>],
+        },
+        <span class="hljs-attr">secondary</span>: {
+            <span class="hljs-attr">light</span>: green[<span class="hljs-number">300</span>],
+            <span class="hljs-attr">main</span>: green[<span class="hljs-number">500</span>],
+            <span class="hljs-attr">dark</span>: green[<span class="hljs-number">700</span>],
+        },
+    },
+});
+
+ReactDOM.render(
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span> <span class="hljs-attr">theme</span>=<span class="hljs-string">{themePurple}</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">App</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span></span>,
+
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
+);
+
+registerServiceWorker();
+</code></pre>
+<a class="anchor" id="add-pouch-to-app-js"></a>
+<h2>Add Pouch to App.js</h2>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">import</span> PouchDB <span class="hljs-keyword">from</span> <span class="hljs-string">'pouchdb'</span>;
+</code></pre>
+<p>Add a constructor with some state:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
+    super(props);
+    this.state = {
+        addressIndex: 10000,
+        firstName: 'unknown',
+        lastName: 'unknown',         
+        ids: []
+    }</span>
+    <span class="hljs-title">this</span>.<span class="hljs-title">init</span><span class="hljs-params">()</span>;</span>
+}
+</code></pre>
+<p>Now initial the database:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">init</span> = <span class="hljs-params">()</span> =&gt;</span> {
+    const DB_NAME=<span class="hljs-string">'address-charlie-nine'</span>;
+    <span class="hljs-keyword">this</span>.db = <span class="hljs-keyword">new</span> PouchDB(DB_NAME);
+    <span class="hljs-regexp">//</span><span class="hljs-keyword">this</span>.remoteCouch = <span class="hljs-string">'http://192.168.2.40:5984/'</span> + DB_NAME;
+    <span class="hljs-keyword">this</span>.remoteCouch = <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">this</span>.syncDom = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'sync-wrapper'</span>);
+    <span class="hljs-keyword">this</span>.db.changes({
+        since: <span class="hljs-string">'now'</span>,
+        live: <span class="hljs-literal">true</span>
+    }).<span class="hljs-literal">on</span>(<span class="hljs-string">'change'</span>, <span class="hljs-keyword">this</span>.showAddress);
+};
+</code></pre>
+<a class="anchor" id="add-an-address"></a>
+<h2>Add an Address</h2>
+<pre><code class="lang-javascript">addAddress = <span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> indexValue = <span class="hljs-keyword">this</span>.state.addressIndex + <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">addressIndex</span>: indexValue});
+    <span class="hljs-keyword">const</span> address = {
+        <span class="hljs-attr">_id</span>: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().toISOString(),
+        <span class="hljs-attr">firstName</span>: data.firstName,
+        <span class="hljs-attr">lastName</span>: data.lastName,
+        <span class="hljs-attr">completed</span>: <span class="hljs-literal">false</span>
+    };
+    <span class="hljs-keyword">this</span>.db.put(address, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback</span>(<span class="hljs-params">err, result</span>) </span>{
+        <span class="hljs-keyword">if</span> (!err) {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Successfully posted a r!'</span>);
+        }
+    });
+};
+</code></pre>
+<p>We need a button to trigger the call to our method:</p>
+<pre><code class="lang-javascript">import <span class="hljs-keyword">Button</span> from <span class="hljs-string">'@material-ui/core/Button'</span><span class="hljs-comment">;</span>
+
+<span class="hljs-comment">// Lots of code Here</span>
+
+&lt;<span class="hljs-keyword">Button</span>
+    <span class="hljs-keyword">color</span>=<span class="hljs-string">'secondary'</span>
+    variant=<span class="hljs-string">'raised'</span>
+    <span class="hljs-keyword">onClick</span>={e =&gt; this.addAddress({firstName: <span class="hljs-string">'foo'</span>, lastName: <span class="hljs-string">'bar'</span>}, e)}
+&gt;
+    Insert FooBar
+&lt;/<span class="hljs-keyword">Button</span>&gt;
+</code></pre>
+<a class="anchor" id="show-an-address"></a>
+<h2>Show an Address</h2>
+<pre><code class="lang-JavaScript">showAddress = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">let</span> ids = [];
+    <span class="hljs-keyword">const</span> getIds = <span class="hljs-keyword">this</span>.state.ids.length === <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">this</span>.db.allDocs({<span class="hljs-attr">include_docs</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">descending</span>: <span class="hljs-literal">true</span>}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, doc</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(doc.rows);
+        <span class="hljs-keyword">if</span> (getIds) {
+            ids = doc.rows.map(<span class="hljs-function">(<span class="hljs-params">row</span>) =&gt;</span> {
+                <span class="hljs-keyword">return</span> row.id;
+            });
+            that.setState({<span class="hljs-attr">ids</span>: ids});
+        }
+    });
+};
+</code></pre>
+<p>Create a button to call it:</p>
+<pre><code class="lang-javascript">&lt;<span class="hljs-keyword">Button</span>
+    <span class="hljs-keyword">color</span>=<span class="hljs-string">'secondary'</span>
+    variant=<span class="hljs-string">'raised'</span>
+    <span class="hljs-keyword">onClick</span>={this.showAddress}
+&gt;
+    Show
+&lt;/<span class="hljs-keyword">Button</span>&gt;
+</code></pre>
+<a class="anchor" id="auto-refresh-data"></a>
+<h2>Auto Refresh Data</h2>
+<p>Add this to <strong>componentDidMount</strong>:</p>
+<pre><code><span class="hljs-keyword">this</span>.db.changes({
+    since: <span class="hljs-string">'now'</span>,
+    live: <span class="hljs-literal">true</span>
+}).on(<span class="hljs-string">'change'</span>, <span class="hljs-keyword">this</span>.showAddress);
+</code></pre><a class="anchor" id="input-data"></a>
+<h2>Input Data</h2>
+<p>We&#39;ll need some JSX. I put mine near the top of the <strong>render</strong> method:</p>
+<pre><code class="lang-html"><span class="xml">import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+
+// LOTS OF CODE HERE. THEN IN RENDER:
+
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span></span><span class="hljs-template-variable">{this.state.firstName}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span></span><span class="hljs-template-variable">{this.state.lastName}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">FormControl</span> <span class="hljs-attr">className</span>=</span></span><span class="hljs-template-variable">{classes.formControl}</span><span class="xml"><span class="hljs-tag">&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">InputLabel</span> <span class="hljs-attr">htmlFor</span>=<span class="hljs-string">"name-simple"</span>&gt;</span>First Name<span class="hljs-tag">&lt;/<span class="hljs-name">InputLabel</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Input</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"name-simple"</span>
+               <span class="hljs-attr">value</span>=</span></span><span class="hljs-template-variable">{this.state.firstName}</span><span class="xml"><span class="hljs-tag">
+               <span class="hljs-attr">onChange</span>=</span></span><span class="hljs-template-variable">{this.handleFirst}</span><span class="xml"><span class="hljs-tag"> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">FormControl</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">FormControl</span> <span class="hljs-attr">className</span>=</span></span><span class="hljs-template-variable">{classes.formControl}</span><span class="xml"><span class="hljs-tag">&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">InputLabel</span> <span class="hljs-attr">htmlFor</span>=<span class="hljs-string">"name-simple"</span>&gt;</span>Last Name<span class="hljs-tag">&lt;/<span class="hljs-name">InputLabel</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Input</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"name-simple"</span>
+               <span class="hljs-attr">value</span>=</span></span><span class="hljs-template-variable">{this.state.lastName}</span><span class="xml"><span class="hljs-tag">
+               <span class="hljs-attr">onChange</span>=</span></span><span class="hljs-template-variable">{this.handleLast}</span><span class="xml"><span class="hljs-tag"> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">FormControl</span>&gt;</span>
+
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</code></pre>
+<p>Here is the <strong>handleFirst</strong> method:</p>
+<pre><code class="lang-javascript">handleFirst = <span class="hljs-keyword">event</span> =&gt; {
+   <span class="hljs-keyword">this</span>.setState({ firstName: <span class="hljs-keyword">event</span>.target.<span class="hljs-keyword">value</span> });
+};
+</code></pre>
+<p>Well, I&#39;ll let you write <strong>handleLast</strong></p>
+<p>Then here is a method that can add an arbitrary small Address from the data in the input controls:</p>
+<pre><code class="lang-javascript">addAddressReal = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+     <span class="hljs-keyword">const</span> indexValue = <span class="hljs-keyword">this</span>.state.addressIndex + <span class="hljs-number">1</span>;
+     <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">addressIndex</span>: indexValue});
+     <span class="hljs-keyword">const</span> address = {
+         <span class="hljs-attr">_id</span>: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().toISOString(),
+         <span class="hljs-attr">firstName</span>: <span class="hljs-keyword">this</span>.state.firstName,
+         <span class="hljs-comment">// YOU GET THE LAST NAME</span>
+         completed: <span class="hljs-literal">false</span>
+     };
+     <span class="hljs-keyword">this</span>.db.put(address, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback</span>(<span class="hljs-params">err, result</span>) </span>{
+         <span class="hljs-keyword">if</span> (!err) {
+             <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Successfully posted a r!'</span>);
+         }
+     });
+     <span class="hljs-keyword">this</span>.state.ids.push(address._id);
+     <span class="hljs-comment">// You call this.setState and set the new ids value.</span>
+};
+</code></pre>
+<a class="anchor" id="update-a-record"></a>
+<h2>Update a Record</h2>
+<p>For now, we will cheat and update only the most recently updated record by setting its completed field to true:</p>
+<pre><code><span class="hljs-function"><span class="hljs-title">update</span> = <span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">this</span>.db.get(<span class="hljs-keyword">this</span>.state.ids[<span class="hljs-number">0</span>])
+        .<span class="hljs-keyword">then</span>(<span class="hljs-function"><span class="hljs-params">(address)</span> =&gt;</span> {
+            address.completed = <span class="hljs-literal">true</span>;
+            <span class="hljs-keyword">this</span>.db.put(address);
+        })
+};
+</code></pre><p>You add a button to call this method.</p>
+<a class="anchor" id="add-cors-to-couchdb"></a>
+<h2>Add CORS to CouchDb</h2>
+<p>This is okay because we are not doing it. Someone who knows what they are doing implemented it.</p>
+<p>Don&#39;t do it on EC2 until we the Admin Party is over! But we can do it locally without needing username and password.</p>
+<pre><code>npm install -g<span class="hljs-built_in"> add-cors-to-couchdb
+</span>add-cors-to-couchdb http://192.168.2.25:5984
+</code></pre><a class="anchor" id="connect-to-couchdb"></a>
+<h2>Connect to CouchDb</h2>
+<p>You need to add this to the body of your index.html:</p>
+<pre><code class="lang-javascript">&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">id</span>=<span class="hljs-string">"sync-wrapper"</span>&gt;
+  &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">id</span>=<span class="hljs-string">"sync-success"</span>&gt;Currently syncing&lt;/<span class="hljs-keyword">div</span>&gt;
+  &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">id</span>=<span class="hljs-string">"sync-error"</span>&gt;There was a problem syncing&lt;/<span class="hljs-keyword">div</span>&gt;
+&lt;/<span class="hljs-keyword">div</span>&gt;
+</code></pre>
+<p>Then add these methods just above your render method:</p>
+<pre><code>syncError = () =&gt; {
+    <span class="hljs-keyword">this</span>.syncDom.setAttribute(<span class="hljs-string">'data-sync-state'</span>, <span class="hljs-string">'error'</span>);
+};
+
+sync = () =&gt; {
+    <span class="hljs-keyword">this</span>.syncDom.setAttribute(<span class="hljs-string">'data-sync-state'</span>, <span class="hljs-string">'syncing'</span>);
+    <span class="hljs-keyword">var</span> opts = {live: <span class="hljs-literal">true</span>};
+    <span class="hljs-keyword">this</span>.db.replicate.to(<span class="hljs-keyword">this</span>.remoteCouch, opts, <span class="hljs-keyword">this</span>.syncError);
+    <span class="hljs-keyword">this</span>.db.replicate.from(<span class="hljs-keyword">this</span>.remoteCouch, opts, <span class="hljs-keyword">this</span>.syncError);
+};
+</code></pre><p>When you sync, you will get several 404 errors that can be ignored. Note this message which should appear at the end of your console messages when you sync:</p>
+<pre><code>The above <span class="hljs-number">404</span> <span class="hljs-keyword">is</span> totally <span class="hljs-keyword">normal</span>. PouchDB <span class="hljs-keyword">is</span> just checking <span class="hljs-keyword">if</span> <span class="hljs-keyword">a</span> remote checkpoint <span class="hljs-built_in">exists</span>.
+</code></pre><a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Turn in working code. Tag it, specify folder. Add the branch name if you are using one.</p>
+<p>Include a screenshot of the CouchDb fouton view of the database showing that you inserted data into the addresses table.</p>
+<a class="anchor" id="upgrade-to-latest-couchdb"></a>
+<h2>Upgrade to Latest CouchDb</h2>
+<p>Delete the old version:</p>
+<pre><code>sudo apt-<span class="hljs-builtin-name">get</span> <span class="hljs-builtin-name">remove</span> --auto-<span class="hljs-builtin-name">remove</span> couchdb
+</code></pre><p>Since we have not done much with CouchDb, we can simply remove all the data and configuration files as well:</p>
+<pre><code>sudo apt-<span class="hljs-builtin-name">get</span> purge --auto-<span class="hljs-builtin-name">remove</span> couchdb
+</code></pre><p>Now install 2.1.1:</p>
+<pre><code><span class="hljs-keyword">echo</span> <span class="hljs-string">"deb https://apache.bintray.com/couchdb-deb xenial main"</span> \
+    | sudo tee -<span class="hljs-keyword">a</span> /etc/apt/sources.<span class="hljs-keyword">list</span>
+
+curl -L http<span class="hljs-variable">s:</span>//couchdb.apache.org/repo/bintray-pubkey.asc \
+    | sudo apt-key <span class="hljs-built_in">add</span> -
+
+sudo apt-<span class="hljs-built_in">get</span> <span class="hljs-keyword">update</span> &amp;&amp; sudo apt-<span class="hljs-built_in">get</span> install couchdb
+</code></pre><p>Choose StandAlone</p>
+<p>Enter 0.0.0.0</p>
+<p>Unless you had one before, continue with the Admin Party for now.</p>
+<a class="anchor" id="data-cycle"></a>
+<h2>Data Cycle</h2>
+<p>Read about the PouchDb, IndexedDB and CouchDB <a href="https://www.ccalvert.net/books/CloudNotes/Assignments/React/ReactAddressEditDialog.html#data-cycle">Data Cycle</a>.</p>
+<a class="anchor" id="read-about-storage-tools"></a>
+<h2>Read about Storage Tools</h2>
+<ul>
+<li><a href="https://developers.google.com/web/tools/chrome-devtools/manage-data/local-storage">Chrome Tools</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Tools/Storage_Inspector">FireFox Tools</a></li>
+</ul>
+</div></body></html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>JestCreateReactApp</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>JestCreateReactApp</h1><p>Welcome to JestCreateReactApp</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#install">Install</a></li>
+<li><a href="#set-the-default-port">Set the Default Port</a></li>
+<li><a href="#get-started">Get Started</a></li>
+<li><a href="#running-tests">Running Tests</a></li>
+<li><a href="#writing-tests">Writing Tests</a></li>
+<li><a href="#enzyme">Enzyme</a></li>
+<li><a href="#enzyme-test-of-component-output">Enzyme Test of Component Output</a></li>
+<li><a href="#elf-debug-enzyme">Elf Debug Enzyme</a></li>
+<li><a href="#constructor-state">Add a constructor and declare some state.</a></li>
+<li><a href="#display-state">In render, display the state</a></li>
+<li><a href="#define-getnine">Define a function called getFile</a></li>
+<li><a href="#test-click">Test button click</a></li>
+<li><a href="#eslint">ESLint</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#test-output">Test Output</a></li>
+<li><a href="#hint">Hint</a></li>
+<li><a href="#the-warnings">The warnings</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>By: <em>Charlie Calvert</em></p>
+<p>Learn how to write <a href="https://facebook.github.io/jest/">Jest</a> tests with the npm packaged called <strong>create-react-app</strong>.</p>
+<p>A deck to accompany this assignment is here:</p>
+<ul>
+<li><a href="http://bit.ly/jest-cra">http://bit.ly/jest-cra</a></li>
+</ul>
+<a class="anchor" id="install"></a>
+<h2>Install</h2>
+<p><strong>create-react-app</strong> is probably already on your system in <strong>~/npm/bin</strong>. That directory should be on your path in the default Pristine Lubuntu system.</p>
+<p>If <strong>create-react-app</strong> is not on your system, then install it like this:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> -g <span class="hljs-keyword">create</span>-react-app
+</code></pre><p>Make sure you are on the latest version:</p>
+<pre><code><span class="hljs-built_in">npm</span> -g outdated
+</code></pre><p>If any globally installed apps are outdated, then reinstall them:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> -g <span class="hljs-keyword">create</span>-react-app
+</code></pre><a class="anchor" id="set-the-default-port"></a>
+<h2>Set the Default Port</h2>
+<p>Load your <strong>.bashrc</strong> file into an editor and add this line near the bottom of the file, if it is not already there:</p>
+<pre><code class="lang-bash"><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">PORT</span>=30025
+</code></pre>
+<p>Some of our programs will use this as the default PORT on which to run.</p>
+<p><strong>NOTE</strong>: <em>We might want to run some programs, especially Express programs, on some other port than 30025, such as 30026. Note that they will default to the port set in the manner described above. As a result, we will sometimes need to take steps to ensure they run on the port we want. One technique is to define the port in <strong>package.json</strong>:</em></p>
+<pre><code class="lang-JavaScript"><span class="hljs-string">"config"</span>: {
+    <span class="hljs-string">"port"</span>: <span class="hljs-string">"30026"</span>
+},
+</code></pre>
+<p>Then in <strong>www/bin</strong>:</p>
+<pre><code class="lang-javascript">const<span class="hljs-built_in"> port </span>= process.env.npm_package_config_port || 30026;
+</code></pre>
+<a class="anchor" id="get-started"></a>
+<h2>Get Started</h2>
+<p>Switch to your Week01 branch.</p>
+<ul>
+<li>Navigate to the root of your repository</li>
+<li>Issue this command:<ul>
+<li>create-react-app <strong>weekxx-react-jest</strong>, where xx is the number of the current week of this quarter.</li>
+<li>rename <strong>weekxx-react-jest</strong> to <strong>Weekxx-React-Jest</strong></li>
+</ul>
+</li>
+<li>Open up the project in WebStorm</li>
+<li>Set WebStorm to use JSX, React and ES6<ul>
+<li>File | Settings | Languages and Settings | JavaScript | React/JSX</li>
+</ul>
+</li>
+<li>If you get lots of JsHint, EsLint or other errors, for now, just disable them:<ul>
+<li>File | Settings | Languages and Settings | JavaScript | Code Quality Tools Tools</li>
+</ul>
+</li>
+</ul>
+<a class="anchor" id="running-tests"></a>
+<h2>Running Tests</h2>
+<p>Open up <strong>src/App.test.js</strong>, shown below. This is a test that allows you to see if the syntax in <strong>App.js</strong> is good enough to allow the component to be loaded.</p>
+<p>To run the tests, type: <strong>npm test</strong> in the project&#39;s root directory.</p>
+<p><a href="https://facebook.github.io/jest/">Jest</a> tests are in files with these extensions:</p>
+<ul>
+<li>*.test.js,</li>
+<li>*.spec.js</li>
+<li>or in a folder called <strong>__tests__</strong><ul>
+<li>That&#39;s two underscores on either side of the word tests.</li>
+</ul>
+</li>
+</ul>
+<p>Here is the simple default test generated by <strong>create-react-app</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> { App } <span class="hljs-keyword">from</span> <span class="hljs-string">'./App'</span>;
+
+it(<span class="hljs-string">'renders without crashing'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+   const div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+   ReactDOM.render(&lt;App /&gt;, div);
+});
+</code></pre>
+<p>This test is built with <a href="https://facebook.github.io/jest/">Jest</a> library, but the syntax looks just like the very popular Jasmine library. In most cases, it also behaves much like Jasmine.</p>
+<a class="anchor" id="writing-tests"></a>
+<h2>Writing Tests</h2>
+<p>Let&#39;s update the default example by wrapping the test in a <strong>describe</strong> method:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./App'</span>;
+
+describe(<span class="hljs-string">'Jest Create React Tests'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+
+   it(<span class="hljs-string">'renders without crashing'</span>, () =&gt; {
+       <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+       ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">App</span> /&gt;</span>, div);
+   });
+
+});</span>
+</code></pre>
+<a class="anchor" id="enzyme"></a>
+<h2>Enzyme</h2>
+<p>We need a tool to capture and parse the output created by our React components. We test that output to see if it is valid. The tool that helps us do this is airbnb&#39;s Enzyme.</p>
+<p>To install it run these commands:</p>
+<pre><code>npm install --<span class="hljs-built_in">save</span>-<span class="hljs-built_in">dev</span> enzyme react-test-renderer
+npm install --<span class="hljs-built_in">save</span>-<span class="hljs-built_in">dev</span> enzyme-adapter-react<span class="hljs-number">-16</span>
+</code></pre><p>I believe we no longer need to use <strong>react-addons-test-utils</strong></p>
+<a class="anchor" id="enzyme-test-of-component-output"></a>
+<h2>Enzyme Test of Component Output</h2>
+<p>The updated tests shown below import <strong>shallow</strong> from enzyme. It grabs text from our component and then checks to see if the text is what we expect it to be.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./App'</span>;
+<span class="hljs-keyword">import</span> Adapter <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme-adapter-react-16'</span>;
+<span class="hljs-keyword">import</span> { configure, shallow } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+configure({ adapter: <span class="hljs-keyword">new</span> Adapter() });
+
+describe(<span class="hljs-string">'jest test'</span>, <span class="hljs-keyword">function</span>() {
+
+   <span class="hljs-literal">it</span>(<span class="hljs-string">'renders without crashing'</span>, () =&gt; {
+       <span class="hljs-keyword">const</span> div = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+       ReactDOM.render(&lt;App /&gt;, div);
+       ReactDOM.unmountComponentAtNode(div);
+   });
+
+   <span class="hljs-literal">it</span>(<span class="hljs-string">'renders and reads H1 text'</span>, () =&gt; {
+       <span class="hljs-keyword">const</span> wrapper = shallow(&lt;App /&gt;);
+       <span class="hljs-keyword">const</span> welcome = &lt;h2&gt;Welcome <span class="hljs-keyword">to</span> React&lt;/h2&gt;;
+       expect(wrapper.contains(welcome)).toEqual(<span class="hljs-literal">true</span>);
+   });
+
+});
+</code></pre>
+<p>Perhaps you are getting an error when you run these tests. You may be able to fix it by yourself, but let&#39;s learn how to use ElfDebugEnzyme to help you find the error.</p>
+<a class="anchor" id="elf-debug-enzyme"></a>
+<h2>Elf Debug Enzyme</h2>
+<p>Get a copy of my gist ElfDebugEnzyme and save it to a file with the same name (ElfDebugEnzyme.js):</p>
+<ul>
+<li><a href="http://bit.ly/elf-debug-enzyme">Elf Debug Enzyme</a></li>
+</ul>
+<p>One way to save the file is to the choose the <strong>Raw</strong> button on GitHub, and then blockcopy the code. Now create a new file in WebStorm and paste in the code.</p>
+<p>Now import <strong>ElfDebugEnzyme</strong> into your test:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">import</span> ElfDebugEnzyme <span class="hljs-keyword">from</span> <span class="hljs-string">'../ElfDebugEnzyme'</span>;
+
+<span class="hljs-keyword">const</span> elfDebugEnzyme = <span class="hljs-keyword">new</span> ElfDebugEnzyme(<span class="hljs-literal">true</span>, <span class="hljs-string">'App.test.js'</span>);
+</code></pre>
+<p>Use <strong>ElfDebugEnzyme</strong> to display the first H1 element:</p>
+<pre><code class="lang-JavaScript">it('renders and reads H1 text', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;App</span> /&gt;)<span class="hljs-comment">;</span>
+    const welcome = &lt;h1 className=<span class="hljs-string">"App-title"</span>&gt;Welcome to React&lt;/h1&gt;<span class="hljs-comment">;</span>
+    elfDebugEnzyme.getFirst(<span class="hljs-name">wrapper</span>, 'h1', true)<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">welcome</span>)).toEqual(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>The key line is this one:</p>
+<pre><code class="lang-JavaScript">elfDebugEnzyme.getFirst(wrapper, <span class="hljs-string">'h1'</span>, <span class="hljs-literal">true</span>);
+</code></pre>
+<p>It calls the <strong>getFirst</strong> method of <strong>ElfDebugEnzyme</strong> and and asks to see the contents of the first H1 element generated by your React component. In our case, there is only one H1 element, and it looks like this, when printed out by <strong>ElfDebugEnzyme</strong>:</p>
+<pre><code class="lang-html">console<span class="hljs-selector-class">.log</span> ElfDebugEnzyme<span class="hljs-selector-class">.js</span>:<span class="hljs-number">45</span>
+  App<span class="hljs-selector-class">.test</span><span class="hljs-selector-class">.js</span>:
+  &lt;<span class="hljs-selector-tag">h1</span> className=<span class="hljs-string">"App-title"</span>&gt;
+    Welcome to React
+  &lt;/h1&gt;
+</code></pre>
+<p>The relevant code in <strong>ElfDebugEnzyme</strong> is simple enough. It asks enzyme to find the first matching H1 element and display the <strong>debug</strong> information associated with that element:</p>
+<pre><code class="lang-javascript">wrapper.<span class="hljs-builtin-name">find</span>(element).first().<span class="hljs-builtin-name">debug</span>();
+</code></pre>
+<p>Once you know the HTML that is being generated, you can adjust your test to ensure that it properly matches the HTML. Or vice versa, depending on your needs and circumstances.</p>
+<a class="anchor" id="constructor-state"></a>
+<h2>Add a constructor and declare some state.</h2>
+<p>Once you know how to test for static HTML generated by your React component, then next step will be to test the dynamic code, the code that changes when you -- for instance -- press a button. Let&#39;s begin by adding a <strong>constructor</strong> to your React component.</p>
+<p>The <strong>constructor</strong> is a function on your component. React calls is it before it mounts the component. Call super() first or else the this variable will not be valid in the constructor.</p>
+<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+   constructor() {
+       <span class="hljs-keyword">super</span>();
+       <span class="hljs-keyword">this</span>.state = {
+           file: <span class="hljs-symbol">'unknow</span>n'
+       }
+   }
+… etc
+}
+</code></pre>
+<p>React will keep your state variables up to date in your UI if you display and play by certain rules. In particular, when you change these variable, use <strong>setState</strong> as described later in this chapter.</p>
+<a class="anchor" id="display-state"></a>
+<h2>In render, display the state</h2>
+<p>In our JSX, we:</p>
+<ul>
+<li>declare a paragraph element,</li>
+<li>Style it not with <strong>class</strong>, but with the JSX <strong>className</strong> attribute</li>
+<li>Display our state in a react expression defined with curly braces.</li>
+</ul>
+<pre><code class="lang-html"><span class="hljs-variable">&lt;p className="App-intro"&gt;</span>File: {this.<span class="hljs-keyword">state</span>.file}&lt;/p&gt;
+</code></pre>
+<a class="anchor" id="define-getnine"></a>
+<h2>Define a function called getFile</h2>
+<p>We declare an arrow function function in our component called <strong>getFile</strong>. Inside it, we call <strong>setState</strong>. The <strong>setState</strong> call can take an object literal defining the new state.</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">getFile</span> = <span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'getFile called.'</span>);
+    <span class="hljs-keyword">this</span>.setState({file: <span class="hljs-string">'url-file.js'</span>})
+};
+</code></pre>
+<a class="anchor" id="render-state"></a>
+<h2>In render, display the state</h2>
+<p>In our JSX, we:</p>
+<ul>
+<li>Declare a button</li>
+<li>Give it <strong><em>not</em></strong> an HTML <strong>onclick</strong> attribute, but a JSX <strong>onClick</strong> attribute</li>
+<li>And use a react expression, defined with curly braces, to call <strong>getNine</strong> when the button is clicked.</li>
+</ul>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">className</span>=<span class="hljs-string">'elf'</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.getFile}</span>&gt;</span>Get Nine<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+</code></pre>
+<a class="anchor" id="test-click"></a>
+<h2>Test button click</h2>
+<p>It&#39;s time to write some unit tests with Jest.</p>
+<p>Call the enzyme simulate method to simulate clicking the button. Check to see if the form now contains the value we expect it to contain. In other words, check that the button click method worked.</p>
+<pre><code class="lang-javascript">it('renders button click message', () =&gt; {
+   const wrapper = shallow(<span class="hljs-name">&lt;App</span> /&gt;)<span class="hljs-comment">;</span>
+   const nineSign = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;File: url-file.js&lt;/p&gt;<span class="hljs-comment">;</span>
+   wrapper.find('button.elf').simulate('click')<span class="hljs-comment">;</span>
+   expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">nineSign</span>)).toEqual(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>To run only a single test use <strong>it.only</strong> or <strong>fit</strong>:</p>
+<pre><code class="lang-javascript">it.only(<span class="hljs-string">'renders button click message'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+   const wrapper = shallow(&lt;App /&gt;);
+   etc...   
+})
+</code></pre>
+<p>With only:</p>
+<pre><code class="lang-javascript">it.only(<span class="hljs-string">'renders button click message'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+   const wrapper = shallow(&lt;App /&gt;);
+   etc...
+})
+</code></pre>
+<p><strong>NOTE</strong>: <em>When I write something like <strong>etc...</strong> or <strong>and so on...</strong> or <strong>You write the code</strong>, then I&#39;m saying that I expect you to complete the code as an exercise. I usually cut and paste working code into a document like this, and then delete the parts I want readers to complete. I usually mark the missing code as described above.</em></p>
+<a class="anchor" id="eslint"></a>
+<h2>ESLint</h2>
+<p>Eslint should be installed globally in <strong>~./npm/bin</strong>.</p>
+<p>Add this <strong>.eslintrc.json</strong> file to your project.</p>
+<pre><code class="lang-JavaScript">{
+    <span class="hljs-string">"extends"</span>: [
+        <span class="hljs-string">"eslint:recommended"</span>,
+        <span class="hljs-string">"plugin:react/recommended"</span>
+    ],
+    <span class="hljs-string">"rules"</span>: {
+        // enable additional rules
+        <span class="hljs-string">"indent"</span>: [<span class="hljs-string">"error"</span>, <span class="hljs-number">4</span>],
+        <span class="hljs-string">"linebreak-style"</span>: [<span class="hljs-string">"error"</span>, <span class="hljs-string">"unix"</span>],
+        <span class="hljs-string">"quotes"</span>: [<span class="hljs-string">"warn"</span>, <span class="hljs-string">"single"</span>],
+        <span class="hljs-string">"semi"</span>: [<span class="hljs-string">"error"</span>, <span class="hljs-string">"always"</span>],
+
+        // override default options for rules from base configurations
+        <span class="hljs-string">"comma-dangle"</span>: [<span class="hljs-string">"off"</span>, <span class="hljs-string">"always"</span>],
+        <span class="hljs-string">"no-cond-assign"</span>: [<span class="hljs-string">"error"</span>, <span class="hljs-string">"always"</span>],
+
+        // disable rules from base configurations
+        <span class="hljs-string">"no-console"</span>: <span class="hljs-string">"off"</span>
+    },
+    <span class="hljs-string">"parserOptions"</span>: {
+        <span class="hljs-string">"ecmaVersion"</span>: <span class="hljs-number">7</span>,
+        <span class="hljs-string">"sourceType"</span>: <span class="hljs-string">"module"</span>,
+        <span class="hljs-string">"ecmaFeatures"</span>: {
+            <span class="hljs-string">"jsx"</span>: <span class="hljs-literal">true</span>
+        }
+    },
+    <span class="hljs-string">"env"</span>: {
+        <span class="hljs-string">"browser"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">"node"</span>: <span class="hljs-literal">true</span>
+    }
+}
+</code></pre>
+<p>Run it like this:</p>
+<pre><code class="lang-bash">eslint%20.
+</code></pre>
+<p>The code above sometimes needs to be updated. To see my current working <strong>.eslintrc.json</strong> file, go <a href="https://gist.github.com/charliecalvert/c5952541925c04479150bbd8c40feac6">here</a>.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Place your work in your repository if it is not already there. Merge your finished project into <strong>master</strong>.</p>
+<p>Push your repository. Go to GitHub or BitBucket and ensure that the code you want to turn in is actually in your repository and that it contains the files and folders you expect it to contain.</p>
+<p>Find the assignment on Canvas and submit it. Add text that states the name of the folder where you placed your assignment. A link to your folder on GitHub/Bitbucket is nice.</p>
+<p>For most of the assignments, I&#39;ll just say something like: &quot;Put your work in your repo and push,&quot; or simply &quot;Push your work&quot;. That&#39;s a shorthand for something along the lines of what I&#39;m saying here.</p>
+<a class="anchor" id="test-output"></a>
+<h2>Test Output</h2>
+<p>I&#39;m expecting the test output to look something like this:</p>
+<pre><code class="lang-javascript">PASS  src/App<span class="hljs-selector-class">.test</span><span class="hljs-selector-class">.js</span>
+ jest test
+   ✓ renders without crashing (<span class="hljs-number">4ms</span>)
+   ✓ renders and reads H1 text (<span class="hljs-number">3ms</span>)
+   ✓ renders <span class="hljs-selector-tag">button</span> click message (<span class="hljs-number">1ms</span>)
+
+Test Suites: <span class="hljs-number">1</span> passed, <span class="hljs-number">1</span> total
+Tests:       <span class="hljs-number">3</span> passed, <span class="hljs-number">3</span> total
+Snapshots:   <span class="hljs-number">0</span> total
+Time:        <span class="hljs-number">0.364s</span>, estimated <span class="hljs-number">1s</span>
+Ran all test suites.
+
+ console<span class="hljs-selector-class">.log</span> ElfDebugEnzyme<span class="hljs-selector-class">.js</span>:<span class="hljs-number">45</span>
+   App<span class="hljs-selector-class">.test</span><span class="hljs-selector-class">.js</span>:
+   &lt;<span class="hljs-selector-tag">h1</span> className=<span class="hljs-string">"App-title"</span>&gt;
+     Welcome to React
+   &lt;/h1&gt;
+
+ console<span class="hljs-selector-class">.log</span> src/App<span class="hljs-selector-class">.js</span>:<span class="hljs-number">14</span>
+   state
+
+ console<span class="hljs-selector-class">.log</span> ElfDebugEnzyme<span class="hljs-selector-class">.js</span>:<span class="hljs-number">45</span>
+   App<span class="hljs-selector-class">.test</span><span class="hljs-selector-class">.js</span>:
+   App<span class="hljs-selector-class">.test</span><span class="hljs-selector-class">.js</span>:
+   &lt;<span class="hljs-selector-tag">p</span> className=<span class="hljs-string">"App-intro"</span>&gt;
+     File:
+     <span class="hljs-string">'url-file.js'</span>
+   &lt;/p&gt;
+
+</code></pre>
+<a class="anchor" id="hint"></a>
+<h2>Hint</h2>
+<p>Don&#39;t nest folders! There should be only one folder called <strong>Week02-ReactJest</strong> in your repository. It should be in the root of your repository.</p>
+<ul>
+<li>Correct: my-repo/Week02-ReactJest</li>
+<li>Wrong: my-repo/Week02-ReactJest/Week02-ReactJest</li>
+</ul>
+<a class="anchor" id="the-warnings"></a>
+<h2>The warnings</h2>
+<p>You are probably no longer getting these warnings, but just in case I will include a few notes about warnings I received.</p>
+<p><strong>Warning</strong>: <strong>ReactTestUtils</strong> has been moved to <strong>react-dom/test-utils</strong>. Update references to remove this warning.
+<strong>Warning</strong>: <strong>Shallow renderer</strong> has been moved to <strong>react-test-renderer/shallow</strong>. Update references to remove this warning</p>
+<p>For awhile, I was seeing warnings due to outdated <strong>react-addons-test-utils</strong> and <strong>enzyme</strong> modules. I believe Enzyme has solved these issues. If you see the warnings below, try updating these two packages:</p>
+<pre><code>npm <span class="hljs-keyword">uninstall</span> react-addons-<span class="hljs-keyword">test</span>-utils enzyme
+npm <span class="hljs-keyword">install</span> react-addons-<span class="hljs-keyword">test</span>-utils enzyme
+</code></pre></div></body></html>

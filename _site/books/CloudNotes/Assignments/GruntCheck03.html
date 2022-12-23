@@ -1,0 +1,206 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>GruntCheck03</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>GruntCheck03</h1><p>Welcome to GruntCheck03</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#updates">Updates</a></li>
+<li><a href="#grunt">Grunt</a></li>
+<li><a href="#karma-changes">Karma Changes</a></li>
+<li><a href="#writing-a-test">Writing a Test</a></li>
+<li><a href="#sanity-check">Sanity Check</a></li>
+<li><a href="#example-program">Example Program</a></li>
+<li><a href="#other-jasmine-jquery">Another Way to Load Jamine-jquery</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>A tool called Jasmine JQuery will allow us to load arbitray HTML files (fixtures) into Jasmine so that we can run tests against them. Normally, we want to load only small chunks of HTML. However, at one point we might want to load the entire contents of the HTML code produced by <strong>vidws/index.jade</strong> into our tests and make sure it contains certain key elements.</p>
+<p>We want to tests the contents of <strong>views/index.jade</strong> but not <strong>views/layout.jade</strong>. To do this, we need to remove the line that reads <strong>extend layout</strong> from <strong>views/index.jade</strong> and copy the results to another file called <strong>views/fixture.jade</strong>. When doing so, <strong>views/index.jade</strong> should not be changed. When we are done, <strong>views/fixture.jade</strong> should be very similar to <strong>views/index.jade</strong> but without the first line about extending <strong>layout.jade</strong>.</p>
+<p>Here are the steps:</p>
+<ul>
+<li>Remove the <strong>extends layout</strong> line <strong>views/index.jade</strong></li>
+<li>Put the results in <strong>views/fixture.jade</strong> without changine <strong>views/index.jade</strong>.</li>
+<li>Convert <strong>views/fixture.jade</strong> into <strong>spec/fixtures/fixture.html</strong></li>
+</ul>
+<p>You can do all the manually, or run this command:</p>
+<pre><code><span class="hljs-attribute">grunt fixture</span>
+</code></pre><p>This produces <strong>spec/fixtures/fixture.html</strong>. This is the code we want to use in our tests.</p>
+<p>The rest of this document is an explanation of how to proceed if you want to set up and run this kind of test.</p>
+<a class="anchor" id="updates"></a>
+<h2>Updates</h2>
+<p>Copy over the new and updated unit tests from:</p>
+<pre><code>cp <span class="hljs-variable">$ELF_TEMPLATES</span><span class="hljs-regexp">/UnitTest/</span>BitlyRefine<span class="hljs-regexp">/\*.js spec/</span>.
+</code></pre><p>Then install some tools:</p>
+<pre><code class="lang-bash">npm <span class="hljs-keyword">install</span> jasmine-jquery <span class="hljs-comment">--save-dev</span>
+npm <span class="hljs-keyword">install</span> grunt-exec <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> grunt-contrib-jade <span class="hljs-comment">--save-dev</span>
+npm <span class="hljs-keyword">install</span> grunt-contrib-clean <span class="hljs-comment">--save-dev</span>
+npm <span class="hljs-keyword">install</span> grunt-jscs <span class="hljs-comment">--save-dev</span>
+npm <span class="hljs-keyword">install</span> grunt-jsbeautifier <span class="hljs-comment">--save-dev</span>
+</code></pre>
+<p>No longer needed:</p>
+<pre><code class="lang-bash">npm <span class="hljs-keyword">install </span>grunt-contrib-<span class="hljs-keyword">jasmine </span>--save-dev
+</code></pre>
+<a class="anchor" id="grunt"></a>
+<h2>Grunt</h2>
+<p>Add these tasks to your Gruntfile:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">jade</span>: {
+    <span class="hljs-attribute">compile</span>: {
+        <span class="hljs-attribute">options</span>: {
+            <span class="hljs-attribute">pretty</span>: true,
+            <span class="hljs-attribute">data</span>: {
+                <span class="hljs-attribute">debug</span>: false
+            }
+        },
+        <span class="hljs-attribute">files</span>: {
+            <span class="hljs-string">'spec/fixtures/fixture.html'</span>: [<span class="hljs-string">'views/fixture.jade'</span>, <span class="hljs-string">'$ELF_TEMPLATES/JadeMixins/*.jade'</span>]
+        }
+    }
+},
+
+<span class="hljs-attribute">exec</span>: {
+
+    <span class="hljs-attribute">stripExtends</span>: {
+        <span class="hljs-attribute">cmd</span>: function() {
+            return <span class="hljs-string">'sed "/extend/d" views/index.jade &gt; views/fixture.jade'</span>;
+        }
+    }
+}
+</code></pre>
+<p>Then near the bottom load the tasks:</p>
+<pre><code class="lang-javascript">    <span class="hljs-selector-tag">grunt</span><span class="hljs-selector-class">.loadNpmTasks</span>(<span class="hljs-string">'grunt-contrib-jade'</span>);
+    <span class="hljs-selector-tag">grunt</span><span class="hljs-selector-class">.loadNpmTasks</span>(<span class="hljs-string">'grunt-exec'</span>);
+</code></pre>
+<p>And finally, register a new task near the very bottom:</p>
+<pre><code class="lang-javascript">    <span class="hljs-selector-tag">grunt</span><span class="hljs-selector-class">.registerTask</span>(<span class="hljs-string">'fixture'</span>, [<span class="hljs-string">'exec:stripExtends'</span>, <span class="hljs-string">'jade'</span>, <span class="hljs-string">'karma'</span>]);
+</code></pre>
+<a class="anchor" id="karma-changes"></a>
+<h2>Karma Changes</h2>
+<p>In karma.conf load <strong>jasmine-jquery</strong>. The following is a sample of what your <strong>files</strong> section might look like once it is done. The first and last lines are the ones you need to focus on. The rest are just boilerplate you have already seen:</p>
+<pre><code class="lang-javascript">files: [
+    <span class="hljs-symbol">'public</span>/components/jquery/dist/jquery.min.js',
+    <span class="hljs-symbol">'node_modules</span>/jasmine-jquery/lib/jasmine-jquery.js',
+    <span class="hljs-symbol">'public</span>/javascripts/*.js',
+    <span class="hljs-symbol">'spec</span>/test*.js',
+    <span class="hljs-symbol">'spec</span>/bitly-links.js',
+    <span class="hljs-symbol">'spec</span>/**/*.html'
+],
+</code></pre>
+<p>Please note that bitly-links and **/*.html are specific to our app. The other entries are generic, and will be used in most tests. The HTML line will be used in all tests that use jasmine-jquery, so it is frequently used. But bitly links is just for programs like BitlyRefine, and might not be used in other applications.</p>
+<p>And put this in <strong>karma.conf.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">preprocessors:</span> {
+    <span class="hljs-string">'**/*.html'</span>: []
+},
+</code></pre>
+<p>If you are using the <strong>spec</strong> reporter, and most of us are, then filter out tests that are being skipped:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">reporters</span>: ['spec'],
+
+<span class="coffeescript">specReporter: {
+    suppressSkipped: <span class="hljs-literal">true</span> <span class="hljs-regexp">//</span> <span class="hljs-keyword">do</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">print</span> information about skipped tests
+},</span>
+</code></pre>
+<a class="anchor" id="writing-a-test"></a>
+<h2>Writing a Test</h2>
+<p>And here is the test, which goes in <strong>spec/test-jasmine-jquery.js</strong></p>
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Test Jade'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+
+    beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        jasmine.getFixtures().fixturesPath = <span class="hljs-string">'base/spec/fixtures/'</span>;
+        loadFixtures(<span class="hljs-string">'fixture.html'</span>);
+    });
+
+    it(<span class="hljs-string">'shows we can get at least 1 &lt;P&gt; element'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> paragraphs = $(<span class="hljs-string">'p'</span>);
+        expect(paragraphs.length).toBeGreaterThan(<span class="hljs-number">0</span>);
+    });
+
+});
+</code></pre>
+<p>We are simply asking jasmine to prove to us that our HTML has at least one paragraph tag in it.</p>
+<a class="anchor" id="sanity-check"></a>
+<h2>Sanity Check</h2>
+<p>In JsObjects, there is a new script that does a rather shoddy job of looking through your <strong>karma-conf.js</strong> and <strong>Gruntfile.js</strong> files to be sure you have things set up correctly. You can copy the script to your <strong>~/bin</strong> directory and then run it in the root of the project you want to check.</p>
+<pre><code class="lang-bash">cp <span class="hljs-variable">$JSOBJECTS</span><span class="hljs-regexp">/Utilities/</span>NodeInstall<span class="hljs-regexp">/check-karma-grunt-config ~/</span>bin<span class="hljs-regexp">/.</span>
+</code></pre>
+<p>Here is a sample run:</p>
+<pre><code>$ ./check-karma-grunt-config
+
+  - setup
+
+js-beautify exists
+beautified karma.conf.js - unchanged
+beautified Gruntfile.js - unchanged
+
+  - These tests are meant <span class="hljs-keyword">to</span> help you <span class="hljs-builtin-name">find</span> problems <span class="hljs-keyword">in</span>
+  - karma.conf <span class="hljs-keyword">and</span> Gruntfile. They are <span class="hljs-keyword">not</span> definitive
+
+preprocessor mentioned
+jasmine-jquery mentioned
+exec task<span class="hljs-built_in"> config </span>mentioned
+jade task<span class="hljs-built_in"> config </span>mentioned
+grunt-contrib-clean loadNpmTask mentioned
+grunt-contrib-jshint loadNpmTask mentioned
+grunt-jscs loadNpmTask mentioned
+grunt-jsbeautifier loadNpmTask mentioned
+grunt-karma loadNpmTask mentioned
+grunt-contrib-jade loadNpmTask mentioned
+grunt-exec loadNpmTask mentioned
+fixture registered task mentioned
+beautify registered task mentioned
+check registered task mentioned
+test registered task mentioned
+</code></pre><p>This script doesn&#39;t really prove much of anything, but it may help us find errors. Here, for instance, is a run in a project that is not properly configured for our jasmine-jquery tests:</p>
+<pre><code>check-karma-grunt-config
+
+*** setup ***
+
+js-beautify exists
+beautified karma.conf.js
+beautified Gruntfile.js
+
+*** These tests are meant <span class="hljs-keyword">to</span> help you <span class="hljs-builtin-name">find</span> problems <span class="hljs-keyword">in</span>
+*** karma.conf <span class="hljs-keyword">and</span> Gruntfile. They are <span class="hljs-keyword">not</span> definitive
+
+preprocessor <span class="hljs-keyword">not</span> found
+jasmine-jquery <span class="hljs-keyword">not</span> found
+exec task<span class="hljs-built_in"> config </span><span class="hljs-keyword">not</span> found
+jade task<span class="hljs-built_in"> config </span><span class="hljs-keyword">not</span> found
+grunt-contrib-clean loadNpmTask <span class="hljs-keyword">not</span> found
+grunt-contrib-jshint loadNpmTask mentioned
+grunt-jscs loadNpmTask <span class="hljs-keyword">not</span> found
+grunt-jsbeautifier loadNpmTask <span class="hljs-keyword">not</span> found
+grunt-karma loadNpmTask mentioned
+grunt-contrib-jade loadNpmTask <span class="hljs-keyword">not</span> found
+grunt-exec loadNpmTask <span class="hljs-keyword">not</span> found
+fixture registered task <span class="hljs-keyword">not</span> found
+beautify registered task <span class="hljs-keyword">not</span> found
+check registered task <span class="hljs-keyword">not</span> found
+test registered task mentioned
+</code></pre><p>The output should be easier to read in the bash shell since it is colorized with missing code in red and found code in green.</p>
+<a class="anchor" id="example-program"></a>
+<h2>Example Program</h2>
+<p>I have an example program in JsObjects called <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/UnitTests/JasmineJQueryTest">JasmineJQueryTest</a>. To use it, do the following:</p>
+<pre><code class="lang-bash">grunt fixture
+grunt <span class="hljs-built_in">test</span>
+</code></pre>
+<p>It should produce the following output:</p>
+<pre><code class="lang-bash">  Elvenware<span class="hljs-built_in"> Simple </span>Plain Suite
+    ✓ expects <span class="hljs-literal">true</span> <span class="hljs-keyword">to</span> be <span class="hljs-literal">true</span>
+
+  Test Jasmine-JQuery Suite
+    ✓ shows we can <span class="hljs-builtin-name">get</span> at least 1 &lt;P&gt; element
+</code></pre>
+<a class="anchor" id="other-jasmine-jquery"></a>
+<h2>Another Way to Load Jamine-jquery</h2>
+<p>For some reason, I don&#39;t really like this one:</p>
+<p>First install karma-jasmine-jquery:</p>
+<pre><code class="lang-bash">npm <span class="hljs-keyword">install</span> karma-jasmine-jquery
+</code></pre>
+<p>Then add it to the plugins section of <strong>karma-conf.js</strong>:</p>
+<pre><code class="lang-javascripts">frameworks: [<span class="hljs-symbol">'jasmine</span>-jquery', <span class="hljs-symbol">'jasmine'</span>],
+
+plugins: [<span class="hljs-symbol">'karma</span>-jasmine',
+    <span class="hljs-symbol">'karma</span>-spec-reporter',
+    <span class="hljs-symbol">'karma</span>-phantomjs-launcher',
+    <span class="hljs-symbol">'karma</span>-chrome-launcher',
+    <span class="hljs-symbol">'karma</span>-jasmine-jquery'
+]
+</code></pre>
+<p>Do this in .jscsrc:</p>
+<pre><code><span class="hljs-string">"excludeFiles"</span>: [<span class="hljs-string">"**/node_modules/**"</span>, <span class="hljs-string">"**/components/**"</span>, <span class="hljs-string">"spec/bitly-links.js"</span>]
+</code></pre></div></body></html>

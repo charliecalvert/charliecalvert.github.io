@@ -1,0 +1,201 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>SystemCheckRefactor</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>SystemCheckRefactor</h1><p>Welcome to SystemCheckRefactor</p><ul><!--TOC_Start--><li><a href="#get-started">Get Started</a></li>
+<li><a href="#eslint-and-prettier">Eslint and Prettier</a></li>
+<li><a href="#systemd">systemd</a></li>
+<li><a href="#push-and-tag">Push and Tag</a></li>
+<li><a href="#setup">Setup</a></li>
+<li><a href="#radio-buttons">Radio Buttons</a></li>
+<li><a href="#modify-render">Modify render</a></li>
+<li><a href="#refactor">Refactor</a></li>
+<li><a href="#deploy">Deploy</a></li>
+<li><a href="#the-build-script">The Build Script</a></li>
+<li><a href="#the-gitignore-for-the-server">The .gitignore for the Server</a></li>
+<li><a href="#changing-branches">Changing Branches</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#slb">SLB</a></li><!--TOC_End--></ul></div><div class="container"><p>=## Overview</p>
+<p>Learn to clean code with prettier and eslint and refactor React components.</p>
+<a class="anchor" id="get-started"></a>
+<h2>Get Started</h2>
+<p>Let&#39;s start from the beginning again.</p>
+<ul>
+<li>Update JsObjects<ul>
+<li>slb</li>
+<li>./CreateSynbolicLinks (needed for semver-inc)</li>
+</ul>
+</li>
+<li>Navigate back to your repository</li>
+<li>Branch: <strong>week07</strong></li>
+<li>Folder: <strong>week07-system-check-refactor</strong></li>
+<li>Navigate into folder<ul>
+<li><strong>get-gist</strong> and choose <strong>Elven Create Concurrently</strong></li>
+<li>Run <strong>elf-concur</strong>, choose s for server</li>
+</ul>
+</li>
+</ul>
+<a class="anchor" id="eslint-and-prettier"></a>
+<h2>Eslint and Prettier</h2>
+<p>Install eslint and prettier</p>
+<ul>
+<li>get-gist and choose <strong>Run ESLintRc and Prettier</strong></li>
+<li>echo &#39;build&#39; &gt; .prettierignore</li>
+<li>Run prettier, and it should clean both <strong>client</strong> and <strong>server</strong>.</li>
+</ul>
+<p>We set up <strong>.prettierignore</strong> because we need to avoid trying to run prettier on our <strong>client/build</strong> directory.</p>
+<a class="anchor" id="systemd"></a>
+<h2>systemd</h2>
+<ul>
+<li>cd server</li>
+<li>get-gist and run <strong>Elven Node systemd Tools</strong></li>
+<li>Open <strong>setup-environment-service</strong> in WebStorm.</li>
+</ul>
+<p>Here are the settings:</p>
+<pre><code><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">SYSTEMD_PROJECT_NAME</span>=scref
+<span class="hljs-builtin-name">export</span> <span class="hljs-attribute">SYSTEMD_DESCRIPTION</span>=<span class="hljs-string">"SystemCheck Refactor Service"</span>
+<span class="hljs-builtin-name">export</span> <span class="hljs-attribute">SYSTEMD_PORT</span>=<span class="hljs-string">"ELF_SCREF_PORT=30030"</span>
+</code></pre><p>Add <strong>ELF_SCREF_PORT</strong> to both <strong>.bashrc</strong> and <strong>/bin/www</strong>. You need to export it from <strong>.bashrc</strong>.</p>
+<pre><code class="lang-JavaScript"><span class="hljs-attribute">var port</span> = normalizePort(process.env.ELF_SCREF_PORT || <span class="hljs-string">'30030'</span>);
+</code></pre>
+<p><strong>NOTE</strong>: _Ultimately, we may want to put these exports in <strong>.my_bash_aliases</strong>._</p>
+<p>Execute <strong>run-setup-service</strong> and confirm that it works. Use the <strong>q</strong> key to exit.</p>
+<p>We also need to support the SETUP_LINUXBOX environment variable. Append this to the appropriate place in your service file completing the steps above:</p>
+<pre><code class="lang-bash">Environment=SETUP_LINUXBOX=<span class="hljs-regexp">/home/</span>bcuser<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>SetupLinuxBox
+</code></pre>
+<p>Of course, the user name (bcuser) might change depending on where you run it from. If you move from Pristine Lubuntu to EC2, for instance, just execute <strong>run_setup_service</strong> to automatically change <strong>bcuser</strong> to <strong>ubuntu</strong> on all lines in the service file that use it.</p>
+<a class="anchor" id="push-and-tag"></a>
+<h2>Push and Tag</h2>
+<p>At this point, you should check that you have completed the [Script Master Push and Tag] assignment.</p>
+<p>Push and tag:</p>
+<pre><code>elf-tagger <span class="hljs-string">"Completed setup phase"</span> <span class="hljs-string">"week07-system-check-refactor"</span>
+</code></pre><a class="anchor" id="setup"></a>
+<h2>Setup</h2>
+<p>Use <strong>meld</strong> to copy the key files from SystemCheck into this project.</p>
+<ul>
+<li>server/app.js</li>
+<li>server/routes/script-pusher.js</li>
+<li>client/src/App.js</li>
+</ul>
+<a class="anchor" id="radio-buttons"></a>
+<h2>Radio Buttons</h2>
+<p>Add radios to render put this before the return statement in render:</p>
+<pre><code class="lang-javascript">const radioLocal =  (
+      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"container"</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">onSubmit</span>=<span class="hljs-string">{this.handleSubmit}</span> &gt;</span>
+
+              <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"elf-form-field"</span> &gt;</span>
+                  <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"app-choice"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"CpuInfo"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"elf-radio-cpu"</span> <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.handleChange}/</span>&gt;</span>
+                  <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">htmlFor</span>=<span class="hljs-string">"elf-radio-cpu"</span>&gt;</span>CpuInfo<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+
+                  <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"app-choice"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"VersionCheck"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"elf-radio-version"</span> <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.handleChange}/</span>&gt;</span>
+                  <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">htmlFor</span>=<span class="hljs-string">"elf-radio-version"</span>&gt;</span>Version Info<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+              <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+              <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"form-group"</span>&gt;</span>
+                  <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"submit"</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"btn btn-primary"</span>&gt;</span>Run System Script<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+              <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  );
+</code></pre>
+<a class="anchor" id="modify-render"></a>
+<h2>Modify render</h2>
+<p>Put this in the <strong>render</strong> method:</p>
+<pre><code class="lang-html"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">main</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">section</span>&gt;</span>
+        </span><span class="hljs-template-variable">{radioLocal}</span><span class="xml">
+    <span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">section</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">pre</span>&gt;</span></span><span class="hljs-template-variable">{this.state.allData}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">pre</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=</span></span><span class="hljs-template-variable">{this.runFoo}</span><span class="xml"><span class="hljs-tag">&gt;</span>Run Foo<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span></span>
+</code></pre>
+<p>The key point is the JavaScript JSX expression {radioLocal}.</p>
+<p>And we handle it like this:</p>
+<pre><code class="lang-javascript">handleChange = (event) =&gt; {
+    const selectedValue = event.target.value;
+    console.<span class="hljs-keyword">log</span>('HANDLE CHANGE', selectedValue);
+    this.<span class="hljs-built_in">set</span>State({
+        ...this.<span class="hljs-keyword">state</span>,
+        selectedValue: selectedValue
+    });
+
+};
+
+handleSubmit= (event) =&gt; {
+    this.<span class="hljs-built_in">set</span>State({<span class="hljs-literal">all</span>Data: ''});
+    console.<span class="hljs-keyword">log</span>('A name was submitted: ' , this.<span class="hljs-keyword">state</span>);
+    //if (this.<span class="hljs-keyword">state</span>.selectedValue === 'cpu') {
+    this.runCpuInfo(this.<span class="hljs-keyword">state</span>.selectedValue);
+    //}
+    event.preventDefault();
+};
+</code></pre>
+<a class="anchor" id="refactor"></a>
+<h2>Refactor</h2>
+<p>I&#39;ll talk you through the refactor.</p>
+<a class="anchor" id="deploy"></a>
+<h2>Deploy</h2>
+<p>Other than systemd reated issues, I think I see three issues that are central to deployment.</p>
+<ol>
+<li>Create a script to automate running the build step in the client.</li>
+<li>Create a <strong>.gitignore</strong> file for the server</li>
+<li>Handle the case where we change branches on a deployed app.</li>
+</ol>
+<a class="anchor" id="the-build-script"></a>
+<h2>The Build Script</h2>
+<p>Create a bash script file called <strong>build-copy</strong>. This script is designed to be run from the <strong>client</strong> directory. It begins as usual with:</p>
+<pre><code class="lang-bash"><span class="hljs-meta">#! /usr/bin/env bash</span>
+</code></pre>
+<p>Declare a variable called <strong>SERVER_DIR</strong> that points at the <strong>public</strong> directory in the server folder. This will be a relative link that starts one directory closer to the root than the <strong>client</strong> directory : <strong>../<THE PATH></strong></p>
+<p>Now run the build:</p>
+<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> build</span>
+</code></pre><p>The next three lines will all use the <strong>SERVER_DIR</strong> variable. They:</p>
+<ul>
+<li>Delete the file called <strong>precache-manifest*.js</strong> from <strong>server/public</strong><ul>
+<li>The part where I place the wildcard (*) will differ every time we build.</li>
+</ul>
+</li>
+<li>Delete the <strong>static</strong> directory from the <strong>server/public</strong></li>
+<li>Recursively copy the contents of the build directory into <strong>server/public</strong></li>
+</ul>
+<p><strong>NOTE</strong>: _Only write the words <strong>server/public</strong> once: in the declaration for <strong>SERVER_DIR</strong>. The rest of the time, when you need to refer to that directory, use <strong>$SERVER_DIR</strong>. And once again, you will probably want to use a relative path in the definition of <strong>SERVER_DIR</strong>._</p>
+<p>When you are done, you should be able to run the script to perform a build, delete the old files from the <strong>SERVER_DIR</strong>, and copy in the new ones. It&#39;s not that these steps are hard to do without the script, but that the script makes the task simpler, and saves us from making a type that might caues trouble when deleting or copying files.</p>
+<p>I suggest storing the <strong>build-copy</strong> file in your scripts directory and creating a symbolic link to it from your <strong>client</strong> directory. (It makes sense to also create a link to it from your <strong>~/bin</strong> directory, but I want you to also create one from your <strong>client</strong> directory so I can use it while grading.)</p>
+<a class="anchor" id="the-gitignore-for-the-server"></a>
+<h2>The .gitignore for the Server</h2>
+<p>A <strong>.gitignore</strong> file belongs in the <strong>server</strong> directory. I think this covers it:</p>
+<pre><code><span class="hljs-keyword">public</span>/<span class="hljs-keyword">static</span>
+<span class="hljs-keyword">public</span>/precache-manifest.\*.js
+<span class="hljs-keyword">public</span>/asset-manifest.json
+<span class="hljs-keyword">public</span>/<span class="hljs-keyword">index</span>.html
+<span class="hljs-keyword">public</span>/service-worker.js
+</code></pre><a class="anchor" id="changing-branches"></a>
+<h2>Changing Branches</h2>
+<p>Once we start a <strong>systemd</strong> service running, problems can occur if we switch branches in our repository. For things to work smoothly, each branch would need to contain more less identical code for a the directory hosting the service. This is not likely to be the case.</p>
+<p>I can think of two solutions:</p>
+<ol>
+<li>Copy the code for the program out of the repository and point symbolic link in the <strong>~/bin</strong> directory to the copy.</li>
+<li>Have two copies of your repository on your hard drive: one in your <strong>~/Git</strong> folder in which you do your work, and one in a <strong>~/Deploy</strong> folder which contains the code for your services. Always having working code in the <strong>master</strong> branch and always have the code in <strong>~/Deploy</strong> pointing at <strong>master</strong>.</li>
+</ol>
+<p>Of these two solutions, the second seems less likely to cause problems and simplest to maintain. The only draw back is that it takes up more disk space.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Make sure <strong>prettier</strong> and <strong>eslint</strong> come back with no errors when run from project root, <strong>client</strong>, or <strong>server</strong>.</p>
+<p>Set up <strong>systemd</strong> to run locally, but not on EC2.</p>
+<p>Tag and push with script:</p>
+<ul>
+<li>elf-tagger &quot;Completed system check refactor&quot; &quot;week07-system-check-refactor&quot;</li>
+</ul>
+<a class="anchor" id="slb"></a>
+<h2>SLB</h2>
+<p>Issues sometimes surface with the environment variable <strong>SETUP_LINUXBOX</strong>. On my system it looks like this:</p>
+<pre><code>$ echo <span class="hljs-variable">$SETUP_LINUXBOX</span>
+<span class="hljs-regexp">/home/</span>charlie<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>SetupLinuxBox
+</code></pre><p>In our JavaScript code we access that variable like this:</p>
+<pre><code>process<span class="hljs-selector-class">.env</span><span class="hljs-selector-class">.SETUP_LINUXBOX</span>
+</code></pre><p>In systemd service files, we set it like this:</p>
+<pre><code>Environment=SETUP_LINUXBOX=<span class="hljs-regexp">/home/</span>charlie<span class="hljs-regexp">/Git/</span>JsObjects<span class="hljs-regexp">/Utilities/</span>SetupLinuxBox
+</code></pre><p>Though the username can differ. In ~/.bash_aliases it gets set on line 14</p>
+<pre><code><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">SETUP_LINUXBOX</span>=<span class="hljs-variable">$ELF_UTILS</span>/SetupLinuxBox
+</code></pre><p>You will need to put the path in <strong>conn.exec</strong> when running a remote call to a file found in the SLB directory.</p>
+</div></body></html>

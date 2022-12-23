@@ -1,0 +1,210 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactAddressEditDialog</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ReactAddressEditDialog</h1><p>Welcome to ReactAddressEditDialog</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#create-files">Create Files</a></li>
+<li><a href="#create-fields">Create Fields</a></li>
+<li><a href="#create-a-dialog">Create a Dialog</a></li>
+<li><a href="#add-a-dialog">Add a Dialog</a></li>
+<li><a href="#create-a-dialog-title">Create a Dialog Title</a></li>
+<li><a href="#define-dialog-content">Define Dialog Content</a></li>
+<li><a href="#the-action">The Action</a></li>
+<li><a href="#call-dialog">Call Dialog</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#data-cycle">Data Cycle</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Allow the user to pop up a dialog and edit a record. Something very much like this code should be added to both the <strong>SmallAddress</strong> program and in your <strong>Final</strong>.</p>
+<a class="anchor" id="create-files"></a>
+<h2>Create Files</h2>
+<ul>
+<li>components/AddressEditFields</li>
+<li>components/AddressEdit</li>
+</ul>
+<a class="anchor" id="create-fields"></a>
+<h2>Create Fields</h2>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> <span class="hljs-type">React</span>, { <span class="hljs-type">Component</span> } from <span class="hljs-symbol">'reac</span>t';
+<span class="hljs-keyword">import</span> <span class="hljs-type">PropTypes</span> from <span class="hljs-symbol">'prop</span>-types';
+<span class="hljs-keyword">import</span> <span class="hljs-type">TextField</span> from '<span class="hljs-meta">@material</span>-ui/core/<span class="hljs-type">TextField</span>';
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AddressFields</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    render() {
+        <span class="hljs-keyword">return</span> (
+            &lt;div&gt;
+                &lt;<span class="hljs-type">TextField</span>
+                    autoFocus
+                    margin=<span class="hljs-string">"dense"</span>
+                    id=<span class="hljs-string">"firstName"</span>
+                    label=<span class="hljs-string">"First Name"</span>
+                    <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"string"</span>
+                    value={<span class="hljs-keyword">this</span>.props.address.firstName}
+                    onChange={e =&gt; <span class="hljs-keyword">this</span>.props.addressChangedByUser(<span class="hljs-symbol">'firstNam</span>e', e)}
+                    fullWidth
+                /&gt;
+                <span class="hljs-comment">// YOU ADD A LASTNAME TextField</span>
+            &lt;/div&gt;
+        );
+    }
+}
+
+<span class="hljs-type">AddressFields</span>.propTypes = {
+    addressChangedByUser: <span class="hljs-type">PropTypes</span>.func,
+    address: <span class="hljs-type">PropTypes</span>.shape({
+        firstName: <span class="hljs-type">PropTypes</span>.string,
+        lastName: <span class="hljs-type">PropTypes</span>.string
+    })
+};
+
+export <span class="hljs-keyword">default</span> <span class="hljs-type">AddressFields</span>;
+</code></pre>
+<a class="anchor" id="create-a-dialog"></a>
+<h2>Create a Dialog</h2>
+<p>Start with a simple React component called <strong>AddressEdit</strong>:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> PropTypes <span class="hljs-keyword">from</span> <span class="hljs-string">'prop-types'</span>;
+<span class="hljs-keyword">import</span> Button <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/Button'</span>;
+<span class="hljs-keyword">import</span> Dialog <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/Dialog'</span>;
+<span class="hljs-keyword">import</span> DialogActions <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/DialogActions'</span>;
+<span class="hljs-keyword">import</span> DialogContent <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/DialogContent'</span>;
+<span class="hljs-keyword">import</span> DialogContentText <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/DialogContentText'</span>;
+<span class="hljs-keyword">import</span> DialogTitle <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/DialogTitle'</span>;
+<span class="hljs-keyword">import</span> AddressEditFields <span class="hljs-keyword">from</span> <span class="hljs-string">'./AddressEditFields'</span>;
+<span class="hljs-keyword">import</span> addressList <span class="hljs-keyword">from</span> <span class="hljs-string">'../address-list'</span>;
+
+<span class="hljs-keyword">const</span> styles = {};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AddressEdit</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+    render() {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>I am Simple<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+        );
+    }
+}
+
+</code></pre>
+<a class="anchor" id="add-a-dialog"></a>
+<h2>Add a Dialog</h2>
+<p>In the DIV of the <strong>render</strong> method delete the H1. Add this instead:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">import</span> Dialog <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/Dialog'</span>;
+</code></pre>
+<pre><code class="lang-html">&lt;Dialog
+   <span class="hljs-keyword">open</span>={<span class="hljs-keyword">this</span>.props.<span class="hljs-keyword">open</span>}
+   onClose={<span class="hljs-keyword">this</span>.userClosedDialogNormal}
+   aria-labelledby=<span class="hljs-string">"form-dialog-title"</span>
+&gt;
+  {<span class="hljs-comment">/* DIALOG BODY WILL GO HERE */</span>}
+&lt;/Dialog&gt;
+</code></pre>
+<a class="anchor" id="create-a-dialog-title"></a>
+<h2>Create a Dialog Title</h2>
+<p>We are going to add several sections to the Dialog. Here is the overall flow, which I will build piece by piece in the next sections of this text:</p>
+<ul>
+<li>Dialog<ul>
+<li>DialogTitle</li>
+<li>DialogContent<ul>
+<li>DialogContentText</li>
+<li>AddressEditFields</li>
+</ul>
+</li>
+<li>DialogActions<ul>
+<li>Button</li>
+<li>Button</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>It&#39;s important to get the components nested properly. We create a <strong>Dialog</strong>, then put a <strong>DialogTitle</strong>, <strong>DialogContent</strong> and <strong>DialogActions</strong> inside it. Inside of <strong>DialogContent</strong> we have <strong>DialogContentText</strong> and <strong>AddressEditFields</strong>. Inside of <strong>DialogActions</strong> we have two <strong>Button</strong> components.</p>
+<p>Let&#39;s start by adding the <strong>DialogTitle</strong>. In the body of the <strong>Dialog</strong> so can have a title for our dialog:</p>
+<pre><code class="lang-javascript"><span class="hljs-tag">&lt;<span class="hljs-name">DialogTitle</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"form-dialog-title"</span>&gt;</span>
+    Edit Address
+<span class="hljs-tag">&lt;/<span class="hljs-name">DialogTitle</span>&gt;</span>
+</code></pre>
+<a class="anchor" id="define-dialog-content"></a>
+<h2>Define Dialog Content</h2>
+<p>In the <strong>Dialog</strong> body below the <strong>DialogTitle</strong> add this:</p>
+<pre><code><span class="hljs-section">&lt;DialogContent&gt;</span>
+   <span class="hljs-section">&lt;DialogContentText&gt;</span>
+       <span class="hljs-attribute">Fill</span> in the fields of the address record.
+   <span class="hljs-section">&lt;/DialogContentText&gt;</span>
+<span class="hljs-section">&lt;/DialogContent&gt;</span>
+</code></pre><p><strong>NOTE</strong>: <em>The text &quot;Fill in the fields...&quot; etc is an instruction to the end user, not to you, the developer.</em></p>
+<p>In the <strong>DialogContent</strong>, below the <strong>DialogContentText</strong> (after it, not inside it),  add the <strong>AddressEditFields</strong>. It will take two props. Study the <strong>AddressEditFields</strong> object and calculate the two props that need to be passed in:</p>
+<pre><code class="lang-html">&lt;AddressEditFields <span class="hljs-comment">// YOU ADD THE PROPS /&gt;</span>
+</code></pre>
+<p>To close out the body, define the <strong>DialogActions</strong>:</p>
+<pre><code class="lang-html">&lt;DialogActions&gt;
+    &lt;<span class="hljs-keyword">Button</span> <span class="hljs-keyword">onClick</span>={this.userCanceledDialog} <span class="hljs-keyword">color</span>=<span class="hljs-string">"primary"</span>&gt;
+        Cancel
+    &lt;/<span class="hljs-keyword">Button</span>&gt;
+    <span class="hljs-comment">// You add an Ok button where onClick calls</span>
+    <span class="hljs-comment">// this.userClosedDialogNormal</span>
+&lt;/DialogActions&gt;
+</code></pre>
+<a class="anchor" id="the-action"></a>
+<h2>The Action</h2>
+<p>Above the render method add these methods:</p>
+<pre><code class="lang-javascript">state = {
+   open: <span class="hljs-keyword">this</span>.props.open,
+   address: addressList[<span class="hljs-number">0</span>]
+};
+<span class="hljs-function">
+<span class="hljs-title">userClosedDialogNormal</span> = <span class="hljs-params">()</span> =&gt;</span> {
+   <span class="hljs-keyword">this</span>.props.addressEdit(<span class="hljs-keyword">this</span>.state.address);
+};
+<span class="hljs-function">
+<span class="hljs-title">userCanceledDialog</span> = <span class="hljs-params">()</span> =&gt;</span> {
+   <span class="hljs-keyword">this</span>.props.addressEdit(<span class="hljs-literal">null</span>);
+};
+<span class="hljs-function">
+<span class="hljs-title">addressChangedByUser</span> = <span class="hljs-params">(v, e)</span> =&gt;</span> {
+   <span class="hljs-keyword">this</span>.props.address[v] = e.target.value;
+   <span class="hljs-keyword">this</span>.setState({ address: <span class="hljs-keyword">this</span>.props.address });
+};
+</code></pre>
+<p>We tend to declare state in a <strong>constructor</strong>, but I see a lot of developers write code like that shown above.</p>
+<p>At the very bottom define props.</p>
+<a class="anchor" id="call-dialog"></a>
+<h2>Call Dialog</h2>
+<p>In AddressShow, in the render method, do this:</p>
+<pre><code class="lang-javascript">render() {
+    const {classes} = <span class="hljs-keyword">this</span>.props;
+    const editDialog = <span class="hljs-keyword">this</span>.state.editOpen ? (
+        &lt;AddressEdit
+            address={<span class="hljs-keyword">this</span>.props.name}
+            <span class="hljs-keyword">open</span>={<span class="hljs-keyword">this</span>.state.editOpen}
+            addressEdit={<span class="hljs-keyword">this</span>.addressEdit}
+        /&gt;
+    ) : (
+        &lt;div/&gt;
+    );
+
+    <span class="hljs-keyword">return</span> (
+
+        &lt;div className={classes.container}&gt;
+            <span class="hljs-comment">// ALL YOUR ADDRESS SHOW JSX HERE</span>
+            &lt;Button
+                color=<span class="hljs-string">"secondary"</span>
+                variant=<span class="hljs-string">"raised"</span>
+                onClick={() =&gt; <span class="hljs-keyword">this</span>.setState({editOpen: <span class="hljs-literal">true</span>})}
+             &gt;
+                Edit
+            &lt;/Button&gt;
+          {editDialog}
+        &lt;div&gt;
+    )
+}
+</code></pre>
+<p>For this to work, there needs to be a bit of Boolean state called <strong>editOpen</strong> that is initialized to false. By default, <strong>editDialog</strong> is just an empty DIV. But if the user sets <strong>editOpen</strong> to true with a button click, then our <strong>AddressEdit</strong> component is defined. The syntax looks a bit funky, but this is just a simple JavaScript <strong>if</strong> statement of the shortcut persuasion. It uses <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator">conditional, or ternary, operator</a>.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Push, tag, Let me know directory and tag.</p>
+<a class="anchor" id="data-cycle"></a>
+<h2>Data Cycle</h2>
+<p>We should pull data from <strong>CongressServer</strong> only once with the <strong>Get Address List</strong> button. Then we push it to <strong>IndexedDB</strong> with the <strong>Convert Address</strong> button.</p>
+<p>From there we use the <strong>Sync</strong> button to push it to CouchDB. Once it is in CouchDb, then we get notified of of updates whenever we are in Sync mode.</p>
+<p>Of course we can start the cycle again at any time by completely clearing Storage in the browser and deleting the database from CouchDB.</p>
+<p>If you are in &quot;Sync mode&quot;, that is, if you first push the Sync button, then when you Save your work, it will be saved both to IndexDB (in the browser) and to CouchDB.</p>
+<p>The best way to see this is to open your to the same record in two browsers. For instance, one copy in Chrome and the other in FireFox. Now put them both in Sync mode. Then start editing a record you should automagically see the change in both browsers when you make the change in one.</p>
+<p>Create Index doesn&#39;t copy the whole database, it just creates an Index on the <strong>LastName</strong> field.</p>
+<p>When we Sync with CouchDb the first time, our App will send both the current data, including updates and deletes, and it will also send the Index on last name. Thereafter it will sync both to and from CouchDB, only the changes.</p>
+</div></body></html>

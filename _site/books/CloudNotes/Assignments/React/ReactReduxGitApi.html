@@ -1,0 +1,199 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactReduxGitApi</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ReactReduxGitApi</h1><p>Welcome to ReactReduxGitApi</p><ul><!--TOC_Start--><li><a href="#react-redux-git-api">React Redux Git API</a></li>
+<li><a href="#reducer">Reducer</a></li>
+<li><a href="#small-numbers">Small Numbers</a></li>
+<li><a href="#small-numbers-implementation">Small Numbers Implementation</a></li>
+<li><a href="#getfoo">GetFoo</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-redux-git-api"></a>
+<h1>React Redux Git API</h1>
+<p>We now want to apply Redux to GitExplorer.</p>
+<a class="anchor" id="reducer"></a>
+<h2>Reducer</h2>
+<p>Let&#39;s start at the beginning. Create a file called <strong>assets/gist-reducer.js</strong>:</p>
+<pre><code class="lang-javascript">const gistState = {
+
+};
+
+const gistReducer = (<span class="hljs-keyword">state</span> = gistState, action) =&gt; {
+    switch (action.type) {
+        <span class="hljs-keyword">default</span>:
+            return <span class="hljs-keyword">state</span>;
+    }
+};
+
+export <span class="hljs-keyword">default</span> gistReducer;
+</code></pre>
+<p>Now set up <strong>index.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> {Provider} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-redux'</span>;
+<span class="hljs-keyword">import</span> {createStore} <span class="hljs-keyword">from</span> <span class="hljs-string">'redux'</span>;
+<span class="hljs-keyword">import</span> gistReducer <span class="hljs-keyword">from</span> <span class="hljs-string">'./assets/gist-reducer'</span>;
+
+<span class="hljs-keyword">let</span> store = createStore(gistReducer);
+
+ReactDOM.render(
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">Router</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">DataMaven</span>/&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Router</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>,
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
+);
+</code></pre>
+<a class="anchor" id="small-numbers"></a>
+<h2>Small Numbers</h2>
+<p>In <strong>SmallNumbers</strong>, strip out the state from the constructor or stop passing in props from <strong>DataMaven</strong>:</p>
+<p>Here is how to call <strong>SmallNumbers</strong>:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">'/get-numbers'</span> <span class="hljs-attr">component</span>=<span class="hljs-string">{SmallNumbers}</span> /&gt;</span>
+</code></pre>
+<p>Here is the constructor:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">constructor</span>(props) {
+    <span class="hljs-keyword">super</span>(props);
+    logger.log(<span class="hljs-string">'SmallNumber props'</span>, <span class="hljs-keyword">this</span>.props);
+    <span class="hljs-keyword">this</span>.getNine = <span class="hljs-keyword">this</span>.getNine.bind(<span class="hljs-keyword">this</span>);
+    <span class="hljs-keyword">this</span>.getEight = <span class="hljs-keyword">this</span>.getEight.bind(<span class="hljs-keyword">this</span>);
+}
+</code></pre>
+<p>Now, lets move the state to the reducer:</p>
+<pre><code class="lang-javascript">const gistState = {
+  numbers: {
+      nine: '<span class="hljs-number">0</span>',
+      eight: '<span class="hljs-number">0</span>'
+  }
+};
+
+const gistReducer = (<span class="hljs-keyword">state</span> = gistState, action) =&gt; {
+    switch (action.type) {
+      case 'NUMBER_NINE':
+        return Object.assign({}, <span class="hljs-keyword">state</span>, {
+            numbers: {
+                nine: <span class="hljs-number">9</span>,
+                eight: <span class="hljs-keyword">state</span>.numbers.eight
+            }
+        });
+
+      case 'NUMBER_EIGHT':
+        return Object.assign({}, <span class="hljs-keyword">state</span>, {
+            numbers: {
+                nine: <span class="hljs-keyword">state</span>.numbers.nine,
+                eight: <span class="hljs-number">8</span>
+            }
+        });
+
+      <span class="hljs-keyword">default</span>:
+        return <span class="hljs-keyword">state</span>;
+    }
+};
+
+export <span class="hljs-keyword">default</span> gistReducer;
+</code></pre>
+<p>We use <strong>Object.assign</strong> because we want our objects to be immutable. You may not change your state object, you must completely rebuild it. You must copy the old state into a new state and in the process add new values to the changed properties. That is what <strong>Object.assign</strong> does.</p>
+<p>Alternatively:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">case</span> <span class="hljs-string">'NUMBER_EIGHT'</span>:
+  <span class="hljs-keyword">return</span> {
+    numbers: {
+      eight: <span class="hljs-string">'8'</span>,
+      nine: state.numbers.nine
+    }
+  };
+</code></pre>
+<p>But that can get unwieldy if our <strong>state</strong> becomes complex.</p>
+<a class="anchor" id="small-numbers-implementation"></a>
+<h2>Small Numbers Implementation</h2>
+<p>Then do this to connect <strong>SmallNumbers</strong> to Redux:</p>
+<pre><code class="lang-javascript">import {connect} <span class="hljs-keyword">from</span> 'react-redux';
+
+// SMALL NUMBERS ITSELF HERE.
+// AND AT THE BOTTOM:
+
+const mapStateToProps = (<span class="hljs-keyword">state</span>) =&gt; {
+    return {
+        numbers: <span class="hljs-keyword">state</span>.numbers
+    };
+};
+
+SmallNumbers = connect(mapStateToProps)(SmallNumbers);
+</code></pre>
+<p>There is no real need for <strong>mapDispatchToProps</strong> because our dispatch calls are so simple:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">getNine</span>() {
+  <span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.dispatch</span>({<span class="hljs-attribute">type</span>: <span class="hljs-string">'NUMBER_NINE'</span>});
+};
+</code></pre>
+<a class="anchor" id="getfoo"></a>
+<h2>GetFoo</h2>
+<p>Get Foo is bit more complex, but still a very similar process:</p>
+<p>In the reducer:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> gistState = {
+    <span class="hljs-attr">getFoo</span>: {
+        <span class="hljs-attr">foo</span>: <span class="hljs-string">'foo'</span>,
+        <span class="hljs-attr">file</span>: <span class="hljs-string">'api.js'</span>
+    },
+    <span class="hljs-attr">numbers</span>: {
+        <span class="hljs-attr">nine</span>: <span class="hljs-string">'0'</span>,
+        <span class="hljs-attr">eight</span>: <span class="hljs-string">'0'</span>
+    }
+};
+
+<span class="hljs-keyword">const</span> gistReducer = <span class="hljs-function">(<span class="hljs-params">state = gistState, action</span>) =&gt;</span> {
+  <span class="hljs-keyword">switch</span> (action.type) {
+      <span class="hljs-keyword">case</span> <span class="hljs-string">'GETFOO'</span>:
+          <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.assign({}, state, {<span class="hljs-attr">getFoo</span>: action.getFoo});
+      etc
+  }      
+}
+</code></pre>
+<p>And here is the connect object in <strong>GetFooConnect</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 6/3/17.
+ */</span>
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">'whatwg-fetch'</span>;
+<span class="hljs-keyword">import</span> {connect} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-redux'</span>;
+<span class="hljs-keyword">import</span> GetFoo <span class="hljs-keyword">from</span> <span class="hljs-string">'./GetFoo'</span>;
+<span class="hljs-keyword">import</span> ElfLogger <span class="hljs-keyword">from</span> <span class="hljs-string">'../assets/ElfLogger'</span>;
+<span class="hljs-keyword">const</span> logger = <span class="hljs-keyword">new</span> ElfLogger(<span class="hljs-string">'get-foo-connect'</span>);
+
+<span class="hljs-keyword">const</span> mapStateToProps = <span class="hljs-function">(<span class="hljs-params">state</span>) =&gt;</span> {
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">foo</span>: state.getFoo.foo,
+        <span class="hljs-attr">file</span>: state.getFoo.file
+    };
+};
+
+<span class="hljs-keyword">const</span> mapDispatchToProps = <span class="hljs-function">(<span class="hljs-params">dispatch</span>) =&gt;</span> {
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">getBar</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+            dispatch({
+                <span class="hljs-attr">type</span>: <span class="hljs-string">'GETFOO'</span>,
+                <span class="hljs-attr">getFoo</span>: {
+                    <span class="hljs-attr">foo</span>: <span class="hljs-string">'url-mock-bar'</span>,
+                    <span class="hljs-attr">file</span>: <span class="hljs-string">'url-mock-api.js'</span>
+                }
+            });
+        },
+        <span class="hljs-attr">getFoo</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+            fetch(<span class="hljs-string">'/foo'</span>)
+                .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+                      <span class="hljs-keyword">return</span> response.json();
+                }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{
+                  dispatch({
+                    <span class="hljs-attr">type</span>: <span class="hljs-string">'GETFOO'</span>,
+                    <span class="hljs-attr">getFoo</span>: json
+                });
+            }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ex</span>) </span>{
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsing failed'</span>, ex);
+            });
+
+        }
+    };
+};
+
+<span class="hljs-keyword">const</span> GetFooConnect = connect(mapStateToProps, mapDispatchToProps)(GetFoo);
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> GetFooConnect;
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>add, commit, push, branch and/or tag. Tell me the branch, tag and folder. I&#39;m expecting it to be done in the folder called <strong>GitExplorer</strong>.</p>
+</div></body></html>

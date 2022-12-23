@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>DropBox</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>DropBox</h1><p>Welcome to DropBox</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#caveats">Caveats</a></li>
+<li><a href="#install">Install</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>DropBox is a file sharing utility. It is used primarily to help you keep files in sync between multiple machines, and a place in the cloud. You can also share read-only or read-write copies of your folders with one or more people. DropBox is especially well suited for sharing files between desktop machines and your tablet or phone.</p>
+<p>If you don&#39;t have one already, create a <a href="https://db.tt/6ZfOwOQg">DropBox account</a>. (Using this link helps me earn free server space on DropBox.)</p>
+<a class="anchor" id="caveats"></a>
+<h2>Caveats</h2>
+<p>Though you can <a href="https://www.dropbox.com/help/11/en">retrieve deleted files for 30 days</a>, and even see multiple versions of your files, still, DropBox is not designed to be a source control tool. If you want to track source code, you should use Git or Mercurial. With a version control system, you can easily retrieve a deleted file, or revert to a previous version of a file. As a result, Dropbox is not a good way to work with detailed changes such as occur in source code. It is a good way to share files between machines.</p>
+<a class="anchor" id="install"></a>
+<h2>Install</h2>
+<p>If you don&#39;t have one already, create a <a href="https://db.tt/6ZfOwOQg">DropBox account</a>.</p>
+<p>On Windows, Linux and the Mac, there are relatively painless automated
+installs of DropBox:</p>
+<p><a href="https://www.dropbox.com/install">https://www.dropbox.com/install</a></p>
+<p>Here is a script you can run to install DropBox on a headless server such as Ubuntu Server and/or an EC2 instance of a Linux Server. I keep the most recent version of this script on <a href="https://github.com/charliecalvert/JsObjects/tree/master/Utilities/DropBox">JsObjects</a>:</p>
+<pre><code><span class="hljs-comment"># Script for downloading and installing DropBox on Linux server</span>
+<span class="hljs-comment"># and on other headless Linux boxes that have no GUI frontend.</span>
+<span class="hljs-comment"># You can use dropbox.py to help you manage dropbox.</span>
+<span class="hljs-comment"># I recommend running this script from $HOME/bin</span>
+
+dropBoxName=dropbox.tar.gz
+wget -O dropbox.py <span class="hljs-string">"https://www.dropbox.com/download?dl=packages/dropbox.py"</span>
+wget -O <span class="hljs-variable">$dropBoxName</span> <span class="hljs-string">"https://www.dropbox.com/download?plat=lnx.x86_64"</span>
+tar xzf <span class="hljs-variable">$dropBoxName</span>
+<span class="hljs-keyword">if</span> [ ! -e ~/.dropbox-dist/dropboxd ]
+<span class="hljs-keyword">then</span>
+    mv .dropbox-dist ~/.
+<span class="hljs-keyword">else</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"I see that /home/<span class="hljs-variable">$USER</span>/.dropbox-dist already exists."</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"I did not expect that. I am going to exit and let you"</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"handle this manually."</span>
+    <span class="hljs-built_in">exit</span>
+<span class="hljs-keyword">fi</span>
+~/.dropbox-dist/dropboxd
+</code></pre><p>If you are using a 32 bit version of Ubuntu, then change the third executable line to read:</p>
+<pre><code><span class="hljs-attribute">wget</span> -O <span class="hljs-variable">$dropBoxName</span> <span class="hljs-string">"https://www.dropbox.com/download?plat=lnx.x86"</span>
+</code></pre><p>If you are using the 64 bit version, then keep this line:</p>
+<pre><code><span class="hljs-attribute">wget</span> -O <span class="hljs-variable">$dropBoxName</span> <span class="hljs-string">"https://www.dropbox.com/download?plat=lnx.x86_64"</span>
+</code></pre><p>Save the above file in your \$HOME/bin directory as <strong>DropBoxOnLinuxServer.sh</strong>. (Remeber that $HOME is an environment variable that points at your home directory. For instance, it might point to <strong>/home/ubuntu</strong> or <strong>/home/adminuser</strong> or <strong>/home/charlie</strong>. It all depends on your user name.) Once you have the script in
+your \$HOME directory, Run it like this:</p>
+<pre><code><span class="hljs-keyword">sh</span> DropBoxOnLinuxServer.<span class="hljs-keyword">sh</span>
+</code></pre><p>Don&#39;t use sudo, just run it as shown. After the install, you can help maintain your instance by running the <em>dropbox.py</em> script:</p>
+<pre><code><span class="hljs-keyword">python</span> dropbox.<span class="hljs-keyword">py</span>
+</code></pre><p>Remember, you can also find the install script (DropBoxOnLinuxServer.sh) on GitHub:</p>
+<ul>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/Utilities/DropBox">https://github.com/charliecalvert/JsObjects/tree/master/Utilities/DropBox</a></li>
+</ul>
+<p>During the install, you will be prompted to copy a URL and paste it into a browser. You will then be prompted to enter your DropBox password. If you get errors during this process about their being an instance of
+dropbox already running, use <em>dropbox.py</em> to stop your instance:</p>
+<pre><code><span class="hljs-keyword">sh</span> dropbox.<span class="hljs-keyword">py</span> <span class="hljs-keyword">stop</span>
+</code></pre><p>Now run the DropBox demon again:</p>
+<pre><code>~<span class="hljs-regexp">/.dropbox-dist/</span>dropboxd
+</code></pre><p>This will again present you with the URL. Copy the URL. Don&#39;t press Ctrl-C to copy it, as that may stop the demon. Try right clicking instead. Paste the URL into your browser and enter your password again. If all goes well, you should see the following back in your Linux shell:</p>
+<pre><code>Please visit http<span class="hljs-variable">s:</span>//www.dropbox.<span class="hljs-keyword">com</span>/cli_link\?host_id=SomeLongValue <span class="hljs-keyword">to</span> link this machine.
+Client successfully linked, Welcome Charlie!
+</code></pre><p>Your prompt will look something like the above, though the first line may be repeated multiple times, and there will be a long hex value where I have written SomeLongNumber. Of course, if all goes well, you will be
+greeted by your own name, and not mine. If you see the above success message, press Ctrl-C to end the process.</p>
+</div></body></html>

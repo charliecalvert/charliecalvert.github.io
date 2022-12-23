@@ -1,0 +1,210 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactAddressTestingDataManager</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ReactAddressTestingDataManager</h1><p>Welcome to ReactAddressTestingDataManager</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#testing-elfheader">Testing ElfHeader</a></li>
+<li><a href="#fake-mock-pouchdbmanager-">Fake Mock PouchDbManager;</a></li>
+<li><a href="#testing-address">Testing Address</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>The introduction of the <strong>PouchDdManager</strong> complicates our testing. Let&#39;s look at <strong>Address.test.js</strong>.</p>
+<a class="anchor" id="testing-elfheader"></a>
+<h2>Testing ElfHeader</h2>
+<p>We need to use <strong>MuiThemeProvider</strong></p>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">import</span> { MuiThemeProvider, createMuiTheme } <span class="hljs-keyword">from</span> <span class="hljs-string">'@material-ui/core/styles'</span>;
+
+<span class="hljs-keyword">const</span> themeDark = createMuiTheme({
+    palette: {
+        <span class="hljs-keyword">type</span>: <span class="hljs-string">'dark'</span>
+    }
+});
+
+<span class="hljs-comment">// Later</span>
+
+&lt;MuiThemeProvider theme={themeDark}&gt;
+</code></pre>
+<a class="anchor" id="fake-mock-pouchdbmanager-"></a>
+<h2>Fake Mock PouchDbManager;</h2>
+<p>In your tests, don&#39;t load the real dataManager. Instead, load a <strong>FakeDataManager</strong>.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> dataManager <span class="hljs-keyword">from</span> <span class="hljs-string">'../assets/FakeDataManager'</span>;
+</code></pre>
+<p>This works for us because we are almost always passing our DataManager as props to our objects. Hence, they will use what we pass to them, and not try to create a real DataManager on their own.</p>
+<p>The fake <strong>DataManager</strong> might look like this:</p>
+<pre><code class="lang-javascript">class FakeDataManager {
+
+    watchChanges = (showAddress) =&gt; {
+        return showAddress;
+    };
+
+    showAddress = () =&gt; {
+        const data = {
+            'docs': [
+                {
+                    'firstName': 'Patty',
+                    'lastName': 'Murray',
+                    'street': '154 Russell Senate Office Building',
+                    'city': 'Washington DC',
+                    'state': 'WA',
+                    'zip': ' <span class="hljs-number">2051</span>0',
+                    'phone': '202-224-<span class="hljs-number">2621</span>',
+                    'website': 'https://www.murray.senate.gov/public',
+                    'email': '',
+                    'contact': 'http://www.murray.senate.gov/public/index.cfm/contactme',
+                    '_id': '<span class="hljs-number">5849</span>dc86-72b9-4fe2-8a08-5d2f43cddb93',
+                    '_rev': '1-b8d1d561e7ba4b2db<span class="hljs-number">8481</span>4aa212cbad0'
+                },
+                {
+                    'firstName': 'Robert',
+                    'lastName': 'Aderholt',
+                    'street': '235 Cannon House Office Building;',
+                    'city': 'Washington DC',
+                    'state': 'AL',
+                    'zip': ' <span class="hljs-number">2051</span>5-<span class="hljs-number">0104</span>',
+                    'phone': '202-225-<span class="hljs-number">4876</span>',
+                    'website': 'https://aderholt.house.gov',
+                    'email': '',
+                    'contact': '',
+                    '_id': 'f892d657-<span class="hljs-number">3115-44</span>c5-813e-<span class="hljs-number">2056</span>c08d158d',
+                    '_rev': '1-009c55df07da43bda<span class="hljs-number">463089</span>f8ab<span class="hljs-number">1537</span>9'
+                },
+                {
+                    'firstName': 'Lamar',
+                    'lastName': 'Alexander',
+                    'street': '455 Dirksen Senate Office Building',
+                    'city': 'Washington DC',
+                    'state': 'TN',
+                    'zip': ' <span class="hljs-number">2051</span>0',
+                    'phone': '202-224-<span class="hljs-number">4944</span>',
+                    'website': 'https://www.alexander.senate.gov/public',
+                    'email': '',
+                    'contact': 'http://www.alexander.senate.gov/public/index.cfm?p=Email',
+                    '_id': 'bdad5eb1-ba0c-4df6-ab16-199c<span class="hljs-number">9245</span>4d3e',
+                    '_rev': '1-06ee<span class="hljs-number">3531</span>f61e47efb<span class="hljs-number">6957</span>da79f0bc599'
+                },
+                {
+                    'firstName': 'Tammy',
+                    'lastName': 'Baldwin',
+                    'street': '709 Hart Senate Office Building',
+                    'city': 'Washington DC',
+                    'state': 'WI',
+                    'zip': ' <span class="hljs-number">2051</span>0',
+                    'phone': '202-224-<span class="hljs-number">5653</span>',
+                    'website': 'https://www.baldwin.senate.gov',
+                    'email': '',
+                    'contact': 'https://www.baldwin.senate.gov/feedback',
+                    '_id': '4d29a806-<span class="hljs-number">7187</span>-4f8d-85a9-a56e6e<span class="hljs-number">3228</span>d6',
+                    '_rev': '1-95b02c43a46f<span class="hljs-number">4384</span>b<span class="hljs-number">7730</span>e<span class="hljs-number">3315</span>a8c57c'
+                },
+                {
+                    'firstName': 'John',
+                    'lastName': 'Barrasso',
+                    'street': '307 Dirksen Senate Office Building',
+                    'city': 'Washington DC',
+                    'state': 'WY',
+                    'zip': ' <span class="hljs-number">2051</span>0',
+                    'phone': '202-224-<span class="hljs-number">6441</span>',
+                    'website': 'https://www.barrasso.senate.gov',
+                    'email': '',
+                    'contact': 'https://www.barrasso.senate.gov/public/index.cfm/contact-form',
+                    '_id': 'a12effc6-062c-41ac-a044-b2c3db68ad4d',
+                    '_rev': '1-ef2f284cc<span class="hljs-number">8314</span>8b4a4ef<span class="hljs-number">873555</span>f22c32'
+                },
+                {
+                    'firstName': 'Joe',
+                    'lastName': 'Barton',
+                    'street': '<span class="hljs-number">2107</span> Rayburn House Office Building;',
+                    'city': 'Washington DC',
+                    'state': 'TX',
+                    'zip': ' <span class="hljs-number">2051</span>5-<span class="hljs-number">4306</span>',
+                    'phone': '202-225-<span class="hljs-number">2002</span>',
+                    'website': 'https://joebarton.house.gov',
+                    'email': '',
+                    'contact': '',
+                    '_id': '5b5c7ab3-fc83-<span class="hljs-number">4391-8562</span>-7cd7a<span class="hljs-number">554864</span>1',
+                    '_rev': '1-5d8a9df3a<span class="hljs-number">182426</span>eb3fe047d<span class="hljs-number">6072</span>d40b'
+                }
+            ]
+        };
+        return new Promise((resolve) =&gt; {
+            resolve(data);
+        });
+    };
+}
+
+const instance = new FakeDataManager();
+
+export default instance;
+</code></pre>
+<p><strong>WatchChanges</strong> is never really called, but it must be present. Hence, our implementation of it is not important. <strong>showAddress</strong> is called, and you can see that we have it return a few records in a <strong>Promise</strong>.</p>
+<a class="anchor" id="testing-address"></a>
+<h2>Testing Address</h2>
+<p>It is a bit difficult to set up the wrapper, so lets do it in one place:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span>  wrapper = <span class="hljs-literal">null</span>;
+
+beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    wrapper = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Address</span>
+       <span class="hljs-attr">dataManager</span>=<span class="hljs-string">{dataManager}</span>
+       <span class="hljs-attr">addressList</span>=<span class="hljs-string">{addresses}</span> /&gt;</span>);
+});</span>
+</code></pre>
+<p>This is called once before each test. It sets up the Enzyme <strong>wrapper</strong> that we use in our tests.</p>
+<p>We can also write another shortcut that looks like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> addressProp = <span class="hljs-function"><span class="hljs-params">wrapper</span> =&gt;</span> wrapper
+  .find(<span class="hljs-string">'WithStyles(AddressShow)'</span>)
+  .prop(<span class="hljs-string">'address'</span>);
+</code></pre>
+<p><strong>NOTE</strong>: <em>In this case I&#39;m explicitly using <strong>WithStyles</strong>. But in my <strong>contains</strong> and <strong>containsMatchingElement</strong> tests, I can ignore the fact that we use <strong>WithStyles</strong> in the React component under test.</em></p>
+<p>Thus we no longer need lines like this:</p>
+<pre><code class="lang-javascript">it('renders and displays the default first name', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;Address</span>
+       dataManager={dataManager}
+       addressList={addresses} /&gt;)<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">wrapper</span>
+      .find('WithStyles(<span class="hljs-name">AddressShow</span>)')
+      .prop('address')
+      .firstName)
+      .toEqual('unknown')<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>Instead, we can write this:</p>
+<pre><code class="lang-javascript">it('renders and displays the default first name', () =&gt; {        
+    expect(<span class="hljs-name">addressProp</span>(<span class="hljs-name">wrapper</span>).firstName).toEqual('unknown')<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>We can also write these:</p>
+<pre><code class="lang-JavaScript">it('renders and displays the <span class="hljs-keyword">default</span> first name <span class="hljs-keyword">from</span> FakeData', () =&gt; {
+    expect(wrapper.<span class="hljs-keyword">state</span>().address.firstName).<span class="hljs-keyword">to</span>Equal('Patty');
+});
+
+it('renders <span class="hljs-keyword">state</span> of firstName after button click', () =&gt; {
+    wrapper.instance().<span class="hljs-built_in">set</span>Address(<span class="hljs-number">1</span>);
+    expect(wrapper.<span class="hljs-keyword">state</span>().address.firstName).<span class="hljs-keyword">to</span>Equal('Robert');
+});
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>You can do this in the final, or in whatever is your latest and greatest. Just point me to a folder containing a working <strong>AddressMaven</strong> that has at least 12 shallow tests running against <strong>Address.js</strong>:</p>
+<pre><code>PASS  src/tests/Address.test.js
+<span class="hljs-built_in"> Address </span>tests
+   ✓ renders without crashing (20ms)
+   ✓ renders <span class="hljs-keyword">and</span> displays the<span class="hljs-built_in"> default </span>first name (2ms)
+   ✓ renders state of firstName after button click (1ms)
+   ✓ renders <span class="hljs-keyword">and</span> displays the<span class="hljs-built_in"> default </span>last name (1ms)
+   ✓ renders state of lastName after button click (4ms)
+   ✓ renders <span class="hljs-keyword">and</span> displays the<span class="hljs-built_in"> default </span>street<span class="hljs-built_in"> address </span>(2ms)
+   ✓ renders state of street<span class="hljs-built_in"> address </span>after button click (1ms)
+   ✓ renders <span class="hljs-keyword">and</span> displays the<span class="hljs-built_in"> default </span>city (1ms)
+   ✓ renders state of city after button click (1ms)
+   ✓ renders <span class="hljs-keyword">and</span> displays the<span class="hljs-built_in"> default </span>stateName (1ms)
+   ✓ renders state of stateName after button click
+   ✓ renders <span class="hljs-keyword">and</span> displays the<span class="hljs-built_in"> default </span>zip (2ms)
+   ✓ renders state of zip after button click (4ms)
+   ✓ renders <span class="hljs-keyword">and</span> displays the<span class="hljs-built_in"> default </span>phone number (1ms)
+   ✓ renders state of phone number after button click (47ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       15 passed, 15 total
+Snapshots:   0 total
+Time:        0.179s, estimated 1s
+Ran all test suites matching /Address.test.js/.
+
+Watch Usage: Press w <span class="hljs-keyword">to</span> show more.
+</code></pre></div></body></html>

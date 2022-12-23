@@ -1,0 +1,333 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Functional</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Functional</h1><p>Welcome to Functional</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#background">Background</a></li>
+<li><a href="#display-and-read">Display and Read</a></li>
+<li><a href="#reading-data-from-disk">Reading Data from Disk</a></li>
+<li><a href="#part-i">Part I</a></li>
+<li><a href="#part-ii">Part II</a></li>
+<li><a href="#part-iii">Part III</a></li>
+<li><a href="#part-iv">Part IV</a></li>
+<li><a href="#part-v">Part V</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h1>Overview</h1>
+<p>Create a single Express based application called <strong>Week02-Functional</strong>:</p>
+<ul>
+<li><strong>CreateExpressProject Week02-Functional</strong></li>
+</ul>
+<p>Create or use an existing client side file called <strong>public/control.js</strong>. Implement the exercises shown below in that file. Display the output as you wish. A simple solution might be to show the output in a DIV. More complex solutions might use listBox or tree to display the data.</p>
+<a class="anchor" id="background"></a>
+<h2>Background</h2>
+<p>Your work can be based on the examples found in <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Syntax/Functional">JsObjects/JavaScript/Syntax/Functional</a>. Use the examples you find there to help you complete this exercise.</p>
+<p><strong>NOTE</strong>: <em>Your code must use both the native <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter">array.filter</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map">array.map</a> exactly as they appear in JavaScript, or in my code Functional examples. There is no mergeAll in JavaScript at this time, and so you can use this method:</em></p>
+<pre><code><span class="hljs-built_in">Array</span>.prototype.mergeAll = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">var</span> results = [];
+    <span class="hljs-keyword">this</span>.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">subArray</span>) </span>{
+        subArray.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">number</span>) </span>{
+            results.push(number);
+        });
+    });
+    <span class="hljs-keyword">return</span> results;
+};
+</code></pre><p>[amerge]:</p>
+<a class="anchor" id="display-and-read"></a>
+<h2>Display and Read</h2>
+<p>Recall that you can create an empty list in your HTML with the following Jade:</p>
+<pre><code class="lang-HTML"><span class="hljs-meta">ul#</span><span class="bash">output</span>
+</code></pre>
+<p>If you want to add a list item to an HTML list, you could use a function like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">show</span>(<span class="hljs-params">data</span>) </span>{
+    $(<span class="hljs-string">"#output"</span>).append(<span class="hljs-string">'&lt;li&gt;{ '</span> + data + <span class="hljs-string">' }&lt;/li&gt;'</span>);
+}
+</code></pre>
+<p>If you want to load an entire array into an HTML list, you could use a function like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showArray</span>(<span class="hljs-params">data</span>) </span>{
+    data.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">row</span>) </span>{
+        $(<span class="hljs-string">"#output"</span>).append(<span class="hljs-string">'&lt;li&gt; '</span> + row + <span class="hljs-string">' &lt;/li&gt;'</span>);
+    });
+}
+</code></pre>
+<a class="anchor" id="reading-data-from-disk"></a>
+<h2>Reading Data from Disk</h2>
+<p>Later in this assignment, I will ask you to download a zip file that contains a data file called <strong>States.json</strong>. Place that JSON file in a directory called <strong>public/data</strong>.</p>
+<p>At run time, you could read the data in once and store it in an object scoped variable, and/or use a function that takes a callback to read in your data:</p>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readData</span><span class="hljs-params">(callback)</span></span> {
+    $.getJSON(<span class="hljs-string">'data/States.json'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(states)</span></span> {
+        callback(states);
+    }).done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span> {
+   showDebug( <span class="hljs-string">"Config loaded second success"</span> );
+  })
+  .fail(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(jqxhr, textStatus, error)</span></span> {
+      showDebug( <span class="hljs-string">"Walk loaded error: "</span> + jqxhr.<span class="hljs-built_in">status</span> + <span class="hljs-string">' '</span> + textStatus + <span class="hljs-string">' '</span> + <span class="hljs-built_in">error</span> );
+  })
+  .always(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span> {
+      showDebug( <span class="hljs-string">"Config loaded complete"</span> );
+  });
+}
+</code></pre><a class="anchor" id="part-i"></a>
+<h2>Part I</h2>
+<p>Write a program that uses <strong>Array.forEach</strong> to itereate over this data and creates an array of objects. Each object should have two fields: <strong>name</strong> and <strong>abbreviation</strong>. The data for the two properties should be taken from <a href="https://s3.amazonaws.com/bucket01.elvenware.com/downloads/states.json.zip">this larger array</a>.</p>
+<p><img src="https://drive.google.com/uc?view=export&amp;id=0B25UTAlOfPRGQnh2U08wUTBiZzg" alt="Funky"></p>
+<a class="anchor" id="part-ii"></a>
+<h2>Part II</h2>
+<p>Add a method to the program that does the same things as in Part I, but using the built in <strong>Array.map</strong> function.</p>
+<p>Now that the program can do more than one thing, you will need some buttons or links to switch back and forth between the task outlined in Part I, and the task outlined in Part II. In the screenshot, the buttons are labelled <strong>For Each</strong> and <strong>Map</strong>.</p>
+<p><img src="https://drive.google.com/uc?view=export&amp;id=0B25UTAlOfPRGYkdVek9UQjVVaFk" alt="Funky"></p>
+<a class="anchor" id="part-iii"></a>
+<h2>Part III</h2>
+<p>Create an array with five names in it:</p>
+<pre><code>[<span class="hljs-symbol">'Able</span>', <span class="hljs-symbol">'Bravo</span>', <span class="hljs-symbol">'Charlie</span>', <span class="hljs-symbol">'Delta</span>', <span class="hljs-symbol">'Echo</span>', <span class="hljs-symbol">'Foxtrot</span>']<span class="hljs-comment">;</span>
+</code></pre><p>And use the built in Array.filter method to return those strings that begin with A.</p>
+<a class="anchor" id="part-iv"></a>
+<h2>Part IV</h2>
+<p>Use <strong>MergeAll</strong> and one call to <strong>map</strong> to flatten the following:</p>
+<pre><code>var states1 = [
+        [ {
+            <span class="hljs-string">"state"</span> : {
+                <span class="hljs-string">"name"</span> : <span class="hljs-string">"ALABAMA"</span>,
+                <span class="hljs-string">"abbreviation"</span> : <span class="hljs-string">"AL"</span>,
+                <span class="hljs-string">"capital"</span> : <span class="hljs-string">"Montgomery"</span>,
+                <span class="hljs-string">"most-populous-city"</span> : <span class="hljs-string">"Birmingham"</span>,
+                <span class="hljs-string">"population"</span> : <span class="hljs-string">"4708708"</span>,
+                <span class="hljs-string">"square-miles"</span> : <span class="hljs-string">"52423"</span>,
+                <span class="hljs-string">"time-zone-1"</span> : <span class="hljs-string">"CST (UTC-6)"</span>,
+                <span class="hljs-string">"time-zone-2"</span> : <span class="hljs-string">"EST (UTC-5)"</span>,
+                <span class="hljs-string">"dst"</span> : <span class="hljs-string">"YES"</span>
+            }
+        }, {
+            <span class="hljs-string">"state"</span> : {
+                <span class="hljs-string">"name"</span> : <span class="hljs-string">"ALASKA"</span>,
+                <span class="hljs-string">"abbreviation"</span> : <span class="hljs-string">"AK"</span>,
+                <span class="hljs-string">"capital"</span> : <span class="hljs-string">"Juneau"</span>,
+                <span class="hljs-string">"most-populous-city"</span> : <span class="hljs-string">"Anchorage"</span>,
+                <span class="hljs-string">"population"</span> : <span class="hljs-string">"698473"</span>,
+                <span class="hljs-string">"square-miles"</span> : <span class="hljs-string">"656425"</span>,
+                <span class="hljs-string">"time-zone-1"</span> : <span class="hljs-string">"AKST (UTC-09)"</span>,
+                <span class="hljs-string">"time-zone-2"</span> : <span class="hljs-string">"HST (UTC-10)"</span>,
+                <span class="hljs-string">"dst"</span> : <span class="hljs-string">"YES"</span>
+            }
+        }, {
+            <span class="hljs-string">"state"</span> : {
+                <span class="hljs-string">"name"</span> : <span class="hljs-string">"ARIZONA"</span>,
+                <span class="hljs-string">"abbreviation"</span> : <span class="hljs-string">"AZ"</span>,
+                <span class="hljs-string">"capital"</span> : <span class="hljs-string">"Phoenix"</span>,
+                <span class="hljs-string">"most-populous-city"</span> : <span class="hljs-string">"Phoenix"</span>,
+                <span class="hljs-string">"population"</span> : <span class="hljs-string">"6595778"</span>,
+                <span class="hljs-string">"square-miles"</span> : <span class="hljs-string">"114006"</span>,
+                <span class="hljs-string">"time-zone-1"</span> : <span class="hljs-string">"MT (UTC-07)"</span>,
+                <span class="hljs-string">"time-zone-2"</span> : <span class="hljs-string">""</span>,
+                <span class="hljs-string">"dst"</span> : <span class="hljs-string">"NO"</span>
+            }
+        }, {
+            <span class="hljs-string">"state"</span> : {
+                <span class="hljs-string">"name"</span> : <span class="hljs-string">"ARKANSAS"</span>,
+                <span class="hljs-string">"abbreviation"</span> : <span class="hljs-string">"AR"</span>,
+                <span class="hljs-string">"capital"</span> : <span class="hljs-string">"Little Rock"</span>,
+                <span class="hljs-string">"most-populous-city"</span> : <span class="hljs-string">"Little Rock"</span>,
+                <span class="hljs-string">"population"</span> : <span class="hljs-string">"2889450"</span>,
+                <span class="hljs-string">"square-miles"</span> : <span class="hljs-string">"53182"</span>,
+                <span class="hljs-string">"time-zone-1"</span> : <span class="hljs-string">"CST (UTC-6)"</span>,
+                <span class="hljs-string">"time-zone-2"</span> : <span class="hljs-string">""</span>,
+                <span class="hljs-string">"dst"</span> : <span class="hljs-string">"YES"</span>
+            }
+        } ],
+        [ {
+            <span class="hljs-string">"state"</span> : {
+                <span class="hljs-string">"name"</span> : <span class="hljs-string">"CALIFORNIA"</span>,
+                <span class="hljs-string">"abbreviation"</span> : <span class="hljs-string">"CA"</span>,
+                <span class="hljs-string">"capital"</span> : <span class="hljs-string">"Sacramento"</span>,
+                <span class="hljs-string">"most-populous-city"</span> : <span class="hljs-string">"Los Angeles"</span>,
+                <span class="hljs-string">"population"</span> : <span class="hljs-string">"36961664"</span>,
+                <span class="hljs-string">"square-miles"</span> : <span class="hljs-string">"163707"</span>,
+                <span class="hljs-string">"time-zone-1"</span> : <span class="hljs-string">"PT (UTC-8)"</span>,
+                <span class="hljs-string">"time-zone-2"</span> : <span class="hljs-string">""</span>,
+                <span class="hljs-string">"dst"</span> : <span class="hljs-string">"YES"</span>
+            }
+        }, {
+            <span class="hljs-string">"state"</span> : {
+                <span class="hljs-string">"name"</span> : <span class="hljs-string">"COLORADO"</span>,
+                <span class="hljs-string">"abbreviation"</span> : <span class="hljs-string">"CO"</span>,
+                <span class="hljs-string">"capital"</span> : <span class="hljs-string">"Denver"</span>,
+                <span class="hljs-string">"most-populous-city"</span> : <span class="hljs-string">"Denver"</span>,
+                <span class="hljs-string">"population"</span> : <span class="hljs-string">"5024748"</span>,
+                <span class="hljs-string">"square-miles"</span> : <span class="hljs-string">"104100"</span>,
+                <span class="hljs-string">"time-zone-1"</span> : <span class="hljs-string">"MT (UTC-07)"</span>,
+                <span class="hljs-string">"time-zone-2"</span> : <span class="hljs-string">""</span>,
+                <span class="hljs-string">"dst"</span> : <span class="hljs-string">"YES"</span>
+            }
+        }, {
+            <span class="hljs-string">"state"</span> : {
+                <span class="hljs-string">"name"</span> : <span class="hljs-string">"CONNECTICUT"</span>,
+                <span class="hljs-string">"abbreviation"</span> : <span class="hljs-string">"CT"</span>,
+                <span class="hljs-string">"capital"</span> : <span class="hljs-string">"Hartford"</span>,
+                <span class="hljs-string">"most-populous-city"</span> : <span class="hljs-string">"Bridgeport"</span>,
+                <span class="hljs-string">"population"</span> : <span class="hljs-string">"3518288"</span>,
+                <span class="hljs-string">"square-miles"</span> : <span class="hljs-string">"5544"</span>,
+                <span class="hljs-string">"time-zone-1"</span> : <span class="hljs-string">"EST (UTC-5)"</span>,
+                <span class="hljs-string">"time-zone-2"</span> : <span class="hljs-string">""</span>,
+                <span class="hljs-string">"dst"</span> : <span class="hljs-string">"YES"</span>
+            }
+        }, {
+            <span class="hljs-string">"state"</span> : {
+                <span class="hljs-string">"name"</span> : <span class="hljs-string">"DELAWARE"</span>,
+                <span class="hljs-string">"abbreviation"</span> : <span class="hljs-string">"DE"</span>,
+                <span class="hljs-string">"capital"</span> : <span class="hljs-string">"Dover"</span>,
+                <span class="hljs-string">"most-populous-city"</span> : <span class="hljs-string">"Wilmington"</span>,
+                <span class="hljs-string">"population"</span> : <span class="hljs-string">"885122"</span>,
+                <span class="hljs-string">"square-miles"</span> : <span class="hljs-string">"1954"</span>,
+                <span class="hljs-string">"time-zone-1"</span> : <span class="hljs-string">"EST (UTC-5)"</span>,
+                <span class="hljs-string">"time-zone-2"</span> : <span class="hljs-string">""</span>,
+                <span class="hljs-string">"dst"</span> : <span class="hljs-string">"YES"</span>
+            }
+        } ]
+    ];
+</code></pre><p>It should look like this when you show the result in a PRE tag with all records in the same array. The point of the exercise is that the nested arrays disappear. You start with two arrays, and end up with one array. You flatten two arrays into one array:</p>
+<pre><code>{
+    <span class="hljs-string">"name"</span>: <span class="hljs-string">"ALABAMA"</span>,
+    <span class="hljs-string">"abbreviation"</span>: <span class="hljs-string">"AL"</span>,
+    <span class="hljs-string">"capital"</span>: <span class="hljs-string">"Montgomery"</span>,
+    <span class="hljs-string">"most-populous-city"</span>: <span class="hljs-string">"Birmingham"</span>,
+    <span class="hljs-string">"population"</span>: <span class="hljs-string">"4708708"</span>,
+    <span class="hljs-string">"square-miles"</span>: <span class="hljs-string">"52423"</span>,
+    <span class="hljs-string">"time-zone-1"</span>: <span class="hljs-string">"CST (UTC-6)"</span>,
+    <span class="hljs-string">"time-zone-2"</span>: <span class="hljs-string">"EST (UTC-5)"</span>,
+    <span class="hljs-string">"dst"</span>: <span class="hljs-string">"YES"</span>
+}
+{
+    <span class="hljs-string">"name"</span>: <span class="hljs-string">"ALASKA"</span>,
+    <span class="hljs-string">"abbreviation"</span>: <span class="hljs-string">"AK"</span>,
+    <span class="hljs-string">"capital"</span>: <span class="hljs-string">"Juneau"</span>,
+    <span class="hljs-string">"most-populous-city"</span>: <span class="hljs-string">"Anchorage"</span>,
+    <span class="hljs-string">"population"</span>: <span class="hljs-string">"698473"</span>,
+    <span class="hljs-string">"square-miles"</span>: <span class="hljs-string">"656425"</span>,
+    <span class="hljs-string">"time-zone-1"</span>: <span class="hljs-string">"AKST (UTC-09)"</span>,
+    <span class="hljs-string">"time-zone-2"</span>: <span class="hljs-string">"HST (UTC-10)"</span>,
+    <span class="hljs-string">"dst"</span>: <span class="hljs-string">"YES"</span>
+}
+<span class="hljs-function"><span class="hljs-title">etc</span></span>...
+</code></pre><a class="anchor" id="part-v"></a>
+<h2>Part V</h2>
+<p>Now use this data:</p>
+<pre><code>var presidents = [
+    {
+        <span class="hljs-string">"name"</span>: <span class="hljs-string">"Older"</span>,
+        <span class="hljs-string">"states"</span>: [
+            {
+                <span class="hljs-string">"state"</span>: {
+                    <span class="hljs-string">"name"</span>: <span class="hljs-string">"ALABAMA"</span>,
+                    <span class="hljs-string">"abbreviation"</span>: <span class="hljs-string">"AL"</span>,
+                    <span class="hljs-string">"capital"</span>: <span class="hljs-string">"Montgomery"</span>,
+                    <span class="hljs-string">"most-populous-city"</span>: <span class="hljs-string">"Birmingham"</span>,
+                    <span class="hljs-string">"population"</span>: <span class="hljs-string">"4708708"</span>,
+                    <span class="hljs-string">"square-miles"</span>: <span class="hljs-string">"52423"</span>,
+                    <span class="hljs-string">"time-zone-1"</span>: <span class="hljs-string">"CST (UTC-6)"</span>,
+                    <span class="hljs-string">"time-zone-2"</span>: <span class="hljs-string">"EST (UTC-5)"</span>,
+                    <span class="hljs-string">"dst"</span>: <span class="hljs-string">"YES"</span>
+                }
+            },
+            {
+                <span class="hljs-string">"state"</span>: {
+                    <span class="hljs-string">"name"</span>: <span class="hljs-string">"ALASKA"</span>,
+                    <span class="hljs-string">"abbreviation"</span>: <span class="hljs-string">"AK"</span>,
+                    <span class="hljs-string">"capital"</span>: <span class="hljs-string">"Juneau"</span>,
+                    <span class="hljs-string">"most-populous-city"</span>: <span class="hljs-string">"Anchorage"</span>,
+                    <span class="hljs-string">"population"</span>: <span class="hljs-string">"698473"</span>,
+                    <span class="hljs-string">"square-miles"</span>: <span class="hljs-string">"656425"</span>,
+                    <span class="hljs-string">"time-zone-1"</span>: <span class="hljs-string">"AKST (UTC-09)"</span>,
+                    <span class="hljs-string">"time-zone-2"</span>: <span class="hljs-string">"HST (UTC-10)"</span>,
+                    <span class="hljs-string">"dst"</span>: <span class="hljs-string">"YES"</span>
+                }
+            },
+            {
+                <span class="hljs-string">"state"</span>: {
+                    <span class="hljs-string">"name"</span>: <span class="hljs-string">"ARIZONA"</span>,
+                    <span class="hljs-string">"abbreviation"</span>: <span class="hljs-string">"AZ"</span>,
+                    <span class="hljs-string">"capital"</span>: <span class="hljs-string">"Phoenix"</span>,
+                    <span class="hljs-string">"most-populous-city"</span>: <span class="hljs-string">"Phoenix"</span>,
+                    <span class="hljs-string">"population"</span>: <span class="hljs-string">"6595778"</span>,
+                    <span class="hljs-string">"square-miles"</span>: <span class="hljs-string">"114006"</span>,
+                    <span class="hljs-string">"time-zone-1"</span>: <span class="hljs-string">"MT (UTC-07)"</span>,
+                    <span class="hljs-string">"time-zone-2"</span>: <span class="hljs-string">""</span>,
+                    <span class="hljs-string">"dst"</span>: <span class="hljs-string">"NO"</span>
+                }
+            },
+            {
+                <span class="hljs-string">"state"</span>: {
+                    <span class="hljs-string">"name"</span>: <span class="hljs-string">"ARKANSAS"</span>,
+                    <span class="hljs-string">"abbreviation"</span>: <span class="hljs-string">"AR"</span>,
+                    <span class="hljs-string">"capital"</span>: <span class="hljs-string">"Little Rock"</span>,
+                    <span class="hljs-string">"most-populous-city"</span>: <span class="hljs-string">"Little Rock"</span>,
+                    <span class="hljs-string">"population"</span>: <span class="hljs-string">"2889450"</span>,
+                    <span class="hljs-string">"square-miles"</span>: <span class="hljs-string">"53182"</span>,
+                    <span class="hljs-string">"time-zone-1"</span>: <span class="hljs-string">"CST (UTC-6)"</span>,
+                    <span class="hljs-string">"time-zone-2"</span>: <span class="hljs-string">""</span>,
+                    <span class="hljs-string">"dst"</span>: <span class="hljs-string">"YES"</span>
+                }
+            }
+        ]
+    },
+    {
+        <span class="hljs-string">"name"</span>: <span class="hljs-string">"Younger"</span>,
+        <span class="hljs-string">"states"</span>: [
+            {
+                <span class="hljs-string">"state"</span>: {
+                    <span class="hljs-string">"name"</span>: <span class="hljs-string">"CALIFORNIA"</span>,
+                    <span class="hljs-string">"abbreviation"</span>: <span class="hljs-string">"CA"</span>,
+                    <span class="hljs-string">"capital"</span>: <span class="hljs-string">"Sacramento"</span>,
+                    <span class="hljs-string">"most-populous-city"</span>: <span class="hljs-string">"Los Angeles"</span>,
+                    <span class="hljs-string">"population"</span>: <span class="hljs-string">"36961664"</span>,
+                    <span class="hljs-string">"square-miles"</span>: <span class="hljs-string">"163707"</span>,
+                    <span class="hljs-string">"time-zone-1"</span>: <span class="hljs-string">"PT (UTC-8)"</span>,
+                    <span class="hljs-string">"time-zone-2"</span>: <span class="hljs-string">""</span>,
+                    <span class="hljs-string">"dst"</span>: <span class="hljs-string">"YES"</span>
+                }
+            },
+            {
+                <span class="hljs-string">"state"</span>: {
+                    <span class="hljs-string">"name"</span>: <span class="hljs-string">"COLORADO"</span>,
+                    <span class="hljs-string">"abbreviation"</span>: <span class="hljs-string">"CO"</span>,
+                    <span class="hljs-string">"capital"</span>: <span class="hljs-string">"Denver"</span>,
+                    <span class="hljs-string">"most-populous-city"</span>: <span class="hljs-string">"Denver"</span>,
+                    <span class="hljs-string">"population"</span>: <span class="hljs-string">"5024748"</span>,
+                    <span class="hljs-string">"square-miles"</span>: <span class="hljs-string">"104100"</span>,
+                    <span class="hljs-string">"time-zone-1"</span>: <span class="hljs-string">"MT (UTC-07)"</span>,
+                    <span class="hljs-string">"time-zone-2"</span>: <span class="hljs-string">""</span>,
+                    <span class="hljs-string">"dst"</span>: <span class="hljs-string">"YES"</span>
+                }
+            },
+            {
+                <span class="hljs-string">"state"</span>: {
+                    <span class="hljs-string">"name"</span>: <span class="hljs-string">"CONNECTICUT"</span>,
+                    <span class="hljs-string">"abbreviation"</span>: <span class="hljs-string">"CT"</span>,
+                    <span class="hljs-string">"capital"</span>: <span class="hljs-string">"Hartford"</span>,
+                    <span class="hljs-string">"most-populous-city"</span>: <span class="hljs-string">"Bridgeport"</span>,
+                    <span class="hljs-string">"population"</span>: <span class="hljs-string">"3518288"</span>,
+                    <span class="hljs-string">"square-miles"</span>: <span class="hljs-string">"5544"</span>,
+                    <span class="hljs-string">"time-zone-1"</span>: <span class="hljs-string">"EST (UTC-5)"</span>,
+                    <span class="hljs-string">"time-zone-2"</span>: <span class="hljs-string">""</span>,
+                    <span class="hljs-string">"dst"</span>: <span class="hljs-string">"YES"</span>
+                }
+            },
+            {
+                <span class="hljs-string">"state"</span>: {
+                    <span class="hljs-string">"name"</span>: <span class="hljs-string">"DELAWARE"</span>,
+                    <span class="hljs-string">"abbreviation"</span>: <span class="hljs-string">"DE"</span>,
+                    <span class="hljs-string">"capital"</span>: <span class="hljs-string">"Dover"</span>,
+                    <span class="hljs-string">"most-populous-city"</span>: <span class="hljs-string">"Wilmington"</span>,
+                    <span class="hljs-string">"population"</span>: <span class="hljs-string">"885122"</span>,
+                    <span class="hljs-string">"square-miles"</span>: <span class="hljs-string">"1954"</span>,
+                    <span class="hljs-string">"time-zone-1"</span>: <span class="hljs-string">"EST (UTC-5)"</span>,
+                    <span class="hljs-string">"time-zone-2"</span>: <span class="hljs-string">""</span>,
+                    <span class="hljs-string">"dst"</span>: <span class="hljs-string">"YES"</span>
+                }
+            }
+        ]
+    }
+]
+ ;
+</code></pre><p>Both flatten (mergeAll) and map the data to a set of new objects containing the state name and its capital. I needed two calls to map.</p>
+<p><img src="https://drive.google.com/uc?view=export&amp;id=0B25UTAlOfPRGVDc2cnhoLUpqNXM" alt="Funky"></p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Place your work in your repository in the folder specified above. When you submit the assignment, include a link to your repository or a URL for your repository, or something that will get me to your repository.</p>
+</div></body></html>

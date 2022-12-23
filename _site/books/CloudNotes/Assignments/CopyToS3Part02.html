@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>CopyToS3Part02</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>CopyToS3Part02</h1><p>Welcome to CopyToS3Part02</p><ul><!--TOC_Start--><li><a href="#the-primary-use-case">The Primary Use Case</a></li>
+<li><a href="#interface-details">Interface Details</a></li>
+<li><a href="#strategy">Strategy</a></li>
+<li><a href="#scenario-01">Scenario 01</a></li>
+<li><a href="#scenario-02">Scenario 02</a></li>
+<li><a href="#week-10-assignment">Week 10 Assignment</a></li>
+<li><a href="#turn-it-in">Turn It In</a></li><!--TOC_End--></ul></div><div class="container"><p>#Copy To S3 Part 02</p>
+<p>Here are the steps we will accomplish:</p>
+<ul>
+<li>Convert <strong>AwsBasicS3</strong> so that it stores all its <strong>config</strong> files and markdown files in MongoDb.</li>
+<li>Convert the interface so that it can be run from a mobile device. </li>
+<li>Create some units tests</li>
+<li>Move at least some of the markdown files we create into a database</li>
+</ul>
+<p>Under consideration and/or Extra credit:</p>
+<ul>
+<li>Provide the ability to save one folders worth of files to the database under a given name, and replace them with another set of files with a different name.</li>
+<li>Use a tool like <a href="http://code.google.com/p/pagedown/">page down</a> to integrate editing markdown on your mobile device.</li>
+</ul>
+<p>Most of this work will be on my end, but we should also find ways to add:</p>
+<ul>
+<li>PubSub</li>
+<li>RequireJs</li>
+</ul>
+<p>Is this the final? Yes, probably, but we will take it in pieces. We have a few weeks to divide the project up into discreet tasks, as described below. You will be grade on each task as weekly homeworks, and then presumably the finished product will be the final. We can negotiate as to what is the best, and most reasonable final. If I&#39;m asking too much, we can find a reasonable middle ground.</p>
+<a class="anchor" id="the-primary-use-case"></a>
+<h2>The Primary Use Case</h2>
+<p>You are sitting in your bedroom with your phone and realize you want to update part of your web site. Using your phone, you make a change to a markdown file, then push a button and see the update published on S3. We won&#39;t be able to get all that working this quarter, but that is where we are headed.</p>
+<a class="anchor" id="interface-details"></a>
+<h2>Interface Details</h2>
+<p>The interface should probably be written in either <a href="http://getbootstrap.com/">bootstrap</a> or <a href="http://jquerymobile.com/">jqueryMobile</a>. The keypoint is that it should be navigable on a phone, not just on a tablet or PC. (If the best you can do is make it work on a tablet, then that won&#39;t be the end of the world, but go for the phone if you want the best grade!)</p>
+<p>You should include:</p>
+<ul>
+<li>The ability to edit the <strong>config</strong> files on your phone</li>
+<li>One page for configuring <strong>MarkdownTransform</strong></li>
+<li>A single page that you can use to configure both <strong>CopyToS3</strong> (aka walkdirs) and <strong>BucketLists</strong>.</li>
+<li>A page for running <strong>MarkdownTransform</strong>, <strong>CopyToS3</strong> and <strong>BucketLists</strong></li>
+<li>A way to view the output</li>
+<li>Links to the code running on both your server and on S3</li>
+</ul>
+<a class="anchor" id="strategy"></a>
+<h2>Strategy</h2>
+<p>All of the work that AwsBasicS3 does is performed on a server. You will only be controlling the action from a mobile device. It would be nice, however, to store some of the files that we use in a database. Let&#39;s think for a moment about what that involves.</p>
+<a class="anchor" id="scenario-01"></a>
+<h3>Scenario 01</h3>
+<p>At first, we can run variations on the current program.</p>
+<ul>
+<li>We create markdown files on StackEdit and save them to Google Drive or Drop Box</li>
+<li>The Google Drive or Drop Box app is running locally, so we have a local copy of the markdown files as soon as we create or edit them.</li>
+<li>We transform the markdown to HTML and copy it to a local web site. We can use Apache, IIS, or the <a href="https://github.com/cloudhead/node-static">NodeStatic</a> sample found in <strong>/JsObjects/JavaScript/NodeCode/StaticSite</strong> to set up the web site. </li>
+<li>Set up a <strong>Options.config</strong> to copy the files to S3 and perform the copy.</li>
+</ul>
+<a class="anchor" id="scenario-02"></a>
+<h3>Scenario 02</h3>
+<p>However, I&#39;d ultimately like to be able to do something at least vaguely like this:</p>
+<ol>
+<li>Have a single folder where you can store your markdown files.</li>
+<li>Teach AwsBasicS3 to copy all the markdown files from that folder to your database and save them under a specific name and a     set of keyworks. For instance, all the files from <strong>CloudNotes/Prog272</strong>
+could be stored in the database under that name. </li>
+<li>When we want to edit them, enter a command to send to our folder, which is part of Google Drive or DropBox. </li>
+<li>Then we edit the markdown in StackEdit.</li>
+<li>When they look right, we transform them to HTML, and copy to them to S3. </li>
+<li>Finally, the updated markdown files are copied back into the database.</li>
+</ol>
+<p>The above, however, is probably too ambitious. It might be enough to simply copy the markdown files from any given folder into the database.</p>
+<a class="anchor" id="week-10-assignment"></a>
+<h2>Week 10 Assignment</h2>
+<ul>
+<li>Store the config files the database</li>
+<li>Provide a means to edit them in <strong>AwsBasicS3</strong>.</li>
+</ul>
+<p>If you have extra time, think about strategies for performing the following task:</p>
+<ul>
+<li>Copy all the files your create in StackEdit and save to DropBox or Google Drive to the database.</li>
+</ul>
+<p>The last step is still assuming scenario 1. Suppose your saving Poems. In StackEdit you have create created two folders: <strong>Shakespeare</strong>, <strong>Shelley</strong>. Your program copy any files found either of those folders to your database. Use one of our existing programs such as <strong>MongoTalk</strong> to display the files.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn It In</h2>
+<p>Place your code in a folder called Week10-CopyToS302 and place it in your repository. Submit the URL of that folder when you turn in the assignment. Make sure the name in your <strong>.project</strong> file for Eclipse includes your last name: **Week10_CopyToS3_LastName, where LastName is your last name.</p>
+<blockquote>
+<p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p>
+</blockquote>
+</div></body></html>

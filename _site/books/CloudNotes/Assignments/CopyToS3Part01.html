@@ -1,0 +1,182 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>CopyToS3Part01</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>CopyToS3Part01</h1><p>Welcome to CopyToS3Part01</p><ul><!--TOC_Start--><li><a href="#set-up-config-file">Set up config file</a></li>
+<li><a href="#set-up">Set Up</a></li>
+<li><a href="#set-up-lamp">Set Up Lamp</a></li>
+<li><a href="#config-json">Config.json</a></li>
+<li><a href="#set-up-the-static-site">Set up the Static Site</a></li>
+<li><a href="#templates">Templates</a></li>
+<li><a href="#copying-files-on-linux">Copying Files on Linux</a></li>
+<li><a href="#caveats-and-limitations">Caveats and Limitations</a></li>
+<li><a href="#turn-it-in">Turn it In</a></li>
+<li><a href="#the-deploy-feature">The Deploy Feature</a></li>
+<li><a href="#additional-notes">Additional Notes</a></li><!--TOC_End--></ul></div><div class="container"><p>#Copy to S3 Part 01</p>
+<p>This assignment helps you get up to speed with AwsBasicS3. This program aids content creators who produce a lot of HTML files. </p>
+<p>To get started is to watch the now outdated intro video:</p>
+<ul>
+<li><a href="http://youtu.be/EF0kHY8mYXg">AwsBasic Intro</a></li>
+</ul>
+<iframe width="640" height="360" src="//www.youtube.com/embed/EF0kHY8mYXg?list=UUPcZjdLfAkdauW2fJzz1Mcw" frameborder="0" allowfullscreen></iframe>
+
+<p>Since the video, I&#39;ve integrated <strong>BuildAll.py</strong> into the project. It is now called <strong>MarkdownTransform.py</strong>, and you should never have to open it. Instead, you edit the contents of the <strong>MarkdownTransformConfig.json</strong> file. The process is the same as that described in the video, but you are now transforming markdown files into HTML, and in the process copying them from one folder to another. This is the same thing that <strong>BuildAll.py</strong> did, only now the file hopefully has a better name and is easier to use.</p>
+<a class="anchor" id="set-up-config-file"></a>
+<h2>Set up config file</h2>
+<pre><code>{ <span class="hljs-attr">"accessKeyId"</span>: <span class="hljs-string">"YOUR KEY HERE"</span>, <span class="hljs-attr">"secretAccessKey"</span>: <span class="hljs-string">"YOUR KEY HERE"</span>, <span class="hljs-attr">"region"</span>: <span class="hljs-string">"us-east-1"</span> }
+</code></pre><p>if you are using us-east-1 then your bucket should be created in US STANDARD. I know that works. If you want to try creating a bucket in Oregon then set it to us-west-2.</p>
+<a class="anchor" id="set-up"></a>
+<h2>Set Up</h2>
+<p>You need to be sure you have the environmonent variables JSOBJECTS and PYTHON path set up correctly. I have the following at the bottom of my .bashrc file:</p>
+<pre><code><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">JSOBJECTS</span>=<span class="hljs-variable">$HOME</span>/Git/JsObjects
+<span class="hljs-builtin-name">export</span> <span class="hljs-attribute">PYTHONPATH</span>=<span class="hljs-variable">${PYTHONPATH}</span>:$JSOBJECTS/Python/:$JSOBJECTS/Python/Utils/:$JSOBJECTS/Python/RegEx/:
+</code></pre><p>You may need to tweak the first of these two lines slightly to fit the set up on your system. </p>
+<ul>
+<li><a href="http://youtu.be/v4DFrhBHuCU">See the video</a></li>
+</ul>
+<p>After making the video I removed the final slash from JSOBJECTS environment variable.</p>
+<p>On Windows I set up my enviornment variables with this batch file that I call <strong>SetEnvionmentVariables.bat:</strong></p>
+<pre><code>@<span class="hljs-built_in">ECHO</span> OFF
+
+<span class="hljs-built_in">ECHO</span> =========================
+SetX GITHUB <span class="hljs-variable">%USERPROFILE%</span>\Documents\GitHub
+<span class="hljs-comment">REM Setx GITHUB C:\Src\Git</span>
+SetX JSOBJECTS <span class="hljs-variable">%GITHUB%</span>\JsObjects
+
+<span class="hljs-built_in">set</span> BASE=<span class="hljs-variable">%JSOBJECTS%</span>\Python
+SetX PYTHONPATH <span class="hljs-variable">%BASE%</span>;<span class="hljs-variable">%BASE%</span>\Utils;<span class="hljs-variable">%BASE%</span>\RegEx;<span class="hljs-variable">%BASE%</span>
+<span class="hljs-built_in">ECHO</span> =========================
+<span class="hljs-built_in">ECHO</span> GITHUB = <span class="hljs-variable">%GITHUB%</span>
+<span class="hljs-built_in">ECHO</span> JSOBJECTS = <span class="hljs-variable">%JSOBJECTS%</span>
+<span class="hljs-built_in">ECHO</span> PYTHONPATH = <span class="hljs-variable">%PYTHONPATH%</span>
+<span class="hljs-built_in">ECHO</span> =========================
+<span class="hljs-built_in">ECHO</span> You will need to restart this command window 
+<span class="hljs-built_in">ECHO</span> before these variables take effect.
+<span class="hljs-built_in">ECHO</span> =========================
+</code></pre><p>I maintain <strong>SetEnvironmentVariables</strong> in <a href="https://github.com/charliecalvert/JsObjects/blob/master/Utilities/InstallScripts/SetEnvironmentVariables.bat">JsObjects</a>.</p>
+<a class="anchor" id="set-up-lamp"></a>
+<h2>Set Up Lamp</h2>
+<p>LAMP = Linux, Apache, MySql and Python/Php/Perl</p>
+<ul>
+<li><p><a href="http://www.elvenware.com/charlie/development/database/mysql/MySql.html#installOnLinux">Go here</a></p>
+<p>  sudo apt-get install tasksel
+  sudo tasksel install lamp-server</p>
+</li>
+</ul>
+<a class="anchor" id="config-json"></a>
+<h2>Config.json</h2>
+<p>You need to get the access keys from the <a href="https://console.aws.amazon.com/iam/home?#security_credential">AWS security page</a> and put them in <strong>config.json</strong>:</p>
+<pre><code>{ <span class="hljs-attr">"accessKeyId"</span>: <span class="hljs-string">"ACCESS KEY HERE"</span>, <span class="hljs-attr">"secretAccessKey"</span>: <span class="hljs-string">"SECRET KEY HERE"</span>, <span class="hljs-attr">"region"</span>: <span class="hljs-string">"us-east-1"</span> }
+</code></pre><p>You need to replace the strings <strong>ACCESS KEY HERE</strong> and <strong>SECRET KEY HERE</strong> with your access and secret keys from AWS.</p>
+<p>Your access key will look like this: <strong>AKIAIOSFODNN7EXAMPLE</strong></p>
+<p>Your secret key will look like this: <strong>wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY</strong></p>
+<p>More information is available in the <a href="http://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html">AWS security credential docs</a>: </p>
+<a class="anchor" id="set-up-the-static-site"></a>
+<h2>Set up the Static Site</h2>
+<p>The files you need are here:</p>
+<ul>
+<li>JsObjects JavaScript NodeCode StaticSite</li>
+</ul>
+<a class="anchor" id="templates"></a>
+<h2>Templates</h2>
+<ul>
+<li>The html pieces (start, nav, etc)</li>
+<li><p>The bootstrap files and elvenware log</p>
+</li>
+<li><p>JsObjects Utilities Templates</p>
+</li>
+<li>You need the Images, Styles and Scripts folders.</li>
+</ul>
+<a class="anchor" id="copying-files-on-linux"></a>
+<h2>Copying Files on Linux</h2>
+<p>This programs works with two sites:</p>
+<ul>
+<li>A staging site.</li>
+<li>The release site on S3</li>
+</ul>
+<p>On Linux, I typically use <strong>/var/www/bc</strong> as my staging site. Then I access it by typing the following in the address bar of my browser:</p>
+<pre><code><span class="hljs-symbol">http:</span><span class="hljs-comment">//localhost/bc</span>
+</code></pre><p>For security reasons, by default, you do not have rights to write to <strong>/var/www/bc</strong>. Since we talking about a staging site, and not a release site, there is usually little reason to be overly concerned about security. As a result, I simply give myself full rights to copy files to the site:</p>
+<pre><code>sudo chown <span class="hljs-string">charlie:</span>charlie <span class="hljs-regexp">/var/</span>www/bc
+</code></pre><p>This is a more flexible way to say the same thing:</p>
+<pre><code>sudo chown <span class="hljs-variable">$USER</span>:<span class="hljs-variable">$USER</span> <span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/bc</span>
+</code></pre><p>Before running <strong>chown</strong> we can use the list (ls) command to see that <strong>/var/www/bc</strong> is owned by root:</p>
+<pre><code>charlie@mongovbox:~$ ls -l /var/www/
+total 12
+drwxr-xr-x <span class="hljs-number"> 5 </span>root    root   <span class="hljs-number"> 4096 </span>Mar<span class="hljs-number"> 10 </span>14:39 bc
+-rw-r--r-- <span class="hljs-number"> 1 </span>root    root    <span class="hljs-number"> 177 </span>Feb<span class="hljs-number"> 14 </span>23:10 index.html
+</code></pre><p>Next we run <strong>chown</strong> and check the results with the list command:</p>
+<pre><code>charlie<span class="hljs-variable">@mongovbox</span><span class="hljs-symbol">:~</span><span class="hljs-variable">$ </span>sudo chown <span class="hljs-variable">$USER</span><span class="hljs-symbol">:</span><span class="hljs-variable">$USER</span> /var/www/bc
+charlie<span class="hljs-variable">@mongovbox</span><span class="hljs-symbol">:~</span><span class="hljs-variable">$ </span>ls -l /var/www/
+total <span class="hljs-number">12</span>
+drwxr-xr-x <span class="hljs-number">5</span> charlie charlie <span class="hljs-number">4096</span> Mar <span class="hljs-number">10</span> <span class="hljs-number">14</span><span class="hljs-symbol">:</span><span class="hljs-number">39</span> bc
+-rw-r--r-- <span class="hljs-number">1</span> root    root     <span class="hljs-number">177</span> Feb <span class="hljs-number">14</span> <span class="hljs-number">23</span><span class="hljs-symbol">:</span><span class="hljs-number">10</span> index.html
+</code></pre><a class="anchor" id="caveats-and-limitations"></a>
+<h2>Caveats and Limitations</h2>
+<p>This program can only copy folders one level deep. This means you can create a structure like this on S3:</p>
+<pre><code>/foo.mybuckter.com/Folder01/SubFolder01%0A.........................../SubFolder02%0A.........................../SubFolder03%0A..etc
+</code></pre><p>You cannot, however, create a structure like this:</p>
+<pre><code>/foo<span class="hljs-selector-class">.mybuckter</span><span class="hljs-selector-class">.com</span>/Folder01/Folder02/Folder03
+</code></pre><p>It is, of course, possible, to create a bucket that looks like this, but you will have to run the program multiple times to do it:</p>
+<pre><code>/foo.mybuckter.com/Folder01/SubFolder02%0A.........................../SubFolder02%0A/foo.mybuckter.com/Folder02/SubFolder01%0A.........................../SubFolder02%0A/foo.mybuckter.com/Folder03/SubFolder01%0Aetc
+</code></pre><p>Since there is a command line version of this program, it will (at least eventually) be possible to automate as single command the act of copying multiple sets of folders to S3, as in the case above.</p>
+<p>The folder that you are copying from your local drive to S3 should have this structure:</p>
+<pre><code>Folder01/SubFolder02%0A......../SubFolder02%0Aetc
+</code></pre><p>It cannot have this structure:</p>
+<pre><code>Folder01<span class="hljs-regexp">/SubFolder02/</span>SubFolder03
+</code></pre><p>Yes, this is a limitation. It is one that can be fixed, but I&#39;m not going to fix it today. And frankly, web sites that go over three folders deep are hard to maintain, and hard to navigate, so there is a bright side to this limitation.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it In</h2>
+<p>In this assignment, all you need to do is get the program up and running. This means:</p>
+<ul>
+<li>Edit five documents (Shekespeare Sonnets 1-5 would do) in StackEdit and link them to DropBox and/or Google Drive</li>
+<li>Send a screen shot of the StackEdit folder on the navigation bar showing that you five documents are linked to Google Drive and/or DropBox</li>
+</ul>
+<p>In this screen shot, you can see that <strong>CopyToS3Part01.md</strong> is saved to Google Drive and <strong>Week05.md</strong> is saved to Google Drive. Another file is saved to both GoogleDrive and DropBox, and has a link back to GitHub:</p>
+<p><img src="http://www.elvenware.com/charlie/books/CloudNotes/Images/AwsBasicS301.png" alt="Drive"></p>
+<p>Also include:</p>
+<ul>
+<li>A screen shot of your files on S3.</li>
+<li>A link to your files on S3</li>
+<li>A screen shot of <strong>AwsBasicS3</strong> running in your browser</li>
+<li>A screen shot of the command line output <strong>AwsBasicS3</strong> creates when you send files to S3.</li>
+<li>Your copies of <strong>MarkdownTransformConfig.json</strong> and <strong>Options.json</strong></li>
+</ul>
+<a class="anchor" id="the-deploy-feature"></a>
+<h2>The Deploy Feature</h2>
+<p>This program is developed in <strong>JsObjects</strong>, and that repository gets updated fairly frequently. This means that your copies of <strong>MarkdownTransformConfig.json</strong> and <strong>Options.json</strong> can get overwritten when you perform a <strong>git pull</strong> on <strong>JsObjects</strong>. It is also possible that I will break the code when updating it.</p>
+<p>As a result, I have created a way that you can <em>deploy</em> the application to another place on your drive. To get started, be sure you have installed <strong>grunt-cli</strong> with this command:</p>
+<pre><code>sudo npm install -g grunt-<span class="hljs-keyword">cli</span>
+</code></pre><p>On Windows you should not include <strong>sudo</strong>.</p>
+<p>Now go to the root folder of the <strong>AwsBasicS3 project</strong> and type:</p>
+<pre><code><span class="hljs-attribute">grunt deploy</span>
+</code></pre><p>This should create a filder called <strong>Deploy</strong> in the root of the project. It should contain all the files you need to run the program. Copy it to well known location and run <strong>npm install</strong>. Now you can run <strong>AwsBasicS3</strong> without concerns about updating <strong>JsObjects</strong>. When upgrades to <strong>AwsBasicS3</strong> occur, I would suggest running <strong>grunt deploy</strong> again and copying the new <strong>Deploy</strong> folder to a second location, so that you don&#39;t overwrite your working copy. When you are convinced that the new copy works, then you can save your config files if necessary and delete your older copy of the program.</p>
+<a class="anchor" id="additional-notes"></a>
+<h2>Additional Notes</h2>
+<p>The AwsBasicS3 program uses node. You typically start it like this:</p>
+<pre><code><span class="hljs-keyword">node</span> <span class="hljs-title">app</span>.js
+</code></pre><p>Then open this address in your browser:</p>
+<ul>
+<li><a href="http://localhost:30025/">http://localhost:30025/</a></li>
+</ul>
+<p>Of course, this won&#39;t work unless node is properly installed. If node is properly installed you should be able to type the following:</p>
+<pre><code><span class="hljs-keyword">node</span> <span class="hljs-title">--version</span>
+</code></pre><p>And see a response similar to this.</p>
+<pre><code><span class="hljs-selector-tag">v0</span><span class="hljs-selector-class">.10</span><span class="hljs-selector-class">.26</span>
+</code></pre><p>If you have not yet installed node on Linux, follow these instructions:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/NodeJs.html#node">Install Node on Linux</a></li>
+</ul>
+<p>You will find this code, which you must right click and copy, line by line, into the Linux command prompt:</p>
+<pre><code>sudo apt-get install python-software-properties python g++ make
+sudo<span class="hljs-built_in"> add-apt-repository </span>ppa:chris-lea/node.js
+sudo apt-get update
+sudo apt-get install nodejs
+</code></pre><p>Now pull the latest content from JsObjects:</p>
+<pre><code><span class="hljs-attribute">git pull</span>
+</code></pre><p>And finally, navigate to the AwsBasicS3 directory, type npm install, and then type <strong>node app.js</strong>. Now open your browser and navigate to: <a href="http://localhost:30025">http://localhost:30025</a>. </p>
+<p>The adventuresome could also play with the command line version:</p>
+<pre><code>charlie<span class="hljs-variable">@bcuservb</span><span class="hljs-symbol">:~/Git/JsObjects/JavaScript/NodeCode/AwsBasicS3</span><span class="hljs-variable">$ </span>node Server.js 
+-l listBuckets
+-u walkDirs
+</code></pre><blockquote>
+<p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p>
+</blockquote>
+</div></body></html>

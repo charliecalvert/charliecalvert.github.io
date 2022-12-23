@@ -1,0 +1,324 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>WebCraftsMoreReact</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>WebCraftsMoreReact</h1><p>Welcome to WebCraftsMoreReact</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#git-ignore">Git Ignore</a></li>
+<li><a href="#bugs">Bugs</a></li>
+<li><a href="#config-wrong">Bugs: The Case of the Wrong Config File</a></li>
+<li><a href="#missing-markdown">Bug: The Case of the Missing Markdown</a></li>
+<li><a href="#bug-the-case-of-the-missing-highlight">Bug: The Case of the Missing Highlight</a></li>
+<li><a href="#the-react-makehtml-files">The React MakeHtml files</a></li>
+<li><a href="#two-dropdowns">Two DropDowns</a></li>
+<li><a href="#details">Details</a></li>
+<li><a href="#generate-html">Generate HTML</a></li>
+<li><a href="#generate-images">Generate Images</a></li>
+<li><a href="#arrow-functions-in-react">Arrow Functions in React</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Additional hints on getting WebCraft converted to React.</p>
+<a class="anchor" id="git-ignore"></a>
+<h2>Git Ignore</h2>
+<p>If you haven&#39;t done so already, add add two items to your <strong>.gitignore file</strong>:</p>
+<pre>bundle.js
+bundle.js.map
+</pre>
+<p>These can both be big files, and care easily reproduced from existing source, so there is no need to check them in. If you are checking them in at this time, remove them with code like these:</p>
+<pre>git rm public/javascripts/bundle.js
+git rm public/javascripts/bundle.js.map
+</pre>
+<a class="anchor" id="bugs"></a>
+<h2>Bugs</h2>
+<p>There are two bugs in <strong>isit-site-tools</strong> that need to be fixed. The simplest way to get the fix is to merge in the code from the upstream repository that you forked earlier. I ran the following from the root of <strong>isit-site-tools</strong>:</p>
+<pre><code>git pull git<span class="hljs-meta">@github</span>.<span class="hljs-string">com:</span>charliecalvert/isit-site-tools.git
+</code></pre><p>Our changes are preserved in this process. In other words, it will not cause the <strong>require</strong> statements that we inserted with the <strong>find</strong> and <strong>sed</strong> commands to be changed back to their original values.</p>
+<p><strong>NOTE</strong> <em>See point 5 in <a href="https://help.github.com/articles/syncing-a-fork/">this documentation</a> for confirmation that your changes will not be lost.</em></p>
+<p>Please also see this: which would probably simplify the process, but I have not tried it yet:</p>
+<ul>
+<li><a href="https://gist.github.com/CristinaSolana/1885435">https://gist.github.com/CristinaSolana/1885435</a></li>
+</ul>
+<p>Below I describe the changes in detail, but you should not actually have to do anything, since the merge described above made the necessary changes.</p>
+<a class="anchor" id="config-wrong"></a>
+<h2>Bugs: The Case of the Wrong Config File</h2>
+<p>Please read the section called <a href="#bugs">Bugs</a> before reading more.</p>
+<p><strong>Isit-Site-Tools</strong> has a file a bug in it. It is currently found here:</p>
+<p>  /markdown-to-html/runners/sample-runner.js</p>
+<p>The file is meant to show how to use <strong>isit-site-tools</strong>. Unfortunately, I&#39;m currently using it as an entry point into the <strong>isit-site-tools</strong> library.</p>
+<p><strong>isit-site-tools</strong> can be configured to use either the local version of the configuration file, or a remote version. By default, it uses the local version. This is not what we want in this case. So we need to explicitly ask it to use the remote version. Here is the fix, which involves passing in a variable called <strong>useLocalConfig</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">runConfig</span>(<span class="hljs-params">user, siteDirsOffset, useLocalConfig</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve, reject</span>) </span>{
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> useLocalConfig !== <span class="hljs-string">'undefined'</span>) {
+            config.useLocalConfig = useLocalConfig;
+        }
+        config.loadAsync()
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">configuration</span>) </span>{
+                createMarkdown(configuration[user], siteDirsOffset)
+                    .then(resolve);
+            })
+            .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+                <span class="hljs-keyword">throw</span> err
+            })
+    });
+}
+</code></pre>
+<p>In <strong>isit-web-crafts</strong> the method is called from here:</p>
+<pre><code>routes/makers.js
+</code></pre><p>The new call looks like this, where the important change is in the third parameter to <strong>walkRunner</strong>:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/walk'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response)</span> </span>{    
+    walkRunner(<span class="hljs-string">'calvert'</span>, request.query.siteDirsIndex, <span class="hljs-keyword">false</span>)
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(report)</span> </span>{
+            response.send(report);
+        })
+        .<span class="hljs-keyword">catch</span>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span> </span>{
+            <span class="hljs-keyword">throw</span> err;
+        });
+});
+</code></pre>
+<a class="anchor" id="missing-markdown"></a>
+<h2>Bug: The Case of the Missing Markdown</h2>
+<p>Please read the section called <a href="#bugs">Bugs</a> before reading more.</p>
+<p>The <strong>WebCrafts</strong> program looks in the directory it is configered to look in for Markdown files. The directory is specified in the <strong>ElvenConfig.js</strong> file. If it finds Markdown files, it converts them to HTML. If it finds a directory contains no Markdown files that have changed since the <strong>most-recent-date</strong> sepecified in the config file, then it blows up.</p>
+<p>The problem is in a file called:</p>
+<pre><code>markdown-<span class="hljs-keyword">to</span>-html/<span class="hljs-keyword">private</span>/walker.js
+</code></pre><p>Here is the fix to the <strong>walker.makePage</strong> from that file:</p>
+<pre><code class="lang-javascript">walker.makePage = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">details, callback</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+
+    details.callback = callback;
+    makePage.init();
+
+    <span class="hljs-comment">// if we found nothing then return nothing</span>
+    <span class="hljs-keyword">if</span> (details.directories.length === <span class="hljs-number">0</span>) {
+        callback([],[])
+    } <span class="hljs-keyword">else</span> {
+        details.directories.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">directory, index</span>) </span>{
+            makePage.run(directory, index, details);
+        });
+    }
+};
+</code></pre>
+<p>The key change is the line that looks for an empty directories property and return to emtpy arrays if it is found. Otherwise, the <strong>details.directories</strong> object is iterated with <strong>forEach</strong> and the markdown found in the directories is converted to HTML. The code called by <strong>makePage.run</strong> note only performs the conversion, but also returns an object with detailed information about which files were converted. That object is then passed to our client so that the user can see what the the program did.</p>
+<a class="anchor" id="bug-the-case-of-the-missing-highlight"></a>
+<h2>Bug: The Case of the Missing Highlight</h2>
+<p>Please read the section called <a href="#bugs">Bugs</a> before reading more. In short, this is done automaticlly, just read it.</p>
+<p>This was the big change that has been holding me up from using this version of the app.</p>
+<p>We have better support now for highlighting and perhaps for bootswatch. The changes are to two methods to a file called <strong>create-markdown</strong> in <strong>markdown-to-html/private</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">function</span> <span class="hljs-string">createDetails(report,</span> <span class="hljs-string">directoryToWalk,</span> <span class="hljs-string">destinationDir,</span> <span class="hljs-string">highlight,</span> <span class="hljs-string">bootswatch)</span> <span class="hljs-string">{</span>
+    <span class="hljs-string">return</span> <span class="hljs-string">{</span>
+<span class="hljs-attr">        report:</span> <span class="hljs-string">report,</span>
+<span class="hljs-attr">        bootswatch:</span> <span class="hljs-string">bootswatch,</span>     <span class="hljs-string">&lt;===</span> <span class="hljs-string">HERE</span>
+<span class="hljs-attr">        directoryToWalk:</span> <span class="hljs-string">directoryToWalk,</span>
+<span class="hljs-attr">        destinationDir:</span> <span class="hljs-string">destinationDir,</span>
+<span class="hljs-attr">        directories:</span> <span class="hljs-string">walkCore.getDirectories(report),</span>
+<span class="hljs-attr">        highlight:</span> <span class="hljs-string">highlight,</span>       <span class="hljs-string">&lt;===</span> <span class="hljs-string">HERE</span>
+<span class="hljs-attr">        testRun:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-string">};</span>
+<span class="hljs-string">}</span>
+</code></pre>
+<p>The changes are in the header for the method, and in the two places called out in the code.</p>
+<p>Also this method was changed:</p>
+<pre><code class="lang-javascript"><span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">configSummary, directoryIndex</span>) </span>{
+<span class="hljs-meta">'use strict'</span>;
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve, reject</span>) </span>{
+      elfLog.setLevel(elfLog.logLevelNano);
+      <span class="hljs-keyword">const</span> directoryToWalk = configSummary[<span class="hljs-string">'base-dir'</span>] + configSummary[<span class="hljs-string">'site-dirs'</span>][directoryIndex];
+      <span class="hljs-keyword">const</span> destinationDir = configSummary[<span class="hljs-string">'destination-dirs'</span>][directoryIndex];
+      <span class="hljs-keyword">const</span> mostRecentDate = configSummary[<span class="hljs-string">'most-recent-date'</span>];
+      <span class="hljs-keyword">const</span> bootswatch = configSummary.bootswatch;  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">===</span> <span class="hljs-attr">HERE</span>
+      <span class="hljs-attr">const</span> <span class="hljs-attr">highlight</span> = <span class="hljs-string">configSummary[</span>'<span class="hljs-attr">highlight</span>']; &lt;=== <span class="hljs-string">HERE</span>
+      <span class="hljs-attr">fs.access</span>(<span class="hljs-attr">directoryToWalk</span>, <span class="hljs-attr">fs.F_OK</span> | <span class="hljs-attr">fs.R_OK</span>, <span class="hljs-attr">function</span>(<span class="hljs-attr">err</span>) {
+          <span class="hljs-attr">if</span> (<span class="hljs-attr">err</span>) {
+              <span class="hljs-attr">reject</span>(<span class="hljs-attr">err</span>);
+          } <span class="hljs-attr">else</span> {
+              <span class="hljs-attr">elfLog.details</span>('<span class="hljs-attr">Folder</span> <span class="hljs-attr">to</span> <span class="hljs-attr">Walk:</span> ' + <span class="hljs-attr">directoryToWalk</span>);
+
+              <span class="hljs-attr">walkCore.buildFileReport</span>(<span class="hljs-attr">directoryToWalk</span>, '<span class="hljs-attr">.md</span>', <span class="hljs-attr">mostRecentDate</span>, <span class="hljs-attr">function</span>(<span class="hljs-attr">report</span>) {
+                  <span class="hljs-attr">elfLog.nano</span>('<span class="hljs-attr">In</span> <span class="hljs-attr">buildFileReport</span> <span class="hljs-attr">callback</span>');
+                  <span class="hljs-attr">const</span> <span class="hljs-attr">details</span> = <span class="hljs-string">createDetails(report,</span> <span class="hljs-attr">directoryToWalk</span>,
+                       <span class="hljs-attr">destinationDir</span>, <span class="hljs-attr">highlight</span>, <span class="hljs-attr">bootswatch</span>); &lt;=== <span class="hljs-string">HERE</span>
+                  <span class="hljs-attr">pageMaker</span>(<span class="hljs-attr">details</span>, <span class="hljs-attr">configSummary</span>, <span class="hljs-attr">destinationDir</span>)
+                      <span class="hljs-attr">.then</span>(<span class="hljs-attr">resolve</span>)
+                      <span class="hljs-attr">.catch</span>(<span class="hljs-attr">reject</span>)
+              });
+          }
+      });
+  });
+};</span></span>
+</code></pre>
+<a class="anchor" id="the-react-makehtml-files"></a>
+<h2>The React MakeHtml files</h2>
+<p>There are three:</p>
+<ul>
+<li>MakeHtml.js</li>
+<li>MakeHtmlDropDowns</li>
+<li>MakeHtmlHomeButton</li>
+</ul>
+<a class="anchor" id="two-dropdowns"></a>
+<h2>Two DropDowns</h2>
+<p>Right now we are just trying to create a relatively simple effect. We want:</p>
+<ul>
+<li>Two DropDowns<ul>
+<li>The first has the <strong>siteDirs</strong> from the <strong>ElvenConfig.json</strong> file.</li>
+<li>The second has the <strong>destinationDirs</strong> from the config file.</li>
+</ul>
+</li>
+<li>If you select the one or the other, the matching item appears automatically.</li>
+<li>If you click a <strong>RaisedButton</strong> labeled <strong>Generate HTML</strong> then the markdown files in the <strong>siteDirs</strong> directory should be converted into HTML found in the <strong>destinationDirs</strong> directory.</li>
+<li>Only the files updated after the <strong>mostRecentDate</strong> from the config file will be processed. If there are no such files in the chosen directory, then the program returns an empty array.</li>
+</ul>
+<p>Watch this video for details:</p>
+<div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/aHJ0GzrfnRI?ecver=2" width="640" height="360" frameborder="0" gesture="media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
+
+<p>I&#39;ll leave it up to you to create the <strong>DropDowns</strong> and the <strong>Button</strong>. For now, we can put this all in <strong>MakeHtmlDropDowns</strong>, but later we may refactor.</p>
+<a class="anchor" id="details"></a>
+<h2>Details</h2>
+<p>Here is the state for the <strong>MakeHtmlDropDowns.js</strong> file:</p>
+<pre><code class="lang-javascript">this.<span class="hljs-keyword">state</span> = {
+    walk: 'Generate HTML',
+    siteDir: '<span class="hljs-literal">unknown</span>',
+    destDir: '<span class="hljs-literal">unknown</span>',
+    configSummary: [],
+    value: <span class="hljs-number">1</span>
+};
+</code></pre>
+<p>In module global scope just below the import statements, declare two arrays:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">const siteDirs</span> = [];
+<span class="hljs-attribute">const destDirs</span> = [];
+</code></pre>
+<p>There was a method in this file called something like <strong>handleChange</strong>. It should become <strong>handleSiteDir</strong>. A second method should be called <strong>handleDestinationDir</strong>. These methods are referenced in our JSX:</p>
+<pre><code class="lang-xml"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">DropDownMenu</span>
+    <span class="hljs-attr">value</span>=</span></span><span class="hljs-template-variable">{this.state.value}</span><span class="xml"><span class="hljs-tag">
+    <span class="hljs-attr">onChange</span>=</span></span><span class="hljs-template-variable">{this.handleSiteDir}</span><span class="xml"><span class="hljs-tag">
+    <span class="hljs-attr">autoWidth</span>=</span></span><span class="hljs-template-variable">{true}</span><span class="xml"><span class="hljs-tag">
+&gt;</span>
+    </span><span class="hljs-template-variable">{siteDirs}</span><span class="xml">
+<span class="hljs-tag">&lt;/<span class="hljs-name">DropDownMenu</span>&gt;</span></span>
+</code></pre>
+<p>Here was <strong>handleChange</strong>:</p>
+<pre><code class="lang-javascript">handleChange(<span class="hljs-keyword">event</span>, index, <span class="hljs-keyword">value</span>) {
+    <span class="hljs-keyword">this</span>.setState({<span class="hljs-keyword">value</span>});
+}
+</code></pre>
+<p>This is using ES6, but it might be clearer like this:</p>
+<pre><code class="lang-javascript">handleChange(<span class="hljs-keyword">event</span>, index, <span class="hljs-keyword">value</span>) {
+    <span class="hljs-keyword">this</span>.setState({<span class="hljs-keyword">value</span>: <span class="hljs-keyword">value</span>});
+}
+</code></pre>
+<p>Change its name to <strong>handleSiteDir</strong> and in the <strong>setState</strong> method also set <strong>state.siteDir</strong> to:</p>
+<pre><code>event<span class="hljs-selector-class">.target</span><span class="hljs-selector-class">.innerHTML</span>,
+</code></pre><p>And set <strong>destDir</strong> to:</p>
+<pre><code><span class="hljs-selector-tag">destDirs</span><span class="hljs-selector-attr">[value]</span><span class="hljs-selector-class">.props</span><span class="hljs-selector-class">.primaryText</span>
+</code></pre><p>Right similar code to for <strong>handleDestinationDir</strong>.</p>
+<p><strong>NOTE</strong>: <em>We don&#39;t actually do anything with state.siteDir and state.destDir. But we may display them later, or use them for debugging or delete them. At any rate, get them to work so you are sure you see what is going on here.</em></p>
+<a class="anchor" id="generate-html"></a>
+<h2>Generate HTML</h2>
+<p>When the button is clicked it should generate call <strong>makers/walk</strong> route in <strong>routes/makers</strong>:</p>
+<pre><code class="lang-javascript">generateHtml() {
+    console.<span class="hljs-keyword">log</span>(this.<span class="hljs-keyword">state</span>.value);
+    console.<span class="hljs-keyword">log</span>(siteDirs[this.<span class="hljs-keyword">state</span>.value]);
+    //walking.runWalkReact('qSingle', this.<span class="hljs-keyword">state</span>.siteDir, this.<span class="hljs-keyword">state</span>.destDir);
+    const query = '/makers/walk?siteDirsIndex=' + this.<span class="hljs-keyword">state</span>.value;
+    var that = this;
+    fetch(query)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(configSummary) {
+            console.<span class="hljs-keyword">log</span>(JSON.stringify(configSummary, null, <span class="hljs-number">4</span>));
+            // CALL that.<span class="hljs-built_in">set</span>State <span class="hljs-keyword">to</span> **<span class="hljs-keyword">state</span>.configSummary** <span class="hljs-keyword">to</span> configSummary.htmlFilesWritten
+        })
+        .catch(function(ex) {
+            console.<span class="hljs-keyword">log</span>('parsing failed', ex);
+        });
+}
+</code></pre>
+<pre><code>        //Object.keys(configSummary).map(<span class="hljs-keyword">function</span> <span class="hljs-title"></span>(key) { <span class="hljs-keyword">return</span> <span class="hljs-type">configSummary[key]</span>; });
+</code></pre><p>You&#39;ll need a PRE tag in your JSX to display <strong>state.configSummary</strong></p>
+<a class="anchor" id="generate-images"></a>
+<h2>Generate Images</h2>
+<p>Creating web pages from images.</p>
+<p>At the end of your <strong>ElvenConfig.json</strong> file there should be a section that looks like this:</p>
+<pre><code class="lang-json"><span class="hljs-comment">"elvenImages"</span>: [
+    {
+        <span class="hljs-comment">"name"</span>: <span class="hljs-comment">"doc"</span>,
+        <span class="hljs-comment">"baseDir"</span>: <span class="hljs-comment">"The base directory where the images to be processed are found"</span>,
+        <span class="hljs-comment">"cloudPath"</span>: <span class="hljs-comment">"Base string found in markdown files"</span>,
+        <span class="hljs-comment">"createSmallImages"</span>: <span class="hljs-keyword">true</span>
+    },
+    {
+        <span class="hljs-comment">"name"</span>: <span class="hljs-comment">"california"</span>,
+        <span class="hljs-comment">"baseDir"</span>: <span class="hljs-comment">"/var/www/html/images"</span>,
+        <span class="hljs-comment">"cloudPath"</span>: <span class="hljs-comment">"/images"</span>,
+        <span class="hljs-comment">"createSmallImages"</span>: <span class="hljs-keyword">true</span>
+    },
+    {
+        <span class="hljs-comment">"name"</span>: <span class="hljs-comment">"california1"</span>,
+        <span class="hljs-comment">"baseDir"</span>: <span class="hljs-comment">"/var/www/html/images"</span>,
+        <span class="hljs-comment">"cloudPath"</span>: <span class="hljs-comment">"https://s3.amazonaws.com/s3bucket01.elvenware.com"</span>,
+        <span class="hljs-comment">"createSmallImages"</span>: <span class="hljs-keyword">true</span>
+    },
+    {
+        <span class="hljs-comment">"name"</span>: <span class="hljs-comment">"california2"</span>,
+        <span class="hljs-comment">"baseDir"</span>: <span class="hljs-comment">"/var/www/html/images"</span>,
+        <span class="hljs-comment">"cloudPath"</span>: <span class="hljs-comment">"/images"</span>,
+        <span class="hljs-comment">"createSmallImages"</span>: <span class="hljs-keyword">true</span>
+    }
+]
+</code></pre>
+<p>We want to concentrate on the last two sections, called <strong>california1</strong> and <strong>california2</strong>. They have a <strong>basedir</strong> set to <strong>/var/www/html/images</strong>. We should combine the <strong>name</strong> and the <strong>baseDir</strong> to point to a specific directory that we will populate with images:</p>
+<pre><code><span class="hljs-meta-keyword">/var/</span>www<span class="hljs-meta-keyword">/html/</span>images/california1
+<span class="hljs-meta-keyword">/var/</span>www<span class="hljs-meta-keyword">/html/</span>images/california2
+</code></pre><p>Before proceeding further, be sure that:</p>
+<ul>
+<li>Apache is installed</li>
+<li>The <strong>/var/www/html/images/</strong> directory exists.</li>
+<li><strong>~/ElvenImages</strong> exists.</li>
+</ul>
+<p>If necessary, create the directories listed in the latter two bullet points. If <strong>/var/www/html</strong> does not exist, then install <strong>Apache2</strong>:</p>
+<pre><code>sudo apt-<span class="hljs-builtin-name">get</span> install apache2
+</code></pre><p>I have sample images in a file found here:</p>
+<ul>
+<li><a href="http://bit.ly/california-pixs">http://bit.ly/california-pixs</a>.  </li>
+</ul>
+<p>Download them and unzip them in <strong>/var/www/html/images/</strong>:</p>
+<pre><code>cd <span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html/</span>images/
+unzip <span class="hljs-regexp">~/Downloads/</span>california.zip
+</code></pre><p>Now run WebCrafts, navigate to the <strong>Make Image</strong> page, and press the <strong>Create Image Page</strong> button. A series of files should be created in <strong>~/ElvenImages</strong>.</p>
+<div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/hJETmBVPwpA?ecver=2" width="640" height="360" frameborder="0" gesture="media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
+
+<a class="anchor" id="arrow-functions-in-react"></a>
+<h2>Arrow Functions in React</h2>
+<p>Sometimes we call bind in our constructors:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">this</span>.foo = <span class="hljs-keyword">this</span>.foo.bind(<span class="hljs-keyword">this</span>);
+
+foo() {}
+</code></pre>
+<p>Alternatively we can use Arrow Functions:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">foo</span> = <span class="hljs-params">()</span> =&gt;</span> {}
+</code></pre>
+<p>The advantage here is that we no longer need to explicitly call <strong>bind</strong> in our constructors. Instead, we use ES6 arrow functions, and <strong>this</strong> is automatically bound to the function.</p>
+<p>To enable this syntax, install <strong>babel-preset-stage-0</strong></p>
+<pre><code>npm <span class="hljs-keyword">install</span> babel-preset-stage-<span class="hljs-number">0</span>
+</code></pre><p>Then, in <strong>webpack.config.js</strong> add the <strong>stage-0</strong> preset:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">module</span>: {
+    <span class="hljs-attribute">loaders</span>: [{
+        test: /.js?$/,
+        loader: <span class="hljs-string">'babel-loader'</span>,
+        exclude: /node_modules/,
+        query: {
+            presets: [<span class="hljs-string">'env'</span>, <span class="hljs-string">'stage-0'</span>, <span class="hljs-string">'react'</span>]
+        }
+    }]
+},
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Push and tell me repo and branch. Check for:</p>
+<ul>
+<li>Bug fixes for isit-site-tools</li>
+<li>MakeHtml files works<ul>
+<li>Two dropdowns work in sync</li>
+<li>It generates HTML from markdown</li>
+</ul>
+</li>
+<li>Generates HTML based on images</li>
+</ul>
+</div></body></html>

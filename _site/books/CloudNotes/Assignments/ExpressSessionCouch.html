@@ -1,0 +1,199 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ExpressSessionCouch</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ExpressSessionCouch</h1><p>Welcome to ExpressSessionCouch</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#add-sessionstore">Add SessionStore</a></li>
+<li><a href="#read-sessions">Read Sessions</a></li>
+<li><a href="#client-side">Client Side</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#images">Images</a></li>
+<li><a href="#session-design">Alternative: Setup Connect-CouchDb</a></li>
+<li><a href="#add-couch-connect">Add Couch Connect Support</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Do you work in a branch called <strong>Week09</strong>.</p>
+<pre><code class="lang-bash">cp -r Week09-SessionBasics/ Week09-SessionCouch
+cd Week09-SessionCouch/
+npm <span class="hljs-keyword">install</span> express-<span class="hljs-keyword">session</span> <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> elf-sessionstore <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> cradle <span class="hljs-comment">--save</span>
+</code></pre>
+<a class="anchor" id="add-sessionstore"></a>
+<h2>Add SessionStore</h2>
+<p>Here is an alternative session store. The nice things about this one is that it will work with a number of different databases.</p>
+<ul>
+<li><a href="https://github.com/adrai/sessionstore">https://github.com/adrai/sessionstore</a></li>
+</ul>
+<p>Here are some things that need to be installed:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> express-<span class="hljs-keyword">session</span> <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> sessionstore <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> cradle <span class="hljs-comment">--save</span>
+</code></pre><p>The code:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> sessionStore = sessionstore.createSessionStore({
+    <span class="hljs-attr">type</span>: <span class="hljs-string">'couchdb'</span>,
+    <span class="hljs-attr">host</span>: <span class="hljs-string">'http://192.168.2.19'</span>,  <span class="hljs-comment">// optional</span>
+    port: <span class="hljs-number">5984</span>,                <span class="hljs-comment">// optional</span>
+    dbName: <span class="hljs-string">'sessionstore-calvert'</span>,<span class="hljs-comment">// optional</span>
+    collectionName: <span class="hljs-string">'sessions'</span>,<span class="hljs-comment">// optional</span>
+    timeout: <span class="hljs-number">10000</span>             <span class="hljs-comment">// optional</span>
+});
+
+router.use(session({
+    <span class="hljs-attr">genid</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-keyword">return</span> uuid.v4(); <span class="hljs-comment">// use UUIDs for session IDs</span>
+    },
+    <span class="hljs-attr">secret</span>: process.env.SESSION_SECRET || <span class="hljs-string">'keyboard cat'</span>,
+    <span class="hljs-attr">resave</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">saveUninitialized</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">store</span>: sessionStore       &lt;==== HERE
+}));
+</code></pre>
+<a class="anchor" id="read-sessions"></a>
+<h2>Read Sessions</h2>
+<p>Install Nano:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> nano <span class="hljs-comment">--save</span>
+</code></pre><p>Copy in the <strong>routes/Couch*.js</strong> files from your DataMaster program or other source. You will, of course, put them in the <strong>routes</strong> folder.</p>
+<ul>
+<li>Modify the top of index.js to load the Couch files that you just added to your project.</li>
+<li>Modify the database name at the top of <strong>routes/Couch.js</strong></li>
+<li>You will also have to modify <strong>CouchDesignDocs</strong> and <strong>CouchViews</strong>.</li>
+</ul>
+<p>In <strong>CouchDesignDocs</strong> your new couch view will look like this:</p>
+<pre><code class="lang-javascript">var elfSessions = <span class="hljs-keyword">function</span>(<span class="hljs-meta">doc</span>) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-meta">doc</span>.type === <span class="hljs-string">'connect-session'</span>) {
+                emit(<span class="hljs-meta">doc</span>.<span class="hljs-number">_</span>id, <span class="hljs-meta">doc</span>);
+        }
+};
+</code></pre>
+<p>This will get all the documents in your database that describe the sessions used by your app. That is, it will retrieve:</p>
+<ul>
+<li>All the couch documents with <strong>type</strong> property that is set to <strong>&#39;connect-session&#39;</strong></li>
+<li>All of those documents will have names of this shape: <strong>connect-session_LOTS_OF_NUMBERS_AND_LETTERS</strong><ul>
+<li>for instance: <strong>connect-session_27014d18-d80d-4224-aa1d-c117ee35fffc</strong></li>
+</ul>
+</li>
+</ul>
+<p>You will want to delete the other design docs, each of which should have names with the words NPC or STATE in them. You will also need to modify the route called &#39;/design/doc&#39;:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/designDoc'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Design Doc Called'</span>);
+
+        <span class="hljs-keyword">var</span> designName = <span class="hljs-string">'_design/elf-session'</span>;
+        <span class="hljs-keyword">var</span> designDocument = {
+                <span class="hljs-string">'views'</span>: {
+                        <span class="hljs-string">'elf-session'</span>: {
+                                <span class="hljs-string">'map'</span>: WHAT_SHOULD_IT_MAP_TO
+                        }
+                }
+        };
+
+    createDesignDocument(designDocument, designName, response);
+});
+</code></pre>
+<p>You will also want to modify <strong>CouchViews</strong> to contain a route called <strong>/viewSessions</strong>. This view should, at least for now, return the entire <strong>body</strong>.</p>
+<p>When learning about design documents, you might get errors that look like this:</p>
+<pre><code class="lang-javascript">{
+    <span class="hljs-attr">"message"</span>: <span class="hljs-string">"missing"</span>,
+    <span class="hljs-attr">"stack"</span>: <span class="hljs-string">"Error: missing\n    at Request._callback REST OF STACK DUMP HERE"</span>,    
+    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Error"</span>,
+    <span class="hljs-attr">"error"</span>: <span class="hljs-string">"not_found"</span>,
+    <span class="hljs-attr">"reason"</span>: <span class="hljs-string">"missing"</span>,
+    <span class="hljs-attr">"scope"</span>: <span class="hljs-string">"couch"</span>,
+    <span class="hljs-attr">"statusCode"</span>: <span class="hljs-number">404</span>
+    ... ETC CODE OMITTED HERE
+}
+</code></pre>
+<p> This kind of error may mean that couchDb can&#39;t find the view you are asking for. It can&#39;t find the view because you have not created it in <strong>routes/CouchDesignDocs.js</strong> and you don&#39;t have a method for calling it in <strong>routes/CouchViews.js</strong>.</p>
+<a class="anchor" id="client-side"></a>
+<h2>Client Side</h2>
+<p>Add some buttons:</p>
+<pre>
+div
+        button.btn.btn-info#designDoc Insert Design Doc
+        button.btn.btn-info#sessionView View Sessions
+</pre>
+
+<p>Add some more click handlers in <strong>control.js</strong>. Hint, here is how to call the view:</p>
+<pre><code class="lang-javascript"> showPage<span class="hljs-params">('/viewSessions?<span class="hljs-attr">designDoc</span>=elf-session&amp;<span class="hljs-attr">view</span>=elf-sessions')</span>
+</code></pre>
+<p>For now we simply showing all the results for the sessions you have created.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Run <strong>grunt check</strong> and make sure it passes. Push your work to the cloud.</p>
+<p>In the comments or text page, specify the branch and folder name for your project.</p>
+<a class="anchor" id="images"></a>
+<h2>Images</h2>
+<p>Here are some screenshots that will help you get some idea of what I&#39;m expecting to see.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/session-couch-view.png" alt="Viewing the session documents from the couch-session-lastname database"></p>
+<p><strong>Image</strong>: <em>Viewing the session documents from the couch-session-lastname database.</em></p>
+<p>When looking at futon, you ought to see two design docs:</p>
+<ul>
+<li>connect-sessions</li>
+<li>elf-session</li>
+</ul>
+<p>And also one or more session documents. These documents have names that begin something like this <strong>connect-session_XXX</strong>, where XXX is the beginning of a long set of numbers and letters. I have two because I ran the app both in Chrome and Firefox.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/session-couch-futon.png" alt="Viewing Futon"></p>
+<p><strong>Image</strong>: <em>What futon looks like with the two design docs and two sessions added. I have two sessions because I ran the application once from chrome and once in FireFox.</em></p>
+<a class="anchor" id="session-design"></a>
+<h2>Alternative: Setup Connect-CouchDb</h2>
+<p>Though I&#39;m not terribly excited about either of them, here is an alternative to sessionStore. Right now, I prefer <strong>sessionStore</strong>, but this one also worked.</p>
+<pre><code class="lang-bash">cp -r Week09-SessionBasics/ Week09-SessionCouch
+cd Week09-SessionCouch/
+npm <span class="hljs-keyword">install</span> express-<span class="hljs-keyword">session</span> <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> <span class="hljs-keyword">connect</span>-couchdb <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> nano <span class="hljs-comment">--save</span>
+</code></pre>
+<p>Run set up like this:</p>
+<pre><code>cd node_modules/<span class="hljs-built_in">connect</span>-couchdb/tools
+</code></pre><p>Now edit <strong>setup.js</strong> like this, but use your ip address:</p>
+<pre><code class="lang-javascript">var opts = {
+    <span class="hljs-string">"host"</span>: <span class="hljs-string">"192.168.2.19"</span>,
+    <span class="hljs-string">"name"</span>: process.argv<span class="hljs-string">[2]</span>,
+  <span class="hljs-string">"revs_limit"</span>: process.argv<span class="hljs-string">[3]</span>};
+</code></pre>
+<p>Run it like this:</p>
+<pre><code><span class="hljs-keyword">node</span> <span class="hljs-title">setup</span>.js couch-session-lastname <span class="hljs-number">1000</span>
+</code></pre><p>These two commands sum up the process:</p>
+<pre><code>geany node_modules/<span class="hljs-built_in">connect</span>-couchdb/tools/<span class="hljs-built_in">setup</span>.js
+node node_modules/<span class="hljs-built_in">connect</span>-couchdb/tools/<span class="hljs-built_in">setup</span>.js couch-session-lastname <span class="hljs-number">1000</span>
+</code></pre><a class="anchor" id="add-couch-connect"></a>
+<h2>Add Couch Connect Support</h2>
+<p>Put this near the top of <strong>middleware.js</strong>:</p>
+<pre><code class="lang-javascript">var ConnectCouchDB = require('connect-couchdb')(<span class="hljs-name">session</span>)<span class="hljs-comment">;</span>
+</code></pre>
+<p>And here is the mothod we use to initialize our couch session object:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> couchStore = <span class="hljs-keyword">new</span> ConnectCouchDB({
+    <span class="hljs-comment">// Name of the database you would like to use for sessions.</span>
+    name: <span class="hljs-string">'myapp-sessions'</span>,
+
+    <span class="hljs-comment">// Optional. Database connection details. See yacw documentation</span>
+    <span class="hljs-comment">// for more informations</span>
+    username: <span class="hljs-string">'username'</span>,
+    password: <span class="hljs-string">'password'</span>,
+    host: <span class="hljs-string">'localhost'</span>,
+
+    <span class="hljs-comment">// Optional. How often expired sessions should be cleaned up.</span>
+    <span class="hljs-comment">// Defaults to 600000 (10 minutes).</span>
+    reapInterval: <span class="hljs-number">600000</span>,
+
+    <span class="hljs-comment">// Optional. How often to run DB compaction against the session</span>
+    <span class="hljs-comment">// database. Defaults to 300000 (5 minutes).</span>
+    <span class="hljs-comment">// To disable compaction, set compactInterval to -1</span>
+    compactInterval: <span class="hljs-number">300000</span>,
+
+    <span class="hljs-comment">// Optional. How many time between two identical session store</span>
+    <span class="hljs-comment">// Defaults to 60000 (1 minute)</span>
+    setThrottle: <span class="hljs-number">60000</span>
+});
+</code></pre>
+<p>You probably won&#39;t use either the userName or password so you can comment those lines out. You will also have to change the name of the database to match the database you created with their <strong>setup</strong> tool.</p>
+<p>And now we change the way we handle the store when we initialize the session:</p>
+<pre><code class="lang-javascript">router.use(session({
+    <span class="hljs-attr">genid</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req</span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-keyword">return</span> uuid.v4(); <span class="hljs-comment">// use UUIDs for session IDs</span>
+    },
+    <span class="hljs-attr">secret</span>: process.env.SESSION_SECRET || <span class="hljs-string">'keyboard cat'</span>,
+    <span class="hljs-attr">resave</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">saveUninitialized</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">store</span>: couchStore   &lt;==== HERE
+}));
+</code></pre>
+</div></body></html>

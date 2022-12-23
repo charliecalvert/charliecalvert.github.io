@@ -1,0 +1,61 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>WindowsBash</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>WindowsBash</h1><p>Welcome to WindowsBash</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#the-linux-file-system">The Linux File System</a></li>
+<li><a href="#file-related-issues">File Related Issues</a></li>
+<li><a href="#tasks">Tasks</a></li>
+<li><a href="#summary">Summary</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>This article is about Bash for Windows in the Windows Subsystem for Linux (WSL). I have spent time with it for the first time today and found I could run my Bash scripts and run my Node applications. I was very impressed with how well this works.</p>
+<ul>
+<li><a href="https://msdn.microsoft.com/en-us/commandline/wsl/install_guide">Install WSL</a></li>
+<li><a href="https://msdn.microsoft.com/en-us/commandline/wsl/about">Learn about WSL</a></li>
+</ul>
+<a class="anchor" id="the-linux-file-system"></a>
+<h2>The Linux File System</h2>
+<p>When you install Ubuntu server on Windows you get a bash shell to access it. There is no GUI. Inside the shell, it looks like there is a Linux root with the typical Linux directories such as <strong>/bin</strong>, <strong>/var</strong>, <strong>/dev</strong> <strong>/etc</strong> and so on. One of the standard directories is called <strong>/mnt</strong>. It is in the <strong>mnt</strong> directory that my C and D drives are mounted.</p>
+<p>When I talk about the Linux File System in this article, I&#39;m talking about the standard Linux directories mentioned above, and also about <strong>/home/charlie/</strong>, or whatever your home directory is called on your system: <strong>/home/<USERNAME></strong>.</p>
+<p>Anything in these directories belongs to Linux and should only be touched and edited with Linux tools such as <strong>nano</strong> and <strong>vim</strong>. You can install additional Linux command line tools with <strong>sudo apt-get install XXX</strong>, where XXX is what you want to install. For instance, I ran <strong>sudo apt-get install build-essential</strong>.</p>
+<p>The code and files in <strong>/mnt/c/</strong> and <strong>/mnt/d/</strong> belongs to Windows. I can create symbolic links to that content so it is easy to access from my Linux home directory. However, I have to be careful about what I do with it, as explained below.</p>
+<a class="anchor" id="file-related-issues"></a>
+<h2>File Related Issues</h2>
+<p>There are various warnings about not trying to edit Linux files with Windows tools. The solution I&#39;m using right now is to keep all my files where they were before I installed WSL. If I left them where they were on my Windows hard drive, in whatever directory I kept them in, then everything seemed to work.</p>
+<p>I&#39;ve been able to edit my code using Windows tools and compile it using WSL. The key steps:</p>
+<ul>
+<li>Keep the code you want to edit with Windows tools outside your Linux File system</li>
+<li>Do not actively use a file in Linux while you are editing it with a Windows tool.</li>
+</ul>
+<p>This has some consequences, for instance, don&#39;t use <strong>nodemon</strong> if you are editing with a Windows tool, since it keeps your files open in Linux, or at least keeps some kind of link to them. Instead, use something like <strong>node bin/www</strong> to launch your projects.</p>
+<a class="anchor" id="tasks"></a>
+<h2>Tasks</h2>
+<p>Let me try to be more specific. Here are tasks I do in WSL (Linux)</p>
+<ul>
+<li>Run my node programs</li>
+<li>Run my node Scripts</li>
+<li>Edit files with <strong>nano</strong> or <strong>vim</strong><ul>
+<li>You can edit files in Linux, just don&#39;t be careful when using Windows tools that no Linux tool is touching it</li>
+</ul>
+</li>
+<li>Push and pull with Git<ul>
+<li>I keep my repository outside of WSL, and create symbolic links to them, so they appear to me be in my Linux <strong>$HOME/Git</strong> directory.</li>
+</ul>
+</li>
+</ul>
+<p>Here are tasks I do in Windows:</p>
+<ul>
+<li>Edit files with Webstorm or Geany<ul>
+<li>I&#39;m careful not actively touch them with a Linux tool while doing this!</li>
+<li>I&#39;m especially careful that I&#39;m not touching them when I save a file from Windows</li>
+</ul>
+</li>
+<li>Run my browser and test the Node programs that I launched from inside WSL (Linux)</li>
+</ul>
+<p>The key step for me was to create symbolic links that recreated my Linux setup. As long as I had /home/USERNAME/Git directory that contained symbolic links to JsObjects and my other repositories, then everything just seemed to work. This includes scripts like <strong>UbuntuAndCloudNineSetup</strong> and <strong>CreateExpressProject</strong>.</p>
+<p>Remember to put all your code in some regular Windows directory. For instance, on my Windows machine, I keep my code in my <strong>D:/Git</strong> directory. If it is already in some place like that, then leave it there. Create symbolic links to the directories where you store your code:</p>
+<pre>ln -s /mnt/d/Git/JsObjects/ ~/Git/JsObjects
+</pre>
+<p>After issuing that command all should be good. As far as Linux is concerned, <strong>JsObjects</strong> is in <strong>~/Git/JsObjects</strong>. Windows, meanwhile, thinks it is in <strong>D:/Git/JsObjects</strong>.</p>
+<a class="anchor" id="summary"></a>
+<h2>Summary</h2>
+<p>I did find that certain commands, such as <strong>git status</strong>, took much longer than they do on my Linux machine. I&#39;m not really sure why this is, but it could be that there is some indirection in WSL. I don&#39;t know.</p>
+<p>I would still prefer to work in Linux, because that is where I am most comfortable. But if you really prefer Windows, or if you simply don&#39;t have a powerful enough machine to load Pristin Lubuntu at home, then this might work for you.</p>
+</div></body></html>

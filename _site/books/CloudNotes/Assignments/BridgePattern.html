@@ -1,0 +1,108 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>BridgePattern</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>BridgePattern</h1><p>Welcome to BridgePattern</p><ul><!--TOC_Start--><li><a href="#links">Links</a></li><!--TOC_End--></ul></div><div class="container"><p>#BridgePattern Part 01</p>
+<p>This assignment has been simplified. Your goal at this stage is just to mock up the creation of the <strong>DataReader</strong> application. We will wait until next week to implement it. In particular, you do not need to read data from the server, and you do not need to properly display either the JSON or the markdown. </p>
+<p>Part II of this assignment will appear soon, and be due sometime next week. At that time you need to start reading data from the server, and you will need to at least begin properly displaying the data that you read.</p>
+<p>##Details</p>
+<p>You will use three patterns in this assignment:</p>
+<ul>
+<li>Factory</li>
+<li>Bridge</li>
+<li>Decorator</li>
+</ul>
+<p>Base your code on on two or more of the following programs:</p>
+<ul>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Design/BridgeSailor">JsObjects/JavaScript/Design/BridgeSailor</a></li>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Design/FactorySimple01">JsObjects/JavaScript/Design/FactorySimple01</a></li>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Design/FactoryInterface">JsObjects/JavaScript/Design/FactoryInterface</a></li>
+</ul>
+<p>Create a <strong>DataReader</strong> object that can:</p>
+<ul>
+<li>Mock reading Json Objects and mock displaying them properly</li>
+<li>Mock reading Markdown files and mock displaying them properly in a markdown editor such as [pagedown][pagedown].</li>
+<li>Both should be able to tell the type of document it handles: JSON or Markdown.</li>
+</ul>
+<p>Basing your work on BridgeSailor, create a <strong>Reader</strong> object using the module pattern. (This will be based on the <strong>Sailor</strong> object. The  <strong>Reader</strong> should be able to create a <em>bridge</em> to your <strong>JsonReader</strong> and <strong>MarkdownReader</strong>. You should also:</p>
+<p>Create a <strong>FancyReader</strong> that <em>decorates</em> Reader and can:</p>
+<ul>
+<li>Tell the length of the text it handles.</li>
+</ul>
+<p>Use the factory pattern to create a <strong>JsonReader</strong>. Pass the <strong>JsonReader</strong> object to your Bridge <strong>Reader</strong> pattern and show that it can read and display JSON files</p>
+<p>Use the factory pattern to create a <strong>MarkdownReader</strong>. Pass the <strong>MarkdownReader</strong> object to your Bridge <strong>Reader</strong> or <strong>FancyReader</strong> pattern and show that it can mock reading and displaying markdown files in a markdown editor.</p>
+<p><strong>NOTE</strong>: Do not use a factory to create <strong>Reader</strong> and <strong>FancyReader</strong>. (I don&#39;t really care if you flip this part of the assignment use the factory for <strong>Reader</strong> and <strong>FancyReader</strong> and create boats normally. I just want you to show that you can use a factory or not, depending on your wishes.)</p>
+<p>##Mock JsonReader and MarkdownReader</p>
+<p>By mocking these objects, I mean that they don&#39;t actually have to read anything from the file system. Instead, when you call <strong>Reader.readFile</strong> (which of course really calls <strong>JsonReader.readFile</strong> or <strong>MarkdownReader.readFile</strong>), then you just return one of the following:</p>
+<p>Default JSON:</p>
+<pre><code>[
+    {
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"George"</span>,
+        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Washington"</span>
+    }, {
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"John"</span>,
+        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Adams"</span>
+    }, {
+        <span class="hljs-attr">"firstName"</span>: <span class="hljs-string">"Thomas"</span>,        
+        <span class="hljs-attr">"lastName"</span>: <span class="hljs-string">"Jefferson"</span>
+    }
+]
+</code></pre><p>Default Markdown:</p>
+<pre><code><span class="hljs-comment"># My Markdown</span>
+
+This <span class="hljs-keyword">is</span> <span class="hljs-keyword">my</span> markdown <span class="hljs-built_in">file</span>. It has a <span class="hljs-built_in">list</span> <span class="hljs-keyword">in</span> <span class="hljs-keyword">it</span>:
+
+- Item01
+- Item02
+- Item03
+</code></pre><p>When you call <strong>Reader.display()</strong>, then you project should display the data returned by <strong>readFile</strong> in an HTML DIV element. You should use jQuery to transfer the data to a <strong>DIV</strong> or <strong>PRE</strong> tag.</p>
+<p>The <strong>FrancyReader</strong> uses the <strong>readFile</strong> object to read data. It then reports the length of it. You may need to convert the JSON to string by running</p>
+<pre><code>JSON.stringify(myJsonData)<span class="hljs-comment">;</span>
+</code></pre><p>In the above, <strong>myJsonData</strong> is the data returned when you call <strong>readFile</strong>.</p>
+<p>#Hints</p>
+<p>Here is a sample output screen:</p>
+<p><img src="http://elvenware.com/charlie/books/CloudNotes/Images/BridgePattern05.png" alt="Sample Output"></p>
+<p>In the above screenshot, I have Jade that looks like this:</p>
+<pre><code><span class="hljs-selector-tag">h2</span> JSON Display
+pre<span class="hljs-selector-id">#displayJson</span>
+
+<span class="hljs-selector-tag">h2</span> Markdown Display
+pre<span class="hljs-selector-id">#displayMarkdown</span>
+
+<span class="hljs-selector-tag">h2</span> FancyReader
+<span class="hljs-selector-tag">p</span> The length of the string from the reader is: 
+  span#showLength
+</code></pre><p>I&#39;m declaring long strings in JavaScript like this:</p>
+<pre><code>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">hereDoc</span>(<span class="hljs-params">func</span>) </span>{
+        <span class="hljs-keyword">return</span> func.toString().replace(<span class="hljs-regexp">/^[^\/]+\/\*!?/</span>, <span class="hljs-string">''</span>).replace(
+                <span class="hljs-regexp">/\*\/[^\/]+$/</span>, <span class="hljs-string">''</span>).replace(<span class="hljs-regexp">/\t/g</span>, <span class="hljs-string">''</span>);
+    }
+
+    MarkdownReader.prototype.readFile = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> hereDoc(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-comment">/*
+            #Title
+
+            This is a ginned up markdown document. I'm using a slightly modified
+            trick I learned on StackOverflow to handle this long string.
+            I found the **hereDoc** method [here](http://stackoverflow.com/a/5571069). 
+
+            ## SubSection.
+
+            You can learn more about markdown
+            [here](http://daringfireball.net/projects/markdown/)
+            */</span>
+        })
+    };
+</code></pre><p>##Turn it in</p>
+<p>Place your work in a folder called <strong>Week04BridgeReader</strong> and check it in to your repository. Submit a link to your repository.</p>
+<a class="anchor" id="links"></a>
+<h2>Links</h2>
+<ul>
+<li><a href="http://www.dofactory.com/javascript-patterns.aspx">DoFactory</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Bridge_pattern">Wikipedia</a></li>
+<li><a href="http://stackoverflow.com/questions/319728/when-do-you-use-the-bridge-pattern">SO: When to use Bridge</a></li>
+<li><a href="http://sourcemaking.com/design_patterns/bridge">Source Making</a></li>
+<li><a href="http://www.blackwasp.co.uk/Bridge.aspx">Black Wasp</a></li>
+</ul>
+<blockquote>
+<p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p>
+</blockquote>
+</div></body></html>

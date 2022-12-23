@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>LinuxServerComplete</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>LinuxServerComplete</h1><p>Welcome to LinuxServerComplete</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#screenshots">Screenshots</a></li>
+<li><a href="#step-01">Step 01</a></li>
+<li><a href="#step-two">Step Two</a></li>
+<li><a href="#step-iii">Step III</a></li>
+<li><a href="#step-iv">Step IV</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#do-i-really-need-to-turn-in-screenshots">Do I Really Need to Turn in Screenshots</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Watch either the <a href="https://www.youtube.com/watch?v=ZuoDFTBEQlE&amp;list=PLe8CjTxuUQ38pOVF37SyD16fEwYCYyehL">Complete Playlist</a> or the videos in the order they are listed. Follow the steps shown in the video, but name your instance vb-lastname so I can recognize it in your screenshots.</p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=ZuoDFTBEQlE&amp;list=PLe8CjTxuUQ38pOVF37SyD16fEwYCYyehL">The complete PlayList</a></li>
+<li><a href="https://youtu.be/ZuoDFTBEQlE">Ubuntu Server Download</a></li>
+<li><a href="https://youtu.be/fym3FG1AfiU">Ubuntu Server Install</a></li>
+<li><a href="https://youtu.be/fol5LV4JjtE">Updates and JsObjects Setup</a></li>
+<li><a href="https://youtu.be/q27oi_9CXFc">Git Repository Setup</a>                              </li>
+</ul>
+<p>As you complete the steps outlined here and in the videos, take screenshots of the work you do. Attach the raw PNG or JPG files that you create to the assignment when you turn it in.</p>
+<a class="anchor" id="screenshots"></a>
+<h2>Screenshots</h2>
+<p>Create, at minimum, a screenshot of:</p>
+<ul>
+<li>The server in the process of being downloaded in the torrent.</li>
+<li>Creation of RAM when you first begin VirtualBox configuration.</li>
+<li>The moment when you name your server during Ubuntu installation. The name should be <strong>vb-lastname</strong>, where lastname is your last name.</li>
+<li>You signing in to the running server for the first time.</li>
+<li>Show SSH to remote server without password prompt</li>
+<li>Show a listing of your cloned repository<ul>
+<li>Either Prog270 or isit320</li>
+<li>The Prog270 folks should install MakeHtml</li>
+<li>The Isit320 folks should run Week01-ReactBasics on the Ubuntu server and display it in a browser.</li>
+</ul>
+</li>
+</ul>
+<p>Please also read the [Turn it in][#turn-it-in] section below.</p>
+<a class="anchor" id="step-01"></a>
+<h2>Step 01</h2>
+<p>Install a torrent application for Windows. If you have a Linux host, then a BitTorrent app is likely to be installed already.</p>
+<a class="anchor" id="step-two"></a>
+<h2>Step Two</h2>
+<pre><code>sudo apt-<span class="hljs-builtin-name">get</span> update
+sudo apt-<span class="hljs-builtin-name">get</span><span class="hljs-built_in"> upgrade
+</span>sudo apt-<span class="hljs-builtin-name">get</span> dist-upgrade
+</code></pre><p>Shutdown the server for a moment so we can make some changes to the VM. In the VirtualBox Manager choose <strong>Settings | General | Advanced</strong> for your VM. In <strong>Settings | System | Processor</strong> set up the shared clipboard and give the VM access to more than one processor if it is available.</p>
+<p>Reboot the server and install the <strong>build-essential</strong>:</p>
+<pre><code>sudo apt-<span class="hljs-builtin-name">get</span> install build-essential
+</code></pre><p>Install JsObjects:</p>
+<pre><code>mkdir ~<span class="hljs-string">/Git</span>
+<span class="hljs-keyword">cd</span> ~<span class="hljs-string">/Git</span>
+git clone https:<span class="hljs-string">//github.com/charliecalvert/JsObjects</span>
+</code></pre><p>Put your private key in the <strong>authorized_keys</strong> file for the server.</p>
+<pre><code>slb
+<span class="hljs-string">./SetupSsh</span>
+<span class="hljs-keyword">cd</span> ~<span class="hljs-string">/.ssh</span>
+<span class="hljs-string">//</span> ssh-copy-id -i id_rsa bcuser@192.168.2.34
+</code></pre><p>The scripts listed above are now consolidated into one script called <a href="https://github.com/charliecalvert/JsObjects/blob/master/Utilities/SetupLinuxBox/GetStarted">GetStarted</a>. Once you have first booted your server, ssh into it with a password. Before you try to update the server or do anything else, paste in the following commands:</p>
+<pre><code>curl https:<span class="hljs-regexp">//</span>raw.githubusercontent.com<span class="hljs-regexp">/charliecalvert/</span>JsObjects<span class="hljs-regexp">/master/</span>Utilities<span class="hljs-regexp">/SetupLinuxBox/</span>GetStarted &gt; GetStarted
+chmod +x GetStarted
+.<span class="hljs-regexp">/GetStarted</span>
+</code></pre><p>Don&#39;t try to paste these into the shell that VirtualBox creates. That doesn&#39;t tend to work very well for me. Instead, paste them into your SSH shell. The <strong>GetStarted</strong> script will run all the commands listed above, prompting you only once for input about setting a password on your private key. You probably don&#39;t want to create that password, but it is a personal decision.</p>
+<a class="anchor" id="step-iii"></a>
+<h2>Step III</h2>
+<p>Run UbuntuSetup.</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/os/linux/ConfigureLinux.html#ubuntu-setup">UbuntuSetup</a></li>
+</ul>
+<a class="anchor" id="step-iv"></a>
+<h2>Step IV</h2>
+<p>We want to access our Git hub repository on the server using SSH. To make this as easy as possible, we are going to copy over the private key to our new server.</p>
+<p><strong>NOTE</strong>: _I can&#39;t know what name you have given your private key, so in this text I will just call it <strong>private_key</strong>._</p>
+<p>Copy over the private key:</p>
+<pre><code>scp private_key bcuser<span class="hljs-variable">@192</span>.<span class="hljs-number">168.2</span>.<span class="hljs-number">34</span><span class="hljs-symbol">:/home/bcuser/</span>.ssh/.
+</code></pre><p>Now go to your server and lock down the private key to increase security:</p>
+<pre><code><span class="hljs-selector-tag">ssh</span> <span class="hljs-selector-tag">bcuser</span>@<span class="hljs-keyword">192</span>.<span class="hljs-keyword">168</span>.<span class="hljs-keyword">2</span>.<span class="hljs-keyword">34</span>
+cd .ssh
+chmod <span class="hljs-number">400</span> private_key
+</code></pre><p>Now clone your repository. In the example below, you will need to supply your Github account name and the proper name for your repository:</p>
+<pre><code>git <span class="hljs-keyword">clone</span> <span class="hljs-title">git</span>@github.com:account-name/isit320-lastname-<span class="hljs-number">2017</span>.git
+</code></pre><pre><code>sudo chown -R <span class="hljs-string">bcuser:</span>bcuser <span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html/</span>
+ln -s <span class="hljs-regexp">~/Git/</span>isit320-calvert<span class="hljs-number">-2017</span><span class="hljs-regexp">/Week01-ReactBasics/</span> <span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html/</span>.
+</code></pre><p>Go here: <a href="http://192.168.2.34/Week01-ReactBasics/">http://192.168.2.34/Week01-ReactBasics/</a></p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Attach your screenshots directly to your submission. Remember:</p>
+<ul>
+<li>Don&#39;t embed screenshots in a Word document.</li>
+<li>Use either PNG or JPG formats</li>
+<li>Don&#39;t zip up your screenshots. Attach each one individually.</li>
+</ul>
+<a class="anchor" id="do-i-really-need-to-turn-in-screenshots"></a>
+<h2>Do I Really Need to Turn in Screenshots</h2>
+<p>A number of you have asked if you really need to turn in the screenshots. After all, we stepped through this process once in class and most of you did not take screenshots as we were working. I know that.</p>
+<p>The point of this exercise is to teach you how to start with an ISO file and end up with an installation suitable for Node Web Development. Just doing this once in class with my guidance doesn&#39;t really show me that you can do it on your own. I want you to step through the process a second time at home so you can prove to yourself (and to me) that you can create a working VM.</p>
+<p>Developing and deploying applications on VMs or in containers is the way the entire technical community is headed. In fact, this is the way that many applications are deployed at this time. I believe what we see now is only the start of a trend that will grow rapidly over the coming years.</p>
+</div></body></html>

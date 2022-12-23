@@ -1,0 +1,521 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Isit320Final2018</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Isit320Final2018</h1><p>Welcome to Isit320Final2018</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#up-to-date">Up to date</a></li>
+<li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#endpoints">EndPoints</a></li>
+<li><a href="#host-address-and-private-key-file">Host Address and Private Key File</a></li>
+<li><a href="#refactor">Refactor</a></li>
+<li><a href="#supertest">SuperTest</a></li>
+<li><a href="#super-special">SuperTest Special Routes</a></li>
+<li><a href="#ec2-systemdl">EC2 and systemd</a></li>
+<li><a href="#environment-variables">Environment Variables</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#extra-credit">Extra Credit</a></li>
+<li><a href="#extra-credit-provision-repository">Extra Credit: Provision Repository</a></li>
+<li><a href="#extra-credit-bumps-in-the-road">Extra Credit: Bumps in the Road</a></li>
+<li><a href="#extra-credit-route-implementation">Extra Credit: Route Implementation</a></li>
+<li><a href="#associate">Extra Credit: Associate</a></li>
+<li><a href="#charlie-notes">Charlie Notes</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Pease see <a href="https://bc.instructure.com/courses/1626572/discussion_topics/8486355">this announcment</a> which covers some of the changes to the final discussed near the end of class on Wednesday.</p>
+<p>You have a few major goals:</p>
+<ul>
+<li>To complete the <a href="https://www.elvenware.com/teach/assignments/Npm/SystemdServiceComplete.html">systemd Service Complete</a> assignment</li>
+<li>To complete a modified version of the <a href="https://www.elvenware.com/teach/assignments/Aws/Ec2ProvisionRepo.html">EC2 Provision Repo</a> assignment<ul>
+<li>The modified version doesn&#39;t do anything  </li>
+<li>The server only returns JSON. It doesn&#39;t do anything real like creating an AWS instances.</li>
+<li>All routes should return <strong>result</strong> and <strong>route</strong></li>
+<li>Some routes return extra properties as specified <a href="#endpoints">here</a> and <a href="#super-special">here</a>.</li>
+<li>The <a href="#associate">extra credit Associate</a> section has many tips in it that might be useful in the final.</li>
+</ul>
+</li>
+<li>Get two applications running on AWS and turn in links to them.<ul>
+<li>The custom aws-provision app described in this document.</li>
+<li>A version of SystemCheck also described in this document.</li>
+</ul>
+</li>
+<li>Create unit tests<ul>
+<li>Create at least 10 Enzyme based tests of your client side code</li>
+<li>Create SuperTest tests for each of the routes on the server</li>
+</ul>
+</li>
+</ul>
+<p>As subset of the second goal, you should write your own script that will clown your repository to the remote instance.</p>
+<p>The <a href="https://www.elvenware.com/teach/assignments/Npm/SystemdServiceComplete.html">Service Complete</a> assignment is self-explanatory, but the EC2 Provision Repo needs some comment, which is provided below.</p>
+<p>For extra credit, you can attempt to fully implement Aws-Provision in a branch called <strong>extra-credit.</strong> Do not deploy this version of the program to EC2. It should only be run locally as it could give other people too much power over your account. To be clear:</p>
+<ul>
+<li><strong>Final Branch</strong>: The <strong>final</strong> contains the custom <strong>Aws-Provision</strong> program that doesn&#39;t really do anything.<ul>
+<li>Deploy this version to EC2.</li>
+</ul>
+</li>
+<li><strong>Extra Credit Branch</strong>: Use the <strong>extra-credit</strong> branch to create a version of <strong>aws-provision</strong> that actually does something.</li>
+</ul>
+<p>The final branch ought to contain at least the <strong>aws-provision</strong>, <strong>scripts</strong> and <strong>system-check</strong> directories. The <strong>master</strong> branch should contain all the programs we have created.</p>
+<a class="anchor" id="up-to-date"></a>
+<h2>Up to date</h2>
+<p>I&#39;m worried that some might have an older version of <a href="https://nodejs.org/en/">node js</a> on your system. To fix do this:</p>
+<pre><code class="lang-bash">jou
+<span class="hljs-keyword">cd</span> NodeInstall/
+<span class="hljs-string">./NodeInstall.sh</span>
+</code></pre>
+<p>When you are done, the following should be more or less what you see:</p>
+<pre><code class="lang-bash">$ <span class="hljs-keyword">node</span> <span class="hljs-title">--version</span>
+v11.<span class="hljs-number">3.0</span>
+</code></pre>
+<a class="anchor" id="getting-started"></a>
+<h2>Getting Started</h2>
+<p>I don&#39;t see why we can&#39;t do our work in the existing <strong>aws-provision</strong> directory. I would however, like you to:</p>
+<ul>
+<li>Create a <strong>final</strong> branch and do your work in it.</li>
+<li>As you start: <strong>elf-tagger &quot;starting final&quot; &quot;aws-provision&quot;</strong></li>
+</ul>
+<p>My tag looks like this:</p>
+<pre><code>v1.<span class="hljs-number">1.24</span>  starting <span class="hljs-keyword">final</span> <span class="hljs-keyword">for</span> aws-provision <span class="hljs-keyword">on</span> branch <span class="hljs-keyword">final</span> <span class="hljs-keyword">with</span> tag v1.<span class="hljs-number">1.24</span>.
+</code></pre><p><strong>NOTE</strong>: <em>It is finally time to get rid of the <strong>queryServer</strong> call to the endpoint <strong>/foo</strong>. We don&#39;t need it anymore since we will create many similar calls as part of this final.</em></p>
+<a class="anchor" id="endpoints"></a>
+<h2>EndPoints</h2>
+<p>Here is a list of the endpoints I want you to implement in the custom Aws-Provision version created for this final. Here are the routes and the file in the <strong>server/routes</strong> directory in which they are found:</p>
+<ul>
+<li>index.js (all use AWS api)<ul>
+<li>/associate-elastic-ip?instanceId=xxx&amp;allocationId=yyy&amp;region=zzz</li>
+<li>/create-educate</li>
+<li>/create-standard</li>
+<li>/get-instance-status?instanceId=xxx</li>
+<li>/reboot-instance</li>
+</ul>
+</li>
+<li>ssh-runner.js (all use ssh2)<ul>
+<li>/run-get-started</li>
+<li>/run-ubuntu-setup</li>
+</ul>
+</li>
+<li>script-pusher (all use spawn)<ul>
+<li>/copy-get-started</li>
+<li>/remove-known-host?ec2Ip=xxx.xxx.xxx.xxx</li>
+</ul>
+</li>
+</ul>
+<p>On the client end, I have my code refactored into a similar, but not identical, pattern.</p>
+<p>Above you can see the methods that take parameters. Both <strong>/create-educate</strong> and <strong>/create-standard</strong> return at least:</p>
+<ul>
+<li>instanceData.InstanceId</li>
+<li>instanceData.KeyName</li>
+<li>instanceData.Architecture</li>
+<li>allocationIds.standard</li>
+<li>regions.region</li>
+</ul>
+<p>Like this:</p>
+<pre><code class="lang-JavaScript">{
+    <span class="hljs-attribute">result</span>: <span class="hljs-string">'success'</span>,
+    <span class="hljs-attribute">route</span>: <span class="hljs-string">'/create-standard'</span>
+    <span class="hljs-attribute">instanceData</span>: {
+        <span class="hljs-comment">// YOU FILL IN THIS</span>
+    },
+    <span class="hljs-attribute">allocationIds</span>: {
+        <span class="hljs-attribute">standard</span>: <span class="hljs-string">"standard"</span>
+    },
+    <span class="hljs-attribute">regions</span>: {
+        <span class="hljs-comment">// YOU FILL IN THIS</span>
+    }
+}
+</code></pre>
+<p>Notice that the code above includes <strong>result</strong> and <strong>route</strong> properties. All your endpoints should return JSON that contain those two properties. Of course, the <strong>route</strong> property will be different for each endpoint.</p>
+<p>There are, however, some endpoints return more than just those two properties. For instance, <strong>createEducate</strong> and <strong>createStandard</strong> should return the extra properties shown above. Also, see the properties described below in the <a href="#super-special">SuperTest Special Routes section</a> that accept extra parameters and that should mirror those back in the JSON it returns.</p>
+<p>The front end, showing some of the data retrieved from the server.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/isit320-final-basic-ui.png" alt="The front end, showing some of the data retrieved from the server"></p>
+<ul>
+<li>The server should serve up JSON</li>
+<li>At least some of the JSON data from the server should be put into state, and finally displayed as above.</li>
+<li>As described below, use SuperTest to confirm that the server is serving up the proper JSON.</li>
+</ul>
+<a class="anchor" id="host-address-and-private-key-file"></a>
+<h2>Host Address and Private Key File</h2>
+<p>The <strong>routes/ssh-runner.js</strong> file must get its <strong>HostAddress</strong> (the Elastic IP of the server) and Private Key identity file from <strong>~/.ssh/config</strong> via the technique explained in the <a href="https://www.elvenware.com/teach/assignments/Linux/GetSshIpAndPrivateKey.html">Get SSH and Private IP</a> assignment. This is an important part of the assignment, as filling in the information by hand is among the time consuming parts of grading your assignment. Having to do it manually would definitely be a bumpy stretch in the process of grading any assignment.</p>
+<a class="anchor" id="refactor"></a>
+<h2>Refactor</h2>
+<p>The following React classes should exist in <strong>client/src</strong>. Beneath each module name I add a few comments and/or the endpoints the module calls:</p>
+<ul>
+<li>App.js<ul>
+<li>Links together the modules listed below in its render method</li>
+<li>It does nothing else</li>
+</ul>
+</li>
+<li>CreateAssociate.js<ul>
+<li>/create-standard</li>
+<li>/create-educate</li>
+<li>/associate-elastic-ip</li>
+<li>Maintains quite a bit of state.</li>
+</ul>
+</li>
+<li>ElfHeader.js<ul>
+<li>Show the Title and your name</li>
+</ul>
+</li>
+<li>RunLocal.js<ul>
+<li>/copy-get-started</li>
+</ul>
+</li>
+<li>RunRemote.js<ul>
+<li>/run-get-started</li>
+<li>/run-ubuntu-setup</li>
+</ul>
+</li>
+<li>Tools.js<ul>
+<li>/get-instance-status</li>
+<li>/reboot-instance</li>
+<li>/remove-known-hosts</li>
+</ul>
+</li>
+</ul>
+<p>The URLs shown above, are not necessarily complete. I&#39;m just giving  you enough information so you can see which URL goes in which file. In our custom version, each route simply returns a simple JSON object with a few simple text fields.</p>
+<a class="anchor" id="supertest"></a>
+<h2>SuperTest</h2>
+<p>Create separate tests files for each of the modules in the <strong>server/routes</strong> directory. Something like this:</p>
+<ul>
+<li>test/ssh-runner-test.js</li>
+<li>test/script-pusher-test.js</li>
+<li>test/index-aws-test.js</li>
+</ul>
+<p>To make sure they all run, adjust your <strong>package.json</strong> entry to something like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"test"</span>: <span class="hljs-string">"mocha 'test/*-test.js'"</span>
+</code></pre>
+<p><strong>NOTE</strong>: <em>From looking at the above, you can probably see at least one fairly easy way to run one test file at a time manually if you have the need: mocha &#39;test/ssh-runner-test.js&#39;.</em></p>
+<p>In the call to describe at the top of each file, put a descriptive string such as:</p>
+<pre><code class="lang-JavaScript">describe(<span class="hljs-string">'script-pusher.js tests'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> { ... });
+</code></pre>
+<p>Below I show an example of what the output <strong>script-pusher</strong> tests might look like:</p>
+<pre><code>  script-pusher.js tests
+GET /script-pusher/copy-get-started <span class="hljs-number">200</span> <span class="hljs-number">0.332</span> ms - <span class="hljs-number">47</span>
+    ✓ should test /script-pusher/copy-get-started returns valid JSON
+GET /script-pusher/copy-get-started <span class="hljs-number">200</span> <span class="hljs-number">0.181</span> ms - <span class="hljs-number">47</span>
+    ✓ should test /script-pusher/copy-get-started returns specific values
+GET /script-pusher/remove-known-host?ec2Ip=<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.2</span> <span class="hljs-number">200</span> <span class="hljs-number">0.274</span> ms - <span class="hljs-number">70</span>
+    ✓ should test /script-pusher/remove-known-host returns valid JSON
+GET /script-pusher/remove-known-host?ec2Ip=<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.2</span> <span class="hljs-number">200</span> <span class="hljs-number">0.206</span> ms - <span class="hljs-number">70</span>
+    ✓ should test /script-pusher/remove-known-host returns specific values
+
+
+  <span class="hljs-number">6</span> passing (<span class="hljs-number">31</span>ms)
+</code></pre><p>Here is the simplest possible implementation of an endpoint, and one that we can use in many cases:</p>
+<pre><code class="lang-javascript">router.get(<span class="hljs-string">'/qux'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response)</span> </span>{
+    response.send({
+        <span class="hljs-string">"result"</span>: <span class="hljs-string">"success"</span>,
+        <span class="hljs-string">"route"</span>: <span class="hljs-string">"qux"</span>,
+    });
+});
+</code></pre>
+<p>Assuming this fictitious endpoint is in <strong>script-pusher</strong>, then we test it like this:</p>
+<pre><code class="lang-javascript">it('should test /script-pusher/qux returns valid JSON', function (<span class="hljs-name">done</span>) {
+    request(<span class="hljs-name">app</span>)
+        .get('/script-pusher/qux')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(<span class="hljs-number">200</span>, done)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+it('should test /script-pusher/qux returns specific values', function (<span class="hljs-name">done</span>) {
+    request(<span class="hljs-name">app</span>)
+        .get('/script-pusher/qux')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect({
+            <span class="hljs-string">"result"</span>: <span class="hljs-string">"success"</span>,
+            <span class="hljs-string">"route"</span>: <span class="hljs-string">"qux"</span>
+        })
+        .expect(<span class="hljs-number">200</span>, done)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>The output would look like this:</p>
+<pre><code>script-pusher.js tests
+GET /script-pusher/qux <span class="hljs-number">200</span> <span class="hljs-number">4.190</span> ms - <span class="hljs-number">34</span>
+  ✓ should test /script-pusher/qux returns valid JSON
+GET /script-pusher/qux <span class="hljs-number">200</span> <span class="hljs-number">0.418</span> ms - <span class="hljs-number">34</span>
+  ✓ should test /script-pusher/qux returns specific values
+
+  <span class="hljs-number">2</span> passing (<span class="hljs-number">11</span>ms)
+</code></pre><p>But it is not always this simple. The methods in <strong>ssh-runner</strong>, for instance, should return not only the default values, but also at least the HOST_ADDRESS and IDENTITY_FILE from our calls to <strong>getSshIp</strong>:</p>
+<pre><code class="lang-javascript">response.send({
+    <span class="hljs-string">"result"</span>: <span class="hljs-string">"success"</span>,
+    <span class="hljs-string">"route"</span>: <span class="hljs-string">"run-get-started"</span>,
+    <span class="hljs-string">"host"</span>: <span class="hljs-literal">result</span>.hostName,
+    <span class="hljs-string">"identity-file"</span>: <span class="hljs-literal">result</span>.identityFile
+});
+</code></pre>
+<p>We still make the call to getSshIp, and it still respond to our promise with <strong>.then</strong> and <strong>.catch</strong>, only in this custom version of <strong>aws-provision</strong>, we don&#39;t ever call a method that wraps SSH2, instead, we just call <strong>response.send</strong> as outline above.</p>
+<ul>
+<li>Call <strong>getSshIp</strong></li>
+<li>Write the <strong>.then</strong> clause<ul>
+<li>inside it nest the <strong>response.send</strong> code shown above</li>
+</ul>
+</li>
+<li>Write the <strong>.catch</strong> clause.<ul>
+<li>For now, at least, write the default response unless you see a need to do otherwise. (I haven&#39;t so far.).</li>
+</ul>
+</li>
+</ul>
+<p>Another case where we might need to write a special response, is if we send one or more parameters to the endpoint. In that case, you should mirror back the parameter. For instance, if we called <strong>/qux?foo=bar</strong> then our response might be:</p>
+<pre><code class="lang-javascript">response.send({
+    <span class="hljs-string">"result"</span>: <span class="hljs-string">"success"</span>,
+    <span class="hljs-string">"route"</span>: <span class="hljs-string">"run-get-started"</span>,
+    <span class="hljs-string">"foo"</span>: &lt;YOU WRITE THE CODE <span class="hljs-keyword">TO</span> <span class="hljs-builtin-name">GET</span> THE VALUE OF THE PARAMETER&gt;
+});
+</code></pre>
+<p><strong>NOTE</strong>: <em>If by some chance you don&#39;t know how to get the parameter passed to an endpoint, then head over to the discussion area and start asking questions. No one will give you the exact code, but they will tell you where to look for it.</em></p>
+<a class="anchor" id="super-special"></a>
+<h2>SuperTest Special Routes</h2>
+<p>At this writing, I can think of three routes that take parameters:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Route</th>
+<th style="text-align:left">Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">/remove-known-host</td>
+<td style="text-align:left">ec2Ip</td>
+</tr>
+<tr>
+<td style="text-align:left">/associate-elastic-ip</td>
+<td style="text-align:left">InstanceId, allocationId, region</td>
+</tr>
+<tr>
+<td style="text-align:left">/get-instance-status</td>
+<td style="text-align:left">InstanceId</td>
+</tr>
+</tbody>
+</table>
+<p>For instance, the list above shows that remove-known-host should take a parameter called <strong>ec2Ip</strong>. The second one takes three parameters, and the third takes one called InstanceId. Remember that on the server you can check request.query when looking for these parameters.</p>
+<p>You don&#39;t need to know real values for these variables for this exercise, but your route should take these parameters and pass them back in its <strong>response</strong>.</p>
+<p>Don&#39;t forget that <strong>/create-standard</strong> and <strong>create-educate</strong> each return the values <a href="#endpoints">described above</a>. Your tests need to take these into account.</p>
+<p>If the test complains that it is getting HTML rather than JSON then that probably means that you are using the wrong URL or throwing some kind of exception in your endpoint. Here is a trick you can use to help you debug your program by showing all or part of the JSON sent by the server:</p>
+<pre><code class="lang-javascript">
+<span class="hljs-selector-tag">request</span>(app)
+    <span class="hljs-selector-class">.get</span>(<span class="hljs-string">'/qux'</span>)
+    <span class="hljs-selector-class">.expect</span>((response) =&gt; {
+        <span class="hljs-selector-tag">if</span> (response) {
+            <span class="hljs-selector-tag">console</span><span class="hljs-selector-class">.log</span>(<span class="hljs-string">'GOT RESPONSE:'</span>, response.res.statusMessage);
+        }
+    })
+    <span class="hljs-selector-class">.set</span>(<span class="hljs-string">'Accept'</span>, <span class="hljs-string">'application/json'</span>)
+    <span class="hljs-selector-class">.expect</span>(<span class="hljs-string">'Content-Type'</span>, /json/)
+    <span class="hljs-selector-class">.expect</span>(<span class="hljs-number">200</span>, done);
+});
+</code></pre>
+<p>We check the <strong>response</strong> to see what info we got. In this case, if the test executed properly, then <strong>response.res.statusMessage</strong> will be <strong>OK</strong>. If you get <strong>NOT FOUND</strong> then perhaps the URL of route is wrong.</p>
+<a class="anchor" id="ec2-systemdl"></a>
+<h2>EC2 and systemd</h2>
+<p>Your empty, non-working version of <strong>aws-provision</strong> that only returns JSON should be running as a <strong>systemd</strong> service on EC2. When I click on the buttons, they should display the default JSON described above.</p>
+<p>You should also have a <strong>SystemCheck</strong> program which only checks methods on the client side running as an EC2 service on EC2. In other words, it never uses <strong>server/routes/ssh-runner</strong>, only <strong>script-pusher.js</strong>. It never uses SSH to check services running on other systems, it just checks the services running on the same instance of EC2 that it runs on. So uptime returns how long your EC2 instance has been up and running. (Please make sure you implement the whitelist!)</p>
+<p>When I refer to the <strong>SystemCheck</strong> program, I mean an assigment like one of these:</p>
+<ul>
+<li><a href="https://www.elvenware.com/teach/assignments/Aws/SystemCheck.html">https://www.elvenware.com/teach/assignments/Aws/SystemCheck.html</a></li>
+<li><a href="https://www.elvenware.com/teach/assignments/Aws/SystemCheckRefactor.html">https://www.elvenware.com/teach/assignments/Aws/SystemCheckRefactor.html</a></li>
+</ul>
+<p>Some program like that which has no calls to a remote system. It can report on your EC2 system because it is running on it, but it does not report on a remote system.</p>
+<p>I&#39;ll be expecting the programs to be running on the following ports, but be sure to include links to the running code when you turn in the assignment:</p>
+<ul>
+<li>export ELF_AWS_PROV_PORT=30032</li>
+<li>export ELF_SYSTEM_CHECK_PORT=30034</li>
+</ul>
+<p>That&#39;s the same as:</p>
+<ul>
+<li>export AWS_PROV_PORT=30032</li>
+<li>export SYSTEM_CHECK_PORT=30034</li>
+</ul>
+<a class="anchor" id="environment-variables"></a>
+<h2>Environment Variables</h2>
+<p>Rather late in the game I&#39;ve decided that I should have asked you to include the block of Environment Variables that you <a href="https://www.elvenware.com/teach/assignments/Npm/SystemdServiceControl.html#official-ports">define and export</a> in your <strong>.bashrc</strong>. This can&#39;t be an official part of the exam, as it is too late for me to add anything now (Sunday evening), but if you can include it, that would be very helpful. A way to get it to me would be to submit the assignment using the Text option in Canvas, and paste them in the Text page. Another good way would be to put in a file and attach that file to Canvas when you turn in the assignment.</p>
+<p>Your list might look a bit like this, but I won&#39;t give real port numbers here because the <a href="https://www.elvenware.com/teach/assignments/Npm/SystemdServiceControl.html#official-ports">offical list</a> is defined elsewhere.</p>
+<pre><code class="lang-bash"><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">PORT</span>=30XXX
+<span class="hljs-builtin-name">export</span> <span class="hljs-attribute">SERVER_PORT</span>=30XXX
+<span class="hljs-builtin-name">export</span> <span class="hljs-attribute">ELF_SCREF_PORT</span>=30XXX
+<span class="hljs-builtin-name">export</span> <span class="hljs-attribute">ELF_SYSTEM_CHECK_PORT</span>=30XXX
+<span class="hljs-builtin-name">export</span> <span class="hljs-attribute">MIDTERM_PORT</span>=30XXX
+</code></pre>
+<p>Don&#39;t even copy the names from here. Use the <a href="https://www.elvenware.com/teach/assignments/Npm/SystemdServiceControl.html#official-ports">offical list</a> so we have one canonical place to list services and make changes. I&#39;m showing you the above only so there can be little doubt as to what I hope you can give me.</p>
+<p>Though we all should agree on these values, when submitting assignments, it would be best if you included your version of this list of export statements from your <strong>~/.bashrc</strong>. Thank you.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<ul>
+<li>elf-tagger &quot;finished final&quot; &quot;aws-provision&quot;<ul>
+<li>If you need to do this more than once, just use the same strings each time. The git tag number will sort out their order.</li>
+</ul>
+</li>
+<li>I&#39;m expecting to find your work on the <strong>final</strong> branch, but also merge your work into the <strong>master</strong> branch when you are done. I want to see them in both places. The one I&#39;ll consider your final is the one in <strong>master</strong>, but please state exactly what code you want me to look at. Give branch and directory and tag.</li>
+</ul>
+<p>Let me know which programs you want me to check to see if they are running correctly according the description in <strong>systemd Service Complete</strong>. If you have any doubt as to whether you are using the right port or the port name, then let me know what you used. For instance:</p>
+<ul>
+<li>Program: System Check</li>
+<li>Port: 30034</li>
+<li>Environment Variable: ELF_SYSTEM_CHECK_PORT</li>
+</ul>
+<p>Recall that the official list of ports and names is in <a href="https://www.elvenware.com/teach/assignments/Npm/SystemdServiceControl.html#official-ports">SystemdServiceControl</a>. If possible, please include the code you have have in <strong>~/.bashrc</strong> for exporting your custom environment variables, especially if they vary from mine.</p>
+<p>When you turn in the final, tell me two programs that you feel are really polished, and I will look at them first. Try the <strong>run a</strong>, <strong>run b</strong> and <strong>run c</strong> on those two programs, as well as prettier and eslint. Check them after you have run the build-copy step. Get others working as you can, but focus on just two. My idea of five working programs is perhaps unrealistic. Try to get five working, but focus on just two and let me know what they are. Hopefully, one of them is your final aws-provision that just returns JSON. </p>
+<a class="anchor" id="extra-credit"></a>
+<h2>Extra Credit</h2>
+<p>Here are the extra credit sections. Each section that begins with the words <strong>Extra Credit</strong> are part of the extra credit portion of the final.</p>
+<a class="anchor" id="extra-credit-provision-repository"></a>
+<h2>Extra Credit: Provision Repository</h2>
+<p>The EC2 Provision Repo assignment asked you to create a series of buttons and make sure that each one had an endpoint on the server. The goal for the final is to make the sure the endpoints actually perform the expected operations. This will involve using calls that we have covered multiple times in this class. In particular, you will need to:</p>
+<ul>
+<li>Copy script files from the local machine to the EC2 instance</li>
+<li>Run the scripts on the remote machine</li>
+<li>Use the AWS api to perform a few tasks such as:<ul>
+<li>Create the instance</li>
+<li>Link the Elastic IP to the instance</li>
+</ul>
+</li>
+</ul>
+<p>Be sure that the code in <strong>App.js</strong> is refactored into an appropriate set of React components.</p>
+<p>Create or maintain at least ten unit tests at least three of which should use <strong>supertest</strong>.</p>
+<a class="anchor" id="extra-credit-bumps-in-the-road"></a>
+<h2>Extra Credit: Bumps in the Road</h2>
+<p>At the time of this writing, the process of running even a correctly implemented <strong>aws-provision</strong> application will not go smoothly even under even the best of circumstances. For instance, the application should copy the JsObjects SLB script <strong>GetStarted</strong> to the server and then run it. Among other things, this script runs the following commands in a non-interactive manner:</p>
+<pre><code>sudo apt update
+sudo apt<span class="hljs-built_in"> upgrade
+</span>sudo apt dist-upgrade
+sudo apt autoremove
+</code></pre><p>All this takes considerable time, and there is no good way at this stage to get feedback to the user. Once the <strong>GetStarted</strong> script is complete, it then reboots the system, which again takes time. By watching the command prompt, you can see the progress, so you, as a technical person, are not in the dark about what is happening. But clearly this is a less than optimal situation. Nevertheless, it does work, and improving the situation will have to wait till a later date, as we out of time this quarter.</p>
+<p>For me, the whole process takes something like five minutes to complete. It is pretty nice to be able to completely provision an EC2 instance in five minutes without having to do anything more than select a few buttons. So the experience has its upside. I definitely want to improve the app, but at least this is a start.</p>
+<a class="anchor" id="extra-credit-route-implementation"></a>
+<h2>Extra Credit: Route Implementation</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Method</th>
+<th style="text-align:left">Button Content (Text)</th>
+<th style="text-align:left">Route to Endpoint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">/create-educate</td>
+<td style="text-align:left">Use the <strong>AwsPromise</strong> code I gave you.</td>
+</tr>
+<tr>
+<td style="text-align:left">/create-standard</td>
+<td style="text-align:left">Use the <strong>AwsPromise</strong> code I gave you</td>
+</tr>
+<tr>
+<td style="text-align:left">/associate-elastic-ip</td>
+<td style="text-align:left">Use the AwsPromise code I gave you</td>
+</tr>
+<tr>
+<td style="text-align:left">/script-pusher/copy-get-started</td>
+<td style="text-align:left">Use the Node JS spawn API and scp</td>
+</tr>
+<tr>
+<td style="text-align:left">/ssh-runner/run-get-started</td>
+<td style="text-align:left">Use the SSH2 Package</td>
+</tr>
+<tr>
+<td style="text-align:left">this.removeKnownHost</td>
+<td style="text-align:left">Remove from KnownHost</td>
+<td style="text-align:left">/script-pusher/remove-known-host</td>
+</tr>
+</tbody>
+</table>
+<a class="anchor" id="associate"></a>
+<h2>Extra Credit: Associate</h2>
+<p><em>This section is extra credit, but it has a lot of information in it that will help you complete the simplified final.</em></p>
+<p>One of the trickiest parts of this process is getting the instanceId of a newly created instance and using it to bind an elastic IP to an instance.</p>
+<p>You need two pieces of information to link an Elastic IP and instance:</p>
+<ul>
+<li>The allocationId of the Elastic IP</li>
+<li>The instanceId of the instance you want to connect to</li>
+</ul>
+<p>Your milage may differ, but I maintain the <strong>allocationIds</strong> for both my standard and my educate account on the client side:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">const allocationIds</span> = {
+    standard: <span class="hljs-string">'eipalloc-0f6a026c08de655a2'</span>,
+    educate: <span class="hljs-string">'eipalloc-0e6db228b0e914bf1'</span>
+};
+
+<span class="hljs-attribute">const regions</span> = { standard: <span class="hljs-string">'us-west-2'</span>, educate: <span class="hljs-string">'us-east-1'</span> };
+</code></pre>
+<p>Note that I also track the region I use on both accounts. (Most of you will only use your educate account, but I show you how I track both pieces of data, since I want my code to work in both places. That is definitely not a requirement for the final, if you can get either educate or standard to work, then that is more than enough to do well on the final.)</p>
+<p>In <strong>routes/aws/AwsPromise.js</strong>, around line 35, you find this code:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-selector-tag">resolve</span>({
+    <span class="hljs-attribute">result</span>: <span class="hljs-string">'success'</span>,
+    instanceData: data.Instances[<span class="hljs-number">0</span>],
+    instanceTagged: tagData
+});
+</code></pre>
+<p>The <strong>instanceData</strong> property contains the information about the created instance that is sent to us by AWS. Among the data sent is the <strong>instanceId</strong> of the new instance. On the client side, in the fetch call that starts off the process of creating a new instance, I write this code:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">that</span><span class="hljs-selector-class">.setState</span>({
+    <span class="hljs-attribute">result</span>: json.result,
+    instanceData: json.instanceData,
+    allocationId: allocationIds.educate,
+    region: regions.educate
+});
+</code></pre>
+<p>Then in my constructor, I track the data send from the server:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">constructor</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">super</span>();
+    <span class="hljs-keyword">this</span>.state = {
+        result: <span class="hljs-string">'unknown'</span>,
+        allocationId: allocationIds.standard,
+        region: regions.standard,
+        instanceData: {
+            Architecture: <span class="hljs-string">''</span>,
+            ClientToken: <span class="hljs-string">''</span>,
+            ImageId: <span class="hljs-string">''</span>,
+            InstanceId: <span class="hljs-string">'i-0b37f98105dd1a72c'</span>,
+            InstanceType: <span class="hljs-string">''</span>,
+            KeyName: <span class="hljs-string">''</span>,
+            LaunchTime: <span class="hljs-string">''</span>,
+            PrivateDnsName: <span class="hljs-string">''</span>,
+            PrivateIpAddress: <span class="hljs-string">''</span>,
+            PublicDnsName: <span class="hljs-string">''</span>,
+            Hypervisor: <span class="hljs-string">''</span>,
+            RootDeviceName: <span class="hljs-string">''</span>,
+            RootDeviceType: <span class="hljs-string">''</span>
+        }
+    };
+}
+</code></pre>
+<p>Note that I provide default values for several fields, but this is just to keep the program from faulting before I have chance to fill them in with real data. In other words, this default values are all replaced after I get the instance data for an instance from the server.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/aws-provision-instanceid.png" alt="Some random version of my app just after instance is created"></p>
+<p><strong>Caption</strong>: <em>Some random version of my app just after an EC2 instance is created. Note that the <strong>instanceId</strong> is displayed.</em></p>
+<p>Now that we have the instanceId of the newly created instance, we can use it to associate our Elastic IP with the instance:</p>
+<pre><code class="lang-JavaScript">associateElasticIp = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-comment">//const that = this;</span>
+    fetch(
+        <span class="hljs-string">'/associate-elastic-ip?instanceId='</span> +
+            <span class="hljs-keyword">this</span>.state.instanceData.InstanceId +
+            <span class="hljs-string">'&amp;allocationId='</span> +
+            <span class="hljs-keyword">this</span>.state.allocationId +
+            <span class="hljs-string">'&amp;region='</span> +
+            <span class="hljs-keyword">this</span>.state.region
+    )
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+            <span class="hljs-keyword">return</span> response.json();
+        })
+        .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsed json'</span>, json);  
+        })
+        .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ex</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(
+                <span class="hljs-string">'parsing failed, URL bad, network down, or similar'</span>,
+                ex
+            );
+        });
+};
+</code></pre>
+<p>Ultimately, it would probably make sense to automatically call associateElasticIp when we get the <strong>instanceId</strong> from the server, but I do yet do that. At this time, I want to complete each step separately so I can be sure it is working. Getting things to run more smoothly is work left for a later date. (Perhaps we&#39;ll do it this spring in Isit322?)</p>
+<a class="anchor" id="charlie-notes"></a>
+<h2>Charlie Notes</h2>
+<p>Here are some key points I need to integrate into this document.</p>
+<ul>
+<li>We spent a lot of time learning lots of good stuff, but also trying to get everyone up to speed to do aws-provision, but we didn&#39;t quite make it, and I was reluctant to admit it. I see it now.</li>
+<li>So the unofficial plan at this writing is to have all the implementation of the server side code for aws-provision be extra credit.</li>
+<li>Instead, I want you to polish the earlier aws-provision assignment in the ways laid out in the SystemdServiceComplete (Links to an external site.)Links to an external site. assignment. The only addition is that I want all the server side methods, that just return placeholder JSON, to be checked with SuperTest code. I&#39;ll be more specific later, but essentially each server-side method should return something like {&quot;result&quot;: &quot;success&quot;, &quot;endpoint-called&quot;: &quot;&lt;YOUR ROUTE NAME LIKE /foo&gt;&quot;} and your SuperTest code should confirm that it can do that.</li>
+<li>This empty, non-working version of aws-provision should be running on as a systemd service on EC2. When I click on the buttons, they should display the default JSON text guessed at above, and specified in more detail by end of day Friday.</li>
+<li>You should also have a SystemCheck program which only checks methods on the client side running as an EC2 service on EC2. In other words, it never uses server/routes/ssh-runner, only script-pusher.js. It never uses SSH to check services running on other systems, it just checks the services running on the same instance of EC2 that it runs on. So uptime returns how long your EC2 instance has been up and running. (Please make sure you implement the whitelist!)</li>
+<li>For extra credit, you can have a separate program in your repository in a branch called extra-credit, that actually tries to implement the server side methods in aws-provision. It doesn&#39;t have to be complete to get you at least some extra credit. Don&#39;t deploy this version to EC2. It is only in the aws-provision directory but in the extra-credit branch. The final branch should contain the version of the program that you deploy to EC2, the version that doesn&#39;t do anything. it is that version that should be merged into master. The extra-credit version is never merged into master, it stays in extra-credit. Make it very obvious that you did the extra credit so I notice that you did it and grade it. Assume I&#39;m a basket case and won&#39;t read a hint buried somewhere. If you did it, make it very clear that you did the extra credit.</li>
+<li>Also, I&#39;m going to want to see some refactoring. I&#39;ll specify just what in the final document, but it is probably going to be close to what is already in the final.</li>
+<li>In summary, the Systemd Service Complete assignment is your final, except that I want you to add your aws-provision program to it, as described above.</li>
+</ul>
+<p>Again, this is not the final version of the final, as it were, but hopefully, it is close enough to let you continue working until I get the updated text to you.</p>
+</div></body></html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>JavaScriptReactMenu</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>JavaScriptReactMenu</h1><p>Welcome to JavaScriptReactMenu</p><ul><!--TOC_Start--><li><a href="#react-menus">React Menus</a></li>
+<li><a href="#router-install">Install React Router</a></li>
+<li><a href="#theory">Theory</a></li>
+<li><a href="#style-the-menu">Style the Menu</a></li>
+<li><a href="#testing">Testing</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-menus"></a>
+<h1>React Menus</h1>
+<p>Create Menus in a React Program.</p>
+<a class="anchor" id="router-install"></a>
+<h2>Install React Router</h2>
+<p>An npm package called <a href="https://www.npmjs.com/package/react-router-dom">react-router-dom</a> can help us both route user selections through the application and also to switch between views.</p>
+<p>When we switch between views we frequently display a particular component and hide other components. This kind of technology is often talked about as a <a href="https://en.wikipedia.org/wiki/Single-page_application">Single Page App, or SPA</a>. The point being that we navigate to a single page, and then change the content of that page as the user makes selections. This may look to the user as if they are navigating between different pages, but in fact we are simply showing and hiding various portions of the page.</p>
+<p>The first step is to install the library we will use to help us accomplish our goals:</p>
+<pre>npm install --save react-router-dom
+</pre>
+<a class="anchor" id="theory"></a>
+<h2>Theory</h2>
+<p>If you go to the address bar in the browser and type the following, it <em>will</em> take you to the <strong>AddressEdit</strong> view:</p>
+<ul>
+<li><a href="http://localhost:3000/edit">http://localhost:3000/edit</a></li>
+</ul>
+<p>The idea is this: rather than use explicit calls to navigate through the features of our application, we are using URLs. Thus, the list item you quote near the end of your question does take you to your edit view.</p>
+<p>To make all this happen, react-router-dom has to do a significant amount of hand waving. It does not, however, want you to have to understand exactly how it achieves its goal. Instead, it creates a declarative syntax. Here we declare what we want our menu to say, and what link (URL) should be associated with it:</p>
+<pre> <li><Link to="/edit">AdressEdit</Link></li>
+</pre>
+<p>Here we state exactly which component should be loaded when the link is called:</p>
+<pre><Route path="/edit" component={AddressChanger}/>
+</pre>
+<p>This may seem odd at first, but it is common paradigm in the web development world. For instance, Angular has a similar syntax for a similar system.</p>
+<p>One of the advantages can be that that the URL can serve as a means of saving the history of where the user has been in case we want to move backwards in time and revisit pages the user has already visited. But that is a more advanced issue.</p>
+<a class="anchor" id="style-the-menu"></a>
+<h2>Style the Menu</h2>
+<p>It&#39;s nice to style the menu. Here is a naive implementation good for simple menus or testing:</p>
+<pre>ul {
+    background-color: #8a6d3b;
+    list-style-type: none;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    color: white;
+    display: block;
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: #985f0d;
+}
+</pre>
+<p>You can put this code in your CSS folder in a file called <strong>menu.css</strong>. Then link it in to the Component where define the menu:</p>
+<pre>import '../css/menu.css';
+</pre>
+<p>Since we are linking our code into a very targeted component, it is unlikely that there will be another UL or LI in that file. As a result, we should change only the unordered list that contains our menu.</p>
+<p>W3Schools has a nice <a href="https://www.w3schools.com/css/css_navbar.asp">write up</a> on all this.</p>
+<a class="anchor" id="testing"></a>
+<h2>Testing</h2>
+<p>Sometimes, in our tests, we want to simulate a menu selection. If we have several menu items, we want to test what happens when the user selects a particular menu item. What is rendered after the menu is selected? Is it the correct HTML?</p>
+<p>Here is how to to use mount and test the HTML that is rendered when the user selects an item from the menu. Suppose you have component that looks something like this:</p>
+<pre>import React, {Component} from 'react';
+import { Route, BrowserRouter } from 'react-router-dom';
+// BUNCH MORE IMPORTS
+
+class DataMaven extends Component {
+  constructor() {
+    super();        
+    // INITIALIZATION OMITTED HERE
+  }
+
+  // SOME METHODS OMITTED HERE
+
+  render() {
+    return (
+      <BrowserRouter>
+        <div>
+          <ElfHeader/>
+          <Route exact path='/' component={GetUserInfo} />
+          <Route path='/get-foo' component={GetFoo}/>
+          <Route path='/get-gist' component={GetGist}/>
+          <Route path='/get-gist-list' component={GistLister}/>
+
+          <Route path='/get-numbers'
+            render={(props) => (
+               <SmallNumbers {...props} numbers={numbersInit}/>
+            )}
+          />
+        </div>
+      </BrowserRouter>   
+    );
+  }
+}
+
+export default DataMaven;
+</pre>
+<p>Take the BrowserRouter/Router out of DataMaven.</p>
+<pre>render() {
+  return (
+    <div>
+      <ElfHeader/>
+      <Route exact path='/' component={GetUserInfo} />
+      <Route path='/get-foo' component={GetFoo}/>
+      <Route path='/get-gist' component={GetGist}/>
+      <Route path='/get-gist-list' component={GistLister}/>
+
+      <Route path='/get-numbers'
+        render={(props) => (
+           <SmallNumbers {...props} numbers={numbersInit}/>
+        )}
+      />
+    </div>
+  );
+}
+</pre>
+<p>Put it in your main component, which is usually called <strong>index.js</strong>:</p>
+<pre>import React from 'react';
+import ReactDOM from 'react-dom';
+import DataMaven from './components/DataMaven';
+import { BrowserRouter as Router } from 'react-router-dom';
+
+ReactDOM.render(
+    <div>
+        <Router>
+            <DataMaven/>
+        </Router>
+    </div>,
+    document.getElementById('root')
+);
+</pre>
+<p>Now write a test that uses the special <strong>MemoryRouter</strong> designed for this specific purpose. Here, for instance, is a test in <strong>SmallNumbers.test.js</strong>:</p>
+<pre>import { MemoryRouter } from 'react-router';
+
+fit('renders with DataMaven the SmallNumbers state.eight', () => {
+    const wrapper = mount(
+        <MemoryRouter initialEntries={['/get-numbers']}>
+            <DataMaven />
+        </MemoryRouter>
+    );
+    elfDebug.getAll(wrapper);
+    const eightSign = <p className='App-intro'>state.eight: 0</p>;
+    expect(wrapper.contains(eightSign)).toEqual(true);
+});
+</pre>
+<p>The point here is that <strong>MemoryRouter</strong> has a property called <strong>initialEntries</strong> that can be used to specify the path you want to use in your test. The code above is therefore the equivalent of selecting <strong>SmallNumbers</strong> from the menu.</p>
+<p>And here is the output from <strong>elfDebugEnzyme</strong>. In other words, this is the HTML generated by the <strong>DataMaven</strong> component:</p>
+<pre>SmallNumbers.test.js:
+    <MemoryRouter initialEntries={{...}}>
+      <Router history={{...}}>
+        <DataMaven>
+          <div>
+            <ElfHeader>
+               // I'M OMITTING THE CONTENTS OF ELFHEADER
+            </ElfHeader>
+            <Route exact={true} path="/" render={[Function]} />
+            <Route path="/get-foo" component={[Function]} />
+            <Route path="/get-gist" render={[Function]} />
+            <Route path="/get-gist-list" render={[Function]} />
+            <Route path="/get-numbers" render={[Function]}>
+              // THE FOLLOWING SHOWS HOW SMALL NUMBERS IS EXPANDED
+              <SmallNumbers match={{...}} location={{...}} history={{...}} staticContext={[undefined]} numbers={{...}}>
+                <div className="App">
+                  <p className="App-intro">
+                    state.nine:
+                    0
+                  </p>
+                  <p className="App-intro">
+                    state.eight:
+                    0
+                  </p>
+                  <button className="getNine" onClick={[Function]}>
+                    Get Nine
+                  </button>
+                  <button className="getEight" onClick={[Function]}>
+                    Get Eight
+                  </button>
+                </div>
+              </SmallNumbers>
+            </Route>
+          </div>
+        </DataMaven>
+      </Router>
+    </MemoryRouter>
+</pre>
+<p>Notice that only the <strong>SmallNumbers</strong> component is expanded, is active. This is why the test shown above passes:</p>
+<pre>PASS  src/__tests__/SmallNumbers.test.js
+ My Small Numbers Tests
+   ✓ renders with DataMaven the SmallNumbers state.eight (12ms)
+   ○ renders initial value of paragraph with state.eight
+   ○ renders initial value of paragraph with state.nine
+
+Test Suites: 1 passed, 1 total
+Tests:       2 skipped, 1 passed, 3 total
+Snapshots:   0 total
+Time:        0.199s, estimated 1s
+Ran all test suites matching "SmallNumbers".
+
+Watch Usage
+› Press a to run all tests.
+› Press o to only run tests related to changed files.
+› Press p to filter by a filename regex pattern.
+› Press q to quit watch mode.
+› Press Enter to trigger a test run.
+</pre>
+</div></body></html>

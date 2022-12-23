@@ -1,0 +1,546 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>TestSnapShotsAndHints</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>TestSnapShotsAndHints</h1><p>Welcome to TestSnapShotsAndHints</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#watch-tests">Watch Tests</a></li>
+<li><a href="#snapshots">Snapshots</a></li>
+<li><a href="#code-coverage">Code Coverage</a></li>
+<li><a href="#proxy-tests">Proxy Tests</a></li>
+<li><a href="#errors">Errors</a></li>
+<li><a href="#mocking-fetch">Mocking Fetch</a></li>
+<li><a href="#address-and-after-click-field-tests">Address and after Click Field Tests</a></li>
+<li><a href="#react-spies">React Spies</a></li>
+<li><a href="#testing-addressshow">Testing AddressShow</a></li>
+<li><a href="#eslint">ESLint</a></li>
+<li><a href="#material-checklist">Material CheckList</a></li>
+<li><a href="#native-test">Native Test</a></li>
+<li><a href="#native-spies">Native Spies</a></li>
+<li><a href="#native-mocks">Native Mocks</a></li>
+<li><a href="#dive-for-regular-non-native-react">Dive for Regular, Non-Native React</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>SnapShot tests do not replace all our standard tests. SnapShot testing is not TDD because you can&#39;t meaningfully write the test first and then get it to pass.</p>
+<p>In all our tests, whether they are SnapShot tests or not, we use <strong>shallow</strong> and don&#39;t use <strong>mount</strong>. There are times when <strong>mount</strong> is useful, but we are not using them on the Midterm.</p>
+<ul>
+<li><a href="https://facebook.github.io/jest/docs/en/configuration.html">Configuring Jest</a></li>
+<li><a href="https://facebook.github.io/jest/docs/en/snapshot-testing.html">SnapShot Testing</a></li>
+</ul>
+<p>See these demos in JsObjects. (Run git pull first to be sure you have the latest):</p>
+<ul>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/React/ReactFetchTests">Native Fetch Enzyme Tests</a></li>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/React/ReactNativeTesting/EnzymeBasics">Web App Fetch Enzyme Tests</a></li>
+</ul>
+<a class="anchor" id="watch-tests"></a>
+<h2>Watch Tests</h2>
+<p>In <strong>package.json</strong> use the --watch flag:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"test"</span>: <span class="hljs-string">"jest --watch"</span>
+</code></pre>
+<a class="anchor" id="snapshots"></a>
+<h2>Snapshots</h2>
+<p>SnapShots allow you to create a text file that contains the output from your component when it is in a particular state. The snapshot is saved to a file. The next time you run the test, the output from your component is compared to the snapshot from your previous run.</p>
+<p>In the future, if your component changes an error will occur saying that your component no longer matches your snapshot. Type &#39;u&#39; to update the snapshot.</p>
+<p>You should have a file called <strong>SnapShots.test.js</strong> that contains one snap shot test for each of your major files in the <strong>components</strong> directory.</p>
+<p>Example:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> AddressShow <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/AddressShow'</span>;
+<span class="hljs-keyword">import</span> { configure, shallow } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+<span class="hljs-keyword">import</span> Adapter <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme-adapter-react-16'</span>;
+<span class="hljs-keyword">import</span> addresses <span class="hljs-keyword">from</span> <span class="hljs-string">'../address-list'</span>;
+
+describe(<span class="hljs-string">'SnapShot Tests'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+
+    it(<span class="hljs-string">'should take an AddressShow snapshot'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> elfTree = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">AddressShow</span> <span class="hljs-attr">address</span>=<span class="hljs-string">{addresses[0]}/</span>&gt;</span>);
+        expect(elfTree).toMatchSnapshot();
+    });
+
+});</span>
+</code></pre>
+<p>You should add more tests, one for each snapshot.</p>
+<a class="anchor" id="code-coverage"></a>
+<h2>Code Coverage</h2>
+<p>Jest uses a tool called Istanbul to help us be sure that all the methods in our objects are being tested.</p>
+<p>Add <strong>--coverage</strong> to your <strong>test</strong> property in <strong>package.json</strong> or just run Jest with it:</p>
+<pre><code>jest <span class="hljs-comment">--coverage</span>
+</code></pre><p>Here is an example, showing how much still needs to be done.</p>
+<pre><code>$ react-scripts test --env=jsdom --coverage
+ PASS  src/tests/App.test.js
+ PASS  src/tests/AddressShow.test.js
+ PASS  src/tests/Header.test.js
+ PASS  src/tests/Address.test.js
+ PASS  src/tests/SnapShots.test.js
+ PASS  src/tests/GetFile.test.js
+
+Test Suites: 6 passed, 6 total
+Tests:       41 passed, 41 total
+Snapshots:   5 passed, 5 total
+Time:        1.821s
+Ran all test suites.
+---------------------------|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">-------------------</span>|
+File                       |<span class="hljs-string">  % Stmts </span>|<span class="hljs-string"> % Branch </span>|<span class="hljs-string">  % Funcs </span>|<span class="hljs-string">  % Lines </span>|<span class="hljs-string"> Uncovered Line #s </span>|
+---------------------------|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">-------------------</span>|
+All files                  |<span class="hljs-string">    38.95 </span>|<span class="hljs-string">    20.51 </span>|<span class="hljs-string">    45.95 </span>|<span class="hljs-string">    53.62 </span>|<span class="hljs-string">                   </span>|
+ src                       |<span class="hljs-string">     3.92 </span>|<span class="hljs-string">        0 </span>|<span class="hljs-string">        0 </span>|<span class="hljs-string">        8 </span>|<span class="hljs-string">                   </span>|
+  address-list.js          |<span class="hljs-string">      100 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">                   </span>|
+  index.js                 |<span class="hljs-string">        0 </span>|<span class="hljs-string">        0 </span>|<span class="hljs-string">        0 </span>|<span class="hljs-string">        0 </span>|<span class="hljs-string">  1,2,3,4,5,7,9,15 </span>|
+  registerServiceWorker.js |<span class="hljs-string">        0 </span>|<span class="hljs-string">        0 </span>|<span class="hljs-string">        0 </span>|<span class="hljs-string">        0 </span>|<span class="hljs-string">... 39,140,141,142 </span>|
+ src/components            |<span class="hljs-string">    79.55 </span>|<span class="hljs-string">    57.14 </span>|<span class="hljs-string">    80.95 </span>|<span class="hljs-string">    79.55 </span>|<span class="hljs-string">                   </span>|
+  Address.js               |<span class="hljs-string">    81.48 </span>|<span class="hljs-string">    58.33 </span>|<span class="hljs-string">       90 </span>|<span class="hljs-string">    81.48 </span>|<span class="hljs-string">    32,33,39,50,56 </span>|
+  AddressShow.js           |<span class="hljs-string">       60 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">       50 </span>|<span class="hljs-string">       60 </span>|<span class="hljs-string">             39,49 </span>|
+  App.js                   |<span class="hljs-string">      100 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">                   </span>|
+  ElfHeader.js             |<span class="hljs-string">       75 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">    66.67 </span>|<span class="hljs-string">       75 </span>|<span class="hljs-string">                16 </span>|
+  GetFile.js               |<span class="hljs-string">    85.71 </span>|<span class="hljs-string">       50 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">    85.71 </span>|<span class="hljs-string">                15 </span>|
+  elf-styles.js            |<span class="hljs-string">        0 </span>|<span class="hljs-string">        0 </span>|<span class="hljs-string">        0 </span>|<span class="hljs-string">        0 </span>|<span class="hljs-string">                   </span>|
+---------------------------|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">-------------------</span>|
+</code></pre><p>A number of problems stem from files that we don&#39;t own or don&#39;t expect to be tested.</p>
+<p>We can fix this by adding a <strong>jest</strong> key to <strong>package.json</strong>:</p>
+<pre><code class="lang-javascript">{
+    <span class="hljs-string">"name"</span>: <span class="hljs-string">"address-proxy"</span>,
+    <span class="hljs-string">"version"</span>: <span class="hljs-string">"1.0.0"</span>,
+    <span class="hljs-string">"private"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-string">"proxy"</span>: <span class="hljs-string">"http://localhost:30026"</span>,
+    <span class="hljs-string">"dependencies"</span>: {
+        // AND SO ON
+    },
+    <span class="hljs-string">"scripts"</span>: {
+        // ETC
+    },
+    <span class="hljs-string">"devDependencies"</span>: {
+        // STUFF HERE
+    },
+    <span class="hljs-string">"jest"</span>: {
+        <span class="hljs-string">"collectCoverageFrom"</span>: [
+            <span class="hljs-string">"**/*.{js,jsx}"</span>,
+            <span class="hljs-string">"!**/coverage/**"</span>,
+            <span class="hljs-string">"!**/node_modules/**"</span>,
+            <span class="hljs-string">"!**/registerServiceWorker.js"</span>,
+            <span class="hljs-string">"!**/elf-styles.js"</span>,
+            <span class="hljs-string">"!src/index.js"</span>
+        ]
+    }
+
+}
+
+</code></pre>
+<p>Now it looks somewhat better:</p>
+<pre><code>------------------|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">-------------------</span>|
+File              |<span class="hljs-string">  % Stmts </span>|<span class="hljs-string"> % Branch </span>|<span class="hljs-string">  % Funcs </span>|<span class="hljs-string">  % Lines </span>|<span class="hljs-string"> Uncovered Line #s </span>|
+------------------|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">-------------------</span>|
+All files         |<span class="hljs-string">    80.43 </span>|<span class="hljs-string">    57.14 </span>|<span class="hljs-string">    80.95 </span>|<span class="hljs-string">    80.43 </span>|<span class="hljs-string">                   </span>|
+ src              |<span class="hljs-string">      100 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">                   </span>|
+  address-list.js |<span class="hljs-string">      100 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">                   </span>|
+ src/components   |<span class="hljs-string">    79.55 </span>|<span class="hljs-string">    57.14 </span>|<span class="hljs-string">    80.95 </span>|<span class="hljs-string">    79.55 </span>|<span class="hljs-string">                   </span>|
+  Address.js      |<span class="hljs-string">    81.48 </span>|<span class="hljs-string">    58.33 </span>|<span class="hljs-string">       90 </span>|<span class="hljs-string">    81.48 </span>|<span class="hljs-string">    32,33,39,50,56 </span>|
+  AddressShow.js  |<span class="hljs-string">       60 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">       50 </span>|<span class="hljs-string">       60 </span>|<span class="hljs-string">             39,49 </span>|
+  App.js          |<span class="hljs-string">      100 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">                   </span>|
+  ElfHeader.js    |<span class="hljs-string">       75 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">    66.67 </span>|<span class="hljs-string">       75 </span>|<span class="hljs-string">                16 </span>|
+  GetFile.js      |<span class="hljs-string">    85.71 </span>|<span class="hljs-string">       50 </span>|<span class="hljs-string">      100 </span>|<span class="hljs-string">    85.71 </span>|<span class="hljs-string">                15 </span>|
+------------------|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">----------</span>|<span class="hljs-string">-------------------</span>|
+</code></pre><p>It is usually not practical to get 100% coverage on all files. Usually 80-90% is considered reasonable.</p>
+<p>If it is not already there, add <strong>coverage</strong> to your <strong>.gitignore</strong> file.</p>
+<a class="anchor" id="proxy-tests"></a>
+<h2>Proxy Tests</h2>
+<pre><code>PASS  src/tests/App.test.js
+PASS  src/tests/Address.test.js
+PASS  src/tests/Header.test.js
+PASS  src/tests/AddressShow.test.js
+PASS  src/tests/GetFile.test.js
+
+<span class="hljs-keyword">Test </span>Suites: 5 passed, 5 total
+Tests:       36 passed, 36 total
+Snapshots:   0 total
+<span class="hljs-keyword">Time:</span>        0.956s, estimated 1s
+Ran all test suites.
+
+Watch Usage: Press w to show more.
+</code></pre><a class="anchor" id="errors"></a>
+<h2>Errors</h2>
+<ul>
+<li><strong>Method “simulate” is only meant to be run on a single node. 0 found instead.</strong><ul>
+<li>Match the <strong>ID</strong> from the <strong>simulate</strong> call in your test to the <strong>ID</strong> of the button you want to click.</li>
+<li>You can add an ID on a <strong>RaisedButton</strong></li>
+</ul>
+</li>
+<li><strong>TypeError: Network request failed</strong><ul>
+<li>This usually means you need to create fetch mock.</li>
+</ul>
+</li>
+<li><strong>TypeError: Cannot read property &#39;prepareStyles&#39; of undefined</strong><ul>
+<li>In your test, wrap the component you want to test in a <strong>MuiThemeProvider</strong></li>
+</ul>
+</li>
+<li><strong>Warning: Failed context type: The context <code>muiTheme</code> is marked as required in <code>AppBar</code>, but its value is <code>undefined</code>.</strong><ul>
+<li>In your test, wrap the component you want to test in a <strong>MuiThemeProvider</strong></li>
+</ul>
+</li>
+</ul>
+<a class="anchor" id="mocking-fetch"></a>
+<h2>Mocking Fetch</h2>
+<p>As a general rule, we don&#39;t ever call across the network while running tests. Instead, we pretend to make the call by creating a mock <strong>fetch</strong>:</p>
+<pre><code class="lang-javascript">beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    global.fetch = jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-keyword">const</span> promise = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> {
+            resolve({
+                <span class="hljs-attr">ok</span>: <span class="hljs-literal">true</span>,
+                <span class="hljs-attr">json</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                    <span class="hljs-keyword">return</span> [
+                        {
+                            <span class="hljs-attr">firstName</span>: <span class="hljs-string">'Patty'</span>,
+                            <span class="hljs-attr">lastName</span>: <span class="hljs-string">'Murray'</span>,
+                            <span class="hljs-attr">address</span>: <span class="hljs-string">'154 Russell Senate Office Building'</span>,
+                            <span class="hljs-attr">city</span>: <span class="hljs-string">'Washington'</span>,
+                            <span class="hljs-attr">state</span>: <span class="hljs-string">'D.C.'</span>,
+                            <span class="hljs-attr">zip</span>: <span class="hljs-string">'20510'</span>,
+                            <span class="hljs-attr">phone</span>: <span class="hljs-string">'(202) 224-2621'</span>,
+                            <span class="hljs-attr">fax</span>: <span class="hljs-string">'(202) 224-0238'</span>,
+                            <span class="hljs-attr">tollfree</span>: <span class="hljs-string">'(866) 481-9186'</span>
+                        }
+                    ];
+                }
+            });
+        });
+        <span class="hljs-keyword">return</span> promise;
+    });
+});
+</code></pre>
+<p>I use this or a similar method in:</p>
+<ul>
+<li>SnapShots.test.js</li>
+<li>Address.test.js</li>
+</ul>
+<p>I need it in <strong>SnapShots.test.js</strong> and <strong>Address.test.js</strong> because we call <strong>fetch</strong> in <strong>componendDidMount</strong>. This means its gets called when we load <strong>Address.js</strong> whether we want it to be called our not.</p>
+<a class="anchor" id="address-and-after-click-field-tests"></a>
+<h2>Address and after Click Field Tests</h2>
+<p>How can we test the address component? It much fussing, the solution turned out to be simple. We want to call <strong>setAddress</strong> and pass in an index, and ensure that this gets us new data.</p>
+<ul>
+<li><a href="https://www.ccalvert.net/books/CloudNotes/Assignments/React/ReactAddressTestingDataManager.html">FakeDataManager</a></li>
+</ul>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> addresses <span class="hljs-keyword">from</span> <span class="hljs-string">'../address-list'</span>;
+<span class="hljs-keyword">import</span> dataManager <span class="hljs-keyword">from</span> <span class="hljs-string">'../assets/FakeDataManager'</span>;
+
+describe(<span class="hljs-string">'Address tests'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">let</span> wrapper = <span class="hljs-literal">null</span>;
+
+  beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      wrapper = shallow(&lt;Address
+          dataManager={dataManager}
+          addressList={addresses}/&gt;);
+  });
+
+  <span class="hljs-keyword">const</span> addressProp = <span class="hljs-function"><span class="hljs-params">wrapper</span> =&gt;</span> wrapper.find(<span class="hljs-string">'WithStyles(AddressShow)'</span>).prop(<span class="hljs-string">'address'</span>);
+
+  it(<span class="hljs-string">'renders and displays the default first name from props'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      expect(addressProp(wrapper).firstName).toEqual(<span class="hljs-string">'unknown'</span>);
+  });
+
+  it(<span class="hljs-string">'renders and displays the default first name from FakeData'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      expect(wrapper.state().address.firstName).toEqual(<span class="hljs-string">'Patty'</span>);
+  });
+
+  it(<span class="hljs-string">'renders state of firstName after button click'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      wrapper.instance().setAddress(<span class="hljs-number">1</span>);
+      expect(wrapper.state().address.firstName).toEqual(<span class="hljs-string">'Robert'</span>);
+  });
+
+});
+</code></pre>
+<a class="anchor" id="react-spies"></a>
+<h2>React Spies</h2>
+<p>Similar tests from the <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/React/ReactFetchTests">ReactFetchTest</a> demo:</p>
+<pre><code class="lang-JavaScript">it('renders state by calling fetchServer directly', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;FetchServer</span> /&gt;)<span class="hljs-comment">;</span>
+    const statusParagraph = (
+        <span class="hljs-name">&lt;p</span> className=<span class="hljs-string">"App-intro"</span>&gt;Result: success&lt;/p&gt;
+    )<span class="hljs-comment">;</span>
+    wrapper.instance().fetchServer()
+        .then(() =&gt; {
+            console.log(<span class="hljs-name">wrapper</span>.debug())<span class="hljs-comment">;</span>
+            wrapper.update()<span class="hljs-comment">;</span>
+            try {
+                expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">statusParagraph</span>)).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+            } catch(<span class="hljs-name">ex</span>) {
+                console.error(<span class="hljs-name">ex</span>)<span class="hljs-comment">;</span>
+            }
+        })<span class="hljs-comment">;</span>
+
+})<span class="hljs-comment">;</span>
+
+it('calls fetchServer button click', () =&gt; {
+    const spy = jest.spyOn(<span class="hljs-name">FetchServer</span>.prototype, 'fetchServer')<span class="hljs-comment">;</span>
+    const wrapper = shallow(<span class="hljs-name">&lt;FetchServer</span> /&gt;)<span class="hljs-comment">;</span>
+    wrapper.find('#fetchServer').simulate('click')<span class="hljs-comment">;</span>
+    console.log(<span class="hljs-name">wrapper</span>.debug())<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">spy</span>).toHaveBeenCalled()<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<a class="anchor" id="testing-addressshow"></a>
+<h2>Testing AddressShow</h2>
+<p>This is the old style, before we needed to call <strong>dive()</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> addresses <span class="hljs-keyword">from</span> <span class="hljs-string">'../address-list'</span>;
+
+describe(<span class="hljs-string">'AddressShow Shallow Suite'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">let</span> wrapper = <span class="hljs-literal">null</span>;
+
+  <span class="hljs-keyword">const</span> addressTest = {
+        <span class="hljs-attr">firstName</span>: <span class="hljs-string">'Patty'</span>,
+        <span class="hljs-attr">lastName</span>: <span class="hljs-string">'Murray'</span>,
+        <span class="hljs-attr">street</span>: <span class="hljs-string">'154 Russell Senate Office Building'</span>,
+        <span class="hljs-attr">city</span>: <span class="hljs-string">'Washington'</span>,
+        <span class="hljs-attr">state</span>: <span class="hljs-string">'D.C.'</span>,
+        <span class="hljs-attr">zip</span>: <span class="hljs-string">'20510'</span>,
+        <span class="hljs-attr">phone</span>: <span class="hljs-string">'(202) 224-2621'</span>,
+        <span class="hljs-attr">fax</span>: <span class="hljs-string">'(202) 224-0238'</span>,
+        <span class="hljs-attr">tollfree</span>: <span class="hljs-string">'(866) 481-9186'</span>
+    };
+
+  <span class="hljs-keyword">const</span> setAddress = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-keyword">const</span> address=addresses[<span class="hljs-number">1</span>];
+      wrapper.setProps({ <span class="hljs-attr">address</span>: address });
+  };
+
+  <span class="hljs-keyword">const</span> afterClickFieldTest = <span class="hljs-function">(<span class="hljs-params">name</span>) =&gt;</span> {
+      wrapper = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">AddressShow</span> <span class="hljs-attr">address</span>=<span class="hljs-string">{addresses[0]}</span> <span class="hljs-attr">setAddress</span>=<span class="hljs-string">{setAddress}/</span>&gt;</span>);
+      const patty = <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-intro"</span>&gt;</span>{name}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>;
+      wrapper.find('#setAddress').simulate('click');
+      //console.log(wrapper.debug());
+      expect(wrapper.contains(patty)).toBe(true);
+  };
+
+  it('renders and displays the first name', () =&gt; {
+      defaultFieldTest('First Name: unknown', 0);
+      afterClickFieldTest('First Name: ' + addressTest.firstName, 0);
+  });
+
+});</span>
+</code></pre>
+<p>Once we add in WithStyles we need to call <strong>dive()</strong>:</p>
+<pre><code class="lang-JavaScript">const getIndex = <span class="hljs-function"><span class="hljs-params">(wrapper, index, talkToMe)</span> =&gt;</span> {
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">debug</span> || talkToMe) {
+        const ninep = wrapper
+            .find(<span class="hljs-string">'div#addressShow'</span>)
+            .childAt(index)
+            .<span class="hljs-built_in">debug</span>();
+        console.log(<span class="hljs-string">'NINEP:'</span>, ninep);
+    }
+};
+
+const defaultFieldTest = <span class="hljs-function"><span class="hljs-params">(name, index, talkToMe)</span> =&gt;</span> {
+    const wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">0</span>]} /&gt;);
+    const welcome = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
+    getIndex(wrapper, index, talkToMe);
+    expect(wrapper.dive().contains(welcome)).toEqual(<span class="hljs-literal">true</span>);
+};
+
+const afterClickFieldTest = <span class="hljs-function"><span class="hljs-params">(name)</span> =&gt;</span> {
+  wrapper = shallow(&lt;AddressShow address={addresses[<span class="hljs-number">0</span>]} setAddress={setAddress}/&gt;);
+  const patty = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;{name}&lt;/p&gt;;
+  wrapper.dive().find(<span class="hljs-string">'#setAddress'</span>).simulate(<span class="hljs-string">'click'</span>);
+  //console.log(wrapper.<span class="hljs-built_in">debug</span>());
+  expect(wrapper.dive().contains(patty)).toBe(<span class="hljs-literal">true</span>);
+};
+</code></pre>
+<a class="anchor" id="eslint"></a>
+<h2>ESLint</h2>
+<p>Make sure you have ES6 in your ENV:</p>
+<pre><code class="lang-javascript">{
+    <span class="hljs-string">"extends"</span>: [
+        <span class="hljs-string">"eslint:recommended"</span>,
+        <span class="hljs-string">"plugin:react/recommended"</span>
+    ],
+    <span class="hljs-string">"rules"</span>: {
+        // enable additional rules
+        <span class="hljs-string">"indent"</span>: [<span class="hljs-string">"error"</span>, <span class="hljs-number">4</span>],
+        <span class="hljs-string">"linebreak-style"</span>: [<span class="hljs-string">"error"</span>, <span class="hljs-string">"unix"</span>],
+        <span class="hljs-string">"quotes"</span>: [<span class="hljs-string">"warn"</span>, <span class="hljs-string">"single"</span>],
+        <span class="hljs-string">"semi"</span>: [<span class="hljs-string">"error"</span>, <span class="hljs-string">"always"</span>],
+
+        // override default options for rules from base configurations
+        <span class="hljs-string">"comma-dangle"</span>: [<span class="hljs-string">"off"</span>, <span class="hljs-string">"always"</span>],
+        <span class="hljs-string">"no-cond-assign"</span>: [<span class="hljs-string">"error"</span>, <span class="hljs-string">"always"</span>],
+
+        // disable rules from base configurations
+        <span class="hljs-string">"no-console"</span>: <span class="hljs-string">"off"</span>
+    },
+    <span class="hljs-string">"parser"</span>:  <span class="hljs-string">"babel-eslint"</span>,
+    <span class="hljs-string">"parserOptions"</span>: {
+        <span class="hljs-string">"ecmaVersion"</span>: <span class="hljs-number">7</span>,
+        <span class="hljs-string">"sourceType"</span>: <span class="hljs-string">"module"</span>,
+        <span class="hljs-string">"ecmaFeatures"</span>: {
+            <span class="hljs-string">"jsx"</span>: <span class="hljs-literal">true</span>
+        }
+    },
+    <span class="hljs-string">"env"</span>: {
+        <span class="hljs-string">"browser"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">"node"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">"jest"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">"es6"</span>: <span class="hljs-literal">true</span>
+    }
+}
+</code></pre>
+<a class="anchor" id="material-checklist"></a>
+<h2>Material CheckList</h2>
+<ul>
+<li>Are your buttons all Material Buttons?</li>
+</ul>
+<a class="anchor" id="native-test"></a>
+<h2>Native Test</h2>
+<p>Run our <strong>get-gist</strong> utility and select either h or i to get the packages with either <strong>yarn</strong> or <strong>npm</strong> you need to add to your project for testing.</p>
+<p>In your <strong>package.json</strong> file set up Jest:</p>
+<pre><code><span class="hljs-string">"jest"</span>: {
+    <span class="hljs-string">"preset"</span>: <span class="hljs-string">"jest-expo"</span>,
+     <span class="hljs-string">"transformIgnorePatterns"</span>: [
+         <span class="hljs-string">"!node_modules/react-runtime"</span>
+     ],
+    <span class="hljs-string">"snapshotSerializers"</span>: [<span class="hljs-string">"enzyme-to-json/serializer"</span>]
+},
+</code></pre><p>Example tests:</p>
+<pre><code class="lang-javascript">describe('jest test', function() {
+
+    const debug = true<span class="hljs-comment">;</span>
+
+    it('renders without crashing', () =&gt; {
+        const tree = renderer.create(<span class="hljs-name">&lt;App</span> /&gt;).toJSON()<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">tree</span>).toMatchSnapshot()<span class="hljs-comment">;</span>
+
+    })<span class="hljs-comment">;</span>
+
+    it('should find Header', () =&gt; {
+        const wrapper = shallow(<span class="hljs-name">&lt;App</span> /&gt;)<span class="hljs-comment">;</span>
+        if (<span class="hljs-name">debug</span>) {
+            console.log(<span class="hljs-name">wrapper</span>.debug())<span class="hljs-comment">;</span>
+        }
+        const nineSign = &lt;ElfHeader /&gt;<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">nineSign</span>)).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>This test for finding an element before a button test:</p>
+<pre><code class="lang-javascript">it('renders state of File paragraph before button click', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;ApiFoo</span> appInit={appInit} /&gt;)<span class="hljs-comment">;</span>
+    const nineSign = &lt;Text&gt;A status: status will go here&lt;/Text&gt;<span class="hljs-comment">;</span>
+    elfDebugEnzyme.getFirst(<span class="hljs-name">wrapper</span>, 'p')<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">nineSign</span>)).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>And then let&#39;s do a button click test:</p>
+<pre><code class="lang-javascript">it('renders state of status paragraph after button click', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;ApiFoo</span> appInit={appInit} /&gt;)<span class="hljs-comment">;</span>
+    const statusParagraph = (
+        <span class="hljs-name">&lt;Text&gt;A</span> status: status did go here&lt;/Text&gt;
+    )<span class="hljs-comment">;</span>
+    wrapper.find('#queryServer').props().onPress()<span class="hljs-comment">;</span>
+    setImmediate(() =&gt; {
+        wrapper.update()<span class="hljs-comment">;</span>
+        try {
+            expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">statusParagraph</span>)).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+        } catch (<span class="hljs-name">e</span>) {
+            console.log(<span class="hljs-name">e</span>)<span class="hljs-comment">;</span>
+        }
+    })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>Note that we can do a less precise match like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-title">expect</span><span class="hljs-params">(wrapper.containsMatchingElement(foo)</span></span>).toBe(true)
+</code></pre>
+<p>This will ignore the props (attributes) on a control.</p>
+<p>Notice that there is a difference between selecting a React button and React Native button:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-selector-tag">wrapper</span><span class="hljs-selector-class">.find</span>(<span class="hljs-string">'#queryServer'</span>)<span class="hljs-selector-class">.simulate</span>(<span class="hljs-string">'click'</span>);
+<span class="hljs-selector-tag">wrapper</span><span class="hljs-selector-class">.find</span>(<span class="hljs-string">'#queryServer'</span>)<span class="hljs-selector-class">.props</span>()<span class="hljs-selector-class">.onPress</span>();
+</code></pre>
+<p>In React Native, we want the latter.</p>
+<p>Or Try these tests:</p>
+<pre><code class="lang-JavaScript">it('finds a text element', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;ElfHeader</span> /&gt;)<span class="hljs-comment">;</span>
+    const link = &lt;Text&gt;Home&lt;/Text&gt;<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">wrapper</span>.dive().contains(<span class="hljs-name">link</span>)).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+it('finds a link', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;ElfHeader</span> /&gt;)<span class="hljs-comment">;</span>
+    const link = &lt;Link&gt;&lt;Text&gt;Home&lt;/Text&gt;&lt;/Link&gt;<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">wrapper</span>.dive().containsMatchingElement(<span class="hljs-name">link</span>)).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<a class="anchor" id="native-spies"></a>
+<h2>Native Spies</h2>
+<p>From the <a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/React/ReactNativeTesting/EnzymeBasics">Native Enzyme demo</a> tests:</p>
+<pre><code class="lang-javascript">it('renders state of File paragraph after button click setimeout', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;App</span> /&gt;)<span class="hljs-comment">;</span>
+    const statusParagraph = &lt;Text&gt;You Rang: hello&lt;/Text&gt;<span class="hljs-comment">;</span>
+
+    return wrapper
+        .instance()
+        .fetchMicro()
+        .then(() =&gt; {
+            wrapper.update()<span class="hljs-comment">;</span>
+            console.log(<span class="hljs-name">wrapper</span>.debug())<span class="hljs-comment">;</span>
+            expect(<span class="hljs-name">wrapper</span>.contains(<span class="hljs-name">statusParagraph</span>)).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+        })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+
+it('calls queryServer button click', () =&gt; {
+    const spy = jest.spyOn(<span class="hljs-name">App</span>.prototype, 'fetchMicro')<span class="hljs-comment">;</span>
+    const wrapper = shallow(<span class="hljs-name">&lt;App</span> /&gt;)<span class="hljs-comment">;</span>
+    wrapper
+        .find('#fetchMicro')
+        .props()
+        .onPress()<span class="hljs-comment">;</span>
+    console.log(<span class="hljs-name">wrapper</span>.debug())<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">spy</span>).toHaveBeenCalled()<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<a class="anchor" id="native-mocks"></a>
+<h2>Native Mocks</h2>
+<p>I found just putting my mock at the top of my test worked in React Native. the <strong>beforeEach</strong> method is called once before each test is run.</p>
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Test Api Foo'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+
+  <span class="hljs-keyword">const</span> debug = <span class="hljs-literal">false</span>;
+
+  beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      global.fetch = jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+          <span class="hljs-keyword">const</span> promise = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+              resolve({
+                  <span class="hljs-attr">ok</span>: <span class="hljs-literal">true</span>,
+                  <span class="hljs-attr">json</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+                      <span class="hljs-keyword">return</span> {
+                          <span class="hljs-attr">file</span>: <span class="hljs-string">'file name did go here.'</span>,
+                          <span class="hljs-attr">status</span>: <span class="hljs-string">'status did go here'</span>,
+                          <span class="hljs-attr">result</span>: <span class="hljs-string">'result did go here'</span>
+                      };
+                  }
+              });
+          });
+          <span class="hljs-keyword">return</span> promise;
+      });
+  });
+
+  <span class="hljs-comment">// YOUR TESTS ARE HERE</span>
+});
+</code></pre>
+<a class="anchor" id="dive-for-regular-non-native-react"></a>
+<h2>Dive for Regular, Non-Native React</h2>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createWrapper</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> shallow(
+        &lt;MuiThemeProvider&gt;
+            &lt;GitUserUI user={userData} /&gt;
+        &lt;/MuiThemeProvider&gt;
+    );
+}
+
+it(<span class="hljs-string">'should take a snapshot'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> elfTree = createWrapper();
+    expect(elfTree).toMatchSnapshot();
+});
+
+it(<span class="hljs-string">'renders GitUserUI'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> wrapper = createWrapper();
+    elfDebugEnzyme.getAllDive(wrapper, <span class="hljs-keyword">false</span>);
+    <span class="hljs-keyword">const</span> nineSign = &lt;p className=<span class="hljs-string">"App-intro"</span>&gt;login: unknowns&lt;/p&gt;;
+    expect(wrapper.dive().containsMatchingElement(nineSign)).toBe(<span class="hljs-keyword">true</span>);
+});
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Attach a screen shot showing that you have run the <strong>--coverage</strong> option.</p>
+<p>Add to your AddressMaven project at least one test that uses SnapShots. Push your work. When I look at your projects, I should find a <strong>__snapshots__</strong> directory. For instance, I have one here:</p>
+<pre><code>AddressProxy<span class="hljs-regexp">/src/</span>tests<span class="hljs-regexp">/__snapshots__</span>
+</code></pre><p>Please specify where I should look for your <strong>__snapshots__</strong> directory. Give at least the name of the project.</p>
+</div></body></html>

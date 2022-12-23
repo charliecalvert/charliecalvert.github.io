@@ -1,0 +1,402 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>WebCraftsJestButtonsPress</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>WebCraftsJestButtonsPress</h1><p>Welcome to WebCraftsJestButtonsPress</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#professional-development-cycles">Professional Development Cycles</a></li>
+<li><a href="#bower-components">Bower Components</a></li>
+<li><a href="#switch-to-pug">Switch to Pug</a></li>
+<li><a href="#using-jquery-in-tests">Using jQuery in Tests</a></li>
+<li><a href="#suppress-requestanimationframe-warning">Suppress RequestAnimationFrame Warning</a></li>
+<li><a href="#refactor-tests">Refactor Tests</a></li>
+<li><a href="#coverage-ignore">Ignore Files in Coverage</a></li>
+<li><a href="#button-clicks">Button Clicks</a></li>
+<li><a href="#surprise">A Gotcha</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Learning more about testing.</p>
+<a class="anchor" id="professional-development-cycles"></a>
+<h2>Professional Development Cycles</h2>
+<p>Let&#39;s think about testing cycle in a professional shop. The following is not a definitive guide, but it is meant to give at least some sense of what happens in a well designed environment.</p>
+<ol>
+<li>A dev writes one or more unit tests</li>
+<li>Devs change code to make unit tests pass<ol>
+<li>Repeat step 2 until tests pass</li>
+</ol>
+</li>
+<li>Commit changes</li>
+<li>The commit automatically triggers a build<ol>
+<li>Usually a VM is spun up and the build is deployed on it.</li>
+<li>If the build fails, go back to step 2</li>
+<li>If the build is successful, move on</li>
+</ol>
+</li>
+<li>The unit tests are run<ol start="2">
+<li>If the tests fail, go back to step 2</li>
+<li>Else move on</li>
+</ol>
+</li>
+<li>Run functional, integration and acceptance tests<ol>
+<li>This could be done on a new VM with a new build</li>
+<li>If they fail, go back to step 1. (We go to step 1 because we need to write tests that capture the problem uncovered by the functional, integrataion and acceptance tests.)</li>
+<li>Else move on</li>
+</ol>
+</li>
+<li>Release a pre-alpha, alpha or beta and let users and/or testers pound on it.<ol>
+<li>If there are issues, go back to step 1 and write tests that capture the problems found by users.</li>
+<li>If you want more features, go back to step 1</li>
+<li>If the users are happy, and the bug count is low enough, then release the product</li>
+</ol>
+</li>
+</ol>
+<p>There are several key benefits derived from steps 1-5</p>
+<ul>
+<li>Do our tests pass</li>
+<li>Does our code integrate with others devs code and still allow a clean build?</li>
+<li>Do our tests pass when integrated with other users code?</li>
+</ul>
+<p>Clearly, this system would not work if there were no unit tests. They are the foundation on which software development at scale works.</p>
+<p>Obviously, there are other kinds of tests beside unit tests. But in this class, we tend to focus on unit tests. I&#39;ll try to find time to learn more about other kinds of tests. But generally, by the time we Selenium up and running, its time to do something else. No one is really happy because we don&#39;t dig into the subject deeply enough. So we will probably stick with Unit testing.</p>
+<p>The other thing to note here is how often this cycle occurs.
+Some Build Numbers:</p>
+<ul>
+<li>Current WebStorm build: <strong>WS-172.4343.25</strong> built October 19, 2017</li>
+<li>For FireFox, go to <a href="about:buildconfig">about:buildconfig</a> and click link.</li>
+<li>Current Chrome: Version 61.0.3163.79 (Official Build) (64-bit)</li>
+<li>Current Chromium: Version 62.0.3202.62 (Official Build)<ul>
+<li>Built on Ubuntu, running on Ubuntu 17.10 (64-bit)</li>
+</ul>
+</li>
+</ul>
+<p>These numbers imply that there are not just weekly builds, but perhaps multiple daily builds. Probably most of these builds end up on Step 4, because the build fails. Another huge set of builds fail because not all the tests pass.</p>
+<p>This system is designed in part to automate the system so completely that a failure is not a big deal. Nevertheless, you still don&#39;t want to be the dev who breaks a build. To avoid this, you need to be able to two things:</p>
+<ul>
+<li>Ask questions and get answers, usually online.</li>
+<li>Write unit tests.</li>
+</ul>
+<p>If you get the right answer and write the right unit tests, then you have a good chance of committing code that works. When the reports come back from the latest build, the odds are that the failures don&#39;t come from your desk.</p>
+<p>Often shops go in two week sprints. This means that on the Friday at the end of a sprint, the team wants to produce a good build. If its 10 o&#39;clock at night on Friday, and a bunch of devs are sitting around waiting for you to check in code that passes, you won&#39;t be happy. To avoid this:</p>
+<ul>
+<li>Start early so you can find where the problems are in your code</li>
+<li>Ask questions online or by email to help you find answers<ul>
+<li>Most people think email is a pain, online is better</li>
+</ul>
+</li>
+<li>Write good tests</li>
+</ul>
+<p>This is what I ask you to do:</p>
+<ul>
+<li>Start early</li>
+<li>Ask questions</li>
+<li>Write tests</li>
+</ul>
+<p>Hopefully you can see why I ask you to do it.</p>
+<a class="anchor" id="bower-components"></a>
+<h2>Bower Components</h2>
+<p>I&#39;ve changed this in my scripts (cat $ELF_TEMPLATES/.bowerrc). But this was forked from an older program, and I had never made the change.</p>
+<ul>
+<li>Open <strong>.bowerrc</strong> and change <strong>components</strong> to <strong>bower_components</strong>.</li>
+<li>Do the same in <strong>views/layout.jade</strong> and in <strong>public/javascripts/main.js</strong></li>
+</ul>
+<p>For instance:</p>
+<p><strong>Original</strong>: jquery: &#39;components/jquery/dist/jquery&#39;,
+<strong>New</strong>: jquery: &#39;bower_components/jquery/dist/jquery&#39;,
+<strong>Original</strong>: link(rel=&#39;stylesheet&#39;, href=&#39;/components/bootswatch/cerulean/bootstrap.css&#39;)
+<strong>New</strong>: link(rel=&#39;stylesheet&#39;, href=&#39;/bower_components/bootswatch/cerulean/bootstrap.css&#39;)</p>
+<a class="anchor" id="switch-to-pug"></a>
+<h2>Switch to Pug</h2>
+<p>First, we need to uninstall the Jade and install Pug:</p>
+<pre>npm uninstall --save jade
+npm install --save pug
+</pre>
+<p>In <strong>app.js</strong>, change the view engine to pug (about line 19):</p>
+<ul>
+<li>Old: app.set(&#39;view engine&#39;, &#39;jade&#39;);</li>
+<li>New: app.set(&#39;view engine&#39;, &#39;pug&#39;);</li>
+</ul>
+<p>Now we need to rename all <strong>jade</strong> files to <strong>pug</strong>. Save this file as <strong>views/renameJadeToPug</strong>. Make it executable. Run it.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> filesystem = require(<span class="hljs-string">"fs"</span>);
+<span class="hljs-keyword">var</span> path = require(<span class="hljs-string">"path"</span>);
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">rename</span></span>(from, to) {
+    filesystem.rename(from, to, <span class="hljs-function"><span class="hljs-keyword">function</span></span>(err) {
+        <span class="hljs-keyword">if</span> (err) {
+            <span class="hljs-keyword">throw</span>(err);
+        }
+    });
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">testMain</span></span>(file, oldPattern, <span class="hljs-keyword">new</span><span class="hljs-type">Pattern</span>) {
+    <span class="hljs-keyword">var</span> base = path.basename(file, <span class="hljs-string">'.'</span> + oldPattern);
+    <span class="hljs-keyword">var</span> ext = path.extname(file);
+    <span class="hljs-keyword">var</span> destination = base + <span class="hljs-string">'.'</span> + <span class="hljs-keyword">new</span><span class="hljs-type">Pattern</span>;
+    console.log(<span class="hljs-string">'mv '</span> + file + <span class="hljs-string">' '</span> + destination );
+    rename(file, destination);
+}
+
+<span class="hljs-keyword">var</span> getAllFilesFromFolder = <span class="hljs-function"><span class="hljs-keyword">function</span></span>(dir, oldPattern, <span class="hljs-keyword">new</span><span class="hljs-type">Pattern</span>) {
+
+    <span class="hljs-keyword">var</span> results = [];
+
+    <span class="hljs-keyword">var</span> mainName;
+
+    filesystem.readdirSync(dir).forEach(<span class="hljs-function"><span class="hljs-keyword">function</span></span>(file) {
+        <span class="hljs-keyword">var</span> test = <span class="hljs-keyword">new</span> <span class="hljs-type">RegExp</span>(oldPattern).test(file)
+        <span class="hljs-keyword">if</span> (test) {
+            testMain(file, oldPattern, <span class="hljs-keyword">new</span><span class="hljs-type">Pattern</span>);
+        }
+
+        results.push(file);
+    });
+
+    <span class="hljs-keyword">return</span> results;
+
+};
+
+<span class="hljs-keyword">var</span> oldPattern = <span class="hljs-string">"jade"</span>;
+<span class="hljs-keyword">var</span> <span class="hljs-keyword">new</span><span class="hljs-type">Pattern</span> = <span class="hljs-string">"pug"</span>;
+<span class="hljs-keyword">var</span> results = getAllFilesFromFolder(<span class="hljs-string">'.'</span>, oldPattern, <span class="hljs-keyword">new</span><span class="hljs-type">Pattern</span>);
+</code></pre>
+<p>The directory before we ran the script:</p>
+<pre>$ ll
+total 64
+drwxrwxr-x  2 charlie charlie 4096 Oct 25 10:09 ./
+drwxrwxr-x 15 charlie charlie 4096 Oct 25 09:59 ../
+-rw-rw-r--  1 charlie charlie   84 Oct 14 12:56 error.jade
+-rw-rw-r--  1 charlie charlie  811 Oct 14 12:56 index.html
+-rw-r--r--  1 charlie charlie  262 Oct 18 10:43 index.jade
+-rw-r--r--  1 charlie charlie  698 Oct 25 09:50 layout.jade
+-rw-rw-r--  1 charlie charlie  950 Oct 14 12:56 login.jade
+-rw-rw-r--  1 charlie charlie  316 Oct 14 12:56 logout.jade
+-rw-rw-r--  1 charlie charlie 1195 Oct 14 12:56 make-html.html
+-rw-rw-r--  1 charlie charlie 1515 Oct 14 12:56 make-html.jade
+-rw-rw-r--  1 charlie charlie  233 Oct 14 12:56 pix-picker.html
+-rw-rw-r--  1 charlie charlie  302 Oct 14 12:56 pix-picker.jade
+-rw-rw-r--  1 charlie charlie  926 Oct 14 12:56 register.jade
+-rwxr-xr-x  1 charlie charlie  935 Oct 25 10:09 renameJadeToPug.js*
+-rw-rw-r--  1 charlie charlie   80 Oct 14 12:56 temp.html
+-rw-rw-r--  1 charlie charlie  116 Oct 14 12:56 temp.jade
+</pre>
+<p>After running it:</p>
+<pre><code>$ ll
+total 64
+drwxrwxr-x <span class="hljs-number"> 2 </span>charlie charlie<span class="hljs-number"> 4096 </span>Oct<span class="hljs-number"> 25 </span>10:31 ./
+drwxrwxr-x<span class="hljs-number"> 15 </span>charlie charlie<span class="hljs-number"> 4096 </span>Oct<span class="hljs-number"> 25 </span>09:59 ../
+-rw-rw-r-- <span class="hljs-number"> 1 </span>charlie charlie  <span class="hljs-number"> 84 </span>Oct<span class="hljs-number"> 14 </span>12:56 error.pug
+-rw-rw-r-- <span class="hljs-number"> 1 </span>charlie charlie <span class="hljs-number"> 811 </span>Oct<span class="hljs-number"> 14 </span>12:56 index.html
+-rw-r--r-- <span class="hljs-number"> 1 </span>charlie charlie <span class="hljs-number"> 262 </span>Oct<span class="hljs-number"> 18 </span>10:43 index.pug
+-rw-r--r-- <span class="hljs-number"> 1 </span>charlie charlie <span class="hljs-number"> 698 </span>Oct<span class="hljs-number"> 25 </span>09:50 layout.pug
+-rw-rw-r-- <span class="hljs-number"> 1 </span>charlie charlie <span class="hljs-number"> 950 </span>Oct<span class="hljs-number"> 14 </span>12:56 login.pug
+-rw-rw-r-- <span class="hljs-number"> 1 </span>charlie charlie <span class="hljs-number"> 316 </span>Oct<span class="hljs-number"> 14 </span>12:56 logout.pug
+-rw-rw-r-- <span class="hljs-number"> 1 </span>charlie charlie<span class="hljs-number"> 1195 </span>Oct<span class="hljs-number"> 14 </span>12:56 make-html.html
+-rw-rw-r-- <span class="hljs-number"> 1 </span>charlie charlie<span class="hljs-number"> 1515 </span>Oct<span class="hljs-number"> 14 </span>12:56 make-html.pug
+-rw-rw-r-- <span class="hljs-number"> 1 </span>charlie charlie <span class="hljs-number"> 233 </span>Oct<span class="hljs-number"> 14 </span>12:56 pix-picker.html
+-rw-rw-r-- <span class="hljs-number"> 1 </span>charlie charlie <span class="hljs-number"> 302 </span>Oct<span class="hljs-number"> 14 </span>12:56 pix-picker.pug
+-rw-rw-r-- <span class="hljs-number"> 1 </span>charlie charlie <span class="hljs-number"> 926 </span>Oct<span class="hljs-number"> 14 </span>12:56 register.pug
+-rwxr-xr-x <span class="hljs-number"> 1 </span>charlie charlie <span class="hljs-number"> 955 </span>Oct<span class="hljs-number"> 25 </span>10:30 renameJadeToPug.js*
+-rw-rw-r-- <span class="hljs-number"> 1 </span>charlie charlie  <span class="hljs-number"> 80 </span>Oct<span class="hljs-number"> 14 </span>12:56 temp.html
+-rw-rw-r-- <span class="hljs-number"> 1 </span>charlie charlie <span class="hljs-number"> 116 </span>Oct<span class="hljs-number"> 14 </span>12:56 temp.pug
+</code></pre><a class="anchor" id="using-jquery-in-tests"></a>
+<h2>Using jQuery in Tests</h2>
+<p>Right now I&#39;m using a jest option called setupFiles that we can put in <strong>package.json</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"jest"</span>: {
+        <span class="hljs-string">"setupFiles"</span>: [<span class="hljs-string">"./source/setup-jest.js"</span>]
+ },
+</code></pre>
+<p>In <strong>source/setup-jest.js</strong></p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
+<span class="hljs-built_in">global</span>.$ = <span class="hljs-built_in">global</span>.jQuery = $;
+</code></pre>
+<a class="anchor" id="suppress-requestanimationframe-warning"></a>
+<h2>Suppress RequestAnimationFrame Warning</h2>
+<p>In <strong>source/temp-poly-fills.js</strong>:</p>
+<pre><code class="lang-javascript">const requestAnimationFrame = <span class="hljs-built_in">global</span>.requestAnimationFrame = <span class="hljs-function"><span class="hljs-params">(cb)</span> =&gt;</span> {
+    setTimeout(cb, <span class="hljs-number">0</span>)
+};
+
+<span class="hljs-keyword">export</span> { requestAnimationFrame }
+</code></pre>
+<p>In <strong>source/setup-jest</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { requestAnimationFrame } <span class="hljs-keyword">from</span> <span class="hljs-string">"./temp-poly-fills"</span>;
+</code></pre>
+<a class="anchor" id="refactor-tests"></a>
+<h2>Refactor Tests</h2>
+<p>We want to better organize our tests. For now, were are going to have three files in <strong><strong>tests</strong></strong> directory:</p>
+<ul>
+<li>sanity.js</li>
+<li>home-buttons.js</li>
+<li>react-home.js</li>
+</ul>
+<p><strong>sanity</strong> should contain three tests:</p>
+<ul>
+<li>Describe: WebCrafts Sanity Test (Example <a href="https://www.ccalvert.net/books/CloudNotes/Assignments/WebCrafts/WebCraftsJestStarter.html#sanity">here</a>.)</li>
+<li>Test 1: it expects true to be true (Example <a href="https://www.ccalvert.net/books/CloudNotes/Assignments/WebCrafts/WebCraftsJestStarter.html#sanity">here</a>.)</li>
+<li>Test 2: it renders ReactHome without crashing. (Example <a href="https://www.ccalvert.net/books/CloudNotes/Assignments/WebCrafts/WebCraftsJestStarter.html#sanity">here</a>.)</li>
+<li>Test 3: it renders HomeButtons without crashing</li>
+</ul>
+<p><strong>react-home</strong> should contain:</p>
+<ul>
+<li>Describe: React Home Tests</li>
+<li><strong>Test 1</strong>:  it expects true to be true (Example <a href="https://www.ccalvert.net/books/CloudNotes/Assignments/WebCrafts/WebCraftsJestStarter.html#sanity">here</a>.)</li>
+<li><strong>Test 2</strong>: renders default value of H1 tag</li>
+</ul>
+<p><strong>home-buttons</strong> should contain:</p>
+<ul>
+<li><strong>import</strong>: &#39;../../public/javascripts/tools/tiny-pub-sub.js&#39;;</li>
+<li><strong>describe</strong>: WebCrafts Home Buttons Test</li>
+<li><strong>Test 1</strong>:  it expects true to be true (Example <a href="https://www.ccalvert.net/books/CloudNotes/Assignments/WebCrafts/WebCraftsJestStarter.html#sanity">here</a>.)</li>
+<li><strong>Test 2</strong>: renders state of XXX after button click</li>
+</ul>
+<a class="anchor" id="coverage-ignore"></a>
+<h2>Ignore Files in Coverage</h2>
+<p>By adding a <strong>coveragePathIgnorePatterns</strong> property to our <strong>jest</strong> object in <strong>package.json</strong>, we can clean up the appearance of our coverage reports.</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"jest"</span>: {
+    <span class="hljs-string">"verbose"</span>: true,
+    <span class="hljs-string">"coveragePathIgnorePatterns"</span>: [
+        <span class="hljs-string">"/node_modules/"</span>,
+        <span class="hljs-string">"ElfDebugEnzyme.js"</span>,
+        <span class="hljs-string">"tiny-pub-sub.js"</span>,
+        <span class="hljs-string">"temp-poly-fills.js"</span>
+    ],
+    <span class="hljs-string">"setupFiles"</span>: [
+        <span class="hljs-string">"./source/setup-jest.js"</span>
+    ]
+},
+</code></pre>
+<p>Here is a video showing the results of the <strong>coveragePathIgnorePatterns</strong> flag.</p>
+<div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/8tDc1q5FMUw?ecver=2" width="640" height="360" frameborder="0" gesture="media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
+
+<a class="anchor" id="button-clicks"></a>
+<h2>Button Clicks</h2>
+<p>Our next goal is to test what happens when the user clicks on the <strong>MakeHtml</strong> button.</p>
+<p>If you look at the button, you can see that it is has an <strong>ID</strong> set to <strong>MakeHtml</strong>:</p>
+<pre><code class="lang-xml"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">RaisedButton</span>
+    <span class="hljs-attr">id</span>=<span class="hljs-string">"makeHtml"</span>
+    <span class="hljs-attr">style</span>=</span></span><span class="hljs-template-variable">{buttonStyle}</span><span class="xml"><span class="hljs-tag">
+    <span class="hljs-attr">primary</span>=</span></span><span class="hljs-template-variable">{true}</span><span class="xml"><span class="hljs-tag">
+    <span class="hljs-attr">onClick</span>=</span></span><span class="hljs-template-variable">{this.makeHtml}</span><span class="xml"><span class="hljs-tag">&gt;</span>
+      </span><span class="hljs-template-variable">{this.state.makeHtml}</span><span class="xml">
+<span class="hljs-tag">&lt;/<span class="hljs-name">RaisedButton</span>&gt;</span></span>
+</code></pre>
+<p>You can see also that it calls a method of the <strong>HomeButtons</strong> object like this:</p>
+<pre><code><span class="hljs-attr">onClick</span>={this.makeHtml}&gt;
+</code></pre><p>The method looks like this:</p>
+<pre><code class="lang-javascript">makeHtml() {
+    $.publish(<span class="hljs-string">'clientMakeHtml'</span>, {
+        message : <span class="hljs-string">"The user wants to makeHtml."</span>
+    });
+}
+</code></pre>
+<p>In our unit test, the <strong>enzyme</strong> library allows us to search for our <strong>RaisedButton</strong> by <strong>ID</strong> and simulate a <strong>click event</strong> on that <strong>Button</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">wrapper</span><span class="hljs-selector-class">.find</span>(<span class="hljs-string">'#makeHtml'</span>)<span class="hljs-selector-class">.simulate</span>(<span class="hljs-string">'click'</span>);
+</code></pre>
+<p>To test that the event actually occurs, and that the button behaves as expected, we can subscribe to the event it generates:</p>
+<pre><code class="lang-javascript">$.subscribe(<span class="hljs-string">'clientMakeHtml'</span>, <span class="hljs-function">(<span class="hljs-params">event, target</span>) =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(event, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+    <span class="hljs-built_in">console</span>.log(target);
+    expect(event.type).toBe(<span class="hljs-string">'clientMakeHtml'</span>);
+    expect(target.message).toBe(<span class="hljs-string">'The user wants to makeHtml.'</span>);
+});
+</code></pre>
+<p>The callback for the event has at least two parameters:</p>
+<ul>
+<li>event</li>
+<li>target</li>
+</ul>
+<p>The <strong>event</strong> object is not terribly important to us, but we display its contents with <strong>console.log</strong> in case you are interested:</p>
+<pre><code class="lang-javascript">{
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"clientMakeHtml"</span>,
+    <span class="hljs-attr">"timeStamp"</span>: <span class="hljs-number">1509145167069</span>,
+    <span class="hljs-attr">"jQuery32102834246722752214"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">"isTrigger"</span>: <span class="hljs-number">3</span>,
+    <span class="hljs-attr">"namespace"</span>: <span class="hljs-string">""</span>,
+    <span class="hljs-attr">"rnamespace"</span>: <span class="hljs-literal">null</span>,
+    <span class="hljs-attr">"target"</span>: {},
+    <span class="hljs-attr">"delegateTarget"</span>: {},
+    <span class="hljs-attr">"currentTarget"</span>: {},
+    <span class="hljs-attr">"handleObj"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"clientMakeHtml"</span>,
+        <span class="hljs-attr">"origType"</span>: <span class="hljs-string">"clientMakeHtml"</span>,
+        <span class="hljs-attr">"guid"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-attr">"namespace"</span>: <span class="hljs-string">""</span>
+    }
+}
+</code></pre>
+<p>You can more or less ignore this object for now. Just glance at it so that you understand what it looks like.</p>
+<p>Here is the target object:</p>
+<pre><code class="lang-javascript">{ <span class="hljs-attribute">message</span>: <span class="hljs-string">'The user wants to makeHtml.'</span> }
+</code></pre>
+<p>This should look familiar as we created it when we published our event:</p>
+<pre><code class="lang-javascript"><span class="hljs-variable">$.</span>publish(<span class="hljs-string">'clientMakeHtml'</span>, {
+    message : <span class="hljs-string">"The user wants to makeHtml."</span>
+});
+</code></pre>
+<p>It should be clear to you that you can use this object to pass all kinds of information with multiple properties. On this occasion, however, we are passing an object with only one property called message.</p>
+<p>Given the above, we can write two tests in our callback:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">expect</span>(event.type)<span class="hljs-selector-class">.toBe</span>(<span class="hljs-string">'clientMakeHtml'</span>);
+<span class="hljs-selector-tag">expect</span>(target.message)<span class="hljs-selector-class">.toBe</span>(<span class="hljs-string">'The user wants to makeHtml.'</span>);
+</code></pre>
+<p>Putting it altogether, we get a test that looks like this:</p>
+<pre><code class="lang-javascript">it('publishes clientMakeHtml event after button click', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;HomeButtons/&gt;</span>)<span class="hljs-comment">;</span>
+    $.subscribe('clientMakeHtml', (<span class="hljs-name">event</span>, target) =&gt; {
+        console.log(<span class="hljs-name">JSON</span>.stringify(<span class="hljs-name">event</span>, null, <span class="hljs-number">4</span>))<span class="hljs-comment">;</span>
+        console.log(<span class="hljs-name">target</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">event</span>.type).toBe('clientMakeHtml')<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">target</span>.message).toBe('The user wants to makeHtml.')<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+    wrapper.find('#makeHtml').simulate('click')<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>Looking at the code, note that we subscribe to the <strong>event</strong> the <strong>button</strong> generates before we click the <strong>button</strong>. If you understand what is happening, you can see that it could not be otherwise.</p>
+<p>You should now write a similar test showing what happens when the <strong>makeImage</strong> button is clicked.</p>
+<p>Here is another way of describing the above:</p>
+<div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/Z7bU9vlO6yY?ecver=2" width="640" height="360" frameborder="0" gesture="media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
+
+<a class="anchor" id="surprise"></a>
+<h2>A Gotcha</h2>
+<p>When writing my second test, I accidentally misnamed the event I was subscribing to. This meant that the <strong>$.subscribe</strong> method was never called, and my <strong>expect</strong> tests never run. Since there were no failed tests, my code appeared to succeed. (This is perhaps one of the reasons we should always start with failing code. You don&#39;t want to start with a test that passes even when the conditions don&#39;t meet the requirements.)</p>
+<p>At any rate, I added another test that ensured that the <strong>$.subscribe</strong> method was called. You should add this code to your tests.</p>
+<pre><code class="lang-javascript">it('publishes clientMakeHtml event after button click', () =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;HomeButtons/&gt;</span>)<span class="hljs-comment">;</span>
+    let subscriptionCalled = false<span class="hljs-comment">;</span>
+    $.subscribe('clientMakeHtml', (<span class="hljs-name">event</span>, target) =&gt; {
+        console.log(<span class="hljs-name">JSON</span>.stringify(<span class="hljs-name">event</span>, null, <span class="hljs-number">4</span>))<span class="hljs-comment">;</span>
+        console.log(<span class="hljs-name">target</span>)<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">event</span>.type).toBe('clientMakeHtml')<span class="hljs-comment">;</span>
+        expect(<span class="hljs-name">target</span>.message).toBe('The user wants to makeHtml.')<span class="hljs-comment">;</span>
+        subscriptionCalled = true<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+    wrapper.find('#makeHtml').simulate('click')<span class="hljs-comment">;</span>
+    expect(<span class="hljs-name">subscriptionCalled</span>).toBeTruthy()<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>I&#39;ve added a variable called <strong>subscriptionCalled</strong> that is initialized to false:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> <span class="hljs-attr">subscriptionCalled</span> = <span class="hljs-literal">false</span>;
+</code></pre>
+<p>I set it to true at the end of the <strong>$.subscribe</strong> method:</p>
+<pre><code class="lang-javascript"><span class="hljs-attr">subscriptionCalled</span> = <span class="hljs-literal">true</span>;
+</code></pre>
+<p>And here is the test to check that it was set to true, thus proving that the <strong>$.subscribe</strong> method was called.</p>
+<pre><code class="lang-javascript">expect<span class="hljs-comment">(subscriptionCalled)</span>.toBeTruthy<span class="hljs-comment">()</span>;
+</code></pre>
+<p>An alternative would have been to use a method called <strong>done</strong> which is used to asynchronous code to tell <strong>Jest</strong> that a callback has been received. Since there are no callbacks in this code, it is not really an appropriate place to use it. However, it does allow us to write less verbose code. In that spirit, in this version, I have tried to remove the methods that are not needed.</p>
+<pre><code class="lang-javascript">it('publishes clientMakeHtml event after button click with done', (<span class="hljs-name">done</span>) =&gt; {
+    const wrapper = shallow(<span class="hljs-name">&lt;HomeButtons/&gt;</span>)<span class="hljs-comment">;</span>
+    $.subscribe('clientMakeHtml', (<span class="hljs-name">event</span>, target) =&gt; {
+        expect(<span class="hljs-name">target</span>.message).toBe('The user wants to makeHtml.')<span class="hljs-comment">;</span>
+        done()<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+    wrapper.find('#makeHtml').simulate('click')<span class="hljs-comment">;    </span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p>Though I continually violate this rule, it is generally considered better to write shorter code so that the reader of the code can understand it more readily.</p>
+<div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/TL7_Yg8b_sw?ecver=2" width="640" height="360" frameborder="0" gesture="media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
+
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Push your work. Give me:</p>
+<ul>
+<li>repo</li>
+<li>branch (I&#39;m expecting either master or Week06)</li>
+<li>folder</li>
+</ul>
+<p>You might get a 5 (redo) if you don&#39;t tell me where to find your code.</p>
+</div></body></html>

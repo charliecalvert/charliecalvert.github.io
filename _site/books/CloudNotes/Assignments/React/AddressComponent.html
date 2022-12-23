@@ -1,0 +1,436 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>AddressComponent</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>AddressComponent</h1><p>Welcome to AddressComponent</p><ul><!--TOC_Start--><li><a href="#address-component">Address Component</a></li>
+<li><a href="#goals">Goals</a></li>
+<li><a href="#tag">Use Git to Tag Your Project</a></li>
+<li><a href="#create-address-component">Create Address Component</a></li>
+<li><a href="#define-address">Define Address</a></li>
+<li><a href="#clean-up-app-js">Clean Up App.js</a></li>
+<li><a href="#add-address">Add Address to our Main File</a></li>
+<li><a href="#clean-up-relative-paths">Clean up Relative Paths</a></li>
+<li><a href="#address-list">Address List</a></li>
+<li><a href="#addresses">Pass addresses to Address</a></li>
+<li><a href="#props-in-address">Consume props</a></li>
+<li><a href="#display-state">Display State</a></li>
+<li><a href="#create-header-component">Create Header Component</a></li>
+<li><a href="#tests">Tests</a></li>
+<li><a href="#refactor-tests">Refactor Tests</a></li>
+<li><a href="#describe-tests">Describe Tests</a></li>
+<li><a href="#debug-jest-message">Debug Jest Message</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#simple-test">Simple Test</a></li>
+<li><a href="#enzyme-dreams">Enzyme Dreams</a></li>
+<li><a href="#props-single-node">Props Singe Node Error</a></li>
+<li><a href="#enospc">ENOSPC Error</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="address-component"></a>
+<h1>Address Component</h1>
+<p>The goal is to extend our <strong>week02-react-jest</strong> project to support new React components with <strong>props</strong>.</p>
+<p><strong>NOTE</strong>: <em>In many cases, my assignments are not simply cut and paste exercises. In my code I might write something like <strong>etc...</strong> or <strong>and so on...</strong> or <strong>You write the code</strong>. In these cases I expect you to complete the code as an exercise. I usually create sections like these by cutting and pasting working code into assignment, and then delete the parts I want readers to complete. Though I try to avoid it, there are places where I leave something out without explicitly making clear that you need to write some code on your own. In any case, you are responsible for creating assignments that compile cleanly and perform specific actions outlined in these assignments.</em></p>
+<a class="anchor" id="goals"></a>
+<h2>Goals</h2>
+<p>Here are the core goals of this assignment.</p>
+<ul>
+<li><a href="#tag">Tag</a> your work</li>
+<li>Create the <strong>components</strong> folder and put in it a file called <strong>Address.js</strong>. This file should be based on <strong>App.js</strong></li>
+<li>Remove code from <strong>Address.js</strong> that <strong>does not</strong> have to do with addresses</li>
+<li>Remove code from <strong>App.js</strong> that has to do with addresses</li>
+<li><strong>import</strong> your <strong>Address</strong> component into <strong>index.js</strong>. Use it in <strong>ReactDOM.render</strong>.</li>
+<li>Create <strong>address-list.js</strong> with sample addresses in it</li>
+<li>In <strong>App.js</strong> pass the addresses from <strong>address-list</strong> to <strong>Address</strong> as props</li>
+<li>Consume props in <strong>Address</strong></li>
+<li>Switch from record 0 to record 1 of the address list.</li>
+<li>Get tests working</li>
+</ul>
+<a class="anchor" id="tag"></a>
+<h2>Use Git to Tag Your Project</h2>
+<p>Since we are often working on a single project that is implemented in multiple phases, I suggest creating a git tag marking the current status of your project:</p>
+<pre><code class="lang-bash">$ git <span class="hljs-keyword">tag</span> <span class="hljs-title">-a</span> v3.<span class="hljs-number">0.0</span> -m <span class="hljs-string">"Start Week03"</span>
+$ git push origin v3.<span class="hljs-number">0.0</span>
+$ git <span class="hljs-keyword">tag</span> <span class="hljs-title">-n1</span>
+</code></pre>
+<p>The first command creates a tag that has a message associated with it. The message works much like the message in a commit.</p>
+<p>The second command pushes the tag from your local machine to the cloud.</p>
+<p>The last command lists your tags and their message on one line. If you have only a single tag, it is not particularly useful, but once you have multiple tags you will see how helpful this can be. Increase the value of the number after -n? to see more information about your tag. You can read about tags here:</p>
+<ul>
+<li><a href="https://git-scm.com/book/en/v2/Git-Basics-Tagging">Git docs on tagging</a></li>
+</ul>
+<a class="anchor" id="create-address-component"></a>
+<h2>Create Address Component</h2>
+<p>In Webstorm:</p>
+<ul>
+<li>Create an empty <strong>src/components</strong> directory.</li>
+<li>Create an an empty <strong>src/components/Address.js</strong>. (Now components is no longer empty.)</li>
+</ul>
+<a class="anchor" id="define-address"></a>
+<h2>Define Address</h2>
+<p>Block copy the contents of <strong>App.js</strong> into <strong>Address.js</strong>.</p>
+<ul>
+<li>Rename the class from <strong>App</strong> to <strong>Address</strong>. At the bottom of the file, export <strong>Address</strong> rather than <strong>App</strong>.</li>
+</ul>
+<p>The result, should include code that looks like this:</p>
+<pre><code class="lang-JavaScript">imports <span class="hljs-built_in">..</span>.
+
+class<span class="hljs-built_in"> Address </span>extends Component { <span class="hljs-built_in">..</span>. }
+
+<span class="hljs-builtin-name">export</span><span class="hljs-built_in"> default </span>Address;
+</code></pre>
+<p>Get rid of anything that is not directly associated with the idea of defining an address.</p>
+<ul>
+<li>Inside <strong>Address.js</strong> Remove references <strong>state.file</strong> and <strong>getFile</strong> from the <strong>constructor</strong> and <strong>render</strong> methods and from anywhere else you find them. Leave the tests alone. We are just editing <strong>Address.js</strong> in this step.</li>
+<li>Remove the <strong>header</strong> section from <strong>render</strong>.</li>
+<li>Remove the default paragraph about editing App.js generated by <strong>create-react-app</strong>: This is the text that reads: &quot;To get started, edit...&quot;.</li>
+<li>Remove imports that are no longer needed such as <strong>logo.svg</strong>.</li>
+</ul>
+<a class="anchor" id="clean-up-app-js"></a>
+<h2>Clean Up App.js</h2>
+<p>In <strong>App.js</strong> do the mirror image of what you did in <strong>Address.js</strong>: remove all references to an address from the <strong>constructor</strong> and <strong>render</strong> methods, etc.</p>
+<p>Preserve the header section for now, but remove the default text that begins &quot;To get started, edit...&quot;.</p>
+<p>Move <strong>App.js</strong> into the <strong>components</strong> directory.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/address-components-dir.png" alt="Components Dir in Webstorm"></p>
+<p>This display in Webstorm can be a bit confusing. Note that <strong>App.css</strong>, <strong>App.test.js</strong>, etc are in <strong>src</strong>, not in <strong>src/components</strong>. The only files in the <strong>src/components</strong> directory at this stage are <strong>Address.js</strong> and <strong>App.js</strong>.</p>
+<a class="anchor" id="add-address"></a>
+<h2>Add Address to our Main File</h2>
+<p>The next step is to display our new <strong>Address</strong> component. There are several ways to achieve this goal. One of the simplest is to render it in <strong>index.js</strong>. To do this, we will need to:</p>
+<ul>
+<li><strong>import</strong> our <strong>Address</strong> component,</li>
+<li>Add a <strong>DIV</strong> to our <strong>render</strong> method</li>
+<li>Display the <strong>Address</strong> component by adding its tag to the <strong>DIV</strong></li>
+</ul>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./App'</span>; &lt;=== MODIFY THIS LINE ==&lt;
+<span class="hljs-keyword">import</span> Address <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/Address'</span>
+<span class="hljs-keyword">import</span> <span class="hljs-string">'./index.css'</span>;
+
+ReactDOM.render(
+    &lt;div&gt;
+        &lt;App /&gt;
+        &lt;Address/&gt;
+    &lt;/div&gt;,
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
+);
+</code></pre>
+<p>There is one further change you will need to make this file. I don&#39;t spell it explicitly, but I give you a strong hint about where to make the change. It is up to your modify the line and get your code running without error.</p>
+<a class="anchor" id="clean-up-relative-paths"></a>
+<h2>Clean up Relative Paths</h2>
+<p>Other changes, such as correcting the paths to <strong>App.css</strong> and <strong>logo.svg</strong> in the files moved to the components directory are left as an exercise. If you don&#39;t yet understand relative paths, read about them here:</p>
+<ul>
+<li><a href="https://www.google.com/search?q=relative+paths+javascript">Relative Paths JavaScript</a></li>
+<li><a href="https://www.w3schools.com/html/html_filepaths.asp">Sadly W3Schools provides a simply example</a></li>
+<li><a href="http://desktop.arcgis.com/en/arcmap/10.3/tools/supplement/pathnames-explained-absolute-relative-unc-and-url.htm#GUID-5118AC85-57E4-4027-AC24-FB6E99FADEFF">Relative Paths</a></li>
+</ul>
+<p><strong>NOTE</strong>: <em>Remember to open up the Browser debugger (Developer Tools), usually with F12, to check for any errors.</em></p>
+<p>Here is a sample error you might get if you do not have the relative paths set up correctly:</p>
+<pre><code class="lang-bash">.<span class="hljs-regexp">/src/</span>components/Address.js
+Module not <span class="hljs-string">found:</span> Cannot resolve <span class="hljs-string">'./App.css'</span> <span class="hljs-keyword">in</span> <span class="hljs-string">'/home/charlie/Git/prog272-calvert-2018/AddressComponent/src/components'</span>
+</code></pre>
+<p>Use an HR element at the bottom of the render method for <strong>App.js</strong> to help separate the two components.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/react-address-two-components.png" alt="Address Program at Runtime"></p>
+<a class="anchor" id="address-list"></a>
+<h2>Address List</h2>
+<p>Let&#39;s create a simple file called <strong>src/address-list.js</strong> that contains two addresses:</p>
+<pre><code class="lang-javascript">const <span class="hljs-literal">unknown</span> = '<span class="hljs-literal">unknown</span>';
+const addresses = [
+    {
+        firstName: <span class="hljs-literal">unknown</span>,
+        lastName: <span class="hljs-literal">unknown</span>,
+        address: <span class="hljs-literal">unknown</span>,
+        city: <span class="hljs-literal">unknown</span>,
+        <span class="hljs-keyword">state</span>: <span class="hljs-literal">unknown</span>,
+        zip: <span class="hljs-literal">unknown</span>,
+        phone: <span class="hljs-literal">unknown</span>,
+        fax: <span class="hljs-literal">unknown</span>,
+        tollfree: <span class="hljs-literal">unknown</span>
+    },
+    {
+        firstName: 'Patty',
+        lastName: 'Murray',
+        address: '<span class="hljs-number">154</span> Russell Senate Office Building',
+        city: 'Washington',
+        <span class="hljs-keyword">state</span>: 'D.C.',
+        zip: '<span class="hljs-number">20510</span>',
+        phone: '(<span class="hljs-number">202</span>) <span class="hljs-number">224</span>-<span class="hljs-number">2621</span>',
+        fax: '(<span class="hljs-number">202</span>) <span class="hljs-number">224</span>-<span class="hljs-number">0238</span>',
+        tollfree: '(<span class="hljs-number">866</span>) <span class="hljs-number">481</span>-<span class="hljs-number">9186</span>'
+    }
+
+];
+
+export <span class="hljs-keyword">default</span> addresses;
+</code></pre>
+<a class="anchor" id="addresses"></a>
+<h2>Pass addresses to Address</h2>
+<p>Use <strong>props</strong> to pass <strong>address</strong> list to <strong>Address</strong>. First link in both our <strong>Address</strong> component and the <strong>address-list</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> Address <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/Address'</span>
+<span class="hljs-keyword">import</span> addresses <span class="hljs-keyword">from</span> <span class="hljs-string">'./address-list'</span>;
+</code></pre>
+<p>Now pass the <strong>address-list</strong> to the <strong>Address</strong> component:</p>
+<pre><code class="lang-javascript">&lt;<span class="hljs-keyword">Address </span><span class="hljs-keyword">addressList={addresses} </span>/&gt;
+</code></pre>
+<p>Altogether, it looks like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./App'</span>;
+<span class="hljs-keyword">import</span> Address <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/Address'</span>
+<span class="hljs-keyword">import</span> addresses <span class="hljs-keyword">from</span> <span class="hljs-string">'./address-list'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'./index.css'</span>;
+
+ReactDOM.render(
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">App</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Address</span> <span class="hljs-attr">addressList</span>=<span class="hljs-string">{addresses}</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>,
+    document.getElementById('root')
+);</span>
+</code></pre>
+<p>Think of it this way. In <strong>index.js</strong>, at this stage, we are instantiating two components called <strong>App</strong> and <strong>Address</strong> and we are setting the props for the <strong>Address</strong> component:</p>
+<pre><code class="lang-html"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">App</span>/&gt;</span>  <span class="hljs-tag">&lt;<span class="hljs-name">==</span> <span class="hljs-attr">This</span> <span class="hljs-attr">instantiates</span> <span class="hljs-attr">our</span> <span class="hljs-attr">App</span> <span class="hljs-attr">component</span>
+    &lt;<span class="hljs-attr">Address</span> <span class="hljs-attr">addressList</span>=<span class="hljs-string">{addressList}/</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</code></pre>
+<p>Focus on this one line from the code fragment show above:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">Address</span> <span class="hljs-attr">addressList</span>=<span class="hljs-string">{addressList}/</span>&gt;</span>
+</code></pre>
+<p>It does two things:</p>
+<ul>
+<li>Instantiates <strong>Address</strong></li>
+<li>Sets the <strong>props</strong> for the <strong>Address</strong> component.</li>
+</ul>
+<p>That means that our <strong>Address</strong> component can access the values from <strong>address-list.js</strong> files as <strong>props</strong>:</p>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(props)</span> <span class="hljs-comment">{
+    super(props);
+    console.log(this.props.addressList)
+}</span>    </span>
+</code></pre><a class="anchor" id="props-in-address"></a>
+<h2>Consume props</h2>
+<p>We don&#39;t want the <strong>Address</strong> component to be responsible for updating the <strong>address-list</strong>. It is an anti-pattern for a component to update it&#39;s own properties.</p>
+<p><strong>Address</strong> does not own the <strong>addressList</strong>. Right now, it is owned by <strong>index.js</strong> and so only <strong>index.js</strong> should change it. <strong>AddressShow</strong> only consumes <strong>address_list</strong> as <strong>props</strong>. We will set things up so the <strong>Address</strong> component can register changes to its <strong>state</strong>, but ultimately it will pass the changes back up the line and let some other component handle updating the <strong>address-list</strong>.</p>
+<p>In the <strong>Address</strong> component, we need to consume the <strong>address-list</strong> passed in <strong>props</strong>. Let&#39;s just copy it into our state:</p>
+<pre><code class="lang-javascript">constructor(props) {
+    super(props);
+
+    console.<span class="hljs-keyword">log</span>('ADDRESS PROPS', typeof this.props);
+    const address = this.props.addressList[<span class="hljs-number">0</span>];
+    this.<span class="hljs-keyword">state</span> = {
+        firstName: address.firstName,
+        lastName: address.lastName,
+        address: address.address,
+        city: address.city,
+        <span class="hljs-keyword">state</span>: address.<span class="hljs-keyword">state</span>,
+        zip: address.zip,
+        phone: address.phone,
+        fax: address.fax,
+        tollfree: address.tollfree,
+        website: address.website
+    }
+
+}
+</code></pre>
+<p>We grab the first item in the <strong>address-list</strong> array and use it to initialize our state.</p>
+<a class="anchor" id="display-state"></a>
+<h2>Display State</h2>
+<p>We don&#39;t need to change our <strong>render</strong> method, but we do need to change what we display as our current <strong>state</strong> when the user clicks our <strong>button</strong>. Since we are only part way to our solution, we will simply get the second item in <strong>address-list</strong>, and display it to the user.</p>
+<p>Note that the constructor gets the first item, this method gets the second item. This helps you see how the system works, but does not fully explain how our code will work in the long run.</p>
+<pre><code class="lang-javascript">setAddress = () =&gt; {
+    const <span class="hljs-keyword">address </span>= this.props.<span class="hljs-keyword">addressList[1];
+</span>
+    this.setState({
+<span class="hljs-symbol">          firstName:</span> <span class="hljs-keyword">address.firstName,
+</span><span class="hljs-symbol">          lastName:</span> <span class="hljs-keyword">address.lastName,
+</span><span class="hljs-symbol">          address:</span> <span class="hljs-keyword">address.address,
+</span><span class="hljs-symbol">          city:</span> <span class="hljs-keyword">address.city,
+</span><span class="hljs-symbol">          state:</span> <span class="hljs-keyword">address.state,
+</span><span class="hljs-symbol">          zip:</span> <span class="hljs-keyword">address.zip,
+</span><span class="hljs-symbol">          phone:</span> <span class="hljs-keyword">address.phone,
+</span><span class="hljs-symbol">          fax:</span> <span class="hljs-keyword">address.fax,
+</span><span class="hljs-symbol">          tollfree:</span> <span class="hljs-keyword">address.tollfree,
+</span><span class="hljs-symbol">          website:</span> <span class="hljs-keyword">address.website
+</span>      })    
+}<span class="hljs-comment">;</span>
+</code></pre>
+<p>Note that we are violating DRY. There are two chunks of code, one in the constructor, one here, that are identical. How can that be fixed?</p>
+<a class="anchor" id="create-header-component"></a>
+<h2>Create Header Component</h2>
+<p>For extra credit, you can move the <strong>header</strong> element from <strong>App.js</strong> into a new file called <strong>components/Header.js</strong>.</p>
+<ul>
+<li>Create an empty file called <strong>components/Header.js</strong></li>
+<li>Copy the contents of App.js into it.</li>
+<li>Remove everything but the render method and the Header:</li>
+<li>Remove the <strong>header</strong> from App.js</li>
+</ul>
+<p>Here is the complete declaration for the <strong>Header</strong> <strong>class</strong>.</p>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">import</span>...
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Header</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    render() {
+        <span class="hljs-keyword">return</span> (
+            &lt;div className=<span class="hljs-string">"App"</span>&gt;
+                &lt;header className=<span class="hljs-string">"App-header"</span>&gt;
+                    &lt;img src={logo} className=<span class="hljs-string">"App-logo"</span> alt=<span class="hljs-string">"logo"</span>/&gt;
+                    &lt;h2 className=<span class="hljs-string">"App-title"</span>&gt;<span class="hljs-type">Welcome</span> to <span class="hljs-type">React</span>&lt;/h2&gt;
+                &lt;/header&gt;
+            &lt;/div&gt;
+        );
+    }
+}
+
+export...
+</code></pre>
+<p>Now add the Header into <strong>index.js</strong>. This will involve adding a new import and adding a new element into the DIV.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/address-component-header.png" alt="Header in components"></p>
+<a class="anchor" id="tests"></a>
+<h2>Tests</h2>
+<p>As you refactor your components, your tests might need to change. For instance, if you move the <strong>H2</strong> for your app into <strong>components/Header.js</strong>, you might need to change your tests. Consider this code:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">'./App'</span>;
+
+<span class="hljs-comment">// Code omitted here</span>
+
+it.only(<span class="hljs-string">'renders and reads H2 text'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> wrapper = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">App</span> /&gt;</span>);
+    const welcome = <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>Welcome to React<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>;
+    expect(wrapper.contains(welcome)).toEqual(true);
+});</span>
+</code></pre>
+<p>It will likely end up like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> Header <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/Header'</span>;
+
+<span class="hljs-comment">// Code omitted here</span>
+
+it.only(<span class="hljs-string">'renders and reads H1 text'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> wrapper = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Header</span> /&gt;</span>);
+    const welcome = <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>Welcome to React<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>;
+    expect(wrapper.contains(welcome)).toEqual(true);
+});</span>
+</code></pre>
+<p>If you want to start to test the Address component, remember that it expects to be passed some <strong>props</strong>. You already saw how to do this in the main program. Simple import the <strong>address-list.js</strong> file, and then use it when you instantiate an instance of that component.</p>
+<p><strong>NOTE</strong>: <em>I&#39;m intentionally leaving out some detail here to make you did a bit of thinking on your own.</em></p>
+<a class="anchor" id="refactor-tests"></a>
+<h2>Refactor Tests</h2>
+<p>Just as you refactored your components into two modules called <strong>App.js</strong> and <strong>Address.js</strong>, you should also refactor your tests into:</p>
+<ul>
+<li><strong>src/App.test.js</strong>: All tests related to the <strong>App</strong> component</li>
+<li><strong>src/Address.test.js</strong>: All tests related to the <strong>Address</strong> component</li>
+</ul>
+<p>This will require a bit of cut and pasting, but it should not be overly difficult.</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/address-components-tests-dir.png" alt="Refactor tests Header, Address and App"></p>
+<a class="anchor" id="describe-tests"></a>
+<h2>Describe Tests</h2>
+<p>Make sure you uniquely describe each suite of tests:</p>
+<pre><code class="lang-javascript">describe(<span class="hljs-string">'Jest Address Tests'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{ ... })
+
+describe(<span class="hljs-string">'Jest App Tests'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{ ... })
+</code></pre>
+<p>Here I <strong>describe</strong> one suite as being for the <strong>Address</strong> component and one for the <strong>App</strong> component.</p>
+<p>Include a string that describes your individual test suites:</p>
+<pre><code class="lang-JavaScript">describe(<span class="hljs-string">'Address tests'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+
+  <span class="hljs-comment">// YOUR TESTS HERE</span>
+
+});
+</code></pre>
+<p>Your other module might use the string <strong>App tests</strong>.</p>
+<a class="anchor" id="debug-jest-message"></a>
+<h2>Debug Jest Message</h2>
+<p>As we start writing more complex tests, we want to create some methods that will help us debug them. In particular, we want to use the Enzyme <a href="http://airbnb.io/enzyme/docs/api/ShallowWrapper/debug.html">debug</a>, <a href="http://airbnb.io/enzyme/docs/api/ShallowWrapper/find.html">find</a> and <a href="http://airbnb.io/enzyme/docs/api/ShallowWrapper/childAt.html">childAt</a> methods.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> getLast = <span class="hljs-function">(<span class="hljs-params">wrapper, element</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> ninep = wrapper.find(element).last().debug();
+    <span class="hljs-built_in">console</span>.log(ninep);
+};
+
+<span class="hljs-keyword">const</span> getFirst = <span class="hljs-function">(<span class="hljs-params">wrapper, element</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> ninep = wrapper.find(element).first().debug();
+    <span class="hljs-built_in">console</span>.log(ninep);
+};
+
+<span class="hljs-keyword">const</span> getChild = <span class="hljs-function">(<span class="hljs-params">wrapper, element, index</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> lastParagraph = wrapper.find(element).childAt(index).debug();
+    <span class="hljs-built_in">console</span>.log(lastParagraph);
+};
+</code></pre>
+<p>Call it like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-literal">it</span>.only(<span class="hljs-string">'renders and reads H2 text'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> wrapper = shallow(&lt;App /&gt;);
+    getFirst(wrapper, <span class="hljs-string">'h1'</span>);
+    <span class="hljs-keyword">const</span> welcome = &lt;h2&gt;Welcome <span class="hljs-keyword">to</span> React&lt;/h2&gt;;
+    expect(wrapper.contains(welcome)).toEqual(<span class="hljs-literal">true</span>);
+});
+</code></pre>
+<p>Or like this, if you want something a bit more flexible. The important difference is that it has the <strong>quiet</strong> option, but not that this one goes after h2 instead of <strong>P</strong>:</p>
+<pre><code class="lang-javascript">   <span class="hljs-keyword">var</span> quiet = <span class="hljs-literal">false</span>;
+
+   <span class="hljs-keyword">const</span> getLast = <span class="hljs-function">(<span class="hljs-params">wrapper, element</span>) =&gt;</span> {
+     <span class="hljs-keyword">const</span> lastParagraph = wrapper.find(element).last().debug();
+     <span class="hljs-keyword">if</span> (!quiet) {
+       <span class="hljs-built_in">console</span>.log(lastParagraph);
+     }
+ };
+
+ <span class="hljs-keyword">const</span> getFirst = <span class="hljs-function">(<span class="hljs-params">wrapper, element</span>) =&gt;</span> {
+     <span class="hljs-keyword">const</span> firstParagraph = wrapper.find(element).first().debug();
+     <span class="hljs-keyword">if</span> (!quiet) {
+       <span class="hljs-built_in">console</span>.log(firstParagraph);
+     }
+ };
+
+ <span class="hljs-keyword">const</span> getChild = <span class="hljs-function">(<span class="hljs-params">wrapper, element, index</span>) =&gt;</span> {
+     <span class="hljs-keyword">const</span> indexedParagraph = wrapper.find(element).childAt(index).debug();
+     <span class="hljs-keyword">if</span> (!quiet) {
+        <span class="hljs-built_in">console</span>.log(indexedParagraph);
+     }
+ };
+
+</code></pre>
+<p>Then change <strong>quiet</strong> to true to suppress the strings.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Make sure your code runs and tests work. Commit your work, push. Tell me where to look for program.</p>
+<ul>
+<li>Folder: weekXX-YYYY</li>
+</ul>
+<p>Your tests might look a bit like this:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/address-component-charlie-tests.png" alt="Final Tests"></p>
+<a class="anchor" id="simple-test"></a>
+<h2>Simple Test</h2>
+<p>Sometimes it seems all my tests are failing and I don&#39;t know if the problem is in the logic of my tests, or in the way I have set up my tests. In cases like that, I want to find a way to ensure that I have at least one test that will definitely pass. If that &quot;unbreakable&quot; test fails, then the problem is not the logic of any particular test, but in the setup or syntax of my tests. Here is my test that &quot;cannot fail&quot;:</p>
+<pre><code class="lang-javascript">fit('proves we can run a test', () =&gt; {
+  expect(<span class="hljs-name">true</span>).toBe(<span class="hljs-name">true</span>)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre>
+<p><strong>true</strong> should always be <strong>true</strong>, so if this test fails, or our tests won&#39;t run at all, the problem is not the logic of the test itself, but the way we have set up our test.</p>
+<p><strong>Note</strong>: <em>I am using <strong>fit</strong> to ensure that only this one test in my current test module is run. After I can confirm that this test passes, then I might change <strong>fit</strong> to <strong>it</strong> or add <strong>fit</strong> to the next test in the module</em>.</p>
+<a class="anchor" id="enzyme-dreams"></a>
+<h2>Enzyme Dreams</h2>
+<p>Enzyme can help you see the output generated by your JSX. Suppose you have this JSX in your React Component:</p>
+<pre><code><span class="hljs-variable">&lt;p className="App-intro"&gt;</span>
+    tollfree: {this.<span class="hljs-keyword">state</span>.tollfree}
+&lt;/p&gt;
+</code></pre><p>Then Enzyme can produce output like this to show what your JSX translates to at runtime:</p>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-intro"</span>&gt;</span>
+  tollfree:
+  unknown
+<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+</code></pre><p>The enzyme code that generates this output might look a bit like this:</p>
+<pre><code><span class="hljs-keyword">const</span> welcome = <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-intro"</span>&gt;</span>tollfree: unknown<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span>;
+<span class="hljs-keyword">const</span> lastParagraph = wrapper.find(<span class="hljs-string">'div'</span>).childAt(<span class="hljs-number">10</span>).debug();
+<span class="hljs-built_in">console</span>.log(lastParagraph);
+expect(wrapper.contains(welcome)).toEqual(<span class="hljs-literal">true</span>);
+</code></pre><p>The wrapper contains all the HTML from your project. See it like this:</p>
+<pre><code><span class="hljs-selector-tag">console</span><span class="hljs-selector-class">.log</span>(<span class="hljs-selector-tag">wrapper</span><span class="hljs-selector-class">.debug</span>();
+</code></pre><p>But the childAt code above finds one node, one paragraph element, in that DOM array of elements, and displays its content.</p>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App-intro"</span>&gt;</span>
+  tollfree:
+  unknown
+<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+</code></pre><a class="anchor" id="props-single-node"></a>
+<h2>Props Singe Node Error</h2>
+<p>This is a common error that you should know because it is so hard to diagnose if you get it. Please look here:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/JavaScriptReact.html#props-single-node">Elvenware React</a></li>
+</ul>
+<a class="anchor" id="enospc"></a>
+<h2>ENOSPC Error</h2>
+<p>This is a relatively rare error that you should know because it is so hard to diagnose if you get it.</p>
+<p>Please look here:</p>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/web/JavaScript/JavaScriptReact.html#enospc">Elvenware React</a></li>
+</ul>
+</div></body></html>

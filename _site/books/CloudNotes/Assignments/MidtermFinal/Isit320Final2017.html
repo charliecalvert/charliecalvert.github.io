@@ -1,0 +1,615 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>Isit320Final2017</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>Isit320Final2017</h1><p>Welcome to Isit320Final2017</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#routes">Routes</a></li>
+<li><a href="#merging-code-into-webcrafts">Merging Code into WebCrafts</a></li>
+<li><a href="#key-steps">The Merging: Key Steps</a></li>
+<li><a href="#the-config-file">The Config File</a></li>
+<li><a href="#config-file-route">Config File Route</a></li>
+<li><a href="#merge-code-you-forked">Merge Code you Forked</a></li>
+<li><a href="#delete-all-old-jquery-code">Delete all old jQuery code</a></li>
+<li><a href="#get-latest-isit-code-and-isit-site-tools">Get latest isit-code and isit-site-tools</a></li>
+<li><a href="#tests">Tests</a></li>
+<li><a href="#firebase">Firebase</a></li>
+<li><a href="#ec2-ports-and-security-groups">EC2 Ports and Security Groups</a></li>
+<li><a href="#all-projects-should-build-on-ec2">All projects Should Build on EC2</a></li>
+<li><a href="#the-gitignore-file">The .gitignore File</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#extra-credit">Extra Credit</a></li>
+<li><a href="#extra-credit-login">Extra Credit Login</a></li>
+<li><a href="#long-link-to-ec2">Long Link to EC2</a></li>
+<li><a href="#attitude">Attitude</a></li>
+<li><a href="#server-ports">Server Ports</a></li>
+<li><a href="#gratuitous-hint">Gratuitous Hint</a></li>
+<li><a href="#i-get-is-not-defined">I get $ is not defined</a></li>
+<li><a href="#the-es6-spread-operator">The ES6 Spread Operator</a></li>
+<li><a href="#redux-tests">Redux Tests</a></li>
+<li><a href="#close-down-ec2-instances">Close Down EC2 Instances</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>The goal of the final is to demonstrate your ability to deploy web sites to the cloud. In particular, I want to see:</p>
+<ul>
+<li>WebCrafts working</li>
+<li>The specified tests working</li>
+<li>Code running on EC2</li>
+<li>Code running on the Firebase site</li>
+<li>Docker Container running on Port 30028</li>
+</ul>
+<p>Please get the FirebaseReact assignment melded into your WebCrafts assignment. See below for what I mean by this.</p>
+<p>Handy links to at least some assignments:</p>
+<ul>
+<li><a href="https://www.ccalvert.net/">https://www.ccalvert.net/</a></li>
+</ul>
+<p>Here you can see that I&#39;m now using the app to create our assignments, including this final:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/is320-final-2017-producer.png" alt="Isit320FinalProducer"></p>
+<a class="anchor" id="routes"></a>
+<h2>Routes</h2>
+<p>Everyone must understand routes to do well in this class. Here is an assignment to show me that you are up to speed:</p>
+<ul>
+<li>At the root of your repository, run1:<ul>
+<li><strong>CreateExpressProject final-routes</strong></li>
+<li><strong>cd final-routes</strong></li>
+</ul>
+</li>
+<li>In <strong>routes/index.js</strong> implement three routes:<ul>
+<li>One that returns { &quot;result&quot; : &quot;route01&quot;}</li>
+<li>One that returns { &quot;result&quot; : &quot;route02&quot;}</li>
+<li>One that returns { &quot;result&quot; : &quot;route03&quot;}</li>
+</ul>
+</li>
+<li>In <strong>index.pug</strong> define three buttons that have the labels:<ul>
+<li>Route01, Route02, Route03</li>
+</ul>
+</li>
+<li>In <strong>control.js</strong> write code so that the button called<ul>
+<li><strong>Route01</strong> uses <strong>fetch</strong> to call <strong>/route01</strong></li>
+<li><strong>Route02</strong> uses <strong>fetch</strong> to call <strong>/route02</strong></li>
+<li><strong>Route03</strong> uses <strong>fetch</strong> to call <strong>/route03</strong></li>
+<li>Each button should display the result in a <strong>PRE</strong> tag.</li>
+</ul>
+</li>
+</ul>
+<p>By this time, fetch should just be built into the JavaScript implementation for all major browsers, so you probably don&#39;t need to run: <strong>npm install whatwg-fetch</strong>.</p>
+<p>You don&#39;t have to use React or any other specific tools other than <strong>Express</strong> routes and <strong>fetch</strong>. Just make it work!</p>
+<a class="anchor" id="merging-code-into-webcrafts"></a>
+<h2>Merging Code into WebCrafts</h2>
+<p>The parts of the Firebase assignments that I would like to see in WebCrafts:</p>
+<ul>
+<li>Login</li>
+<li>The <strong>ShowUsers</strong> and <strong>ShowUser</strong> dialogs that start to display the <strong>ElvenConfig</strong> file to the user in an easier to understand format.</li>
+<li><strong>Redux</strong></li>
+</ul>
+<p>I think all this implies connection to the Firebase database.</p>
+<p>I&#39;m flexible on all of this. Do what you can. If all you get is the login, that&#39;s better than nothing. If we get the <strong>ShowUsers</strong> but not the database, that&#39;s also better than nothing. Just merge in what you can.</p>
+<a class="anchor" id="key-steps"></a>
+<h2>The Merging: Key Steps</h2>
+<p>Watch the <a href="https://youtu.be/iA21zK3Idt8">video</a></p>
+<p>From <strong>Week10-FirebaseReact</strong> I needed these files:</p>
+<ul>
+<li>The Main Files that load the Login Page. In my case:<ul>
+<li>AppMain.js</li>
+<li>FireDataPush.js</li>
+<li>ElvenLogin.js</li>
+</ul>
+</li>
+<li>ShowUsers.js</li>
+<li>ShowUser.js</li>
+<li>fire-reducer.js</li>
+</ul>
+<p>The code from AppMain.js ended up in HomeButtons. And <strong>HomeButtons</strong> had to learn how to support Redux by linking in connect at the top:</p>
+<pre><code><span class="hljs-keyword">import</span> {<span class="hljs-built_in">connect</span>} from <span class="hljs-string">'react-redux'</span>;
+</code></pre><p>And MapStateToProps at the bottom:</p>
+<pre><code class="lang-javascript">const mapStateToProps = (<span class="hljs-keyword">state</span>) =&gt; {
+    return {
+        loggedIn: <span class="hljs-keyword">state</span>.loggedIn,
+        component: <span class="hljs-keyword">state</span>.component,
+        signInLabel: <span class="hljs-keyword">state</span>.signInLabel
+
+    }
+};
+
+HomeButtons = connect(mapStateToProps)(HomeButtons);
+</code></pre>
+<p>Near the bottom of <strong>layout.pug</strong>, I needed to add the code to load Firebase:</p>
+<pre><code>script(<span class="hljs-attribute">defer</span>=<span class="hljs-string">''</span>, <span class="hljs-attribute">src</span>=<span class="hljs-string">'https://www.gstatic.com/firebasejs/4.6.2/firebase-app.js'</span>)
+script(<span class="hljs-attribute">defer</span>=<span class="hljs-string">''</span>, <span class="hljs-attribute">src</span>=<span class="hljs-string">'https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js'</span>)
+script(<span class="hljs-attribute">defer</span>=<span class="hljs-string">''</span>, <span class="hljs-attribute">src</span>=<span class="hljs-string">'https://www.gstatic.com/firebasejs/4.6.2/firebase-database.js'</span>)
+</code></pre><p>We are stripping out all the jQuery, so the main react file now starts like this:</p>
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">try</span> {
+        <span class="hljs-keyword">const</span> root = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'home'</span>);
+        ReactDOM.render(
+
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">HomeButtons</span>/&gt;</span>
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span></span>
+            , root);
+    } <span class="hljs-keyword">catch</span> (e) {
+        <span class="hljs-built_in">console</span>.error(e);
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'load'</span>).innerHTML = <span class="hljs-string">'Error loading the Firebase SDK, check the console.'</span>;
+    }
+<span class="hljs-comment">//     homeDiv = document.getElementById('home');</span>
+<span class="hljs-comment">//     home();</span>
+<span class="hljs-comment">//     $.subscribe('reactMakeHtml', reactMakeHtml);</span>
+<span class="hljs-comment">//     $.subscribe('reactMakeImages', reactMakeImages);</span>
+<span class="hljs-comment">//     $.subscribe('home', reactHome);</span>
+});
+</code></pre>
+<p>The jquery removal:</p>
+<ul>
+<li>Remove the JumboTrons from index.pug and elsewhere.</li>
+</ul>
+<a class="anchor" id="the-config-file"></a>
+<h2>The Config File</h2>
+<p>Place your working <strong>ElvenConfig.json</strong> file in a folder of your repository called <strong>ElvenConfig</strong>. Include a section of the users node called <strong>lastname</strong>, where lastname is your last name. For instance, if your last name is Smith:</p>
+<pre><code class="lang-json">{
+  <span class="hljs-string">"users"</span>: {
+    <span class="hljs-string">"calvert"</span>:<span class="hljs-meta">{...}</span>,
+    <span class="hljs-string">"smith"</span>: <span class="hljs-meta">{...}</span>
+  },
+  <span class="hljs-string">"selectedElvenImages"</span>: [...],
+  <span class="hljs-string">"elvenImages"</span>: [...]
+}
+</code></pre>
+<p>Go through your tests and find the places where the &#39;calvert&#39; user is being used explicitly, and replace it with your last name. For instance, replace it with Smith.</p>
+<p>The goal is to allow me to insert your lastname section in my ElvenConfig file and have it work out of the box.</p>
+<p>Make sure the most recent Config file is on EC2.</p>
+<p>When I run <strong>Week10-FirebaseReact</strong>, turn to the <strong>Show Users</strong> page and click a button, I expect them to be configured to use <strong>/home/ubuntu</strong>.</p>
+<p>Here is how to change all instances of <strong>bcuser</strong> to <strong>ubuntu</strong> inside the <strong>ElvenConfig.json</strong> file:</p>
+<pre><code>sed -<span class="hljs-selector-tag">i</span> <span class="hljs-string">"s/bcuser/ubuntu/g"</span> ElvenConfig.json
+</code></pre><a class="anchor" id="config-file-route"></a>
+<h2>Config File Route</h2>
+<p>To accommodate the new format for ElvenConfig.json we had to change our code. Specifically, when working on <strong>Week10-FirebaseReact</strong> we changed the <strong>get-config</strong> route in <strong>routes/index.js</strong>. Here is the the updated version of the method as found in <strong>Week10-FirebaseReact</strong>:</p>
+<pre><code>router.get(<span class="hljs-string">'/get-config'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{ <span class="hljs-string">'use strict'</span>;
+    <span class="hljs-keyword">try</span> {
+        config.useLocalConfig = <span class="hljs-literal">false</span>;
+        config.loadAsync()
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">configuration</span>) </span>{
+                res.send({ <span class="hljs-attr">configuration</span>: configuration });
+            })
+            .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+                <span class="hljs-keyword">throw</span> err
+            })
+    } <span class="hljs-keyword">catch</span>(e) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(e);
+    }
+});
+</code></pre><p>You should replace the <strong>routes/makers</strong> verison of that method with the code shown in above. Note that we changed the name of the route from <strong>config</strong> to <strong>get-config</strong>. That means you have to change the route you call when you press the <strong>insertConfig</strong> button in <strong>FireDataPush</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">insertConfig</span>() {
+  <span class="hljs-selector-tag">fetch</span>(<span class="hljs-string">'/makers/get-config'</span>)
+    <span class="hljs-selector-class">.then</span>(...)
+    <span class="hljs-selector-class">.then</span>(...)
+    <span class="hljs-selector-class">.catch</span>(...)
+}
+</code></pre>
+<a class="anchor" id="merge-code-you-forked"></a>
+<h2>Merge Code you Forked</h2>
+<p>Be sure to merge in the latest changes from the repositories that you forked. I made changes as recently as November 29, 2017, but may do more.</p>
+<p>If you have things set up correctly, per the <a href="https://www.ccalvert.net/books/CloudNotes/Assignments/WebCrafts/WebCraftsUpToDate.html">UpToDate</a> assigment, it should be relatively easy to <strong>fetch</strong> and <strong>pull</strong>.</p>
+<p>The Atom editor makes merging conflicts easier:</p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/up-to-date-merge-atom.png" alt="Atom makes merging easy"></p>
+<a class="anchor" id="delete-all-old-jquery-code"></a>
+<h2>Delete all old jQuery code</h2>
+<p>For instance:</p>
+<p>Put a breakpoint here in make-html.js and make sure it never gets called:</p>
+<pre><code class="lang-javascript">$.getJSON(<span class="hljs-string">'/makers/config'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">configSummary</span>) </span>{ ... })
+</code></pre>
+<p>Then just delete the entire file.</p>
+<p>A simple way to get started is to stop loading <strong>require</strong> in <strong>views/layout.pub</strong>:</p>
+<pre><code>//script(<span class="hljs-name">data-main=</span><span class="hljs-string">"javascripts/main.js"</span> src=<span class="hljs-string">"/bower_components/requirejs/require.js"</span>)
+</code></pre><p>Without <strong>require</strong>, you don&#39;t load jQuery, which means you can no longer use <strong>document.ready</strong> in <strong>react-main</strong>:</p>
+<pre><code>//$(document).ready(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span> { ... }
+</code></pre><p>Replace it with <strong>window.onload</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-built_in">window</span>.onload = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ ... }
+</code></pre>
+<p>At that point you should be able to delete code that we commented out earlier. We can also delete the following directories and files:</p>
+<ul>
+<li><strong>make-html</strong>, <strong>make-image</strong> and <strong>tools</strong></li>
+<li><strong>control.js</strong> and <strong>main.js</strong></li>
+</ul>
+<p>The <strong>public/javascripts</strong> directory before deleting all jQuery related code:</p>
+<pre>$ ll
+total 3228
+drwxrwxr-x 5 charlie charlie    4096 Dec  4 19:38 ./
+drwxrwxr-x 6 charlie charlie    4096 Nov 21 11:31 ../
+-rw-rw-r-- 1 charlie charlie 1498647 Dec  6 07:30 bundle.js
+-rw-rw-r-- 1 charlie charlie 1775651 Dec  6 07:30 bundle.js.map
+-rw-rw-r-- 1 charlie charlie     563 Dec  4 19:36 control.js
+-rw-rw-r-- 1 charlie charlie    1217 Dec  4 19:36 main.js
+drwxrwxr-x 2 charlie charlie    4096 Dec  4 19:36 make-html/
+drwxrwxr-x 2 charlie charlie    4096 Dec  4 19:36 make-image/
+drwxrwxr-x 2 charlie charlie    4096 Dec  4 19:36 tools/
+</pre>
+<p>The commands to delete the jQuery related code, These should be issued in the <strong>public/javascripts</strong> directory:</p>
+<pre>git rm control.js main.js
+git rm -r make-html/ make-image/ tools/
+</pre>
+<p>After issuing the before commands:</p>
+<pre>$ ll
+total 3208
+drwxrwxr-x 2 charlie charlie    4096 Dec  6 07:35 ./
+drwxrwxr-x 6 charlie charlie    4096 Nov 21 11:31 ../
+-rw-rw-r-- 1 charlie charlie 1498647 Dec  6 07:30 bundle.js
+-rw-rw-r-- 1 charlie charlie 1775651 Dec  6 07:30 bundle.js.map
+</pre>
+<a class="anchor" id="get-latest-isit-code-and-isit-site-tools"></a>
+<h2>Get latest isit-code and isit-site-tools</h2>
+<p>Run <strong>npm outdated</strong></p>
+<p>If there are problems, to fix, run <strong>npm update</strong> or get in there and fix it by hand.</p>
+<pre>$ npm outdated
+Package                   Current  Wanted  Latest  Location
+babel-eslint                8.0.1   8.0.2   8.0.2  isit-web-crafts
+enzyme                      3.1.0   3.2.0   3.2.0  isit-web-crafts
+enzyme-adapter-react-16     1.0.2   1.1.0   1.1.0  isit-web-crafts
+eslint                     4.10.0  4.12.1  4.12.1  isit-web-crafts
+eslint-plugin-react         7.4.0   7.5.1   7.5.1  isit-web-crafts
+isit-code-lastname         1.0.0   1.0.1   1.0.1  isit-web-crafts
+isit-sitetools-lastname    1.0.1   1.0.3   1.0.3  isit-web-crafts
+mongoose                   4.12.4  4.13.5  4.13.5  isit-web-crafts
+react                      16.0.0  16.2.0  16.2.0  isit-web-crafts
+react-dom                  16.0.0  16.2.0  16.2.0  isit-web-crafts
+react-test-renderer        16.0.0  16.2.0  16.2.0  isit-web-crafts
+webpack                     3.8.1   3.9.1   3.9.1  isit-web-crafts
+webpack-dev-server          2.9.3   2.9.5   2.9.5  isit-web-crafts
+charlie@rohan-mintc ~/Git/WebCrafts-Isit320/jespinoza/isit-webcrafts-jespinoza (master)
+$ npm update
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.1.3 (node_modules/fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.1.3: wanted {"os":"darwin","arch":"any"} (current: {"os":"linux","arch":"x64"})
+
++ isit-sitetools-lastname@1.0.3
++ isit-code-lastname@1.0.1
++ react-dom@16.2.0
++ react@16.2.0
++ babel-eslint@8.0.2
++ enzyme@3.2.0
++ eslint-plugin-react@7.5.1
++ enzyme-adapter-react-16@1.1.0
++ eslint@4.12.1
++ mongoose@4.13.5
++ react-test-renderer@16.2.0
++ webpack-dev-server@2.9.5
++ webpack@3.9.1
+added 138 packages, removed 17 packages, updated 49 packages and moved 5 packages in 11.72s
+`
+</pre>
+<a class="anchor" id="tests"></a>
+<h2>Tests</h2>
+<p>In <strong>isit-web-crafts</strong>, set your <strong><strong>mocks</strong>/mock-data.js</strong> file to the following:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> getData = <span class="hljs-function">(<span class="hljs-params">url</span>) =&gt;</span> {
+    <span class="hljs-keyword">switch</span> (url) {
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'/api/foo'</span>:
+            <span class="hljs-keyword">return</span> {
+                <span class="hljs-attr">foo</span>: <span class="hljs-string">'url-mock-bar'</span>,
+                <span class="hljs-attr">file</span>: <span class="hljs-string">'url-mock-api.js'</span>
+            };
+
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'/makers/config'</span>:
+            <span class="hljs-keyword">const</span> configSummary = {
+                <span class="hljs-string">'base-dir'</span>: <span class="hljs-string">'/home/bcuser/'</span>,
+                <span class="hljs-string">'bootswatch'</span>: <span class="hljs-string">'cosmo'</span>,
+                <span class="hljs-string">'most-recent-date'</span>: <span class="hljs-string">'2017-08-14'</span>,
+                <span class="hljs-string">'highlight'</span>: <span class="hljs-literal">true</span>,
+                <span class="hljs-string">'siteDirs'</span>: [
+                    <span class="hljs-string">'Documents/AllTest'</span>,
+                    <span class="hljs-string">'Git/CloudNotes/Isit320'</span>
+                ],
+                <span class="hljs-string">'destinationDirs'</span>: [
+                    <span class="hljs-string">'/var/www/html/AllSite/'</span>,
+                    <span class="hljs-string">'/home/charlie/Git/CloudNotes/Isit320/'</span>
+                ],
+                <span class="hljs-string">'destination-dirs-extra'</span>: [{
+                    <span class="hljs-string">'base'</span>: <span class="hljs-string">'/var/www/html/'</span>,
+                    <span class="hljs-string">'extra'</span>: <span class="hljs-string">''</span>
+                }, {
+                    <span class="hljs-string">'base'</span>: <span class="hljs-string">'/var/www/html/Assignments/'</span>,
+                    <span class="hljs-string">'extra'</span>: <span class="hljs-string">'Assignments'</span>
+                }]
+            };
+            <span class="hljs-keyword">return</span> configSummary;
+
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'/makers/walk?siteDirsIndex=1'</span>:
+            <span class="hljs-keyword">const</span> walkResult = {
+                <span class="hljs-attr">result</span>: <span class="hljs-string">'success'</span>,
+                <span class="hljs-attr">baseDir</span>: <span class="hljs-literal">undefined</span>,
+                <span class="hljs-attr">mostRecentDate</span>: <span class="hljs-literal">undefined</span>,
+                <span class="hljs-attr">destinationDir</span>: <span class="hljs-string">'/home/charlie/Git/CloudNotes/tips/'</span>,
+                <span class="hljs-attr">directories</span>: [<span class="hljs-string">'/home/charlie/Git/CloudNotes/Tips'</span>],
+                <span class="hljs-attr">masterListOfNames</span>: [<span class="hljs-string">'* [Summary.html](Summary.html)'</span>],
+                <span class="hljs-attr">htmlFilesWritten</span>:
+                    [<span class="hljs-string">'/home/charlie/Git/CloudNotes/tips/Summary.html'</span>,
+                        <span class="hljs-string">'/home/charlie/Git/CloudNotes/tips/master-list.html'</span>]
+            };
+
+            <span class="hljs-keyword">return</span> walkResult;
+
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">return</span> {};
+    }
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> getData;
+</code></pre>
+<p>Have the render method for <strong>MakeHtmlDropDowns</strong> contain, among other things, button with the ID <strong>generate</strong> and a PRE tag with the ID <strong>configSummary</strong>:</p>
+<pre><code class="lang-HTML">render() {
+      <span class="hljs-keyword">return</span> (
+          <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span>&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                  <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Render Markdown as HTML<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+                  // OTHER CONTROLS OMITTED HERE
+                  <span class="hljs-tag">&lt;<span class="hljs-name">RaisedButton</span>
+                      <span class="hljs-attr">id</span>=<span class="hljs-string">"generate"</span>
+                      <span class="hljs-attr">style</span>=<span class="hljs-string">{buttonStyle}</span>
+                      <span class="hljs-attr">primary</span>=<span class="hljs-string">{true}</span>
+                      <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.generateHtml}</span>
+                  &gt;</span>
+                      {this.state.walk}
+                  <span class="hljs-tag">&lt;/<span class="hljs-name">RaisedButton</span>&gt;</span>
+
+                  <span class="hljs-tag">&lt;<span class="hljs-name">pre</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"configSummary"</span>&gt;</span>{this.state.configSummary}<span class="hljs-tag">&lt;/<span class="hljs-name">pre</span>&gt;</span>
+              <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span></span>
+      );
+  }
+</code></pre>
+<p>Make sure that <strong>make-html-drop-downs.js</strong> has at least the following in it and that all tests pass:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { configure, shallow } <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+<span class="hljs-keyword">import</span> Adapter <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme-adapter-react-16'</span>;
+configure({ adapter: <span class="hljs-keyword">new</span> Adapter() });
+<span class="hljs-keyword">import</span> MenuItem <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/MenuItem'</span>;
+<span class="hljs-keyword">import</span> MakeHtmlDropDowns <span class="hljs-keyword">from</span> <span class="hljs-string">'../MakeHtmlDropDowns'</span>;
+<span class="hljs-keyword">import</span> ElfDebugEnzyme <span class="hljs-keyword">from</span> <span class="hljs-string">'../ElfDebugEnzyme'</span>;
+const elfDebugEnzyme = <span class="hljs-keyword">new</span> ElfDebugEnzyme(<span class="hljs-literal">true</span>, <span class="hljs-string">'make-html-drop-downs'</span>);
+
+describe(<span class="hljs-string">'React Home Tests'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    it(<span class="hljs-string">'renders default value of H1 tag'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        const wrapper = shallow(&lt;MakeHtmlDropDowns /&gt;);
+        const h1tag = &lt;h1&gt;Render Markdown <span class="hljs-keyword">as</span> HTML&lt;/h1&gt;;
+        elfDebugEnzyme.getLast(wrapper, <span class="hljs-string">'h1'</span>, <span class="hljs-literal">true</span>);
+        expect(wrapper.contains(h1tag)).toEqual(<span class="hljs-literal">true</span>);
+    });
+
+    it(<span class="hljs-string">'gets drop down value'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        const wrapper = shallow(&lt;MakeHtmlDropDowns /&gt;);
+        <span class="hljs-regexp">//</span>elfDebugEnzyme.getAll(wrapper, <span class="hljs-literal">true</span>);
+        elfDebugEnzyme.getLast(wrapper, <span class="hljs-string">'MenuItem'</span>, <span class="hljs-literal">true</span>);
+        const code = &lt;MenuItem primaryText=<span class="hljs-string">'/home/charlie/Git/CloudNotes/Isit320/'</span>/&gt;;
+        expect(wrapper.containsMatchingElement(code)).toBe(<span class="hljs-literal">true</span>);
+    });
+
+    it(<span class="hljs-string">'renders button click message for last pre tag'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        const wrapper = shallow(&lt;MakeHtmlDropDowns /&gt;);
+        wrapper.find(<span class="hljs-string">'#generate'</span>).simulate(<span class="hljs-string">'click'</span>);
+        elfDebugEnzyme.getLast(wrapper, <span class="hljs-string">'pre'</span>, <span class="hljs-literal">true</span>);
+        const paragraphData = wrapper.find(<span class="hljs-string">'pre'</span>).last().debug();
+        expect(paragraphData).toContain(<span class="hljs-string">'/home/charlie/Git/CloudNotes/tips'</span>);
+    });
+
+});
+</code></pre>
+<p>In particular, the PRE tag, though empty when the test starts, should be modified during the test, and should contain the following:</p>
+<pre><code class="lang-pre"><span class="hljs-params">&lt;pre id="configSummary"&gt;</span>
+      [
+          <span class="hljs-variable">&amp;quot</span>;<span class="hljs-meta-keyword">/home/</span>charlie/Git/CloudNotes<span class="hljs-meta-keyword">/tips/</span>Summary.html<span class="hljs-variable">&amp;quot</span>;,
+          <span class="hljs-variable">&amp;quot</span>;<span class="hljs-meta-keyword">/home/</span>charlie/Git/CloudNotes<span class="hljs-meta-keyword">/tips/</span>master-list.html<span class="hljs-variable">&amp;quot</span>;
+      ]
+<span class="hljs-params">&lt;/pre&gt;</span>
+</code></pre>
+<p>Add a fourth test that proves that the page has a an element that matches this tag:</p>
+<pre><code class="lang-pre">&lt;pre <span class="hljs-built_in">id</span>=<span class="hljs-string">"configSummary"</span> /&gt;
+</code></pre>
+<p>The body of the test should contains four lines, the last two of which would look like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">elfDebugEnzyme</span><span class="hljs-selector-class">.getLast</span>(wrapper, <span class="hljs-string">'pre'</span>, true);
+<span class="hljs-selector-tag">expect</span>(wrapper.containsMatchingElement(code))<span class="hljs-selector-class">.toBe</span>(true);
+</code></pre>
+<p>The test should not include a button click. In other words, we are proving the tag exists before the button is clicked.</p>
+<p>Also, the following programs should the specified number of tests passing.</p>
+<a class="anchor" id="firebase"></a>
+<h2>Firebase</h2>
+<p>Your Firebase app should:</p>
+<ul>
+<li>Run on the Firebase cloud. We also have Firebase running on EC2, but this should have firebaseapp.com in the URL.</li>
+<li>I should be able to query for, and add new, Presidents.<ul>
+<li>The presidents can show up only in the console.</li>
+<li>For extra credit, display them on the main page in a UL element.</li>
+</ul>
+</li>
+</ul>
+<p>Part of the security mechanism for Firebase is to make sure that the app can only be run from authorized locations. When you move to EC2, you might get an error like this one: <strong>uncaught exception: Error: This domain (34.333.134.3) is not authorized to run this operation. Add it to the OAuth redirect domains list in the Firebase console -&gt; Auth section -&gt; Sign in method tab.</strong></p>
+<p><img src="https://s3.amazonaws.com/bucket01.elvenware.com/images/firebase-not-auth.png" alt="Firebase EC2 Error"></p>
+<p>When adding the domain, use the long name from EC2. It looks something like this:</p>
+<pre><code>ec2<span class="hljs-number">-34</span><span class="hljs-number">-233</span><span class="hljs-number">-323</span><span class="hljs-number">-3.</span>us-west<span class="hljs-number">-2.</span>compute.amazonaws.com
+</code></pre><p>You can find it on the AWS EC2 <strong>instances</strong> page.</p>
+<a class="anchor" id="ec2-ports-and-security-groups"></a>
+<h2>EC2 Ports and Security Groups</h2>
+<p>View your EC2 instances <strong>inbound rules</strong> and make sure 30025, 30026 and 30027 are listed as open:</p>
+<ul>
+<li><a href="https://www.ccalvert.net/books/CloudNotes/Assignments/Ec2GetStarted.html#step-04-b-security-groups">Details are here</a></li>
+</ul>
+<a class="anchor" id="all-projects-should-build-on-ec2"></a>
+<h2>All projects Should Build on EC2</h2>
+<p>This is not the same thing as saying that they work. It just means I can go into any directory in your repository and type <strong>npm install</strong> and it will complete without errors. I should also be able to type <strong>npm start</strong> and go to the browser and see that the application loads without error. It need not run correctly, but it should not throw errors when it loads. No red text!</p>
+<a class="anchor" id="the-gitignore-file"></a>
+<h2>The .gitignore File</h2>
+<p>Must contain the following:</p>
+<ul>
+<li>.idea</li>
+<li>node_modules</li>
+<li>bower_components</li>
+<li>bundle.js</li>
+<li>bundle.js.map</li>
+</ul>
+<p>And should contain:</p>
+<ul>
+<li>.c9</li>
+</ul>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>This video shows one possible interpretation of what to do with the final:</p>
+<ul>
+<li><a href="https://youtu.be/joSQBo8swZU">Charlie&#39;s Final Final</a></li>
+</ul>
+<p>Here is a preliminary list of what I&#39;m looking for:</p>
+<ul>
+<li>Webcrafts should work<ul>
+<li>Markdown to HTML</li>
+<li>Images to HTML</li>
+</ul>
+</li>
+<li>On EC2 and kept running with <strong>systemd</strong><ul>
+<li>WebCrafts running on port 30025</li>
+<li>Firebase React on 30026</li>
+<li>Firebase Express (the HTML version) on 30027</li>
+<li>Send me the link to the long name for your app:<ul>
+<li>ec2-xxx-us.west-2-compute-amazonaws.com:3002X.</li>
+</ul>
+</li>
+<li>Install Apache and after I run WebCrafts I should be able to see pages there.</li>
+</ul>
+</li>
+<li>Repositories:<ul>
+<li>Webcrafts<ul>
+<li>Webcrafts</li>
+<li>isit-code</li>
+<li>isit-site-tools</li>
+</ul>
+</li>
+<li>Main Repository:<ul>
+<li>...</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Firebase<ul>
+<li>Load code that allows me to log in</li>
+<li>The URL of your application running on the Firebase servers. Not a local copy, a copy running in the Firebase cloud. (We also have Firebase code running on EC2, but that is a different part of the assignment.)</li>
+</ul>
+</li>
+<li>Tests<ul>
+<li>Read the tests section above and make sure you meet the requirements</li>
+</ul>
+</li>
+</ul>
+<p>For all the code I need to see:</p>
+<ul>
+<li>repository</li>
+<li>directory</li>
+<li>branch</li>
+</ul>
+<p>I&#39;m expecting to find your <em>final</em> code in <strong>master</strong>, but it would not be a serious mistake to have it elsewhere so long as you say where. If you don&#39;t say where, I will look only in master. But I want to see that you have been working in various branches with checkin dates distributed throughout the quarter.</p>
+<p>The command <strong>npm outdated</strong> should show that you have the most recent versions of your <strong>isit-code</strong> and <strong>isit-site-tools</strong> in your <strong>package.json</strong>. This is not just a minor point. Make sure you have this right! Your code probably won&#39;t work if it is not right.</p>
+<p>Projects should build on EC2. See the list of projects that need to build on EC2 in the appropriate section above.</p>
+<p>Delete dead code and code that has been commented out. This is your final, and it should look as nice as possible.</p>
+<a class="anchor" id="extra-credit"></a>
+<h2>Extra Credit</h2>
+<p>For Presidents in the FirebaseExpress and FirebaseReact apps, display the Presidents on the appropriate page.</p>
+<p>In the testing section of this exam, you saw several examples of how to use the data from MockData file. Add three more tests that involve the MakeImages rather than the MakeHtml page. These tests could be similar to those in <strong>make-html-drop-downs</strong>, but they should involve the images page. You will need to add mock data to the <strong><strong>mocks</strong>/MockData.js</strong> file.</p>
+<p>The Presidents are not part of WebCrafts. But in the pure HTML solution, and FirebaseExpress mixins and Pug solution, you should be able to enter a new president and display a list of existing presidents in the console. The buttons are already there and should call the right methods: pushPresidents and getPresidents. They only work when you are logged in.</p>
+<a class="anchor" id="extra-credit-login"></a>
+<h2>Extra Credit Login</h2>
+<p>It would be nice if the user were first presented with the login page, and only after logging in could see the rest of the app. This is the way the app worked before we commented out the code for the old login system in <strong>routes/index.js</strong>.</p>
+<p>For extra credit, you could try to get that working again, but this time with the Firebase login system. I don&#39;t care if the solution you come up with is actually secure, just so that it appears to be secure.</p>
+<p>In particular, in the old system, if the user went to the home page, all they could see was the login screen until they were logged in. There was middleware that ensured (at least in theory) that no other request worked until the user was logged in. That&#39;s a high bar, but any progress you want to make down that road would be great to see.</p>
+<a class="anchor" id="long-link-to-ec2"></a>
+<h2>Long Link to EC2</h2>
+<p>This is reminder to send me the long link to your EC2 instance. It might look a bit like this:</p>
+<ul>
+<li>ec2-xxx-us.west-2-compute-amazonaws.com.</li>
+</ul>
+<a class="anchor" id="attitude"></a>
+<h2>Attitude</h2>
+<p>Complete as much of the exam as you can. It is better to get it in, and get it in more or less on time, than to spin trying to complete something you don&#39;t understand.</p>
+<p>I&#39;m mostly interested in seeing that you:</p>
+<ul>
+<li>Show clear evidence that you learned something</li>
+<li>Did the homework more or less on time</li>
+<li>Came to class</li>
+</ul>
+<p>Students start in different places. I&#39;m looking for evidence that a student worked hard and learned something new rather than being overly concerned with whether they can complete each assignment perfectly.</p>
+<p>When I was growing up, A&#39;s were not fetishized. People could and very frequently did get into Ivy League colleges with a B average. Today, in the technical world, what matters is the interview, not your grades. As a result, I try to keep things simple and give students the grade they deserve.</p>
+<a class="anchor" id="server-ports"></a>
+<h2>Server Ports</h2>
+<p>Make sure programs that run on a server port such as 30026 are set up like this in <strong>www/bin</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var port</span> = normalizePort(process.env.SERVER_PORT || <span class="hljs-string">'30026'</span>);
+</code></pre>
+<p>Note that we are using <strong>SERVER_PORT</strong> rather than <strong>PORT</strong>.</p>
+<a class="anchor" id="gratuitous-hint"></a>
+<h2>Gratuitous Hint</h2>
+<p>Fancier Bash hints on current repo. Near top of <strong>.bashrc</strong>:</p>
+<pre><code class="lang-bash">COLOR_RED=<span class="hljs-string">"\033[0;31m"</span>
+COLOR_YELLOW=<span class="hljs-string">"\033[0;33m"</span>
+COLOR_GREEN=<span class="hljs-string">"\033[0;32m"</span>
+COLOR_OCHRE=<span class="hljs-string">"\033[38;5;95m"</span>
+COLOR_BLUE=<span class="hljs-string">"\033[0;34m"</span>
+COLOR_WHITE=<span class="hljs-string">"\033[0;37m"</span>
+COLOR_RESET=<span class="hljs-string">"\033[0m"</span>
+
+<span class="hljs-keyword">function</span> git_color {
+  <span class="hljs-built_in">local</span> git_status=<span class="hljs-string">"<span class="hljs-variable">$(git status 2&gt; /dev/null)</span>"</span>
+
+  <span class="hljs-keyword">if</span> [[ ! <span class="hljs-variable">$git_status</span> =~ <span class="hljs-string">"working directory clean"</span> ]]; <span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-variable">$COLOR_RED</span>
+  <span class="hljs-keyword">elif</span> [[ <span class="hljs-variable">$git_status</span> =~ <span class="hljs-string">"Your branch is ahead of"</span> ]]; <span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-variable">$COLOR_YELLOW</span>
+  <span class="hljs-keyword">elif</span> [[ <span class="hljs-variable">$git_status</span> =~ <span class="hljs-string">"nothing to commit"</span> ]]; <span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-variable">$COLOR_GREEN</span>
+  <span class="hljs-keyword">else</span>
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-variable">$COLOR_OCHRE</span>
+  <span class="hljs-keyword">fi</span>
+}
+
+<span class="hljs-keyword">function</span> git_branch {
+  <span class="hljs-built_in">local</span> git_status=<span class="hljs-string">"<span class="hljs-variable">$(git status 2&gt; /dev/null)</span>"</span>
+  <span class="hljs-built_in">local</span> on_branch=<span class="hljs-string">"On branch ([^<span class="hljs-variable">${IFS}</span>]*)"</span>
+  <span class="hljs-built_in">local</span> on_commit=<span class="hljs-string">"HEAD detached at ([^<span class="hljs-variable">${IFS}</span>]*)"</span>
+
+  <span class="hljs-keyword">if</span> [[ <span class="hljs-variable">$git_status</span> =~ <span class="hljs-variable">$on_branch</span> ]]; <span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">local</span> branch=<span class="hljs-variable">${BASH_REMATCH[1]}</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"(<span class="hljs-variable">$branch</span>)"</span>
+  <span class="hljs-keyword">elif</span> [[ <span class="hljs-variable">$git_status</span> =~ <span class="hljs-variable">$on_commit</span> ]]; <span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">local</span> commit=<span class="hljs-variable">${BASH_REMATCH[1]}</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"(<span class="hljs-variable">$commit</span>)"</span>
+  <span class="hljs-keyword">fi</span>
+}
+</code></pre>
+<p>Below the PS1 statements and right before <strong>unset color prompt</strong> :</p>
+<pre><code class="lang-bash">PS1+=<span class="hljs-string">"\[\$(git_color)\]"</span>
+PS1+=<span class="hljs-string">"\$(git_branch)"</span>                       <span class="hljs-comment"># prints current branch</span>
+PS1+=<span class="hljs-string">"\[$COLOR_BLUE\]\n\$\[$COLOR_RESET\] "</span>   <span class="hljs-comment"># '#' for root, else '$'</span>
+</code></pre>
+<a class="anchor" id="i-get-is-not-defined"></a>
+<h2>I get $ is not defined</h2>
+<p>If you get a <strong>$ is not defined</strong> it probably means you have not run <strong>bower install</strong>.</p>
+<a class="anchor" id="the-es6-spread-operator"></a>
+<h2>The ES6 Spread Operator</h2>
+<p>Use of the the <a href="(http://es6-features.org/#SpreadOperator)">spread operator</a> still requires STAGE-0:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save babel-preset-stage-0</span>
+</code></pre><p>And then in webpack.config.js:</p>
+<pre><code><span class="hljs-string">presets:</span> [<span class="hljs-string">'env'</span>, <span class="hljs-string">'stage-0'</span>, <span class="hljs-string">'react'</span>]
+</code></pre><p>Here is the kind of error you get if you don&#39;t have ES6 STAGE-0 installed:</p>
+<pre>ERROR in ./source/reducer.js
+Module build failed: SyntaxError: Unexpected token (12:16)
+
+  10 |         case 'SWITCH_COMPONENT':
+  11 |             return {
+> 12 |                 ...state,
+     |                 ^
+  13 |                 configured: true,
+  14 |                 component: action.component,
+  15 |                 userName: action.userName
+</pre>
+<ul>
+<li><a href="(http://es6-features.org/#SpreadOperator)">Spread Operator Overview</a></li>
+<li><a href="(https://babeljs.io/docs/plugins/preset-stage-0/)">Stage 0</a></li>
+</ul>
+<a class="anchor" id="redux-tests"></a>
+<h2>Redux Tests</h2>
+<ul>
+<li><a href="https://www.ccalvert.net/books/CloudNotes/Assignments/WebCrafts/WebCraftsJestMocks.html#dealing-with-redux">Look here</a></li>
+</ul>
+<a class="anchor" id="close-down-ec2-instances"></a>
+<h2>Close Down EC2 Instances</h2>
+<p>You can keep, delete, mangle, change in whatever way you want your EC2 instances after December 11, 2017. See the Canvas announcement on this subject for more information.</p>
+</div></body></html>

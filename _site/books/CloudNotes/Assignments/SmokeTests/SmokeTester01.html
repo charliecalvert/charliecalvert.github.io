@@ -1,0 +1,118 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>SmokeTester01</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>SmokeTester01</h1><p>Welcome to SmokeTester01</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#background">Background</a></li>
+<li><a href="#merging">Merging</a></li>
+<li><a href="#other-things-to-know">Other things to Know</a></li>
+<li><a href="#save-a-good-copy-of-your-repo">Save a Good Copy of Your Repo</a></li>
+<li><a href="#merging-week06-into-week07">Merging week06 into week07</a></li>
+<li><a href="#rename-a-directory">Rename a Directory</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>Normalize file naming conventions as outlined in the <strong>Turn it in</strong> section. After renaming the files, get the best and latest versions of your programs in the <strong>master</strong> branch.</p>
+<p>I&#39;ll run a check to see if you have the right programs in master. I&#39;ll be checking for case and other details in the name. Your grade will be based on the results of that check.</p>
+<a class="anchor" id="background"></a>
+<h2>Background</h2>
+<p>Ideally, our repository should have a structure like this:</p>
+<ul>
+<li>Branch week01<ul>
+<li>week01-program-01</li>
+</ul>
+</li>
+<li>Branch week02<ul>
+<li>week01-program-01</li>
+<li>week02-program-01</li>
+</ul>
+</li>
+<li>Branch week03<ul>
+<li>week01-program-01</li>
+<li>week02-program-01</li>
+<li>week03-program-01</li>
+<li>week03-program-02</li>
+</ul>
+</li>
+</ul>
+<p>The point being that each week we create a new branch based on the previous week&#39;s branch. We add one or more programs to the new branch.</p>
+<p>Meanwhile, the <strong>master</strong> branch ought to always contain working versions of all our code. For instance, it might look like this during week03, if we are still working on <strong>week03-program-02</strong>:</p>
+<ul>
+<li>Branch master<ul>
+<li>week01-program-01</li>
+<li>week02-program-01</li>
+<li>week03-program-01</li>
+</ul>
+</li>
+</ul>
+<p>Note that <strong>master</strong> contains three working programs, but omits <strong>week03-program-02</strong> because it is still under development.</p>
+<p>I understand that your repository might no always be this clean. However, I want your <strong>master</strong> branch to be this clean.</p>
+<a class="anchor" id="merging"></a>
+<h2>Merging</h2>
+<p>Assuming all the programs in branch <strong>week03</strong> are working, and assuming you never work in <strong>master</strong>, it should be very simple to merge the <strong>week03</strong> branch into <strong>master</strong>:</p>
+<pre><code>git checkout <span class="hljs-keyword">master</span>
+<span class="hljs-title">git</span> merge week03
+</code></pre><p>And your done.</p>
+<p>Let&#39;s assume this goes fairly smoothly, but when you check your code in master, you find a problem. You can&#39;t resist fixing it right there. After your update <strong>master</strong> is ahead of <strong>week03</strong>. It should be simple to fix this. First commit your work in <strong>master</strong>, then</p>
+<pre><code>git checkout week03
+git <span class="hljs-keyword">merge</span> <span class="hljs-keyword">master</span>
+</code></pre><p>Let&#39;s assume you have completed these programs in week03:</p>
+<ul>
+<li>week01-program-01</li>
+<li>week02-program-01</li>
+<li>week03-program-01</li>
+</ul>
+<p>But you have not completed <strong>week03-program-02</strong>. How can you merge <strong>week03</strong> into <strong>master</strong>? Well, there are any number of strategies for handling this, but one might be:</p>
+<pre><code>git checkout week03
+git branch temp
+git checkout temp
+git rm -r week03-program-<span class="hljs-number">02</span>
+// commit
+git checkout <span class="hljs-keyword">master</span>
+<span class="hljs-title">git</span> merge temp
+git branch -d temp <span class="hljs-comment"># Delete branch temp</span>
+</code></pre><p>This allows you to merge all of week03 into master except <strong>week03-program02</strong>.</p>
+<a class="anchor" id="other-things-to-know"></a>
+<h2>Other things to Know</h2>
+<p>Here is how to compare two branches with some ability to copy files from one side to another:</p>
+<pre><code>git checkout <span class="hljs-keyword">master</span>
+<span class="hljs-title">git</span> difftool -d week07
+</code></pre><p>This compares <strong>master</strong> and <strong>week07</strong>. Do it from the root of a directory.</p>
+<p>I know merging preserves my history, and I want to do that. But I&#39;m desperate. The heck with merging! Can&#39;t I just copy one directory or file from one branch to another?</p>
+<pre><code>git checkout week07
+git checkout week06 <span class="hljs-comment">-- my-missing-dir</span>
+</code></pre><p>This will copy the directory called <strong>my-missing-dir</strong> from branch <strong>week06</strong> into branch <strong>week07</strong>.</p>
+<p><strong>NOTE</strong>: <em>One reason not to do this is that history can be your friend. Sometimes you turn in assignment late either because you forgot to turn it in, or because you were stuck on one bug even though everything else was working. If this happens I can check when you first started committing code for this project, or when you stopped committing or when you finished a particular file. Do I do this? Yes, I do, and it has meant some students did not lose points for lateness. But if you <strong>checkout</strong> rather than <strong>merge</strong>, then your history might get lost, and that is not good in some cases. Summary: try to merge. If it just isn&#39;t going to work for you, then try alternate strategies.</em></p>
+<a class="anchor" id="save-a-good-copy-of-your-repo"></a>
+<h2>Save a Good Copy of Your Repo</h2>
+<p>There are elegant ways to undo a merge or to fix bad merges. But here is one simple, if crude, way to handle failed merges.</p>
+<p>Here&#39;s one cheap trick. Clone two copies of your repo, your main copy, and a backup. If you are about to try a merge that you think might fail, then update the backup. Try the merge in your main repo. If it fails utterly, you still have a backup repo that held your good work before the failed merge. Delete the working repo, copy or clone the good repo.</p>
+<p><strong>NOTE</strong>: <em>An alternate strategy would be to keep only one repo and push everything before you try a merge. If a merge fails, then just delete the messed up repo and reclone it. It will contain your code as it was before you had the failed merge.</em></p>
+<a class="anchor" id="merging-week06-into-week07"></a>
+<h2>Merging week06 into week07</h2>
+<p>Suppose you are in week03. But you checkout week02. You make an update to</p>
+<ul>
+<li>week02-program-01</li>
+</ul>
+<p>You commit <strong>week02</strong> and checkout <strong>week03</strong>. Should you now be afraid of merging <strong>week02</strong> into <strong>week03</strong>? In other words, would do so delete <strong>week03-program-01</strong>? In the normal course of thing no, it would not. Instead, it would merge only the files from <strong>week02</strong> that are newer than those in <strong>week03</strong>. In other words, it would merge in only the new code from <strong>week02-program-01</strong>, which would usually be exactly what you want.</p>
+<a class="anchor" id="rename-a-directory"></a>
+<h2>Rename a Directory</h2>
+<p>To rename a directory use <strong>git mv</strong>. For instance:</p>
+<pre><code>git <span class="hljs-keyword">mv</span> Week02-Foo week02-foo
+</code></pre><p>You may have to do this in multiple branches or your merges won&#39;t work correctly. In other words, <strong>git merge</strong> thinks <strong>Week02-Foo</strong> is unrelated to <strong>week02-foo</strong>.</p>
+<p>Use the <strong>git difftool</strong> described above to check that you have the names set up right.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Merge into your <strong>master</strong> branch all the working copies you have of at least the following programs:</p>
+<pre><code><span class="hljs-symbol">'week</span>..-react-basics',
+<span class="hljs-symbol">'week</span>..-rest-basics/client',
+<span class="hljs-symbol">'week</span>..-rest-basics/server',
+<span class="hljs-symbol">'week</span>..-aws-setup',
+<span class="hljs-symbol">'week</span>..-rest-test',
+<span class="hljs-symbol">'week</span>..-concurrently',
+<span class="hljs-symbol">'aws</span>-provision/client',
+<span class="hljs-symbol">'aws</span>-provision/server',
+<span class="hljs-symbol">'week</span>..-ec2-copy-file',
+<span class="hljs-symbol">'week</span>..-system-check/client',
+<span class="hljs-symbol">'week</span>..-system-check/server'
+</code></pre><p>The two periods are wild cards. I&#39;m going to check for the existence of specific directories, but I won&#39;t get fussy about the week number. Thus I will accept <strong>week01-react-basics</strong> or <strong>week02-react-basics</strong>. At least for now. But I won&#39;t accept <strong>Week01-React-Basics</strong>.</p>
+<p>If one of these programs is not working, then don&#39;t merge it. I&#39;m looking for working code.</p>
+<p>The same programs should appear in our latest branch, for instance <strong>week07</strong>, but they don&#39;t have to be working.</p>
+<p>This assignment requires a certain amount of fussing about on details. I know that already, so you don&#39;t need to tell me about that aspect of the assignment. I care because I want to automate things, and I need some regularity to do that.</p>
+</div></body></html>

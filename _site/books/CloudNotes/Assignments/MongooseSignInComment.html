@@ -1,0 +1,626 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>MongooseSignInComment</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>MongooseSignInComment</h1><p>Welcome to MongooseSignInComment</p><ul><!--TOC_Start--><li><a href="#description">Description</a></li>
+<li><a href="#step-one">Step One</a></li>
+<li><a href="#step-two">Step Two</a></li>
+<li><a href="#step-three">Step Three</a></li>
+<li><a href="#step-four">Step Four</a></li>
+<li><a href="#step-five">Step Five</a></li>
+<li><a href="#step-six">Step Six</a></li>
+<li><a href="#step-seven">Step Seven</a></li>
+<li><a href="#hints">Hints</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="description"></a>
+<h2>Description</h2>
+<p>SignIn and Comments in one program with a menu.</p>
+<p>Found a <a href="https://vickev.com/#!/article/authentication-in-single-page-applications-node-js-passportjs-angularjs">good article</a> on passport and angular. The <a href="https://github.com/Anomen/AuthenticationAngularJS">code</a> is available and that is how I knew to replace the method shown above.</p>
+<p>A working example of how to handle the SignIn program is in the following directory: </p>
+<ul>
+<li><a href="https://github.com/charliecalvert/JsObjects/tree/master/JavaScript/Design/AngularSignIn" title="Angular Sign In on JsObjects">JsObjects/JavaScript/Design/AngularSignIn</a></li>
+</ul>
+<p>To get the program, go to your JsObjects directory and get the latest with a:</p>
+<pre><code><span class="hljs-attribute">git pull</span>
+</code></pre><p>Or get the whole repository, <strong>being very careful not to issue this command inside your own repository</strong>:</p>
+<pre><code>git <span class="hljs-keyword">clone</span> <span class="hljs-title">http</span>://github.org/charliecalvert/JsObjects.git
+</code></pre><p>The <strong>AngularSignIn</strong> example program contains the SignIn code, but not the Comments code. </p>
+<a class="anchor" id="step-one"></a>
+<h2>Step One</h2>
+<p>Copy the MongooseComments program into a new folder:</p>
+<pre><code>robocopy Week11-MongooseComments Week11-SignInComment <span class="hljs-string">/mir</span>
+</code></pre><p>Open the project in WebStorm and rename it the project to <strong>SignInComment</strong>.</p>
+<p>Install the tools we will need:</p>
+<pre><code>npm <span class="hljs-keyword">install</span> bcrypt-nodejs <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> passport <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> passport-<span class="hljs-keyword">local</span> <span class="hljs-comment">--save</span>
+npm <span class="hljs-keyword">install</span> express-<span class="hljs-keyword">session</span> <span class="hljs-comment">--save</span>
+bower <span class="hljs-keyword">install</span> angular-route <span class="hljs-comment">--save</span>
+</code></pre><a class="anchor" id="step-two"></a>
+<h2>Step Two</h2>
+<p>Add a menu</p>
+<p>In <strong>layout.jade</strong>, copy in meta tags to prepare for use in a mobile device:</p>
+<pre><code>doctype html
+html(<span class="hljs-attribute">data-ng-app</span>=<span class="hljs-string">"elvenApp"</span> <span class="hljs-attribute">ng-controller</span>=<span class="hljs-string">"ThemeController as themeController"</span>)
+    head
+        meta(<span class="hljs-attribute">charset</span>=<span class="hljs-string">'utf-8'</span>)
+        meta(<span class="hljs-attribute">name</span>=<span class="hljs-string">'description'</span>, <span class="hljs-attribute">content</span>=<span class="hljs-string">'Final by Charlie Calvert for Prog 219 Spring 2015'</span>)
+        meta(<span class="hljs-attribute">name</span>=<span class="hljs-string">'viewport'</span>, <span class="hljs-attribute">content</span>=<span class="hljs-string">'width=device-width, initial-scale=1'</span>)
+        title= title
+</code></pre><p>Notice that we are adding an ng-app directive here in the first line
+above. That means we should remove it from the body tag near the bottom
+of the file:</p>
+<pre><code>        script(src=<span class="hljs-string">"javascripts/logout.js"</span>)
+    <span class="hljs-selector-tag">body</span>
+        block <span class="hljs-attribute">content</span>
+</code></pre><p>And then optionally, for theme switching:</p>
+<pre><code>link(<span class="hljs-attribute">rel</span>=<span class="hljs-string">"stylesheet"</span>, <span class="hljs-attribute">ng-href</span>=<span class="hljs-string">"components/bootswatch/{{themeController.bootStrapCss}}/bootstrap.css"</span>)
+</code></pre><p>Then also load <strong>angular-route</strong> and <strong>app.js</strong></p>
+<pre><code>    script(<span class="hljs-name">src=</span><span class="hljs-string">"components/angular-route/angular-route.js"</span>)
+    script(<span class="hljs-name">src=</span><span class="hljs-string">"javascripts/app.js"</span>)
+</code></pre><p>Then in <strong>index.jade</strong>, paste in the menu we have used in other programs, where I have include a few extra lines to provide context:</p>
+<pre><code class="lang-jade">extends layout
+block <span class="hljs-attribute">content</span>
+    <span class="hljs-selector-tag">nav</span><span class="hljs-selector-class">.navbar-default</span><span class="hljs-selector-class">.navbar-fixed-top</span>
+        <span class="hljs-selector-class">.container-fluid</span>
+            <span class="hljs-selector-class">.navbar-header</span>
+                button(type=<span class="hljs-string">"button"</span> class=<span class="hljs-string">"navbar-toggle collapsed"</span> data-toggle=<span class="hljs-string">"collapse"</span> data-target=<span class="hljs-string">"#myTarget"</span>)
+                    <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.sr-only</span> Toggle navigation
+                    <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.icon-bar</span>
+                    <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.icon-bar</span>
+                    <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.icon-bar</span>
+                <span class="hljs-selector-tag">a</span>.navbar-brand(href=<span class="hljs-string">"#/"</span>) Final
+            <span class="hljs-selector-id">#myTarget</span><span class="hljs-selector-class">.collapse</span><span class="hljs-selector-class">.navbar-collapse</span>
+                <span class="hljs-selector-tag">ul</span><span class="hljs-selector-class">.nav</span><span class="hljs-selector-class">.navbar-nav</span>
+                    li(ng-class=<span class="hljs-string">"{ active: isActive('/')}"</span>)
+                        a(ng-href=<span class="hljs-string">'#/'</span>) Home
+                    li(ng-class=<span class="hljs-string">"{ active: isActive('/comments')}"</span>)
+                        a(ng-href=<span class="hljs-string">'#/comments'</span>) Comments
+                    li(ng-class=<span class="hljs-string">"{ active: isActive('/about')}"</span>)
+                        a(ng-href=<span class="hljs-string">'#/about'</span>) About
+                    li(ng-class=<span class="hljs-string">"{ active: isActive('/signin')}"</span>)
+                        a(ng-href=<span class="hljs-string">'#/{{themeController.signinMenuItem}}'</span>) {{themeController.signinMenuText}}
+                    li(ng-switch=<span class="hljs-string">"themeController.loggedIn"</span> ng-class=<span class="hljs-string">"{ active: isActive('/login')}"</span>)
+                        a(ng-switch-when=<span class="hljs-string">"true"</span> ng-href=<span class="hljs-string">'#/logout'</span>) Logout
+                        a(ng-switch-default ng-href=<span class="hljs-string">'#/login'</span>) Login
+
+    h1= title
+    <span class="hljs-selector-tag">p</span> Welcome to #{title}
+    div(data-ng-view=<span class="hljs-string">""</span>)
+</code></pre>
+<p>Here is a reference for ng-switch:</p>
+<ul>
+<li><a href="https://docs.angularjs.org/api/ng/directive/ngSwitch">ng-switch angular docs</a></li>
+<li><a href="http://stackoverflow.com/a/14297556">ng-switch stackOverflow</a></li>
+</ul>
+<a class="anchor" id="step-three"></a>
+<h2>Step Three</h2>
+<p>Link in the passport sign in code.</p>
+<ul>
+<li>Copy the passport folder from the <a href="https://www.ccalvert.net/books/CloudNotes/Assignments/MongooseSignIn.html">sign in project</a>. It includes three files:<ul>
+<li>init.js</li>
+<li>login.js</li>
+<li>signup.js</li>
+</ul>
+</li>
+</ul>
+<p>Here is init:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> login = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./login'</span>);
+<span class="hljs-keyword">var</span> signup = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./signup'</span>);
+<span class="hljs-keyword">var</span> User = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models/user'</span>);
+
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">passport</span>) </span>{
+
+    <span class="hljs-comment">// Passport needs to be able to serialize and deserialize</span>
+    <span class="hljs-comment">// users to support persistent login sessions</span>
+    passport.serializeUser(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">user, done</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'serializing user: '</span>);
+        <span class="hljs-built_in">console</span>.log(user);
+        done(<span class="hljs-literal">null</span>, user._id);
+    });
+
+    passport.deserializeUser(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">id, done</span>) </span>{
+        User.findById(id, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, user</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'deserializing user:'</span>, user);
+            done(err, user);
+        });
+    });
+
+    <span class="hljs-comment">// Setting up Passport Strategies for Login and SignUp/Registration</span>
+    login(passport);
+    signup(passport);
+
+};
+</code></pre>
+<p>Here is login:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> LocalStrategy   = <span class="hljs-built_in">require</span>(<span class="hljs-string">'passport-local'</span>).Strategy;
+<span class="hljs-keyword">var</span> User = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models/user'</span>);
+<span class="hljs-keyword">var</span> bCrypt = <span class="hljs-built_in">require</span>(<span class="hljs-string">'bcrypt-nodejs'</span>);
+
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">passport</span>) </span>{
+
+    passport.use(<span class="hljs-string">'login'</span>, <span class="hljs-keyword">new</span> LocalStrategy({
+            <span class="hljs-attr">passReqToCallback</span> : <span class="hljs-literal">true</span>
+        },
+        <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, username, password, done</span>) </span>{ 
+            <span class="hljs-comment">// check in mongo if a user with username exists or not</span>
+            User.findOne({ <span class="hljs-string">'username'</span> :  username }, 
+                <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, user</span>) </span>{
+                    <span class="hljs-comment">// In case of any error, return using the done method</span>
+                    <span class="hljs-keyword">if</span> (err)
+                        <span class="hljs-keyword">return</span> done(err);
+                    <span class="hljs-comment">// Username does not exist, log the error and redirect back</span>
+                    <span class="hljs-keyword">if</span> (!user){
+                        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'User Not Found with username '</span>+username);
+                        <span class="hljs-keyword">return</span> done(<span class="hljs-literal">null</span>, <span class="hljs-literal">false</span>);
+                    }
+                    <span class="hljs-comment">// User exists but wrong password, log the error </span>
+                    <span class="hljs-keyword">if</span> (!isValidPassword(user, password)){
+                        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Invalid Password'</span>);
+                        <span class="hljs-keyword">return</span> done(<span class="hljs-literal">null</span>, <span class="hljs-literal">false</span>); <span class="hljs-comment">// redirect back to login page</span>
+                    }
+                    <span class="hljs-comment">// User and password both match, return user from done method</span>
+                    <span class="hljs-comment">// which will be treated like success</span>
+                    <span class="hljs-keyword">return</span> done(<span class="hljs-literal">null</span>, user);
+                }
+            );
+
+        })
+    );
+
+
+    <span class="hljs-keyword">var</span> isValidPassword = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">user, password</span>)</span>{
+        <span class="hljs-keyword">return</span> bCrypt.compareSync(password, user.password);
+    }
+
+};
+</code></pre>
+<p>Here is signup:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> LocalStrategy   = require(<span class="hljs-string">'passport-local'</span>).Strategy;
+<span class="hljs-keyword">var</span> User = require(<span class="hljs-string">'../models/user'</span>);
+<span class="hljs-keyword">var</span> bCrypt = require(<span class="hljs-string">'bcrypt-nodejs'</span>);
+
+module.exports = <span class="hljs-function"><span class="hljs-keyword">function</span></span>(passport){
+
+    passport.use(<span class="hljs-string">'signup'</span>, <span class="hljs-keyword">new</span> <span class="hljs-type">LocalStrategy</span>({
+            passReqToCallback : <span class="hljs-type">true </span>// allows us to pass back the entire request to the callback
+        },
+        <span class="hljs-function"><span class="hljs-keyword">function</span></span>(req, username, password, done) {
+
+            findOrCreateUser = <span class="hljs-function"><span class="hljs-keyword">function</span></span>(){
+                <span class="hljs-comment">// find a user in Mongo with provided username</span>
+                User.findOne({ <span class="hljs-string">'username'</span> :  <span class="hljs-type">username </span>}, <span class="hljs-function"><span class="hljs-keyword">function</span></span>(err, user) {
+                    <span class="hljs-comment">// In case of any error, return using the done method</span>
+                    <span class="hljs-keyword">if</span> (err){
+                        console.log(<span class="hljs-string">'Error in SignUp: '</span>+err);
+                        <span class="hljs-keyword">return</span> done(err);
+                    }
+                    <span class="hljs-comment">// already exists</span>
+                    <span class="hljs-keyword">if</span> (user) {
+                        console.log(<span class="hljs-string">'User already exists with username: '</span>+username);
+                        <span class="hljs-keyword">return</span> done(<span class="hljs-literal">null</span>, <span class="hljs-literal">false</span>, req.flash(<span class="hljs-string">'message'</span>,<span class="hljs-string">'User Already Exists'</span>));
+                    } <span class="hljs-keyword">else</span> {
+                        <span class="hljs-comment">// if there is no user with that email</span>
+                        <span class="hljs-comment">// create the user</span>
+                        <span class="hljs-keyword">var</span> <span class="hljs-keyword">new</span><span class="hljs-type">User</span> = <span class="hljs-keyword">new</span> <span class="hljs-type">User</span>();
+
+                        <span class="hljs-comment">// set the user's local credentials</span>
+                        <span class="hljs-keyword">new</span><span class="hljs-type">User</span>.username = username;
+                        <span class="hljs-keyword">new</span><span class="hljs-type">User</span>.password = createHash(password);
+                        <span class="hljs-keyword">new</span><span class="hljs-type">User</span>.email = req.param(<span class="hljs-string">'email'</span>);
+                        <span class="hljs-keyword">new</span><span class="hljs-type">User</span>.firstName = req.param(<span class="hljs-string">'firstName'</span>);
+                        <span class="hljs-keyword">new</span><span class="hljs-type">User</span>.lastName = req.param(<span class="hljs-string">'lastName'</span>);
+
+                        <span class="hljs-comment">// save the user</span>
+                        <span class="hljs-keyword">new</span><span class="hljs-type">User</span>.save(<span class="hljs-function"><span class="hljs-keyword">function</span></span>(err) {
+                            <span class="hljs-keyword">if</span> (err){
+                                console.log(<span class="hljs-string">'Error in Saving user: '</span>+err);  
+                                <span class="hljs-keyword">throw</span> err;  
+                            }
+                            console.log(<span class="hljs-string">'User Registration succesful'</span>);    
+                            <span class="hljs-keyword">return</span> done(<span class="hljs-literal">null</span>, <span class="hljs-keyword">new</span><span class="hljs-type">User</span>);
+                        });
+                    }
+                });
+            };
+            <span class="hljs-comment">// Delay the execution of findOrCreateUser and execute the method</span>
+            <span class="hljs-comment">// in the next tick of the event loop</span>
+            process.nextTick(findOrCreateUser);
+        })
+    );
+
+    <span class="hljs-comment">// Generates hash using bCrypt</span>
+    <span class="hljs-keyword">var</span> createHash = <span class="hljs-function"><span class="hljs-keyword">function</span></span>(password){
+        <span class="hljs-keyword">return</span> bCrypt.hashSync(password, bCrypt.genSaltSync(<span class="hljs-number">10</span>), <span class="hljs-literal">null</span>);
+    }
+
+};
+</code></pre>
+<p>From the sign in project, copy <strong>models/user.js</strong> and place it in the <strong>models</strong> folder of this project.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
+
+<span class="hljs-keyword">var</span> userSchema = mongoose.Schema({
+    <span class="hljs-attribute">id:</span><span class="hljs-string"> String</span>,
+    <span class="hljs-attribute">firstName</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-attribute">lastName</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-attribute">username</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-attribute">password</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-attribute">email</span>: <span class="hljs-built_in">String</span>
+});
+
+<span class="hljs-built_in">module</span>.exports = mongoose.model(<span class="hljs-string">'User'</span>, userSchema);
+</code></pre>
+<p>Copy <strong>SpaceNeedle.png</strong> or some similar file into <strong>public/images</strong>.</p>
+<p>Copy in the CSS from the <a href="https://www.ccalvert.net/books/CloudNotes/Assignments/MongooseSignIn.html">SignIn</a> assignment.</p>
+<a class="anchor" id="step-four"></a>
+<h2>Step Four</h2>
+<p>Most things on the backend for passport are the same. Just make sure you get rid of all references to <strong>flash</strong>.</p>
+<p>We are going to create a file called <strong>routes/login.js</strong>. It provides new middleware routes for logging in. This is like the example code from the previous example that was found in <strong>routes/index.js</strong>, but now we don&#39;t invoke it off the main route (&#39;/&#39;), instead we have <strong>login</strong> route (&#39;/login&#39;).</p>
+<p>Here are the changes to make in <strong>app.js</strong>. You can keep the loading of routes middleware the same:</p>
+<pre><code class="lang-javascript"><span class="hljs-attribute">var routes</span> = require(<span class="hljs-string">'./routes/index'</span>);
+<span class="hljs-attribute">var users</span> = require(<span class="hljs-string">'./routes/users'</span>);
+<span class="hljs-attribute">var comments</span> = require(<span class="hljs-string">'./routes/comments'</span>);
+</code></pre>
+<p>And then further down we have code that is quite similar to the original example:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// Configuring Passport</span>
+<span class="hljs-keyword">var</span> passport = <span class="hljs-keyword">require</span>(<span class="hljs-string">'passport'</span>);
+<span class="hljs-keyword">var</span> expressSession = <span class="hljs-keyword">require</span>(<span class="hljs-string">'express-session'</span>);
+app.<span class="hljs-keyword">use</span>(expressSession({
+      secret: <span class="hljs-string">'mySecretKey'</span>,
+      resave: <span class="hljs-keyword">true</span>,
+      saveUninitialized: <span class="hljs-keyword">true</span>
+    })
+);
+app.<span class="hljs-keyword">use</span>(passport.initialize());
+app.<span class="hljs-keyword">use</span>(passport.session());
+
+<span class="hljs-comment">// Initialize Passport</span>
+<span class="hljs-keyword">var</span> initPassport = <span class="hljs-keyword">require</span>(<span class="hljs-string">'./passport/init'</span>);
+initPassport(passport);
+
+<span class="hljs-keyword">var</span> login = <span class="hljs-keyword">require</span>(<span class="hljs-string">'./routes/login'</span>)(passport);
+app.<span class="hljs-keyword">use</span>(<span class="hljs-string">'/'</span>, routes);
+app.<span class="hljs-keyword">use</span>(<span class="hljs-string">'/users'</span>, users);
+app.<span class="hljs-keyword">use</span>(<span class="hljs-string">'/comments'</span>, comments);
+app.<span class="hljs-keyword">use</span>(<span class="hljs-string">'/login'</span>, login);
+
+</code></pre>
+<p>Notice the last line, where we load the new middleware for handling our new <strong>login</strong> route.</p>
+<p>And below you see <strong>routes/login.js</strong>. Notice that this is pretty much the same as in our login example, but the <strong>post(&#39;/login&#39;</strong> method has been replaced (I commented out the old version):</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> router = express.Router();
+
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">passport</span>) </span>{
+
+    router.post(<span class="hljs-string">'/login'</span>, passport.authenticate(<span class="hljs-string">'login'</span>),
+        <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+            res.send(req.user);
+        }
+    );
+
+    router.get(<span class="hljs-string">'/logout'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>)</span>{
+        request.logOut();
+        response.sendStatus(<span class="hljs-number">200</span>);
+    });
+
+    router.get(<span class="hljs-string">'/loggedin'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request, response</span>) </span>{
+        response.send(request.isAuthenticated() ? <span class="hljs-literal">true</span> : <span class="hljs-literal">false</span>);
+    });
+
+    router.get(<span class="hljs-string">'/signup'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Get signup'</span>);
+        res.render(<span class="hljs-string">'register'</span>, {});
+    });
+
+    <span class="hljs-comment">/* Handle Registration POST */</span>
+    router.post(<span class="hljs-string">'/signup'</span>, passport.authenticate(<span class="hljs-string">'signup'</span>, {
+        <span class="hljs-attr">successRedirect</span>: <span class="hljs-string">'/#/login'</span>,
+        <span class="hljs-attr">failureRedirect</span>: <span class="hljs-string">'/signup'</span>
+    }));
+
+
+    <span class="hljs-keyword">return</span> router;
+};
+</code></pre>
+<p>Notice that we have replaced this method from the routes folder:</p>
+<pre><code><span class="hljs-selector-tag">router</span><span class="hljs-selector-class">.post</span>(<span class="hljs-string">'/login'</span>, passport.authenticate(<span class="hljs-string">'login'</span>, {
+    <span class="hljs-attribute">successRedirect</span>: <span class="hljs-string">'/#/home'</span>,
+    <span class="hljs-attribute">failureRedirect</span>: <span class="hljs-string">'/'</span>
+}));
+</code></pre><p>With this one:</p>
+<pre><code>router.post(<span class="hljs-string">'/login'</span>, passport.authenticate(<span class="hljs-string">'login'</span>),
+    <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(req, res)</span> </span>{
+        res.send(req.user);
+        }
+);
+</code></pre><a class="anchor" id="step-five"></a>
+<h2>Step Five</h2>
+<p>We need a login route in app.js:</p>
+<p>Put this code in <strong>public/javascripts/app.js</strong>:</p>
+<pre><code><span class="hljs-keyword">var</span> myModule = angular.module(<span class="hljs-string">"elvenApp"</span>, [ <span class="hljs-string">'ngRoute'</span> ]);
+
+myModule.config(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($routeProvider, $httpProvider, $locationProvider)</span> </span>{
+
+    <span class="hljs-comment">//================================================</span>
+    <span class="hljs-comment">// Check if the user is connected</span>
+    <span class="hljs-comment">//================================================</span>
+    <span class="hljs-keyword">var</span> checkLoggedin = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($q, $timeout, $http, $location, $rootScope)</span></span>{
+        <span class="hljs-comment">// Initialize a new promise</span>
+        <span class="hljs-keyword">var</span> deferred = $q.defer();
+
+        <span class="hljs-comment">// Make an AJAX call to check if the user is logged in</span>
+        $http.get(<span class="hljs-string">'/login/loggedin'</span>).success(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(result)</span></span>{
+            <span class="hljs-comment">// Authenticated</span>
+            <span class="hljs-keyword">if</span> (result !== <span class="hljs-keyword">false</span>)
+            <span class="hljs-comment">/*$timeout(deferred.resolve, 0);*/</span>
+                deferred.resolve();
+
+            <span class="hljs-comment">// Not Authenticated</span>
+            <span class="hljs-keyword">else</span> {
+                $rootScope.message = <span class="hljs-string">'You need to log in.'</span>;
+                <span class="hljs-comment">//$timeout(function(){deferred.reject();}, 0);</span>
+                deferred.reject();
+                $location.url(<span class="hljs-string">'/login'</span>);
+            }
+        });
+
+        <span class="hljs-keyword">return</span> deferred.promise;
+    };
+
+    <span class="hljs-comment">//================================================</span>
+    <span class="hljs-comment">// Add an interceptor for AJAX errors</span>
+    <span class="hljs-comment">//================================================</span>
+    $httpProvider.interceptors.push(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($q, $location)</span> </span>{
+        <span class="hljs-keyword">return</span> {
+            response: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(response)</span> </span>{
+                <span class="hljs-comment">// do something on success</span>
+                <span class="hljs-keyword">return</span> response;
+            },
+            responseError: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(response)</span> </span>{
+                <span class="hljs-keyword">if</span> (response.status === <span class="hljs-number">401</span>) {
+                    console.log(<span class="hljs-string">'status 401'</span>);
+                    $location.url(<span class="hljs-string">'/login'</span>);
+                }
+                <span class="hljs-keyword">return</span> $q.reject(response);
+            }
+        };
+    });    
+
+    <span class="hljs-comment">//================================================</span>
+    <span class="hljs-comment">// Define all the routes</span>
+    <span class="hljs-comment">//================================================</span>
+    $routeProvider.when(<span class="hljs-string">"/"</span>, {
+        templateUrl : <span class="hljs-string">"main"</span>,
+        controller : <span class="hljs-string">"MainController"</span>,
+        controllerAs: <span class="hljs-string">"mainController"</span>
+    }).when(<span class="hljs-string">'/comments'</span>, {
+        templateUrl : <span class="hljs-string">"comments"</span>,
+        controller : <span class="hljs-string">"CommentsController"</span>,
+        controllerAs: <span class="hljs-string">'commentsController'</span>,
+        resolve: {
+            loggedin: checkLoggedin
+        }
+    }).when(<span class="hljs-string">'/about'</span>, {
+        templateUrl : <span class="hljs-string">"about"</span>,
+        controller : <span class="hljs-string">"AboutController"</span>,
+        controllerAs: <span class="hljs-string">'aboutController'</span>
+    }).when(<span class="hljs-string">'/login'</span>, {
+        templateUrl : <span class="hljs-string">"login"</span>,
+        controller : <span class="hljs-string">"LoginController"</span>,
+        controllerAs: <span class="hljs-string">'loginController'</span>
+    }).when(<span class="hljs-string">'/logout'</span>, {
+        templateUrl : <span class="hljs-string">"logout"</span>,
+        controller : <span class="hljs-string">"LogoutController"</span>,
+        controllerAs: <span class="hljs-string">'logoutController'</span>
+    }).when(<span class="hljs-string">'/register'</span>, {
+        templateUrl : <span class="hljs-string">"register"</span>
+    }).otherwise({
+        redirectTo : <span class="hljs-string">'/'</span>
+    });
+});
+
+</code></pre><p>Near the top of the file, you will have to inject the <strong>$httpProvider</strong> in the signature for the config provider:</p>
+<pre><code>myModule.config(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($routeProvider, $httpProvider, $locationProvider)</span> </span>{
+</code></pre><p>This is your updated login jade, which has been adapted to work with angular:</p>
+<pre><code>extends layout
+block <span class="hljs-attribute">content</span>
+   <span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.container</span>
+      <span class="hljs-selector-id">#main</span><span class="hljs-selector-class">.row</span>
+         <span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.col-sm-6</span><span class="hljs-selector-class">.col-md-4</span><span class="hljs-selector-class">.col-md-offset-4</span>
+            <span class="hljs-selector-tag">h1</span><span class="hljs-selector-class">.text-center</span><span class="hljs-selector-class">.login-title</span> {{loginController.hint}}
+               <span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.account-wall</span>
+                  img(class=<span class="hljs-string">'profile-img'</span>, src=<span class="hljs-string">'images/SpaceNeedle.png'</span>)
+                  <span class="hljs-selector-tag">form</span>.form-signin(novalidate=<span class="hljs-string">''</span>)
+                     <span class="hljs-selector-tag">input</span>.form-control(type=<span class="hljs-string">'text'</span>, ng-model=<span class="hljs-string">'loginController.userName'</span> placeholder=<span class="hljs-string">'UserName'</span>,required, autofocus)
+                     <span class="hljs-selector-tag">input</span>.form-control(type=<span class="hljs-string">'password'</span>, ng-model=<span class="hljs-string">'loginController.password'</span> placeholder=<span class="hljs-string">'Password'</span>, required)
+                     <span class="hljs-selector-tag">button</span><span class="hljs-selector-class">.btn</span><span class="hljs-selector-class">.btn-lg</span><span class="hljs-selector-class">.btn-primary</span><span class="hljs-selector-class">.btn-block</span>(type=<span class="hljs-string">'submit'</span>, ng-click=<span class="hljs-string">'loginController.update()'</span>) Sign <span class="hljs-keyword">in</span>
+                     <span class="hljs-selector-tag">span</span><span class="hljs-selector-class">.clearfix</span>
+               a(href=<span class="hljs-string">'/login/signup'</span>, class=<span class="hljs-string">'text-center new-account'</span>) Create an account
+               <span class="hljs-selector-id">#message</span>
+               <span class="hljs-keyword">if</span> message
+                  <span class="hljs-selector-tag">h1</span><span class="hljs-selector-class">.text-center</span><span class="hljs-selector-class">.error-message</span> #{message}
+</code></pre><p>This is your login controller:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> app = angular.module(<span class="hljs-string">'elvenApp'</span>);
+
+app.controller(<span class="hljs-string">'LoginController'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($http, $location, themeFactory)</span> </span>{
+    <span class="hljs-keyword">var</span> loginController = this;
+    loginController.hint = <span class="hljs-string">"Sign in"</span>;
+
+    loginController.update = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        console.log(<span class="hljs-string">'update'</span>);
+        <span class="hljs-keyword">var</span> user = {
+            <span class="hljs-string">"username"</span>: loginController.userName,
+            <span class="hljs-string">"password"</span>: loginController.password
+        };
+
+        $http.post(<span class="hljs-string">'/login/login/'</span>, user).success(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(user)</span> </span>{
+            themeFactory.setLogin(<span class="hljs-keyword">true</span>);
+            console.log(user);
+            $location.path(<span class="hljs-string">'/'</span>);
+        }).error(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span> </span>{
+            loginController.hint = <span class="hljs-string">'Bad Password/User. Try again'</span>;
+        })
+    }
+});
+</code></pre>
+<p>Notice how it works. We have two paths:</p>
+<ul>
+<li>success</li>
+<li>error</li>
+</ul>
+<p>If the user is logged in successfully the success path is invoked and the user is redirected back to the home page. We are also passed information about the user from our database. That is, we are passed the user name, email, etc. If the error path is invoked, then a hint is displayed telling the user to try again.</p>
+<p>Here is the register (signup) jade file:</p>
+<pre><code>extends layout
+
+block content
+    div.container
+        div.row
+            div.col-sm-6.col-md-4.col-md-offset-4
+                h1.text-center.login-title Registration Details
+                    div.signup-wall
+                        form(<span class="hljs-attribute">class</span>=<span class="hljs-string">'form-signin'</span>, <span class="hljs-attribute">action</span>=<span class="hljs-string">'/login/signup'</span>, <span class="hljs-attribute">method</span>=<span class="hljs-string">'POST'</span>)
+                            input(<span class="hljs-attribute">type</span>=<span class="hljs-string">'text'</span>, <span class="hljs-attribute">name</span>=<span class="hljs-string">'username'</span>, <span class="hljs-attribute">class</span>=<span class="hljs-string">'form-control'</span>, <span class="hljs-attribute">placeholder</span>=<span class="hljs-string">'Username'</span>,required, autofocus)
+                            input(<span class="hljs-attribute">type</span>=<span class="hljs-string">'password'</span>, <span class="hljs-attribute">name</span>=<span class="hljs-string">'password'</span>, <span class="hljs-attribute">class</span>=<span class="hljs-string">'form-control nomargin'</span>, <span class="hljs-attribute">placeholder</span>=<span class="hljs-string">'Password'</span>, required)
+                            input(<span class="hljs-attribute">type</span>=<span class="hljs-string">'email'</span>, <span class="hljs-attribute">name</span>=<span class="hljs-string">'email'</span>, <span class="hljs-attribute">class</span>=<span class="hljs-string">'form-control'</span>, <span class="hljs-attribute">placeholder</span>=<span class="hljs-string">'Email'</span>,required)
+                            input(<span class="hljs-attribute">type</span>=<span class="hljs-string">'text'</span>, <span class="hljs-attribute">name</span>=<span class="hljs-string">'firstName'</span>, <span class="hljs-attribute">class</span>=<span class="hljs-string">'form-control'</span>, <span class="hljs-attribute">placeholder</span>=<span class="hljs-string">'First Name'</span>,required)
+                            input(<span class="hljs-attribute">type</span>=<span class="hljs-string">'text'</span>, <span class="hljs-attribute">name</span>=<span class="hljs-string">'lastName'</span>, <span class="hljs-attribute">class</span>=<span class="hljs-string">'form-control'</span>, <span class="hljs-attribute">placeholder</span>=<span class="hljs-string">'Last Name'</span>,required)
+                            button(<span class="hljs-attribute">class</span>=<span class="hljs-string">'btn btn-lg btn-primary btn-block'</span>, <span class="hljs-attribute">type</span>=<span class="hljs-string">'submit'</span>) Register
+                            span.clearfix
+                    #message
+                        <span class="hljs-keyword">if</span> message
+                            h1.text-center.error-message #{message}
+</code></pre><p>We now have signup working. If you need be, however, you can create a user using the signup <a href="https://www.ccalvert.net/books/CloudNotes/Assignments/MongooseSignIn.html">assignment</a> example. Then switch back to this code.</p>
+<a class="anchor" id="step-six"></a>
+<h2>Step Six</h2>
+<p>Logging out.</p>
+<p>Here is the logout controller:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> app = angular.module(<span class="hljs-string">'elvenApp'</span>);
+
+app.controller(<span class="hljs-string">'LogoutController'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($http, $sce, $location, themeFactory)</span> </span>{
+    <span class="hljs-keyword">var</span> logoutController = this;
+    logoutController.hint = <span class="hljs-string">"Sign in"</span>;
+    logoutController.loggedInStatus = <span class="hljs-string">"unknown"</span>;
+
+    logoutController.logout = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        console.log(<span class="hljs-string">'logout'</span>);
+
+        $http.get(<span class="hljs-string">'/login/logout/'</span>).success(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(user)</span> </span>{
+            themeFactory.setLogin(<span class="hljs-keyword">false</span>);
+            console.log(user);
+        }).error(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span> </span>{
+            logoutController.hint = <span class="hljs-string">'Could not call logout'</span>;
+            logoutController.error = $sce.trustAsHtml(err);
+        })
+    };
+
+    logoutController.isLoggedIn = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+
+        $http.get(<span class="hljs-string">'/login/loggedin/'</span>).success(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(user)</span> </span>{
+            logoutController.loggedInStatus = user;
+        }).error(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span> </span>{
+            logoutController.hint = <span class="hljs-string">'Bad Password/User. Try again'</span>;
+        });
+    };
+
+    logoutController.logout();
+});
+</code></pre>
+<p>Here is <strong>logout.jade</strong>:</p>
+<pre><code>h1 Logout
+
+p hint: {{logoutController.hint}}
+
+p logged <span class="hljs-keyword">in</span>: {{logoutController.loggedInStatus}}
+
+div.names
+   div.btn-group
+      button.btn.btn-default(<span class="hljs-attribute">ng-click</span>=<span class="hljs-string">'logoutController.isLoggedIn()'</span>) Is<span class="hljs-built_in"> user </span>logged <span class="hljs-keyword">in</span>?
+
+<span class="hljs-comment">#document(ng-bind-html="logoutController.error")</span>
+</code></pre><p>We have already added the following at the bottom of <strong>routes/login.js</strong>. </p>
+<pre><code>router.get(<span class="hljs-string">'/logout'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response)</span></span>{
+    request.logOut();
+    response.sendStatus(<span class="hljs-number">200</span>);
+});
+
+router.get(<span class="hljs-string">'/loggedin'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response)</span> </span>{
+    response.send(request.isAuthenticated() ? <span class="hljs-literal">true</span> : <span class="hljs-literal">false</span>);
+});
+</code></pre><p>Tie together the login and log out code and provide support for switching themes:</p>
+<pre><code class="lang-javascript">(<span class="hljs-name">function</span> () {
+
+    var app = angular.module(<span class="hljs-name">'elvenApp'</span>)<span class="hljs-comment">;</span>
+
+    app.factory(<span class="hljs-name">'themeFactory'</span>, function() {
+        var themeFactory = {
+            themeController: null,
+            setLogin: function(<span class="hljs-name">init</span>) {
+                themeFactory.themeController.loggedIn = init;
+            }
+        }
+
+        return themeFactory;
+    })<span class="hljs-comment">;</span>
+
+    app.controller(<span class="hljs-name">'ThemeController'</span>, function (<span class="hljs-name">themeFactory</span>) {
+        var themeController = this;
+        themeController.loggedIn = <span class="hljs-literal">false</span><span class="hljs-comment">;</span>
+        themeFactory.themeController = themeController;
+        themeController.bootStrapCss = <span class="hljs-string">"cosmo"</span><span class="hljs-comment">;</span>
+        themeController.bootStrapThemes = [
+            {name: <span class="hljs-string">"Cerulean"</span>, url: <span class="hljs-string">"cerulean"</span>},
+            {name: <span class="hljs-string">"Cosmo"</span>, url: <span class="hljs-string">"cosmo"</span>},
+            {name: <span class="hljs-string">"Cyborg"</span>, url: <span class="hljs-string">"cyborg"</span>},
+                        etc...
+        ]<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+})()<span class="hljs-comment">;</span>
+</code></pre>
+<p>Notice that the themeFactory is used in the <strong>login</strong> and <strong>logout</strong> controllers.</p>
+<a class="anchor" id="step-seven"></a>
+<h2>Step Seven</h2>
+<p>Here is <strong>public/javascripts/comments.js</strong></p>
+<pre><code>(<span class="hljs-name">function</span>() {
+
+    var app = angular.module(<span class="hljs-name">'elvenApp'</span>)<span class="hljs-comment">;</span>
+
+    app.controller(<span class="hljs-name">'CommentsController'</span>, function(<span class="hljs-name">mongoFactory</span>, commentFactory) {
+        var commentsController = this;
+
+        commentsController.updateComment = function() {
+            commentFactory.updateComment(<span class="hljs-comment">comment</span><span class="hljs-name">sController.scientist</span>)<span class="hljs-comment">;</span>
+        }<span class="hljs-comment">;</span>
+
+        // Code omitted here....
+
+        function getScientist() {
+            mongoFactory.getScientistById(<span class="hljs-name">mongoFactory.currentId</span>, commentsController)<span class="hljs-comment">;</span>
+        }
+
+        getScientist()<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+
+})()<span class="hljs-comment">;</span>
+</code></pre><p>Here is the code from <strong>mongo-factory</strong> that provides you with a <strong>name</strong> property you can display at the top of the <strong>edit</strong>, <strong>comments</strong>, and <strong>subjects</strong> pages of your final:</p>
+<pre><code class="lang-javascript">    setControllerName: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(controller)</span> </span>{
+        controller.name = controller.scientist.firstName + <span class="hljs-string">' '</span> + controller.scientist.lastName;
+    },
+</code></pre>
+<p>Call it from <strong>getScientistById</strong>:</p>
+<pre><code class="lang-javascript">getScientistById: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(id, controller)</span> </span>{
+    mongoFactory.currentId = id;
+    <span class="hljs-keyword">var</span> items = mongoFactory.allData.filter(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(scientist)</span> </span>{
+        <span class="hljs-keyword">return</span> scientist._id === id;
+    });
+    controller.scientist = items[<span class="hljs-number">0</span>];
+    mongoFactory.setControllerName(controller);
+    <span class="hljs-keyword">return</span> controller.scientist;
+},
+</code></pre>
+<p>This means that a file like <strong>views/comments.jade</strong> would begin like this:</p>
+<pre><code><span class="hljs-selector-tag">h1</span> Comments: {{commentsController.name}}
+<span class="hljs-selector-tag">div</span><span class="hljs-selector-class">.names</span>
+    <span class="hljs-selector-tag">ul</span>
+        li(ng-repeat=<span class="hljs-string">'comment in commentsController.scientist.comments'</span>)
+            a(ng-click=<span class="hljs-string">"commentsController.selectComment(comment)"</span>) {{comment.commentText}}
+</code></pre><p>The fist line shows how to use the new <strong>name</strong> property.</p>
+<a class="anchor" id="hints"></a>
+<h2>Hints</h2>
+<p>You may get a warning &#39;Synchronous XMLHttpRequest on the main thread is deprecated&#39;. I believe this has something to do with the dialog we are loading to login and the related code. I don&#39;t think it has to do with the way we are rerouting events. In other words, it happens when we go directly to the login page, not just when we get there from the comments link. For now we are ignorning this warning.</p>
+</div></body></html>

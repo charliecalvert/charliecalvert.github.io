@@ -1,0 +1,207 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>MapExpress</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>MapExpress</h1><p>Welcome to MapExpress</p><ul><!--TOC_Start--><li><a href="#map-express">Map Express</a></li>
+<li><a href="#the-html-and-css">The HTML and CSS</a></li>
+<li><a href="#the-code">The Code</a></li>
+<li><a href="#the-constructor">The Constructor</a></li>
+<li><a href="#goto-location">Goto Location</a></li>
+<li><a href="#turn-it-in">Turn It In</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="map-express"></a>
+<h1>Map Express</h1>
+<p>The goal of this application is to show the user&#39;s current position on a map.</p>
+<a class="anchor" id="the-html-and-css"></a>
+<h2>The HTML and CSS</h2>
+<p>To get started, create an express application called <strong>Week11MapExpress</strong>. Set the port. In <strong>routes/index.js</strong>, set the application name.</p>
+<p>In <strong>views/index.jade</strong>, you need a div in which you can put your map:</p>
+<pre><code><span class="hljs-keyword">div</span><span class="hljs-comment">#map</span>
+</code></pre><p>We will also need to set up the CSS:</p>
+<pre><code class="lang-css"><span class="hljs-selector-tag">body</span> {  
+  <span class="hljs-attribute">font</span>: <span class="hljs-number">14px</span> <span class="hljs-string">"Lucida Grande"</span>, Helvetica, Arial, sans-serif;
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">0</span>;
+
+}
+
+<span class="hljs-selector-tag">html</span> {
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;
+}
+
+<span class="hljs-selector-id">#map</span> {
+    <span class="hljs-attribute">background-color</span>: blue;
+    <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;
+    <span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>;
+}
+</code></pre>
+<a class="anchor" id="the-code"></a>
+<h2>The Code</h2>
+<p>We need one variable in Control with object scope:</p>
+<pre><code>var mapDiv<span class="hljs-comment">;</span>
+</code></pre><p>There are a few more methods we need. Put in this case, things are very simple, all the code goes into Control.js. (For the final, you will arrange things differently, but for now, just put all the code in Control.js.) Here is an updated and simplified call to <strong>getCurrentPosition</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">position</span><span class="hljs-params">()</span> </span>{
+
+    <span class="hljs-keyword">var</span> options = {
+        enableHighAccuracy : <span class="hljs-literal">true</span>,
+        timeout : <span class="hljs-number">5000</span>,
+        maximumAge : <span class="hljs-number">0</span>
+    };
+
+    <span class="hljs-keyword">try</span> {
+        <span class="hljs-keyword">if</span> (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(loadMap, showDebug, options);
+        } <span class="hljs-keyword">else</span> {
+            showError(<span class="hljs-string">"NOT-SUPPORTED"</span>);
+        }
+    } <span class="hljs-keyword">catch</span> (evt) {
+        alert(evt);
+    }
+}
+</code></pre>
+<p>Instead of just showing the user the position, we display the position on a map:</p>
+<pre><code class="lang-javascript">function loadMap(<span class="hljs-built_in">position</span>) {
+    <span class="hljs-built_in">var</span> latlng = <span class="hljs-built_in">new</span> google.maps.LatLng(<span class="hljs-built_in">position</span>.coords.latitude,
+            <span class="hljs-built_in">position</span>.coords.longitude);
+    <span class="hljs-built_in">var</span> mapOptions = {
+        zoom : <span class="hljs-number">8</span>,
+        <span class="hljs-built_in">center</span> : latlng,
+        mapTypeId : google.maps.MapTypeId.ROADMAP
+    };
+    <span class="hljs-built_in">var</span> <span class="hljs-built_in">map</span> = $(<span class="hljs-string">"#map"</span>);
+    mapDiv = <span class="hljs-built_in">new</span> google.maps.Map(<span class="hljs-built_in">map</span>[<span class="hljs-number">0</span>], mapOptions);
+
+    makeMarker('here', latlng.lat(), latlng.lng());
+}
+</code></pre>
+<p>This function allows us to put a pin, or marker, on the map:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">makeMarker</span><span class="hljs-params">(name, latitude, longitude)</span> </span>{
+    <span class="hljs-keyword">var</span> location = <span class="hljs-keyword">new</span> google.maps.LatLng(latitude, longitude);
+
+    <span class="hljs-keyword">var</span> place = <span class="hljs-keyword">new</span> google.maps.Marker({
+        position : location,
+        map : mapDiv,
+        title : name
+    });
+
+    google.maps.event.addListener(place, <span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        mapDiv.setCenter(location);
+        mapDiv.setZoom(<span class="hljs-number">10</span>);
+    });
+}
+</code></pre>
+<p>And here is ShowDebug:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> showDebug = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">textToDisplay</span>) </span>{
+    $(<span class="hljs-string">"#debug"</span>).append(<span class="hljs-string">'&lt;li&gt;'</span> + textToDisplay + <span class="hljs-string">'&lt;/li&gt;'</span>);
+};
+</code></pre>
+<a class="anchor" id="the-constructor"></a>
+<h2>The Constructor</h2>
+<p>The tricky part of this program is loading the Google API. If you simply want to load it like any normal human being, you could do something like this:</p>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"http://maps.googleapis.com/maps/api/js?sensor=true"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre><p>I&#39;m sure you can see that this is way to easy, as it even eliminates the need to call the navigator to the position. Pathetic really. Definitely for the simple minded.</p>
+<p>To make it interesting, we will use require, loading it in <strong>layout.jade</strong>:</p>
+<pre><code class="lang-pug">doctype html
+html
+  head
+    title= title
+    link(<span class="hljs-attribute">rel</span>=<span class="hljs-string">'stylesheet'</span>, <span class="hljs-attribute">href</span>=<span class="hljs-string">'/stylesheets/style.css'</span>)
+    script(<span class="hljs-attribute">src</span>=<span class="hljs-string">"javascripts/require.js"</span>, <span class="hljs-attribute">data-main</span>=<span class="hljs-string">"javascripts/Main"</span>)
+  body
+    block content
+</code></pre>
+<p>The problem, of course, is that trying to load it in <strong>Main.js</strong> with require doesn&#39;t work, even if we try to shim it in:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">require</span><span class="hljs-selector-class">.config</span>({
+    <span class="hljs-attribute">paths </span>: {
+        <span class="hljs-string">"jquery"</span> : [<span class="hljs-string">"http://code.jquery.com/jquery-1.11.1"</span>],
+        <span class="hljs-string">"googleMap"</span>: [<span class="hljs-string">"http://maps.googleapis.com/maps/api/js?sensor=true"</span>],
+        <span class="hljs-string">"Control"</span>: <span class="hljs-string">"Control"</span>
+    },
+    <span class="hljs-attribute">shim </span>: {
+        <span class="hljs-string">"googleMap"</span>: [<span class="hljs-string">"jquery"</span>]
+    }
+
+});  
+</code></pre>
+<p>Don&#39;t use the code above, as it does not work. Part of the problem here is that <strong>api/js</strong>, like <strong>bin/www</strong>, has no <strong>.js</strong> extension. As a result, require is not happy with it. There may be a simple solution to this problem, but I came up with this one, which is not simple, but nevertheless I find it interesting:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elf = {
+    <span class="hljs-attr">position</span> : <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">this</span>.control.position();
+    }
+}
+
+define(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+
+    <span class="hljs-keyword">var</span> Control = (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">        'use strict'</span>;
+        <span class="hljs-keyword">var</span> mapDiv;
+
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Control</span>(<span class="hljs-params"></span>) </span>{
+            loadScript();
+        }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadScript</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">var</span> script = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'script'</span>);
+      script.type = <span class="hljs-string">'text/javascript'</span>;
+      script.src = <span class="hljs-string">'https://maps.googleapis.com/maps/api/js?v=3.exp&amp;callback=elf.position'</span>;
+      <span class="hljs-built_in">document</span>.body.appendChild(script);
+    }
+
+        Control.prototype.position = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ ... }
+
+        <span class="hljs-comment">// Code ommitted here</span>
+  });
+});
+</code></pre>
+<p>We are, in effect, creating a poor man&#39;s require. It appends the call to load the script to the HTML we are loading, thus ensure that that GoogleApi javascript file does get loaded. It is also passes in the name of a callback:</p>
+<p>callback=elf.position</p>
+<p>Here is elf:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> elf = {
+    position : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.control.position();
+    }
+}
+</code></pre>
+<p>But how does elf know about Control? We set that up in <strong>Main.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-built_in">require</span>.config({
+    <span class="hljs-attr">paths</span> : {
+        <span class="hljs-string">"jquery"</span> : [<span class="hljs-string">"http://code.jquery.com/jquery-1.11.1"</span>],
+        <span class="hljs-string">"Control"</span>: <span class="hljs-string">"Control"</span>
+    }
+});
+
+<span class="hljs-built_in">require</span>([ <span class="hljs-string">"jquery"</span>, <span class="hljs-string">"Control"</span> ], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">jq, Control</span>) </span>{
+<span class="hljs-meta">    'use strict'</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Main called."</span>);
+    elf.control = <span class="hljs-keyword">new</span> Control();
+});
+</code></pre>
+<p>The important line is this one:</p>
+<pre><code>elf.control = <span class="hljs-keyword">new</span> <span class="hljs-type">Control</span>();
+</code></pre><p>This is too fancy by far, but it does seem to work. I provide it just so you can understand that we have options even when the normal require API appears, at least to me, to not provide a solution. Granted, however, there is much about <strong>require</strong> that I don&#39;t know, and perhaps there is a simpler solution.</p>
+<a class="anchor" id="goto-location"></a>
+<h2>Goto Location</h2>
+<p>Here is a method that can take you to any latitude or longitude on the map:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">gotoLocation</span><span class="hljs-params">(latitude, longitude, zoomLevel)</span> </span>{
+    <span class="hljs-keyword">var</span> location = <span class="hljs-keyword">new</span> google.maps.LatLng(latitude, longitude);
+    mapDiv.setCenter(location);
+    mapDiv.setZoom(zoomLevel);
+    <span class="hljs-keyword">return</span> location;
+}
+</code></pre>
+<p>You can now set up a button click handler that will allow you to travel to Darwin, Australia:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">gotoDarwin</span><span class="hljs-params">()</span> </span>{
+
+    <span class="hljs-keyword">var</span> darwin = gotoLocation(<span class="hljs-number">-12.461334</span>, <span class="hljs-number">130.841904</span>, <span class="hljs-number">14</span>);
+
+    <span class="hljs-keyword">var</span> marker = <span class="hljs-keyword">new</span> google.maps.Marker({
+        position : darwin,
+        map : mapDiv,
+        title : <span class="hljs-string">"Hello World!"</span>
+    });
+
+    google.maps.event.addListener(marker, <span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        mapDiv.setZoom(<span class="hljs-number">8</span>);
+    });
+}
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn It In</h2>
+<p>Place you code in your repository in a folder called <strong>MapExpress</strong>. Push. Submit the assignment.</p>
+</div></body></html>

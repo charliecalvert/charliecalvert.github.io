@@ -1,0 +1,424 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>WebCraftsMakeHtmlPage</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>WebCraftsMakeHtmlPage</h1><p>Welcome to WebCraftsMakeHtmlPage</p><ul><!--TOC_Start--><li><a href="#overview">Overview</a></li>
+<li><a href="#webpack">WebPack Source Maps</a></li>
+<li><a href="#webpack-watch">Run WebPack when Sources Files Change</a></li>
+<li><a href="#pubsub-flow">Pub Sub Flow</a></li>
+<li><a href="#react-in-make-html">How to Insert React in MakeHtml</a></li>
+<li><a href="#go-home">Go Home</a></li>
+<li><a href="#react-navigation">React Navigation</a></li>
+<li><a href="#the-makehtml-react-code">The MakeHtml React code</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#going-forward">Going Forward</a></li>
+<li><a href="#clear-jquery-page">Alternative way to Clear the jQuery Page</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="overview"></a>
+<h2>Overview</h2>
+<p>The goal of this assignment is to start converting the <strong>MakeHtml</strong> page to React.</p>
+<p>Do your work in a branch called <strong>Week07</strong></p>
+<a class="anchor" id="webpack"></a>
+<h2>WebPack Source Maps</h2>
+<p>First, let&#39;s do something to improve our development experience. In particular, let&#39;s add code that will allows us to debug our ES6 code directly in the <a href="https://developer.chrome.com/devtools">Chrome Developer Tools</a></p>
+<p>In <strong>webpack.config.js</strong> add a new property:</p>
+<pre><code><span class="hljs-symbol">devtool:</span> <span class="hljs-string">"source-map"</span>
+</code></pre><p>At runtime, look for a folder in the <strong>source</strong> page for the Chrome Dev Tools that says <strong>webpack</strong>. You have to click around a bit to find your <strong>source</strong> folder, but once you have it, you can set breakpoints and inspect directly on ES6 code. This is much better than having to spelunk through <strong>bundle.js</strong>.</p>
+<a class="anchor" id="webpack-watch"></a>
+<h2>Run WebPack when Sources Files Change</h2>
+<p>If we pass in <strong>--watch</strong> to <strong>webpack</strong> then webpack will run automatically when we update one of our ES6 files. This does for WebPack something similar to what <strong>nodemon</strong> does for your ES5 JavaScript files. To get this useful feature, modify the <strong>buildDev</strong> property in <strong>package.json</strong>. (It may be called something else on your system, such as <strong>bundle</strong>. The key thing is to change the property that runs webpack.)</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"buildDev"</span>: <span class="hljs-string">"node_modules/.bin/webpack --watch"</span>
+</code></pre>
+<p>By adding the <strong>--watch</strong> flag we tell WebPack to monitor our ES6 files referenced in the <strong>entry</strong> property of <strong>webpack.config.js</strong>. This won&#39;t refresh our web page automatically, but it will run <strong>webpack</strong> and generate a new <strong>bundle.js</strong> file. Then you can press F5 in the browser to refresh your Web App.</p>
+<div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/glQFWpKRhu4?ecver=2" width="640" height="360" frameborder="0" gesture="media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
+
+<a class="anchor" id="pubsub-flow"></a>
+<h2>Pub Sub Flow</h2>
+<p>In the following text, we are going to define, or discuss various events that are published and subscribed to by various parts of our application. The following tables provide an overview of these events.</p>
+<p>At this time, they may not make a great deal of sense to you. You should, however refer back to these tables while reading the rest of the discussion. The can help you get an overview of the application.</p>
+<p>Don&#39;t be concerned if not all these events look familiar. Some of the events are already declared, others will be declared in this document.</p>
+<p>Publishers:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">File</th>
+<th style="text-align:left">Publisher</th>
+<th style="text-align:left">Subscriber</th>
+<th style="text-align:left">Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">HomeButtons</td>
+<td style="text-align:left">clientMakeHtml</td>
+<td style="text-align:left">control</td>
+<td style="text-align:left">Show MakeHtml Page</td>
+</tr>
+<tr>
+<td style="text-align:left">HomeButtons</td>
+<td style="text-align:left">clientMakeImage</td>
+<td style="text-align:left">control</td>
+<td style="text-align:left">Show MakeImage Page</td>
+</tr>
+<tr>
+<td style="text-align:left">MakeHtml</td>
+<td style="text-align:left">home</td>
+<td style="text-align:left">react-main</td>
+<td style="text-align:left">Show Home Page</td>
+</tr>
+<tr>
+<td style="text-align:left">make-html</td>
+<td style="text-align:left">reactMakeHtml</td>
+<td style="text-align:left">react-main</td>
+<td style="text-align:left">Insert React MakeHtml</td>
+</tr>
+</tbody>
+</table>
+<p>Another way to look at the messages:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Message</th>
+<th style="text-align:left">What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">reactMakeHtml</td>
+<td style="text-align:left">Inserts React code into MakeHtml</td>
+</tr>
+<tr>
+<td style="text-align:left">home</td>
+<td style="text-align:left">Inserts React code into home page</td>
+</tr>
+<tr>
+<td style="text-align:left">clientMakeHtml</td>
+<td style="text-align:left">Displays MakeHtml page</td>
+</tr>
+<tr>
+<td style="text-align:left">clientMakeImage</td>
+<td style="text-align:left">Displays MakeImage page</td>
+</tr>
+</tbody>
+</table>
+<p>Here is the flow:</p>
+<ol>
+<li>The User Clicks the <strong>MakeHtml</strong> button on the home page.<ul>
+<li>In <strong>HomeButtons.js</strong> this causes the <strong>clientMakeHtml</strong> event to be published.</li>
+</ul>
+</li>
+<li>Code in <strong>control</strong> subscribes to this event and launches the <strong>MakeHtml</strong> page.</li>
+<li>The code that loads the <strong>MakeHtml</strong> page also loads the react components associated with out main page.</li>
+<li>Additionally, an event is fired that allows us to navigate from the <strong>MakeHtml</strong> page back to the Home page.</li>
+</ol>
+<p>Since you already understand steps one and two above, the focus in this assignment will be on steps three and four.</p>
+<a class="anchor" id="react-in-make-html"></a>
+<h2>How to Insert React in MakeHtml</h2>
+<p>We have already added React buttons with <strong>material-ui</strong> styling to the home page. The next step is to make similar changes to the <strong>MakeHtml</strong> page. Because we need to attach our React code to a DOM node, we cannot insert our React code into the <strong>MakeHtml</strong> page until the <strong>MakeHtml</strong> page is loaded. Our goal, then, is to find the place in our code where the <strong>MakeHtml</strong> page is loaded, and to then piggyback on that code, inserting code that will add our React code after the page is loaded.</p>
+<p>This is a serious problem for developers. If you are handed a fairly large code base, you sometimes must spelunk through it looking for the place where certain events take place. In this course, I will step you through that process, but you must take a moment to consider the magnitude of such problems and whether or not you think you are up to them.</p>
+<p>Here is what happens when the <strong>MakeHtml</strong> button on the main page is pressed:</p>
+<ul>
+<li><strong>MakeHtml</strong> button clicked.</li>
+<li>Code found in <strong>public/javascripts/control.js</strong> causes <strong>makeHtml.item</strong> to fire.<ul>
+<li><strong>$.subscribe(&#39;clientMakeHtml&#39;, makeHtml.init);</strong></li>
+</ul>
+</li>
+</ul>
+<p>The question then becomes, where is <strong>makeHtml.init</strong> implemented? At the top of <strong>control.js</strong>, we see this code:</p>
+<pre><code class="lang-javascript">define([<span class="hljs-string">'makeHtml'</span>, <span class="hljs-string">'makeImage'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(makeHtml, makeImage)</span> </span>{ ... });
+</code></pre>
+<p>This tells us that the <strong>makeHtml</strong> is loaded by <strong>RequireJs</strong> in <strong>main.js</strong>. In particular, see this line from <strong>main.js</strong>:</p>
+<pre><code class="lang-javascripts">makeHtml: 'javascripts/<span class="hljs-built_in">make</span>-html/<span class="hljs-built_in">make</span>-html',
+</code></pre>
+<p>Now we know what file to look in. If you open that file, you will find the <strong>init</strong> method near the bottom of the file:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">return</span> {
+    <span class="hljs-attribute">init</span>: <span class="hljs-built_in">function</span>() {
+        $(<span class="hljs-string">'#pageLoad'</span>).<span class="hljs-built_in">load</span>(<span class="hljs-string">'/makers/makeHtml'</span>, function() {
+          // CODE OMITTED HERE
+        });        
+    }
+};
+</code></pre>
+<p>Now we know where the <strong>MakeHtml</strong> page is loaded, and hence where we need to insert our shim for our React code. Add this method to <strong>public/javascripts/make-html/make-html.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">publishRectMakeHtml</span>(<span class="hljs-params"></span>) </span>{
+    $.publish(<span class="hljs-string">'reactMakeHtml'</span>, {
+        <span class="hljs-attr">message</span> : <span class="hljs-string">"Publisher Constructor Called"</span>
+    });
+}
+</code></pre>
+<p>Note that this code publishes an event call <strong>reactMakeHtml</strong>.</p>
+<p>In the same file, make sure our <strong>publishMakeHtml</strong> method gets called when <strong>makeHtml</strong> is displayed:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">init</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'#pageLoad'</span>).load(<span class="hljs-string">'/makers/makeHtml'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            $(<span class="hljs-string">'#loadConfig'</span>).click(loadConfig);
+            $(<span class="hljs-string">'#walk'</span>).click(walk);
+            $(<span class="hljs-string">'#walktype'</span>).change(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                radioWalkType = $(<span class="hljs-string">'input[name=walktype]:checked'</span>).attr(<span class="hljs-string">'id'</span>);
+            });
+            walking.configurePageOne();
+            loadConfig();
+            publishRectMakeHtml(); <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">===</span> <span class="hljs-attr">HERE</span>
+        });
+    }
+};</span></span>
+</code></pre>
+<p>Here is an overview of this subject:</p>
+<div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/5tg5aX6EvYw?ecver=2" width="640" height="360" frameborder="0" gesture="media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
+
+<a class="anchor" id="go-home"></a>
+<h2>Go Home</h2>
+<p>Before we can handle the <strong>reactMakeHtml</strong> message, we have to make a couple simple changes. It turns out that memory is managed better if React has complete control of the DIV on which we place our components. This means we should not use the same DIV for jQuery components that we use for React components. So let&#39;s set up two DIVs on <strong>views/index.pug</strong>: one for <strong>jQuery</strong> and one for <strong>React</strong>. For now, I will call the <strong>jQuery</strong> DIV <strong>pageLoad</strong> and the <strong>React</strong> DIV <strong>home</strong>:</p>
+<pre>extends layout
+
+block content
+
+    .jumbotron
+        h1 Elven Site Builder
+
+    div#home
+
+    div#pageLoad
+        p To see options, select a button above.
+</pre>
+<a class="anchor" id="react-navigation"></a>
+<h2>React Navigation</h2>
+<p>The next step is to write code that responds to the publication of the <strong>reactMakeHtml</strong>. Start by <strong>subscribing</strong> to the event in <strong>document ready</strong> block at the bottom of <strong>source/react-main</strong>:</p>
+<pre><code class="lang-javascript">$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{    
+    $.subscribe(<span class="hljs-string">'reactMakeHtml'</span>, reactMakeHtml);    
+});
+</code></pre>
+<p>It turns out that we will need to reference our <strong>home</strong> DIV fairly often. Rather than searching for it each time, let&#39;s keep a reference to it:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> homeDiv = <span class="hljs-literal">null</span>;
+homeDiv = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'home'</span>);
+$.subscribe(<span class="hljs-string">'reactMakeHtml'</span>, reactMakeHtml);
+</code></pre>
+<p>Finally, let&#39;s insert our React components into the Home page at program start and into the MakeHtml page when the appropriate event is published:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">reactMakeHtml</span>(<span class="hljs-params">event, customMessage</span>) </span>{
+    ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MakeHtml</span>/&gt;</span></span>, homeDiv);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">home</span>(<span class="hljs-params"></span>) </span>{
+    ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ReactHome</span>/&gt;</span></span>, homeDiv);
+}
+
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    homeDiv = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'home'</span>);
+    home();
+    $.subscribe(<span class="hljs-string">'reactMakeHtml'</span>, reactMakeHtml);    
+});
+</code></pre>
+<a class="anchor" id="the-makehtml-react-code"></a>
+<h2>The MakeHtml React code</h2>
+<p>Here is the code for our new <strong>MakeHtml</strong> component.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> MuiThemeProvider <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/styles/MuiThemeProvider'</span>;
+<span class="hljs-keyword">import</span> RaisedButton <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/RaisedButton'</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MakeHtml</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">super</span>();
+
+        <span class="hljs-keyword">this</span>.state = {
+            <span class="hljs-attr">home</span>: <span class="hljs-string">'Go Home'</span>
+        }
+    }
+
+    goHome() {
+        $.publish(<span class="hljs-string">'home'</span>, {
+            <span class="hljs-attr">message</span>: <span class="hljs-string">"The user wants to go home."</span>
+        });
+    }
+
+    render() {
+
+        <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">RaisedButton</span>
+                    <span class="hljs-attr">style</span>=<span class="hljs-string">{buttonStyle}</span>
+                    <span class="hljs-attr">primary</span>=<span class="hljs-string">{true}</span>
+                    <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.goHome}</span>&gt;</span>
+                        {this.state.home}
+                <span class="hljs-tag">&lt;/<span class="hljs-name">RaisedButton</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>This is the React MakeHtml component.<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span></span>;
+    };
+}
+
+<span class="hljs-keyword">const</span> buttonStyle = {
+    <span class="hljs-attr">margin</span>: <span class="hljs-string">'10px 10px 10px 0'</span>
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> MakeHtml;
+</code></pre>
+<p>Note that it display an event button and <strong>publishes</strong> an event that sends the user back to the home page.</p>
+<a class="anchor" id="go-home"></a>
+<h2>Go Home</h2>
+<p>Now lets add additional code to that page that allows us to navigate from the <strong>MakeHtml</strong> page to the Home page:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> ReactHome <span class="hljs-keyword">from</span> <span class="hljs-string">'./ReactHome'</span>;
+<span class="hljs-keyword">import</span> MakeHtml <span class="hljs-keyword">from</span> <span class="hljs-string">'./MakeHtml'</span>;
+
+<span class="hljs-keyword">let</span> homeDiv = <span class="hljs-literal">null</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">reactMakeHtml</span>(<span class="hljs-params">event, customMessage</span>) </span>{
+    ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MakeHtml</span>/&gt;</span></span>, homeDiv);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">reactHome</span>(<span class="hljs-params"></span>) </span>{
+  $(<span class="hljs-string">'#pageLoad'</span>).empty();
+  home();
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">home</span>(<span class="hljs-params"></span>) </span>{
+    ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ReactHome</span>/&gt;</span></span>, homeDiv);
+}
+
+$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    homeDiv = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'home'</span>);
+    home();
+    $.subscribe(<span class="hljs-string">'reactMakeHtml'</span>, reactMakeHtml);
+    $.subscribe(<span class="hljs-string">'home'</span>, reactHome);
+});
+</code></pre>
+<p>Notice that we first call the jQuery <strong>empty</strong> method to blank out, clear, any content on the <strong>pageLoad</strong> DIV.  After clearing the <strong>pageLoad</strong> DIV, we load the Home React code back in the <strong>home</strong> DIV. This takes us full circle, back to where we were at the start.</p>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>Push your code. When you are done, tell:</p>
+<ul>
+<li>Repository (isit-web-crafts-lastname)</li>
+<li>Branch (Week07)</li>
+<li>Merge your code back into the <strong>master</strong> branch.</li>
+</ul>
+<a class="anchor" id="going-forward"></a>
+<h2>Going Forward</h2>
+<p>So how do we move forward? How do we begin to integrate React into our code?</p>
+<p>Right now I have this configuration, but it will change:</p>
+<ul>
+<li><strong>source/MakeHtml</strong> is very simple, as shown below</li>
+</ul>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> MuiThemeProvider <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/styles/MuiThemeProvider'</span>;
+<span class="hljs-keyword">import</span> MakeHtmlDropDowns <span class="hljs-keyword">from</span> <span class="hljs-string">'./MakeHtmlDropDowns'</span>;
+<span class="hljs-keyword">import</span> MakeHtmlHomeButton <span class="hljs-keyword">from</span> <span class="hljs-string">'./MakeHtmlHomeButton'</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MakeHtml</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+    render() {
+
+        <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">MakeHtmlHomeButton</span>/&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">MakeHtmlDropDowns</span>/&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span></span>;
+    };
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> MakeHtml;
+</code></pre>
+<p>I&#39;ll leave it up to you to put together the <strong>MakeHtmlHomeButton</strong> component, which is obviously very similar to the original <strong>MakeHtml</strong> component shown above.</p>
+<p>The <strong>MakeHtmlDropDowns</strong> component has a number of tricks in it. We will review in class:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> MuiThemeProvider <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/styles/MuiThemeProvider'</span>;
+<span class="hljs-keyword">import</span> DropDownMenu <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/DropDownMenu'</span>;
+<span class="hljs-keyword">import</span> MenuItem <span class="hljs-keyword">from</span> <span class="hljs-string">'material-ui/MenuItem'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'whatwg-fetch'</span>;
+
+<span class="hljs-keyword">const</span> styles = {
+    <span class="hljs-attr">customWidth</span>: {
+        <span class="hljs-attr">width</span>: <span class="hljs-number">500</span>,
+    },
+};
+
+<span class="hljs-keyword">const</span> items = [];
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MakeHtmlDropDowns</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+
+
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">super</span>();
+
+        <span class="hljs-keyword">this</span>.state = {
+            <span class="hljs-attr">makeImage</span>: <span class="hljs-string">'Make Image'</span>,
+            <span class="hljs-attr">makeHtml</span>: <span class="hljs-string">'Make HTML'</span>,
+            <span class="hljs-attr">value</span>: <span class="hljs-number">1</span>
+        };
+        <span class="hljs-keyword">this</span>.handleChange = <span class="hljs-keyword">this</span>.handleChange.bind(<span class="hljs-keyword">this</span>);
+    }
+
+    handleChange(event, index, value) {
+        <span class="hljs-keyword">this</span>.setState({value});
+    }
+
+    <span class="hljs-comment">/**
+     * @typedef {Object} configSummary
+     * @property {Object} siteDirs
+     * @property {Object} destinationDirs
+     * @property {String} baseDir
+     * @property {String} mostRecentDate
+     */</span>
+    loadConfig() {
+        <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+        fetch(<span class="hljs-string">'/makers/config'</span>)
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">response</span>) </span>{
+                <span class="hljs-keyword">return</span> response.json();
+            })
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">configSummary</span>) </span>{
+                <span class="hljs-comment">//console.log('parsed json', JSON.stringify(configSummary, null, 4));</span>
+                items.length = <span class="hljs-number">0</span>;
+                configSummary.siteDirs.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">dir, index</span>) </span>{
+                    <span class="hljs-keyword">const</span> showDir = configSummary.baseDir + dir;
+                    items.push(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">MenuItem</span> <span class="hljs-attr">value</span>=<span class="hljs-string">{index}</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{index}</span> <span class="hljs-attr">primaryText</span>=<span class="hljs-string">{showDir}</span> /&gt;</span>);
+                });
+            })
+            .catch(function (ex) {
+                console.log('parsing failed', ex);
+            });
+    }
+
+    componentDidMount() {
+        this.loadConfig();
+    }
+
+    render() {
+        return <span class="hljs-tag">&lt;<span class="hljs-name">MuiThemeProvider</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Home Page<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">DropDownMenu</span>
+                    <span class="hljs-attr">value</span>=<span class="hljs-string">{this.state.value}</span>
+                    <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.handleChange}</span>
+                    <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.customWidth}</span>
+                    <span class="hljs-attr">autoWidth</span>=<span class="hljs-string">{false}</span>
+                &gt;</span>
+                    {items}
+                <span class="hljs-tag">&lt;/<span class="hljs-name">DropDownMenu</span>&gt;</span>
+
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>This is a DropDown component.<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">MuiThemeProvider</span>&gt;</span>
+    };
+}
+
+var buttonStyle = {
+    margin: '15px'
+};
+
+export default MakeHtmlDropDowns;</span>
+</code></pre>
+<p>This is far from a complete solution, but it should help you get started. What I&#39;m looking for now is your ability to think ahead and create code of your own.</p>
+<a class="anchor" id="clear-jquery-page"></a>
+<h2>Alternative way to Clear the jQuery Page</h2>
+<p>We should let React handle the React DIV. The <strong>PageLoad</strong> DIV, however, needs to be cleared when we navigate back home. First, let&#39;s declare a bit of Pug code that consists of little more than an empty DIV. I save this as <strong>views/empyt.pug</strong>:</p>
+<pre>block content
+
+    #empty
+</pre>
+<p>Now in <strong>react-main</strong>, rewrite the <strong>reachHome</strong> code to look like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">reactHome</span>(<span class="hljs-params"></span>) </span>{
+    $(<span class="hljs-string">'#pageLoad'</span>).load(<span class="hljs-string">'/empty'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        home();
+    });
+}
+</code></pre>
+<p>Another alternative, here is how to empty a node using pure JavaScript. It works in ie 9+:</p>
+<pre><code class="lang-javascript"><span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'pageLoad'</span>).innerHTML = <span class="hljs-string">''</span>;
+</code></pre>
+<p>See also <a href="http://youmightnotneedjquery.com/">You Might not Need jQuery</a>. This site has standard JavaScript code for many of the methods in jQuery. Back in the day, the standard JavaScript code did not run in many browsers, but it does now.</p>
+</div></body></html>

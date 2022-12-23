@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>MakeEpubMobiPdf</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Elvenware</a></div><div id="navbar" class="navbar-collapse collapse">       <ul class="nav navbar-nav"><li ng-class="{ active: isActive('/')}" class="trigger-collapse"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img alt="Elvenware" src="/images/elvenwarelogo.png" class="elf-normal"/></figure><h1>MakeEpubMobiPdf</h1><p>Welcome to MakeEpubMobiPdf</p><ul><!--TOC_Start--><li><a href="#downloads-and-installs">Downloads and Installs</a></li>
+<li><a href="#fonts">Fonts</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="downloads-and-installs"></a>
+<h2>Downloads and Installs</h2>
+<p>KindleGen <a href="https://www.amazon.com/gp/feature.html?docId=1000765211">is here</a></p>
+<p>tar xvfz kindlegen_linux_2.6_i386_v2_9.tar.gz</p>
+<p>git clone git@github.com:paulfurley/markdown-to-epub-mobi.git
+sudo apt install pandoc
+sudo apt install texlive-latex-base
+sudo apt install xzdec</p>
+<p>make epub
+make pdf
+make mobi</p>
+<a class="anchor" id="fonts"></a>
+<h2>Fonts</h2>
+<p>I had a font error when I tried to create the PDF.</p>
+<pre><code>$ make pdf
+pandoc <span class="hljs-string">\</span>
+    -o build/book.pdf <span class="hljs-string">\</span>
+    meta/title.txt <span class="hljs-string">\</span>
+    chapters/<span class="hljs-number">01_chapter_</span>1.md <span class="hljs-string">\</span>
+    --toc
+! Font T1<span class="hljs-regexp">/cmr/m</span>/n/<span class="hljs-number">10</span>=ecrm1000 at <span class="hljs-number">10.0pt</span> <span class="hljs-keyword">not</span> loadable: Metric (TFM) file <span class="hljs-keyword">not</span> fou
+nd.
+&lt;<span class="hljs-keyword">to</span> be read again&gt;
+                   relax
+l.<span class="hljs-number">105</span> <span class="hljs-string">\fontencoding\encodingdefault\selectfont</span>
+
+pandoc: Error producing PDF
+Makefile:<span class="hljs-number">41</span>: recipe <span class="hljs-keyword">for</span> target <span class="hljs-string">'build/book.pdf'</span> failed
+make: *** [build/book.pdf] Error <span class="hljs-number">43</span>
+</code></pre><p>To fix this, set up tlmgr:</p>
+<pre><code><span class="hljs-attribute">tlmgr init-usertree</span>
+</code></pre><p>This creates a folder: <strong>~/texmf</strong></p>
+<p>Then I can search for the missing font shown in the error message:</p>
+<pre><code>tlmgr <span class="hljs-keyword">search</span> --<span class="hljs-keyword">file</span> ecrm1000.tfm --<span class="hljs-keyword">global</span>
+</code></pre><p>This yields:</p>
+<pre><code><span class="hljs-symbol">ec:</span>
+    texmf-dist<span class="hljs-meta-keyword">/fonts/</span>tfm<span class="hljs-meta-keyword">/jknappen/</span>ec/ecrm1000.tfm
+</code></pre><p>The result tells me to install <strong>ec</strong>:</p>
+<pre><code>tlmgr <span class="hljs-keyword">install</span> ec
+</code></pre><p><a href="https://puppet.com/blog/how-we-automated-our-ebook-builds-pandoc-and-kindlegen">https://puppet.com/blog/how-we-automated-our-ebook-builds-pandoc-and-kindlegen</a>
+<a href="http://docs.electric-cloud.com/accelerator_doc/8_1/Mobile/eMake/Advanced/Content/emake%20Guide/5_Make_Compatibility/8_Wildcard_Sort_Order.htm">http://docs.electric-cloud.com/accelerator_doc/8_1/Mobile/eMake/Advanced/Content/emake%20Guide/5_Make_Compatibility/8_Wildcard_Sort_Order.htm</a></p>
+</div></body></html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1.0"><title>ReactAddressMock</title><link href="/css/first-style.css" rel="stylesheet"><link rel="shortcut icon" href="/images/favicon.png"><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"><link href="/css/highlight/googlecode.css" rel="stylesheet" type="text/css"><link href="/css/style.css" rel="stylesheet"><script src="https://code.jquery.com/jquery-1.12.0.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS --><script src="/js/elven-help.js"></script></head><body><nav class="navbar navbar-inverse"><div class="container"><div class="navbar-header"><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/">Elvenware</a></div><div class="navbar-collapse collapse" id="navbar"><ul class="nav navbar-nav"><li class="trigger-collapse" ng-class="{ active: isActive('/')}"><a href="/">Home</a></li><li><a href="/about.html">About</a></li></ul></div></div></nav><div class="container"><figure><img class="elf-normal" alt="Elvenware" src="/images/elvenwarelogo.png"/></figure><h1>ReactAddressMock</h1><p>Welcome to ReactAddressMock</p><ul><!--TOC_Start--><li><a href="#react-address-mock">React Address Mock</a></li>
+<li><a href="#goals">Goals</a></li>
+<li><a href="#mock-local-storage">Mock Local Storage</a></li>
+<li><a href="#create-mocks-folder">Create Mocks Folder</a></li>
+<li><a href="#mock-data">Mock Data</a></li>
+<li><a href="#mock-fetch">Mock fetch</a></li>
+<li><a href="#using-mocks-in-tests">Using Mocks in Tests</a></li>
+<li><a href="#dataloader">DataLoader</a></li>
+<li><a href="#elf-local-storage">Elf Local Storage</a></li>
+<li><a href="#load-local-data">Load Local Data</a></li>
+<li><a href="#turn-it-in">Turn it in</a></li>
+<li><a href="#hint-tagging">Hint Tagging</a></li><!--TOC_End--></ul></div><div class="container"><a class="anchor" id="react-address-mock"></a>
+<h1>React Address Mock</h1>
+<ul>
+<li>DevOps and TDD: <a href="http://bit.ly/elf-dev-ops">http://bit.ly/elf-dev-ops</a></li>
+<li>Elven Unit Tests: <a href="http://bit.ly/elven-unit-tests">http://bit.ly/elven-unit-tests</a></li>
+</ul>
+<a class="anchor" id="goals"></a>
+<h2>Goals</h2>
+<ul>
+<li>Mock Local Storage</li>
+<li>Create the mocks folder</li>
+<li>Put two files in it.<ul>
+<li>Mock Data</li>
+<li>Mock fetch object</li>
+</ul>
+</li>
+<li>Adjust our Tests</li>
+</ul>
+<a class="anchor" id="mock-local-storage"></a>
+<h2>Mock Local Storage</h2>
+<p>We are using <strong>localstorage</strong> in our browser. This is not going to be available in our tests since we are not executing our code inside a browser. Instead, we need to mock <strong>localstorage</strong>. We need to create a fake <strong>localstorage</strong> object that emulates what the browser local storage object.</p>
+<p>In the browser, the global object is called <strong>window</strong>. <strong>localStorage</strong> is a method of this global objects: <strong>window.localStorage</strong>. In NodeJs the global object is called <strong>global</strong>. So we create <strong>global.localStorage</strong>. In both cases, one can access <strong>localStorage</strong> directly by name. We don&#39;t have to write <strong>global.localStorage</strong> or <strong>window.localStorage</strong>. It is not an error to do so, but it is not necessary. Therefore, in both our tests and in a browser, we can just call <strong>localStorage</strong> even though in one case it is called <strong>global.localStorage</strong> and in the other it is called <strong>window.localStorage</strong>.</p>
+<p>At the risk of belaboring the point too long, I&#39;ll just sum up by saying that we are creating a mock <strong>localStorage</strong> object that acts just like the real <strong>localStorage</strong> object but does not require the presence of the browser and the <strong>window</strong> object.</p>
+<p>Below is the code which implements the parts of <strong>localStorage</strong> that we use in our app. This code will be executed during our tests. Place the code near the top of the files that will need access to our data. For instance, if you checking for the value of <strong>firstName</strong> you will probably need the mock. A simple way to determine where it belongs is to simply run the tests in a module and see if they throw an exception saying that <strong>localStorage</strong> is not defined.</p>
+<p><strong>NOTE</strong>: <em>Remember that we can press the letter &#39;p&#39; when running tests, then type in all or part of the name of the file for a test. Then only that file will be run. For instance, typing <strong>Address</strong> will run only <strong>Address.test.js</strong>. This works best if you can uniquely identify each file. For instance, if you have tests suites called <strong>FooBar.test.js</strong> and <strong>Bar.test.js</strong> then trying to filter on <strong>Bar.test.js</strong> will get both test suites because both names contain <strong>Bar.test.js</strong>. Typing <strong>FooBar.test.js</strong> will run only the tests in <strong>FooBar.test.js</strong>.</em></p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// http://stackoverflow.com/a/32911774/253576</span>
+beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">const</span> localStorageMock = (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">let</span> storage = {};
+        <span class="hljs-keyword">return</span> {
+            <span class="hljs-attr">getItem</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key</span>) </span>{
+                <span class="hljs-keyword">return</span> storage[key];
+            },
+            <span class="hljs-attr">setItem</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key, value</span>) </span>{
+                storage[key] = value.toString();
+            },
+            <span class="hljs-attr">clear</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                storage = {};
+            }
+        };
+    })();
+    <span class="hljs-built_in">Object</span>.defineProperty(global, <span class="hljs-string">'localStorage'</span>, {<span class="hljs-attr">value</span>: localStorageMock});
+
+});
+</code></pre>
+<a class="anchor" id="create-mocks-folder"></a>
+<h2>Create Mocks Folder</h2>
+<p>So how do we perform this miracle? To make a long story short: we use the mock library built into Jest. Here is how to proceed:</p>
+<ul>
+<li>Create a new folder in the root of your project called: <strong>__mocks__</strong><ul>
+<li>Two underscores, the word mocks, two more underscores</li>
+</ul>
+</li>
+<li>Create a file in that directory called <strong>whatwg-fetch.js</strong></li>
+</ul>
+<a class="anchor" id="mock-data"></a>
+<h2>Mock Data</h2>
+<p>First lets create a simple module that contains the data we will use in our mock and call it <strong>__mocks__/mock-data.js</strong>:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 4/18/17.
+ */</span>
+
+<span class="hljs-keyword">const</span> getData = <span class="hljs-function">(<span class="hljs-params">url</span>) =&gt;</span> {
+    <span class="hljs-keyword">switch</span> (url) {
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'./address-list.json'</span>:
+            <span class="hljs-keyword">return</span> [{
+                <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Lamar"</span>,
+                <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"Alexander"</span>,
+                <span class="hljs-string">"street"</span>: <span class="hljs-string">"455 Dirksen Senate Office Building"</span>,
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"Washington DC"</span>,
+                <span class="hljs-string">"state"</span>: <span class="hljs-string">"TN"</span>,
+                <span class="hljs-string">"zip"</span>: <span class="hljs-string">" 20510"</span>,
+                <span class="hljs-string">"phone"</span>: <span class="hljs-string">"202-224-4944"</span>,
+                <span class="hljs-string">"website"</span>: <span class="hljs-string">"https://www.alexander.senate.gov/public"</span>,
+                <span class="hljs-string">"email"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"contact"</span>: <span class="hljs-string">"http://www.alexander.senate.gov/public/index.cfm?p=Email"</span>
+            },
+            {
+                <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Roger"</span>,
+                <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"Wicker"</span>,
+                <span class="hljs-string">"street"</span>: <span class="hljs-string">"555 Dirksen Senate Office Building"</span>,
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"Washington DC"</span>,
+                <span class="hljs-string">"state"</span>: <span class="hljs-string">"MS"</span>,
+                <span class="hljs-string">"zip"</span>: <span class="hljs-string">" 20510"</span>,
+                <span class="hljs-string">"phone"</span>: <span class="hljs-string">"202-224-6253"</span>,
+                <span class="hljs-string">"website"</span>: <span class="hljs-string">"https://www.wicker.senate.gov"</span>,
+                <span class="hljs-string">"email"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"contact"</span>: <span class="hljs-string">"https://www.wicker.senate.gov/public/index.cfm/contact"</span>
+            },
+            {
+                <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Timothy"</span>,
+                <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"Kaine"</span>,
+                <span class="hljs-string">"street"</span>: <span class="hljs-string">"231 Russell Senate Office Building"</span>,
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"Washington DC"</span>,
+                <span class="hljs-string">"state"</span>: <span class="hljs-string">"VA"</span>,
+                <span class="hljs-string">"zip"</span>: <span class="hljs-string">" 20510"</span>,
+                <span class="hljs-string">"phone"</span>: <span class="hljs-string">"202-224-4024"</span>,
+                <span class="hljs-string">"website"</span>: <span class="hljs-string">"https://www.kaine.senate.gov"</span>,
+                <span class="hljs-string">"email"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"contact"</span>: <span class="hljs-string">"https://www.kaine.senate.gov/contact"</span>
+            }];
+
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">return</span> [];
+    }
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> getData;
+</code></pre>
+<p>This code simply creates sets of data that mimic what our server would return given a call to a specific <strong>url</strong>.</p>
+<a class="anchor" id="mock-fetch"></a>
+<h2>Mock fetch</h2>
+<p>Below is the source code for our new mock for <strong>fetch</strong> called <strong>whatwg-fetch.js</strong>. Save it and <strong>mock-data.js</strong> in the <strong>__mocks__</strong> folder. Note in particular the call to <strong>jest.genMockFromModule</strong>. That call asks Jest to generate a mock object for the module we want to replace with a mock:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by charlie on 4/17/17.
+ */</span>
+
+<span class="hljs-keyword">import</span> getData <span class="hljs-keyword">from</span> <span class="hljs-string">'./mock-data'</span>;
+
+<span class="hljs-meta">'use strict'</span>;
+
+<span class="hljs-keyword">const</span> whatwgFetch = jest.genMockFromModule(<span class="hljs-string">'whatwg-fetch'</span>);
+
+<span class="hljs-keyword">const</span> fetch = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">url</span>) </span>{
+
+    <span class="hljs-keyword">const</span> objectState = getData(url);
+
+    <span class="hljs-keyword">const</span> response = {};
+    response.json = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> objectState;
+    };
+
+    <span class="hljs-comment">//console.log("FETCH STATER", objectState);</span>
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">then</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">func</span>) </span>{
+            <span class="hljs-comment">//console.log('FETCH TEST ONE', func(response));</span>
+            <span class="hljs-keyword">return</span> {
+                <span class="hljs-attr">then</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">func</span>) </span>{
+                    <span class="hljs-comment">//func(JSON.stringify(stater));</span>
+                    func(objectState);
+                    <span class="hljs-keyword">return</span> {
+                        <span class="hljs-attr">catch</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+
+                        }
+                    };
+                }
+            };
+        }
+    };
+};
+
+whatwgFetch.fetch = fetch;
+<span class="hljs-built_in">window</span>.fetch = fetch;
+
+<span class="hljs-built_in">module</span>.exports = whatwgFetch;
+</code></pre>
+<p>Over time, you can comment out the calls to <strong>console.log</strong>. But they might be helpful at first when you are trying to understand what is going on. Note in particular that we are now putting calls to the callbacks (func) passed into our labyrinthine series of <strong>return</strong> statements. The most important is the second call to <strong>then</strong> where we pass back the <strong>stater</strong> object. Recall that this is used as follows in our call to <strong>fetch</strong>:</p>
+<pre><code class="lang-javascript">.then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">json</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'GETONE-FETCH-TWO'</span>);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'parsed json'</span>, json);
+    that.setState(<span class="hljs-function"><span class="hljs-params">foo</span> =&gt;</span> (json));
+})
+</code></pre>
+<a class="anchor" id="using-mocks-in-tests"></a>
+<h2>Using Mocks in Tests</h2>
+<p>At the top of your address.test.js file, do this:</p>
+<ul>
+<li>jest.mock(&#39;whatwg-fetch&#39;);</li>
+</ul>
+<p>Is this still necessary? (Was it ever necessary?) I think you can just do this at the top of your test:</p>
+<pre><code class="lang-javascript"><span class="hljs-meta"><span class="hljs-meta-keyword">import</span> 'whatwg-fetch';</span>
+</code></pre>
+<a class="anchor" id="dataloader"></a>
+<h2>DataLoader</h2>
+<p>In the <strong>constructor</strong> for <strong>Address</strong> we have the following code. Its responsibility is to be sure that <strong>localStorage</strong> contains at least 100 records representing the addresses we placed in <strong>address-list.json</strong>.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> DataLoader <span class="hljs-keyword">from</span> <span class="hljs-string">'./DataLoader'</span>;
+<span class="hljs-keyword">const</span> dataLoader = <span class="hljs-keyword">new</span> DataLoader();
+
+<span class="hljs-comment">// Code ommitted here.</span>
+<span class="hljs-comment">// Then, in the constructor:</span>
+<span class="hljs-keyword">constructor</span>(props) {
+    <span class="hljs-keyword">super</span>(props);
+    logger.log(<span class="hljs-string">'Constructor called'</span>);
+    <span class="hljs-comment">//localStorage.clear();</span>
+
+    <span class="hljs-keyword">this</span>.addressIndex = <span class="hljs-number">0</span>;
+
+    <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+    dataLoader.loadAddresses(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">addressCount</span>) </span>{
+        <span class="hljs-keyword">if</span> (!addressCount) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Cannot get address count in address.js'</span>);
+        }
+        that.addressCount = addressCount;
+    });
+    <span class="hljs-comment">// AND SO ON</span>
+}
+</code></pre>
+<p>This code performs a little trick you have seen before:</p>
+<ul>
+<li>We a variable called <strong>that</strong> equal to <strong>this</strong>.</li>
+<li>Then we create an anonymous callback function.</li>
+<li>In that anonymous function we use that to be sure that we can initialize the variable called <strong>addressCount</strong>.</li>
+</ul>
+<p>The <strong>loadAddress</strong> function has one responsibility but two parts:</p>
+<ul>
+<li>First it checks if <strong>localStorage</strong> already contains a copy of the data for our database. If it does, sends the number of records back to address in the anonymous callback and then exits.</li>
+<li>If <strong>localStorage</strong> does not contain our data, then it uses <strong>fetch</strong> to load the data and stuff our records into <strong>localStorage</strong>. When it is done it uses the callback to send the <strong>addressCount</strong> back to <strong>Address</strong>.</li>
+</ul>
+<p>Here is some of <strong>DataLoader</strong>:</p>
+<pre><code class="lang-javascript">
+<span class="hljs-comment">/**
+ * Created by bcuser on 5/10/17.
+ */</span>
+
+<span class="hljs-keyword">import</span> Logger <span class="hljs-keyword">from</span> <span class="hljs-string">'../assets/elf-logger'</span>;
+<span class="hljs-keyword">const</span> logger = <span class="hljs-keyword">new</span> Logger(<span class="hljs-string">'data-loader'</span>, <span class="hljs-string">'yellow'</span>, <span class="hljs-string">'green'</span>, <span class="hljs-string">'18px'</span>);
+<span class="hljs-keyword">import</span> {saveByIndex} <span class="hljs-keyword">from</span> <span class="hljs-string">'../assets/elf-local-storage'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'whatwg-fetch'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DataLoader</span> </span>{
+
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.STORE_SET = [<span class="hljs-string">'elven-store'</span>, <span class="hljs-string">'set'</span>, <span class="hljs-string">'elven-count'</span>];
+        <span class="hljs-keyword">this</span>.loadAddresses = <span class="hljs-keyword">this</span>.loadAddresses.bind(<span class="hljs-keyword">this</span>);
+    }
+
+    dataLoaded() {
+        <span class="hljs-keyword">const</span> elfStore = localStorage.getItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">0</span>]);
+        <span class="hljs-keyword">return</span> (elfStore === <span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">1</span>]);
+    }
+
+    setLocalStorage(addresses) {
+        logger.log(<span class="hljs-string">'SET LOCAL'</span>, addresses);
+        <span class="hljs-comment">//localStorage.setItem('elven-store', 'set');</span>
+        localStorage.setItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">0</span>], <span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">1</span>]);
+        <span class="hljs-comment">//localStorage.setItem('elven-count', addresses.length);</span>
+        localStorage.setItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">2</span>], addresses.length);
+        addresses.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">address, index</span>) </span>{
+            saveByIndex(address, index);
+        });
+        <span class="hljs-keyword">return</span> addresses;
+    }
+
+    loadAddresses(callback) {
+        <span class="hljs-keyword">const</span> that = <span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.dataLoaded()) {
+            logger.log(<span class="hljs-string">'Using data from localstore'</span>);
+            callback(localStorage.getItem(<span class="hljs-keyword">this</span>.STORE_SET[<span class="hljs-number">2</span>]));
+        } <span class="hljs-keyword">else</span> {
+            logger.log(<span class="hljs-string">'Loading data'</span>);
+            fetch(<span class="hljs-string">'./address-list.json'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+                <span class="hljs-keyword">const</span> addresses = data.json();
+                <span class="hljs-built_in">console</span>.log(addresses);
+                <span class="hljs-keyword">return</span> addresses;
+            }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+                logger.log(<span class="hljs-built_in">JSON</span>.stringify(data, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>));
+                <span class="hljs-comment">//console.log(that);</span>
+                that.setLocalStorage(data);
+                callback(data.length);
+            }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+                logger.log(err);
+            });
+        }
+    }
+}
+</code></pre>
+<a class="anchor" id="elf-local-storage"></a>
+<h2>Elf Local Storage</h2>
+<p>The <strong>DataLoader</strong> code is specific to our current project. Here is a helper object with <strong>localStorage</strong> calls that could be reused in multiple programs. Save it as <strong>elf-local-storage.js</strong> in your <strong>assets</strong> directory.</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**
+ * Created by Charlie on 5/8/17.
+ */</span>
+
+<span class="hljs-keyword">const</span> ELF_TAG = <span class="hljs-string">'elf'</span>;
+
+<span class="hljs-keyword">const</span> padNumber = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">numberToPad, width, padValue</span>) </span>{
+    padValue = padValue || <span class="hljs-string">'0'</span>;
+    numberToPad += <span class="hljs-string">''</span>;
+    <span class="hljs-keyword">if</span> (numberToPad.length &gt;= width) {
+        <span class="hljs-keyword">return</span> numberToPad;
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(width - numberToPad.length + <span class="hljs-number">1</span>).join(padValue) + numberToPad;
+    }
+};
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">saveByIndex</span>(<span class="hljs-params">item, index</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> item === <span class="hljs-string">'object'</span>) {
+        item = <span class="hljs-built_in">JSON</span>.stringify(item, <span class="hljs-literal">null</span>, <span class="hljs-number">4</span>);
+    }
+    <span class="hljs-keyword">const</span> key = ELF_TAG + padNumber(index, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>);
+    localStorage.setItem(key, item);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getByIndex</span>(<span class="hljs-params">index</span>) </span>{
+    <span class="hljs-keyword">const</span> key = ELF_TAG + padNumber(index, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">JSON</span>.parse(localStorage.getItem(key));
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">removeElfKeys</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> localStorage) {
+        <span class="hljs-keyword">if</span> (key.startsWith(ELF_TAG)) {
+            localStorage.removeItem(key);
+        }
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clearLocalStorage</span>(<span class="hljs-params"></span>) </span>{
+    localStorage.clear();
+}
+
+<span class="hljs-keyword">export</span> {saveByIndex, getByIndex, removeElfKeys, clearLocalStorage};
+</code></pre>
+<a class="anchor" id="load-local-data"></a>
+<h2>Load Local Data</h2>
+<p>In <strong>onAddressChange</strong> load data from the localStore:</p>
+<pre><code class="lang-javascript">onAddressChange(event) {
+    detailLogger.log(<span class="hljs-string">'onAddressChange called with'</span>, event.target.id);
+    <span class="hljs-keyword">if</span> (event.target.id.startsWith(<span class="hljs-string">'dec'</span>)) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.addressIndex &gt; <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">this</span>.addressIndex -= <span class="hljs-number">1</span>;
+        }
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.addressIndex &lt; <span class="hljs-keyword">this</span>.addressCount) {
+            <span class="hljs-keyword">this</span>.addressIndex += <span class="hljs-number">1</span>;
+        }
+    }
+    detailLogger.log(<span class="hljs-string">'addressIndex'</span>, <span class="hljs-keyword">this</span>.addressIndex);
+    const address = getByIndex(<span class="hljs-keyword">this</span>.addressIndex);
+
+    <span class="hljs-keyword">this</span>.setState({
+        address: address
+    });
+};
+</code></pre>
+<a class="anchor" id="turn-it-in"></a>
+<h2>Turn it in</h2>
+<p>I&#39;ll be grading <strong>React Address Mock</strong> and <strong>React Address DataMaven</strong> assignments at the same time from the same codebase. You will get two grades, but I will be looking at one copy of <strong>CongressAddress</strong> when I grade them. I don&#39;t want to have to get two versions of <strong>CongressAddress</strong> going. Therefore, I will start a single version of the program, run the tests, and expect to be able to grade both assignments based on the code from the same commit. Two assignments, one version of <strong>CongressAddress</strong>:</p>
+<ul>
+<li><a href="https://www.ccalvert.net/books/CloudNotes/Assignments/React/ReactAddressMock.html">React Address Mock</a></li>
+<li><a href="https://www.ccalvert.net/books/CloudNotes/Assignments/React/ReactAddressDataMaven.html">React Address DataMaven</a></li>
+</ul>
+<p>Once you have a version of <strong>CongressAddress</strong> that contains code fulfilling the requirements for both assignments, then you should push, branch and tag:</p>
+<pre><code>git add .
+git commit -m <span class="hljs-string">"Code for React Address Mock and React Address DataMaven"</span>
+git push
+git branch week07-DataMavenMock
+git tag -<span class="hljs-selector-tag">a</span> v7<span class="hljs-selector-class">.X</span><span class="hljs-selector-class">.X</span> -m <span class="hljs-string">"Code for React Address Mock and React Address DataMaven"</span>
+git push origin v7<span class="hljs-selector-class">.X</span><span class="hljs-selector-class">.X</span>
+</code></pre><p>Of course, the X.X bit would contain your idea of the appropriate numbering scheme. For instance: <strong>v7.0.0</strong>.</p>
+<a class="anchor" id="hint-tagging"></a>
+<h2>Hint Tagging</h2>
+<ul>
+<li><a href="http://www.elvenware.com/charlie/development/cloud/Git.html#git-tag">Git Tag</a></li>
+<li><a href="http://www.elvenware.com/charlie/development/cloud/Git.html#understanding-tags">Understanding Tags</a></li>
+</ul>
+</div></body></html>
