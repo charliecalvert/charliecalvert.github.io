@@ -5,19 +5,29 @@ date:   2023-04-18 10:00:00 -0800
 categories: jekyll update
 ---
 
+Something like this:
+
+```bash
+#! /bin/bash
+
 sudo apt-get install ruby-full build-essential zlib1g-dev
 
 echo '# Install Ruby Gems to ~/gems' >> ~/.bashrc
 echo 'export GEM_HOME="$HOME/gems"' >> ~/.bashrc
 echo 'export PATH="$HOME/gems/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
+```
 
+And then maybe:
+
+``` bash
 gem install jekyll bundler
 
 mkdir Source && cd Source/
 jekyll new myblog
 cd myblog/
 bundle add webrick
+```
 
 ## Strategy A
 
