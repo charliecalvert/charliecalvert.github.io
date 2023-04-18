@@ -43,6 +43,9 @@ StartPythonWebServer
 
 ## Bonus History
 
+I want to make a change:
+
+``` bash
    1  nano start.sh
     2  chmod +x start.sh
     3  ./start.sh
@@ -62,3 +65,4 @@ StartPythonWebServer
    17  cd _site/
    18  StartPythonWebServer
    19  history
+```
