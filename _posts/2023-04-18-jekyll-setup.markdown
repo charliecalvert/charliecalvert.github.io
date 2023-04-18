@@ -33,12 +33,13 @@ bundle add webrick
 
 bundle exec jekyll serve --port 30025
 
-
 ## Strategy B
 
+```bash
 bundle exec jekyll build
 cd _site
 StartPythonWebServer
+```
 
 ## Bonus History
 
