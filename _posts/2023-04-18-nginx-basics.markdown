@@ -1,0 +1,58 @@
+---
+layout: post
+title:  "Notes on nginx Basics"
+date:   2023-04-18 12:00:00 -0800
+categories: jekyll update
+---
+
+## Basics
+
+It should all be in here:
+
+    git clone git@github.com:charliecalvert/elven-web.git
+
+## Other notes
+
+None of these notes amount too much They're all half formed:
+
+like this:
+
+``` bash
+ sudo add-apt-repository 'deb-src https://nginx.org/packages/ubuntu/ jammy nginx'
+ The following signatures couldn't be verified because the public key is not available: NO_PUBKEY ABF5BD827BD9BF62
+ export key=ABF5BD827BD9BF62
+ ## Replace $key with the corresponding $key from your GPG error.
+ ```
+
+ After you replace the key:
+
+```
+ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys $key
+ sudo apt update
+ sudo apt install nginx
+ sudo systemctl start nginx
+ curl localhost
+```
+
+``` bash
+export release=JammyJellyfish
+deb https://nginx.org/packages/ubuntu/ $release nginx
+deb-src https://nginx.org/packages/ubuntu/ $release nginx
+
+sudo apt update
+sudo apt install nginx
+```
+
+like this:
+
+``` bash
+ sudo add-apt-repository 'deb-src https://nginx.org/packages/ubuntu/ jammy nginx'
+ The following signatures couldn't be verified because the public key is not available: NO_PUBKEY ABF5BD827BD9BF62
+ export key=ABF5BD827BD9BF62
+ ## Replace $key with the corresponding $key from your GPG error.
+ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys $key
+ sudo apt update
+ sudo apt install nginx
+ sudo systemctl start nginx
+ curl localhost
+```
