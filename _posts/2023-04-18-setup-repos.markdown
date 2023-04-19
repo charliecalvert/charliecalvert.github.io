@@ -15,15 +15,23 @@ chmod +x get-jsobjects
 ./get-jsobjects
 ```
 
-Get the ssh keys:
+## Get the ssh keys
 
+The details are in the vault.
+
+``` bash
 curl https://s3.amazonaws.com/bucket01.elvenware.com/JsObjects/ssh-setup > ssh-setup
 chmod +x ssh-setup
 ./ssh-setup
+```
 
+## Get Repos
+
+``` bash
 gd
 
 curl https://s3.amazonaws.com/bucket01.elvenware.com/JsObjects/get-repos > get-repos
 
 chmod +x get-repos
 ./get-repos
+```
