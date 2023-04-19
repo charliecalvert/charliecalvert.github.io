@@ -2,8 +2,12 @@
 layout: post
 title:  "Jekyll Prerequisites Setup"
 date:   2023-04-18 10:00:00 -0800
-categories: jekyll update
+categories: setup
 ---
+
+## Get Started
+
+
 
 Something like this:
 
