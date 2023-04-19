@@ -21,4 +21,6 @@ As long as you sit back down and resume breathing, repeating a mantra, or watchi
 
 I mean the above literally, but I am also trying to trick you into sitting down and meditating. My experience is that if I can sit down for 10 or 15 minutes, my mind will calm down. It's just a question of tricking myself into sitting down. 
 
+## Summary
+
 Set your expectations as low as possible. Sitting down and having the world's worst meditation is better than having no meditation.
