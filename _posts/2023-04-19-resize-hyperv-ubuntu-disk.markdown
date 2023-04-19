@@ -5,9 +5,9 @@ date:   2023-04-19 07:00:00 -0800
 categories: howto
 ---
 
-I used the **Quick Create** option in the **hyper-v manager** to create an ubuntu22.04desktop. I thought I was creating a disk that was 127 gigabyte in size, but it had a maximum size of less than 12 gigabyte.
+I used the **Quick Create** option in the **Hyper-v Manager** to create an **Ubuntu 22.04 Desktop**. I thought I was creating a disk that was 127 gigabyte in size, but it had a maximum size of less than 12 gigabyte.
 
-I shut down the virtual machine and deleted the checkpoint so that only **Now** remained. After the checkpoint was deleted **Now** disappeared and the **hyper-v manager** showed no checkpoints.
+I shut down the virtual machine and deleted the checkpoint so that only **Now** remained. After the checkpoint was deleted **Now** disappeared and the **Hyper-v Manager** showed no checkpoints.
 
 I then went into settings, found the virtual hard drive, and edited it. I resized it to 64 gigabytes. All that was easy and went well.
 
