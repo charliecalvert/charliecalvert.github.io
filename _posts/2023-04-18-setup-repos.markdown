@@ -25,6 +25,27 @@ chmod +x ssh-setup
 ./ssh-setup
 ```
 
+## Send AWS Conffig
+
+Put any SSH keys or configuration files that you need into a ZIP file called **AWSConfigAll.zip**. 
+
+Set up a portion of your **config** file to define a rule called **aws-spot**:
+
+```
+Host aws-spot
+        HostName <YOUR-AWS-INSTANCE-PUBLIC-IP>
+        Port 22
+        User ubuntu
+        IdentityFile ~/.ssh/<YOUR-AWS-PRIVATE-KEY>
+```
+
+
+Then secure copy your keys and config file to AWS:
+
+``` bash
+ scp AwsConfigAll.zip aws-spot:/home/ubuntu/.
+```
+
 ## Get Repos
 
 ``` bash
