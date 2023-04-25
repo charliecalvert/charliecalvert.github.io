@@ -7,9 +7,16 @@ categories: tech setup
 
 ## Install WSL
 
+Ideally,you want one copy of windows 11 pro to be the host.They had at least one copy of windows 10 or 11 Home or Pro in which to set up your work environment. You don't need pro to set up your environment. Pro is only necessaryto allow you to have full control over Hyper-V virtual machines.
+
 Tasks:
 
-- Select **Task View | New Desktop** from **Task Bar**
+- On Windows 10 Select **Task View | New Desktop** from **Task Bar**
+  - Task View is the little icon next to the search area.
+- [Turn on Microphone](https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/learn-more/Use-local-resources-on-Hyper-V-virtual-machine-with-VMConnect)
+    - Close connection to VM by clicking the X at the top of the VM window
+    - Start it again by selecting **Connect** from the **Hyper-v Manager** 
+    - At the prompt to set up enhanced mode I chose the **Localization** tab to get the Options that I wanted.  
 - Log into Stack Overflow 
 - [ccalvert](https://www.ccalvert.net/)
 
