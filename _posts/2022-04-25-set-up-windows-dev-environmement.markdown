@@ -7,6 +7,10 @@ categories: tech setup
 
 ## Install WSL
 
+Tasks:
+
+- Log into Stack Overflow 
+
 ## Install Windows Terminal
 
 - [Install Page from Learn Microsoft](https://learn.microsoft.com/en-us/windows/terminal/install)
@@ -24,7 +28,11 @@ categories: tech setup
 
 ## Install PowerShell 7
 
-
+- [With Winget](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2#winget)
+- [Install Page (7.3)](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell)
+- [Windows Specific](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows)
+- [Overview](https://learn.microsoft.com/en-us/powershell/?view=powershell-7.2)
+- [The Preview](https://briantjackett.com/2019/06/24/windows-terminal-with-powershell-v7-preview/)
 
 ``` json
 {
