@@ -7,7 +7,7 @@ categories: tech setup
 
 ## Install WSL
 
-Ideally,you want one copy of windows 11 pro to be the host.They had at least one copy of windows 10 or 11 Home or Pro in which to set up your work environment. You don't need pro to set up your environment. Pro is only necessaryto allow you to have full control over Hyper-V virtual machines.
+Ideally,you want one copy of Windows 11 Pro to be the host. Have at least one copy of Windows 10 or 11 Home or Pro in which to set up your work environment. You don't need pro to set up your environment. Pro is only necessaryto allow you to have full control over Hyper-V virtual machines.
 
 Tasks:
 
@@ -50,4 +50,17 @@ Tasks:
     "hidden": false,
     "name": "PowerShell v7"
 },
+```
+
+## Bonus
+
+```
+PS C:\Users\charl> history
+
+  Id CommandLine
+  -- -----------
+   1 winget search Microsoft.PowerShell
+   2 winget install --id Microsoft.Powershell --source winget
+   3 $PsHome
+   4 Get-Process powershell
 ```
