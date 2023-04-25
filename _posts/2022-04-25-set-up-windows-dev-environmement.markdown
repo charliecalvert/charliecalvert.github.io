@@ -9,7 +9,9 @@ categories: tech setup
 
 Tasks:
 
+- Select **Task View | New Desktop** from **Task Bar**
 - Log into Stack Overflow 
+- [ccalvert](https://www.ccalvert.net/)
 
 ## Install Windows Terminal
 
