@@ -29,7 +29,7 @@ categories: tech setup
 ``` json
 {
     "commandline": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
-    "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+    "guid": "{some-guid-1111-2222-3333-444455556}",
     "hidden": false,
     "name": "PowerShell v7"
 },
