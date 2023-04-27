@@ -5,6 +5,8 @@ date:   2023-04-27 07:00:00 -0800
 categories: spirit christian
 ---
 
+[Radix 10 Participant Packet](https://saintmarks.org/wp-content/uploads/2023/04/Radix-10-participant-packet.pdf)
+
 ## [Matthew](https://app.logos.com/books/LLS%3A1.0.710/references/bible%2Besv.61.28.1)
 
 - Who: Mary Magdalene and the other Mary went to see the tomb
@@ -19,7 +21,7 @@ categories: spirit christian
 
 ## [Luke](https://app.logos.com/books/LLS%3A1.0.710/references/bible%2Besv.63.23.56)
 
-- **Who**: Mary Magdalene and Joanna and Mary the mother of James and the other women with them
+- **Who**: Unclear, but perhaps: Mary Magdalene and Joanna and Mary the mother of James and the other women with them
 - [Luke 23:56 Search](https://www.google.com/search?q=Luke+23+56)
 - [Luke ESV](https://app.logos.com/books/LLS%3A1.0.710/references/bible%2Besv.63.23.56)
 
