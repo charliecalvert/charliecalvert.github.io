@@ -9,7 +9,8 @@ categories: spirit christian
 
 ## [Matthew](https://app.logos.com/books/LLS%3A1.0.710/references/bible%2Besv.61.28.1)
 
-- Who: Mary Magdalene and the other Mary went to see the tomb
+- **Who**: Mary Magdalene and the other Mary went to see the tomb
+- **Where**: Jerusalem and Galilee
 - [Matthew 28 Search](https://www.google.com/search?q=Matthew+28)
 - [Matthew 28:1 ESV](https://app.logos.com/books/LLS%3A1.0.710/references/bible%2Besv.61.28.1)
 
@@ -28,6 +29,8 @@ categories: spirit christian
 ## [John: The Resurrection](https://app.logos.com/books/LLS%3A1.0.710/references/bible%2Besv.64.20.1)
 
 - **Who**: Mary
+- **Where**: Jerusalem
+- **Note** The Beloved Disciple gets faith before Mary enters the tomb. Thomas also gets a 1 on 1 with Jeses
 - [John 20 Search](https://www.google.com/search?q=John+20)
 - [John 20 ESV](https://app.logos.com/books/LLS%3A1.0.710/references/bible%2Besv.64.20.1)
 
