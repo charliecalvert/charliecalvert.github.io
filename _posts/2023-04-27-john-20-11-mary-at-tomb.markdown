@@ -37,3 +37,7 @@ categories: spirit christian
 2 So she ran and went to Simon Peter and the other disciple, the one whom Jesus loved, and said to them, “They have taken the Lord out of the tomb, and we do not know where they have laid him.” 3 So Peter went out with the other disciple, and they were going toward the tomb. 4 Both of them were running together, but the other disciple outran Peter and reached the tomb first. 8 Then the other disciple, who had reached the tomb first, also went in, and he saw and believed...
 
 The Holy Bible: English Standard Version (Wheaton, IL: Crossway Bibles, 2016), Jn 20:1–10.
+
+## Closing Prayer
+
+**Closing**: Creator of all, who washes away our sins in water, teach us to: *Go forth into the world in peace; be of good courage; hold fast that which is good; render to no one evil for evil; strengthen the fainthearted; support the weak; help the afflicted; honour everyone; and love and serve the Lord, rejoicing always in the power of the Holy Spirit*.
