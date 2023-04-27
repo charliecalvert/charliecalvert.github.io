@@ -56,3 +56,45 @@ like this:
  sudo systemctl start nginx
  curl localhost
 ```
+
+## Other Techniques
+
+Here we create or build a Docker container with a jekyl siter in it.
+
+Dokerfile:
+
+``` Dockerfile
+FROM nginx
+COPY myblog01/_site /usr/share/nginx/html
+```
+
+Serve:
+
+``` bash
+#! /bin/bash
+
+export site_name="myblog01"
+cd $site_name
+
+docker run --rm \
+  --volume="$PWD:/srv/jekyll:Z" \
+  --publish [::1]:4000:4000 \
+  jekyll/jekyll \
+  jekyll serve
+```
+
+Build:
+
+``` bash 
+#! /bin/bash
+
+export site_name="myblog01"
+export JEKYLL_VERSION=latest
+
+cd $site_name
+
+docker run --rm \
+  --volume="$PWD:/srv/jekyll:Z" \
+  -it jekyll/builder:$JEKYLL_VERSION \
+  jekyll build --watch
+```
