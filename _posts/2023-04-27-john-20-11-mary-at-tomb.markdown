@@ -8,7 +8,7 @@ categories: spirit christian
 ## [Matthew](https://app.logos.com/books/LLS%3A1.0.710/references/bible%2Besv.61.28.1)
 
 - Who: Mary Magdalene and the other Mary went to see the tomb
-[Matthew 28:1 ESV](https://app.logos.com/books/LLS%3A1.0.710/references/bible%2Besv.61.28.1)
+- [Matthew 28:1 ESV](https://app.logos.com/books/LLS%3A1.0.710/references/bible%2Besv.61.28.1)
 
 ## [Mark](https://www.biblegateway.com/passage/?search=Mark%2016&version=CEB)
 
