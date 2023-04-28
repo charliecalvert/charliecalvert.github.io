@@ -9,7 +9,9 @@ categories: jekyll update
 
 It should all be in here:
 
-    git clone git@github.com:charliecalvert/elven-web.git
+``` bash
+git clone git@github.com:charliecalvert/elven-web.git
+```
 
 ## Other notes
 
@@ -26,12 +28,12 @@ like this:
 
  After you replace the key:
 
-```
- sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys $key
- sudo apt update
- sudo apt install nginx
- sudo systemctl start nginx
- curl localhost
+``` bash
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys $key
+sudo apt update
+sudo apt install nginx
+sudo systemctl start nginx
+curl localhost
 ```
 
 ``` bash

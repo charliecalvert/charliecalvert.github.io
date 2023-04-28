@@ -43,7 +43,16 @@ Host aws-spot
 Then secure copy your keys and config file to AWS:
 
 ``` bash
- scp AwsConfigAll.zip aws-spot:/home/ubuntu/.
+ scp AwsConfigAll.zip aws-spot:/home/ubuntu/.ssh/.
+```
+
+On the server (aws):
+
+``` bash
+sudo apt install unzip zip dos2unix
+cd /home/ubuntu/.ssh/
+unzip ./AwsConfigAll.zip
+
 ```
 
 ## Get Repos
