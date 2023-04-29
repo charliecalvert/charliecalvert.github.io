@@ -5,6 +5,14 @@ date:   2023-04-18 12:00:00 -0800
 categories: jekyll update
 ---
 
+## Default Install
+
+``` bash
+sudo apt-get install nginx
+```
+
+Look in **/var/www/html/**
+
 ## Basics
 
 It should all be in here:

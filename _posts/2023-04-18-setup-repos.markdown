@@ -111,4 +111,5 @@ curl https://s3.amazonaws.com/bucket01.elvenware.com/JsObjects/get-repos > get-r
 chmod +x get-repos
 # ./get-repos
 echo "get-repos is ./Git/get-repos.sh"
+echo "git clone git@github.com:charliecalvert/charliecalvert.github.io.git"
 ```
