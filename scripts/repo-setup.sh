@@ -21,7 +21,7 @@ echo "reboot is ${REBOOT}"
 
 # JsObjects
 curl https://s3.amazonaws.com/bucket01.elvenware.com/JsObjects/get-jsobjects > ${GET_JSOBJECTS}
-chmod +x #{GET_JSOBJECTS}
+chmod +x ${GET_JSOBJECTS}
 echo "JsOobjects is ${GET_JSOBJECTS}"
 
 # SSH Setup
@@ -35,5 +35,5 @@ cd ${GIT_HOME}
 curl https://s3.amazonaws.com/bucket01.elvenware.com/JsObjects/get-repos > get-repos.sh
 
 chmod +x get-repos
-        
+
 echo "get-repos is ${GET_REPOS}"
