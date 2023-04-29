@@ -5,11 +5,19 @@ date:   2023-04-18 14:00:00 -0800
 categories: setup
 ---
 
+## Update
+
+``` bash
+sudo apt update
+sudo apt upgrade -y
+echo -e "sudo reboot now"
+```
+
 ## JsObjects
 
 Get [JsObjects](https://github.com/charliecalvert/JsObjects) like this:
 
-```
+``` bash
 curl https://s3.amazonaws.com/bucket01.elvenware.com/JsObjects/get-jsobjects > get-jsobjects
 chmod +x get-jsobjects
 ./get-jsobjects
