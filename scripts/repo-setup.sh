@@ -3,33 +3,37 @@
 sudo apt update
 sudo apt upgrade -y
 
-# Reboot
-echo -e "sudo reboot now"
-echo "sudo reboot now" > reboot.sh
-chmod +x reboot.sh
-echo "reboot is ./reboot.sh"
+GIT_HOME=${HOME}/Git
+REBOOT=${HOME}/reboot.sh
+GET_JSOBJECTS=${HOME}/get-jsobjects.sh
+SSH_SETUP=${HOME}/ssh-setup.sh
+GET_REPOS=${GIT_HOME}/get-repos.sh
 
-# JSOBjects
-curl https://s3.amazonaws.com/bucket01.elvenware.com/JsObjects/get-jsobjects > get-jsobjects
-chmod +x get-jsobjects
-echo "JsOobjects is ./get-js-objects"
-
-# SSH Setup
-curl https://s3.amazonaws.com/bucket01.elvenware.com/JsObjects/ssh-setup > ssh-setup
-chmod +x ssh-setup
-echo "ssh-setup is ./ssh-setup"
-
-## Repo Setup
-GIT=/home/ubuntu/Git
-
-if [ ! -d "$GIT" ]; then
-    mkdir $GIT
+if [ ! -d "${GIT_HOME}" ]; then
+    mkdir ${GIT_HOME}
 fi
 
-cd $GIT
+# Reboot
+echo -e "sudo reboot now"
+echo "sudo reboot now" > ${REBOOT}
+chmod +x ${REBOOT}
+echo "reboot is ${REBOOT}"
+
+# JsObjects
+curl https://s3.amazonaws.com/bucket01.elvenware.com/JsObjects/get-jsobjects > ${GET_JSOBJECTS}
+chmod +x #{GET_JSOBJECTS}
+echo "JsOobjects is ${GET_JSOBJECTS}"
+
+# SSH Setup
+curl https://s3.amazonaws.com/bucket01.elvenware.com/JsObjects/ssh-setup > ${SSH_SETUP}
+chmod +x ${SSH_SETUP}
+echo "ssh-setup is ${SSH_SETUP}"
+
+## Repo Setup
+cd ${GIT_HOME}
 
 curl https://s3.amazonaws.com/bucket01.elvenware.com/JsObjects/get-repos > get-repos.sh
 
 chmod +x get-repos
 # ./get-repos
-echo "get-repos is ./Git/get-repos.sh"
+echo "get-repos is ${GET_REPOS}"
