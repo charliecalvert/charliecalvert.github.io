@@ -32,8 +32,8 @@ echo "ssh-setup is ${SSH_SETUP}"
 ## Repo Setup
 cd ${GIT_HOME}
 
-curl https://s3.amazonaws.com/bucket01.elvenware.com/JsObjects/get-repos > get-repos.sh
+curl https://s3.amazonaws.com/bucket01.elvenware.com/JsObjects/get-repos > ${GET_REPOS}
 
-chmod +x get-repos
+chmod +x ${GET_REPOS}
 
 echo "get-repos is ${GET_REPOS}"
