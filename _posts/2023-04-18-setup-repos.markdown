@@ -11,6 +11,9 @@ categories: setup
 sudo apt update
 sudo apt upgrade -y
 echo -e "sudo reboot now"
+echo "sudo reboot now" > reboot.sh
+chmod +x reboot.sh
+echo "reboot is ./reboot.sh"
 ```
 
 ## JsObjects
