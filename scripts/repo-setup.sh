@@ -35,5 +35,5 @@ cd ${GIT_HOME}
 curl https://s3.amazonaws.com/bucket01.elvenware.com/JsObjects/get-repos > get-repos.sh
 
 chmod +x get-repos
-# ./get-repos
+        
 echo "get-repos is ${GET_REPOS}"
