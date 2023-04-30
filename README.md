@@ -1,3 +1,11 @@
+## Update Repo
+
+in the scripts directorythere are four files.On the local machine, run **copy-to-aws.sh**. This will copy the numbered files to the server and alsoand also copythe ZIP file containing the keys.
+
+On the remote machine run the other three scripts in order.
+
+## SASSC
+
 Installing sassc 2.4.0 with native extensions
 
 Fetching webrick 1.8.1
