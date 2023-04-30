@@ -51,7 +51,7 @@ cd _site
 sudo cp -r _site/* /var/www/html/.
 ```
 
-See also the [nginx install document](/`jekyll/update/2023/04/18/nginx-basics.html).
+See also the [nginx install document](/jekyll/update/2023/04/18/nginx-basics.html).
 
 ## Bonus History
 
