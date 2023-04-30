@@ -29,8 +29,6 @@ curl https://s3.amazonaws.com/bucket01.elvenware.com/JsObjects/ssh-setup > ssh-s
 chmod +x ssh-setup
 echo "ssh-setup is ./ssh-setup"
 
-
-
 if [ ! -d "$GIT" ]; then
     mkdir $GIT
 fi
