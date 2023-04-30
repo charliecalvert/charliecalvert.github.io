@@ -4,7 +4,11 @@ in the scripts directorythere are four files.On the local machine, run **copy-to
 
 On the remote machine run the other three scripts in order.
 
-## SASSC
+## Message After Bundle Install
+
+I get this message after running **bundle install**. I'm not sure exactly what it means.
+
+
 
 Installing sassc 2.4.0 with native extensions
 
