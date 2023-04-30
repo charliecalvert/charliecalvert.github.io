@@ -48,7 +48,6 @@ StartPythonWebServer
 ```bash
 bundle install
 bundle exec jekyll build
-cd _site
 sudo cp -r _site/* /var/www/html/.
 ```
 
