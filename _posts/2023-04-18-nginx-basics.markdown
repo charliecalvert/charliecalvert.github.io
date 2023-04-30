@@ -13,6 +13,8 @@ sudo apt-get install nginx
 
 Look in **/var/www/html/**
 
+See also [jekyll Strategy C](/setup/2023/04/18/jekyll-setup.html)
+
 ## Basics
 
 It should all be in here:
