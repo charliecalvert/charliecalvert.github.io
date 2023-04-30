@@ -7,8 +7,6 @@ categories: setup
 
 ## Get Started
 
-
-
 Something like this:
 
 ```bash
@@ -44,6 +42,16 @@ bundle exec jekyll build
 cd _site
 StartPythonWebServer
 ```
+
+## Strategy C (nginx)
+
+```bash
+bundle exec jekyll build
+cd _site
+sudo cp -r _site/* /var/www/html/.
+```
+
+See also the [nginx install document](/`jekyll/update/2023/04/18/nginx-basics.html).
 
 ## Bonus History
 
