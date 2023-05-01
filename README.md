@@ -57,3 +57,29 @@ to avoid an unexpected breakage when 3.0 is released (e.g. ~> 2.3.0).
 See https://github.com/rubyzip/rubyzip for details. The Changelog also
 lists other enhancements and bugfixes that have been implemented since
 version 2.3.0.
+
+## CertBot
+
+ubuntu@ip-172-31-0-247:/etc/nginx/sites-enabled$ sudo certbot --nginx
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Please enter the domain name(s) you would like on your certificate (comma and/or
+space separated) (Enter 'c' to cancel): calvert.work www.calvert.work
+Requesting a certificate for calvert.work and www.calvert.work
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/calvert.work/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/calvert.work/privkey.pem
+This certificate expires on 2023-07-29.
+These files will be updated when the certificate renews.
+Certbot has set up a scheduled task to automatically renew this certificate in the background.
+
+Deploying certificate
+Successfully deployed certificate for calvert.work to /etc/nginx/sites-enabled/default
+Successfully deployed certificate for www.calvert.work to /etc/nginx/sites-enabled/default
+Congratulations! You have successfully enabled HTTPS on https://calvert.work and https://www.calvert.work
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+If you like Certbot, please consider supporting our work by:
+ * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+ * Donating to EFF:                    https://eff.org/donate-le
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
