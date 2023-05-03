@@ -8,7 +8,7 @@ categories: jekyll update
 ## Default Install
 
 ``` bash
-sudo apt-get install nginx
+sudo apt-get install nginx -y
 ```
 
 Look in **/var/www/html/**

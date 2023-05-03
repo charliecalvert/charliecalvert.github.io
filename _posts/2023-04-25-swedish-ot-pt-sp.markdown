@@ -1,9 +1,13 @@
 ---
 layout: post
-title:  "Tendon Glide Exercises"
+title:  "Therapy Exercises"
 date:   2023-04-25 07:00:00 -0800
-categories: health nerves
+categories: health
 ---
+
+## Physical Therapy
+
+- [https://www.medbridgego.com/plus/resources](https://www.medbridgego.com/plus/resources)
 
 ## Dycum
 
@@ -12,6 +16,8 @@ categories: health nerves
 
 ## Tendon Glide
 
+- [Duck lide](https://youtu.be/favZefGkiHk)
+- [Explain Form Guide](https://youtu.be/dUhjUBAQv30)
 - [tendon-glide-exercises](https://www.mcit.org/resource/tendon-glide-exercises/)
 - [Basic Glide (Exercises for carpal tunnel)](https://orthoinfo.aaos.org/globalassets/pdfs/a00789_therapeutic-exercise-program-for-carpal-tunnel_final.pdf)
 -[Funk Glide](https://youtu.be/favZefGkiHk)
