@@ -110,3 +110,33 @@ docker run --rm \
   -it jekyll/builder:$JEKYLL_VERSION \
   jekyll build --watch
 ```
+
+## Subdomains
+
+``` bash
+git clone git@github.com:charliecalvert/charliecalvert.github.io.git
+cd /etc/nginx/
+cat nginx.conf
+cd sites-enabled/
+cat default
+cd ../sites-available/
+cat default
+cat default.old
+cd sites-enabled/
+```
+Create your A record:
+
+![subdomain a record](https://s3.amazonaws.com/bucket01.elvenware.com/images/subdomain-edit.png)
+
+``` bash
+ping go.elven.work
+ping elven.work
+sudo mkdir /var/www/html/go.elven.work
+ll /var/www/html/
+sudo nano /var/www/html/go.elven.work/index.html
+sudo nano /etc/nginx/sites-available/go.elven.work
+sudo nginx -t # Check your work
+sudo ln -s /etc/nginx/sites-available/go.elven.work .
+sudo systemctl restart nginx
+sudo certbot -d go.elven.work --expand
+```
