@@ -1,17 +1,77 @@
 # Update Repo
 
+There are two phases, one in **CloudNotes** and one in **charliecalvert.github.io**.
+
+### In CloudNotes
+
 Go to this file:
 
 - $GIT_HOME/CloudNotes/lib/walk-markdown-files.mjs
 - Add match **const isMatch = (...)**
 
+Run a command like this:
+
+```bash
+export CN_COMMAND="node lib/walk-markdown-files.mjs"
+DEBUG=lib:walk-markdown-files:gp $CN_COMMAND
+```
+
 Go to this file:
 
 - $GIT_HOME/CloudNotes/lib/guide-objects-caps.mjs
 - be sure you have an object defining the value used in the match.
+
+### In **charliecalvert.github.io**
+
 Run the appropriate script from this directory: [/home/ubuntu/Git/charliecalvert.github.io/scripts](/home/ubuntu/Git/charliecalvert.github.io/scripts)
 
-in the scripts directorythere are four files. On the local machine, run **copy-to-aws.sh**. This will copy the numbered files to the server and also and also copythe ZIP file containing the keys.
+Like this:
+
+```bash
+#!/bin/bash
+
+# Copy files to css-guide directory
+SOURCE_DIR="$CLOUDNOTES/elvenware/development/web/CsharpGuide/"
+DEST_DIR="$HOME/Git/charliecalvert.github.io/elves/_csharp-guide"
+
+rsync -avrun --delete --include="*/" --include="*.md" --exclude="*" ${SOURCE_DIR} ${DEST_DIR}
+```
+
+This is a dry run. When you are ready remove the letter **n** from the first parameter:
+
+```text
+-avrun => -avru
+---
+
+Run:
+
+```bash
+bundle install
+bundle update
+bundle exec jekyll build --watch
+```
+
+Create a link to your work.
+
+In the **charliecalvert.github.io** directory update the **_config.yml** file:
+
+```text
+collections:
+  android-guide:
+    output: true
+  css-guide:
+    output: true
+  cloud-guide:
+    output: true
+  csharp-guide:
+    output: true
+  database-guide:
+    output: true
+```
+
+## Get AWS Keys
+
+In the scripts directory there are several files. On the local machine, run **copy-to-aws.sh**. This will copy the referenced files to the server and also and also copy the ZIP file containing the keys.
 
 On the remote machine run the other three scripts in order.
 

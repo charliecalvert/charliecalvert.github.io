@@ -9,4 +9,5 @@ layout: home
 - [Android Guide](android-guide)
 - [Cloude Guide](cloud-guide)
 - [Css Guide](css-guide)
+- [CSharp Guide](csharp-guide)
 - [Database Guide](database-guide)
