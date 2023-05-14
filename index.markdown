@@ -12,3 +12,4 @@ layout: home
 - [CSharp Guide](csharp-guide)
 - [Database Guide](database-guide)
 - [Mobile Guide](mobile-guide)
+- [Design Guide](design-guide)

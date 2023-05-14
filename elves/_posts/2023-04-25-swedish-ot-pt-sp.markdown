@@ -27,3 +27,17 @@ categories: health
 - [Pulley A](https://www.amazon.com/gp/product/B01MT8KWIB/ref=ewc_pr_img_2?smid=A1T6JNFRXASP3G&psc=1)
 - [Pulley B](https://www.amazon.com/gp/product/B01JK1NSR6/ref=ewc_pr_img_1?smid=A1T6JNFRXASP3G&psc=1)
 - [Half Roller](https://www.amazon.com/gp/product/B07RWRCN2N/ref=ox_sc_act_title_1?smid=ATVPDKIKX0DER&psc=1)
+
+## Exercise Articles
+
+These are just a few articles to highlight some of the points we have discussed in therapy.
+
+This article highlights various exercises near the middle and end. Note the recommended aerobic exercise frequency (days per week and time).
+
+Campbell, KL, Winters-Stone, KM, et al. “Exercise Guidelines for Cancer Survivors: Consensus Statement from International Multidisciplinary Roundtable.” Official Journal of the American College of Sports Medicine, 1-16.
+
+[Found at lww.com](https://journals.lww.com/acsm-msse/Fulltext/2019/11000/Exercise_Guidelines_for_Cancer_Survivors_.23.aspx)
+
+The next article recommends avoiding excessive high intensity exercise:
+
+Mustian KM, Sprod LK, Janelsins M, Peppone LJ, Mohile S. Exercise Recommendations for Cancer-Related Fatigue, Cognitive Impairment, Sleep problems, Depression, Pain, Anxiety, and Physical Dysfunction: A Review. Oncol Hematol Rev. 2012;8(2):81-88. doi: 10.17925/ohr.2012.08.2.81. PMID: 23667857; PMCID: PMC3647480. [Found on nih.gov](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3647480/)
