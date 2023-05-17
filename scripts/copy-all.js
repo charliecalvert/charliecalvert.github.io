@@ -32,13 +32,13 @@ if (fileInfos.length === 0) {
  * @param {object} fileInfo
  */
 async function processFile(fileInfo) {
-    const frontMatter = await getFrontMatterAndTocReport(fileInfo.fullPath);
+    const fmData = await getFrontMatterAndTocReport(fileInfo.fullPath);
     const CGI =`${process.env.GIT_HOME}/charliecalvert.github.io/elves/`
-    const CATEGORY_DIR = `${CGI}/${frontMatter.category}`;
-    if (!elfUtils.fileExists(${CATEGORY_DIR})) {
+    const CATEGORY_DIR = `${CGI}/${fmData.frontMatter.category}`;
+    if (!elfUtils.fileExists(`${CATEGORY_DIR}`)) {
         elfUtils.ensureDir(`${CATEGORY_DIR}`);
     }
-    copyFileSync(frontMatter.fullPath, `${CATEGORY_DIR}/${frontMatter.fileName}`, "utf8");
+    copyFileSync(fmData.FrontMatter.fullPath, `${CATEGORY_DIR}/${fmData.fileName}`, "utf8");
 }
 
 for (const fileInfo of fileInfos) {
