@@ -13,7 +13,7 @@ const directoryOptions = () => {
     const assignments = `${process.env.CLOUDNOTES}/Assignments`;
     // CHAIO is defined in .my_bash_profile, it is
     // charliecalvert.github.io
-    const CGI =`${process.env.CHAIO}/elves/`
+    const CGI =`${process.env.CHAIO}/elves`
     return { elf: elvenware, asign: assignments, cgiElves: CGI };
 }
 const ext = '.md';
