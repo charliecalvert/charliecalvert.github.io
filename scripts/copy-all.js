@@ -38,7 +38,7 @@ async function processFile(fileInfo) {
     //if (!elfUtils.fileExists(`${CATEGORY_DIR}`)) {
     elfUtils.ensureDir(CATEGORY_DIR);
     //}
-    copyFileSync(fmData.frontMatter.fullPath, `${CATEGORY_DIR}${fmData.frontMatter.fileName}`);
+    copyFileSync(fmData.frontMatter.fullPath, `${CATEGORY_DIR}/${fmData.frontMatter.fileName}`);
 }
 
 for (const fileInfo of fileInfos) {
