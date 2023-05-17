@@ -6,6 +6,9 @@ import {
 import { walkSimple } from 'walk-directories';
 import { copyFileSync } from 'node:fs';
 import { elfUtils } from 'elven-code';
+
+import createDebugMessages from 'debug';
+const debug = createDebugMessages('scripts:copy-all');
 // const directory = process.env.GIT_HOME + '/CloudNotes';
 //const directory = `${process.env.GIT_HOME}/CloudNotes/elvenware/development`;
 const directoryOptions = () => {
@@ -13,8 +16,14 @@ const directoryOptions = () => {
     const assignments = `${process.env.CLOUDNOTES}/Assignments`;
     // CHAIO is defined in .my_bash_profile, it is
     // charliecalvert.github.io
-    const CGI =`${process.env.CHAIO}/elves`
-    return { elf: elvenware, asign: assignments, cgiElves: CGI };
+    const CGI_ELVES = `${process.env.CHAIO}/elves`
+    const CGI_ASSIGNMENTS = `${process.env.CHAIO}/assignments`;
+    return {
+        elf: elvenware,
+        asign: assignments,
+        cgiElves: CGI_ELVES,
+        cgiAssignments: CGI_ASSIGNMENTS
+    };
 }
 const ext = '.md';
 const directory = directoryOptions().asign;
@@ -40,12 +49,17 @@ if (fileInfos.length === 0) {
  */
 async function processFile(fileInfo) {
     const fmData = await getFrontMatterAndTocReport(fileInfo.fullPath);
-    const CGI = `${directoryOptions().cgiElves}/assignments`;
-    const CATEGORY_DIR = `${CGI}/_${fmData.frontMatter.category}`;
-    //if (!elfUtils.fileExists(`${CATEGORY_DIR}`)) {
-    elfUtils.ensureDir(CATEGORY_DIR);
-    //}
-    copyFileSync(fmData.frontMatter.fullPath, `${CATEGORY_DIR}/${fmData.frontMatter.fileName}`);
+    if (fmData.frontMatter) {
+        const CGI = `${directoryOptions().cgiAssignments}`;
+        const CATEGORY_DIR = `${CGI}/_${fmData.frontMatter.category}`;
+        //if (!elfUtils.fileExiss(`${CATEGORY_DIR}`)) {
+        debug('CATEGORY_DIR', CATEGORY_DIR);
+        debug('CGI DIR', CGI);
+        elfUtils.ensureDir(CGI);
+        elfUtils.ensureDir(CATEGORY_DIR);
+        //}
+        copyFileSync(fmData.frontMatter.fullPath, `${CATEGORY_DIR}/${fmData.frontMatter.fileName}`);
+    }
 }
 
 for (const fileInfo of fileInfos) {
