@@ -4,8 +4,8 @@ import {
     hasTocCode
 } from 'elven-jekyll-post';
 import { walkSimple } from 'walk-directories';
-import { readFileSync, writeFileSync } from 'node:fs';
-
+import { copyFileSync } from 'node:fs';
+import { elfUtils } from 'elven-code';
 // const directory = process.env.GIT_HOME + '/CloudNotes';
 const directory = `${process.env.GIT_HOME}/CloudNotes/elvenware/development`;
 
@@ -23,15 +23,22 @@ if (fileInfos.length === 0) {
 
 // console.log('fileInfos', fileInfos);
 
+/**
+ *
+ * Iterate through all the objects in fileInfos
+ * if directory elves/_frontMatter.category does not exist
+ * then create it.
+ * Copy all files from frontMatter.fullPath to elves/_frontMattercategory.
+ * @param {object} fileInfo
+ */
 async function processFile(fileInfo) {
-    const fm = await getFrontMatterAndTocReport(fileInfo.fullPath);
-    if (fm.frontMatter.category === 'css-guide' && !(fm.frontMatter.directoryName === 'CssGuide')) {
-        console.log('frontMatter.category:', fm.frontMatter.category);
-        console.log('fm.frontMatter', fm);
-        fm.markdown =  fm.markdown.replace('category : css-guide', `category: ${fm.frontMatter.directoryName.toLowerCase()}-guide`);
-        console.log('fm.markdown', fm.markdown);
-        writeFileSync(fileInfo.fullPath, fm.markdown);
+    const frontMatter = await getFrontMatterAndTocReport(fileInfo.fullPath);
+    const CGI =`${process.env.GIT_HOME}/charliecalvert.github.io/elves/`
+    const CATEGORY_DIR = `${CGI}/${frontMatter.category}`;
+    if (!elfUtils.fileExists(${CATEGORY_DIR})) {
+        elfUtils.ensureDir(`${CATEGORY_DIR}`);
     }
+    copyFileSync(frontMatter.fullPath, `${CATEGORY_DIR}/${frontMatter.fileName}`, "utf8");
 }
 
 for (const fileInfo of fileInfos) {
