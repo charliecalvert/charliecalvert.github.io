@@ -34,7 +34,7 @@ if (fileInfos.length === 0) {
 async function processFile(fileInfo) {
     const fmData = await getFrontMatterAndTocReport(fileInfo.fullPath);
     const CGI =`${process.env.GIT_HOME}/charliecalvert.github.io/elves/`
-    const CATEGORY_DIR = `${CGI}/_${fmData.frontMatter.category.toLowerCase()}`;
+    const CATEGORY_DIR = `${CGI}/_${fmData.frontMatter.category}`;
     //if (!elfUtils.fileExists(`${CATEGORY_DIR}`)) {
     elfUtils.ensureDir(CATEGORY_DIR);
     //}
