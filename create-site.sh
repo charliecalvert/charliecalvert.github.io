@@ -2,4 +2,4 @@
 
 bundle install
 bundle update
-bundle exec jekyll build
+bundle exec jekyll build --watch

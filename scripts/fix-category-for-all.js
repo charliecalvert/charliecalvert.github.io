@@ -4,10 +4,10 @@ import {
     hasTocCode
 } from 'elven-jekyll-post';
 import { walkSimple } from 'walk-directories';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 
 // const directory = process.env.GIT_HOME + '/CloudNotes';
-const directory = `${process.env.GIT_HOME}/CloudNotes/elvenware/development`;
+const directory = `${process.env.CLOUDNOTES}/elvenware/development`;
 
 const ext = '.md';
 

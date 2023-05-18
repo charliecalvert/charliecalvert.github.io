@@ -13,3 +13,4 @@ layout: home
 - [Database Guide](database-guide)
 - [Mobile Guide](mobile-guide)
 - [Design Guide](design-guide)
+- [Assignments](assignments/all-links.html)
