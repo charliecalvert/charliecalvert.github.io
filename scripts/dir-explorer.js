@@ -8,7 +8,9 @@ debug('process.env.CHAIO', process.env.CHAIO);
 const CHAIO = process.env.CHAIO;
 debug('CHAIO', CHAIO);
 
-function writeCopyScript(directoryName, scriptName, index) {
+function writeCopyScript(directoryName, lastItem, index) {
+    const SOURCE_DIR=`$CLOUDNOTES/assignments/${directoryName}/`
+    const DEST_DIR=`${directoryName}`;
     const file = `#!/bin/bash
 
     # Copy files to css-guide directory
@@ -17,7 +19,7 @@ function writeCopyScript(directoryName, scriptName, index) {
 
     rsync -avru --delete --include="*/" --include="*.md" --exclude="*" ${SOURCE_DIR} ${DEST_DIR}
     `;
-    writeFileSync(`%{lastItem}.sh`, file);
+    writeFileSync(`${lastItem}.sh`, file);
 }
 
 async function listFiles() {
