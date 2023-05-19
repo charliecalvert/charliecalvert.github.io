@@ -1,6 +1,6 @@
 import { writeFileSync } from 'node:fs';
 import { listDirs } from "walk-directories";
-import { areIdentical } from 'elven-code';
+// import { areIdentical } from 'elven-code';
 import createDebugMessages from 'debug';
 const debug = createDebugMessages('lib:dir-explorer');
 const debugLink = createDebugMessages('lib:dir-explorer:link');
@@ -46,7 +46,7 @@ function getMarkdownForADirectoryLink(fileName) {
     // debug('remainder = ', remainder);
     const markdownLink = `[${workDirectory}](${remainder})`;
     debugLink('markdownLink -', markdownLink);
-    if (!areIdentical(process.env.CHAIO, undefined)) {
+    // if (!areIdentical(process.env.CHAIO, undefined)) {
     directoryLinks.push(`- ${markdownLink}`);
 
     return workDirectory;
