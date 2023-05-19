@@ -58,7 +58,11 @@ async function processFile(fileInfo) {
         elfUtils.ensureDir(CGI);
         elfUtils.ensureDir(CATEGORY_DIR);
         //}
-        copyFileSync(fmData.frontMatter.fullPath, `${CATEGORY_DIR}/${fmData.frontMatter.fileName}`);
+        const src = fmData.frontMatter.fullPath;
+        const dest = `${CATEGORY_DIR}/${fmData.frontMatter.fileName}`;
+        if (!areIdentical(src, dest)) {
+            copyFileSync(src, dest);
+        }
     }
 }
 
