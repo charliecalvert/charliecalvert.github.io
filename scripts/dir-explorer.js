@@ -29,6 +29,8 @@ rsync -avru --delete --include="*/" --include="*.md" --exclude="*" ${SOURCE_DIR}
     writeFileSync(`${lastItem}.sh`, file);
 }
 
+const directoryLinks = [];
+
 /**
  * Create a markdown link for a directory
  * @param {string} fileName The full path to the directory
@@ -39,10 +41,12 @@ function getMarkdownForADirectoryLink(fileName) {
     // Break path into an array of strings
     const pathArray = fileName.split('/');
     // Get the last item in the array
-    const workDirectory = pathArray[pathArray.length - 1];
+    let workDirectory = pathArray[pathArray.length - 1];
+    workDirectory = workDirectory.substring(1, workDirectory.length - 1);
     // Get the remainder of a string
     const len = fileName.length;
-    const remainder = fileName.substring(CHAIO.length, len);
+    let remainder = '..' + fileName.substring(CHAIO.length, len);
+    remainder = remainder.replace('assignments/_', '');
     // debug('remainder = ', remainder);
     const markdownLink = `[${workDirectory}](${remainder})`;
     debugLink('markdownLink -', markdownLink);
@@ -59,7 +63,6 @@ function getMarkdownForADirectoryLink(fileName) {
  * @see
  */
 async function listFiles(createCopyScripts = false) {
-    const directoryLinks = [];
     debug('listFiles called');
     const patheToExplore = `${process.env.CHAIO}/assignments/`;
     debug('patheToExplore', patheToExplore);
@@ -71,8 +74,8 @@ async function listFiles(createCopyScripts = false) {
             writeCopyScript(fileName, workDirectory);
         }
     });
-
-    writeFileSync(`${process.env.CHAIO}/assignments/all-links.markdown`, directoryLinks.join('\n'));
+    const withHeading = `# All Links\n\n${directoryLinks.join('\n')}\n`;
+    writeFileSync(`${process.env.CHAIO}/assignments/all-links.markdown`, withHeading);
 }
 
 debug('meta:dir-explorer.js', new URL(import.meta.url));
