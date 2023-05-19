@@ -5,7 +5,7 @@ import {
 } from 'elven-jekyll-post';
 import { walkSimple } from 'walk-directories';
 import { copyFileSync } from 'node:fs';
-import { elfUtils } from 'elven-code';
+import { elfUtils, elfFiles } from 'elven-code';
 
 import createDebugMessages from 'debug';
 const debug = createDebugMessages('scripts:copy-all');
@@ -60,7 +60,7 @@ async function processFile(fileInfo) {
         //}
         const src = fmData.frontMatter.fullPath;
         const dest = `${CATEGORY_DIR}/${fmData.frontMatter.fileName}`;
-        if (!areIdentical(src, dest)) {
+        if (!elfFiles.areIdentical(src, dest)) {
             copyFileSync(src, dest);
         }
     }
