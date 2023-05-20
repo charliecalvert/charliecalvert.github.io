@@ -14,3 +14,21 @@ layout: home
 - [Mobile Guide](mobile-guide)
 - [Design Guide](design-guide)
 - [Assignments](assignments/all-links.html)
+
+## Assignments
+
+{% for collection in site.collections %}
+<h3><a href="{{ collection.label }}">
+    {{ collection.label }}
+{% endfor %}
+
+<h2>Turtle Graphics</h2>
+
+{% for collection in site.collections %}
+<h1> {{ collection.label }} </h1>
+
+    {% for product in site[collection.label] %}
+<a href="{{ product.url }}">
+    {{ product.title }}
+    {% endfor %}
+{% endfor %}
