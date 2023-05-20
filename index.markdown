@@ -15,10 +15,11 @@ layout: home
 - [Design Guide](design-guide)
 - [Assignments](assignments/all-links.html)
 
-## Assignments
+## Guides
 
+<ul>
 {% for collection in site.collections %}
-<h3><a href="{{ collection.label }}">
+<li><a href="{{ collection.label }}">
     {{ collection.label }}
 {% endfor %}
 
