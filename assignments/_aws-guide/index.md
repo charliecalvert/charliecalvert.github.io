@@ -1,5 +1,5 @@
 ---
-layout: home
+layout: page
 date: 2023-05-17 10:47:29 -0700
 fullPath: /home/ubuntu/Git/CloudNotes/Assignments/Aws/index.md
 directoryPath: /home/ubuntu/Git/CloudNotes/Assignments/Aws
@@ -12,17 +12,9 @@ category : aws-guide
 
 ## Overview
 
-Rocks and sand
-
-{{ "adam!" | capitalize | prepend: "Hello " }}
-
 {% for product in site.aws-guide %}
   <a href="{{ product.url }}">
   {{ product.title }}
-{% endfor %}
-
-{% for collection in collections %}
-  {{ collection.title }}
 {% endfor %}
 
 AWS assigments
