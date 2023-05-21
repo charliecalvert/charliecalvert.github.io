@@ -8,23 +8,9 @@ import { copyFileSync } from 'node:fs';
 import { elfUtils, elfFiles } from 'elven-code';
 
 import createDebugMessages from 'debug';
+import { getWorkDirectories, directoryOptions } from './getWorkDirectories';
 const debug = createDebugMessages('scripts:copy-all');
-// const directory = process.env.GIT_HOME + '/CloudNotes';
-//const directory = `${process.env.GIT_HOME}/CloudNotes/elvenware/development`;
-const directoryOptions = () => {
-    const elvenware = `${process.env.CLOUDNOTES}/elvenware/development`;
-    const assignments = `${process.env.CLOUDNOTES}/Assignments`;
-    // CHAIO is defined in .my_bash_profile, it is
-    // charliecalvert.github.io
-    const CGI_ELVES = `${process.env.CHAIO}/elves`
-    const CGI_ASSIGNMENTS = `${process.env.CHAIO}/assignments`;
-    return {
-        elf: elvenware,
-        asign: assignments,
-        cgiElves: CGI_ELVES,
-        cgiAssignments: CGI_ASSIGNMENTS
-    };
-}
+
 const ext = '.md';
 const directory = directoryOptions().asign;
 const fileInfos = await walkSimple(directory, ext)
@@ -50,8 +36,7 @@ if (fileInfos.length === 0) {
 async function processFile(fileInfo) {
     const fmData = await getFrontMatterAndTocReport(fileInfo.fullPath);
     if (fmData.frontMatter) {
-        const CGI = `${directoryOptions().cgiAssignments}`;
-        const CATEGORY_DIR = `${CGI}/_${fmData.frontMatter.category}`;
+        const { CATEGORY_DIR, CGI } = getWorkDirectories(fmData, true);
         //if (!elfUtils.fileExiss(`${CATEGORY_DIR}`)) {
         debug('CATEGORY_DIR', CATEGORY_DIR);
         debug('CGI DIR', CGI);
@@ -71,5 +56,4 @@ for (const fileInfo of fileInfos) {
     processFile(fileInfo)
 }
 
-/* console.log('fileInfo', fileInfos[45]);
-processFile(fileInfos[0]); */
+
