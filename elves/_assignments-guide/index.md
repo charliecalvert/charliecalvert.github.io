@@ -14,7 +14,7 @@ category : assignments-guide
 
 A list of many of the assignments I have created over the years. This is not a complete list.
 
-## The Assignments
+## The Guides
 
 <ul>
 {% for product in site.assignments-guide %}
@@ -23,8 +23,6 @@ A list of many of the assignments I have created over the years. This is not a c
 {% endfor %}
 
 ## Broken Don't Use
-
-Do not use these. They are broken.
 
 * [AllAssignments.html](/teach/assignments/AllAssignments.html)
 * [AllFiles.html](/teach/assignments/AllFiles.html)

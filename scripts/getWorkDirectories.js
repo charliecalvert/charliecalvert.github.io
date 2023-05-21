@@ -1,4 +1,3 @@
-import { directoryOptions } from './copy-all';
 
 /**
  * @typedef {object} DirectoryOptions
@@ -58,4 +57,4 @@ function getWorkDirectories(fmData, useDefaults = true) {
     return { CATEGORY_DIR, CGI };
 }
 
-export { getWorkDirectories, directoryOptions, DirectoryOptions, WorkDirectories };
+export { getWorkDirectories, directoryOptions };

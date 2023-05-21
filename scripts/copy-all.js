@@ -1,8 +1,4 @@
-import {
-    getFrontMatterAndTocReport,
-    hasFrontMatter,
-    hasTocCode
-} from 'elven-jekyll-post';
+import { getFrontMatterAndTocReport } from 'elven-jekyll-post';
 import { walkSimple } from 'walk-directories';
 import { copyFileSync } from 'node:fs';
 import { elfUtils, elfFiles } from 'elven-code';
