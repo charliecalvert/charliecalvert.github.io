@@ -22,7 +22,7 @@ import { directoryOptions } from './copy-all';
  * @returns {DirectoryOptions} The directory options
  * @see DirectoryOptions
  */
-export const directoryOptions = () => {
+const directoryOptions = () => {
     const elvenware = `${process.env.CLOUDNOTES}/elvenware/development`;
     const assignments = `${process.env.CLOUDNOTES}/Assignments`;
 

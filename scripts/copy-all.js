@@ -8,7 +8,7 @@ import { copyFileSync } from 'node:fs';
 import { elfUtils, elfFiles } from 'elven-code';
 
 import createDebugMessages from 'debug';
-import { getWorkDirectories, directoryOptions } from './getWorkDirectories';
+import { getWorkDirectories, directoryOptions } from './getWorkDirectories.js';
 const debug = createDebugMessages('scripts:copy-all');
 
 const ext = '.md';
