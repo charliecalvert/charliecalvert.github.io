@@ -10,6 +10,6 @@ directoryName: Assignments
 category : assignments-guide
 ---
 
-Create Branch
+## Overview
 
-Edit Project
+GitBranchProject.md has moved to a [new location](Git/GitBranchProject.md).
