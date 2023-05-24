@@ -45,7 +45,7 @@ inquirer.prompt([
     console.info('Answer A:', options.a);
 
     if (answers.pathToExplore === options.a) {
-        cmd = `./copy-android-guide.sh`;
+        cmd = `./copy-android-guide.sh d`;
         console.log('cmd', cmd);
         execShellCommand(cmd).then((result) => {
             console.log('result', result);
