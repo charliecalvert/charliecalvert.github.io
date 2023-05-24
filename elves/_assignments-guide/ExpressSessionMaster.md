@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-ExpressSessionMaster.md has moved to a [new location](Express/ExpressSessionMaster.md).
+ExpressSessionMaster.html has moved to a [new location](/express-guide/ExpressSessionMaster.html).

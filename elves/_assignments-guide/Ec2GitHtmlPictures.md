@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-Ec2GitHtmlPictures.md has moved to a [new location](Aws/Ec2GitHtmlPictures.md).
+Ec2GitHtmlPictures.html has moved to a [new location](/aws-guide/Ec2GitHtmlPictures.html).

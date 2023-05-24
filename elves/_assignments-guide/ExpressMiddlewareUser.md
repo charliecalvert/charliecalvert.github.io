@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-ExpressMiddlewareUser.md has moved to a [new location](Express/ExpressMiddlewareUser.md).
+ExpressMiddlewareUser.html has moved to a [new location](/express-guide/ExpressMiddlewareUser.html).

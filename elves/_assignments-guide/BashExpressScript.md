@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-BashExpressScript.md has moved to a [new location](Express/BashExpressScript.md).
+BashExpressScript.html has moved to a [new location](/express-guide/BashExpressScript.html).

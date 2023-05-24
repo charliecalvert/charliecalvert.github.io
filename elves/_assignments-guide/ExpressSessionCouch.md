@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-ExpressSessionCouch.md has moved to a [new location](Express/ExpressSessionCouch.md).
+ExpressSessionCouch.html has moved to a [new location](/express-guide/ExpressSessionCouch.html).

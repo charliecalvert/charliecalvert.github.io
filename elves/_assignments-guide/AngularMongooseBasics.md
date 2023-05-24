@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-AngularMongooseBasics.md has moved to a [new location](Mongo/AngularMongooseBasics.md).
+AngularMongooseBasics.html has moved to a [new location](/mongo-guide/AngularMongooseBasics.html).

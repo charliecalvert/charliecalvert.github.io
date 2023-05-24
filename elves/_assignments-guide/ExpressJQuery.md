@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-ExpressJQuery.md has moved to a [new location](Express/ExpressJQuery.md).
+ExpressJQuery.html has moved to a [new location](/express-guide/ExpressJQuery.html).

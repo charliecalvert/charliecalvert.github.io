@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-FirebaseStarter.md has moved to a [new location](Firebase/FirebaseStarter.md).
+FirebaseStarter.html has moved to a [new location](/firebase-guide/FirebaseStarter.html).

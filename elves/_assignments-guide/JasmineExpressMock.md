@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-JasmineExpressMock.md has moved to a [new location](Express/JasmineExpressMock.md).
+JasmineExpressMock.html has moved to a [new location](/express-guide/JasmineExpressMock.html).

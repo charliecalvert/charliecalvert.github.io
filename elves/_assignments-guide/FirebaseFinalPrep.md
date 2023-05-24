@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-FirebaseFinalPrep.md has moved to a [new location](Firebase/FirebaseFinalPrep.md).
+FirebaseFinalPrep.html has moved to a [new location](/firebase-guide/FirebaseFinalPrep.html).

@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-GitHubApi.md has moved to a [new location](Git/GitHubApi.md).
+GitHubApi.html has moved to a [new location](/git-guide/GitHubApi.html).

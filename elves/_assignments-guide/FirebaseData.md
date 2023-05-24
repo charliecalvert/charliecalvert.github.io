@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-FirebaseData.md has moved to a [new location](Firebase/FirebaseData.md).
+FirebaseData.html has moved to a [new location](/firebase-guide/FirebaseData.html).

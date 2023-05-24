@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-GitBranchProject.md has moved to a [new location](Git/GitBranchProject.md).
+GitBranchProject.html has moved to a [new location](/git-guide/GitBranchProject.html).

@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-MongooseEditor.md has moved to a [new location](Mongo/MongooseEditor.md).
+MongooseEditor.html has moved to a [new location](/mongo-guide/MongooseEditor.html).

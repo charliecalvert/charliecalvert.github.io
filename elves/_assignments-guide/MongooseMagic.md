@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-MongooseMagic.md has moved to a [new location](Mongo/MongooseMagic.md).
+MongooseMagic.html has moved to a [new location](/mongo-guide/MongooseMagic.html).

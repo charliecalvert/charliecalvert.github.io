@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-SinglePageExpress.md has moved to a [new location](Express/SinglePageExpress.md).
+SinglePageExpress.html has moved to a [new location](/express-guide/SinglePageExpress.html).

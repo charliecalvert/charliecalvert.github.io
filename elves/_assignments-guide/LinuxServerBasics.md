@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-LinuxServerBasics.md has moved to a [new location](Linux/LinuxServerBasics.md).
+LinuxServerBasics.html has moved to a [new location](/linux-guide/LinuxServerBasics.html).

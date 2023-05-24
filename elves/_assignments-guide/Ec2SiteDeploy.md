@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-Ec2SiteDeploy.md has moved to a [new location](Aws/Ec2SiteDeploy.md).
+Ec2SiteDeploy.html has moved to a [new location](/aws-guide/Ec2SiteDeploy.html).

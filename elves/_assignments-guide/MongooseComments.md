@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-MongooseComments.md has moved to a [new location](Mongo/MongooseComments.md).
+MongooseComments.html has moved to a [new location](/mongo-guide/MongooseComments.html).

@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-ApacheHtml.md has moved to a [new location](Aws/ApacheHtml.md).
+ApacheHtml.html has moved to a [new location](/aws-guide/ApacheHtml.html).

@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-GitDualRepos.md has moved to a [new location](Git/GitDualRepos.md).
+GitDualRepos.html has moved to a [new location](/git-guide/GitDualRepos.html).

@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-GitBranchBasics.md has moved to a [new location](Git/GitBranchBasics.md).
+GitBranchBasics.html has moved to a [new location](/git-guide/GitBranchBasics.html).

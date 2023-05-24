@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-MongoStarter.md has moved to a [new location](Mongo/MongoStarter.md).
+MongoStarter.html has moved to a [new location](/mongo-guide/MongoStarter.html).

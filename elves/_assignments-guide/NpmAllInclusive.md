@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-NpmAllInclusive.md has moved to a [new location](Npm/NpmAllInclusive.md).
+NpmAllInclusive.html has moved to a [new location](/npm-guide/NpmAllInclusive.html).

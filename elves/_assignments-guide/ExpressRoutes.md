@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-ExpressRoutes.md has moved to a [new location](Express/ExpressRoutes.md).
+ExpressRoutes.html has moved to a [new location](/express-guide/ExpressRoutes.html).

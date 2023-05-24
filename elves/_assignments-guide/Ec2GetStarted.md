@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-Ec2GetStarted.md has moved to a [new location](Aws/Ec2GetStarted.md).
+Ec2GetStarted.html has moved to a [new location](/aws-guide/Ec2GetStarted.html).

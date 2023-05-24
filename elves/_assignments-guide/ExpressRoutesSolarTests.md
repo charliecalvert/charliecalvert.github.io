@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-ExpressRoutesSolarTests.md has moved to a [new location](Express/ExpressRoutesSolarTests.md).
+ExpressRoutesSolarTests.html has moved to a [new location](/express-guide/ExpressRoutesSolarTests.html).

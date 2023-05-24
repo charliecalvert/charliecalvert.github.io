@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-NpmUtilities.md has moved to a [new location](Npm/NpmUtilities.md).
+NpmUtilities.html has moved to a [new location](/npm-guide/NpmUtilities.html).

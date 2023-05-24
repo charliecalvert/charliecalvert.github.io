@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-ExpressRoutesSolarCleaner.md has moved to a [new location](Express/ExpressRoutesSolarCleaner.md).
+ExpressRoutesSolarCleaner.html has moved to a [new location](/express-guide/ExpressRoutesSolarCleaner.html).

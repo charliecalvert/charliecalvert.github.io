@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-ExpressBasics.md has moved to a [new location](Express/ExpressBasics.md).
+ExpressBasics.html has moved to a [new location](/express-guide/ExpressBasics.html).

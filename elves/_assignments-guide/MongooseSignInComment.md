@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-MongooseSignInComment.md has moved to a [new location](Mongo/MongooseSignInComment.md).
+MongooseSignInComment.html has moved to a [new location](/mongo-guide/MongooseSignInComment.html).

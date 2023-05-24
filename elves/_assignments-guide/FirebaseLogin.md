@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-FirebaseLogin.md has moved to a [new location](Firebase/FirebaseLogin.md).
+FirebaseLogin.html has moved to a [new location](/firebase-guide/FirebaseLogin.html).

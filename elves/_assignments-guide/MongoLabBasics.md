@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-MongoLabBasics.md has moved to a [new location](Mongo/MongoLabBasics.md).
+MongoLabBasics.html has moved to a [new location](/mongo-guide/MongoLabBasics.html).

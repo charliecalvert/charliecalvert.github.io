@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-Ec2RunElvenSite.md has moved to a [new location](Aws/Ec2RunElvenSite.md).
+Ec2RunElvenSite.html has moved to a [new location](/aws-guide/Ec2RunElvenSite.html).

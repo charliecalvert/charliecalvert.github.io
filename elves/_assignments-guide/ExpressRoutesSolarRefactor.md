@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-ExpressRoutesSolarRefactor.md has moved to a [new location](Express/ExpressRoutesSolarRefactor.md).
+ExpressRoutesSolarRefactor.html has moved to a [new location](/express-guide/ExpressRoutesSolarRefactor.html).

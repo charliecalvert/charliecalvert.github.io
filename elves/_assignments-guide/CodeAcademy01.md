@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-CodeAcademy01.md has moved to a [new location](CodeAcademy/CodeAcademy01.md).
+CodeAcademy01.html has moved to a [new location](/codeacademy-guide/CodeAcademy01.html).

@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-Ec2CloudOnly.md has moved to a [new location](Aws/Ec2CloudOnly.md).
+Ec2CloudOnly.html has moved to a [new location](/aws-guide/Ec2CloudOnly.html).

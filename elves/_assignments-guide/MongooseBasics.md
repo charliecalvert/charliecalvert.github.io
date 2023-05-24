@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-MongooseBasics.md has moved to a [new location](Mongo/MongooseBasics.md).
+MongooseBasics.html has moved to a [new location](/mongo-guide/MongooseBasics.html).

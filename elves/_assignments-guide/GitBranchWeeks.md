@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-GitBranchWeeks.md has moved to a [new location](Git/GitBranchWeeks.md).
+GitBranchWeeks.html has moved to a [new location](/git-guide/GitBranchWeeks.html).

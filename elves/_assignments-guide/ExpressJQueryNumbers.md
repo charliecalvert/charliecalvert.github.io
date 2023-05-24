@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-ExpressJQueryNumbers.md has moved to a [new location](Express/ExpressJQueryNumbers.md).
+ExpressJQueryNumbers.html has moved to a [new location](/express-guide/ExpressJQueryNumbers.html).

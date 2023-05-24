@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-MangoExpress.md has moved to a [new location](Express/MangoExpress.md).
+MangoExpress.html has moved to a [new location](/express-guide/MangoExpress.html).

@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-Ec2Checklist.md has moved to a [new location](Aws/Ec2Checklist.md).
+Ec2Checklist.html has moved to a [new location](/aws-guide/Ec2Checklist.html).

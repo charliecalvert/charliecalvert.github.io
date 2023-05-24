@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-NewGitBucket.md has moved to a [new location](Git/NewGitBucket.md).
+NewGitBucket.html has moved to a [new location](/git-guide/NewGitBucket.html).

@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-AngularMongooseOnePage.md has moved to a [new location](Mongo/AngularMongooseOnePage.md).
+AngularMongooseOnePage.html has moved to a [new location](/mongo-guide/AngularMongooseOnePage.html).

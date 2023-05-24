@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-AngularMongoDbTest.md has moved to a [new location](Mongo/AngularMongoDbTest.md).
+AngularMongoDbTest.html has moved to a [new location](/mongo-guide/AngularMongoDbTest.html).

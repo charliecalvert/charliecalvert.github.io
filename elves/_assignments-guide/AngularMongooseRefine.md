@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-AngularMongooseRefine.md has moved to a [new location](Mongo/AngularMongooseRefine.md).
+AngularMongooseRefine.html has moved to a [new location](/mongo-guide/AngularMongooseRefine.html).

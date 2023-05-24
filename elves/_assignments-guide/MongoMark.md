@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-MongoMark.md has moved to a [new location](Mongo/MongoMark.md).
+MongoMark.html has moved to a [new location](/mongo-guide/MongoMark.html).

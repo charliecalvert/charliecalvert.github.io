@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-MongooseSubDocuments.md has moved to a [new location](Mongo/MongooseSubDocuments.md).
+MongooseSubDocuments.html has moved to a [new location](/mongo-guide/MongooseSubDocuments.html).

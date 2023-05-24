@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-AngularMongoDbStarter.md has moved to a [new location](Mongo/AngularMongoDbStarter.md).
+AngularMongoDbStarter.html has moved to a [new location](/mongo-guide/AngularMongoDbStarter.html).

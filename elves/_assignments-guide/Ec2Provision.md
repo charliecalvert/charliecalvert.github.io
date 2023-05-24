@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-Ec2Provision.md has moved to a [new location](Aws/Ec2Provision.md).
+Ec2Provision.html has moved to a [new location](/aws-guide/Ec2Provision.html).

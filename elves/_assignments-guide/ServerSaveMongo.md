@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-ServerSaveMongo.md has moved to a [new location](Mongo/ServerSaveMongo.md).
+ServerSaveMongo.html has moved to a [new location](/mongo-guide/ServerSaveMongo.html).

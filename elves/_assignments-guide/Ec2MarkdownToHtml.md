@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-Ec2MarkdownToHtml.md has moved to a [new location](Aws/Ec2MarkdownToHtml.md).
+Ec2MarkdownToHtml.html has moved to a [new location](/aws-guide/Ec2MarkdownToHtml.html).

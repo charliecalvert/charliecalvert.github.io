@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-AngularMongoDbCrud.md has moved to a [new location](Mongo/AngularMongoDbCrud.md).
+AngularMongoDbCrud.html has moved to a [new location](/mongo-guide/AngularMongoDbCrud.html).

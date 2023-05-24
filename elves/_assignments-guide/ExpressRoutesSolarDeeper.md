@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-ExpressRoutesSolarDeeper.md has moved to a [new location](Express/ExpressRoutesSolarDeeper.md).
+ExpressRoutesSolarDeeper.html has moved to a [new location](/express-guide/ExpressRoutesSolarDeeper.html).

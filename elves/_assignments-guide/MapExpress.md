@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-MapExpress.md has moved to a [new location](Express/MapExpress.md).
+MapExpress.html has moved to a [new location](/express-guide/MapExpress.html).

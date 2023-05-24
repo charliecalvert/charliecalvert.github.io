@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-MongooseMtgSets.md has moved to a [new location](Mongo/MongooseMtgSets.md).
+MongooseMtgSets.html has moved to a [new location](/mongo-guide/MongooseMtgSets.html).

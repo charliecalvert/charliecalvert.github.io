@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-ExpressPagesAndMixins.md has moved to a [new location](Express/ExpressPagesAndMixins.md).
+ExpressPagesAndMixins.html has moved to a [new location](/express-guide/ExpressPagesAndMixins.html).

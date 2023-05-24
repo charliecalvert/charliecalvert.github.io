@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-Ec2DataHunterFinalPrep.md has moved to a [new location](Aws/Ec2DataHunterFinalPrep.md).
+Ec2DataHunterFinalPrep.html has moved to a [new location](/aws-guide/Ec2DataHunterFinalPrep.html).

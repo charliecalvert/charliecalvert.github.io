@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-ExpressSessionBasics.md has moved to a [new location](Express/ExpressSessionBasics.md).
+ExpressSessionBasics.html has moved to a [new location](/express-guide/ExpressSessionBasics.html).

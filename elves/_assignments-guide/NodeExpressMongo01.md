@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-NodeExpressMongo01.md has moved to a [new location](Mongo/NodeExpressMongo01.md).
+NodeExpressMongo01.html has moved to a [new location](/mongo-guide/NodeExpressMongo01.html).

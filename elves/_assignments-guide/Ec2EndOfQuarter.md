@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-Ec2EndOfQuarter.md has moved to a [new location](Aws/Ec2EndOfQuarter.md).
+Ec2EndOfQuarter.html has moved to a [new location](/aws-guide/Ec2EndOfQuarter.html).

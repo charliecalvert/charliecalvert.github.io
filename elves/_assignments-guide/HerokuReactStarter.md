@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-HerokuReactStarter.md has moved to a [new location](Heroku/HerokuReactStarter.md).
+HerokuReactStarter.html has moved to a [new location](/heroku-guide/HerokuReactStarter.html).

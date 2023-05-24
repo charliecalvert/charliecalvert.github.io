@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-MongooseRoutes.md has moved to a [new location](Mongo/MongooseRoutes.md).
+MongooseRoutes.html has moved to a [new location](/mongo-guide/MongooseRoutes.html).

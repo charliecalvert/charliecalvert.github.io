@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-NpmPublishing.md has moved to a [new location](Npm/NpmPublishing.md).
+NpmPublishing.html has moved to a [new location](/npm-guide/NpmPublishing.html).

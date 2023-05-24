@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-LampBootstrap.md has moved to a [new location](Aws/LampBootstrap.md).
+LampBootstrap.html has moved to a [new location](/aws-guide/LampBootstrap.html).

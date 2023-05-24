@@ -12,4 +12,4 @@ category : assignments-guide
 
 ## Overview
 
-GruntSmokeTest02.md has moved to a [new location](SmokeTests/GruntSmokeTest02.md).
+GruntSmokeTest02.html has moved to a [new location](/smoketests-guide/GruntSmokeTest02.html).
