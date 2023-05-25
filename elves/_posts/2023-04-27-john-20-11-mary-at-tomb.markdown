@@ -49,9 +49,9 @@ The Holy Bible: English Standard Version (Wheaton, IL: Crossway Bibles, 2016), J
 
 - [Miriam](https://en.wikipedia.org/wiki/Miriam)
 - [Miriam in the Bible](https://www.biblestudytools.com/dictionary/miriam/)
+- [Miram sent to lead Isreal (Micah)](https://www.biblegateway.com/passage/?search=Micah%206%3A4&version=NIV)
+- [God Punishes Miriam (Numbers)](https://www.biblegateway.com/passage/?search=Numbers%2012&version=NIV)
 - [Phyllis Trible Miram Jewish Bible](https://jwa.org/encyclopedia/article/miriam-bible)
 - [Phyllis Trible](https://en.wikipedia.org/wiki/Phyllis_Trible)
 - [Phyllis Trible on Miriam Video](https://www.youtube.com/watch?v=Z2Z2YX9X3Dc)
 - [Phyllis Trible on Miriam](https://jwa.org/encyclopedia/author/trible-phyllis)
-- [Miram sent to lead Micah](https://www.biblegateway.com/passage/?search=Micah%206%3A4&version=NIV)
-- [God Punishes Miriam](https://www.biblegateway.com/passage/?search=Numbers%2012&version=NIV)
