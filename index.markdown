@@ -6,30 +6,30 @@ layout: home
 ---
 <!-- markdownlint-disable MD041 -->
 
-- [Android Guide](android-guide)
-- [Cloude Guide](cloud-guide)
-- [Css Guide](css-guide)
-- [CSharp Guide](csharp-guide)
-- [Database Guide](database-guide)
-- [Mobile Guide](mobile-guide)
-- [Design Guide](design-guide)
-- [Assignments](assignments/all-links.html)
+## Overview
+
+The best way to navigate this site is to use the guides in the next section. If you are looking for a specific file, you can use the first link below. The second two links really need to be deleted, I just don't have the heart to do it yet.
+
+- [Everything on the site all at once](everything.html)
+- [Manual Guide](elves/all-links.html)
+- [The old All Files list](assignments-guide/AllFiles.html)
 
 ## Guides
 
-<ul>
+<section><ul>
 {% for collection in site.collections %}
+    {% if collection.label contains 'guide' %}
 <li><a href="{{ collection.label }}">
-    {{ collection.label }}
+    {{ collection.label }}</a></li>
+    {% endif %}
 {% endfor %}
+</ul></section>
 
-<h2>Turtle Graphics</h2>
+## Posts
 
-{% for collection in site.collections %}
-<h1> {{ collection.label }} </h1>
-
-    {% for product in site[collection.label] %}
-<a href="{{ product.url }}">
-    {{ product.title }}
-    {% endfor %}
+<section><ul>
+{% for product in site['posts'] %}
+<li><a href="{{ product.url }}">
+    {{ product.title }}</a></li>
 {% endfor %}
+</ul></section>
