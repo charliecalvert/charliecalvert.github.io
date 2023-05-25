@@ -70,3 +70,19 @@ Moon and stars pour their healing light on you.
 Deep peace of Christ,
 of Christ the light of the world to you.
 Deep peace of Christ to you.
+
+## Art
+
+"Hurt people hurt people. That’s how pain patterns get passed on, generation after generation after generation. Break the chain today. Meet anger with sympathy, contempt with compassion, cruelty with kindness. Greet grimaces with smiles. Forgive and forget about finding fault. Love is the weapon of the future." - Yehuda Berg
+
+- [Lukova Google Arts and Culture](https://artsandculture.google.com/story/vQWxi9fJcTLyIg)
+
+## Closing Prayer
+
+From 6-24-2023
+
+Holy Wisdom, Mother God, you hold my time in your hands. Your providence guides the stars and my cells. Your compassion opens my heart to healing in the midst of pain. Help me rest in you, trusting the future in your care and giving comfort to those who mourn, hurt, and face personal challenge. In Christ’s name. Amen.
+
+To  Everyone:
+
+[Julian of Norwich (Richard Rohr site - cac)](https://cac.org/daily-meditations/julian-of-norwich-weekly-summary-2020-05-16/)
