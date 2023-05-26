@@ -17,10 +17,38 @@ See also [jekyll Strategy C](/setup/2023/04/18/jekyll-setup.html)
 
 ## Basics
 
+- **docker run**: Create a new container from an image
+- **start**: Start stopped containers. @see [Docker start](https://docs.docker.com/engine/reference/commandline/start/)
+- **exec**: Execute commands on a running container!
+- container remove: Delete a container. @see [container remove](https://docs.docker.com/engine/reference/commandline/container_rm/)
+- **rm**: Remove a container. @see [Docker rm](https://docs.docker.com/engine/reference/commandline/rm/)
+- **help**: Run _docker exec --help_ for more information on a command.
+
+@see [Docker Exec](https://docs.docker.com/engine/reference/commandline/exec/)
+@see [Docker exec, what does it do](https://buildvirtual.net/docker-exec-what-does-it-do/)
+@see [Docker run](https://docs.docker.com/engine/reference/commandline/run/)
+
+@see [Docker stop](https://docs.docker.com/engine/reference/commandline/stop/)
+@see [Docker ps](https://docs.docker.com/engine/reference/commandline/ps/)
+
+@see [Docker Exec What does it do](https://buildvirtual.net/docker-exec-what-does-it-do/)
+
 It should all be in here:
 
 ``` bash
 git clone git@github.com:charliecalvert/elven-web.git
+```
+
+## Alpine
+
+- [Alpine Linux Wiki](https://wiki.alpinelinux.org/wiki/Main_Page)
+- [Get Stuff Working](https://wiki.alpinelinux.org/wiki/How_to_get_regular_stuff_working)
+- [Alpine Newbies](https://wiki.alpinelinux.org/wiki/Alpine_Newbies)
+
+Add bash to Alpine:
+
+``` bash
+apk add bash bash-doc bash-completion
 ```
 
 ## Other notes
