@@ -36,6 +36,13 @@ See also [jekyll Strategy C](/setup/2023/04/18/jekyll-setup.html)
 It should all be in here:
 
 ``` bash
+alias dks="docker start"
+alias dkl="docker container ls -a"
+docker container cp ./AwsConfigAll.zip epic_payne:/home/ubuntu/.ssh/.
+docker exec -it epic_payne bash
+dkl -s
+docker rename epic_payne ubuntu-complete
+docker stop ubuntu-complete
 git clone git@github.com:charliecalvert/elven-web.git
 ```
 
