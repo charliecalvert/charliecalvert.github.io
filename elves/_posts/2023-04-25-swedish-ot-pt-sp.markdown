@@ -28,6 +28,66 @@ categories: health
 - [Pulley B](https://www.amazon.com/gp/product/B01JK1NSR6/ref=ewc_pr_img_1?smid=A1T6JNFRXASP3G&psc=1)
 - [Half Roller](https://www.amazon.com/gp/product/B07RWRCN2N/ref=ox_sc_act_title_1?smid=ATVPDKIKX0DER&psc=1)
 
+## Voice Exercises
+
+Belly (Diaphragm) Breathing:
+
+- Place one hand on your chest and one hand on your belly
+- Inhale: Breathe in through your nose. Think about breathing low to fill up the bottom of your
+lungs. As you breathe in you should feel your belly press out. The hand on your chest should
+stay relatively still.
+- Exhale: Breathe out with pursed lips. As you breathe out gently contract your abdominals.
+Think about pressing the air up from below as you exhale.
+- Repeat this cycle ~10x.
+
+Use this breathing throughout your stretching and voice exercises
+
+### Stretches
+
+Neck Stretches: Hold each position for 2 breath cycles. - Move slowly between each stretch. Repeat 3-5x.
+
+- Ear to Shoulder - R & L
+- Ear to Shoulder, tilt chin back - R & L
+- Look Behind you - R & L
+- Draw circles with your nose
+
+### Jaw and Tongue Stretches
+
+Hold 3-5 seconds as tolerated. Then Relax. Repeat x5.
+
+- Yawn
+- Tongue Stretches: You should feel these stretch in the back of your tongue and into the top of
+your throat.
+- Curl tip of tongue down onto lower teeth then press forward.
+- Stick tongue out and down towards your chin
+
+### Laryngeal Massage
+
+- Place your fingers on the front of your throat and swallow. Find the bump the moves up and
+then back down. This is the front of your thyroid cartilage. Think of this as 'home base'
+- Then pinch your thumb and pointer fingers together at 'home base'. Then slide your fingers to
+the sides of the cartilage.
+- Add pressure to one side of your voice box. Gently press to the side and then slightly down.
+
+Repeat 3-4 times on one side. Then move to the opposite side.
+Its ok to increase pressure as tolerated. If you feel some clicking / popping as your press- don't
+worry, that is normal.
+Repeat for 3-5 cycles or until you feel like you need a break.
+
+### Voice Tasks
+
+**MMMMMMM Sound**: Focus on the vibration in your lips
+Hold for 4-5 seconds
+Repeat 5x
+
+**MMMM Syllables**: Focus on the vibration in your lips and clear sounding voice. Repeat 3-4x
+
+- MMMMe
+- MMMMay
+- MMMMy
+- MMMMoe
+- MMMMooo
+
 ## Exercise Articles
 
 These are just a few articles to highlight some of the points we have discussed in therapy.
