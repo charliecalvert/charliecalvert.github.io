@@ -7,7 +7,7 @@ categories: jekyll update
 
 We will need two extensions:
 
-1. Docker 
+1. Docker
 Remote Development
 1. [Dev Containers](https://containers.dev/implementors/json_reference/)
 
@@ -16,6 +16,18 @@ Create a repo, mine is called [docker-jekyll](https://github.com/charliecalvert/
 At the top right of Jekyll site you can see the latest. For instance [Version 4.3.2](https://github.com/jekyll/jekyll/releases/tag/v4.3.2)
 
 Go to the [Docker Hub](https://hub.docker.com/). Search on [ruby alpine](https://hub.docker.com/search?q=ruby%20alpine). So as of 2023-04-17, for vanilla Jekyll use [ruby 3.2 alpine 3.17](https://github.com/docker-library/ruby/blob/4041b21f3e11111846e6b6043da2da92e1da7019/3.2/alpine3.17/Dockerfile). For Github Pages, use Ruby 2.X and Alpine 3.X).
+
+## Run a container
+
+``` shell
+'docker container run --name elvendt -it elvendtest'
+```
+
+``` shell
+docker run -it --rm ruby:3.2.0-alpine3.17 /bin/sh
+```
+
+## Create a Dockerfile
 
 Create this dockerfile:
 
@@ -89,8 +101,8 @@ Using terminal-table 3.0.2
 Using webrick 1.8.1
 Using jekyll 4.3.2
 /workspaces/docker-jekyll # bundle exec jekyll new --force --skip-bundle .
-New jekyll site installed in /workspaces/docker-jekyll. 
-Bundle install skipped. 
+New jekyll site installed in /workspaces/docker-jekyll.
+Bundle install skipped.
 /workspaces/docker-jekyll # bundle add webrick
 Fetching gem metadata from https://rubygems.org/...........
 Resolving dependencies...
@@ -210,7 +222,7 @@ Configuration file: /workspaces/docker-jekyll/_config.yml
             Source: /workspaces/docker-jekyll
        Destination: /workspaces/docker-jekyll/_site
  Incremental build: disabled. Enable with --incremental
-      Generating... 
+      Generating...
        Jekyll Feed: Generating feed for posts
 Deprecation Warning: Using / for division outside of calc() is deprecated and will be removed in Dart Sass 2.0.0.
 
@@ -289,6 +301,5 @@ LiveReload address: http://127.0.0.1:35729
     Server address: http://127.0.0.1:4000/
   Server running... press ctrl-c to stop.
 [2023-04-17 15:56:29] ERROR `/favicon.ico' not found.
-^C/workspaces/docker-jekyll # 
+^C/workspaces/docker-jekyll #
 ```
-
