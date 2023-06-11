@@ -65,7 +65,7 @@ chmod +x ssh-setup
 
 ## Send AWS Conffig
 
-Put any SSH keys or configuration files that you need into a ZIP file called **AWSConfigAll.zip**. 
+Put any SSH keys or configuration files that you need into a ZIP file called **AWSConfigAll.zip**.
 
 Set up a portion of your **config** file to define a rule called **aws-spot**:
 
@@ -76,7 +76,6 @@ Host aws-spot
         User ubuntu
         IdentityFile ~/.ssh/<YOUR-AWS-PRIVATE-KEY>
 ```
-
 
 Then secure copy your keys and config file to AWS:
 
@@ -110,4 +109,32 @@ chmod +x get-repos
 # ./get-repos
 echo "get-repos is ./Git/get-repos.sh"
 echo "git clone git@github.com:charliecalvert/charliecalvert.github.io.git"
+```
+
+## Create User
+
+``` bash
+apt install sudo curl git
+add user myuser
+```
+
+Become the new user:
+
+``` bash
+su - myuser
+```
+
+Something like this might add a user without any prompts:
+
+``` bash
+adduser myuser --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
+echo "myuser:password" | sudo chpasswd
+```
+
+We are using echo to pass a username and password in clear text to the chpasswd command. This is not secure, but it is convenient.
+
+## Add to Sudoers
+
+``` bash
+usermod -aG sudo myuser
 ```

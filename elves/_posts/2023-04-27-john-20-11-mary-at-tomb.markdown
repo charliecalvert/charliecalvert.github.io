@@ -44,3 +44,29 @@ The Holy Bible: English Standard Version (Wheaton, IL: Crossway Bibles, 2016), J
 ## Closing Prayer
 
 **Closing**: Creator of all, who washes away our sins in water, teach us to: *Go forth into the world in peace; be of good courage; hold fast that which is good; render to no one evil for evil; strengthen the fainthearted; support the weak; help the afflicted; honour everyone; and love and serve the Lord, rejoicing always in the power of the Holy Spirit*.
+
+## Miriam
+
+- [Miriam](https://en.wikipedia.org/wiki/Miriam)
+- [Miriam in the Bible](https://www.biblestudytools.com/dictionary/miriam/)
+- [Miram sent to lead Isreal (Micah)](https://www.biblegateway.com/passage/?search=Micah%206%3A4&version=NIV)
+- [God Punishes Miriam (Numbers)](https://www.biblegateway.com/passage/?search=Numbers%2012&version=NIV)
+- [Phyllis Trible Miram Jewish Bible](https://jwa.org/encyclopedia/article/miriam-bible)
+- [Phyllis Trible](https://en.wikipedia.org/wiki/Phyllis_Trible)
+- [Phyllis Trible on Miriam Video](https://www.youtube.com/watch?v=Z2Z2YX9X3Dc)
+- [Phyllis Trible on Miriam](https://jwa.org/encyclopedia/author/trible-phyllis)
+
+## Deep Peace
+
+- [Deep Peace](https://www.youtube.com/watch?v=Z2Z2YX9X3Dc)
+- [Deep Peace Lyrics](https://www.youtube.com/watch?v=Z2Z2YX9X3Dc)
+
+>> Deep peace of the running wave to you.
+Deep peace of the flowing air to you.
+Deep peace of the quiet earth to you.
+Deep peace of the shining stars to you.
+Deep peace of the gentle night to you.
+Moon and stars pour their healing light on you.
+Deep peace of Christ,
+of Christ the light of the world to you.
+Deep peace of Christ to you.

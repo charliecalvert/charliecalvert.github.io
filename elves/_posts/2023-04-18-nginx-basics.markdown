@@ -97,7 +97,7 @@ docker run --rm \
 
 Build:
 
-``` bash 
+``` bash
 #! /bin/bash
 
 export site_name="myblog01"
@@ -124,6 +124,7 @@ cat default
 cat default.old
 cd sites-enabled/
 ```
+
 Create your A record:
 
 ![subdomain a record](https://s3.amazonaws.com/bucket01.elvenware.com/images/subdomain-edit.png)
@@ -140,3 +141,5 @@ sudo ln -s /etc/nginx/sites-available/go.elven.work .
 sudo systemctl restart nginx
 sudo certbot -d go.elven.work --expand
 ```
+
+- [https://go.elven.work/](https://go.elven.work/)
