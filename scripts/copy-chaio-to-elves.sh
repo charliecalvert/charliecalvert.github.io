@@ -36,7 +36,7 @@ function message() {
 
 function dryRun() {
     message "Dry Run"
-    sudo rsync -avru --delete --dry-run --include="*/" --include="*.html" --exclude="*" ${SOURCE_DIR} ${DEST_DIR}
+    sudo rsync -avru --delete --dry-run --include="*/" --include="*.html" --include="*.css" --exclude="*" ${SOURCE_DIR} ${DEST_DIR}
 }
 
 function realCopy() {
