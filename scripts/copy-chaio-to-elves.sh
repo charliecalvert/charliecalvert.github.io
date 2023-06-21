@@ -41,7 +41,7 @@ function dryRun() {
 
 function realCopy() {
     message "Real Copy"
-    sudo rsync -avru --delete --include="*/" --include="*.html" --exclude="*" ${SOURCE_DIR} ${DEST_DIR}
+    sudo rsync -avru --delete --include="*/" --include="*.html" --include="*.css" --exclude="*" ${SOURCE_DIR} ${DEST_DIR}
 }
 
 while true; do
