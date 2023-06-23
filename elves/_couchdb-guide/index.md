@@ -11,6 +11,13 @@ category : couchdb-guide
 ---
 
 <section><ul>
+{% for product in site['couchdb_guide'] %}
+<li><a href="{{ product.url }}">
+    {{ product.title }}</a></li>
+{% endfor %}
+</ul></section>
+
+<section><ul>
 {% for collection in site.collections %}
     {% if collection.label contains 'guide' %}
 <li><a href="{{ collection.label }}">
