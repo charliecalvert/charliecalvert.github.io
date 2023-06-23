@@ -11,7 +11,7 @@ category : couchdb-guide
 ---
 
 <section><ul>
-{% for product in site['couchdb_guide'] %}
+{% for product in site['couchdb-guide'] %}
 <li><a href="{{ product.url }}">
     {{ product.title }}</a></li>
 {% endfor %}
