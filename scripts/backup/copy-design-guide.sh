@@ -1,9 +1,8 @@
 #!/bin/bash
 
-# Copy files to cloud directory
-# CLOUDNOTES="$HOME/Git/CloudNotes"
-SOURCE_DIR="$CLOUDNOTES/Assignments/Aws/"
-DEST_DIR="${CHARLIE_IO}/elves/_aws-guide"
+# Copy files to css-guide directory
+SOURCE_DIR="$CLOUDNOTES/elvenware/development/design/"
+DEST_DIR="$CHAIO/elves/_design-guide"
 
 # rsync -avru --delete --dry-run --include="*/" --include="*.md" --exclude="*" ${SOURCE_DIR} ${DEST_DIR}
 rsync -avru --delete --include="*/" --include="*.md" --exclude="*" ${SOURCE_DIR} ${DEST_DIR}

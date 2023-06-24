@@ -2,7 +2,7 @@
 
 # Copy files to css-guide directory
 SOURCE_DIR="$CLOUDNOTES/elvenware/development/android/"
-DEST_DIR="$HOME/Git/charliecalvert.github.io/elves/_android-guide"
+DEST_DIR="$CHAIO/elves/_android-guide"
 
 function dryRun {
     echo "Run Basics"
