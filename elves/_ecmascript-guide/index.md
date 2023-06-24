@@ -1,19 +1,19 @@
 ---
 layout: page
 date: 2023-06-23 10:47:29 -0700
-fullPath: /home/ubuntu/Git/CloudNotes/Assignments/CouchDb/index.md
-directoryPath: /home/ubuntu/Git/CloudNotes/Assignments/CouchDb
+fullPath: /home/ubuntu/Git/CloudNotes/Assignments/EcmaScript/index.md
+directoryPath: /home/ubuntu/Git/CloudNotes/Assignments/EcmaScript
 fileName: index.md
-relativePath: /CouchDb/index.md
-title: CouchDB index
-directoryName: CouchDb
-category : couchdb-guide
+relativePath: /EcmaScript/index.md
+title: EcmaScript index
+directoryName: EcmaScript
+category : ecmascript-guide
 ---
 
 ## Overview
 
 <section><ul>
-{% for product in site['couchdb-guide'] %}
+{% for product in site['ecmascript-guide'] %}
 <li><a href="{{ product.url }}">
     {{ product.title }}</a></li>
 {% endfor %}
