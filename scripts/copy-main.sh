@@ -131,7 +131,7 @@ while true; do
     echo -e "${BIGreen} x) Real Copy Heroku"${Color_Off}
     echo -e "${BIGreen} y) Dry Run All"${Color_Off}
     echo -e "${BIGreen} z) Real Copy All"${Color_Off}
-    echo -e "${Red} xq) Exit (You should source .bashrc when done)"${Color_Off}
+    echo -e "${Red} 1) Exit (You should source .bashrc when done)"${Color_Off}
     echo -e "\n"${Color_Off}
     read -p "Please make a selection: " eotuyx
     case $eotuyx in
@@ -161,7 +161,7 @@ while true; do
         [Xx]* ) realCopy ${SOURCE_DIR_HEROKU} ${DEST_DIR_HEROKU} false; continue;;
         [Yy]* ) dryRun ${SOURCE_DIR} ${DEST_DIR} true; continue;;
         [Zz]* ) realCopy ${SOURCE_DIR} ${DEST_DIR} true; continue;;
-        [XxQq]* ) break;;
+        [1]* ) break;;
         * ) echo -e "\n$NC" + "Please answer with c, r or x.";;
     esac
 done
