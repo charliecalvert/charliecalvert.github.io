@@ -53,6 +53,9 @@ DEST_DIR_ECMASCRIPT="$CHAIO/elves/_ecmascript-guide"
 # FIREBASE
 SOURCE_DIR_FIREBASE="$CLOUDNOTES/Assignments/Firebase/"
 DEST_DIR_FIREBASE="${CHAIO}/elves/_firebase-guide"
+# HEROKU
+SOURCE_DIR_HEROKU="$CLOUDNOTES/Assignments/Heroku/"
+DEST_DIR_HEROKU="${CHAIO}/elves/_heroku-guide"
 # MOBILE
 SOURCE_DIR_MOBILE="$DEV/web/Mobile/"
 DEST_DIR_MOBILE="$CHAIO/elves/_mobile-guide"
@@ -110,6 +113,24 @@ while true; do
     echo -e "${BIGreen} f) Real Copy Database"${Color_Off}
     echo -e "${BIGreen} g) Dry Run EcmaScript"${Color_Off}
     echo -e "${BIGreen} h) Real Copy EcmaScript"${Color_Off}
+    echo -e "${BIGreen} i) Dry Run Mobile"${Color_Off}
+    echo -e "${BIGreen} j) Real Copy Mobile"${Color_Off}
+    echo -e "${BIGreen} k) Dry Run Android"${Color_Off}
+    echo -e "${BIGreen} l) Real Copy Android"${Color_Off}
+    echo -e "${BIGreen} m) Dry Run Aws"${Color_Off}
+    echo -e "${BIGreen} n) Real Copy Aws"${Color_Off}
+    echo -e "${BIGreen} o) Dry Run Css"${Color_Off}
+    echo -e "${BIGreen} p) Real Copy Css"${Color_Off}
+    echo -e "${BIGreen} q) Dry Run Csharp"${Color_Off}
+    echo -e "${BIGreen} r) Real Copy Csharp"${Color_Off}
+    echo -e "${BIGreen} s) Dry Run Design"${Color_Off}
+    echo -e "${BIGreen} t) Real Copy Design"${Color_Off}
+    echo -e "${BIGreen} u) Dry Run Firebase"${Color_Off}
+    echo -e "${BIGreen} v) Real Copy Firebase"${Color_Off}
+    echo -e "${BIGreen} w) Dry Run Heroku"${Color_Off}
+    echo -e "${BIGreen} x) Real Copy Heroku"${Color_Off}
+    echo -e "${BIGreen} y) Dry Run All"${Color_Off}
+    echo -e "${BIGreen} z) Real Copy All"${Color_Off}
     echo -e "${Red} xq) Exit (You should source .bashrc when done)"${Color_Off}
     echo -e "\n"${Color_Off}
     read -p "Please make a selection: " eotuyx
@@ -122,7 +143,24 @@ while true; do
         [Ff]* ) realCopy ${SOURCE_DIR_DATABASE} ${DEST_DIR_DATABASE} false; continue;;
         [Gg]* ) dryRun ${SOURCE_DIR_ECMASCRIPT} ${DEST_DIR_ECMASCRIPT} false; continue;;
         [Hh]* ) realCopy ${SOURCE_DIR_ECMASCRIPT} ${DEST_DIR_ECMASCRIPT} false; continue;;
-
+        [Ii]* ) dryRun ${SOURCE_DIR_MOBILE} ${DEST_DIR_MOBILE} false; continue;;
+        [Jj]* ) realCopy ${SOURCE_DIR_MOBILE} ${DEST_DIR_MOBILE} false; continue;;
+        [Kk]* ) dryRun ${SOURCE_DIR_ANDROID} ${DEST_DIR_ANDROID} false; continue;;
+        [Ll]* ) realCopy ${SOURCE_DIR_ANDROID} ${DEST_DIR_ANDROID} false; continue;;
+        [Mm]* ) dryRun ${SOURCE_DIR_AWS} ${DEST_DIR_AWS} false; continue;;
+        [Nn]* ) realCopy ${SOURCE_DIR_AWS} ${DEST_DIR_AWS} false; continue;;
+        [Oo]* ) dryRun ${SOURCE_DIR_CSS} ${DEST_DIR_CSS} false; continue;;
+        [Pp]* ) realCopy ${SOURCE_DIR_CSS} ${DEST_DIR_CSS} false; continue;;
+        [Qq]* ) dryRun ${SOURCE_DIR_CSHARP} ${DEST_DIR_CSHARP} false; continue;;
+        [Rr]* ) realCopy ${SOURCE_DIR_CSHARP} ${DEST_DIR_CSHARP} false; continue;;
+        [Ss]* ) dryRun ${SOURCE_DIR_DESIGN} ${DEST_DIR_DESIGN} false; continue;;
+        [Tt]* ) realCopy ${SOURCE_DIR_DESIGN} ${DEST_DIR_DESIGN} false; continue;;
+        [Uu]* ) dryRun ${SOURCE_DIR_FIREBASE} ${DEST_DIR_FIREBASE} false; continue;;
+        [Vv]* ) realCopy ${SOURCE_DIR_FIREBASE} ${DEST_DIR_FIREBASE} false; continue;;
+        [Ww]* ) dryRun ${SOURCE_DIR_HEROKU} ${DEST_DIR_HEROKU} false; continue;;
+        [Xx]* ) realCopy ${SOURCE_DIR_HEROKU} ${DEST_DIR_HEROKU} false; continue;;
+        [Yy]* ) dryRun ${SOURCE_DIR} ${DEST_DIR} true; continue;;
+        [Zz]* ) realCopy ${SOURCE_DIR} ${DEST_DIR} true; continue;;
         [XxQq]* ) break;;
         * ) echo -e "\n$NC" + "Please answer with c, r or x.";;
     esac
