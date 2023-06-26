@@ -13,7 +13,7 @@ category : smoketests-guide
 ## Overview
 
 <section><ul>
-{% for product in site['midtermfinal-guide'] %}
+{% for product in site['smoketests-guide'] %}
 <li><a href="{{ product.url }}">
     {{ product.title }}</a></li>
 {% endfor %}
