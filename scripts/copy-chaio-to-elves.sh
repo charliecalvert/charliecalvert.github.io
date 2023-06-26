@@ -32,11 +32,23 @@ function message() {
     echo -e "\n${Green}================== ${BIGreen}$1${Green} ======================${Color_Off}"
 }
 
-
-
+# --archive, -a            archive mode is -rlptgoD (no -A,-X,-U,-N,-H)
+# --recursive, -r          recurse into directories
+# --verbose, -v            increase verbosity
+# --update, -u             skip files that are newer on the receiver
+# --delete, -d             delete extraneous files from dest dirs
+# --dry-run                perform a trial run with no changes made
+# --exclude=PATTERN        exclude files matching PATTERN
+# --include=PATTERN        don't exclude files matching PATTERN
+# -p, --perms                 preserve permissions
+# -t, --times                 preserve times
+# -g, --group                 preserve group
+# -o, --owner                 preserve owner (super-user only)
+# -D                          same as --devices --specials
+# --devices               preserve device files (super-user only)
 function dryRun() {
     message "Dry Run"
-    sudo rsync -avru --delete --dry-run \
+    sudo rsync -avrui --delete --dry-run \
         --include="*/" --include="*.html" \
         --include="*.css" --include="*.jpg" \
         --include="*.png" --exclude="*" ${SOURCE_DIR} ${DEST_DIR}
