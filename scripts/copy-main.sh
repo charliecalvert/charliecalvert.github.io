@@ -62,6 +62,9 @@ DEST_DIR_MIDTERMFINAL="$CHAIO/elves/_midtermfinal-guide"
 # MOBILE
 SOURCE_DIR_MOBILE="$DEV/web/Mobile/"
 DEST_DIR_MOBILE="$CHAIO/elves/_mobile-guide"
+# SMOKETESTS
+SOURCE_DIR_SMOKETESTS="$CLOUDNOTES/Assignments/SmokeTests/"
+DEST_DIR_SMOKETESTS="$CHAIO/elves/_smoketests-guide"
 
 # -----------------------------------
 # Confirm that the directories exist
@@ -134,9 +137,9 @@ while true; do
     echo -e "${BIGreen} x) Real Copy Heroku"${Color_Off}
     echo -e "${BIGreen} y) Dry Run MidtermFinal"${Color_Off}
     echo -e "${BIGreen} z) Real Copy MidtermFinal"${Color_Off}
-#    echo -e "${BIGreen} y) Dry Run All"${Color_Off}
-#    echo -e "${BIGreen} z) Real Copy All"${Color_Off}
-    echo -e "${Red} 1) Exit (You should source .bashrc when done)"${Color_Off}
+    echo -e "${BIGreen} 1) Dry Run Smoketests"${Color_Off}
+    echo -e "${BIGreen} 2) Real Copy Smoketests"${Color_Off}
+    echo -e "${Red} 0) Exit (You should source .bashrc when done)"${Color_Off}
     echo -e "\n"${Color_Off}
     read -p "Please make a selection: " eotuyx
     case $eotuyx in
@@ -166,7 +169,9 @@ while true; do
         [Xx]* ) realCopy ${SOURCE_DIR_HEROKU} ${DEST_DIR_HEROKU} false; continue;;
         [Yy]* ) dryRun ${SOURCE_DIR_MIDTERMFINAL} ${DEST_DIR_MIDTERMFINAL} false; continue;;
         [Zz]* ) realCopy ${SOURCE_DIR_MIDTERMFINAL} ${DEST_DIR_MIDTERMFINAL} false; continue;;
-        [1]* ) break;;
+        [1]* ) dryRun ${SOURCE_DIR_SMOKETESTS} ${DEST_DIR_SMOKETESTS} false; continue;;
+        [2]* ) realCopy ${SOURCE_DIR_SMOKETESTS} ${DEST_DIR_SMOKETESTS} false; continue;;
+        [0]* ) break;;
         * ) echo -e "\n$NC" + "Please answer with c, r or x.";;
     esac
 done
