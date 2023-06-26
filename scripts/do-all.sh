@@ -14,6 +14,10 @@ else
     exit 1
 fi
 
+function message() {
+    echo -e "\n${Green}================== ${BIGreen}$1${Green} ======================${Color_Off}"
+}
+
 function insertFrontMatter() {
     cd /home/ubuntu/Git/CloudNotes # Go to CloudNotes
     npm run InsertFrontMatterNotWorking2 # Insert front matter
