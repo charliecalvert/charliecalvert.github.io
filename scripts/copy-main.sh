@@ -129,8 +129,8 @@ while true; do
     echo -e "${BIGreen} v) Real Copy Firebase"${Color_Off}
     echo -e "${BIGreen} w) Dry Run Heroku"${Color_Off}
     echo -e "${BIGreen} x) Real Copy Heroku"${Color_Off}
-    echo -e "${BIGreen} y) Dry Run All"${Color_Off}
-    echo -e "${BIGreen} z) Real Copy All"${Color_Off}
+#    echo -e "${BIGreen} y) Dry Run All"${Color_Off}
+#    echo -e "${BIGreen} z) Real Copy All"${Color_Off}
     echo -e "${Red} 1) Exit (You should source .bashrc when done)"${Color_Off}
     echo -e "\n"${Color_Off}
     read -p "Please make a selection: " eotuyx
@@ -159,8 +159,8 @@ while true; do
         [Vv]* ) realCopy ${SOURCE_DIR_FIREBASE} ${DEST_DIR_FIREBASE} false; continue;;
         [Ww]* ) dryRun ${SOURCE_DIR_HEROKU} ${DEST_DIR_HEROKU} false; continue;;
         [Xx]* ) realCopy ${SOURCE_DIR_HEROKU} ${DEST_DIR_HEROKU} false; continue;;
-        [Yy]* ) dryRun ${SOURCE_DIR} ${DEST_DIR} true; continue;;
-        [Zz]* ) realCopy ${SOURCE_DIR} ${DEST_DIR} true; continue;;
+#        [Yy]* ) dryRun ${SOURCE_DIR} ${DEST_DIR} true; continue;;
+#        [Zz]* ) realCopy ${SOURCE_DIR} ${DEST_DIR} true; continue;;
         [1]* ) break;;
         * ) echo -e "\n$NC" + "Please answer with c, r or x.";;
     esac
