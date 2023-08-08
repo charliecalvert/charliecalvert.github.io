@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2023-08-08 01:44:12 -0700
-title: Electric Bike Rides
+title: Walks and Electric Bike Rides
 categories: exercise
 ---
 
@@ -9,29 +9,29 @@ categories: exercise
 
 Some rides we have taken recently.
 
-## Woodinville Ride
+## Woodinville Bike Ride
 
 <div class="strava-embed-placeholder" data-embed-type="activity" data-embed-id="9597159149"></div><script src="https://strava-embeds.com/embed.js"></script>
 
-## Kirkland Ride
+## Kirkland Bike Ride
 
 <div class="strava-embed-placeholder" data-embed-type="activity" data-embed-id="9590312193"></div><script src="https://strava-embeds.com/embed.js"></script>
 
-## Down 140th
+## Bike Ride Down 140th
 
 <div class="strava-embed-placeholder" data-embed-type="activity" data-embed-id="9333342323"></div><script src="https://strava-embeds.com/embed.js"></script>
 
-## Whole Foods
+## Whole Foods Bike Ride
 
 <div class="strava-embed-placeholder" data-embed-type="activity" data-embed-id="9582219345"></div><script src="https://strava-embeds.com/embed.js"></script>
 
-## LedBetter Beach
+## LedBetter Beach Walk
 
 This is just a walk not a bike ride
 
 <div class="strava-embed-placeholder" data-embed-type="activity" data-embed-id="9478622370"></div><script src="https://strava-embeds.com/embed.js"></script>
 
-## Camano Island State Park
+## Camano Island State Park Hike
 
 A nice hike.
 
