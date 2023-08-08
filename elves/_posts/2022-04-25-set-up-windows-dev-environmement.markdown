@@ -52,6 +52,19 @@ Tasks:
 },
 ```
 
+## Power & Screen Control
+
+See the **control panel** | **power options**.
+
+Choose **Control X** and then **power options**.
+
+Set screen timeout to 60 minutes. One is for plugged in and the other is for use with the battery.
+
+``` powershell
+powercfg -change -monitor-timeout-ac 60
+powercfg -change -monitor-timeout-dc 60
+```
+
 ## Bonus
 
 ```
