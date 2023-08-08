@@ -24,3 +24,15 @@ Some rides we have taken recently.
 ## Whole Foods
 
 <div class="strava-embed-placeholder" data-embed-type="activity" data-embed-id="9582219345"></div><script src="https://strava-embeds.com/embed.js"></script>
+
+## LedBetter Beach
+
+This is just a walk not a bike ride
+
+<div class="strava-embed-placeholder" data-embed-type="activity" data-embed-id="9478622370"></div><script src="https://strava-embeds.com/embed.js"></script>
+
+## Camano Island State Park
+
+A nice hike.
+
+<div class="strava-embed-placeholder" data-embed-type="route" data-embed-id="3124017516175021274"></div><script src="https://strava-embeds.com/embed.js"></script>
