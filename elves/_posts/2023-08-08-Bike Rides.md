@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-08-06 01:44:12 -0700
+date: 2023-08-08 01:44:12 -0700
 title: Electric Bike Rides
 categories: exercise
 ---
