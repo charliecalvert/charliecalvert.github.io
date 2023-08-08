@@ -5,9 +5,9 @@ title: Walks and Electric Bike Rides
 categories: exercise
 ---
 
-## Electric Bike Rides
+## Overview
 
-Some rides we have taken recently.
+Some walks and rides we have taken recently.
 
 ## Woodinville Bike Ride
 
