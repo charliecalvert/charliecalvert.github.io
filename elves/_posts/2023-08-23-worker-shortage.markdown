@@ -1,7 +1,8 @@
 ---
 layout: post
 date: 2023-08-23 07:56:20 -0700
-title: worker-shortage
+title: Worker Shortage
+categories: finance
 ---
 
 Google says that by 2025 we will need
