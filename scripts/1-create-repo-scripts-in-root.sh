@@ -1,5 +1,12 @@
 #! /bin/bash
 
+# For used in a new virtual machine, or new Linux installation.
+# This script creates the scripts that are used to clone
+# frequently used repositories.
+# It also reboots the machine and creates the script that is used
+# to get the JsObjects repo.
+
+
 sudo apt update
 sudo apt upgrade -y
 
