@@ -5,7 +5,7 @@ title: Worker Shortage
 categories: finance
 ---
 
-Google says that by 2025 we will need
+[Google says](https://cloud.withgoogle.com/next/22/catalog?session=BLD106#featured) that by 2025 we will need
 move From 1.4 million workers to four million workers.
 
 The [Economist says](https://www.economist.com/united-states/2023/08/05/america-is-building-chip-factories-now-to-find-the-workers)
