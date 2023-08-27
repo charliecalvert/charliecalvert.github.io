@@ -5,7 +5,7 @@ title: Github Copilot
 categories: tech
 ---
 
-[GitHub][site] Copilot is built on top of the [OpenAI Codex][openai] and provides enhanced autocompletion inside Visual Studio code. You can trigger it either by starting to write code, or writing comments for the code that you want to create. It excels at certain tasks such as helping you write unit tests. Find more information on by visiting pages like this one by LadyKerr entitled [Getting Started with GitHub Copilot Chat in VSCode][lady-kerr]
+[GitHub][site] Copilot is built on top of the [OpenAI Codex][openai] and provides enhanced autocompletion inside Visual Studio code. You can trigger it either by starting to write code, or writing comments for the code that you want to create. It excels at certain tasks such as helping you write unit tests. Find more information on by visiting pages like this one by [LadyKerr][lady-kerr] entitled [Getting Started with GitHub Copilot Chat in VSCode][lksamples]
 
 GitHub copilot is [free for teachers and students][edu]. If you are not already in the program go to the [GitHub Global Campus][ggcs] site and apply. 
 
@@ -21,7 +21,8 @@ A good way to get started would be to build a [simple project][simple] that you 
 [site]: https://github.com/features/copilot
 [bill]: https://github.com/settings/billing
 [openai]: https://openai.com/blog/openai-codex
-[lady-kerr]: https://github.com/orgs/community/discussions/64517
+[lady-kerr]: https://github.com/LadyKerr
+[lksamples]: https://github.com/orgs/community/discussions/64517
 [edu]: https://docs.github.com/en/billing/managing-billing-for-github-copilot/about-billing-for-github-copilot#pricing-for-github-copilot-for-individuals
 [ggcs]: https://docs.github.com/en/education/explore-the-benefits-of-teaching-and-learning-with-github-education/github-global-campus-for-students/apply-to-github-global-campus-as-a-student
 [ext]: https://marketplace.visualstudio.com/VSCode
