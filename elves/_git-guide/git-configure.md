@@ -76,10 +76,10 @@ Now you have a new repository. Your **.git/config** file looks like this:
 <pre>
 $ cat .git/config
 [core]
-	repositoryformatversion = 0
-	filemode = true
-	bare = false
-	logallrefupdates = true
+ repositoryformatversion = 0
+ filemode = true
+ bare = false
+ logallrefupdates = true
 charlie@MountainStreamsLinux
 </pre>
 
@@ -89,16 +89,15 @@ Now run our command and then look at **.git/config**
 ~/temp/foo
 $ cat .git/config
 [core]
-	repositoryformatversion = 0
-	filemode = true
-	bare = false
-	logallrefupdates = true
+ repositoryformatversion = 0
+ filemode = true
+ bare = false
+ logallrefupdates = true
 [remote "origin"]
-	url = ssh://git@bitbucket.org/lucia/myrepo.git
-	fetch = +refs/heads/*:refs/remotes/origin/*
+ url = ssh://git@bitbucket.org/lucia/myrepo.git
+ fetch = +refs/heads/*:refs/remotes/origin/*
 ~/temp/foo
 </pre>
-
 
 ## Git CONFIG File
 
@@ -108,36 +107,61 @@ The config file is called **config** and it is stored in a hidden directory at t
 
 To set your global user.email, you can write something like this:
 
-	git config --global user.email "me@somewhere.com"
+ git config --global user.email "<me@somewhere.com>"
 
 This information is usually written to **$HOME/.gitconfig**. Here is a sample file:
 
 ```
 $ cat ~/.gitconfig
 [user]
-	email = charlie@example.com
-	name = Charlie on RohanElf
+ email = charlie@example.com
+ name = Charlie on RohanElf
 [push]
-	default = simple
+ default = simple
 [diff]
-	tool = meld
+ tool = meld
+```
+
+other useful commands:
+
+view aliases:
+
+    git config --get-regexp alias
+
+``` bash
+[alias]
+ co = checkout
+ br = branch
+ ci = commit
+ st = status
+ last = log -1 HEAD
+ logr = log --oneline --decorate --graph --all
+ logr7 = log -r --pretty=oneline -n 7
+ li = for-each-ref --sort=-committerdate refs/heads/
+ li1 = for-each-ref --sort=-committerdate refs/heads/ --format='%(committerdate:short) %(refname:short)'
+ li2 = for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'
+[init]
+ defaultBranch = main
+[user]
+ email = charlie@elvenwaree.com
+ name = charlie on CascadeTrails
 ```
 
 On Windows, you might find the file here:
 
-	c:\users\username\.gitconfig
+ c:\users\username\.gitconfig
 
 On Linux:
 
-	\home\username\.gitconfig
+ \home\username\.gitconfig
 
 Or on the Mac:
 
-	\users\username\.gitconfig
+ \users\username\.gitconfig
 
 If you are a guru, and this gets really mixed up, try looking in:
 
-	C:\Program Files (x86)\Git\etc\profile
+ C:\Program Files (x86)\Git\etc\profile
 
 In particular, one time I found my environment had a variable in it called HOME that was pointing to some nonsense value like /home/ubuntu, even though I was on a Windows machine.
 
@@ -156,16 +180,16 @@ I describe how to use GitGui below. If you are working from the command line, go
 
 My .gitconfig looks something like this:
 
-	[user]
-	email = someone@somewhere.com
-	name = Charlie CedarIsle Calvert
-	[push]
-	default = simple
-	[gui]
-	recentrepo = C:/Src/Git/Simple02
-	recentrepo = C:/Src/Git/Writing
-	recentrepo = C:/Src/Git/CloudNotes
-	recentrepo = C:/Src/Git/JsObjects
+ [user]
+ email = <someone@somewhere.com>
+ name = Charlie CedarIsle Calvert
+ [push]
+ default = simple
+ [gui]
+ recentrepo = C:/Src/Git/Simple02
+ recentrepo = C:/Src/Git/Writing
+ recentrepo = C:/Src/Git/CloudNotes
+ recentrepo = C:/Src/Git/JsObjects
 
 As you can see, I've set up the **email**, **name** and **push | default** options.
 If you don't set up your user name and email as described above,
@@ -214,7 +238,6 @@ I respond to this message by typing the following:
 
     git config --global push.default simple
 
-
 For those who are interested, let's leave the command line and discuss GitGui. When you first open GitGui, you should set up your user name and email. From the menu, select **Edit | Options**.
 
 What you write in the GitGui options ends up in the email and name fields of **.gitconfig**, and vice-versa. It is important to have both of these fields filled out from the start.
@@ -231,8 +254,8 @@ There is a third option beyond what is mentioned above. You can look at the **.g
 
 There are two primary types of Git URLs:
 
-- SSH: git@github.com:charliecalvert/JsObjects.git
-- HTTPS: https://github.com/charliecalvert/JsObjects.git
+- SSH: <git@github.com>:charliecalvert/JsObjects.git
+- HTTPS: <https://github.com/charliecalvert/JsObjects.git>
 
 I prefer using SSH since it does not involve using a password. In my opinion passwords are both more difficult to use and more likely to cause a security risk than an SSH key. Also, it is useful to understand how SSH keys work. It is, in my opinion, useful to know how to:
 
@@ -251,26 +274,26 @@ or Bitbucket:
 
 - You can have read only access to the repository. This will let you check files out, but you cannot make changes and check them back in. This is what you want if you are using some third party library.
 - You can have HTTPs access to the library, which will enable you to check in and check out. Access to the library is then usually controlled with a user name and password. If you are uncomfortable with SSH, this will probably be the simplest option for you.
-- You can have SSH access to the repository. If you are at all familiar with SSH, you will probably find this option easiest when working with Git. If you have a key loaded with a tool like *Pageant* or *ssh-add*, then you can check in and check out without having to worry about typing in your user name and password.
+- You can have SSH access to the repository. If you are at all familiar with SSH, you will probably find this option easiest when working with Git. If you have a key loaded with a tool like _Pageant_ or _ssh-add_, then you can check in and check out without having to worry about typing in your user name and password.
 
 *NOTE*: Many tools, such as GitHub for Windows, can handle your password for you automatically. That means they work well with HTTPS connections. To get that benefit, you need to be in the GitHub GUI, or in the shells associated with those GUI's. These tools work well, and I encourage you to use them. However, there are times when it is nice to be able to check in and out of Git without having to use a specific tool. In those cases, many people will find it easiest to use SSH.
 
 To connect to a site using SSH, you need to do two things:
 
 - Load or reference your SSH private key on your local machine.
-- Cache your SSH public key on the remote machine. Both Bitbucket and GitHub have locations on their web site where you can cache your public keys. Start by clicking on the icon on the upper right corner of the web page. On Bitbucket, choose *Bitbucket Settings - SSH keys*. On GitHub, choose *Edit profile - SSH and GPG keys*.
+- Cache your SSH public key on the remote machine. Both Bitbucket and GitHub have locations on their web site where you can cache your public keys. Start by clicking on the icon on the upper right corner of the web page. On Bitbucket, choose _Bitbucket Settings - SSH keys_. On GitHub, choose _Edit profile - SSH and GPG keys_.
 
 As mentioned above, there are several types of URLs you can use with Git. Only one of them sets up your repository to use SSH. When you use a URL that looks like the one shown below, then you are saying you want to work with a read/write copy of the repository in SSH mode:
 
-	git@github.com:someone/JsObjects.git
+ <git@github.com>:someone/JsObjects.git
 
 None of this is specific to GitHub. The same syntax applies when working with files stored in any remote repository. Here, for instance, is an SSH URL for Bitbucket:
 
-	git@bitbucket.org:someone/deleteme.git
+ <git@bitbucket.org>:someone/deleteme.git
 
 Here is a URL for an HTTPS readwrite connection to a repository:
 
-	https://github.com/charliecalvert/bc-basic.git
+ <https://github.com/charliecalvert/bc-basic.git>
 
 These URLs are easy to identify since they begin with the letters HTTPS.
 
@@ -279,10 +302,10 @@ repositories.*
 
 ## Finding and Changing Git URLs {#find-change-url}
 
-Recall that the URL for your repository is usually kept in the **.git** directory at the root of your repository. (This folder is usually hidden, even on Windows. You can look for hidden files or folders, or just go ahead and type *cd .git*, and assume it will work if you are in the root of your repository.) If you want to change the URL your repository uses by default, you can open the *config* file in your .git directory and edit this line:
+Recall that the URL for your repository is usually kept in the **.git** directory at the root of your repository. (This folder is usually hidden, even on Windows. You can look for hidden files or folders, or just go ahead and type _cd .git_, and assume it will work if you are in the root of your repository.) If you want to change the URL your repository uses by default, you can open the _config_ file in your .git directory and edit this line:
 
-	[remote "origin"]
-	url = git@github.com:charliecalvert/JsObjects.git
+ [remote "origin"]
+ url = <git@github.com>:charliecalvert/JsObjects.git
 
 You can view it by typing: **git remote show origin**. Alternatively, try this:
 
@@ -292,9 +315,9 @@ git config --get remote.origin.url
 
 Here is the line in the config file that specifies your URL:
 
-	[remote "origin"]
-		url = git@github.com:charliecalvert/JsObjects.git
-		fetch = +refs/heads/*:refs/remotes/origin/*
+ [remote "origin"]
+  url = <git@github.com>:charliecalvert/JsObjects.git
+  fetch = +refs/heads/*:refs/remotes/origin/*
 
 The conventional way to see this information is with the following command:
 
@@ -332,7 +355,7 @@ If you are uncertain about the URL for your repository, you should able to easil
 
 ### The SSH Key
 
-If you are going to be using SSH to connect to your repository, then you want to be sure that you have your key loaded into memory. On Windows, I use Pageant (PuTTY). When you clone, it helps a lot if you use Pagaent. On Linux, you can use *ssh-agent* and *ssh-add*.
+If you are going to be using SSH to connect to your repository, then you want to be sure that you have your key loaded into memory. On Windows, I use Pageant (PuTTY). When you clone, it helps a lot if you use Pagaent. On Linux, you can use _ssh-agent_ and _ssh-add_.
 
 *NOTE*: When working on Windows, be sure to check your /users/username/.ssh folder for keys that tools like GitHub might be using. This will only come into play if you are not using Plink to handle your keys.
 
@@ -343,14 +366,14 @@ On Linux, this is how I load an SSH key into memory so that I don't have to refe
 First I need to be sure ssh-agent is loaded. Then I add the key to the store.
 Notice that in the first command we use backticks:
 
-	eval `ssh-agent`
-	ssh-add MyKey.pem
+ eval `ssh-agent`
+ ssh-add MyKey.pem
 
 Try putting this in .bashrc to load ssh-agent when you log in to your bash shell:
 
-	if [ -z "$SSH_AUTH_SOCK" ] ; then
-	  eval `ssh-agent`
-	fi
+ if [ -z "$SSH_AUTH_SOCK" ] ; then
+   eval `ssh-agent`
+ fi
 
 If you put this in .bashrc then **ssh-agent** will get loaded each time you open the shell, so you can end up with multiple copies of **ssh-agent** running. But you need to have it running in the current shell, so I don't see a good way around this.
 
@@ -359,22 +382,21 @@ You can also create a **~/.ssh/config** file that associates a domain with key. 
 Host github.com
         IdentityFile ~/.ssh/Github.pem
 
-
 If you get a warning about an unprotected key file, that usually means that you have not set up the permissions correctly for the key file itself. You should ensure that only the current user can read it:
 
-	chmod 600 github_rsa
+ chmod 600 github_rsa
 
 Or perhaps:
 
-	chmod 600 MyKey.pem
+ chmod 600 MyKey.pem
 
 Now try again, and it should go smoothly.
 
-	ssh-add github_rsa
+ ssh-add github_rsa
 
 *NOTE*: I suppose you could even make the SSH keys readonly:
 
-	chmod 400 github_rsa
+ chmod 400 github_rsa
 
 After doing this, you should be able to access sites where you have shared your ssh public key.
 
@@ -385,7 +407,7 @@ If you are having problems, check the following:
 - Are you issuing the command from inside your repository?
 - Have you loaded your SSH private key with Pageant, **ssh-add** or some other tool?
 - Does the server you are trying to reach (ec2, Bitbucket, GitHub, etc.) have a copy of your public key?
-- Does your **config** file use an SSH style URL (git@bitbucket.org vs https://bitbucket.org)?
+- Does your **config** file use an SSH style URL (<git@bitbucket.org> vs <https://bitbucket.org>)?
 - Have you loaded the correct public and private keys? In other words, does the private key you loaded match the public key on your server?
 - Do you need to do a push or pull before proceeding?
 - Have you carefully read any error messages that Git gives you? Have you tried searching on that error message?
@@ -393,7 +415,6 @@ If you are having problems, check the following:
 Useful video:
 
 - [Convert PEM File](https://youtu.be/EV9QSSX2w9I)
-
 
 ## Host Key is not Cached
 
@@ -406,21 +427,20 @@ using SSH. It should now work.
 
 Another option is to type the following at the command line:
 
-	plink MyUserName@bitbucket.org
+ plink <MyUserName@bitbucket.org>
 
-This will also give you an option to store the key for the Bitbucket server in your known_hosts file. The *known_hosts* file is usually stored in your **.ssh** directory:
-
+This will also give you an option to store the key for the Bitbucket server in your known_hosts file. The _known_hosts_ file is usually stored in your **.ssh** directory:
 
 ## Amend a Commit
 
 You can amend the previous commit (i.e. after removing a bad file or even simply to change the commit message... add -m "message" after --amend)
 
-	git commit --amend -m "My new message."
-	git push -f
+ git commit --amend -m "My new message."
+ git push -f
 
 If you omit the push command you will get an error message like this:
 
-	"...the tip of your current branch is behind..."
+ "...the tip of your current branch is behind..."
 
 To test this out, type **git log** at your command prompt in Linux. It will show you the commits you have done in Git. Type **q** to exit the log page. If you type **git commit --amend**, a nano editor will pop up, and you can change the message or type in a new message, then use **ctrl-o** to save the message, press the enter key to confirm the save and then **ctrl-x** to exit the editor. Now type **git log** again, and you will see your new commit message in the log. Don't forget the second command, **git push -f**.
 
@@ -436,10 +456,10 @@ If you check your git log, you will see that the commit message is "foo" at firs
 References:
 
 [Rewriting Git History]
-  https://www.atlassian.com/git/tutorials/rewriting-history
+  <https://www.atlassian.com/git/tutorials/rewriting-history>
 
 [Edit an Incorrect Message in Git]
-	http://stackoverflow.com/questions/179123/how-do-i-edit-an-incorrect-commit-message-in-git
+ <http://stackoverflow.com/questions/179123/how-do-i-edit-an-incorrect-commit-message-in-git>
 
 This command can be useful if you accidentally sent some confidential files along with your original commit. That confidential info would still be tracked in history even though you removed it in subsequent updates.
 
@@ -455,21 +475,21 @@ git push -f
 
 For those who are new to Git, or new to Version Control, just a couple reminders:
 
-* The purpose of Git is to give you a complete record of your work on a
+- The purpose of Git is to give you a complete record of your work on a
 project. It saves all your work, and each version of your work. If you use
 Git, it is almost impossible to lose work in such a way that it can't ever
 be retrieved. Even if your entire hard drive explodes, destroying your
 computer and all your work, the files that are stored on a remote Git
 repository (Bitbucket or GitHub) are safe. They will not be lost.
 
-* The commands that rewrite Git history, such as amend and rebase, can cause
+- The commands that rewrite Git history, such as amend and rebase, can cause
 you to completely lose code that you once checked in. Even worse, if you
 issue one of the commands incorrectly, you could accidentally, and
 permanently, delete files that you may still need. In other words, you may
 do your homework, check it into Git, then amend Git, lose your homework, and
 find that you can't retrieve it.
 
-* Git is infinitely configurable. That is why it is sometimes hard to use.
+- Git is infinitely configurable. That is why it is sometimes hard to use.
 There is seemingly nothing that can't be done with Git. It even allows you
 to undermine the whole purpose of Git by allowing you to rewrite, or amend,
 the history that it is carefully designed to save. This is my way of saying
@@ -509,19 +529,19 @@ repository on GitHub. Navigate to the folder that holds your local copy of
 the repository. If issued from that folder, the following line ought to add
 your local repository to the empty GitHub repository:
 
-	git remote add origin ssh://git@bitbucket.org/ccalvert/deleteme.git
+ git remote add origin ssh://git@bitbucket.org/ccalvert/deleteme.git
 
 You can then type the following to see where your repository is set up:
 
-	git remote -v
+ git remote -v
 
 By default, you will have a remote called **origin**. If you want to be able to push and pull from multiple remote repositories, you can add new remotes with **git remote add**. This can be useful when working with Heroku. You might, for instance, want to maintain both a GitHub and a Heroku version of your repository. To delete a remote called **working**:
 
-	git remote remove working
+ git remote remove working
 
 To delete a local branch named working:
 
-	git branch -d working
+ git branch -d working
 
 ## Repo on Local machine
 
@@ -543,11 +563,11 @@ git remote set-url pi charlie@192.168.2.33:/home/charlie/Git/WebCrafts/isit-site
 
 Every little bit, run:
 
-  	git gc
+   git gc
 
 Verify it:
 
-  	C:\Git\repo>git verify-pack -verbose .git\objects\pack\pack-4beeb...idx
+   C:\Git\repo>git verify-pack -verbose .git\objects\pack\pack-4beeb...idx
 
 ## Script It
 
