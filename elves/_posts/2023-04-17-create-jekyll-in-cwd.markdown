@@ -1,4 +1,8 @@
 ---
+layout: post
+title:  "Docker Alpine Jekyll"
+date:   2023-04-17 13:00:00 -0800
+categories: tech docker
 ---
 
 Here:
@@ -23,8 +27,8 @@ fi
 
 if [ -d .jekyll-cache ]; then
     echo "Removing .jekyll-cache directory"
-    rm -rf .jekyll-cache        
-else    
+    rm -rf .jekyll-cache
+else
     echo ".jekyll-cache directory does not exist"
 fi
 
@@ -38,7 +42,7 @@ fi
 gem install jekyll bundler
 bundle init
 bundle add jekyll --version "~>4.3.2"
-jekyll new --force .        # Creates a new Jekyll site scaffold in .   
+jekyll new --force .        # Creates a new Jekyll site scaffold in .
 bundle add webrick
 bundle install
 bundle update

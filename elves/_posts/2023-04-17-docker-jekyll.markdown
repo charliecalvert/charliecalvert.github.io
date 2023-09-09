@@ -2,7 +2,7 @@
 layout: post
 title:  "Docker Alpine Jekyll"
 date:   2023-04-17 13:00:00 -0800
-categories: jekyll update
+categories: tech docker
 ---
 
 We will need two extensions:

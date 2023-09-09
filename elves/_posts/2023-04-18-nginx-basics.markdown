@@ -2,7 +2,7 @@
 layout: post
 title:  "Notes on nginx Basics"
 date:   2023-04-18 12:00:00 -0800
-categories: jekyll update
+categories: tech
 ---
 
 ## Default Install
