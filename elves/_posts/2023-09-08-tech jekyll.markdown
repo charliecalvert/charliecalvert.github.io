@@ -52,9 +52,6 @@ less ./2023-09-08-tech jekyll.markdown
 
 ## Categories
 
-- [Tech](#tech)
-- [Docker](#docker)
-- [Jekyll](#jekyll)
 - consumption
 - environment
 - tech
@@ -75,5 +72,3 @@ less ./2023-09-08-tech jekyll.markdown
 - exercise
 - music
 - finance
--
--
