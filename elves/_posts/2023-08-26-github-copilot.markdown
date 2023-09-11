@@ -28,6 +28,8 @@ Use Firefox when logging into openai.com.
 
 [openai keys][keys]
 
+[Bill openai][bill-openai]
+
 ## References
 
 [site]: https://github.com/features/copilot
@@ -39,3 +41,4 @@ Use Firefox when logging into openai.com.
 [ext]: https://marketplace.visualstudio.com/VSCode
 [simple]: https://www.freecodecamp.org/news/javascript-projects-for-beginners/
 [keys]: https://platform.openai.com/account/api-keys
+[bill-openai]: https://platform.openai.com/account/billing/overview
