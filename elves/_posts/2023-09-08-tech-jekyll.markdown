@@ -1,7 +1,8 @@
 ---
 layout: post
 date: 2023-09-08 04:30:19 -0700
-title: tech jekyll
+title: Techniques for Working with Jekyll
+categories: tech jekyll
 ---
 
 ## Techniques for working with Jekyll
@@ -58,6 +59,7 @@ less ./2023-09-08-tech jekyll.markdown
 - tech aws
 - tech setup
 - tech docker
+- tech utilities
 - writing
 - jekyll update
 - charlie travel

@@ -1,0 +1,51 @@
+---
+layout: post
+date: 2023-09-11 02:48:53 -0700
+title: Using GNU grep on Ubuntu in Bash
+categories: tech utilities
+---
+
+tldr:
+
+```bash
+grep -r --include=*.md --include=*.markdown --exclude-dir=node_modules "postgres"
+grep -r -o --include=*.md --include=*.markdown --exclude-dir=node_modules "postgres"
+```
+
+I'm on Ubuntu using bash with GNU grep 3.7:
+
+```bash
+$ grep -V
+grep (GNU grep) 3.7
+Copyright (C) 2021 Free Software Foundation, Inc.
+```
+
+I wanted to search for anything in files with a **.md** or a **.markdown** extension.
+
+The first example produced results like this:
+
+```bash
+elves/_posts/2023-09-11-postgres.markdown:postgres
+elves/_heroku-guide/HerokuDataStarter.md:https://elements.heroku.com/addons/heroku-postgresql
+elves/_heroku-guide/HerokuDataStarter.md:heroku addons:create heroku-postgresql:hobby-dev
+vendor/bundle/ruby/3.0.0/gems/zeitwerk-2.6.7/README.md:# my_gem/db_adapters/postgresql.rb
+```
+
+The second:
+
+```bash
+elves/_posts/2023-09-11-postgres.markdown:postgres
+elves/_heroku-guide/HerokuDataStarter.md:postgres
+elves/_heroku-guide/HerokuDataStarter.md:postgres
+vendor/bundle/ruby/3.0.0/gems/zeitwerk-2.6.7/README.md:postgres
+vendor/bundle/ruby/3.0.0/gems/eventmachine-1.2.7/docs/GettingStarted.md:postgres
+vendor/bundle/ruby/3.0.0/gems/zeitwerk-2.6.6/README.md:postgres
+```
+
+I found something like the following helpful:
+
+```bash
+#! /bin/bash
+
+GREP='grep -r --include=*.md --include=*.markdown --exclude=bundle.js etc...'
+```
