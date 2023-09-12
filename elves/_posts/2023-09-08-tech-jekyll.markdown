@@ -53,24 +53,25 @@ less ./2023-09-08-tech jekyll.markdown
 
 ## Categories
 
+- charlie travel
 - consumption
 - environment
-- tech
-- tech aws
-- tech setup
-- tech docker
-- tech utilities
-- writing
+- exercise
+- finance
+- health
+- howto
 - jekyll update
-- charlie travel
-- walks
+- misc
+- music
 - setup
 - spirit
-- spirit meditation
-- spirit christianity
-- howto
-- health
-- misc
-- exercise
-- music
-- finance
+- spirit christian
+- tech
+- tech
+- tech aws
+- tech database
+- tech docker
+- tech jekyll
+- tech setup
+- tech utilities
+- walks
