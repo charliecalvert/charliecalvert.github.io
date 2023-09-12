@@ -9,7 +9,7 @@ categories: tech jekyll
 
 These are notes to help me track how I am using [Jekyll][jekyll].
 
-I've created a series of scripts that begin with a word **SearchChaio** that do useful tasks.  I've also created a script called  **create-post.sh** that will create a new post.
+I've created a series of scripts that begin with the word **SearchChaio** that do useful tasks.  I've also created a script called  **create-post.sh** that will create a new post.
 
 find . -iname "202?-??-??-*" | sort -n -t _
 
