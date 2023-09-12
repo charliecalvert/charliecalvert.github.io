@@ -7,6 +7,10 @@ categories: tech jekyll
 
 ## Techniques for working with Jekyll
 
+These are notes to help me track how I am using [Jekyll][jekyll].
+
+I've created a series of scripts that begin with a word **SearchChaio** that do useful tasks.  I've also created a script called  **create-post.sh** that will create a new post.
+
 find . -iname "202?-??-??-*" | sort -n -t _
 
 ## Results 2023-09-08
@@ -51,6 +55,42 @@ less ./2023-08-30-Cars.markdown
 less ./2023-09-08-tech jekyll.markdown
 ```
 
+## Learning to search
+
+The following is a direct quote from a conversation with Bing on 9/12/2023.
+
+>> To extract the last word of a string in bash, you can use the following command:
+
+```bash
+echo "Some variable has value abc.123" | awk '{print $NF}'
+```
+
+This command uses `awk` to break the input string into different fields using whitespace as the separator by default. `$NF` is a built-in `awk` variable that gives the total number of fields in the current record. Combining `$` with `NF` outputs the last field in the string, no matter how many fields your string contains ¹.
+
+If you want to extract the last word after a specific string, you can use `awk` with `substr` and `index` functions as follows:
+
+```bash
+echo "Some variable has value abc.123" | awk '{print substr($0, index($0, "value") + length("value") + 1)}'
+```
+
+This command first finds the index of the word "value" in the input string using `index` function. It then adds the length of "value" and 1 to get the starting position of the last word. Finally, it uses `substr` function to extract the last word from that position till the end of the string .
+
+To sort and remove duplicate rows from the extracted words, you can use `sort` and `uniq` commands as follows:
+
+```bash
+echo "Some variable has value abc.123" | awk '{print substr($0, index($0, "value") + length("value") + 1)}' | sort | uniq
+```
+
+This command sorts all words extracted from your input string in ascending order and removes any duplicate rows.
+
+I hope this helps!
+
+Source: Conversation with Bing, 9/12/2023
+(1) How to extract last part of string in bash? - Stack Overflow. <https://stackoverflow.com/questions/12426659/how-to-extract-last-part-of-string-in-bash>.
+(2) Linux sort Command with Examples - phoenixNAP. <https://phoenixnap.com/kb/linux-sort>.
+(3) SORT command in Linux/Unix with examples - GeeksforGeeks. <https://www.geeksforgeeks.org/sort-command-linuxunix-examples/>.
+(4) How to cut a string after last occurrence of a substring in shell?. <https://stackoverflow.com/questions/52524046/how-to-cut-a-string-after-last-occurrence-of-a-substring-in-shell>.
+
 ## Categories
 
 - charlie travel
@@ -75,3 +115,7 @@ less ./2023-09-08-tech jekyll.markdown
 - tech setup
 - tech utilities
 - walks
+
+## Tags & References
+
+[jekyll]: https://jekyllrb.com/ "Jekyll"
