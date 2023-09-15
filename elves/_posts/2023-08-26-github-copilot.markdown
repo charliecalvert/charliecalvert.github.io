@@ -5,6 +5,18 @@ title: Github Copilot
 categories: tech
 ---
 
+## My Experiments with AI
+
+I've been experimenting with AI In a casual scattershot manner. My experience suggests that I shouldn't try to use AI to create a new project from scratch. I'm better off bootstrapping my code from my existing notes, scripts, and projects. Then I can use AI to help me add new features to an existing project.
+
+AI doesn't do a good job of sorting out **node.js** projects from **plain javascript** from **C#** or from **Python** projects. Nor can it always tell whether it has chosen code that really works or which is just easily found on the web. I imagine that will improve over time.
+
+I have lots of scripts and starter projects that provide the framework on which to build a complex projectt. With those pieces in place, AI becomes very useful.
+
+It doesn't whether I use Bing Chat, Google Bard, or GitHub Copilot. They are all good at looking at an existing code that works and using that code to help me generate new features. But GitHub CoPilot has the edge because it has the best view of my code. *It really helps me get a lot of work done fast*.
+
+## Copilot
+
 [GitHub][site] Copilot is built on top of the [OpenAI Codex][openai] and provides enhanced autocompletion inside Visual Studio code. You can trigger it either by starting to write code, or writing comments for the code that you want to create. It excels at certain tasks such as helping you write unit tests. Find more information on by visiting pages like this one by [LadyKerr][lady-kerr] entitled [Getting Started with GitHub Copilot Chat in VSCode][lksamples]
 
 GitHub copilot is [free for teachers and students][edu]. If you are not already in the program go to the [GitHub Global Campus][ggcs] site and apply.
