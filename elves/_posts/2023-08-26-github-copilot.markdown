@@ -7,13 +7,13 @@ categories: tech
 
 ## My Experiments with AI
 
-I've been experimenting with AI In a casual scattershot manner. My experience suggests that I shouldn't try to use AI to create a new project from scratch. I'm better off bootstrapping my code from my existing notes, scripts, and projects. Then I can use AI to help me add new features to an existing project.
+I've been experimenting with AI In a scattershot manner. i'm learning not to try to use AI to create a new project from scratch. Instead, I like to bootstrap my new code from working notes, scripts, and projects. Then I use AI to help me add new features to an existing project.
 
-AI doesn't do a good job of sorting out **node.js** projects from **plain javascript** from **C#** or from **Python** projects. Nor can it always tell whether it has chosen code that really works or which is just easily found on the web. I imagine that will improve over time.
+AI can't tell whether it has chosen code that really works or which is just easily found on the web. Nor does it alaways do a good job of sorting out **node.js** projects from **plain javascript** from **C#** or from **Python** projects. I imagine these things will improve over time.
 
-I have lots of scripts and starter projects that provide the framework on which to build a complex projectt. With those pieces in place, AI becomes very useful.
+I have lots of scripts and starter projects that provide the framework on which to build a complex project. With those pieces in place, AI becomes useful.
 
-It doesn't whether I use Bing Chat, Google Bard, or GitHub Copilot. They are all good at looking at an existing code that works and using that code to help me generate new features. But GitHub CoPilot has the edge because it has the best view of my code. *It really helps me get a lot of work done fast*.
+It doesn't matter whether I use Bing Chat, Google Bard, or GitHub Copilot. They are all good at looking at existing code that works and using that code to help me generate new features. But GitHub CoPilot has the edge because it has the best view of my code. *It really helps me get a lot of work done fast*.
 
 ## Copilot
 
