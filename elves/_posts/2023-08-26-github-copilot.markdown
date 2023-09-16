@@ -34,8 +34,7 @@ A good way to get started would be to build a [simple project][simple] that you 
 
 [OpenAI][openai] is the company that created the [GPT-3][gpt3] language model. They have a new model called [Codex][codex] that is the basis for GitHub Copilot. You can try it out at [GPT-PILOT][pilot].
 
-[openai]: https://openai.com/
-
+**
 Use Firefox when logging into openai.com.
 
 [openai keys][keys]
@@ -44,6 +43,10 @@ Use Firefox when logging into openai.com.
 
 ## References
 
+[openai]: https://openai.com/
+[gpt3]: https://en.wikipedia.org/wiki/GPT-3
+[codex]: https://openai.com/blog/openai-codex/
+[pilot]: https://github.com/Pythagora-io/gpt-pilot
 [site]: https://github.com/features/copilot
 [bill]: https://github.com/settings/billing
 [lady-kerr]: https://github.com/LadyKerr
