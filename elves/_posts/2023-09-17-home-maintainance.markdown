@@ -15,15 +15,15 @@ Laundry Detergent:
 
 Dishwasher Detergent:
 
-- [https://www.consumerreports.org/appliances/dishwasher-detergents/buying-guide/][4]
-- [https://www.consumerreports.org/products/dishwasher-detergents-33328/dishwasher-detergent-33146/view2/][5]
-- [https://www.consumerreports.org/appliances/dishwasher-detergents/][6]
+- [Dishwasher Detergent Buying Guide][4]
+- [Dishwasher Detergent Ratings in Order][5]
+- [Dishwasher Detergent Ratings Overview][6]
 
 Use, Clean (and maintain) the Dishwasher itself:
 
-- [https://youtu.be/wvZn5xukNhc?si=qeZy5VEjXyTnL6fS][7]
-- [https://youtu.be/ygxSlmsOX2M?si=n7u4qvxxiYEQb9VM][8]
-- [https://www.consumerreports.org/video/view/home-garden/news/6331352304112/how-to-load-a-dishwasher-the-right-way/][9]
+- [How to Wash Your Dishwasher][7]
+- [5 Things You Should Never Put in the Dishwasher (Video)][8]
+- [How to load Dishwasher and related videos][9]
 - [How to Load a Dishwasher][10]
 
 ## References
