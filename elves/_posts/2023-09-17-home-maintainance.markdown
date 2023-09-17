@@ -9,9 +9,9 @@ categories: house
 
 Laundry Detergent:
 
-- [https://youtu.be/LYHOG5QBhRE?si=eV_aNMQhtks7dQ_q][1]
-- [https://www.consumerreports.org/appliances/laundry-detergents/best-and-worst-laundry-detergents-from-consumer-reports-tests-a9342715268/][2]
-- [https://www.consumerreports.org/home-garden/cleaning/smarter-youre-probably-using-way-too-much-detergent-a6214726490/][3]
+- [Best and Worst Laundry Detergents (Video)][1]
+- [Best and Worst Laundry Detergents (Text)][2]
+- [You're Probably Using Way Too Much Detergent][3]
 
 Dishwasher Detergent:
 
