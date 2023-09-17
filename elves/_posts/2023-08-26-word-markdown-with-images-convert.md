@@ -12,6 +12,8 @@ this line do you set it up:
 
 \$env:PATH=\"C:\\Program Files\\GIMP 2\\bin;\$env:PATH\"
 
+Create small images with a resize image for Microsoft Power Toys
+
 ## Themes
 
 Themes are found on the design tab.
