@@ -1,7 +1,7 @@
-[[---
+---
 layout: post
 date: 2023-09-17 08:19:54 -0700
-title: home-maintainance
+title: Home Maintainance
 categories: house
 ---
 
