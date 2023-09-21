@@ -19,7 +19,15 @@ Like this:
 - Choose **Embed | generate**.
 - Copy the generated url and paste it into your web page.
 
+##  typescript
+
+Anders, Luke, Amanda, and Daniel are working on a new language called
+[typescript](https://www.typescriptlang.org/).
+
+- [https://youtu.be/U6s2pdxebSo?si=svsLw1B9q8_BxSuQ4Q][3]
 ## References
 
 [1]: https://1drv.ms/u/s!AqXHjx7qYz4QgQ
 [2]: https://sl.bing.net/fiH3TetpbC8
+[3]: https://youtu.be/U6s2pdxebSo?si=svsLw1B9q8_BxSuQ4Q
+```
