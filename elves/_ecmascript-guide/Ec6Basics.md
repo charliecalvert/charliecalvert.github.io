@@ -33,3 +33,39 @@ Block scoping
 ## Enhanced Object Literals
 
 - [PromiseFile](./PromiseFile)
+
+## Eslint rules
+
+Let's look at the official example from the node team on how to use [opendir](https://nodejs.org/api/fs.html#fspromisesopendirpath-options):
+
+```javascript
+import { opendir } from 'node:fs/promises';
+
+try {
+  const dir = await opendir('./');
+  for await (const dirent of dir)
+    console.log(dirent.name);
+} catch (err) {
+  console.error(err);
+}
+```
+
+As you can see, they recommend using the **for-of** syntax along with **console.error**. Assuming that we can take their recommendation as worthy of consideration, then we might want to turn these rules off.
+
+To turn them off for an entire file:
+
+```javascript
+/* eslint-disable no-console */
+/* eslint-disable no-restricted-syntax */
+```
+
+To turn them` off in the eslint configuration file that affects all of your source code:
+
+```javascript
+rules: {
+   'no-console': ['off'],
+   'no-restricted-syntax': ['off', 'ForOfStatement'],
+},
+```
+
+There are several variations we can use to write these rules, but this should be enough to get started.
