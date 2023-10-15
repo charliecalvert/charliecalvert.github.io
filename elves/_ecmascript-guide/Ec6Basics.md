@@ -69,3 +69,5 @@ rules: {
 ```
 
 There are several variations we can use to write these rules, but this should be enough to get started.
+
+[stack overflow](https://stackoverflow.com/a/77297603/253576)
