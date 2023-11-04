@@ -5,4 +5,6 @@ title: microsoft
 categories: tech microsoft
 ---
 
+## Microsoft Slideshows
+
 I understand how it works now. First start the slide show, then hover the mouse over the bottom left corner of the running slideshow and a hidden menu will appear. Once the menu appears you can choose the Autopay option and it's all intuitive from there.
