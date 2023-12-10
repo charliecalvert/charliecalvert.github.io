@@ -5,10 +5,11 @@ title: christmas
 categories: spirit christian
 ---
 
-Christmas is a time of joy and
-happiness. It is a time of family and friends. It is a time of love and peace.
+Images and text generated with Bing AI.
 
-Images generated with Bing AI.
+Christmas is a time of joy and happiness. It is a
+time of family and friends. It is a time of love
+and peace.
 
 ![Christmas](/assets/images/christmas/SnowyChristmas-2023-12-10-01.jpeg "Christmas")
 
