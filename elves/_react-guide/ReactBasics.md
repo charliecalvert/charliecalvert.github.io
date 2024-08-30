@@ -32,6 +32,60 @@ Here are some useful links:
 
     cp $ELF_TEMPLATES/React/ReactNpm
 
+## Webpack Configuration
+
+```javascript
+module: {
+    rules: [
+        {
+            test: /.js?$/,
+            exclude: /(node_modules|bower_components)/,
+            use: [
+                {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: [
+                            '@babel/preset-env',
+                            '@babel/preset-react'
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            test: /\.css$/,
+            use: ['style-loader', 'css-loader']
+        }
+    ]
+}
+```
+
+## Install Babel
+
+``` bash
+npm i @babel/cli
+npm i @babel/plugin-proposal-class-properties
+npm i -D @babel/core
+npm i -D @babel/eslint-parser
+npm i -D @babel/preset-env
+npm i -D @babel/preset-react
+npm i -D babel-loader
+```
+
+## Remove Babel
+
+``` bash
+npm rm @babel/cli
+npm rm @babel/*
+npm rm @babel/plugin-transform-class-properties
+npm rm @babel/core
+npm rm @babel/eslint-parser
+npm rm @babel/preset-env
+npm rm @babel/preset-react
+npm rm babel-loader
+npm rm babel-eslint
+```
+
 ## IDE
 
 These days we are using Visual Studio Code. Several extensions are helpful:
@@ -174,7 +228,7 @@ Now edit the **scripts** section of **package.json** so that it looks like this:
 
 ```javascript
 "scripts": {
-   "start": "node_modules/.bin/webpack-dev-server --port=30025 --mode=development",   
+   "start": "node_modules/.bin/webpack-dev-server --port=30025 --mode=development",
    "build": "node_modules/.bin/webpack",
    "test": "echo \"Error: no test specified\" && exit 1"
 },
@@ -428,12 +482,11 @@ Here we include the presets in **webpack.config.js** in the **options** property
 
 Both techniques are common. There are advantages to both techniques. It is nice to not have to have one file instead of two, which gives a vote to **options** section in **webpackage.config.js**. Note however, that without **.babelrc** you can't run Babel directly against our code; we _have to_ use webpack to transpile the code or jump through some other hoop like a command line option. If you do decide to do that, then you should delete or rename or **.babelrc**. All this is typical: there are trade-offs and we have to weigh each option and make a decision. For now, I vote to skip the **options** section and go with **.babelrc**, but I admit there are good arguments on both sides.
 
-
 ## Run Your Code
 
 To start your project, type **npm start**. Now browse to:
 
-http://localhost:30025/
+<http://localhost:30025/>
 
 Optionally issue this command at the command prompt to check your work:
 
@@ -511,6 +564,7 @@ ReactDOM.render(
     document.getElementById("root")
 );
 ```
+
 ## Link in Function Components
 
 Modify **main.js** by removing the reference to **ReactBasics.js** and replacing it with a reference to **ReactBasicsFunctionComponent.js**.
