@@ -10,6 +10,8 @@ directoryName: React
 category : react-guide
 ---
 
+//TODO: Auto-generate this page
+
 * [AddressComponent.html](AddressComponent.html)
 * [CongressAddressServer.html](CongressAddressServer.html)
 * [GitUserTesting.html](GitUserTesting.html)
