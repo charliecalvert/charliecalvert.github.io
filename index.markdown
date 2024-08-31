@@ -1,5 +1,6 @@
 ---
-# Feel free to add content and custom Front Matter to this file.
+# Feel free to add content and custom Front Matter
+# to this file.
 # To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
 layout: home
@@ -12,11 +13,7 @@ The best way to navigate this site is to use the:
 
 [List of all guides](guides.html).
 
-## Posts
+The blog posts are listed with the other guids, but I break
+them out here for you:
 
-<section><ul>
-{% for product in site['posts'] %}
-<li><a href="{{ product.url }}">
-    {{ product.title }}</a></li>
-{% endfor %}
-</ul></section>
+[List of blog posts](posts-only.html).
