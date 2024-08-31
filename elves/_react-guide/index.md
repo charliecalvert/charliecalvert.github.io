@@ -11,11 +11,13 @@ category : react-guide
 ---
 <h1>{{ page.title }}</h1>
 
+<p>My custom loop to list all the pages in the react-guide directory.</p>
+
 <ul>
-  {% assign docs = site.pages | where_exp: "page", "page.path contains 'docs/'" %}
-  {% for doc in docs %}
+  {% assign react-guide = site.pages | where_exp: "page", "page.path contains 'react-guide/'" %}
+  {% for file in react_guide %}
     <li>
-      <a href="{{ doc.url }}">{{ doc.title }}</a>
+      <a href="{{ file.url }}">{{ file.title }}</a>
     </li>
   {% endfor %}
 </ul>
