@@ -7,9 +7,17 @@ layout: home
 
 ## Overview
 
-If you are looking for a specific file, you can use the first link below. The second two links really need to be deleted, I just don't have the heart to do it yet.
+If you are looking for a specific file, you can use the first link below.
 
 - [All files on the site all at once](everything.html)
+
+## Guides
+
+If you are looking for a guide, you can use the links below.
+
+If you want to see a blog post, [the Blog Posts page](posts-only.html).
+
+Here are the guides on the site:
 
 <section><ul>
 {% for collection in site.collections %}
