@@ -9,8 +9,20 @@ title: index
 directoryName: React
 category : react-guide
 ---
+<h1>{{ page.title }}</h1>
+
+<ul>
+  {% assign docs = site.pages | where_exp: "page", "page.path contains 'docs/'" %}
+  {% for doc in docs %}
+    <li>
+      <a href="{{ doc.url }}">{{ doc.title }}</a>
+    </li>
+  {% endfor %}
+</ul>
 
 //TODO: Auto-generate this page
+
+## Manual Pages
 
 * [AddressComponent.html](AddressComponent.html)
 * [CongressAddressServer.html](CongressAddressServer.html)
