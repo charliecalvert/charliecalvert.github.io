@@ -1,3 +1,7 @@
+# Update Repo
+
+There are two phases, one in **CloudNotes** and one in **charliecalvert.github.io**.
+
 ## Create New Post
 
 ```bash
@@ -5,10 +9,6 @@ cd ../jekyll-private/scripts
 npm i
 node create-jekyll-post.js
 ```
-
-# Update Repo
-
-There are two phases, one in **CloudNotes** and one in **charliecalvert.github.io**.
 
 ## Run
 
