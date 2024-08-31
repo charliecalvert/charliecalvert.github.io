@@ -12,7 +12,7 @@ category : react-guide
 <h1>{{ page.title }}</h1>
 
 <p>My custom loop to list all the pages in the react-guide directory.</p>
-<p>V 0.9801: of the custom loop that lists all the pages in the react-guide directory.</p>
+<p>V 0.9802: of the custom loop that lists all the pages in the react-guide directory.</p>
 
 <h1>{{ page.title }}</h1>
 
@@ -20,23 +20,6 @@ category : react-guide
   {% for react-guide in site.react-guide %}
     <li>
       <a href="{{ react-guide.url }}">{{ react-guide.title }}</a>
-    </li>
-  {% endfor %}
-</ul>
-
-<ul>
-  {% assign react-guide = site.pages | where_exp: "page", "page.path contains 'react-guide/'" %}
-
-  <!-- Debug: Print the entire react-guide collection -->
-  <pre>{{ react-guide | jsonify }}</pre>
-  {% for file in react-guide %}
-      <!-- Debug: Print each file object -->
-    <pre>{{ file | jsonify }}</pre>
-    <div>
-      <p>{{ file.url }}</p>
-    </div>
-    <li>
-      <a href="{{ file.url }}">{{ file.title }}</a>
     </li>
   {% endfor %}
 </ul>
