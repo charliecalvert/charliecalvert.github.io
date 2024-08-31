@@ -9,12 +9,11 @@ title: index
 directoryName: React
 category : react-guide
 ---
-<h1>{{ page.title }}</h1>
 
 <p>My custom loop to list all the pages in the react-guide directory.</p>
 <p>V 0.9802: of the custom loop that lists all the pages in the react-guide directory.</p>
 
-<h1>{{ page.title }}</h1>
+<p>The pages in the react-guide directory.</p>
 
 <ul>
   {% for react-guide in site.react-guide %}
@@ -23,8 +22,6 @@ category : react-guide
     </li>
   {% endfor %}
 </ul>
-
-//TODO: Auto-generate this page
 
 ## Manual Pages
 
