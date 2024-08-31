@@ -4,7 +4,7 @@ layout: default
 
 # Everything All at Once
 
-Here you can find links to all the files in the site.
+Here you can find links to all the files in each of the guides.
 
 {% for collection in site.collections %}
 <h2> {{ collection.label }} </h2>
