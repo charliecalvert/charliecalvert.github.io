@@ -18,9 +18,8 @@ category : react-guide
   {% assign react-guide = site.pages | where_exp: "page", "page.path contains 'react-guide'" %}
 
   <!-- Debug: Print the entire react_guide collection -->
-  <pre>{{ react_guide | jsonify }}</pre>
-
-  {% for file in react_guide %}
+  <pre>{{ react-guide | jsonify }}</pre>
+  {% for file in react-guide %}
       <!-- Debug: Print each file object -->
     <pre>{{ file | jsonify }}</pre>
     <div>
