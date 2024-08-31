@@ -12,6 +12,7 @@ category : react-guide
 <h1>{{ page.title }}</h1>
 
 <p>My custom loop to list all the pages in the react-guide directory.</p>
+<p>V 0.95: of the custom loop that lists all the pages in the react-guide directory.</p>
 
 <ul>
   {% assign react-guide = site.pages | where_exp: "page", "page.path contains 'react-guide'" %}
