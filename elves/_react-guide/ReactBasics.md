@@ -32,6 +32,9 @@ Here are some useful links:
 
 ## Webpack Configuration
 
+Create a file called **webpack.config.js** in the root of your project. Here is part of the content of that file that defines how to load
+JavaScript and CSS files using **babel-loader** and **css-loader**:
+
 ```javascript
 module: {
     rules: [
