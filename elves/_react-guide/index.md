@@ -16,6 +16,9 @@ category : react-guide
 <ul>
   {% assign react-guide = site.pages | where_exp: "page", "page.path contains 'react-guide/'" %}
   {% for file in react_guide %}
+    <div>
+      <p>{{ file.url }}</p>
+    </div>
     <li>
       <a href="{{ file.url }}">{{ file.title }}</a>
     </li>
