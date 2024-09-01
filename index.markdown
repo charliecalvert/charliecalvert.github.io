@@ -17,3 +17,5 @@ The blog posts are listed with the other guids, but I break
 them out here for you:
 
 [List of blog posts](posts-only.html).
+
+Can we lose the posts?
